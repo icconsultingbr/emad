@@ -1,0 +1,299 @@
+<ng-template #customLoadingTemplate>
+  <div style="position: fixed; z-index:9999; width: 100%; top: 50%; left: 20px">
+    <i class="fa fa-circle-o-notch fa-spin">
+      <img class="image" src="assets/imgs/favicon.png" alt="" width="60">
+    </i>
+  </div>
+</ng-template>
+
+<ngx-loading [show]="loading" [config]="{fullScreenBackdrop: true}" [template]="customLoadingTemplate"></ngx-loading>
+
+<form [formGroup]="form" (submit)="sendForm($event)">
+
+  <p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
+  <p *ngIf="warning.length" class="alert alert-danger sticky-top">
+    {{warning}}
+  </p>
+
+  <div *ngIf="errors.length" class="alert alert-danger">
+    <div *ngFor="let error of errors" class="row">
+      <div class="col-12 text-left">
+        {{error.message}}
+      </div>
+
+    </div>
+  </div>
+
+  <div *ngIf="!id">
+    <div *ngFor="let field of fields">
+      <div *ngIf="(field.onlyCreate==true || field.onlyCreate === undefined) && field.form" class="form-group row" id="{{'fg-' + field.field}}">
+        <label *ngIf="field.type!='hidden' && field.form" for="{{field.field}}"
+          class="col-sm-2 col-form-label text-left">{{field.label}}
+          <span class="text-danger font-weight-bold">{{field.required?'*':''}}</span>
+        </label>
+        <div class="col-sm-10">
+          <div class="input-group">
+            <input *ngIf="field.type=='text' && field.keyUpMethod && field.form && !field.autoFocus"
+              type="{{field.type}}" id="{{field.field}}" name="{{field.field}}" clearIfNotMatch="true"
+              placeholder="{{field.placeholder}}" [(ngModel)]="object[field.field]" formControlName="{{field.field}}"
+              (keyup)="debounce.next($event.target.value+'||'+field.keyUpMethod+'||'+field.keyUpTarget)"
+              class="form-control has-error" [readonly]="field.readonly" autocomplete="off">
+
+            <input *ngIf="field.type=='text' && field.mask && field.form && !field.keyUpMethod && !field.autoFocus"
+              type="{{field.type}}" id="{{field.field}}" mask="{{field.mask}}" name="{{field.field}}"
+              clearIfNotMatch="true" placeholder="{{field.placeholder}}" [(ngModel)]="object[field.field]"
+              formControlName="{{field.field}}" class="form-control has-error" [readonly]="field.readonly"
+              (blur)="field.onBlur?blurMethod($event.target.value, field):''" autocomplete="off">
+
+            <input
+              *ngIf="(field.type=='text' || field.type=='hidden') && !field.mask && field.decimalMask && field.form  && !field.keyUpMethod && !field.autoFocus"
+              currencyMask
+              [options]="{ prefix: field.decimalMask.prefix ? field.decimalMask.prefix : '', thousands: field.decimalMask.thousands ? field.decimalMask.thousands : '.', decimal: field.decimalMask.decimal ? field.decimalMask.decimal : ',' , align : field.decimalMask.align ? field.decimalMask.align : 'left' }"
+              type="{{field.type}}" id="{{field.field}}" name="{{field.field}}" placeholder="{{field.placeholder}}"
+              [(ngModel)]="object[field.field]" formControlName="{{field.field}}" class="form-control has-error"
+              [readonly]="field.readonly" (blur)="field.onBlur?blurMethod($event.target.value, field):''"
+              autocomplete="off">
+
+            <input
+              *ngIf="(field.type=='text' || field.type=='hidden' || field.type=='password') && !field.mask && !field.decimalMask && field.form && !field.keyUpMethod && !field.autoFocus"
+              type="{{field.type}}" id="{{field.field}}" name="{{field.field}}" placeholder="{{field.placeholder}}"
+              [(ngModel)]="object[field.field]" formControlName="{{field.field}}" class="form-control has-error"
+              [readonly]="field.readonly" (blur)="field.onBlur?blurMethod($event.target.value, field):''"
+              autocomplete="off">
+
+            <input *ngIf="field.type=='text' && field.keyUpMethod && field.form && field.autoFocus"
+              type="{{field.type}}" id="{{field.field}}" name="{{field.field}}" clearIfNotMatch="true"
+              placeholder="{{field.placeholder}}" [(ngModel)]="object[field.field]" formControlName="{{field.field}}"
+              (keyup)="debounce.next($event.target.value+'||'+field.keyUpMethod+'||'+field.keyUpTarget)"
+              class="form-control has-error" [readonly]="field.readonly"
+              (blur)="field.onBlur?blurMethod($event.target.value, field):''" autofocus #focus autocomplete="off">
+
+            <input *ngIf="field.type=='text' && field.mask && field.form && !field.keyUpMethod && field.autoFocus"
+              type="{{field.type}}" id="{{field.field}}" mask="{{field.mask}}" name="{{field.field}}"
+              clearIfNotMatch="true" placeholder="{{field.placeholder}}" [(ngModel)]="object[field.field]"
+              formControlName="{{field.field}}" class="form-control has-error" [readonly]="field.readonly"
+              (blur)="field.onBlur?blurMethod($event.target.value, field):''" autofocus #focus autocomplete="off">
+
+            <input
+              *ngIf="(field.type=='text' || field.type=='hidden') && !field.mask && field.decimalMask && field.form  && !field.keyUpMethod && field.autoFocus"
+              currencyMask
+              [options]="{ prefix: field.decimalMask.prefix ? field.decimalMask.prefix : '', thousands: field.decimalMask.thousands ? field.decimalMask.thousands : '.', decimal: field.decimalMask.decimal ? field.decimalMask.decimal : ',' , align : field.decimalMask.align ? field.decimalMask.align : 'left' }"
+              type="{{field.type}}" id="{{field.field}}" name="{{field.field}}" placeholder="{{field.placeholder}}"
+              [(ngModel)]="object[field.field]" formControlName="{{field.field}}" class="form-control has-error"
+              [readonly]="field.readonly" (blur)="field.onBlur?blurMethod($event.target.value, field):''" autofocus
+              #focus autocomplete="off">
+
+            <input
+              *ngIf="(field.type=='text' || field.type=='hidden' || field.type=='password') && !field.mask && !field.decimalMask && field.form  && !field.keyUpMethod && field.autoFocus"
+              type="{{field.type}}" id="{{field.field}}" name="{{field.field}}" placeholder="{{field.placeholder}}"
+              [(ngModel)]="object[field.field]" formControlName="{{field.field}}" class="form-control has-error"
+              [readonly]="field.readonly" (blur)="field.onBlur?blurMethod($event.target.value, field):''" autofocus
+              #focus autocomplete="off">
+
+            <textarea *ngIf="field.type=='textarea' && field.form  && !field.keyUpMethod" id="{{field.field}}"
+              name="{{field.field}}" placeholder="{{field.placeholder}}" [(ngModel)]="object[field.field]"
+              formControlName="{{field.field}}" rows="4" class="form-control has-error"
+              [readonly]="field.readonly"></textarea>
+
+            <select
+              *ngIf="field.type=='select' && domains.length && field.form  && !field.keyUpMethod && !field.autoFocus"
+              (change)="(field.filter && field.filter.changeMethod) || field.toggleFields ?loadDomain(field, $event):''"
+              name="{{field.field}}" id="{{field.field}}" [(ngModel)]="object[field.field]"
+              formControlName="{{field.field}}" class="custom-select d-block w-100">
+              <option [ngValue]="undefined" selected>
+                {{ domains && domains[0][field.field].length ? "Selecione..." : "Não há registros" }}</option>
+              <option *ngFor="let domain of domains[0][field.field]" value="{{domain.id}}">{{domain.nome}}</option>
+            </select>
+
+            <select
+              *ngIf="field.type=='select' && !domains.length && field.form  && !field.keyUpMethod && !field.autoFocus"
+              (change)="(field.filter && field.filter.changeMethod) || field.toggleFields ?loadDomain(field, $event):''"
+              name="{{field.field}}" id="{{field.field}}" [(ngModel)]="object[field.field]"
+              formControlName="{{field.field}}" class="custom-select d-block w-100" disabled>
+              <option [ngValue]="undefined">Sem dados...</option>
+            </select>
+
+            <select
+              *ngIf="field.type=='select' && domains.length && field.form  && !field.keyUpMethod && field.autoFocus"
+              (change)="(field.filter && field.filter.changeMethod) || field.toggleFields ?loadDomain(field, $event):''"
+              name="{{field.field}}" id="{{field.field}}" [(ngModel)]="object[field.field]"
+              formControlName="{{field.field}}" class="custom-select d-block w-100" autofocus #focus>
+              <option [ngValue]="undefined" selected>
+                {{ domains[0][field.field].length ? "Selecione..." : "Não há registros" }}</option>
+              <option *ngFor="let domain of domains[0][field.field]" value="{{domain.id}}">{{domain.nome}}</option>
+            </select>
+
+            <select
+              *ngIf="field.type=='select' && !domains.length && field.form  && !field.keyUpMethod && field.autoFocus"
+              (change)="(field.filter && field.filter.changeMethod) || field.toggleFields ?loadDomain(field, $event):''"
+              name="{{field.field}}" id="{{field.field}}" [(ngModel)]="object[field.field]"
+              formControlName="{{field.field}}" class="custom-select d-block w-100" disabled>
+              <option [ngValue]="undefined">Sem dados...</option>
+            </select>
+          </div>
+
+          <div *ngIf="field.type=='checkbox' && field.form" class="custom-control custom-checkbox"
+            style="width: 25px; margin-top: -10px">
+            <input type="checkbox" id="{{field.field}}" name="{{field.field}}" [(ngModel)]="object[field.field]"
+              formControlName="{{field.field}}" class="custom-control-input" [readonly]="field.readonly">
+            <label class="custom-control-label" for="{{field.field}}"></label>
+          </div>
+          
+          <ng-multiselect-dropdown *ngIf="domains && domains.length && field.type=='multiSelect'" 
+            formControlName="{{field.field}}" style="border-color: #ced4da; background: #FFF; width: 100%;"
+            [placeholder]="'Selecionar itens'" [data]="domains[0][field.field]" [(ngModel)]="object[field.field]"
+            [settings]="dropdownSettings"
+            (onDropDownClose)="field.selectMethod?filterMultiSelectMethod(field.field, object[field.field]):''"
+            (onSelect)="field.selectMethod?filterMultiSelectMethod(field.field, object[field.field]):''"
+            (onSelectAll)="field.selectMethod?filterMultiSelectMethod(field.field, object[field.field]):''"
+            (onDeSelect)="field.selectMethod?filterMultiSelectMethod(field.field, object[field.field]):''"
+            (onDeSelectAll)="field.selectMethod?filterMultiSelectMethod(field.field, object[field.field]):''">
+          </ng-multiselect-dropdown>
+
+          <input
+            *ngIf="field.type=='geocode' && field.form"
+            type="text"
+            id="{{field.field}}" 
+            name="{{field.field}}" 
+            clearIfNotMatch="true" 
+            placeholder="{{field.placeholder}}"
+            formControlName="{{field.field}}"
+            [(ngModel)]="object[field.field]"
+            class="form-control has-error" 
+            [readonly]="field.readonly"
+            autocomplete="off"
+            #addresstext
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div *ngIf="id">
+    <div *ngFor="let field of fields">
+      <div *ngIf="(field.onlyCreate==false || field.onlyCreate === undefined) && field.form" class="form-group row" id="{{'fg-' + field.field}}">
+        <label *ngIf="field.type!='hidden' && field.form" for="{{field.field}}"
+          class="col-sm-2 col-form-label text-left">{{field.label}}
+          <span class="text-danger font-weight-bold">{{field.required?'*':''}}</span>
+        </label>
+
+        <div class="col-sm-10">
+          <div class="input-group">
+            <input *ngIf="field.type=='text' && field.keyUpMethod && field.form" type="{{field.type}}"
+              id="{{field.field}}" name="{{field.field}}" clearIfNotMatch="true" placeholder="{{field.placeholder}}"
+              [(ngModel)]="object[field.field]" formControlName="{{field.field}}"
+              (keyup)="debounce.next($event.target.value+'||'+field.keyUpMethod+'||'+field.keyUpTarget)"
+              class="form-control has-error" [readonly]="field.readonly"
+              (blur)="field.onBlur?blurMethod($event.target.value, field):''">
+
+            <input *ngIf="field.type=='text' && field.mask && field.form && !field.keyUpMethod" type="{{field.type}}"
+              id="{{field.field}}" mask="{{field.mask}}" name="{{field.field}}" clearIfNotMatch="true"
+              placeholder="{{field.placeholder}}" [(ngModel)]="object[field.field]" formControlName="{{field.field}}"
+              class="form-control has-error" [readonly]="field.readonly"
+              (blur)="field.onBlur?blurMethod($event.target.value, field):''">
+
+            <input
+              *ngIf="(field.type=='text' || field.type=='hidden') && !field.mask && field.decimalMask && field.form && !field.keyUpMethod"
+              currencyMask
+              [options]="{ prefix: field.decimalMask.prefix ? field.decimalMask.prefix : '', thousands: field.decimalMask.thousands ? field.decimalMask.thousands : '.', decimal: field.decimalMask.decimal ? field.decimalMask.decimal : ',' , align : field.decimalMask.align ? field.decimalMask.align : 'left' }"
+              type="{{field.type}}" id="{{field.field}}" name="{{field.field}}" placeholder="{{field.placeholder}}"
+              [(ngModel)]="object[field.field]" formControlName="{{field.field}}" class="form-control has-error"
+              [readonly]="field.readonly" (blur)="field.onBlur?blurMethod($event.target.value, field):''">
+
+            <input
+              *ngIf="(field.type=='text' || field.type=='hidden' || field.type=='password') && !field.mask && !field.decimalMask && field.form && !field.keyUpMethod"
+              type="{{field.type}}" id="{{field.field}}" name="{{field.field}}" placeholder="{{field.placeholder}}"
+              [(ngModel)]="object[field.field]" formControlName="{{field.field}}" class="form-control has-error"
+              [readonly]="field.readonly" (blur)="field.onBlur?blurMethod($event.target.value, field):''">
+
+            <textarea *ngIf="field.type=='textarea' && field.form" id="{{field.field}}" name="{{field.field}}"
+              placeholder="{{field.placeholder}}" [(ngModel)]="object[field.field]" formControlName="{{field.field}}"
+              rows="4" class="form-control has-error" [readonly]="field.readonly"></textarea>
+
+            <select *ngIf="domains && field.type=='select' && domains.length && field.form && !field.autoFocus"
+              (change)="(field.filter && field.filter.changeMethod) || field.toggleFields ?loadDomain(field, $event):''"
+              name="{{field.field}}" id="{{field.field}}" [(ngModel)]="object[field.field]"
+              formControlName="{{field.field}}" class="custom-select d-block w-100">
+              <option [ngValue]="undefined" selected>
+                {{ domains[0][field.field].length ? "Selecione..." : "Não há registros" }}</option>
+              <option *ngFor="let domain of domains[0][field.field]" value="{{domain.id}}">{{domain.nome}}</option>
+            </select>
+
+            <select *ngIf="domains && field.type=='select' && !domains.length && field.form && !field.autoFocus"
+              (change)="(field.filter && field.filter.changeMethod) || field.toggleFields ?loadDomain(field, $event):''"
+              name="{{field.field}}" id="{{field.field}}" [(ngModel)]="object[field.field]"
+              formControlName="{{field.field}}" class="custom-select d-block w-100" disabled>
+              <option [ngValue]="undefined">Sem dados...</option>
+            </select>
+
+            <select *ngIf="domains && field.type=='select' && domains.length && field.form && field.autoFocus"
+              (change)="(field.filter && field.filter.changeMethod) || field.toggleFields ?loadDomain(field, $event):''"
+              name="{{field.field}}" id="{{field.field}}" [(ngModel)]="object[field.field]"
+              formControlName="{{field.field}}" class="custom-select d-block w-100" autofocus #focus>
+              <option [ngValue]="undefined" selected>
+                {{ domains[0][field.field].length ? "Selecione..." : "Não há registros" }}</option>
+              <option *ngFor="let domain of domains[0][field.field]" value="{{domain.id}}">{{domain.nome}}</option>
+            </select>
+
+            <select *ngIf="domains && field.type=='select' && !domains.length && field.form && field.autoFocus"
+              (change)="(field.filter && field.filter.changeMethod) || field.toggleFields ?loadDomain(field, $event):''"
+              name="{{field.field}}" id="{{field.field}}" [(ngModel)]="object[field.field]"
+              formControlName="{{field.field}}" class="custom-select d-block w-100" disabled>
+              <option [ngValue]="undefined">Sem dados...</option>
+            </select>
+
+            <div *ngIf="field.type=='checkbox' && field.form" class="custom-control custom-checkbox"
+              style="width: 25px; margin-top: -10px">
+              <input type="checkbox" id="{{field.field}}" name="{{field.field}}" [(ngModel)]="object[field.field]"
+                formControlName="{{field.field}}" class="custom-control-input">
+              <label class="custom-control-label" for="{{field.field}}"></label>
+            </div>
+
+            <ng-multiselect-dropdown *ngIf="domains && domains.length && field.type=='multiSelect'"
+              formControlName="{{field.field}}" style="border-color: #ced4da; background: #FFF; width: 100%;"
+              [placeholder]="'Selecionar itens'" [data]="domains[0][field.field]" [(ngModel)]="object[field.field]"
+              [settings]="dropdownSettings"
+              (onDropDownClose)="field.selectMethod?filterMultiSelectMethod(field.field, object[field.field]):''"
+              (onSelect)="field.selectMethod?filterMultiSelectMethod(field.field, object[field.field]):''"
+              (onSelectAll)="field.selectMethod?filterMultiSelectMethod(field.field, object[field.field]):''"
+              (onDeSelect)="field.selectMethod?filterMultiSelectMethod(field.field, object[field.field]):''"
+              (onDeSelectAll)="field.selectMethod?filterMultiSelectMethod(field.field, object[field.field]):''">
+            </ng-multiselect-dropdown>
+
+            <input *ngIf="field.type=='text' && field.keyUpMethod && field.form" type="{{field.type}}"
+              id="{{field.field}}" name="{{field.field}}" clearIfNotMatch="true" placeholder="{{field.placeholder}}"
+              [(ngModel)]="object[field.field]" formControlName="{{field.field}}"
+              (keyup)="debounce.next($event.target.value+'||'+field.keyUpMethod+'||'+field.keyUpTarget)"
+              class="form-control has-error" [readonly]="field.readonly"
+              (blur)="field.onBlur?blurMethod($event.target.value, field):''">
+            
+            <input
+              *ngIf="field.type=='geocode' && field.form"
+              type="text"
+              id="{{field.field}}" 
+              name="{{field.field}}" 
+              clearIfNotMatch="true" 
+              placeholder="{{field.placeholder}}"
+              formControlName="{{field.field}}"
+              [(ngModel)]="object[field.field]"
+              class="form-control has-error" 
+              [readonly]="field.readonly"
+              autocomplete="off"
+              #addresstext
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group text-right">
+    <button (click)="back()" class="btn btn-default mr-2" type="button">
+      <i class="fa fa-arrow-left"></i> Retornar
+    </button>
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
+      <i class="fa fa-save"></i> Salvar
+    </button>
+  </div>
+</form>

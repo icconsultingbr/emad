@@ -1,0 +1,314 @@
+<ng-template #customLoadingTemplate>
+    <div style="position: fixed; z-index:9999; width: 100%; top: 50%; left: 20px">
+        <i class="fa fa-circle-o-notch fa-spin">
+            <img class="image" src="assets/imgs/favicon.png" alt="" width="60">
+        </i>
+    </div>
+</ng-template>
+
+<ngx-loading [show]="loading" [config]="{fullScreenBackdrop: true}" [template]="customLoadingTemplate"></ngx-loading>
+
+<div #alert *ngIf="showMessage" class="alert alert-warning alert-dismissible fade show float-message" role="alert">
+    <button type="button" class="close" aria-label="Close" (click)="closeAlert()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <strong>Atenção!</strong> Não foi encontrado nenhum estabelecimento no raio de {{raio.toLocaleString()}} metro(s).
+</div>
+
+<div *ngIf="count > 0" class="alert alert-success alert-dismissible fade show float-message" style="padding: 8px 15px 8px 10px;">
+    <div class="custom-control custom-checkbox text-left">
+        <input class="custom-control-input" checked="checked" name="count" type="checkbox" id="count" (change)="onChangeCount($event)">
+        <label class="custom-control-label" style="font-weight: bold;" for="count">
+            <img [src]="legendIconSrc" [class]="legendIconClass">({{count}})
+        </label>
+    </div>
+</div>
+
+<div #mapRef class="map"></div>
+
+<button class="btn btn-primary ml-3 rounded float" type="button" (click)="open(contentEntry, 1)">
+  <i class="fa fa-search"></i>
+</button>
+
+<ng-template #contentEntry>
+    <div class="modal-header">
+        <h5 class="modal-title">Tipo de Localização</h5>
+        <button type="button" class="close" aria-label="Close" (click)="close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group row">
+            <div class="col-12">
+                <ul class="list-group">
+                    <li class="list-group-item text-left"  *ngFor="let entry of entries">
+                        <input type="radio" name="radiogroup" 
+                            [checked]="entry.id === 1"
+                            [value]="entry.id"
+                            (change)="onSelectionChange(entry)" 
+                        >
+                        {{entry.description}}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="form-group row text-right">
+            <div class="col-12">
+                <button class="btn btn-primary  mr-2" type="button" (click)="open(content, 2)">
+                    <i class="fa fa-angle-right"></i>&nbsp;&nbsp;Próximo
+                </button>
+                <button class="btn btn-default" (click)="close()" type="button">
+                    <i class="fa fa-times"></i>&nbsp;&nbsp;Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #content>
+    <div class="modal-header">
+        <h4 class="modal-title">{{selectedEntry.description}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p *ngIf="message.length" class="alert alert-info">{{message}}</p>
+        <div *ngIf="errors.length" class="alert alert-danger">
+            <div *ngFor="let error of errors" class="row">
+                <div class="col-12 text-left">
+                    {{error.message}}
+              </div>
+            </div>
+        </div>
+
+        <!-- Filtro 1 -->
+        <div *ngIf="selectedEntry.id === 1">
+            <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                    Cartao SUS:
+                </label>
+                <div class="col-8">
+                    <input type="text" mask="9999999999999999999999" class="form-control has-error" [(ngModel)]="paciente.cartaoSus" autofocus>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                    Nome do paciente:
+                </label>
+                <div class="col-8">
+                    <input type="text" class="form-control has-error" [(ngModel)]="paciente.nome">
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtro 1 -->
+        <div *ngIf="selectedEntry.id === 2">
+            <div class="form-group row">
+                <label class="col-xl-3 col-form-label text-left">
+                    CNES:
+                </label>
+                <div class="col-9">
+                    <input type="text" mask="9999999999999999999999" class="form-control has-error" [(ngModel)]="estabelecimento.cnes" autofocus>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-xl-3 col-form-label text-left">
+                    Tipo da Unidade:
+                </label>
+                <div class="col-9">
+                    <select [(ngModel)]="estabelecimento.idTipoUnidade" class="form-control has-error" class="custom-select d-block w-100" autofocus>
+                        <option [ngValue]="0" selected>Selecione...</option>
+                        <option *ngFor="let domain of domains[0]['idTipoUnidade']" value="{{domain.id}}">{{domain.nome}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-xl-3 col-form-label text-left">
+                    Razão Social:
+                </label>
+                <div class="col-9">
+                    <input type="text" class="form-control has-error" [(ngModel)]="estabelecimento.razaoSocial">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-12">
+                <button [routerLink]="" class="btn btn-primary float-right" [disabled]="toggleSearch()"
+                    (click)="search()">
+                    <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin text-left">
+                        <i class="fa fa-spinner"></i>
+                    </i>
+                    <i *ngIf="!loading" class="fas fa-search"></i>
+                </button>
+
+                <a [routerLink]="" (click)="clear()" class="btn btn-default text-secondary mr-2 float-right"
+                    style="border: 1px solid #d1d1d1 ">
+                    <i class="fas fa-eraser"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-12 table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th *ngFor="let field of fields;" class="text-left">{{field.label}}</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let item of pagedItems let index=index; let odd='odd'; let even='even';">
+                        <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
+
+                            <td class="text-secondary">
+                                <div class="custom-control custom-radio float-left">
+                                    <input type="radio" (change)="seleciona(item)" class="custom-control-input"
+                                        id="{{ item.id }}" name="radio-item">
+                                    <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
+                                </div>
+                            </td>
+                            <td *ngFor="let field of fields;">
+                                <label for="{{ item.id }}">
+                                    {{
+                                        field.isDate?(item[field.field] | date :'dd/MM/yyyy') : 
+                                        field.isDateTime?(item[field.field] | date :'dd/MM/yyyy HH:mm'): 
+                                        field.translate?(translate(item[field.field], field.translate)):
+                                        field.decimalMask?(toCurrency(item[field.field] | currency:'R$ ':true:'1.2-2',field.decimalMask)):
+                                        field.docMask?(maskDocument(item[field.field])):
+                                        item[field.field]
+                                    }}
+                                </label>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <tbody *ngIf="!allItems || allItems.length==0">
+                        <tr class="text-left" class="even">
+                            <td colspan="99" class="text-secondary">
+                                <i>Não há resultados...</i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div *ngIf="pager.pages && pager.pages.length" class="text text-secondary col-md-12 pr-0 mx-auto">
+                <i>
+                    Exibindo
+                    {{pager.currentPage === pager.totalPages?allItems.length:pager.currentPage*pagedItems.length}}
+                    de
+                    {{allItems.length}}
+                    resultado(s).
+                </i>
+            </div>
+        </div>
+
+        <div class="row">
+            <ul *ngIf="pager.pages && pager.pages.length" class="pagination mx-auto">
+                <li class="page-item" [ngClass]="{'disabled':pager.currentPage === 1}">
+                    <a class="page-link" (click)="setPage(1)">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                </li>
+                <li class="page-item" [ngClass]="{'disabled':pager.currentPage === 1}">
+                    <a class="page-link" (click)="setPage(pager.currentPage - 1)">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                </li>
+                <li>
+                    <select (change)="loadQuantityPerPage($event)" class="custom-select d-block w-100"
+                        style="border: 1px solid #dee2e6">
+                        <option [ngValue]="10">10</option>
+                        <option [ngValue]="25">25</option>
+                        <option [ngValue]="50">50</option>
+                    </select>
+                </li>
+                <li class="page-item" [ngClass]="{'disabled':pager.currentPage === pager.totalPages}">
+                    <a class="page-link" (click)="setPage(pager.currentPage + 1)">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="page-item" [ngClass]="{'disabled':pager.currentPage === pager.totalPages}">
+                    <a class="page-link" (click)="setPage(pager.totalPages)">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <hr/>
+        <div *ngIf="selectedEntry.id === 1" class="form-group row mt-2">
+            <label class="col-xl-4 col-form-label text-left">
+                Tipo da Unidade:
+            </label>
+            <div class="col-8">
+                <select [(ngModel)]="idTipoUnidade" class="custom-select d-block w-100" [disabled]="pacienteSelecionado == null">
+                    <option [ngValue]="0" selected>Selecione...</option>
+                    <option *ngFor="let domain of domains[0]['idTipoUnidade']" value="{{domain.id}}">{{domain.nome}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div *ngIf="selectedEntry.id === 2">
+            <div class="form-group row mt-2">
+                <label class="col-xl-4 col-form-label text-left">
+                    Modalidade do Paciente:
+                </label>
+                <div class="col-8">
+                    <select [(ngModel)]="idModalidade" class="custom-select d-block w-100" [disabled]="estabelecimentoSelecionado == null">
+                        <option [ngValue]="0" selected>TODOS</option>
+                        <option *ngFor="let domain of domains[0]['idModalidade']" value="{{domain.id}}">{{domain.nome}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                    Sexo do Paciente:
+                </label>
+                <div class="col-8">
+                    <select [(ngModel)]="sexo" class="custom-select d-block w-100" [disabled]="estabelecimentoSelecionado == null">
+                        <option [ngValue]="0" selected>TODOS</option>
+                        <option *ngFor="let domain of domains[0]['sexo']" value="{{domain.id}}">{{domain.nome}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                    Idade do Paciente (anos):
+                </label>
+                <label class="col-1 col-form-label text-left">De </label>  
+                <div class="col-3">
+                    <input type="text" mask="999" class="form-control has-error" [(ngModel)]="idadeDe" [disabled]="estabelecimentoSelecionado == null">
+                </div>
+                <label class="col-1 col-form-label text-left">Até </label>
+                <div class="col-3">                    
+                    <input type="text" mask="999" class="form-control has-error" [(ngModel)]="idadeAte" [disabled]="estabelecimentoSelecionado == null">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-xl-4 col-form-label text-left">
+                Raio de Localização (metros):
+            </label>
+            <div class="col-8">
+                <input type="text" mask="9999999999999999999999" class="form-control has-error" [(ngModel)]="raio" [disabled]="pacienteSelecionado == null && estabelecimentoSelecionado == null">
+            </div>
+        </div>  
+
+        <div class="form-group row text-right">
+            <div class="col-12">
+                <button class="btn btn-primary  mr-2" type="button" [disabled]="disableLocalizar()"
+                    (click)="confirma()">
+                    <i class="fa fa-map-marker-alt"></i>&nbsp;&nbsp;Localizar
+                </button>
+
+                <button class="btn btn-default" (click)="close()" type="button">
+                    <i class="fa fa-times"></i>&nbsp;&nbsp;Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-template>

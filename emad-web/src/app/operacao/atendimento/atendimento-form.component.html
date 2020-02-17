@@ -1,0 +1,788 @@
+<h4 class="mb-5 text-left">Atendimento</h4>
+
+
+
+<ng-template #customLoadingTemplate>
+  <div style="position: fixed; z-index:9999; width: 100%; top: 50%; left: 20px">
+    <i class="fa fa-circle-o-notch fa-spin">
+      <img class="image" src="assets/imgs/favicon.png" alt="" width="60">
+    </i>
+  </div>
+</ng-template>
+
+<ngx-loading [show]="loading" [config]="{fullScreenBackdrop: true}" [template]="customLoadingTemplate"></ngx-loading>
+
+<p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
+<div *ngIf="errors.length" class="alert alert-danger sticky-top"> 
+  <div *ngFor="let error of errors" class="row">
+    <div class="col-12 text-left">
+      {{error.message}}
+    </div>
+  </div>
+</div>
+
+<form [formGroup]="form" (submit)="sendForm($event)">
+
+  <input type="hidden" [(ngModel)]="object.idEstabelecimento" formControlName="idEstabelecimento" /> 
+
+  <div class="card mb-4">
+    <div class="card-header text-left">
+      Paciente
+
+      <button *ngIf="object.id" class="btn btn-primary float-right rounded" type="button" (click)="abreFichaDigital(object.id)">
+        <i class="fa fa-print"></i>
+      </button>
+
+      <button *ngIf="object.id" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreAtendimentoFichaDigital(object.id)">
+        <i class="fa fa-file-alt"></i>
+      </button>
+    </div>
+    <div class="card-body text-left">
+      <div class="row">
+        <div class="col-12">
+          <div class="row">
+
+            <label class="col-xl-2 col-form-label text-left">Pesquisar paciente
+              <span class="text-danger font-weight-bold">*</span>
+            </label>
+            <div class="col-xl-10">
+              <input type="hidden" [(ngModel)]="object.id" formControlName="id">
+              <input type="hidden" [(ngModel)]="object.idPaciente" formControlName="idPaciente">
+              <div class="input-group">
+
+                <input type="text" class="form-control has-error rounded" [(ngModel)]="object.pacienteNome"
+                  formControlName="pacienteNome" readonly>
+
+                <div class="input-group-append">
+                  <button class="btn btn-primary ml-3 rounded" type="button" (click)="open(contentClient)" [disabled]="disableFields()">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4" *ngIf="object.idPaciente">
+    <div class="card-header text-left">
+      Sinais vitais
+    </div>
+    <div class="card-body text-left">
+      <div class="row">
+        <div class="col-xl-6">
+          <div class="form-group row">
+            <label class="col-xl-4 col-form-label text-left">
+              Pressão arterial
+            </label>
+            <div class="col-xl-8">
+              <input type="text" class="form-control has-error" [(ngModel)]="object.pressaoArterial"
+                formControlName="pressaoArterial" [readonly]="disableFields()"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-6">
+          <div class="form-group row">
+            <label class="col-xl-4 col-form-label text-left">
+              Pulso
+            </label>
+            <div class="col-xl-8">
+              <input type="text" class="form-control has-error" [(ngModel)]="object.pulso" formControlName="pulso" [readonly]="disableFields()"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-6">
+          <div class="form-group row">
+            <label class="col-xl-4 col-form-label text-left">
+              Saturação 02
+            </label>
+            <div class="col-xl-8">
+              <input type="text" class="form-control has-error" [(ngModel)]="object.saturacao"
+                formControlName="saturacao" [readonly]="disableFields()" />
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-6">
+          <div class="form-group row">
+            <label class="col-xl-4 col-form-label text-left">
+              Temperatura
+            </label>
+            <div class="col-xl-8">
+              <input type="text" class="form-control has-error" [(ngModel)]="object.temperatura"
+                formControlName="temperatura" [readonly]="disableFields()" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-6">
+          <div class="form-group row">
+            <label class="col-xl-4 col-form-label text-left">
+              Altura
+            </label>
+            <div class="col-xl-8">
+              <input type="text" class="form-control has-error" [(ngModel)]="object.altura" formControlName="altura" [readonly]="disableFields()" />
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-6">
+          <div class="form-group row">
+            <label class="col-xl-4 col-form-label text-left">
+              Peso
+            </label>
+            <div class="col-xl-8">
+              <input type="text" class="form-control has-error" [(ngModel)]="object.peso" formControlName="peso" [readonly]="disableFields()" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4" *ngIf="object.idPaciente">
+    <div class="card-header text-left">
+      Dados do atendimento
+    </div>
+    <div class="card-body text-left">
+      <div class="row">
+        <div class="col-xl-6">
+          <div class="form-group row">
+            <label class="col-xl-4 col-form-label text-left">
+              História clínico / Evoução
+            </label>
+            <div class="col-xl-8">
+              <textarea rows="4" class="form-control has-error" [(ngModel)]="object.historicoClinico"
+                formControlName="historicoClinico" [readonly]="disableFields()"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-6">
+          <div class="form-group row">
+            <label class="col-xl-4 col-form-label text-left">
+              História progressa / famíliar
+            </label>
+            <div class="col-xl-8">
+              <textarea rows="4" class="form-control has-error" [(ngModel)]="object.historiaProgressa"
+                formControlName="historiaProgressa" [readonly]="disableFields()"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-6">
+          <div class="form-group row">
+            <label class="col-xl-4 col-form-label text-left">
+              Exame físico
+            </label>
+            <div class="col-xl-8">
+              <textarea rows="4" class="form-control has-error" [(ngModel)]="object.exameFisico"
+                formControlName="exameFisico" [readonly]="disableFields()"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-6">
+          <div class="form-group row">
+            <label class="col-xl-4 col-form-label text-left">
+              Observações gerais
+            </label>
+            <div class="col-xl-8">
+              <textarea rows="4" class="form-control has-error" [(ngModel)]="object.observacoesGerais"
+                formControlName="observacoesGerais" [readonly]="disableFields()"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4" *ngIf="object.idPaciente">
+    <div class="card-header text-left">
+      Hipótese diagnostica
+    </div>
+    <div class="card-body text-left">
+
+      <div class="row">
+
+        <div class="col-12 mb-3">
+          <button *ngIf="!disableFields()" type="button" class="btn btn-primary float-left mr-2" (click)="openHipotese(contentHipotese)" [disabled]="!object.id">
+            <i class="fa fa-plus-circle"></i>
+          </button>
+
+          <button type="button" class="btn btn-default float-left" (click)="findHipotesePorAtendimento()">
+            <i class="fa fa-sync-alt"></i>
+          </button>
+        </div>
+        <div class="col-12 table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Diagnóstico</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody *ngIf="!allItemsHipotese.length">
+              <tr class="text-left">
+                <td colspan="99" class="text-secondary">
+                  <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para inserir uma hipótese diagnóstica!'}}</i>
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="allItemsHipotese.length">
+              <tr class="text-left" *ngFor="let item of allItemsHipotese">
+                <td class="text-secondary">{{item.codigo}}</td>
+                <td class="text-secondary">{{item.nome}}</td>
+                <td class="text-secondary text-right">
+                  <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]="" (click)="removeHipotese(item)">
+                    <i class="fa fa-trash-alt"></i> Remover
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4" *ngIf="object.idPaciente">
+    <div class="card-header text-left">
+      Prescrição Medicamentos
+    </div>
+    <div class="card-body text-left">
+
+      <div class="row">
+        <div class="col-12 mb-3">
+          <button *ngIf="!disableFields()"  type="button" class="btn btn-primary float-left mr-2" [disabled]="!object.id"
+            (click)="openMedicamento(contentMedicamento)">
+            <i class="fa fa-plus-circle"></i>
+          </button>
+
+          <button type="button" class="btn btn-default float-left" (click)="findMedicamentoPorAtendimento()">
+            <i class="fa fa-sync-alt"></i>
+          </button>
+        </div>
+        <div class="col-12 table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Medicamento</th>
+                <th>Uso</th>
+                <th>Tipo via</th>
+                <th>Quantidade</th>
+                <th>Apresentação</th>
+                <th>Posologia</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="text-left">
+                <td colspan="99" class="text-secondary"  *ngIf="!allItemsMedicamento.length">
+                  <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para prescrever um medicamento!'}}</i>
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="allItemsMedicamento.length">
+                <tr class="text-left" *ngFor="let item of allItemsMedicamento">
+                  <td class="text-secondary">{{item.idMedicamento}}</td>
+                  <td class="text-secondary">{{item.uso}}</td>
+                  <td class="text-secondary">{{item.tipoVia}}</td>
+                  <td class="text-secondary">{{item.quantidade}}</td>
+                  <td class="text-secondary">{{item.apresentacao}}</td>
+                  <td class="text-secondary">{{item.posologia}}</td>
+                  <td class="text-secondary text-right">
+                    <a *ngIf="!disableFields()"  class="btn btn-link" [routerLink]="" (click)="removeMedicamento(item)">
+                      <i class="fa fa-trash-alt"></i> Remover
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4" *ngIf="object.idPaciente">
+    <div class="card-header text-left">
+      Encaminhamento
+    </div>
+    <div class="card-body text-left">
+
+      <div class="row">
+
+        <div class="col-12 mb-3">
+          <button *ngIf="!disableFields()" type="button" class="btn btn-primary float-left mr-2"
+            (click)="openEncaminhamento(contentEncaminhamento)" [disabled]="!object.id">
+            <i class="fa fa-plus-circle"></i>
+          </button>
+
+          <button type="button" class="btn btn-default float-left" (click)="findEncaminhamentoPorAtendimento()">
+            <i class="fa fa-sync-alt"></i>
+          </button>
+        </div>
+        <div class="col-12 table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Especialidade</th>
+                <th>Motivo</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody *ngIf="!allItemsEncaminhamento.length">
+              <tr class="text-left">
+                <td colspan="99" class="text-secondary">
+                  <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para fazer um encaminhamento!'}}</i>
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="allItemsEncaminhamento.length">
+              <tr class="text-left" *ngFor="let item of allItemsEncaminhamento">
+                <td class="text-secondary">{{item.nome}}</td>
+                <td class="text-secondary">{{item.motivo}}</td>
+                <td class="text-secondary text-right">
+                  <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]="" (click)="removeEncaminhamento(item)">
+                    <i class="fa fa-trash-alt"></i> Remover
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4" *ngIf="object.idPaciente">
+    <div class="card-body text-left">
+      <div class="row">
+        <div class="col-xl-6">
+          <div class="form-group row">
+            <label class="col-xl-4 col-form-label text-left">
+              Situação<span class="text-danger font-weight-bold"> *</span>
+            </label>
+            <div class="col-xl-8">
+              <select *ngIf="!disableFields()" class="custom-select d-block w-100" [(ngModel)]="object.situacao" formControlName="situacao">
+                <option [value]="null">Selecione...</option>
+                <option value="C">Continuidade</option>
+                <option value="A">Alta</option>
+              </select>
+
+              <select *ngIf="disableFields()" class="custom-select d-block w-100" [(ngModel)]="object.situacao" formControlName="situacao" disabled>
+                <option [value]="null">Selecione...</option>
+                <option value="C">Continuidade</option>
+                <option value="A">Alta</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group text-right">
+
+    <button class="btn btn-secondary " type="button" *ngIf="canStop()" (click)="stopProcess('F')">
+      <i class="fa fa-save"></i> Finalizar
+    </button>
+
+    <button class="btn btn-danger" type="button" [disabled]="form.invalid" *ngIf="canStop()" (click)="stopProcess('C')">
+      <i class="fa fa-save"></i> Cancelar
+    </button>
+
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="object.idPaciente && !disableFields()"
+      [disabled]="form.invalid">
+      <i class="fa fa-save"></i> {{ !object.id ? 'Criar atendimento' : 'Salvar'}}
+    </button>
+
+    <button (click)="back()" class="btn btn-default" type="button">
+      <i class="fa fa-arrow-left"></i> Retornar
+    </button>
+  </div>
+
+</form>
+
+
+
+<ng-template #contentClient>
+  <div class="modal-header">
+    <h4 class="modal-title">Localizar paciente</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+    <div *ngIf="errors.length" class="alert alert-danger">
+      <div *ngFor="let error of errors" class="row">
+        <div class="col-12 text-left">
+          {{error.message}}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-xl-4 col-sm-12 col-form-label text-left">
+        Cartao SUS:
+      </label>
+      <div class="col-xl-8 col-sm-12">
+        <input type="text" mask="9999999999999999999999" class="form-control has-error" [(ngModel)]="paciente.cartaoSus"
+          autofocus>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-xl-4 col-sm-12 col-form-label text-left">
+        Nome do paciente:
+      </label>
+      <div class="col-xl-8 col-sm-12">
+        <input type="text" class="form-control has-error" [(ngModel)]="paciente.nome">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-12">
+        <button [routerLink]="" class="btn btn-primary float-right" [disabled]="togglePaciente()"
+          (click)="buscaPaciente()">
+          <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin text-left">
+            <i class="fa fa-spinner"></i>
+          </i>
+          <i *ngIf="!loading" class="fas fa-search"></i>
+        </button>
+
+        <a [routerLink]="" (click)="clear()" class="btn btn-default text-secondary mr-2 float-right"
+          style="border: 1px solid #d1d1d1 ">
+          <i class="fas fa-eraser"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-12 table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th></th>
+              <th *ngFor="let field of fieldsPacientes;" class="text-left">{{field.label}}</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let item of allItems let index=index; let odd='odd'; let even='even';">
+            <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
+
+              <td class="text-secondary">
+                <div class="custom-control custom-radio float-left">
+                  <input type="radio" (change)="selecionaPaciente(item)" class="custom-control-input" id="{{ item.id }}"
+                    name="radio-item">
+                  <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
+                </div>
+              </td>
+              <td *ngFor="let field of fieldsPacientes;">
+                <label for="{{ item.id }}">
+                  {{
+                      field.isDate?(item[field.field] ) : 
+                      field.isDateTime?(item[field.field] | date :'dd/MM/yyyy HH:mm'): 
+                      field.translate?(translate(item[field.field], field.translate)):
+                      field.decimalMask?(toCurrency(item[field.field] | currency:'R$ ':true:'1.2-2',field.decimalMask)):
+                      field.docMask?(maskDocument(item[field.field])):
+                      item[field.field]
+                  }}
+                </label>
+              </td>
+            </tr>
+          </tbody>
+
+          <tbody *ngIf="!allItems || allItems.length==0">
+            <tr class="text-left">
+              <td colspan="99" class="text-secondary">
+                <i>Não há resultados...</i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div *ngIf="pager.pages && pager.pages.length" class="text text-secondary col-md-12 pr-0 mx-auto">
+        <i>
+          Exibindo
+          {{pager.currentPage === pager.totalPages?allItems.length:pager.currentPage*pagedItems.length}}
+          de
+          {{allItems.length}}
+          resultado(s).
+        </i>
+      </div>
+    </div>
+
+    <div class="row">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination mx-auto">
+        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === 1}">
+          <a class="page-link" (click)="setPage(1)">
+            <i class="fas fa-angle-double-left"></i>
+          </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === 1}">
+          <a class="page-link" (click)="setPage(pager.currentPage - 1)">
+            <i class="fas fa-angle-left"></i>
+          </a>
+        </li>
+        <li>
+          <select (change)="loadQuantityPerPage($event)" class="custom-select d-block w-100"
+            style="border: 1px solid #dee2e6">
+            <option [ngValue]="10">10</option>
+            <option [ngValue]="25">25</option>
+            <option [ngValue]="50">50</option>
+          </select>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === pager.totalPages}">
+          <a class="page-link" (click)="setPage(pager.currentPage + 1)">
+            <i class="fas fa-angle-right"></i>
+          </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === pager.totalPages}">
+          <a class="page-link" (click)="setPage(pager.totalPages)">
+            <i class="fas fa-angle-double-right"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="form-group row text-right">
+      <div class="col-12">
+        <button class="btn btn-primary  mr-2" type="button" [disabled]="pacienteSelecionado==null"
+          (click)="confirmaPaciente()">
+          <i class="fa fa-plus-circle"></i> Carregar seleção
+        </button>
+
+        <button class="btn btn-default" (click)="close()" type="button">
+          <i class="fa fa-times"></i> Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+
+<ng-template #contentRemove>
+
+  <div class="modal-header">
+    <h4 class="modal-title">Apagar registro</h4>
+    <button type="button" class="close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Deseja realmente apagar este registro?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger">Apagar</button>
+    <button type="button" class="btn btn-outline-dark" (click)="close()">Cancelar</button>
+  </div>
+</ng-template>
+
+<ng-template #contentHipotese>
+  <div class="modal-header">
+    <h4 class="modal-title">Hipótese diagnóstica</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+    <div *ngIf="errors.length" class="alert alert-danger">
+      <div *ngFor="let error of errors" class="row">
+        <div class="col-12 text-left">
+          {{error.message}}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-xl-4 col-form-label text-left">
+        Hipótese diagnóstica <span class="text-danger font-weight-bold"> *</span>
+      </label>
+      <div class="col-xl-8">
+        <input type="hidden" [(ngModel)]="pacienteHipotese.idPaciente" />
+        <select *ngIf="domains" class="custom-select d-block w-100"
+          [(ngModel)]="pacienteHipotese.idHipoteseDiagnostica">
+          <option [value]="null">Selecione...</option>
+          <option *ngFor="let item of domains[0].hipoteses" [value]="item.id">{{item.nome}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group row text-right">
+      <div class="col-12">
+        <button class="btn btn-primary  mr-2" type="button" [disabled]="disableHipoteseButton()"
+          (click)="saveHipotese()">
+          <i class="fa fa-plus-circle"></i> Adicionar
+        </button>
+
+        <button class="btn btn-default" (click)="close()" type="button">
+          <i class="fa fa-times"></i> Cancelar
+        </button>
+      </div>
+    </div>
+
+  </div>
+</ng-template>
+
+
+
+<ng-template #contentEncaminhamento>
+  <div class="modal-header">
+    <h4 class="modal-title">Encaminhamento</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+    <div *ngIf="errors.length" class="alert alert-danger">
+      <div *ngFor="let error of errors" class="row">
+        <div class="col-12 text-left">
+          {{error.message}}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-xl-4 col-form-label text-left">
+        Especialidade <span class="text-danger font-weight-bold"> *</span>
+      </label>
+      <div class="col-xl-8">
+        <input type="hidden" [(ngModel)]="encaminhamento.idPaciente" />
+        <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="encaminhamento.idEspecialidade">
+          <option [value]="null">Selecione...</option>
+          <option *ngFor="let item of domains[0].especialidades" [value]="item.id">{{item.nome}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-xl-4 col-form-label text-left">
+        Motivo <span class="text-danger font-weight-bold"> *</span>
+      </label>
+      <div class="col-xl-8">
+        <textarea rows="4" class="form-control has-error" [(ngModel)]="encaminhamento.motivo"></textarea>
+      </div>
+    </div>
+
+    <div class="form-group row text-right">
+      <div class="col-12">
+        <button class="btn btn-primary  mr-2" type="button" [disabled]="disableEncaminhamentoButton()"
+          (click)="saveEncaminhamento()">
+          <i class="fa fa-plus-circle"></i> Adicionar
+        </button>
+
+        <button class="btn btn-default" (click)="close()" type="button">
+          <i class="fa fa-times"></i> Cancelar
+        </button>
+      </div>
+    </div>
+
+  </div>
+</ng-template>
+
+
+
+<ng-template #contentMedicamento>
+  <div class="modal-header">
+    <h4 class="modal-title">Prescrição de medicamento</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+    <div *ngIf="errors.length" class="alert alert-danger">
+      <div *ngFor="let error of errors" class="row">
+        <div class="col-12 text-left">
+          {{error.message}}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-xl-4 col-form-label text-left">
+        Medicamento <span class="text-danger font-weight-bold"> *</span>
+      </label>
+      <div class="col-xl-8">
+        <input type="hidden" [(ngModel)]="atendimentoMedicamento.idPaciente" />
+        <input type="hidden" [(ngModel)]="atendimentoMedicamento.idAtendimento" />
+
+        <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="atendimentoMedicamento.idMedicamento">
+          <option [value]="null">Selecione...</option>
+          <option *ngFor="let item of domains[0].medicamentos" [value]="item.id">{{item.nome}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-xl-4 col-form-label text-left">
+        Uso<span class="text-danger font-weight-bold"> *</span>
+      </label>
+      <div class="col-xl-8">
+        <input type="text" class="form-control has-error" [(ngModel)]="atendimentoMedicamento.uso" />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-xl-4 col-form-label text-left">
+        Tipo via<span class="text-danger font-weight-bold"> *</span>
+      </label>
+      <div class="col-xl-8">
+        <input type="text" class="form-control has-error" [(ngModel)]="atendimentoMedicamento.tipoVia" />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-xl-4 col-form-label text-left">
+        Quantidade<span class="text-danger font-weight-bold"> *</span>
+      </label>
+      <div class="col-xl-8">
+        <input type="text" class="form-control has-error" [(ngModel)]="atendimentoMedicamento.quantidade" />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-xl-4 col-form-label text-left">
+        Apresentação<span class="text-danger font-weight-bold"> *</span>
+      </label>
+      <div class="col-xl-8">
+        <input type="text" class="form-control has-error" [(ngModel)]="atendimentoMedicamento.apresentacao" />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-xl-4 col-form-label text-left">
+        Posologia <span class="text-danger font-weight-bold"> *</span>
+      </label>
+      <div class="col-xl-8">
+        <textarea rows="4" class="form-control has-error" [(ngModel)]="atendimentoMedicamento.posologia"></textarea>
+      </div>
+    </div>
+
+    <div class="form-group row text-right">
+      <div class="col-12">
+        <button class="btn btn-primary  mr-2" type="button" [disabled]="disableMedicamentoButton()"
+          (click)="saveMedicamento()">
+          <i class="fa fa-plus-circle"></i> Adicionar
+        </button>
+
+        <button class="btn btn-default" (click)="close()" type="button">
+          <i class="fa fa-times"></i> Cancelar
+        </button>
+      </div>
+    </div>
+
+  </div>
+</ng-template>

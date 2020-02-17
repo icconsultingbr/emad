@@ -1,0 +1,24 @@
+.table td {
+    padding: 3px 3px 3px 10px;
+    vertical-align: middle;
+    border-top: 1px solid #dee2e6;
+}
+
+.odd{
+    background: #fff;
+}
+
+.even{
+    background: #f8f9fa;
+}
+
+.bioPerson{
+    border-radius: 50px;
+    width: 30px;
+    height: 30px;
+}
+
+.multiselect-dropdown{
+    background: #4D6FA0;
+    border : 1px solid #3d587f;
+}

@@ -1,0 +1,16 @@
+{
+    "urlApi": "https://emad.icconsulting.com.br/api",
+    "apiPort": 4000,
+    "superAdmin": 3,
+    "avancado": 2,
+    "admin": 1,
+    "consulta": 6,
+    "idUsuarioSistema": 1,
+    "dbConfig": {
+        "host": "172.17.0.1",
+        "port": 3306,
+        "username": "root", 
+        "password": "zCAV%xf2",
+        "database": "emad"
+    }
+}

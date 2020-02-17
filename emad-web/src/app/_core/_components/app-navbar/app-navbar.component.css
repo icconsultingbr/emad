@@ -1,0 +1,41 @@
+.navbar{
+  padding:0
+
+}
+body {
+  padding-top: 5rem;
+}
+.starter-template {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.bg-vermelho{
+  background-color: #4D6FA0;
+}
+
+.dropdown-menu{
+  margin: 0.125rem 0 0 -72px;
+}
+
+.nav-item{
+  cursor: pointer;
+}
+
+.nav-link{
+  color: #343a40;
+}
+
+.nav-link:hover {
+  color: #464e56;
+}
+.nav-link.active{
+  color: #343a40;
+  font-weight: bold;
+
+}
+
+.nav-link.activated{
+  color: #464e56;
+  font-weight: bold;
+}

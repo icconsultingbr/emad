@@ -1,0 +1,39 @@
+.map {
+    width: calc(100% + 44px);
+    height: calc(100vh - 50px);
+    margin: 0px;
+    margin-left: -20px;
+    margin-top: -15px;
+}
+
+.float {
+	position: absolute;
+	top: 11px;
+    left: 180px;
+    height: 41px;
+}
+
+.float-message {
+    position: absolute;
+    top: 11px;
+    z-index: 999;
+    left: 260px;
+}
+
+.fa {
+    font-size: 20px !important;
+}
+
+.legend-icon-estabelecimento {
+    height: 25px; 
+    margin-top: -6px;
+    margin-right: 5px;
+    margin-left: -4px;
+}
+
+.legend-icon-paciente {
+    height: 25px; 
+    margin-top: -7px;
+    margin-right: 5px;
+    margin-left: -4px;
+}

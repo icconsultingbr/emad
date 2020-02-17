@@ -1,0 +1,81 @@
+<form *ngIf="!forgotP" method="POST" [formGroup]="loginForm" class="form-signin" (submit)="logar($event)" autocomplete="off">
+  <img class="mb-4" src="assets/imgs/login-logo.png" alt="" height="160">
+
+  <span *ngIf="isErro" class="form-control alert-danger mt-3 mb-3">
+    {{erro}}
+  </span>
+
+  <span *ngIf="isSucesso" class="form-control alert-success mt-3 mb-3">
+    {{sucesso}}
+  </span>
+
+  <label for="inputEmail" class="sr-only">E-mail</label>
+  <input name="email" formControlName="email" type="email" id="inputEmail" class="form-control mb-3" placeholder="E-mail" autocomplete="off" autofocus />
+
+  <div *ngIf="loginForm.controls.email.invalid" class="mt-2 mb-2">
+    <span *ngIf="loginForm.controls.email.errors.email && loginForm.controls.email.length >0" class="form-control alert-danger">Insira
+      um email válido</span>
+  </div>
+
+  <label for="inputPassword" class="sr-only">Senha</label>
+
+  <input name="senha" formControlName="senha" type="password" id="senha" class="form-control mb-3" placeholder="Senha"
+    autocomplete="off">
+
+  <div *ngIf="loginForm.controls.senha.invalid" class="mb-2">
+    <span *ngIf="loginForm.controls.senha.errors.required && loginForm.controls.senha.length >0" class="form-control alert-danger">Senha
+      obrigatória</span>
+  </div>
+
+  <re-captcha name="captcha" formControlName="captcha" id="captcha" (resolved)="resolved($event)" siteKey="6LfS74QUAAAAAKduZqHaV2ljDSfgwTTqq_oY5wj-">
+
+  </re-captcha>
+
+
+  <button class="btn btn-lg btn-primary btn-block mt-3" type="submit" [disabled]="loginForm.invalid || carregando">
+    <i class="fa fa-circle-o-notch fa-spin text-left">
+      <i *ngIf="carregando" class="fa fa-spinner"></i>
+    </i>
+    Efetuar login
+  </button>
+
+  <button type="button" (click)="forgotPassword($event)" class="btn btn-link text-white mt-2">Esqueceu seu usuário ou senha?</button>
+</form>
+
+<form *ngIf="forgotP" method="POST" [formGroup]="forgotForm" class="form-signin" (submit)="solicitarSenha($event)"
+  autocomplete="off">
+
+  <img class="mb-4" src="assets/imgs/logo.png" alt="" width="200">
+
+  <h1 class="h3 mb-3 font-weight-normal text-primary">Esqueceu seu usuário ou senha?</h1>
+  <h5 class="font-weight-light mb-3 text-white">Não se preocupe, insira seu e-mail ou CPF no campo abaixo que lhe enviaremos uma forma
+    de criar uma nova senha!</h5>
+
+  <span *ngIf="isErro" class="form-control alert-danger mt-3 mb-3">
+    {{erro}}
+  </span>
+
+  <span *ngIf="isSucesso" class="form-control alert-success mt-3 mb-3">
+    {{sucesso}}
+  </span>
+
+  <input name="emailForgot" formControlName="emailForgot" type="text" id="emailForgot" class="form-control mb-3"
+    placeholder="E-mail/CPF" autocomplete="off" autofocus />
+
+  <div *ngIf="forgotForm.controls.emailForgot.invalid" class="mt-2 mb-2">
+    <span *ngIf="forgotForm.controls.emailForgot.errors.required && forgotForm.controls.emailForgot.length >0" class="form-control alert-danger">Insira
+      um email válido</span>
+  </div>
+
+  <re-captcha name="captcha2" formControlName="captcha2" id="captcha2" (resolved)="resolved($event)" siteKey="6LfS74QUAAAAAKduZqHaV2ljDSfgwTTqq_oY5wj-"></re-captcha>
+
+
+  <button class="btn btn-lg btn-primary btn-block mt-2" type="submit" [disabled]="forgotForm.invalid || carregando">
+    <i class="fa fa-circle-o-notch fa-spin text-left">
+      <i *ngIf="carregando" class="fa fa-spinner"></i>
+    </i>
+    Solicitar Senha
+  </button>
+  <button type="button" (click)="forgotPassword($event)" class="btn btn-link text-white">Voltar</button>
+
+</form>

@@ -1,0 +1,134 @@
+<main role="main" class="containe-fluid">
+  <div class="row">
+
+    <div class="col-12 text-left mb-3">
+      <h1>Dashboard</h1>
+
+    </div>
+
+    <div class="col-sm-6 col-md-4 col-xl-4 mb-4">
+      <div class="card text-white bg-primary pb-4">
+        <div class="card-body pb-0">
+          <div class="btn-group float-right" dropdown>
+            <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle text-white float-right"
+              aria-controls="dropdown-basic" style="background: none">
+              <i class="fa fa-sliders-h"></i>
+              <span class="caret"></span>
+            </button>
+
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu"
+              aria-labelledby="button-basic">
+              <li role="menuitem"><a class="dropdown-item" href="#">2019</a></li>
+              <li role="menuitem"><a class="dropdown-item" href="#">2018</a></li>
+              <li role="menuitem"><a class="dropdown-item" href="#">2017</a></li>
+            </ul>
+
+          </div>
+
+          <div class="text-value text-left h4">10.325</div>
+          <div class="text-left small">Atendimentos em 2019</div>
+
+          <canvas baseChart height="80" [datasets]="lineChartData" [labels]="lineChartLabels"
+            [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend"
+            [chartType]="lineChartType" (chartHover)="chartHovered($event)"
+            (chartClick)="chartClicked($event)"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-md-4 col-xl-4 mb-4">
+      <div class="card text-white bg-light pb-4">
+        <div class="card-body pb-0">
+          <div class="btn-group float-right" dropdown>
+            <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle text-primary float-right"
+              aria-controls="dropdown-basic" style="background: none">
+              <i class="fa fa-sliders-h"></i>
+              <span class="caret"></span>
+            </button>
+
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu"
+              aria-labelledby="button-basic">
+              <li role="menuitem"><a class="dropdown-item" href="#">Últimos 7 dias</a></li>
+              <li role="menuitem"><a class="dropdown-item" href="#">Últimos 15 dias</a></li>
+              <li role="menuitem"><a class="dropdown-item" href="#">Últimos 30 dias</a></li>
+            </ul>
+          </div>
+
+          <div class="text-value text-left h4 text-primary">57</div>
+          <div class="text-left small text-primary">Consultas nesta semana</div>
+
+          <canvas baseChart height="80" [datasets]="lineChartData" [labels]="lineChartLabels"
+            [options]="lineChartOptions" [colors]="lineChartColors2" [legend]="lineChartLegend"
+            [chartType]="lineChartType" (chartHover)="chartHovered($event)"
+            (chartClick)="chartClicked($event)"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-md-4 col-xl-4 mb-4">
+      <div class="card text-white bg-primary pb-4">
+        <div class="card-body pb-0">
+          <div class="btn-group float-right" dropdown>
+            <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle text-white float-right"
+              aria-controls="dropdown-basic" style="background: none">
+              <i class="fa fa-sliders-h"></i>
+              <span class="caret"></span>
+            </button>
+
+            <!--ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-basic">
+              <li role="menuitem"><a class="dropdown-item" href="#">Action</a></li>
+              <li role="menuitem"><a class="dropdown-item" href="#">Another action</a></li>
+              <li role="menuitem"><a class="dropdown-item" href="#">Something else here</a></li>
+              <li class="divider dropdown-divider"></li>
+              <li role="menuitem"><a class="dropdown-item" href="#">Separated link</a>
+              </li>
+            </ul-->
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu"
+              aria-labelledby="button-basic">
+              <li role="menuitem"><a class="dropdown-item" href="#">Últimos 7 dias</a></li>
+              <li role="menuitem"><a class="dropdown-item" href="#">Últimos 15 dias</a></li>
+              <li role="menuitem"><a class="dropdown-item" href="#">Últimos 30 dias</a></li>
+            </ul>
+
+          </div>
+          <div class="text-value text-left h4">540</div>
+          <div class="text-left small">Profissionais cadastradas</div>
+          <canvas baseChart height="80" [datasets]="lineChartData" [labels]="lineChartLabels"
+            [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend"
+            [chartType]="lineChartType" (chartHover)="chartHovered($event)"
+            (chartClick)="chartClicked($event)"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 mb-4">
+      <div class="card text-white bg-light pb-4">
+        <div class="card-body pb-0">
+          <div class="btn-group float-right" dropdown>
+            <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle text-primary float-right"
+              aria-controls="dropdown-basic" style="background: none">
+              <i class="fa fa-sliders-h"></i>
+              <span class="caret"></span>
+            </button>
+
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu"
+              aria-labelledby="button-basic">
+              <li role="menuitem"><a class="dropdown-item" href="#">Últimos 7 dias</a></li>
+              <li role="menuitem"><a class="dropdown-item" href="#">Últimos 15 dias</a></li>
+              <li role="menuitem"><a class="dropdown-item" href="#">Últimos 30 dias</a></li>
+            </ul>
+          </div>
+
+          <div class="text-value text-left h4 text-primary">Atendimento por tipo de unidade</div>
+          <div class="text-left small text-primary"> </div>
+
+          <div style="display: block">
+            <canvas baseChart [datasets]="barChartData" [colors]="barchartColor" [labels]="barChartLabels"
+              [legend]="barChartLegend" height="100" [chartType]="barChartType" (chartHover)="chartHovered($event)"
+              (chartClick)="chartClicked($event)"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

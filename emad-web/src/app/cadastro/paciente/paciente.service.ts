@@ -1,0 +1,342 @@
+import { Injectable } from '@angular/core';
+import { Validators } from '@angular/forms';
+import { GenericsService } from '../../_core/_services/generics.service';
+
+@Injectable()
+export class PacienteService extends GenericsService {
+
+  fields: any[] = [
+    {
+      field: "id",
+      type: "hidden",
+      label: "Id",
+      grid: true,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "cartaoSus",
+      type: "text",
+      label: "Cartão SUS",
+      grid: true,
+      form: true,
+      required: true,
+      validator: ['', Validators.required],
+      autoFocus: true
+    },
+    {
+      field: "nome",
+      type: "text",
+      label: "Nome",
+      grid: true,
+      form: true,
+      required: true,
+      validator: ['', Validators.required],
+    },
+
+    {
+      field: "nomeSocial",
+      type: "text",
+      label: "Nome social",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['',''],
+    },
+    {
+      field: "nomeMae",
+      type: "text",
+      label: "Nome da mãe",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required],
+    },
+    {
+      field: "nomePai",
+      type: "text",
+      label: "Nome do pai",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', ''],
+    },
+    {
+      field: "dataNascimento",
+      type: "text",
+      mask: "99/99/9999",
+      placeholder: "99/99/9999",
+      label: "Data de nascimento",
+      grid: true,
+      //isDate: true,
+      form: true,
+      required: true,
+      validator: ['', Validators.required],
+    },
+    {
+      field: "sexo",
+      type: "select",
+      label: "Sexo",
+      grid: true,
+      form: true,
+      translate: { "M": "Masculino", "F": "Feminino" },
+      required: true,
+      validator: ['', Validators.required]
+    },
+    {
+      field: "idNacionalidade",
+      type: "select",
+      label: "Nacionalidade",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required],
+      filter: {
+        type: "select",
+        changeMethod: 'uf/pais',
+        changeTarget: 'idNaturalidade'
+      },
+    },
+    {
+      field: "idNaturalidade",
+      type: "select",
+      label: "Naturalidade",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required],
+
+    },
+    {
+      field: "ocupacao",
+      type: "text",
+      label: "Ocupação",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', ''],
+
+    },
+    {
+      field: "cpf",
+      type: "text",
+      label: "CPF",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
+    },
+    {
+      field: "rg",
+      type: "text",
+      label: "RG",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "dataEmissao",
+      type: "text",
+      label: "Data de emissão",
+      mask: "99/99/9999",
+      placeholder: "99/99/9999",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', ],
+
+    },
+    {
+      field: "orgaoEmissor",
+      type: "text",
+      label: "Órgão emissor",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', ''],
+
+    },
+    {
+      field: "escolaridade",
+      type: "select",
+      label: "Escolaridade",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required],
+
+    },
+    {
+      field: "logradouro",
+      type: "geocode",
+      label: "Endereço",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
+    },
+    {
+      field: "latitude",
+      type: "text",
+      label: "Latitude",
+      grid: false,
+      form: true,
+      required: false,
+      readonly: true,
+      validator: ['', '']
+    },
+    {
+      field: "longitude",
+      type: "text",
+      label: "Longitude",
+      grid: false,
+      form: true,
+      required: false,
+      readonly: true,
+      validator: ['', '']
+    },
+    {
+      field: "numero",
+      type: "text",
+      label: "Número",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
+    },
+    {
+      field: "complemento",
+      type: "text",
+      label: "Complemento",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "bairro",
+      type: "text",
+      label: "Bairro",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
+    },
+    {
+      field: "idUf",
+      type: "select",
+      label: "Estado",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required],
+      filter: {
+        type: "select",
+        changeMethod: 'municipio/uf',
+        changeTarget: 'idMunicipio'
+      },
+    },
+    {
+      field: "idMunicipio",
+      type: "select",
+      label: "Município",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
+    },
+    {
+      field: "cep",
+      type: "text",
+      label: "CEP",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required],
+      mask: "99999-999",
+      placeholder: "00000-000",
+      /*
+      onBlur: {
+        url: "endereco/cep",
+        targets: [
+          { field: 'logradouro' },
+          { field: 'bairro' },
+          { field: 'idUf' },
+          { field: 'idMunicipio' }
+        ],
+      },
+      */
+    },
+    {
+      field: "foneResidencial",
+      type: "text",
+      label: "Telefone residencial",
+      placeholder: "(99) 9999-9999",
+      mask: "(99) 9999-9999",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "foneCelular",
+      type: "text",
+      placeholder: "(99) 99999-9999",
+      mask: "(99) 99999-9999",
+      label: "Telefone celular",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "foneContato",
+      type: "text",
+      placeholder: "(99) 9999-9999",
+      mask: "(99) 9999-9999",
+      label: "Telefone de contato",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "contato",
+      type: "text",
+      label: "Contato",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "email",
+      type: "text",
+      label: "E-mail",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "idModalidade",
+      type: "select",
+      label: "Modalidade",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
+    },
+    {
+      field: "situacao",
+      type: "checkbox",
+      label: "Situação",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
+    }
+  ];
+}

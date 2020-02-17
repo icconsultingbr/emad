@@ -1,0 +1,17 @@
+{
+    "urlApi": "http://localhost:4000",
+    "apiPort": 4000,
+    "consulta" : 6,
+    "superAdmin": 3,
+    "avancado": 2,
+    "admin": 1,
+    "idUsuarioSistema" : 1,
+    "dbConfig": {
+        "host": "179.190.29.92",
+        "port": 3306,
+        "username": "root", 
+        "password": "zCAV%xf2",
+        "database": "emad"
+    }
+}
+

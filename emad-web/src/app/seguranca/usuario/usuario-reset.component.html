@@ -1,0 +1,65 @@
+<h4 class="mb-5 text-left">Alterar senha</h4>
+
+<p *ngIf="mensagem.length" class="alert alert-info">{{mensagem}}</p>
+<p *ngIf="warning.length" class="alert alert-danger">{{warning}}</p>
+
+
+<form [formGroup]="usuarioForm" (submit)="redefinirSenha($event)">
+
+  <p *ngIf="ep==1" class="alert alert-warning text-left">
+    Atenção, senha expirada! <br/>
+    Para continuar navegando no sistema, você deve informar uma nova senha! <br/>
+    Regra: a senha deve conter no mínimo 8 caracteres, e conter pelo menos 1 número!
+
+  </p>
+ 
+  <div class="form-group row">
+
+    <label for="nome" class="col-sm-2 col-form-label text-left">
+      Senha atual<span class="text-danger font-weight-bold"> *</span>
+    </label>
+    <div class="col-sm-10">
+      <input type="password" name="senhaAtual" formControlName="senhaAtual" [(ngModel)]="usuario.senhaAtual" class="form-control has-error">
+    </div>
+  </div>
+
+  <div class="form-group row">
+
+    <label for="nome" class="col-sm-2 col-form-label text-left">
+      Nova senha<span class="text-danger font-weight-bold"> *</span>
+    </label>
+    <div class="col-sm-10">
+      <input type="password" name="novaSenha" formControlName="novaSenha" [(ngModel)]="usuario.novaSenha" class="form-control has-error">
+    </div>
+  </div>
+ 
+
+
+  <div class="form-group row">
+
+    <label for="nome" class="col-sm-2 col-form-label text-left">
+      Confirmar senha<span class="text-danger font-weight-bold"> *</span>
+    </label>
+    <div class="col-sm-10">
+      <input type="password" name="confirmarNovaSenha" formControlName="confirmarNovaSenha" [(ngModel)]="usuario.confirmarNovaSenha"
+        class="form-control has-error">
+    </div>
+  </div>
+
+
+
+  <hr class="mb-4 mt-4">
+
+  <div class="form-group text-right">
+    <button [routerLink]="['/']" class="btn btn-default mr-2">
+      <i class="fa fa-arrow-left"></i>
+      Retornar
+    </button>
+    <button class="btn btn-primary" type="submit" [disabled]="usuarioForm.invalid">
+      <i class="fa fa-plus-circle"></i>
+      Adicionar
+    </button>
+  </div>
+
+
+</form>

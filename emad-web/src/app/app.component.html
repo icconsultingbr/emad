@@ -1,0 +1,113 @@
+<div *ngIf="route!='/login' && usuario.ep==0" class="row" [style.height.px]="alturaTela">
+    <nav *ngIf="showMenu" class="col-md-3 col-lg-2 d-none d-md-block sidebar shadow"
+        style="position: fixed; height: 100%; background: #f9fafc;">
+        <div class="sidebar-sticky">
+            <div class="bg-secondary p-3" style="background: url(assets/imgs/perfil_bg.jpg);">
+                <div class="row">
+                    <div class="col">
+                        <img src="assets/imgs/user2-160x160.jpg" class="float-left"
+                            style="border-radius: 50px; width: 64px; height: 64px; border: 3px solid #eaeaea">
+                    </div>
+                </div>
+                <div class="row mt-3 h6">
+                    <div class="col-12">
+                        <span class="float-left text-white">{{usuario.nome}}</span>
+                    </div>
+                    <div class="col-12">
+                        <span class="float-left text-white">{{usuario.email}}</span>
+                    </div>
+                    <div *ngIf="estabelecimentoNome" class="col-12 text-left mt-2">
+                        <span class="float-left text-white">{{estabelecimentoNome}}</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <ul class="nav flex-column text-left mb-5 mt-3" style="font-size: 0.9rem">
+                <div *ngFor="let menu of menus">
+                    <li *ngIf="menu.invisivel==false && menu.menuPai==null" class="nav-item">
+                        <a *ngIf="menu.rota!='#'" class="nav-link" [ngClass]="route==menu.rota?'active':''"
+                            [routerLink]="menu.rota" (click)="ativo=false">
+                            <i class="{{'fa mr-2 '+menu.icone}}"></i> {{menu.nome}}
+                        </a>
+                        <a *ngIf="menu.rota=='#'" class="nav-link" [routerLink]=""
+                            (click)="menu.isCollapsed = !menu.isCollapsed" [attr.aria-expanded]="!menu.isCollapsed"
+                            [attr.aria-controls]="menu.nome">
+                            <i class="{{'fa mr-2 '+menu.icone}}"></i> {{menu.nome}} <i style="font-size: 10px"
+                                class="{{menu.isCollapsed?'fa fa-minus float-right mt-1':'fa fa-plus float-right mt-1'}}"></i>
+                        </a>
+                    </li>
+
+                    <div *ngIf="menu.hasChildren && menu.invisivel==false && menu.menuPai==null">
+                        <div [id]="menu.nome" [ngbCollapse]="!menu.isCollapsed">
+                            <ul class="nav flex-column text-left"
+                                style="background: #ececec; box-shadow: inset 0 0 10px #dcdcdc;">
+
+                                <div *ngFor="let menu2 of menus">
+
+                                    <li *ngIf="menu2.invisivel==false && menu2.menuPai==menu.id" class="nav-item"
+                                        style="margin-left: 26px">
+                                        <a *ngIf="menu2.rota!='#'" class="nav-link"
+                                            [ngClass]="route==menu2.rota?'active':''" [routerLink]="menu2.rota"
+                                            (click)="ativo=false">
+                                            {{menu2.nome}}
+                                        </a>
+                                        <a *ngIf="menu2.rota=='#'" class="nav-link" [routerLink]=""
+                                            (click)="menu2.isCollapsed = !menu2.isCollapsed"
+                                            [attr.aria-expanded]="!menu2.isCollapsed" [attr.aria-controls]="menu2.nome">
+                                            {{menu2.nome}} <i style="font-size: 10px"
+                                                class="{{menu2.isCollapsed?'fa fa-minus float-right mt-1':'fa fa-plus float-right mt-1'}}"></i>
+                                        </a>
+                                    </li>
+
+                                    <div *ngIf="menu2.hasChildren && menu2.invisivel==false && menu2.menuPai==menu.id">
+                                        <div [id]="menu2.nome" [ngbCollapse]="!menu2.isCollapsed">
+                                            <ul class="nav flex-column text-left" style="background: #e2e2e2;  box-shadow: inset 0 0 10px #dbdbdb;">
+
+                                                <div *ngFor="let menu3 of menus">
+
+                                                    <li *ngIf="menu3.invisivel==false && menu3.menuPai==menu2.id"
+                                                        class="nav-item" style="margin-left: 26px">
+                                                        <a *ngIf="menu3.rota!='#'" class="nav-link"
+                                                            [ngClass]="route==menu3.rota?'active':''"
+                                                            [routerLink]="menu3.rota" (click)="ativo=false">
+                                                            {{menu3.nome}}
+                                                        </a>
+                                                        
+                                                    </li>
+
+                                                    
+                                                </div>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </ul>
+        </div>
+    </nav>
+
+
+    <main id="main_principal" role="main"
+        class="{{showMenu?'col-md-9 ml-sm-auto col-lg-10 pt-3 px-4 mt-5':'col-md-12 ml-sm-auto col-lg-12 pt-3 px-4 mt-5'}}">
+        <app-navbar
+            classe="{{showMenu?'navbar navbar-expand-md navbar-dark bg-vermelho fixed-top col-md-9 ml-sm-auto col-lg-10 shadow-sm':'navbar navbar-expand-md navbar-dark bg-vermelho fixed-top col-md-12 ml-sm-auto col-lg-12'}}">
+        </app-navbar>
+        <router-outlet></router-outlet>
+    </main>
+</div>
+
+<div *ngIf="route!='/login' && usuario.ep==1" class="row" [style.height.px]="alturaTela">
+    <main id="main_principal" role="main"
+        class="col-md-12 ml-sm-auto col-lg-12 pt-3 px-4 mt-5">
+        <app-navbar classe="navbar navbar-expand-md navbar-dark bg-vermelho fixed-top col-md-12 ml-sm-auto col-lg-12">
+        </app-navbar>
+        <app-usuario-reset [ep]="usuario.ep"></app-usuario-reset>
+    </main>
+</div>
+<main *ngIf="route=='/login'" id="main_principal" role="main" class="col-md-12 ml-sm-auto col-lg-12 pt-3 px-4 mt-5">
+    <router-outlet></router-outlet>
+</main>
