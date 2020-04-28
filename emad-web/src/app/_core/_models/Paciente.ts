@@ -35,4 +35,5 @@ export class Paciente {
     @Input() longitude: number;
     @Input() distancia: number;
     @Input() idade: number = null;
+    @Input() idSap: Number = null ;
 }

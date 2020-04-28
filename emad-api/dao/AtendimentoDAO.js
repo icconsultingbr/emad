@@ -32,8 +32,24 @@ AtendimentoDAO.prototype.lista = function(addFilter, callback) {
             where+=" AND a.idEstabelecimento  = "+addFilter.idEstabelecimento;
         }
 
-        if (addFilter.situcao) {
-            where+=" AND a.situcao  = '"+addFilter.situcao+"'";
+        if (addFilter.situacao) {
+            where+=" AND a.situacao  = '"+addFilter.situacao+"'";
+        }
+
+        if(addFilter.idSap){
+            where+=" AND p.idSap like '%"+addFilter.idSap+"%'";
+        }
+
+        if(addFilter.situacaoAtendimento){
+
+            if(addFilter.situacaoAtendimento == "F")
+                where+=" AND a.dataFinalizacao IS NOT NULL";
+            
+            if(addFilter.situacaoAtendimento == "C")
+                where+=" AND a.dataCancelamento IS NOT NULL";
+
+            if(addFilter.situacaoAtendimento == "P")
+                where+=" AND a.dataCancelamento IS NULL  AND a.dataFinalizacao IS NULL";
         }
     }
 
@@ -54,7 +70,9 @@ AtendimentoDAO.prototype.lista = function(addFilter, callback) {
         WHEN a.dataFinalizacao IS NOT NULL THEN 'Finalizado'
         WHEN a.dataCancelamento IS NOT NULL THEN 'Cancelado'
         WHEN a.dataCancelamento IS NULL  AND a.dataFinalizacao IS NULL THEN 'Pendente'
-    END AS situacaoAtendimento      
+    END AS situacaoAtendimento,
+    p.idSap,
+    a.tipoFicha
     FROM ${this._table} a 
     INNER JOIN tb_paciente p ON(a.idPaciente = p.id)  
     INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
@@ -90,8 +108,24 @@ AtendimentoDAO.prototype.listaPorUsuario = function(id, addFilter, callback) {
             where+=" AND a.idEstabelecimento  = "+addFilter.idEstabelecimento;
         }
 
-        if (addFilter.situcao) {
-            where+=" AND a.situcao  = '"+addFilter.situcao+"'";
+        if (addFilter.situacao) {
+            where+=" AND a.situacao  = '"+addFilter.situacao+"'";
+        }
+
+        if(addFilter.idSap){
+            where+=" AND p.idSap like '%"+addFilter.idSap+"%'";
+        }
+
+        if(addFilter.situacaoAtendimento){
+
+            if(addFilter.situacaoAtendimento == "F")
+                where+=" AND a.dataFinalizacao IS NOT NULL";
+            
+            if(addFilter.situacaoAtendimento == "C")
+                where+=" AND a.dataCancelamento IS NOT NULL";
+
+            if(addFilter.situacaoAtendimento == "P")
+                where+=" AND a.dataCancelamento IS NULL  AND a.dataFinalizacao IS NULL";
         }
     }
 
@@ -112,7 +146,9 @@ AtendimentoDAO.prototype.listaPorUsuario = function(id, addFilter, callback) {
             WHEN a.dataFinalizacao IS NOT NULL THEN 'Finalizado'
             WHEN a.dataCancelamento IS NOT NULL THEN 'Cancelado'
             WHEN a.dataCancelamento IS NULL  AND a.dataFinalizacao IS NULL THEN 'Pendente'
-        END AS situacaoAtendimento         
+        END AS situacaoAtendimento,
+        p.idSap,
+        a.tipoFicha     
     FROM ${this._table} a 
     INNER JOIN tb_paciente p ON(a.idPaciente = p.id)  
     INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 

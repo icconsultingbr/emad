@@ -26,6 +26,14 @@ PacienteDAO.prototype.lista = function (addFilter, callback) {
         if (addFilter.nomeSocial) {
             where += ` AND UPPER(pac.nomeSocial) LIKE '%${addFilter.nomeSocial.toUpperCase()}%'`;
         }
+
+        if(addFilter.cpf){
+            where+=" AND pac.cpf LIKE '%"+addFilter.cpf+"%'";
+        }
+
+        if(addFilter.idSap){
+            where+=" AND pac.idSap LIKE '%"+addFilter.idSap+"%'";
+        }
     }
 
     this._connection.query(`
@@ -62,7 +70,8 @@ PacienteDAO.prototype.lista = function (addFilter, callback) {
             pac.situacao,
             md.nome AS idModalidade,
             latitude,
-            longitude
+            longitude,
+            pac.idSap
         FROM tb_paciente pac
         INNER JOIN tb_nacionalidade nac ON (pac.idNacionalidade = nac.id)
         INNER JOIN tb_uf nat ON (pac.idNaturalidade = nat.id)
@@ -108,7 +117,8 @@ PacienteDAO.prototype.buscaPorId = function (id, callback) {
     idModalidade, 
     DATE_FORMAT(dataCriacao,'%d/%m/%Y') as dataCriacao,
     latitude,
-    longitude
+    longitude,
+    idSap
     FROM ${this._table} WHERE id = ?`, id, callback);
 }
 
@@ -150,7 +160,8 @@ PacienteDAO.prototype.buscaPorIdFicha = function (id, callback) {
     p.idModalidade, 
     DATE_FORMAT(p.dataCriacao,'%d/%m/%Y') as dataCriacao,
     p.latitude,
-    p.longitude 
+    p.longitude ,
+    p.idSap
     FROM ${this._table} p 
     INNER JOIn tb_municipio m ON(p.idMunicipio = m.id) WHERE p.id = ?`, id, callback);
 }

@@ -207,9 +207,9 @@
                     </span>
                 </td>
 
-                <td class="text-right">
+                <td class="text-right" style="white-space:nowrap;">
                     <a *ngIf="view" class="btn btn-link" [routerLink]="" (click)="viewer(item.id)">
-                        <i class="fa fa-eye"></i> {{showLabels ? 'Ver' : ''}}
+                        <i class="fa fa-eye" title="Ver"></i> {{showLabels ? 'Ver' : ''}}
                     </a>
 
                     <a *ngIf="edit && haveSubmitPermission()" class="btn btn-link" [routerLink]=""
@@ -222,7 +222,7 @@
                     </a>
 
                     <a *ngFor="let url of customUrls" class="btn btn-link" [routerLink]="" (click)="openCustomUrl(url, item.id)">
-                        <i class="fa {{ url.icon }}"></i> {{url.label}}
+                        <i class="fa {{ url.icon }}" title="{{ url.title }}"></i> {{url.label}}
                     </a>
 
 

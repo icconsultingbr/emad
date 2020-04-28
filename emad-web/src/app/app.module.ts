@@ -71,6 +71,8 @@ import { LogComponent } from './seguranca/log/log.component';
 import { LogService } from './seguranca/log/log.service';
 import { AtendimentoFormComponent } from './operacao/atendimento/atendimento-form.component';
 import { AtendimentoComponent } from './operacao/atendimento/atendimento.component';
+import { CanetaComponent } from './cadastro/caneta/caneta.component';
+import { CanetaFormComponent } from './cadastro/caneta/caneta-form.component';
 
 if (environment.production) {
     enableProdMode();
@@ -129,6 +131,8 @@ defineLocale('pt-br', deLocale);
         PacienteFormComponent,
         EquipeComponent,
         EquipeFormComponent,
+        CanetaComponent,
+        CanetaFormComponent,
         TipoUnidadeComponent,
         TipoUnidadeFormComponent,
         EspecialidadeComponent,

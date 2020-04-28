@@ -56,7 +56,8 @@ module.exports = function (app) {
             req.assert("idMunicipio").notEmpty().withMessage("Municipio é um campo obrigatório;");
             req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
             req.assert("idModalidade").notEmpty().withMessage("Modalidade é um campo obrigatório;");
-
+            req.assert("idSap").isLength({ min: 0, max: 20 }).withMessage("O campo ID SAP deve ter no máximo 20 caracteres");
+            
             var errors = req.validationErrors();
 
             if (errors) {
@@ -105,7 +106,7 @@ module.exports = function (app) {
             req.assert("idMunicipio").notEmpty().withMessage("Municipio é um campo obrigatório;");
             req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
             req.assert("idModalidade").notEmpty().withMessage("Modalidade é um campo obrigatório;");
-
+            req.assert("idSap").isLength({ min: 0, max: 20 }).withMessage("O campo ID SAP deve ter no máximo 20 caracteres");
             
             
             errors = req.validationErrors();

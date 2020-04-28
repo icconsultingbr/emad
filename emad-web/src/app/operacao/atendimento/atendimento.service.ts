@@ -5,11 +5,6 @@ import { Validators } from '@angular/forms';
 
 @Injectable()
 export class AtendimentoService extends GenericsService {
-
-
-
-
-
     fields: any[] = [
         {
             field: "id",
@@ -21,23 +16,27 @@ export class AtendimentoService extends GenericsService {
             validator: ['', '']
         },
         {
-            field: "idPaciente",
-            type: "text",
-            label: "ID do Paciente",
-            grid: false,
-            form: false,
-            required: true,
-            validator: ['', ''],
-            autoFocus: true
-        },
-        {
             field: "cartaoSus",
             type: "text",
             label: "Cartão SUS",
             grid: true,
             form: false,
+            mask: "9999",
             required: true,
             validator: ['', ''],
+            filter: {
+                type: "text"
+            }
+        },
+        {
+            field: "idSap",
+            type: "text",
+            label: "ID SAP do paciente",
+            grid: true,
+            form: false,
+            required: true,
+            validator: ['', ''],
+            autoFocus: true,
             filter: {
                 type: "text"
             }
@@ -133,7 +132,10 @@ export class AtendimentoService extends GenericsService {
             form: false,
             translate: { "A": "Alta", "C": "Continuidade" },
             required: true,
-            validator: ['', '']
+            validator: ['', ''],
+            filter : {
+                type: "select"
+              }
         },
         {
             field: "situacaoAtendimento",
@@ -142,7 +144,10 @@ export class AtendimentoService extends GenericsService {
             grid: true,
             form: false,
             required: true,
-            validator: ['', '']
+            validator: ['', ''],
+            filter : {
+                type: "select"
+              }
         },
 
 

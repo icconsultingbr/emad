@@ -34,7 +34,8 @@ import { AgendaComponent } from './operacao/agenda/agenda.component';
 import { LogComponent } from './seguranca/log/log.component';
 import { AtendimentoFormComponent } from './operacao/atendimento/atendimento-form.component';
 import { AtendimentoComponent } from './operacao/atendimento/atendimento.component';
-
+import { CanetaComponent } from './cadastro/caneta/caneta.component';
+import { CanetaFormComponent } from './cadastro/caneta/caneta-form.component';
 
 const appRoutes : Routes = [
     { path : '', component : MainComponent, canActivate: [AuthGuard] },
@@ -67,7 +68,11 @@ const appRoutes : Routes = [
 
     { path : 'equipe', component : EquipeComponent, canActivate: [AuthGuard]  },
     { path : 'equipe-form', component : EquipeFormComponent, canActivate: [AuthGuard]  },
-    { path : 'equipe-form/:id', component : EquipeFormComponent, canActivate: [AuthGuard]  }, 
+    { path : 'equipe-form/:id', component : EquipeFormComponent, canActivate: [AuthGuard]  },     
+
+    { path : 'caneta', component : CanetaComponent, canActivate: [AuthGuard]  },
+    { path : 'caneta-form', component : CanetaFormComponent, canActivate: [AuthGuard]  },
+    { path : 'caneta-form/:id', component : CanetaFormComponent, canActivate: [AuthGuard]  }, 
 
     { path : 'tipo-unidade', component : TipoUnidadeComponent, canActivate: [AuthGuard]  },
     { path : 'tipo-unidade-form', component : TipoUnidadeFormComponent, canActivate: [AuthGuard]  },

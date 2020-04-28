@@ -68,6 +68,38 @@
 
   <div class="card mb-4" *ngIf="object.idPaciente">
     <div class="card-header text-left">
+      Tipo de ficha
+    </div>
+    <div class="card-body text-left">
+      <div class="row">
+        <div class="col-xl-6">
+          <div class="form-group row">
+            <label class="col-xl-4 col-form-label text-left">
+              Tipo de ficha<span class="text-danger font-weight-bold"> *</span>
+            </label>
+            <div class="col-xl-8">
+              <select *ngIf="!disableFields()" class="custom-select d-block w-100" [(ngModel)]="object.tipoFicha" formControlName="tipoFicha">
+                <option [value]="null">Selecione...</option>
+                <option value="1">Tipo ficha 1</option>
+                <option value="2">Tipo ficha 2</option>
+                <option value="3">Tipo ficha 3</option>
+              </select>
+
+              <select *ngIf="disableFields()" class="custom-select d-block w-100" [(ngModel)]="object.tipoFicha" formControlName="tipoFicha" disabled>
+                <option [value]="null">Selecione...</option>
+                <option value="1">Tipo ficha 1</option>
+                <option value="2">Tipo ficha 2</option>
+                <option value="3">Tipo ficha 3</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4" *ngIf="object.idPaciente">
+    <div class="card-header text-left">
       Sinais vitais
     </div>
     <div class="card-body text-left">
