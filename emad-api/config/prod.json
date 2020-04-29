@@ -7,10 +7,10 @@
     "consulta": 6,
     "idUsuarioSistema": 1,
     "dbConfig": {
-        "host": "172.17.0.1",
+        "host": "34.83.206.222",
         "port": 3306,
         "username": "root", 
         "password": "zCAV%xf2",
-        "database": "emad"
+        "database": "e-atend"
     }
 }
