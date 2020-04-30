@@ -771,4 +771,8 @@ export class AtribuicaoCanetaComponent implements OnInit {
     return Util.getInitialsOfName(nome)[0] + "" + Util.getInitialsOfName(nome)[Util.getInitialsOfName(nome).length-1];
   }
 
+  sendForm($event: any){
+    
+  }
+
 }
