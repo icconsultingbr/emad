@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { GenericsService } from '../../_core/_services/generics.service';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class PacienteService extends GenericsService {
@@ -23,8 +24,23 @@ export class PacienteService extends GenericsService {
       form: true,
       required: true,
       validator: ['', Validators.required],
-      autoFocus: true
+      autoFocus: true,
+      filter: {
+        type: "text"
+      }
     },
+     {
+       field: "idSap",
+       type: "text",
+       label: "ID SAP",
+       grid: true,
+       form: true,
+       required: false,
+       autoFocus: true,
+        filter: {
+          type: "text"
+        }
+     },
     {
       field: "nome",
       type: "text",
@@ -33,6 +49,9 @@ export class PacienteService extends GenericsService {
       form: true,
       required: true,
       validator: ['', Validators.required],
+      filter: {
+        type: 'text'
+      }
     },
 
     {
@@ -122,10 +141,15 @@ export class PacienteService extends GenericsService {
       field: "cpf",
       type: "text",
       label: "CPF",
-      grid: false,
+      grid: true,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ['', Validators.required],
+      filter: {
+        type: 'text',
+        placeHolder: '999.999.999-99',
+        mask: '999.999.999-99'
+    }
     },
     {
       field: "rg",

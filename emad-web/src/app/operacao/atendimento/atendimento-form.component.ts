@@ -104,7 +104,8 @@ export class AtendimentoFormComponent implements OnInit {
       exameFisico: ['', ''],
       observacoesGerais: ['', ''],
       situacao: [Validators.required],
-      idEstabelecimento: [Validators.required]
+      idEstabelecimento: [Validators.required],
+      tipoFicha: [Validators.required],
     });
 
 

@@ -7,11 +7,11 @@
     "admin": 1,
     "idUsuarioSistema" : 1,
     "dbConfig": {
-        "host": "179.190.29.92",
+        "host": "34.83.206.222",
         "port": 3306,
         "username": "root", 
         "password": "zCAV%xf2",
-        "database": "emad"
+        "database": "e-atend"
     }
 }
 

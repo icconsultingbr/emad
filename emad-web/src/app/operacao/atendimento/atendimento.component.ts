@@ -19,16 +19,18 @@ export class AtendimentoComponent implements OnInit {
   urls : any[] = [
     { 
       icon : 'fa-print',
-      label : 'Imprimir ficha',
+      label : '',
       url : 'http://saude.icconsulting.com.br/aps/download?fileName={id}.pdf',
-      log: 'atendimento/print-document'
+      log: 'atendimento/print-document',
+      title: 'Imprimir ficha'
 
     }, 
     { 
       icon : 'fa-file-alt',
-      label : 'Ver ficha',
+      label : '',
       url : 'http://saude.icconsulting.com.br/afs/view?id={id}',
-      log: 'atendimento/open-document'
+      log: 'atendimento/open-document',
+      title: 'Ver ficha'
     }, 
   ]
 
@@ -51,13 +53,20 @@ export class AtendimentoComponent implements OnInit {
     this.nav.show();
   }
 
-  loadDomains() {
+  loadDomains() {      
     this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
       this.domains.push({
         s: estabelecimentos,
+        situacao: [
+          { id: "A", nome: "Alta" },
+          { id: "C", nome: "Continuidade" }
+        ],
+        situacaoAtendimento: [
+          { id: "F", nome: "Finalizado" },
+          { id: "C", nome: "Cancelado" },
+          { id: "P", nome: "Pendente" }
+        ]
       });
-    });
+    });        
   }
-
-
 }
