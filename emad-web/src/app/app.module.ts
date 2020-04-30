@@ -73,6 +73,7 @@ import { AtendimentoFormComponent } from './operacao/atendimento/atendimento-for
 import { AtendimentoComponent } from './operacao/atendimento/atendimento.component';
 import { CanetaComponent } from './cadastro/caneta/caneta.component';
 import { CanetaFormComponent } from './cadastro/caneta/caneta-form.component';
+import { AtribuicaoCanetaComponent } from './operacao/atribuicao-caneta/atribuicao-caneta.component';
 
 if (environment.production) {
     enableProdMode();
@@ -133,6 +134,7 @@ defineLocale('pt-br', deLocale);
         EquipeFormComponent,
         CanetaComponent,
         CanetaFormComponent,
+        AtribuicaoCanetaComponent,
         TipoUnidadeComponent,
         TipoUnidadeFormComponent,
         EspecialidadeComponent,

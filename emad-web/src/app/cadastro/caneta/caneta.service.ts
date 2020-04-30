@@ -16,16 +16,23 @@ export class CanetaService extends GenericsService {
       validator: ['', '']
     },
     {
-      field: "modelo",
+      field: "idModeloCaneta",
       type: "select",
       label: "Modelo",
-      grid: true,
+      grid: false,
       form: true,
       required: true,
-      translate: { "1": "DP 201", "2": "Anoto Live Pen 2" },
       validator: ['',  Validators.required],
     },
-
+    {
+      field: "nomeModeloCaneta",
+      type: "text",
+      label: "Modelo",
+      grid: true,
+      form: false,
+      required: true,
+      validator: ['', ''],
+    },
     {
       field: "serialNumber",
       type: "text",
@@ -57,7 +64,6 @@ export class CanetaService extends GenericsService {
       form: false,
       required: true,
       validator: ['', ''],
-      autoFocus: true
     },
     {
       field: "situacao",

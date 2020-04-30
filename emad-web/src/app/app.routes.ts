@@ -36,6 +36,7 @@ import { AtendimentoFormComponent } from './operacao/atendimento/atendimento-for
 import { AtendimentoComponent } from './operacao/atendimento/atendimento.component';
 import { CanetaComponent } from './cadastro/caneta/caneta.component';
 import { CanetaFormComponent } from './cadastro/caneta/caneta-form.component';
+import { AtribuicaoCanetaComponent } from './operacao/atribuicao-caneta/atribuicao-caneta.component';
 
 const appRoutes : Routes = [
     { path : '', component : MainComponent, canActivate: [AuthGuard] },
@@ -73,6 +74,8 @@ const appRoutes : Routes = [
     { path : 'caneta', component : CanetaComponent, canActivate: [AuthGuard]  },
     { path : 'caneta-form', component : CanetaFormComponent, canActivate: [AuthGuard]  },
     { path : 'caneta-form/:id', component : CanetaFormComponent, canActivate: [AuthGuard]  }, 
+
+    { path : 'atribuicao-caneta', component : AtribuicaoCanetaComponent, canActivate: [AuthGuard]  },
 
     { path : 'tipo-unidade', component : TipoUnidadeComponent, canActivate: [AuthGuard]  },
     { path : 'tipo-unidade-form', component : TipoUnidadeFormComponent, canActivate: [AuthGuard]  },

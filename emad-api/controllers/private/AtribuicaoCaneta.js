@@ -1,6 +1,6 @@
 module.exports = function (app) {
 
-    app.get('/caneta', function (req, res) {
+    app.get('/atribuicao-caneta', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
@@ -17,7 +17,7 @@ module.exports = function (app) {
         }
     });
 
-    app.get('/caneta/:id', function (req, res) {
+    app.get('/atribuicao-caneta/:id', function (req, res) {
         let usuario = req.usuario;
         let id = req.params.id;
         let util = new app.util.Util();
@@ -35,17 +35,14 @@ module.exports = function (app) {
     });
 
 
-    app.get('/caneta/estabelecimento/:idEstabelecimento/:periodoinicial/:periodofinal', function (req, res) {
+    app.get('/atribuicao-caneta/atribuicao-caneta/:caneta/:idEstabelecimento', function (req, res) {
         let usuario = req.usuario;
         let idEstabelecimento = req.params.idEstabelecimento;
-        let periodoinicial = req.params.periodoinicial;
-        let periodofinal = req.params.periodofinal;
         let util = new app.util.Util();
-
         let errors = [];
 
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
-            buscarPorEstabelecimento(idEstabelecimento, periodoinicial, periodofinal, res).then(function (response) {
+            buscarPorEstabelecimento(idEstabelecimento, res).then(function (response) {
                 console.log(response);
                 res.status(200).json(response);
                 return;
@@ -57,7 +54,7 @@ module.exports = function (app) {
     }); 
 
 
-    app.post('/caneta', function (req, res) {
+    app.post('/atribuicao-caneta', function (req, res) {
         var obj = req.body;
         var usuario = req.usuario;
         var util = new app.util.Util();
@@ -66,7 +63,7 @@ module.exports = function (app) {
 
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
             
-            req.assert("idModeloCaneta").notEmpty().withMessage("Modelo é um campo obrigatório");
+            req.assert("modelo").notEmpty().withMessage("Modelo é um campo obrigatório");
             req.assert("serialNumber").notEmpty().withMessage("Serial number é um campo obrigatório").isLength({ min: 1, max: 15 }).withMessage("Serial number deve ter no máximo 15 caracteres");
             req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório");
             req.assert("idEstabelecimento").notEmpty().withMessage("ID do estabelecimento é um campo obrigatório");
@@ -91,7 +88,7 @@ module.exports = function (app) {
         }
     });
 
-    app.put('/caneta', function (req, res) {
+    app.put('/atribuicao-caneta', function (req, res) {
         let usuario = req.usuario;
         let obj = req.body;
         let util = new app.util.Util();
@@ -101,7 +98,7 @@ module.exports = function (app) {
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
 
 
-            req.assert("idModeloCaneta").notEmpty().withMessage("Modelo é um campo obrigatório");
+            req.assert("modelo").notEmpty().withMessage("Modelo é um campo obrigatório");
             req.assert("serialNumber").notEmpty().withMessage("Serial number é um campo obrigatório").isLength({ min: 1, max: 15 }).withMessage("Serial number deve ter no máximo 15 caracteres");
             req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório");
             req.assert("idEstabelecimento").notEmpty().withMessage("ID do estabelecimento é um campo obrigatório");
@@ -122,7 +119,7 @@ module.exports = function (app) {
         }
     });
 
-    app.delete('/caneta/:id', function (req, res) {
+    app.delete('/atribuicao-caneta/:id', function (req, res) {
         var util = new app.util.Util();
         let usuario = req.usuario;
         let errors = [];
@@ -142,16 +139,16 @@ module.exports = function (app) {
         }
     });
 
-    function buscarPorEstabelecimento(estabelecimento, periodoinicial, periodofinal, res) {
+    function buscarPorEstabelecimento(estabelecimento, addFilter, res) {
         var q = require('q');
         var d = q.defer();
         var util = new app.util.Util();
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.CanetaDAO(connection);
+        var objDAO = new app.dao.AtribuicaoCanetaDAO(connection);
 
         var errors = [];
 
-        objDAO.listaPorEstabelecimentoDisponivel(estabelecimento, periodoinicial, periodofinal, function (exception, result) {
+        objDAO.listaPorEstabelecimento(estabelecimento, addFilter, function (exception, result) {
             if (exception) {
                 d.reject(exception);
                 console.log(exception);
@@ -170,7 +167,7 @@ module.exports = function (app) {
         var d = q.defer();
         var util = new app.util.Util();
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.CanetaDAO(connection);
+        var objDAO = new app.dao.AtribuicaoCanetaDAO(connection);
 
         var errors = [];
 
@@ -194,7 +191,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.CanetaDAO(connection);
+        var objDAO = new app.dao.AtribuicaoCanetaDAO(connection);
         var errors = [];
 
         objDAO.buscaPorId(id, function (exception, result) {
@@ -218,7 +215,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.CanetaDAO(connection);
+        var objDAO = new app.dao.AtribuicaoCanetaDAO(connection);
         var errors = [];
 
         objDAO.deletaPorId(id, function (exception, result) {
@@ -243,7 +240,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.CanetaDAO(connection);
+        var objDAO = new app.dao.AtribuicaoCanetaDAO(connection);
         var errors = [];
 
         objDAO.atualiza(obj, id, function (exception, result) {
@@ -264,7 +261,7 @@ module.exports = function (app) {
     function salva(caneta, res) {
         delete caneta.id;
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.CanetaDAO(connection);
+        var objDAO = new app.dao.AtribuicaoCanetaDAO(connection);
         var q = require('q');
         var d = q.defer();
 

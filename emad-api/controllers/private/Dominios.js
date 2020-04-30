@@ -113,6 +113,27 @@ module.exports = function (app) {
         });
     });
 
+    app.get('/dominios/caneta', function (req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.CanetaDAO(connection);
+        
+        listaDominios(dao, "Caneta", res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
+    app.get('/dominios/modelo-caneta', function (req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.ModeloCanetaDAO(connection);
+        
+        listaDominios(dao, "Modelo de caneta", res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
 
     function listaDominios(dao, dom, res) {
         var q = require('q');
