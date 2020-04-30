@@ -21,7 +21,8 @@ CanetaDAO.prototype.lista = function(addFilter, callback) {
 
     this._connection.query(`SELECT 
     c.id,
-    c.modelo,
+    c.idModeloCaneta,
+    m.nome as nomeModeloCaneta,
     c.serialNumber, 
     c.situacao,
     c.idEstabelecimento,    
@@ -29,6 +30,7 @@ CanetaDAO.prototype.lista = function(addFilter, callback) {
     e.nomeFantasia
     FROM ${this._table} c     
     INNER JOIN tb_estabelecimento e ON(c.idEstabelecimento = e.id) 
+    INNER JOIN tb_modelo_caneta m ON(c.idModeloCaneta = m.id) 
     WHERE 1=1 ${where}`,callback);    
 }
 
@@ -36,17 +38,25 @@ CanetaDAO.prototype.buscaPorId = function (id, callback) {
     this._connection.query(`SELECT * FROM ${this._table} WHERE id = ?`,id,callback);
 }
 
-CanetaDAO.prototype.buscaPorEstabelecimento = function (idEstabelecimento,  callback) {
+CanetaDAO.prototype.listaPorEstabelecimentoDisponivel = function (idEstabelecimento,  periodoinicial, periodofinal, callback) {
+
     this._connection.query(`SELECT 
     c.id,
-    c.modelo,
-    c.serialNumber, 
-    c.situacao,
-    c.idEstabelecimento,    
-    c.dataCriacao,    
-    e.nomeFantasia  
+    CASE 
+        WHEN profissional_caneta.idProfissional is not null  THEN concat(serialNumber,' (',m.nome,') - Vinculada ao profissional: ', profissional.nome)  
+        ELSE concat(serialNumber,' (',m.nome,')') 
+    END AS nome,
+    CASE 
+        WHEN profissional_caneta.idProfissional is not null  THEN true  
+        ELSE false 
+    END AS disabled 
     FROM ${this._table} c    
-    INNER JOIN tb_estabelecimento e ON(c.idEstabelecimento = e.id)  
+    INNER JOIN tb_estabelecimento e ON(c.idEstabelecimento = e.id) 
+    INNER JOIN tb_modelo_caneta m ON(c.idModeloCaneta = m.id) 
+    LEFT JOIN tb_profissional_caneta profissional_caneta on profissional_caneta.idCaneta = c.id 
+    AND profissional_caneta.periodoInicial  >='${periodoinicial} ' 
+    AND profissional_caneta.periodoFinal  <='${periodofinal} '
+    LEFT JOIN tb_profissional profissional on profissional.id = profissional_caneta.idProfissional
     WHERE c.idEstabelecimento = ${idEstabelecimento} AND c.situacao = 1`,callback);
 }
 
@@ -59,7 +69,7 @@ CanetaDAO.prototype.deletaPorId = function (id,callback) {
 }
 
 CanetaDAO.prototype.dominio = function(callback) {
-    this._connection.query("select id, serialNumber as nome FROM "+this._table+" WHERE situacao = 1 ORDER BY serialNumber ASC",callback);
+    this._connection.query("select c.id, concat(serialNumber,' (',m.nome,')') as nome FROM "+this._table+" c INNER JOIN tb_modelo_caneta m ON(c.idModeloCaneta = m.id) WHERE c.situacao = 1 ORDER BY c.serialNumber ASC",callback);
 }
 
 module.exports = function(){

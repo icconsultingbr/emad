@@ -69,7 +69,7 @@ export class MainComponent implements OnInit {
     },
   };
   public lineChartColors: Array<any> = this.renderBgChart('rgba(0, 0, 0, 0)', 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', '#fff', '#B4B4B4', 'rgba(255,255,255,0.8)');
-  public lineChartColors2: Array<any> = this.renderBgChart('rgba(0, 0, 0, 0)', 'rgba(219,219,219,1)', 'rgba(219,219,219,1)', '#4D6FA0', 'rgb(77, 111, 160,1)', 'rgba(46,79,143,0.8)');
+  public lineChartColors2: Array<any> = this.renderBgChart('rgba(0, 0, 0, 0)', 'rgba(219,219,219,1)', 'rgba(219,219,219,1)', '#00929c', 'rgb(77, 111, 160,1)', 'rgba(46,79,143,0.8)');
   public barchartColor: Array<any> =  [
     { // grey
       backgroundColor:'rgb(77, 111, 160, 1)',

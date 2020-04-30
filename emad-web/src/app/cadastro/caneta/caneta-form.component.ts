@@ -37,15 +37,12 @@ export class CanetaFormComponent implements OnInit {
   loadDomains() {
 
     this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
-        this.domains.push({
-          idEstabelecimento: estabelecimentos,          
-          modelo: [
-            { id: 1, nome: "DP 201" },
-            { id: 2, nome: "Anoto Live Pen 2" }
-          ]
-        });      
+      this.service.listDomains('modelo-caneta').subscribe(modelosCaneta => {
+          this.domains.push({
+            idEstabelecimento: estabelecimentos,          
+            idModeloCaneta: modelosCaneta
+          });              
+        });
     });
-
   }
-
 }
