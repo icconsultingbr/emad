@@ -1,5 +1,5 @@
 {
-    "urlApi": "https://emad.icconsulting.com.br/api",
+    "urlApi": "http://saude.icconsulting.com.br/api",
     "apiPort": 4000,
     "superAdmin": 3,
     "avancado": 2,
@@ -7,7 +7,7 @@
     "consulta": 6,
     "idUsuarioSistema": 1,
     "dbConfig": {
-        "host": "34.83.206.222",
+        "host": "172.17.0.3",
         "port": 3306,
         "username": "root", 
         "password": "zCAV%xf2",

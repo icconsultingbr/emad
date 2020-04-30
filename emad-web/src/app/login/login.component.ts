@@ -71,7 +71,8 @@ export class LoginComponent implements OnInit {
           if(localStorage.getItem('est')){
             localStorage.removeItem('est');
           }
-          window.location.href = "/";
+          //window.location.href = "/";
+          window.location.href = "/emad/";
         }
       }, error => {
 
@@ -94,7 +95,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.nav.hide();
-    this.elementRef.nativeElement.ownerDocument.body.style.background = "url(../../assets/imgs/bglogin2.jpg)";
+    this.elementRef.nativeElement.ownerDocument.body.style.background = "url(assets/imgs/bglogin2.jpg)";
     //this.carregando = false;
   }
 
