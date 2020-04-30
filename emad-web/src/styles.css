@@ -1,216 +1,216 @@
-/* You can add global styles to this file, and also import other style files */
-
-@import "~bootstrap/dist/css/bootstrap.css";
-@import "~ag-grid-community/dist/styles/ag-grid.css";
-@import "~ag-grid-community/dist/styles/ag-theme-balham.css";
-.btn-primary {
-  color: #fff;
-  background-color: #00929c;
-  border-color: #00929c;
-}
-
-.btn-primary:hover {
-  color: #fff;
-  background-color: #006d75;
-  border-color: #006d75;
-}
-
-.btn-primary.disabled, .btn-primary:disabled {
-  color: #fff;
-  background-color: #00929c;
-  border-color: #00929c;
-}
-
-.btn-outline-primary {
-  color: #00929c;
-  background-color: transparent;
-  background-image: none;
-  border-color: #00929c;
-}
-
-.btn-outline-primary:hover {
-  color: #fff;
-  background-color: #00929c;
-  border-color: #00929c;
-}
-
-.btn-outline-primary.disabled, .btn-outline-primary:disabled {
-  color: #00929c;
-  background-color: transparent;
-}
-
-.btn-outline-primary:not(:disabled):not(.disabled):active, .btn-outline-primary:not(:disabled):not(.disabled).active, .show>.btn-outline-primary.dropdown-toggle {
-  color: #fff;
-  background-color: #00929c;
-  border-color: #00929c;
-}
-
-.btn-link {
-  font-weight: 400;
-  color: #00929c;
-  background-color: transparent;
-}
-
-.dropdown-item.active, .dropdown-item:active {
-  color: #fff;
-  text-decoration: none;
-  background-color: #00929c;
-}
-
-.custom-control-input:checked~.custom-control-label::before {
-  color: #fff;
-  background-color: #343a40;
-}
-
-.custom-checkbox .custom-control-input:checked~.custom-control-label::before {
-  background-color: #343a40;
-}
-
-.custom-checkbox .custom-control-input:indeterminate~.custom-control-label::before {
-  background-color: #343a40;
-}
-
-.custom-radio .custom-control-input:checked~.custom-control-label::before {
-  background-color: #343a40;
-}
-
-.custom-range::-webkit-slider-thumb {
-  width: 1rem;
-  height: 1rem;
-  margin-top: -0.25rem;
-  background-color: #343a40;
-  border: 0;
-  border-radius: 1rem;
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-.custom-range::-moz-range-thumb {
-  width: 1rem;
-  height: 1rem;
-  background-color: #343a40;
-  border: 0;
-  border-radius: 1rem;
-  -moz-appearance: none;
-  appearance: none;
-}
-
-.custom-range::-ms-thumb {
-  width: 1rem;
-  height: 1rem;
-  background-color: #343a40;
-  border: 0;
-  border-radius: 1rem;
-  appearance: none;
-}
-
-.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-  color: #fff;
-  background-color: #343a40;
-}
-
-.page-link {
-  position: relative;
-  display: block;
-  padding: 0.5rem 0.75rem;
-  margin-left: -1px;
-  line-height: 1.25;
-  color: #343a40;
-  background-color: #fff;
-  border: 1px solid #dee2e6;
-}
-
-.page-link:hover {
-  z-index: 2;
-  color: #343a40;
-  text-decoration: none;
-  background-color: #e9ecef;
-  border-color: #dee2e6;
-}
-
-.page-item.active .page-link {
-  z-index: 1;
-  color: #fff;
-  background-color: #00929c;
-  border-color: #00929c;
-}
-
-.badge-primary {
-  color: #fff;
-  background-color: #00929c;
-}
-
-.progress-bar {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -ms-flex-pack: center;
-  justify-content: center;
-  color: #fff;
-  text-align: center;
-  white-space: nowrap;
-  background-color: #00929c;
-  transition: width 0.6s ease;
-}
-
-.list-group-item.active {
-  z-index: 2;
-  color: #fff;
-  background-color: #00929c;
-  border-color: #00929c;
-}
-
-.bg-primary {
-  background-color: #00929c !important;
-}
-
-.border-primary {
-  border-color: #00929c !important;
-}
-
-.text-primary {
-  color: #00929c !important;
-}
-
-:root {
-  --blue: #00929c;
-  --indigo: #6610f2;
-  --purple: #6f42c1;
-  --pink: #e83e8c;
-  --red: #dc3545;
-  --orange: #fd7e14;
-  --yellow: #ffc107;
-  --green: #28a745;
-  --teal: #20c997;
-  --cyan: #17a2b8;
-  --white: #fff;
-  --gray: #6c757d;
-  --gray-dark: #343a40;
-  --primary: #00929c;
-  --secondary: #6c757d;
-  --success: #28a745;
-  --info: #17a2b8;
-  --warning: #ffc107;
-  --danger: #dc3545;
-  --light: #f8f9fa;
-  --dark: #343a40;
-  --breakpoint-xs: 0;
-  --breakpoint-sm: 576px;
-  --breakpoint-md: 768px;
-  --breakpoint-lg: 992px;
-  --breakpoint-xl: 1200px;
-  --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-}
-
-.contentbox {
-  overflow-x: auto;
-  border-left: 1px solid #dee2e6;
-  border-right: 1px solid #dee2e6;
-}
-
-.sticky-top {
-  top: 3.15rem;
-  border-radius: 5px;
+/* You can add global styles to this file, and also import other style files */
+
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~ag-grid-community/dist/styles/ag-grid.css";
+@import "~ag-grid-community/dist/styles/ag-theme-balham.css";
+.btn-primary {
+  color: #fff;
+  background-color: #00929c;
+  border-color: #00929c;
 }
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #006d75;
+  border-color: #006d75;
+}
+
+.btn-primary.disabled, .btn-primary:disabled {
+  color: #fff;
+  background-color: #00929c;
+  border-color: #00929c;
+}
+
+.btn-outline-primary {
+  color: #00929c;
+  background-color: transparent;
+  background-image: none;
+  border-color: #00929c;
+}
+
+.btn-outline-primary:hover {
+  color: #fff;
+  background-color: #00929c;
+  border-color: #00929c;
+}
+
+.btn-outline-primary.disabled, .btn-outline-primary:disabled {
+  color: #00929c;
+  background-color: transparent;
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled):active, .btn-outline-primary:not(:disabled):not(.disabled).active, .show>.btn-outline-primary.dropdown-toggle {
+  color: #fff;
+  background-color: #00929c;
+  border-color: #00929c;
+}
+
+.btn-link {
+  font-weight: 400;
+  color: #00929c;
+  background-color: transparent;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+  color: #fff;
+  text-decoration: none;
+  background-color: #00929c;
+}
+
+.custom-control-input:checked~.custom-control-label::before {
+  color: #fff;
+  background-color: #343a40;
+}
+
+.custom-checkbox .custom-control-input:checked~.custom-control-label::before {
+  background-color: #343a40;
+}
+
+.custom-checkbox .custom-control-input:indeterminate~.custom-control-label::before {
+  background-color: #343a40;
+}
+
+.custom-radio .custom-control-input:checked~.custom-control-label::before {
+  background-color: #343a40;
+}
+
+.custom-range::-webkit-slider-thumb {
+  width: 1rem;
+  height: 1rem;
+  margin-top: -0.25rem;
+  background-color: #343a40;
+  border: 0;
+  border-radius: 1rem;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.custom-range::-moz-range-thumb {
+  width: 1rem;
+  height: 1rem;
+  background-color: #343a40;
+  border: 0;
+  border-radius: 1rem;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.custom-range::-ms-thumb {
+  width: 1rem;
+  height: 1rem;
+  background-color: #343a40;
+  border: 0;
+  border-radius: 1rem;
+  appearance: none;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+  color: #fff;
+  background-color: #343a40;
+}
+
+.page-link {
+  position: relative;
+  display: block;
+  padding: 0.5rem 0.75rem;
+  margin-left: -1px;
+  line-height: 1.25;
+  color: #343a40;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+}
+
+.page-link:hover {
+  z-index: 2;
+  color: #343a40;
+  text-decoration: none;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+
+.page-item.active .page-link {
+  z-index: 1;
+  color: #fff;
+  background-color: #00929c;
+  border-color: #00929c;
+}
+
+.badge-primary {
+  color: #fff;
+  background-color: #00929c;
+}
+
+.progress-bar {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -ms-flex-pack: center;
+  justify-content: center;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #00929c;
+  transition: width 0.6s ease;
+}
+
+.list-group-item.active {
+  z-index: 2;
+  color: #fff;
+  background-color: #00929c;
+  border-color: #00929c;
+}
+
+.bg-primary {
+  background-color: #00929c !important;
+}
+
+.border-primary {
+  border-color: #00929c !important;
+}
+
+.text-primary {
+  color: #00929c !important;
+}
+
+:root {
+  --blue: #00929c;
+  --indigo: #6610f2;
+  --purple: #6f42c1;
+  --pink: #e83e8c;
+  --red: #dc3545;
+  --orange: #fd7e14;
+  --yellow: #ffc107;
+  --green: #28a745;
+  --teal: #20c997;
+  --cyan: #17a2b8;
+  --white: #fff;
+  --gray: #6c757d;
+  --gray-dark: #343a40;
+  --primary: #00929c;
+  --secondary: #6c757d;
+  --success: #28a745;
+  --info: #17a2b8;
+  --warning: #ffc107;
+  --danger: #dc3545;
+  --light: #f8f9fa;
+  --dark: #343a40;
+  --breakpoint-xs: 0;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.contentbox {
+  overflow-x: auto;
+  border-left: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+}
+
+.sticky-top {
+  top: 3.15rem;
+  border-radius: 5px;
+} 
