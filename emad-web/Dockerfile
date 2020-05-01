@@ -26,7 +26,7 @@ ARG env=prod
 
 ## Build the angular app in production mode and store the artifacts in dist folder
 
-RUN $(npm bin)/ng build --prod --build-optimizer --environment=$env --base-href .
+RUN $(npm bin)/ng build --prod --build-optimizer --environment=$env --base-href="/e-atende/"
 
 ### STAGE 2: Setup ###
 

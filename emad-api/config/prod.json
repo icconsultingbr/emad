@@ -1,5 +1,5 @@
 {
-    "urlApi": "http://saude.icconsulting.com.br/api",
+    "urlApi": "http://saude.icconsulting.com.br/api-eatende",
     "apiPort": 4000,
     "superAdmin": 3,
     "avancado": 2,
