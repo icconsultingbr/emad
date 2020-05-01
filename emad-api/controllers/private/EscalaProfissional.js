@@ -1,6 +1,8 @@
 module.exports = function (app) {
 
-    app.get('/caneta', function (req, res) {
+    const _table = "tb_atribuicao_caneta";
+
+    app.get('/escala-profissional', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
@@ -17,7 +19,7 @@ module.exports = function (app) {
         }
     });
 
-    app.get('/caneta/:id', function (req, res) {
+    app.get('/escala-profissional/:id', function (req, res) {
         let usuario = req.usuario;
         let id = req.params.id;
         let util = new app.util.Util();
@@ -34,44 +36,18 @@ module.exports = function (app) {
         }
     });
 
-
-    app.get('/caneta/estabelecimento/:idEstabelecimento/:dataInicial/:horaInicial/:dataFinal/:horaFinal', function (req, res) {
-        let usuario = req.usuario;
-        let idEstabelecimento = req.params.idEstabelecimento;        
-        let dataInicial = req.params.dataInicial;
-        let horaInicial = req.params.horaInicial;
-        let dataFinal = req.params.dataFinal;
-        let horaFinal = req.params.horaFinal;
-        let util = new app.util.Util();
-
-        let errors = [];
-
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
-            buscarPorEstabelecimento(idEstabelecimento, dataInicial, horaInicial, dataFinal, horaFinal, res).then(function (response) {
-                console.log(response);
-                res.status(200).json(response);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
-    }); 
-
-
-    app.post('/caneta', function (req, res) {
+    app.post('/escala-profissional', function (req, res) {
         var obj = req.body;
         var usuario = req.usuario;
         var util = new app.util.Util();
         var errors = [];
         let idEstabelecimento = req.params.idEstabelecimento;
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
-            
-            req.assert("idModeloCaneta").notEmpty().withMessage("Modelo é um campo obrigatório");
-            req.assert("serialNumber").notEmpty().withMessage("Serial number é um campo obrigatório").isLength({ min: 1, max: 15 }).withMessage("Serial number deve ter no máximo 15 caracteres");
-            req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório");
-            req.assert("idEstabelecimento").notEmpty().withMessage("ID do estabelecimento é um campo obrigatório");
+        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {            
+            req.assert("idCaneta").notEmpty().withMessage("Caneta é um campo obrigatório");
+            req.assert("idProfissional").notEmpty().withMessage("Profissional é um campo obrigatório");
+            req.assert("periodoInicial").notEmpty().withMessage("Data/hora de atribuição inicial é um campo obrigatório");
+            req.assert("periodoFinal").notEmpty().withMessage("Data/hora de atribuição final é um campo obrigatório");
             
             var errors = req.validationErrors();
 
@@ -93,20 +69,19 @@ module.exports = function (app) {
         }
     });
 
-    app.put('/caneta', function (req, res) {
+    app.put('/escala-profissional', function (req, res) {
         let usuario = req.usuario;
         let obj = req.body;
         let util = new app.util.Util();
         let errors = [];
         let id = obj.id;
+        let idEstabelecimento = req.params.idEstabelecimento;
 
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
-
-
-            req.assert("idModeloCaneta").notEmpty().withMessage("Modelo é um campo obrigatório");
-            req.assert("serialNumber").notEmpty().withMessage("Serial number é um campo obrigatório").isLength({ min: 1, max: 15 }).withMessage("Serial number deve ter no máximo 15 caracteres");
-            req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório");
-            req.assert("idEstabelecimento").notEmpty().withMessage("ID do estabelecimento é um campo obrigatório");
+            req.assert("idCaneta").isNumeric().notEmpty().withMessage("Caneta é um campo obrigatório");
+            req.assert("idProfissional").notEmpty().withMessage("Profissional é um campo obrigatório");
+            req.assert("periodoInicial").notEmpty().withMessage("Data/hora de atribuição inicial é um campo obrigatório");
+            req.assert("periodoFinal").notEmpty().withMessage("Data/hora de atribuição final é um campo obrigatório");
 
             errors = req.validationErrors();
 
@@ -124,7 +99,7 @@ module.exports = function (app) {
         }
     });
 
-    app.delete('/caneta/:id', function (req, res) {
+    app.delete('/escala-profissional/:id', function (req, res) {
         var util = new app.util.Util();
         let usuario = req.usuario;
         let errors = [];
@@ -144,27 +119,51 @@ module.exports = function (app) {
         }
     });
 
-    function buscarPorEstabelecimento(estabelecimento, dataInicial, horaInicial, dataFinal, horaFinal, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.CanetaDAO(connection);
+    app.get('/escala-profissional/profissional/:idProfissional/:periodoinicial/:periodofinal', function(req,res){        
+        let usuario = req.usuario;
+        let id = req.params.id;
+        let idProfissional = req.params.idProfissional;
+        let periodoinicial = req.params.periodoinicial;
+        let periodofinal = req.params.periodofinal;
 
-        var errors = [];
+        let util = new app.util.Util();
+        let errors = [];
 
-        objDAO.listaPorEstabelecimentoDisponivel(estabelecimento, dataInicial, horaInicial, dataFinal, horaFinal, function (exception, result) {
+
+        if(usuario.idTipoUsuario == util.SUPER_ADMIN){		
+            buscarAtribuicaoPorProfissionalId(idProfissional, periodoinicial, periodofinal, res).then(function(response) {
+                res.status(200).json(response);
+                return;      
+            });
+        }
+        else{
+            errors = util.customError(errors, "header", "Não autorizado!", "obj");
+            res.status(401).send(errors);
+        }
+    }); 
+
+    function buscarAtribuicaoPorProfissionalId(id, periodoinicial, periodofinal, res) {
+        let q = require('q');
+        let d = q.defer();
+        let util = new app.util.Util();
+       
+        let connection = app.dao.ConnectionFactory();
+        let objDAO = new app.dao.EscalaProfissionalDAO(connection, _table);
+        let errors =[];
+     
+        objDAO.buscaPorProfissionalId(id, periodoinicial, periodofinal,  function(exception, result){
             if (exception) {
                 d.reject(exception);
                 console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
                 res.status(500).send(errors);
                 return;
             } else {
+                
                 d.resolve(result);
             }
         });
-        return d.promise;
+        return d.promise;  
     }
 
     function lista(addFilter, res) {
@@ -172,7 +171,7 @@ module.exports = function (app) {
         var d = q.defer();
         var util = new app.util.Util();
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.CanetaDAO(connection);
+        var objDAO = new app.dao.EscalaProfissionalDAO(connection);
 
         var errors = [];
 
@@ -180,7 +179,7 @@ module.exports = function (app) {
             if (exception) {
                 d.reject(exception);
                 console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "Caneta");
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "Atribuição da caneta");
                 res.status(500).send(errors);
                 return;
             } else {
@@ -196,7 +195,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.CanetaDAO(connection);
+        var objDAO = new app.dao.EscalaProfissionalDAO(connection);
         var errors = [];
 
         objDAO.buscaPorId(id, function (exception, result) {
@@ -220,13 +219,13 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.CanetaDAO(connection);
+        var objDAO = new app.dao.EscalaProfissionalDAO(connection);
         var errors = [];
 
         objDAO.deletaPorId(id, function (exception, result) {
             if (exception) {
                 d.reject(exception);
-                errors = util.customError(errors, "data", "Erro ao apagar os dados", "caneta");
+                errors = util.customError(errors, "data", "Erro ao apagar os dados", "Atribuição da caneta");
                 res.status(500).send(errors);
                 return;
             } else {
@@ -245,7 +244,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.CanetaDAO(connection);
+        var objDAO = new app.dao.EscalaProfissionalDAO(connection);
         var errors = [];
 
         objDAO.atualiza(obj, id, function (exception, result) {
@@ -253,7 +252,7 @@ module.exports = function (app) {
             if (exception) {
                 d.reject(exception);
                 console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao editar os dados", "caneta");
+                errors = util.customError(errors, "data", "Erro ao editar os dados", "Atribuição da caneta");
                 res.status(500).send(errors);
                 return;
             } else {
@@ -266,7 +265,7 @@ module.exports = function (app) {
     function salva(caneta, res) {
         delete caneta.id;
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.CanetaDAO(connection);
+        var objDAO = new app.dao.EscalaProfissionalDAO(connection);
         var q = require('q');
         var d = q.defer();
 

@@ -119,19 +119,21 @@ module.exports = function (app) {
         }
     });
 
-    app.get('/atribuicao-caneta/profissional/:idProfissional/:periodoinicial/:periodofinal', function(req,res){        
+    app.get('/atribuicao-caneta/profissional/:idProfissional/:dataInicial/:horaInicial/:dataFinal/:horaFinal', function(req,res){        
         let usuario = req.usuario;
         let id = req.params.id;
         let idProfissional = req.params.idProfissional;
-        let periodoinicial = req.params.periodoinicial;
-        let periodofinal = req.params.periodofinal;
+        let dataInicial = req.params.dataInicial;
+        let horaInicial = req.params.horaInicial;
+        let dataFinal = req.params.dataFinal;
+        let horaFinal = req.params.horaFinal;
 
         let util = new app.util.Util();
         let errors = [];
 
 
         if(usuario.idTipoUsuario == util.SUPER_ADMIN){		
-            buscarAtribuicaoPorProfissionalId(idProfissional, periodoinicial, periodofinal, res).then(function(response) {
+            buscarAtribuicaoPorProfissionalId(idProfissional, dataInicial, horaInicial , dataFinal, horaFinal, res).then(function(response) {
                 res.status(200).json(response);
                 return;      
             });
@@ -142,7 +144,7 @@ module.exports = function (app) {
         }
     }); 
 
-    function buscarAtribuicaoPorProfissionalId(id, periodoinicial, periodofinal, res) {
+    function buscarAtribuicaoPorProfissionalId(id, dataInicial, horaInicial , dataFinal, horaFinal, res) {
         let q = require('q');
         let d = q.defer();
         let util = new app.util.Util();
@@ -151,7 +153,7 @@ module.exports = function (app) {
         let objDAO = new app.dao.AtribuicaoCanetaDAO(connection, _table);
         let errors =[];
      
-        objDAO.buscaPorProfissionalId(id, periodoinicial, periodofinal,  function(exception, result){
+        objDAO.buscaPorProfissionalId(id, dataInicial, horaInicial , dataFinal, horaFinal,  function(exception, result){
             if (exception) {
                 d.reject(exception);
                 console.log(exception);

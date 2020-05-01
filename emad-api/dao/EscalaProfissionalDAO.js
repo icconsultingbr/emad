@@ -1,17 +1,17 @@
-function AtribuicaoCanetaDAO(connection) {
+function EscalaProfissionalDAO(connection) {
     this._connection = connection;
     this._table = "tb_atribuicao_caneta";
 }
 
-AtribuicaoCanetaDAO.prototype.salva = function(obj, callback) {
+EscalaProfissionalDAO.prototype.salva = function(obj, callback) {
     this._connection.query(`INSERT INTO ${this._table} SET ?`, obj, callback);
 }
 
-AtribuicaoCanetaDAO.prototype.atualiza = function(obj, id, callback) {
+EscalaProfissionalDAO.prototype.atualiza = function(obj, id, callback) {
     this._connection.query(`UPDATE ${this._table} SET ? WHERE id= ?`, [obj, id], callback);
 }
 
-AtribuicaoCanetaDAO.prototype.lista = function(addFilter, callback) {
+EscalaProfissionalDAO.prototype.lista = function(addFilter, callback) {
     let where = "";
 
     if (addFilter != null) {
@@ -48,21 +48,15 @@ AtribuicaoCanetaDAO.prototype.lista = function(addFilter, callback) {
     ORDER BY profissional_caneta.periodoFinal DESC`,callback);    
 }
 
-AtribuicaoCanetaDAO.prototype.buscaPorId = function (id, callback) {
+EscalaProfissionalDAO.prototype.buscaPorId = function (id, callback) {
     this._connection.query(`SELECT * FROM ${this._table} WHERE id = ?`,id,callback);
 }
 
-AtribuicaoCanetaDAO.prototype.deletaPorId = function (id,callback) {
+EscalaProfissionalDAO.prototype.deletaPorId = function (id,callback) {
     this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
 }
 
-AtribuicaoCanetaDAO.prototype.buscaPorProfissionalId = function (idProfissional, dataInicial, horaInicial, dataFinal, horaFinal, callback) {
-    let periodoinicial = "";
-    let periodofinal = "";
-    
-    periodoinicial = dataInicial + " " + horaInicial;
-    periodofinal = dataFinal + " " + horaFinal;
-
+EscalaProfissionalDAO.prototype.buscaPorProfissionalId = function (idProfissional, periodoinicial, periodofinal, callback) {
     this._connection.query(`SELECT 
     profissional_caneta.id,
     concat(c.serialNumber,' (',m.nome,')') AS nome,
@@ -86,5 +80,5 @@ AtribuicaoCanetaDAO.prototype.buscaPorProfissionalId = function (idProfissional,
 }
 
 module.exports = function(){
-    return AtribuicaoCanetaDAO;
+    return EscalaProfissionalDAO;
 };

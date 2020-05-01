@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Validators } from '@angular/forms';
 
 @Injectable()
-export class AtribuicaoCanetaService extends GenericsService{
+export class EscalaProfissionalService extends GenericsService{
   
   fields: any[] = [
     {
@@ -21,7 +21,7 @@ export class AtribuicaoCanetaService extends GenericsService{
       type: "select",
       label: "Caneta",
       grid: false,
-      form: false,
+      form: true,
       required: false,
       validator: ['', ''],
       filter: {
@@ -42,7 +42,7 @@ export class AtribuicaoCanetaService extends GenericsService{
       type: "select",
       label: "Profissional",
       grid: false,
-      form: false,
+      form: true,
       required: false,
       validator: ['',  ''],
       filter: {
@@ -63,7 +63,7 @@ export class AtribuicaoCanetaService extends GenericsService{
       type: "text",
       label: "Data de atribuição inicial",
       grid: true,
-      form: false,
+      form: true,
       required: false,
       validator: ['', ''],
       filter: {
@@ -76,7 +76,7 @@ export class AtribuicaoCanetaService extends GenericsService{
       type: "text",
       label: "Data de atribuição final",
       grid: true,
-      form: false,
+      form: true,
       required: false,
       validator: ['', ''],
     },
@@ -91,12 +91,12 @@ export class AtribuicaoCanetaService extends GenericsService{
     }
     ];
 
-    findHistoricoAtribuicaoByProfissional(id: any, dateInicial: string, horaInicial: string, dateFinal: string, horaFinal: string): Observable<any> {
-      return this.http.get(this.url + "atribuicao-caneta/profissional/" + id 
-      + '/' +  dateInicial  
-      + '/' + horaInicial 
-      + '/' + dateFinal 
-      + '/' + horaFinal, { headers: this.headers }).map(res => res.json());
+      findHistoricoAtribuicaoByProfissional(id: any, dateInicial: string, horaInicial: string, dateFinal: string, horaFinal: string): Observable<any> {
+        return this.http.get(this.url + "atribuicao-caneta/profissional/" + id 
+        + '/' +  dateInicial  
+        + '/' + horaInicial 
+        + '/' + dateFinal 
+        + '/' + horaFinal, { headers: this.headers }).map(res => res.json());
     }
 
     saveAtribuicao(obj: any) {

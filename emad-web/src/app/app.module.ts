@@ -75,6 +75,8 @@ import { CanetaComponent } from './cadastro/caneta/caneta.component';
 import { CanetaFormComponent } from './cadastro/caneta/caneta-form.component';
 import { AtribuicaoCanetaComponent } from './operacao/atribuicao-caneta/atribuicao-caneta.component';
 import { AtribuicaoCanetaFormComponent } from './operacao/atribuicao-caneta/atribuicao-caneta-form.component';
+import { EscalaProfissionalFormComponent } from './operacao/escala-profissional/escala-profissional-form.component';
+import { EscalaProfissionalComponent } from './operacao/escala-profissional/escala-profissional.component';
 
 if (environment.production) {
     enableProdMode();
@@ -137,6 +139,8 @@ defineLocale('pt-br', deLocale);
         CanetaFormComponent,
         AtribuicaoCanetaComponent,
         AtribuicaoCanetaFormComponent,
+        EscalaProfissionalComponent,
+        EscalaProfissionalFormComponent,
         TipoUnidadeComponent,
         TipoUnidadeFormComponent,
         EspecialidadeComponent,
