@@ -45,7 +45,7 @@ module.exports = function (app) {
 
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {            
             req.assert("idCaneta").notEmpty().withMessage("Caneta é um campo obrigatório");
-            req.assert("idProfissional").notEmpty().withMessage("Serial number é um campo obrigatório");
+            req.assert("idProfissional").notEmpty().withMessage("Profissional é um campo obrigatório");
             req.assert("periodoInicial").notEmpty().withMessage("Data/hora de atribuição inicial é um campo obrigatório");
             req.assert("periodoFinal").notEmpty().withMessage("Data/hora de atribuição final é um campo obrigatório");
             
@@ -78,8 +78,8 @@ module.exports = function (app) {
         let idEstabelecimento = req.params.idEstabelecimento;
 
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
-            req.assert("idCaneta").notEmpty().withMessage("Caneta é um campo obrigatório");
-            req.assert("idProfissional").notEmpty().withMessage("Serial number é um campo obrigatório");
+            req.assert("idCaneta").isNumeric().notEmpty().withMessage("Caneta é um campo obrigatório");
+            req.assert("idProfissional").notEmpty().withMessage("Profissional é um campo obrigatório");
             req.assert("periodoInicial").notEmpty().withMessage("Data/hora de atribuição inicial é um campo obrigatório");
             req.assert("periodoFinal").notEmpty().withMessage("Data/hora de atribuição final é um campo obrigatório");
 
@@ -119,15 +119,19 @@ module.exports = function (app) {
         }
     });
 
-    app.get('/atribuicao-caneta/profissional/:id', function(req,res){        
+    app.get('/atribuicao-caneta/profissional/:idProfissional/:periodoinicial/:periodofinal', function(req,res){        
         let usuario = req.usuario;
         let id = req.params.id;
+        let idProfissional = req.params.idProfissional;
+        let periodoinicial = req.params.periodoinicial;
+        let periodofinal = req.params.periodofinal;
+
         let util = new app.util.Util();
         let errors = [];
 
 
         if(usuario.idTipoUsuario == util.SUPER_ADMIN){		
-            buscarAtribuicaoPorProfissionalId(id, res).then(function(response) {
+            buscarAtribuicaoPorProfissionalId(idProfissional, periodoinicial, periodofinal, res).then(function(response) {
                 res.status(200).json(response);
                 return;      
             });
@@ -138,7 +142,7 @@ module.exports = function (app) {
         }
     }); 
 
-    function buscarAtribuicaoPorProfissionalId(id,  res) {
+    function buscarAtribuicaoPorProfissionalId(id, periodoinicial, periodofinal, res) {
         let q = require('q');
         let d = q.defer();
         let util = new app.util.Util();
@@ -147,7 +151,7 @@ module.exports = function (app) {
         let objDAO = new app.dao.AtribuicaoCanetaDAO(connection, _table);
         let errors =[];
      
-        objDAO.buscaPorProfissionalId(id, function(exception, result){
+        objDAO.buscaPorProfissionalId(id, periodoinicial, periodofinal,  function(exception, result){
             if (exception) {
                 d.reject(exception);
                 console.log(exception);

@@ -74,6 +74,7 @@ import { AtendimentoComponent } from './operacao/atendimento/atendimento.compone
 import { CanetaComponent } from './cadastro/caneta/caneta.component';
 import { CanetaFormComponent } from './cadastro/caneta/caneta-form.component';
 import { AtribuicaoCanetaComponent } from './operacao/atribuicao-caneta/atribuicao-caneta.component';
+import { AtribuicaoCanetaFormComponent } from './operacao/atribuicao-caneta/atribuicao-caneta-form.component';
 
 if (environment.production) {
     enableProdMode();
@@ -135,6 +136,7 @@ defineLocale('pt-br', deLocale);
         CanetaComponent,
         CanetaFormComponent,
         AtribuicaoCanetaComponent,
+        AtribuicaoCanetaFormComponent,
         TipoUnidadeComponent,
         TipoUnidadeFormComponent,
         EspecialidadeComponent,
