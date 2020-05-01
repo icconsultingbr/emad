@@ -1,23 +1,18 @@
 import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AtribuicaoCanetaService } from './atribuicao-caneta.service';
-import { Paciente } from '../../_core/_models/Paciente';
-import { PagerService } from '../../_core/_services';
 import { Util } from '../../_core/_util/Util';
 import { Router } from '@angular/router';
-import { AgendaProfissional } from '../../_core/_models/AgendaProfissional';
-import { environment } from "../../../environments/environment";
-import { AtendimentoService } from '../atendimento/atendimento.service';
-import { AtribuicaoCaneta } from '../../_core/_models/AtribuicaoCaneta';
+import { EscalaProfissionalService } from './escala-profissional.service';
+import { EscalaProfissional } from '../../_core/_models/EscalaProfissional';
 
 @Component({
-  selector: 'app-atribuicao-caneta-form',
-  templateUrl: './atribuicao-caneta-form.component.html',
-  styleUrls: ['./atribuicao-caneta-form.component.css'],
-  providers: [AtribuicaoCanetaService, AtendimentoService]
+  selector: 'app-escala-profissional-form',
+  templateUrl: './escala-profissional-form.component.html',
+  styleUrls: ['./escala-profissional-form.component.css'],
+  providers: [EscalaProfissionalService]
 })
-export class AtribuicaoCanetaFormComponent implements OnInit {
+export class EscalaProfissionalFormComponent implements OnInit {
 
   //MESSAGES
   loading: Boolean = false;
@@ -26,15 +21,15 @@ export class AtribuicaoCanetaFormComponent implements OnInit {
   modalRef: NgbModalRef = null;
   modalRemoveRef: NgbModalRef = null;
   form: FormGroup;
-  method: String = "atribuicao-caneta";
+  method: String = "escala-profissional";
   fields: any[] = [];
   historicoAtribuicoes: any[] = [];
-  object: AtribuicaoCaneta = new AtribuicaoCaneta();
+  object: EscalaProfissional = new EscalaProfissional();
   domains: any[] = [];
 
   constructor(
     private fb: FormBuilder,
-    private service: AtribuicaoCanetaService,
+    private service: EscalaProfissionalService,
     private router: Router) {
 
     for (let field of this.service.fields) {
@@ -174,13 +169,11 @@ export class AtribuicaoCanetaFormComponent implements OnInit {
         this.object.periodoInicial = dateInicialFormatada;
         this.object.periodoFinal = dateFinalFormatada;
 
-        var dataAtribuicao = periodoinicial.getFullYear() + "-" + this.twoDigits(1 + periodoinicial.getMonth()) + "-" + this.twoDigits(periodoinicial.getDate());
-
         this.loading = true;
-        this.service.list('caneta/estabelecimento/' + JSON.parse(localStorage.getItem("est"))[0].id + '/' +  dataAtribuicao  + '/' + this.form.value.horarioInicial + '/' + dataAtribuicao + '/' + this.form.value.horarioFinal).subscribe(result => {
+        this.service.list('caneta/estabelecimento/' + JSON.parse(localStorage.getItem("est"))[0].id + '/' +  this.form.value.dataAtribuicao  + '/' + this.form.value.horarioInicial + '/' + this.form.value.dataAtribuicao + '/' + this.form.value.horarioFinal).subscribe(result => {
         this.domains[0].idCaneta = result;
         
-        this.findHistoricoAtribuicoesPorProfissional(dataAtribuicao, this.form.value.horarioInicial, dataAtribuicao, this.form.value.horarioFinal);
+        this.findHistoricoAtribuicoesPorProfissional(this.form.value.dataAtribuicao, this.form.value.horarioInicial, this.form.value.dataAtribuicao, this.form.value.horarioFinal);
 
         this.loading = false;
       }, error => {

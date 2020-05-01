@@ -38,7 +38,13 @@ CanetaDAO.prototype.buscaPorId = function (id, callback) {
     this._connection.query(`SELECT * FROM ${this._table} WHERE id = ?`,id,callback);
 }
 
-CanetaDAO.prototype.listaPorEstabelecimentoDisponivel = function (idEstabelecimento,  periodoinicial, periodofinal, callback) {
+CanetaDAO.prototype.listaPorEstabelecimentoDisponivel = function (idEstabelecimento, dataInicial, horaInicial, dataFinal, horaFinal, callback) {
+
+    let periodoinicial = "";
+    let periodofinal = "";
+
+    periodoinicial = dataInicial + " " + horaInicial;
+    periodofinal = dataFinal + " " + horaFinal;
 
     this._connection.query(`SELECT 
     c.id,

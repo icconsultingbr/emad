@@ -1,4 +1,5 @@
-<h4 class="mb-5 text-left">Adicionar atribuição de caneta</h4>
+
+<h4 class="mb-5 text-left">{{id!=null?'Editar '+label:'Adicionar escala do profissional '+label}}</h4>
 
 <ng-template #customLoadingTemplate>
     <div style="position: fixed; z-index:9999; width: 100%; top: 50%; left: 20px">
@@ -26,8 +27,7 @@
             Profissional<span class="text-danger font-weight-bold"> *</span>
         </label>
         <div class="col-xl-10">
-            <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idProfissional" formControlName="idProfissional" 
-                (change)="clearAtribuicao()">
+            <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idProfissional" formControlName="idProfissional">
                 <option [value]="null">Selecione...</option>
                 <option *ngFor="let domain of domains[0]['idProfissional']" value="{{domain.id}}">{{domain.nome}}
                 </option>
@@ -55,44 +55,48 @@
             Horário inicial<span class="text-danger font-weight-bold"> *</span>
         </div>
         <div class="col-xl-2">
-            <input type="text" class="form-control has-error" formControlName="horarioInicial"  mask="99:99" placeholder="99:99"
-            (change)="carregarCanetasDisponiveis()"/>
+            <input type="text" class="form-control has-error" formControlName="horarioInicial"  mask="99:99" placeholder="99:99"/>
         </div>
         <div class="col-xl-2">
             Horário final<span class="text-danger font-weight-bold"> *</span>
         </div>
         <div class="col-xl-2">
-            <input type="text" class="form-control has-error" formControlName="horarioFinal" mask="99:99" placeholder="99:99"
-            (change)="carregarCanetasDisponiveis()" />
+            <input type="text" class="form-control has-error" formControlName="horarioFinal" mask="99:99" placeholder="99:99" />
         </div>
-
-       
-
     </div>
-    
+
     <div class="form-group row" *ngIf="object.idProfissional>0">
         <label class="col-xl-2 col-form-label text-left">
-            Canetas <span class="text-danger font-weight-bold"> *</span>
-        </label>
-        <div class="col-xl-10">
-            <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idCaneta" formControlName="idCaneta"
-                [disabled]="object.horarioFinal==null || object.horarioFinal=='null'">
+            Dia da semana<span class="text-danger font-weight-bold"></span>
+        </label>    
+        <div class="col-xl-2">
+            <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idProfissionalNovo" formControlName="idProfissionalNovo">
                 <option [value]="null">Selecione...</option>
-                <option *ngFor="let item of domains[0].idCaneta" [value]="item.id" [disabled]="item.disabled" >{{item.nome}}</option>
+                <option *ngFor="let domain of domains[0]['idProfissional']" value="{{domain.id}}">{{domain.nome}}
+                </option>
             </select>
+        </div>    
+        <div class="col-xl-2">
+            Horário inicial<span class="text-danger font-weight-bold"> *</span>
         </div>
-    </div>
+        <div class="col-xl-2">
+            <input type="text" class="form-control has-error" formControlName="horarioInicialSegundaFeira"  mask="99:99" placeholder="99:99"/>
+        </div>
+        <div class="col-xl-2">
+            Horário final<span class="text-danger font-weight-bold"> *</span>
+        </div>
+        <div class="col-xl-2">
+            <input type="text" class="form-control has-error" formControlName="horarioFinalSegundaFeira" mask="99:99" placeholder="99:99" />
+        </div>
+    </div>   
     
     <div class="form-group text-right"  *ngIf="object.idProfissional>0">
-
         <button class="btn btn-primary " type="button" (click)="saveAtribuicao()">
           <i class="fa fa-save"></i> Atribuir
-        </button>
-    
+        </button>    
         <button (click)="back()" class="btn btn-default" type="button">
             <i class="fa fa-arrow-left"></i> Retornar
-          </button>
-
+        </button>
       </div>
 </form>
 
