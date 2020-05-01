@@ -2,8 +2,9 @@ import { Input } from "@angular/core";
 
 export class AtribuicaoCaneta {
     id: Number;
-    @Input() modelo: String;
-    @Input() serial: String;
+    @Input() idProfissional: Number;
+    @Input() idCaneta: Number;
+    @Input() periodoInicial: Date;
+    @Input() periodoFinal: Date;
     @Input() situacao: Boolean;
-    @Input() idEstabelecimento : Number = +JSON.parse(localStorage.getItem("est"))[0].id;
 }

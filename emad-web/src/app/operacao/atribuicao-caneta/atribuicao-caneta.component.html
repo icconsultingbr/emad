@@ -20,14 +20,14 @@
     </div>
 </div>
 
-<form [formGroup]="form" (submit)="sendForm($event)">    
+<form [formGroup]="form">    
     <div class="form-group row">
         <label class="col-xl-2 col-form-label text-left">
             Profissional<span class="text-danger font-weight-bold"> *</span>
         </label>
         <div class="col-xl-10">
             <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idProfissional" formControlName="idProfissional" 
-                 (change)="findMedicamentoPorAtendimento()">
+                 (change)="findHistoricoAtribuicoesPorProfissional()">
                 <option [value]="null">Selecione...</option>
                 <option *ngFor="let domain of domains[0]['idProfissional']" value="{{domain.id}}">{{domain.nome}}
                 </option>
@@ -46,7 +46,7 @@
                         <i class="fa fa-calendar-alt"></i>
                     </div>
                 </div>
-                <input type="text" formControlName="dataAtribuicao" [(ngModel)]="object.dataAtribuicao" placeholder="dd/mm/aaaa" bsDatepicker 
+                <input type="text" formControlName="dataAtribuicao" placeholder="dd/mm/aaaa" bsDatepicker 
                     [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control" autocomplete="off"
                     (change)="carregarCanetasDisponiveis()">
             </div>
@@ -55,14 +55,14 @@
             Horário inicial<span class="text-danger font-weight-bold"> *</span>
         </div>
         <div class="col-xl-2">
-            <input type="text" class="form-control has-error" [(ngModel)]="object.horarioInicial" formControlName="horarioInicial"  mask="99:99" placeholder="99:99"
+            <input type="text" class="form-control has-error" formControlName="horarioInicial"  mask="99:99" placeholder="99:99"
             (change)="carregarCanetasDisponiveis()"/>
         </div>
         <div class="col-xl-2">
             Horário final<span class="text-danger font-weight-bold"> *</span>
         </div>
         <div class="col-xl-2">
-            <input type="text" class="form-control has-error" [(ngModel)]="object.horarioFinal" formControlName="horarioFinal" mask="99:99" placeholder="99:99"
+            <input type="text" class="form-control has-error" formControlName="horarioFinal" mask="99:99" placeholder="99:99"
             (change)="carregarCanetasDisponiveis()" />
         </div>
 
@@ -85,7 +85,7 @@
     
     <div class="form-group text-right"  *ngIf="object.idProfissional>0">
 
-        <button class="btn btn-primary " type="button" (click)="back()">
+        <button class="btn btn-primary " type="button" (click)="saveAtribuicao()">
           <i class="fa fa-save"></i> Atribuir
         </button>
     
@@ -108,28 +108,30 @@
                 <table class="table table-striped">
                   <thead>
                     <tr>
+                      <th>Id</th>
                       <th>Caneta</th>                      
-                      <th>Data de atribuição</th>
-                      <th>Horário inicial</th>
-                      <th>Horário final</th>                      
+                      <th>Período inicial</th>
+                      <th>Período final</th>
+                      <th>Situação</th>
                       <th></th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr class="text-left">
-                      <td colspan="99" class="text-secondary"  *ngIf="!allItemsMedicamento.length">
+                      <td colspan="99" class="text-secondary"  *ngIf="!historicoAtribuicoes.length">
                         <i>Não há resultados...</i>
                       </td>
                     </tr>
                   </tbody>
-                  <tbody *ngIf="allItemsMedicamento.length">
-                      <tr class="text-left" *ngFor="let item of allItemsMedicamento">
-                        <td class="text-secondary">{{item.idMedicamento}}</td>
-                        <td class="text-secondary">{{item.uso}}</td>
-                        <td class="text-secondary">{{item.tipoVia}}</td>
-                        <td class="text-secondary">{{item.quantidade}}</td>
+                  <tbody *ngIf="historicoAtribuicoes.length">
+                      <tr class="text-left" *ngFor="let item of historicoAtribuicoes">
+                        <td class="text-secondary">{{item.id}}</td>
+                        <td class="text-secondary">{{item.nome}}</td>
+                        <td class="text-secondary">{{item.periodoInicial}}</td>
+                        <td class="text-secondary">{{item.periodoFinal}}</td>
+                        <td class="text-secondary">{{item.situacao}}</td>
                         <td class="text-secondary text-right">
-                          <a   class="btn btn-link" [routerLink]="" (click)="removeMedicamento(item)">
+                          <a   class="btn btn-link" [routerLink]="" (click)="removeAtribuicao(item)">
                             <i class="fa fa-trash-alt"></i> Remover
                           </a>
                         </td>

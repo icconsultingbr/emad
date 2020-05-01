@@ -71,8 +71,8 @@ export class LoginComponent implements OnInit {
           if(localStorage.getItem('est')){
             localStorage.removeItem('est');
           }
-          //window.location.href = "/";
-          window.location.href = "/emad/";
+          window.location.href = "/";
+          //window.location.href = "/emad/";
         }
       }, error => {
 

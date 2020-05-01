@@ -1,6 +1,6 @@
 function AtribuicaoCanetaDAO(connection) {
     this._connection = connection;
-    this._table = "tb_caneta";
+    this._table = "tb_atribuicao_caneta";
 }
 
 AtribuicaoCanetaDAO.prototype.salva = function(obj, callback) {
@@ -12,54 +12,45 @@ AtribuicaoCanetaDAO.prototype.atualiza = function(obj, id, callback) {
 }
 
 AtribuicaoCanetaDAO.prototype.lista = function(addFilter, callback) {
-    
-    let where = "";
-
-    if (addFilter.idEstabelecimento) {
-        where+=" AND c.idEstabelecimento  = "+addFilter.idEstabelecimento;
-    }
-
     this._connection.query(`SELECT 
-    c.id,
-    c.modelo,
-    c.serialNumber, 
-    c.situacao,
-    c.idEstabelecimento,    
-    c.dataCriacao,    
-    e.nomeFantasia
-    FROM ${this._table} c     
-    INNER JOIN tb_estabelecimento e ON(c.idEstabelecimento = e.id) 
-    WHERE 1=1 ${where}`,callback);    
+    profissional_caneta.id,
+    concat(c.serialNumber,' (',m.nome,')') AS nome,
+    DATE_FORMAT(profissional_caneta.periodoInicial, '%d/%m/%Y %H:%i') as periodoInicial,
+    DATE_FORMAT(profissional_caneta.periodoFinal, '%d/%m/%Y %H:%i') as periodoFinal,
+    CASE  
+        WHEN profissional_caneta.situacao = 0  THEN 'Inativo'  
+        WHEN profissional_caneta.situacao =  1 THEN 'Ativo'  
+        END as situacao
+    FROM ${this._table} profissional_caneta       
+    INNER JOIN tb_caneta c on profissional_caneta.idCaneta = c.id     
+    INNER JOIN tb_modelo_caneta m ON(c.idModeloCaneta = m.id)
+    WHERE profissional_caneta.situacao = 1 
+    ORDER BY profissional_caneta.periodoFinal DESC`,callback);    
 }
 
 AtribuicaoCanetaDAO.prototype.buscaPorId = function (id, callback) {
     this._connection.query(`SELECT * FROM ${this._table} WHERE id = ?`,id,callback);
 }
 
-AtribuicaoCanetaDAO.prototype.buscaPorEstabelecimento = function (idEstabelecimento,  callback) {
-    this._connection.query(`SELECT 
-    c.id,
-    c.modelo,
-    c.serialNumber, 
-    c.situacao,
-    c.idEstabelecimento,    
-    c.dataCriacao,    
-    e.nomeFantasia  
-    FROM ${this._table} c    
-    INNER JOIN tb_estabelecimento e ON(c.idEstabelecimento = e.id)  
-    WHERE c.idEstabelecimento = ${idEstabelecimento} AND c.situacao = 1`,callback);
-}
-
-AtribuicaoCanetaDAO.prototype.buscaDominio = function (callback) {
-    this._connection.query(`SELECT id, nome FROM ${this._table}`, callback);
-}
-
 AtribuicaoCanetaDAO.prototype.deletaPorId = function (id,callback) {
     this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
 }
 
-AtribuicaoCanetaDAO.prototype.dominio = function(callback) {
-    this._connection.query("select id, serialNumber as nome FROM "+this._table+" WHERE situacao = 1 ORDER BY serialNumber ASC",callback);
+AtribuicaoCanetaDAO.prototype.buscaPorProfissionalId = function (idProfissional,callback) {
+    this._connection.query(`SELECT 
+    profissional_caneta.id,
+    concat(c.serialNumber,' (',m.nome,')') AS nome,
+    DATE_FORMAT(profissional_caneta.periodoInicial, '%d/%m/%Y %H:%i') as periodoInicial,
+    DATE_FORMAT(profissional_caneta.periodoFinal, '%d/%m/%Y %H:%i') as periodoFinal,
+    CASE  
+        WHEN profissional_caneta.situacao = 0  THEN 'Inativo'  
+        WHEN profissional_caneta.situacao =  1 THEN 'Ativo'  
+        END as situacao
+    FROM ${this._table} profissional_caneta       
+    INNER JOIN tb_caneta c on profissional_caneta.idCaneta = c.id     
+    INNER JOIN tb_modelo_caneta m ON(c.idModeloCaneta = m.id)
+    WHERE profissional_caneta.situacao = 1 AND profissional_caneta.idProfissional = ${idProfissional}
+    ORDER BY profissional_caneta.periodoFinal DESC`,callback);
 }
 
 module.exports = function(){
