@@ -43,7 +43,7 @@ CanetaDAO.prototype.listaPorEstabelecimentoDisponivel = function (idEstabelecime
     this._connection.query(`SELECT 
     c.id,
     CASE 
-        WHEN profissional_caneta.idProfissional is not null  THEN concat(serialNumber,' (',m.nome,') - Vinculada ao profissional: ', profissional.nome)  
+        WHEN profissional_caneta.idProfissional is not null  THEN concat(serialNumber,' (',m.nome,') - Vinculada ao profissional: ', profissional.nome, ' (', DATE_FORMAT(profissional_caneta.periodoInicial, '%d/%m/%Y %H:%i'), ' - ', DATE_FORMAT(profissional_caneta.periodoFinal, '%d/%m/%Y %H:%i'),')')  
         ELSE concat(serialNumber,' (',m.nome,')') 
     END AS nome,
     CASE 
@@ -53,9 +53,14 @@ CanetaDAO.prototype.listaPorEstabelecimentoDisponivel = function (idEstabelecime
     FROM ${this._table} c    
     INNER JOIN tb_estabelecimento e ON(c.idEstabelecimento = e.id) 
     INNER JOIN tb_modelo_caneta m ON(c.idModeloCaneta = m.id) 
-    LEFT JOIN tb_profissional_caneta profissional_caneta on profissional_caneta.idCaneta = c.id 
-    AND profissional_caneta.periodoInicial  >='${periodoinicial} ' 
-    AND profissional_caneta.periodoFinal  <='${periodofinal} '
+    LEFT JOIN tb_atribuicao_caneta profissional_caneta on profissional_caneta.idCaneta = c.id 
+    AND     
+    ('${periodoinicial}'  BETWEEN  profissional_caneta.periodoInicial AND profissional_caneta.periodoFinal  ||
+     '${periodofinal}'    BETWEEN profissional_caneta.periodoInicial AND profissional_caneta.periodoFinal   ||
+     profissional_caneta.periodoInicial BETWEEN '${periodoinicial}' and '${periodofinal}'             ||
+     profissional_caneta.periodoFinal BETWEEN '${periodoinicial}' and '${periodofinal}'
+     )
+     AND profissional_caneta.situacao = 1
     LEFT JOIN tb_profissional profissional on profissional.id = profissional_caneta.idProfissional
     WHERE c.idEstabelecimento = ${idEstabelecimento} AND c.situacao = 1`,callback);
 }

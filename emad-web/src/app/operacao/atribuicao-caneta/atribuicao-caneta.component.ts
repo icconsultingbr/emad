@@ -1,287 +1,49 @@
-import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
-import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.service';
 import { AtribuicaoCanetaService } from './atribuicao-caneta.service';
-import { Paciente } from '../../_core/_models/Paciente';
-import { PagerService } from '../../_core/_services';
-import { Util } from '../../_core/_util/Util';
-import { Router } from '@angular/router';
-import { AgendaProfissional } from '../../_core/_models/AgendaProfissional';
-import { environment } from "../../../environments/environment";
-import { AtendimentoService } from '../atendimento/atendimento.service';
+import { AtribuicaoCaneta } from '../../_core/_models/AtribuicaoCaneta';
 
 @Component({
   selector: 'app-atribuicao-caneta',
   templateUrl: './atribuicao-caneta.component.html',
   styleUrls: ['./atribuicao-caneta.component.css'],
-  providers: [AtribuicaoCanetaService, AtendimentoService]
+  providers: [AtribuicaoCanetaService]
 })
 export class AtribuicaoCanetaComponent implements OnInit {
 
-  //MESSAGES
-  loading: Boolean = false;
-  message: String = "";
-  errors: any[] = [];
-  modalRef: NgbModalRef = null;
-  modalRemoveRef: NgbModalRef = null;
-  form: FormGroup;
-  method: String = "agenda";
-
-  //PAGINATION
-  allItems: any[];
-  pager: any = {};
-  pagedItems: any[];
-  pageLimit: number = 10;
-  fields: any[] = [];
-  agendas: any[] = [];
-
-  domingo: any = {};
-  segunda: any = {};
-  terca: any = {};
-  quarta: any = {};
-  quinta: any = {};
-  sexta: any = {};
-  sabado: any = {};
-
-  allItemsMedicamento: any[] = [];
-
-  @ViewChild('contentScheduler') contentScheduler: ElementRef;
-  selectedSchedule : any = null;
-  @Input() readonly : Boolean = false;
-
-
-  //MODELS (OBJECTS)
-  object: AgendaProfissional = new AgendaProfissional();
-  paciente: Paciente = new Paciente();
-
-  pacienteSelecionado: any = null;
+  method: String = "atribuicao-caneta";
   domains: any[] = [];
+  fields = [];
+  fieldsSearch = [];
+  object: AtribuicaoCaneta = new AtribuicaoCaneta();
 
   constructor(
-    private pagerService: PagerService,
-    private fb: FormBuilder,
-    private service: AtribuicaoCanetaService,
-    private serviceAtendimento: AtendimentoService,
-    private modalService: NgbModal,
-    private router: Router) {
+    public nav: AppNavbarService,
+    private service: AtribuicaoCanetaService) {
 
     for (let field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }
+      if (field.filter) {
+        this.fieldsSearch.push(field);
+      }
     }
+    this.loadDomains();
   }
 
   ngOnInit() {
-    this.loadDomains();
-    this.loadSchedule(null);
-    this.buscaProfissionais();   
-    this.createGroup();
-  }
-
-  open(content: any) {
-
-
-    this.clear();
-    this.pacienteSelecionado = null;
-
-    /*this.object.idPaciente = null;
-    this.object.pacienteNome = null;*/
-    this.allItems = [];
-
-    this.modalRef = this.modalService.open(content, {
-      backdrop: 'static',
-      keyboard: false,
-      centered: true,
-      size: "lg"
-    });
-  }
-
-  openSchedule(content: any, id : Number = null) {
-
-    if(Util.isEmpty(id)){
-      this.object.dom = false;
-      this.object.seg = false;
-      this.object.ter = false;
-      this.object.qua = false;
-      this.object.qui = false;
-      this.object.sex = false;
-      this.object.sab = false;
-      this.object.id = null;
-      this.object.dataVigencia = null;
-      this.object.idTipoAgenda = null;
-      this.object.dataInicio = null;
-      this.object.horaInicio = null;
-      this.object.horaFim = null;
-      this.object.observacoes = null;
-    }
-
-
-
-    this.modalRef = this.modalService.open(content, {
-      backdrop: 'static',
-      keyboard: false,
-      centered: true,
-      size: "lg"
-    });
-  }
-
-  openRemoveSchedule(content: any) {
-    this.modalRemoveRef = this.modalService.open(content, {
-      backdrop: 'static',
-      keyboard: false,
-      centered: true,
-      size: "sm"
-    });
-  }
-
-  close() {
-    this.modalRef.close();
-  }
-
-  removeCancel() {
-    this.modalRemoveRef.close();
-  }
-
-
-  toggleProfissional() {
-    if (this.object.idEquipe != null && this.object.idEquipe != undefined) {
-      return false;
-    }
-    return true;
-  }
-
-  buscaPaciente() {
-    this.loading = true;
-    let params = "";
-    if (!Util.isEmpty(this.paciente)) {
-      if (Object.keys(this.paciente).length) {
-        for (let key of Object.keys(this.paciente)) {
-          if (!Util.isEmpty(this.paciente[key])) {
-            params += key + "=" + this.paciente[key] + "&";
-          }
-        }
-
-        if (params != "") {
-          params = "?" + params;
-        }
-      }
-    }
-
-    this.service.list('paciente' + params).subscribe(result => {
-
-      this.allItems = result;
-      this.setPage(1);
-      this.loading = false;
-
-    }, erro => {
-      this.loading = false;
-      this.errors = Util.customHTTPResponse(erro);
-    });
-  }
-
-  setPage(page: number) {
-    this.pager = this.pagerService.getPager(this.allItems.length, page, this.pageLimit);
-    this.pagedItems = this.allItems.slice(this.pager.startIndex, this.pager.endIndex + 1);
-  }
-
-  loadQuantityPerPage(event) {
-    let id = parseInt(event.target.value);
-    this.pageLimit = id;
-    this.setPage(1);
-  }
-
-  clear() {
-    
-    this.allItems = [];
-    this.allItemsMedicamento = [];
-    this.object.idProfissional = 0;
-  }
-
-  findMedicamentoPorAtendimento() {
-    this.message = "";
-    this.errors = [];
-    this.loading = true;
-    this.serviceAtendimento.findMedicamentoByAtendimento(105).subscribe(result => {
-      this.allItemsMedicamento = result;
-      this.loading = false;
-    }, error => {
-      this.loading = false;
-      this.errors = Util.customHTTPResponse(error);
-    });
-  }
-
-  removeMedicamento(item) {
-    this.serviceAtendimento.removeMedicamento(item.id).subscribe(result => {
-      this.message = "Medicamento removido com sucesso!"
-      this.modalRef.close();
-      this.loading = false;
-      this.findMedicamentoPorAtendimento();
-    });
-  }
-
-  togglePaciente() {
-    return Util.isEmpty(this.paciente.cartaoSus) && Util.isEmpty(this.paciente.nome);
-  }
-
-  selecionaPaciente(item) {
-    this.pacienteSelecionado = item;
-  }
-
-  confirmaPaciente() {
-    this.object.equipe = null;
-    this.object.idEquipe = null;
-    this.object.idProfissional = null;
-    this.object.idPaciente = this.pacienteSelecionado.id;
-    this.object.pacienteNome = this.pacienteSelecionado.nome;
-    this.modalRef.close();
-    this.consultaAgenda();
-  }
-
-  buscaEquipe() {
-
-    if (!Util.isEmpty(this.object.equipe)) {
-      this.loading = true;
-      this.service.list('equipe/equipe/' + this.object.equipe+"/"+this.object.idEstabelecimento).subscribe(result => {
-        this.domains[0].idEquipe = result;
-        this.loading = false;
-        this.consultaAgenda();
-      }, error => {
-        this.loading = false;
-        this.errors = Util.customHTTPResponse(error);
-      });
-    }
+    this.nav.show();
   }
 
   loadDomains() {
-    this.domains.push({
-      equipe: [
-        { id: "EMAD", nome: "EMAD" },
-        { id: "EMAP", nome: "EMAP" }
-      ],
-      idEquipe: [],
-      idCaneta: []
-    });  
-  }
-
-  createGroup() {
-    this.form = this.fb.group({
-      id: [''],
-      idPaciente: [Validators.required],
-      pacienteNome: [Validators.required],
-      dataAtribuicao: ['', ''],
-      horarioInicial: ['', ''],
-      horarioFinal: ['', ''],
-      idEquipe: ['', ''],
-      idCaneta: ['', ''],
-      equipe: ['', ''],
-      idProfissional: ['', ''],
-      historiaProgressa: ['', ''],
-      exameFisico: ['', ''],
-      observacoesGerais: ['', ''],
-      situacao: [Validators.required],
-      idEstabelecimento: [Validators.required],
-      tipoFicha: [Validators.required],
+    this.service.listDomains('profissional').subscribe(profissionais => {
+      this.service.listDomains('caneta').subscribe(canetas => {
+        this.domains.push({
+          idProfissional: profissionais,
+          idCaneta: canetas
+        })
+      });
     });
   }
 
