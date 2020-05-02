@@ -38,9 +38,9 @@ export class EscalaProfissionalService extends GenericsService{
       validator: ['', ''],
     },
     {
-      field: "idProfissional",
+      field: "idMesEscala",
       type: "select",
-      label: "Profissional",
+      label: "Mês de escal",
       grid: false,
       form: true,
       required: false,
@@ -91,29 +91,42 @@ export class EscalaProfissionalService extends GenericsService{
     }
     ];
 
-      findHistoricoAtribuicaoByProfissional(id: any, dateInicial: string, horaInicial: string, dateFinal: string, horaFinal: string): Observable<any> {
-        return this.http.get(this.url + "atribuicao-caneta/profissional/" + id 
-        + '/' +  dateInicial  
-        + '/' + horaInicial 
-        + '/' + dateFinal 
-        + '/' + horaFinal, { headers: this.headers }).map(res => res.json());
+    carregaAusenciaPorProfissional(id: any): Observable<any> {
+        return this.http.get(this.url + "ausencia-profissional/profissional/" + id, { headers: this.headers }).map(res => res.json());
     }
 
-    saveAtribuicao(obj: any) {
+    salvaAusencia(obj: any) {
       if (obj.id) {
           return this.http
-              .put(this.url + 'atribuicao-caneta', JSON.stringify(obj), { headers: this.headers })
+              .put(this.url + 'ausencia-profissional', JSON.stringify(obj), { headers: this.headers })
               .map((res) => res.json());
       }
       else {
           return this.http
-              .post(this.url + 'atribuicao-caneta', JSON.stringify(obj), { headers: this.headers })
+              .post(this.url + 'ausencia-profissional', JSON.stringify(obj), { headers: this.headers })
               .map((res) => res.json());
       }
-  }
+    }
 
-  removeAtribuicao(params: any) {
-    return this.http.delete(this.url + 'atribuicao-caneta/' + params, { headers: this.headers }).map(res => res.json());
-}
+    removeAusencia(params: any) {
+      return this.http.delete(this.url + 'ausencia-profissional/' + params, { headers: this.headers }).map(res => res.json());
+    }
+
+    carregaEscalaProfissionalAnoMes(id: any, anoMes: string): Observable<any> {
+      return this.http.get(this.url + 'escala-profissional' + "/profissional/" + id + "/anomes/" + anoMes, { headers: this.headers }).map(res => res.json());
+    }
+
+    salvaEscalaProfissional(obj: any) {
+      if (obj.id) {
+          return this.http
+              .put(this.url + 'escala-profissional', JSON.stringify(obj), { headers: this.headers })
+              .map((res) => res.json());
+      }
+      else {
+          return this.http
+              .post(this.url + 'escala-profissional', JSON.stringify(obj), { headers: this.headers })
+              .map((res) => res.json());
+      }
+    }
 
 }

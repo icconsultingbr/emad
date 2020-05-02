@@ -1,25 +1,8 @@
 module.exports = function (app) {
 
-    const _table = "tb_escala_profissional";
+    const _table = "tb_ausencia_profissional";
 
-    app.get('/escala-profissional', function (req, res) {
-        let usuario = req.usuario;
-        let util = new app.util.Util();
-        let errors = [];
-        let addFilter = req.query;
-
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
-            lista(addFilter, res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
-    });
-
-    app.get('/escala-profissional/:id', function (req, res) {
+    app.get('/ausencia-profissional/:id', function (req, res) {
         let usuario = req.usuario;
         let id = req.params.id;
         let util = new app.util.Util();
@@ -36,7 +19,7 @@ module.exports = function (app) {
         }
     });
 
-    app.post('/escala-profissional', function (req, res) {
+    app.post('/ausencia-profissional', function (req, res) {
         var obj = req.body;
         var usuario = req.usuario;
         var util = new app.util.Util();
@@ -45,7 +28,9 @@ module.exports = function (app) {
 
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {            
             req.assert("idProfissional").notEmpty().withMessage("Profissional é um campo obrigatório");
-            req.assert("anoMes").notEmpty().withMessage("Ano/Mês é um campo obrigatório");
+            req.assert("idTipoAusencia").notEmpty().withMessage("Tipo da ausência é um campo obrigatório");            
+            req.assert("periodoInicial").notEmpty().withMessage("Período inicial é um campo obrigatório");
+            req.assert("periodoFinal").notEmpty().withMessage("Período final é um campo obrigatório");
             
             var errors = req.validationErrors();
 
@@ -67,7 +52,7 @@ module.exports = function (app) {
         }
     });
 
-    app.put('/escala-profissional', function (req, res) {
+    app.put('/ausencia-profissional', function (req, res) {
         let usuario = req.usuario;
         let obj = req.body;
         let util = new app.util.Util();
@@ -77,7 +62,9 @@ module.exports = function (app) {
 
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
             req.assert("idProfissional").notEmpty().withMessage("Profissional é um campo obrigatório");
-            req.assert("anoMes").notEmpty().withMessage("Ano/Mês é um campo obrigatório");
+            req.assert("idTipoAusencia").notEmpty().withMessage("Tipo da ausência é um campo obrigatório");
+            req.assert("periodoInicial").notEmpty().withMessage("Período inicial é um campo obrigatório");
+            req.assert("periodoFinal").notEmpty().withMessage("Período final é um campo obrigatório");
 
             errors = req.validationErrors();
 
@@ -95,7 +82,7 @@ module.exports = function (app) {
         }
     });
 
-    app.delete('/escala-profissional/:id', function (req, res) {
+    app.delete('/ausencia-profissional/:id', function (req, res) {
         var util = new app.util.Util();
         let usuario = req.usuario;
         let errors = [];
@@ -115,18 +102,16 @@ module.exports = function (app) {
         }
     });
 
-    app.get('/escala-profissional/profissional/:idProfissional/anomes/:anomes', function(req,res){        
+    app.get('/ausencia-profissional/profissional/:idProfissional', function(req,res){        
         let usuario = req.usuario;
         let id = req.params.id;
         let idProfissional = req.params.idProfissional;
-        let anomes = req.params.anomes;
-
         let util = new app.util.Util();
         let errors = [];
 
 
         if(usuario.idTipoUsuario == util.SUPER_ADMIN){		
-            buscarEscalaPorProfissionalAnoMes(idProfissional, anomes, res).then(function(response) {
+            buscarAusenciaPorProfissionalId(idProfissional, res).then(function(response) {
                 res.status(200).json(response);
                 return;      
             });
@@ -137,16 +122,16 @@ module.exports = function (app) {
         }
     }); 
 
-    function buscarEscalaPorProfissionalAnoMes(id, anomes, res) {
+    function buscarAusenciaPorProfissionalId(id, res) {
         let q = require('q');
         let d = q.defer();
         let util = new app.util.Util();
        
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.EscalaProfissionalDAO(connection, _table);
+        let objDAO = new app.dao.AusenciaProfissionalDAO(connection, _table);
         let errors =[];
      
-        objDAO.buscaPorProfissionalId(id, anomes,  function(exception, result){
+        objDAO.buscaPorProfissionalId(id, function(exception, result){
             if (exception) {
                 d.reject(exception);
                 console.log(exception);
@@ -161,36 +146,13 @@ module.exports = function (app) {
         return d.promise;  
     }
 
-    function lista(addFilter, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.EscalaProfissionalDAO(connection);
-
-        var errors = [];
-
-        objDAO.lista(addFilter, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "Escala do profissional");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
     function buscarPorId(id, res) {
         var q = require('q');
         var d = q.defer();
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.EscalaProfissionalDAO(connection);
+        var objDAO = new app.dao.AusenciaProfissionalDAO(connection);
         var errors = [];
 
         objDAO.buscaPorId(id, function (exception, result) {
@@ -214,13 +176,13 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.EscalaProfissionalDAO(connection);
+        var objDAO = new app.dao.AusenciaProfissionalDAO(connection);
         var errors = [];
 
         objDAO.deletaPorId(id, function (exception, result) {
             if (exception) {
                 d.reject(exception);
-                errors = util.customError(errors, "data", "Erro ao apagar os dados", "Escala do profissional");
+                errors = util.customError(errors, "data", "Erro ao apagar os dados", "Ausência do profissional");
                 res.status(500).send(errors);
                 return;
             } else {
@@ -239,7 +201,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.EscalaProfissionalDAO(connection);
+        var objDAO = new app.dao.AusenciaProfissionalDAO(connection);
         var errors = [];
 
         objDAO.atualiza(obj, id, function (exception, result) {
@@ -247,7 +209,7 @@ module.exports = function (app) {
             if (exception) {
                 d.reject(exception);
                 console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao editar os dados", "Escala do profissional");
+                errors = util.customError(errors, "data", "Erro ao editar os dados", "Ausência do profissional");
                 res.status(500).send(errors);
                 return;
             } else {
@@ -257,14 +219,14 @@ module.exports = function (app) {
         return d.promise;
     }
 
-    function salva(caneta, res) {
-        delete caneta.id;
+    function salva(ausencia, res) {
+        delete ausencia.id;
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.EscalaProfissionalDAO(connection);
+        var objDAO = new app.dao.AusenciaProfissionalDAO(connection);
         var q = require('q');
         var d = q.defer();
 
-        objDAO.salva(caneta, function (exception, result) {
+        objDAO.salva(ausencia, function (exception, result) {
             if (exception) {
                 console.log('Erro ao inserir os dados', exception);
                 res.status(500).send(exception);

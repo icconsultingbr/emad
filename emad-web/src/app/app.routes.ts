@@ -38,7 +38,6 @@ import { CanetaComponent } from './cadastro/caneta/caneta.component';
 import { CanetaFormComponent } from './cadastro/caneta/caneta-form.component';
 import { AtribuicaoCanetaComponent } from './operacao/atribuicao-caneta/atribuicao-caneta.component';
 import { AtribuicaoCanetaFormComponent } from './operacao/atribuicao-caneta/atribuicao-caneta-form.component';
-import { EscalaProfissionalComponent } from './operacao/escala-profissional/escala-profissional.component';
 import { EscalaProfissionalFormComponent } from './operacao/escala-profissional/escala-profissional-form.component';
 
 const appRoutes : Routes = [
@@ -81,7 +80,6 @@ const appRoutes : Routes = [
     { path : 'atribuicao-caneta', component : AtribuicaoCanetaComponent, canActivate: [AuthGuard]  },
     { path : 'atribuicao-caneta-form', component : AtribuicaoCanetaFormComponent, canActivate: [AuthGuard]  },
 
-    { path : 'escala-profissional', component : EscalaProfissionalComponent, canActivate: [AuthGuard]  },
     { path : 'escala-profissional-form', component : EscalaProfissionalFormComponent, canActivate: [AuthGuard]  },
 
     { path : 'tipo-unidade', component : TipoUnidadeComponent, canActivate: [AuthGuard]  },

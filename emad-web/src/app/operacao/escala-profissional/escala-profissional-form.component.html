@@ -22,127 +22,275 @@
 <form [formGroup]="form">    
     <div class="form-group row">
         <label class="col-xl-2 col-form-label text-left">
-            Profissional<span class="text-danger font-weight-bold"> *</span>
+            Profissional<span class="text-danger font-weight-bold"></span>
         </label>
         <div class="col-xl-10">
-            <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idProfissional" formControlName="idProfissional">
+            <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idProfissional" formControlName="idProfissional"
+            (change)="carregaDadosDoProfissional()">
                 <option [value]="null">Selecione...</option>
                 <option *ngFor="let domain of domains[0]['idProfissional']" value="{{domain.id}}">{{domain.nome}}
                 </option>
             </select>
         </div>
     </div>
-    
-    <div class="form-group row" *ngIf="object.idProfissional>0">
-        <label class="col-xl-2 col-form-label text-left">
-            Data de atribuição<span class="text-danger font-weight-bold"> *</span>
-        </label>
-        <div class="col-xl-2">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <div class="input-group-text btn">
-                        <i class="fa fa-calendar-alt"></i>
+    <div class="card mb-4" *ngIf="object.idProfissional">
+        <div class="card-header text-left">
+            Escala semanal
+        </div>
+        <div class="card-body text-left">    
+            <div class="row">    
+                <div class="col-12 mb-3">
+                    <div class="form-group row" *ngIf="object.idProfissional>0">
+                        <label class="col-xl-2 col-form-label text-left">
+                            Ano da escala<span class="text-danger font-weight-bold"> *</span>
+                        </label>
+                        <div class="col-xl-4">
+                            <input type="text" class="form-control has-error" formControlName="anoEscala"  mask="9999" placeholder="9999" value="2020" (change)="carregaEscalaPorProfissionalAnoMes()"/>
+                        </div>    
+                        <div class="col-xl-2">
+                            Mês da escala<span class="text-danger font-weight-bold"> *</span>
+                        </div>
+                        <div class="col-xl-4">
+                            <select *ngIf="domains" class="custom-select d-block w-100" formControlName="idMesEscala" (change)="carregaEscalaPorProfissionalAnoMes()">
+                                <option [value]="null">Selecione...</option>
+                                <option *ngFor="let domain of domains[0]['idMesEscala']" value="{{domain.id}}">{{domain.nome}}
+                                </option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <input type="text" formControlName="dataAtribuicao" placeholder="dd/mm/aaaa" bsDatepicker 
-                    [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control" autocomplete="off"
-                    (change)="carregarCanetasDisponiveis()">
+                    <div class="form-group row" *ngIf="form.value.anoEscala>0 && form.value.idMesEscala>0">
+                        <label class="col-xl-2 col-form-label text-left">
+                            Dia da semana<span class="text-danger font-weight-bold"></span>
+                        </label>    
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" value="DOMINGO" disabled/>
+                        </div>    
+                        <div class="col-xl-2">
+                            Horário inicial<span class="text-danger font-weight-bold"></span>
+                        </div>
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" [(ngModel)]="object.domingoHorarioInicial" formControlName="domingoHorarioInicial"  mask="99:99"/>
+                        </div>
+                        <div class="col-xl-2">
+                            Horário final<span class="text-danger font-weight-bold"></span>
+                        </div>
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" [(ngModel)]="object.domingoHorarioFinal" formControlName="domingoHorarioFinal"   mask="99:99"/>
+                        </div>
+                    </div>   
+                    <div class="form-group row" *ngIf="form.value.anoEscala>0 && form.value.idMesEscala>0">
+                        <label class="col-xl-2 col-form-label text-left">
+                            Dia da semana<span class="text-danger font-weight-bold"></span>
+                        </label>    
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" value="SEGUNDA-FEIRA" disabled/>
+                        </div>    
+                        <div class="col-xl-2">
+                            Horário inicial<span class="text-danger font-weight-bold"></span>
+                        </div>
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" [(ngModel)]="object.segundaHorarioInicial" formControlName="segundaHorarioInicial"  mask="99:99"/>
+                        </div>
+                        <div class="col-xl-2">
+                            Horário final<span class="text-danger font-weight-bold"></span>
+                        </div>
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" [(ngModel)]="object.segundaHorarioFinal" formControlName="segundaHorarioFinal" mask="99:99" />
+                        </div>
+                    </div>
+                    <div class="form-group row" *ngIf="form.value.anoEscala>0 && form.value.idMesEscala>0">
+                        <label class="col-xl-2 col-form-label text-left">
+                            Dia da semana<span class="text-danger font-weight-bold"></span>
+                        </label>    
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" value="TERÇA-FEIRA" disabled/>
+                        </div>    
+                        <div class="col-xl-2">
+                            Horário inicial<span class="text-danger font-weight-bold"></span>
+                        </div>
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" [(ngModel)]="object.tercaHorarioInicial" formControlName="tercaHorarioInicial"  mask="99:99"/>
+                        </div>
+                        <div class="col-xl-2">
+                            Horário final<span class="text-danger font-weight-bold"></span>
+                        </div>
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" [(ngModel)]="object.tercaHorarioFinal" formControlName="tercaHorarioFinal" mask="99:99" />
+                        </div>
+                    </div>
+                    <div class="form-group row" *ngIf="form.value.anoEscala>0 && form.value.idMesEscala>0">
+                        <label class="col-xl-2 col-form-label text-left">
+                            Dia da semana<span class="text-danger font-weight-bold"></span>
+                        </label>    
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" value="QUARTA-FEIRA" disabled/>
+                        </div>    
+                        <div class="col-xl-2">
+                            Horário inicial<span class="text-danger font-weight-bold"></span>
+                        </div>
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" [(ngModel)]="object.quartaHorarioInicial" formControlName="quartaHorarioInicial"  mask="99:99"/>
+                        </div>
+                        <div class="col-xl-2">
+                            Horário final<span class="text-danger font-weight-bold"></span>
+                        </div>
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" [(ngModel)]="object.quartaHorarioFinal" formControlName="quartaHorarioFinal" mask="99:99" />
+                        </div>
+                    </div>
+                    <div class="form-group row" *ngIf="form.value.anoEscala>0 && form.value.idMesEscala>0">
+                        <label class="col-xl-2 col-form-label text-left">
+                            Dia da semana<span class="text-danger font-weight-bold"></span>
+                        </label>    
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" value="QUINTA-FEIRA" disabled/>
+                        </div>    
+                        <div class="col-xl-2">
+                            Horário inicial<span class="text-danger font-weight-bold"></span>
+                        </div>
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" [(ngModel)]="object.quintaHorarioInicial" formControlName="quintaHorarioInicial"  mask="99:99"/>
+                        </div>
+                        <div class="col-xl-2">
+                            Horário final<span class="text-danger font-weight-bold"></span>
+                        </div>
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" [(ngModel)]="object.quintaHorarioFinal" formControlName="quintaHorarioFinal" mask="99:99" />
+                        </div>
+                    </div>
+                    <div class="form-group row" *ngIf="form.value.anoEscala>0 && form.value.idMesEscala>0">
+                        <label class="col-xl-2 col-form-label text-left">
+                            Dia da semana<span class="text-danger font-weight-bold"></span>
+                        </label>    
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" value="SEXTA-FEIRA" disabled/>
+                        </div>    
+                        <div class="col-xl-2">
+                            Horário inicial<span class="text-danger font-weight-bold"></span>
+                        </div>
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" [(ngModel)]="object.sextaHorarioInicial" formControlName="sextaHorarioInicial"  mask="99:99"/>
+                        </div>
+                        <div class="col-xl-2">
+                            Horário final<span class="text-danger font-weight-bold"></span>
+                        </div>
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" [(ngModel)]="object.sextaHorarioFinal" formControlName="sextaHorarioFinal" mask="99:99" />
+                        </div>
+                    </div>
+                    <div class="form-group row" *ngIf="form.value.anoEscala>0 && form.value.idMesEscala>0">
+                        <label class="col-xl-2 col-form-label text-left">
+                            Dia da semana<span class="text-danger font-weight-bold"></span>
+                        </label>    
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" value="SÁBADO" disabled/>
+                        </div>    
+                        <div class="col-xl-2">
+                            Horário inicial<span class="text-danger font-weight-bold"></span>
+                        </div>
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" [(ngModel)]="object.sabadoHorarioInicial" formControlName="sabadoHorarioInicial"  mask="99:99"/>
+                        </div>
+                        <div class="col-xl-2">
+                            Horário final<span class="text-danger font-weight-bold"></span>
+                        </div>
+                        <div class="col-xl-2">
+                            <input type="text" class="form-control has-error" [(ngModel)]="object.sabadoHorarioFinal" formControlName="sabadoHorarioFinal" mask="99:99" />
+                        </div>
+                    </div>   
+                </div>                
             </div>
-        </div>    
-        <div class="col-xl-2">
-            Horário inicial<span class="text-danger font-weight-bold"> *</span>
-        </div>
-        <div class="col-xl-2">
-            <input type="text" class="form-control has-error" formControlName="horarioInicial"  mask="99:99" placeholder="99:99"/>
-        </div>
-        <div class="col-xl-2">
-            Horário final<span class="text-danger font-weight-bold"> *</span>
-        </div>
-        <div class="col-xl-2">
-            <input type="text" class="form-control has-error" formControlName="horarioFinal" mask="99:99" placeholder="99:99" />
+            <div class="form-group text-right"  *ngIf="form.value.anoEscala>0 && form.value.idMesEscala>0">
+                <button class="btn btn-primary " type="button" (click)="salvaEscalaProfissional()">
+                <i class="fa fa-save"></i> Salvar
+                </button> 
+            </div>
         </div>
     </div>
 
-    <div class="form-group row" *ngIf="object.idProfissional>0">
-        <label class="col-xl-2 col-form-label text-left">
-            Dia da semana<span class="text-danger font-weight-bold"></span>
-        </label>    
-        <div class="col-xl-2">
-            <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idProfissionalNovo" formControlName="idProfissionalNovo">
-                <option [value]="null">Selecione...</option>
-                <option *ngFor="let domain of domains[0]['idProfissional']" value="{{domain.id}}">{{domain.nome}}
-                </option>
-            </select>
-        </div>    
-        <div class="col-xl-2">
-            Horário inicial<span class="text-danger font-weight-bold"> *</span>
+    <div class="card mb-4" *ngIf="object.idProfissional">
+        <div class="card-header text-left">
+          Férias e Ausências
         </div>
-        <div class="col-xl-2">
-            <input type="text" class="form-control has-error" formControlName="horarioInicialSegundaFeira"  mask="99:99" placeholder="99:99"/>
-        </div>
-        <div class="col-xl-2">
-            Horário final<span class="text-danger font-weight-bold"> *</span>
-        </div>
-        <div class="col-xl-2">
-            <input type="text" class="form-control has-error" formControlName="horarioFinalSegundaFeira" mask="99:99" placeholder="99:99" />
-        </div>
-    </div>   
-    
-    <div class="form-group text-right"  *ngIf="object.idProfissional>0">
-        <button class="btn btn-primary " type="button" (click)="saveAtribuicao()">
-          <i class="fa fa-save"></i> Atribuir
-        </button>    
-        <button (click)="back()" class="btn btn-default" type="button">
-            <i class="fa fa-arrow-left"></i> Retornar
-        </button>
-      </div>
-</form>
-
-
-
-<div class="card mb-4"  *ngIf="object.idProfissional>0">
-    <div class="card-header text-left">
-        Atribuições do profissional no período
-    </div>
-    <div class="card-body text-left">
-        <div class="row">
-            <div class="col-12 table-responsive">
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>Id</th>
-                      <th>Caneta</th>                      
-                      <th>Período inicial</th>
-                      <th>Período final</th>
-                      <th>Situação</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="text-left">
-                      <td colspan="99" class="text-secondary"  *ngIf="!historicoAtribuicoes.length">
-                        <i>Não há resultados...</i>
-                      </td>
-                    </tr>
-                  </tbody>
-                  <tbody *ngIf="historicoAtribuicoes.length">
-                      <tr class="text-left" *ngFor="let item of historicoAtribuicoes">
-                        <td class="text-secondary">{{item.id}}</td>
-                        <td class="text-secondary">{{item.nome}}</td>
-                        <td class="text-secondary">{{item.periodoInicial}}</td>
-                        <td class="text-secondary">{{item.periodoFinal}}</td>
-                        <td class="text-secondary">{{item.situacao}}</td>
-                        <td class="text-secondary text-right">
-                          <a   class="btn btn-link" [routerLink]="" (click)="removeAtribuicao(item)">
-                            <i class="fa fa-trash-alt"></i> Remover
-                          </a>
-                        </td>
-                      </tr>
-                    </tbody>
-                </table>
+        <div class="card-body text-left">    
+          <div class="row">    
+            <div class="col-12 mb-3">              
+                <div class="form-group row">
+                    <label class="col-xl-2 col-form-label text-left">
+                        Tipo da ausência<span class="text-danger font-weight-bold"></span>
+                    </label>    
+                    <div class="col-xl-2">
+                        <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="ausenciaProfissional.idTipoAusencia" formControlName="idTipoAusencia">
+                            <option [value]="null">Selecione...</option>
+                            <option *ngFor="let domain of domains[0]['idTipoAusencia']" value="{{domain.id}}">{{domain.nome}}
+                            </option>
+                        </select>
+                    </div>    
+                    <div class="col-xl-2">
+                        Período inicial<span class="text-danger font-weight-bold"></span>
+                    </div>
+                    <div class="col-xl-2">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text btn">
+                                    <i class="fa fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                            <input type="text" [(ngModel)]="ausenciaProfissional.periodoInicial" formControlName="periodoInicial" placeholder="dd/mm/aaaa" bsDatepicker 
+                                [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="col-xl-2">
+                        Período final<span class="text-danger font-weight-bold"></span>
+                    </div>
+                    <div class="col-xl-2">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text btn">
+                                    <i class="fa fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                            <input type="text" [(ngModel)]="ausenciaProfissional.periodoFinal" formControlName="periodoFinal" placeholder="dd/mm/aaaa" bsDatepicker 
+                                [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control" autocomplete="off">
+                        </div>
+                    </div>
+                </div>  
+              <div class="form-group row text-right">
+                <div class="col-12">
+                  <button class="btn btn-primary  mr-2" type="button" (click)="salvaAusencia()">
+                    <i class="fa fa-plus-circle"></i> Adicionar
+                  </button>
+                </div>
               </div>
+            </div>
+            <div class="col-12 table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Tipo de ausência</th>
+                    <th>Período inicial</th>
+                    <th>Período final</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="allItemsAusencia.length">
+                  <tr class="text-left" *ngFor="let item of allItemsAusencia">
+                    <td class="text-secondary">{{item.nomeTipoAusencia}}</td>
+                    <td class="text-secondary">{{item.periodoInicial}}</td>
+                    <td class="text-secondary">{{item.periodoFinal}}</td>
+                    <td class="text-secondary text-right">
+                      <a class="btn btn-link" [routerLink]="" (click)="removeAusencia(item)">
+                        <i class="fa fa-trash-alt"></i> Remover
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-    </div>
-</div>
+      </div>
+
+</form>
 
 
