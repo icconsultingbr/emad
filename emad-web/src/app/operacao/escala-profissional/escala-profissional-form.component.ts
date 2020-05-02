@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
-import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModalRef, NgbModal, NgbCalendarIslamicUmalqura } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Util } from '../../_core/_util/Util';
 import { Router } from '@angular/router';
 import { EscalaProfissionalService } from './escala-profissional.service';
 import { EscalaProfissional } from '../../_core/_models/EscalaProfissional';
+import { AusenciaProfissional } from '../../_core/_models/AusenciaProfissional';
 
 @Component({
   selector: 'app-escala-profissional-form',
@@ -22,14 +23,16 @@ export class EscalaProfissionalFormComponent implements OnInit {
   modalRemoveRef: NgbModalRef = null;
   form: FormGroup;
   method: String = "escala-profissional";
+  ausenciaProfissional: AusenciaProfissional = new AusenciaProfissional();
   fields: any[] = [];
-  historicoAtribuicoes: any[] = [];
   object: EscalaProfissional = new EscalaProfissional();
   domains: any[] = [];
+  allItemsAusencia: any[] = [];
 
   constructor(
     private fb: FormBuilder,
     private service: EscalaProfissionalService,
+    private modalService: NgbModal,
     private router: Router) {
 
     for (let field of this.service.fields) {
@@ -46,56 +49,39 @@ export class EscalaProfissionalFormComponent implements OnInit {
   }
 
   clear() {
-    this.historicoAtribuicoes = [];
-    this.object.idProfissional = 0;
+    this.clearEscala();
+    this.clearAusencia();
   }
 
-  clearAtribuicao() {    
-    this.object.idCaneta = 0;    
-    this.carregarCanetasDisponiveis();
+  clearEscala() {         
+    //this.object.anoEscala = "2020";
+    //this.object.idMesEscala = "";
   }
 
-  findHistoricoAtribuicoesPorProfissional(dateInicial, horaInicial, dateFinal, horaFinal) {
-    this.message = "";
-    this.errors = [];
-    this.loading = true;
-    this.service.findHistoricoAtribuicaoByProfissional(this.object.idProfissional, dateInicial, horaInicial, dateFinal, horaFinal).subscribe(result => {
-      this.historicoAtribuicoes = result;
-      this.loading = false;
-    }, error => {
-      this.loading = false;
-      this.errors = Util.customHTTPResponse(error);
-    });
-  }
-
-  removeAtribuicao(item) {
-    this.service.removeAtribuicao(item.id).subscribe(result => {
-      this.message = "Atribuição removida com sucesso!"
-      this.loading = false;
-      this.clearAtribuicao();
-    });
-  }
-
-  saveAtribuicao() {
-    this.message = "";
-    this.errors = [];
-    this.loading = true;
-
-    this.service.saveAtribuicao(this.object).subscribe(result => {
-      this.message = "Atribuição inserida com sucesso!"
-      this.loading = false;
-      this.clearAtribuicao();           
-    }, error => {
-      this.loading = false;
-      this.errors = Util.customHTTPResponse(error);
-    });
-  }
+  clearAusencia() {    
+     this.ausenciaProfissional = new AusenciaProfissional();        
+     this.allItemsAusencia = [];
+   }
 
   loadDomains() {
     this.domains.push({
-      equipe: [
-        { id: "EMAD", nome: "EMAD" },
-        { id: "EMAP", nome: "EMAP" }
+      idMesEscala: [
+        { id: 1, nome: "JANEIRO" },
+        { id: 2, nome: "FEVEREIRO" },
+        { id: 3, nome: "MARÇO" },
+        { id: 4, nome: "ABRIL" },
+        { id: 5, nome: "MAIO" },
+        { id: 6, nome: "JUNHO" },
+        { id: 7, nome: "JULHO" },
+        { id: 8, nome: "AGOSTO" },
+        { id: 9, nome: "SETEMBRO" },
+        { id: 10, nome: "NOVEMBRO" },
+        { id: 11, nome: "NOVEMBRO" },
+        { id: 12, nome: "DEZEMBRO" },
+      ],  
+      idTipoAusencia: [
+        { id: 1, nome: "Férias" },
+        { id: 2, nome: "Falta" }
       ],
       idEquipe: [],
       idCaneta: []
@@ -105,18 +91,26 @@ export class EscalaProfissionalFormComponent implements OnInit {
   createGroup() {
     this.form = this.fb.group({
       id: [''],
-      idPaciente: [Validators.required],
-      pacienteNome: [Validators.required],
-      dataAtribuicao: ['', ''],
-      horarioInicial: ['', ''],
-      horarioFinal: ['', ''],
-      idEquipe: ['', ''],
-      idCaneta: ['', ''],
-      equipe: ['', ''],
+      periodoInicial: ['', ''],
+      periodoFinal: ['', ''],
+      domingoHorarioInicial: ['', ''],
+      domingoHorarioFinal: ['', ''],
+      segundaHorarioInicial: ['', ''],
+      segundaHorarioFinal: ['', ''],
+      tercaHorarioInicial: ['', ''],
+      tercaHorarioFinal: ['', ''],
+      quartaHorarioInicial: ['', ''],
+      quartaHorarioFinal: ['', ''],
+      quintaHorarioInicial: ['', ''],
+      quintaHorarioFinal: ['', ''],
+      sextaHorarioInicial: ['', ''],
+      sextaHorarioFinal: ['', ''],
+      sabadoHorarioInicial: ['', ''],
+      sabadoHorarioFinal: ['', ''],
       idProfissional: ['', ''],
-      historiaProgressa: ['', ''],
-      exameFisico: ['', ''],
-      observacoesGerais: ['', ''],
+      idMesEscala: ['', ''],
+      anoEscala: ['2020', ''],      
+      idTipoAusencia: ['', ''],
       situacao: [Validators.required],
       idEstabelecimento: [Validators.required],
       tipoFicha: [Validators.required],
@@ -134,55 +128,6 @@ export class EscalaProfissionalFormComponent implements OnInit {
       });
   }
 
-  carregarCanetasDisponiveis() {
-    if (!Util.isEmpty(this.form.value.horarioInicial) && !Util.isEmpty(this.form.value.horarioFinal) && !Util.isEmpty(this.form.value.dataAtribuicao))
-    {     
-        var periodoinicial = new Date(this.form.value.dataAtribuicao.getFullYear(),
-                               this.form.value.dataAtribuicao.getMonth(),                                
-                               this.form.value.dataAtribuicao.getDate(),                               
-                               this.form.value.horarioInicial.substring(2,0),
-                               this.form.value.horarioInicial.substring(3),
-                               0);
-
-        var periodofinal = new Date(this.form.value.dataAtribuicao.getFullYear(),
-                               this.form.value.dataAtribuicao.getMonth(),                                
-                               this.form.value.dataAtribuicao.getDate(),                               
-                               this.form.value.horarioFinal.substring(2,0),
-                               this.form.value.horarioFinal.substring(3),
-                               0);
-
-        var dateInicialFormatada;
-        var dateFinalFormatada;
-
-        dateInicialFormatada = periodoinicial.getFullYear() + "-" + this.twoDigits(1 + periodoinicial.getMonth()) + "-" + 
-        this.twoDigits(periodoinicial.getDate()) + " " + 
-        this.twoDigits(periodoinicial.getHours()) + ":" + 
-        this.twoDigits(periodoinicial.getMinutes()) + ":" + 
-        this.twoDigits(periodoinicial.getSeconds());
-    
-          dateFinalFormatada = periodofinal.getFullYear() + "-" + this.twoDigits(1 + periodofinal.getMonth()) + "-" + 
-                                                         this.twoDigits(periodofinal.getDate()) + " " + 
-                                                         this.twoDigits(periodofinal.getHours()) + ":" + 
-                                                         this.twoDigits(periodofinal.getMinutes()) + ":" + 
-                                                         this.twoDigits(periodofinal.getSeconds());
-
-        this.object.periodoInicial = dateInicialFormatada;
-        this.object.periodoFinal = dateFinalFormatada;
-
-        this.loading = true;
-        this.service.list('caneta/estabelecimento/' + JSON.parse(localStorage.getItem("est"))[0].id + '/' +  this.form.value.dataAtribuicao  + '/' + this.form.value.horarioInicial + '/' + this.form.value.dataAtribuicao + '/' + this.form.value.horarioFinal).subscribe(result => {
-        this.domains[0].idCaneta = result;
-        
-        this.findHistoricoAtribuicoesPorProfissional(this.form.value.dataAtribuicao, this.form.value.horarioInicial, this.form.value.dataAtribuicao, this.form.value.horarioFinal);
-
-        this.loading = false;
-      }, error => {
-        this.loading = false;
-        this.errors = Util.customHTTPResponse(error);
-      });
-
-    }
-  }
 
   twoDigits(d) {
     if(0 <= d && d < 10) return "0" + d.toString();
@@ -193,4 +138,146 @@ export class EscalaProfissionalFormComponent implements OnInit {
   back() {
     this.router.navigate([this.method]);
   }
+
+  salvaAusencia() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+
+    var dateInicialFormatada;
+    var dateFinalFormatada;
+    
+    if (Util.isEmpty(this.ausenciaProfissional.periodoInicial) || Util.isEmpty(this.ausenciaProfissional.periodoFinal) || Util.isEmpty(this.ausenciaProfissional.idTipoAusencia))
+    {
+      this.errors = [{message:"O tipo da ausência, período inicial e período final são campos obrigatórios"}];
+      this.loading = false;
+      return;
+    }
+
+    if (this.ausenciaProfissional.periodoFinal < this.ausenciaProfissional.periodoInicial)
+    {
+      this.errors = [{message:"O período informado é inválido"}];
+      this.loading = false;
+      return;
+    }
+    
+    dateInicialFormatada = this.ausenciaProfissional.periodoInicial.getFullYear() + "-" + this.twoDigits(1 + this.ausenciaProfissional.periodoInicial.getMonth()) + "-" +
+    this.twoDigits(this.ausenciaProfissional.periodoInicial.getDate()) + " " + 
+    this.twoDigits(this.ausenciaProfissional.periodoInicial.getHours()) + ":" + 
+    this.twoDigits(this.ausenciaProfissional.periodoInicial.getMinutes()) + ":" + 
+    this.twoDigits(this.ausenciaProfissional.periodoInicial.getSeconds());
+
+    dateFinalFormatada = this.ausenciaProfissional.periodoFinal.getFullYear() + "-" + this.twoDigits(1 + this.ausenciaProfissional.periodoFinal.getMonth()) + "-" + 
+    this.twoDigits(this.ausenciaProfissional.periodoFinal.getDate()) + " " + 
+    this.twoDigits(this.ausenciaProfissional.periodoFinal.getHours()) + ":" + 
+    this.twoDigits(this.ausenciaProfissional.periodoFinal.getMinutes()) + ":" + 
+    this.twoDigits(this.ausenciaProfissional.periodoFinal.getSeconds());
+
+    this.ausenciaProfissional.periodoInicial = dateInicialFormatada;
+    this.ausenciaProfissional.periodoFinal = dateFinalFormatada;
+    this.ausenciaProfissional.idProfissional = this.object.idProfissional;
+    
+    this.service.salvaAusencia(this.ausenciaProfissional).subscribe(result => {
+      this.message = "Ausência/Férias inserida com sucesso!"
+      this.loading = false;
+      this.carregaAusenciaPorProfissional();      
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });    
+    this.ausenciaProfissional.periodoInicial = null;
+    this.ausenciaProfissional.periodoFinal = null;
+    this.ausenciaProfissional.idTipoAusencia = 0;
+  }
+
+  carregaDadosDoProfissional()
+  {
+    this.clear();
+    this.carregaAusenciaPorProfissional();
+  }
+  
+  carregaAusenciaPorProfissional() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.service.carregaAusenciaPorProfissional(this.object.idProfissional).subscribe(result => {
+      this.allItemsAusencia = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+
+  removeAusencia(item) {
+    this.service.removeAusencia(item.id).subscribe(result => {
+      this.message = "Ausência/Férias removida com sucesso!"
+      this.loading = false;
+      this.carregaAusenciaPorProfissional();
+    });
+  }
+
+  findEscalaPorProfissionalAnoMes() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.service.carregaAusenciaPorProfissional(this.object.idProfissional).subscribe(result => {
+      this.allItemsAusencia = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+
+  carregaEscalaPorProfissionalAnoMes() {    
+    this.errors = [];
+    this.message = "";
+    this.loading = true;
+    var anoMes = this.form.value.anoEscala + this.form.value.idMesEscala.padStart(2,'0');
+
+    this.service.carregaEscalaProfissionalAnoMes(this.object.idProfissional, anoMes).subscribe(result => {      
+      this.object.id = result[0] ? result[0].id : null;
+      this.object.domingoHorarioInicial = result[0] ? result[0].domingoHorarioInicial : "";
+      this.object.domingoHorarioFinal = result[0] ? result[0].domingoHorarioFinal : "";
+      this.object.segundaHorarioInicial = result[0] ? result[0].segundaHorarioInicial : "";
+      this.object.segundaHorarioFinal = result[0] ? result[0].segundaHorarioFinal : "";
+      this.object.tercaHorarioInicial = result[0] ? result[0].tercaHorarioInicial : "";
+      this.object.tercaHorarioFinal = result[0] ? result[0].tercaHorarioFinal : "";
+      this.object.quartaHorarioInicial = result[0] ? result[0].quartaHorarioInicial : "";
+      this.object.quartaHorarioFinal = result[0] ? result[0].quartaHorarioFinal : "";
+      this.object.quintaHorarioInicial = result[0] ? result[0].quintaHorarioInicial : "";
+      this.object.quintaHorarioFinal = result[0] ? result[0].quintaHorarioFinal : "";
+      this.object.sextaHorarioInicial = result[0] ? result[0].sextaHorarioInicial : "";
+      this.object.sextaHorarioFinal = result[0] ? result[0].sextaHorarioFinal : "";
+      this.object.sabadoHorarioInicial = result[0] ? result[0].sabadoHorarioInicial : "";
+      this.object.sabadoHorarioFinal = result[0] ? result[0].sabadoHorarioFinal : "";
+      this.loading = false;
+
+    }, error => {
+      this.object = new EscalaProfissional();
+      this.loading = false;
+      this.errors.push({
+        message: "Escala não encontrada"
+      });
+    });
+  }
+
+  salvaEscalaProfissional() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+
+    this.object.anoMes = this.form.value.anoEscala + this.form.value.idMesEscala.padStart(2,'0');
+
+    this.service.salvaEscalaProfissional(this.object).subscribe(result => {
+      this.loading = false; 
+      this.carregaEscalaPorProfissionalAnoMes();
+      this.message = "Escala atualizada com sucesso!"
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });    
+  }
+
 }
