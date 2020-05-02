@@ -35,13 +35,13 @@ module.exports = function (app) {
     });
 
 
-    app.get('/caneta/estabelecimento/:idEstabelecimento/:dataInicial/:horaInicial/:dataFinal/:horaFinal', function (req, res) {
+    app.get('/caneta/estabelecimento/:idEstabelecimento', function (req, res) {
         let usuario = req.usuario;
         let idEstabelecimento = req.params.idEstabelecimento;        
-        let dataInicial = req.params.dataInicial;
-        let horaInicial = req.params.horaInicial;
-        let dataFinal = req.params.dataFinal;
-        let horaFinal = req.params.horaFinal;
+        let dataInicial = req.query.dataInicial;
+        let horaInicial = req.query.horaInicial;
+        let dataFinal = req.query.dataFinal;
+        let horaFinal = req.query.horaFinal;
         let util = new app.util.Util();
 
         let errors = [];

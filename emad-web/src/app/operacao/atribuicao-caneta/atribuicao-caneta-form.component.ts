@@ -177,11 +177,14 @@ export class AtribuicaoCanetaFormComponent implements OnInit {
         var dataAtribuicao = periodoinicial.getFullYear() + "-" + this.twoDigits(1 + periodoinicial.getMonth()) + "-" + this.twoDigits(periodoinicial.getDate());
 
         this.loading = true;
-        this.service.list('caneta/estabelecimento/' + JSON.parse(localStorage.getItem("est"))[0].id + '/' +  dataAtribuicao  + '/' + this.form.value.horarioInicial + '/' + dataAtribuicao + '/' + this.form.value.horarioFinal).subscribe(result => {
+        this.service.list('caneta/estabelecimento/' + JSON.parse(localStorage.getItem("est"))[0].id 
+        + '?dataInicial=' +  dataAtribuicao  
+        + '&horaInicial=' + this.form.value.horarioInicial 
+        + '&dataFinal=' + dataAtribuicao 
+        + '&horaFinal=' + this.form.value.horarioFinal).subscribe(result => {
         this.domains[0].idCaneta = result;
         
         this.findHistoricoAtribuicoesPorProfissional(dataAtribuicao, this.form.value.horarioInicial, dataAtribuicao, this.form.value.horarioFinal);
-
         this.loading = false;
       }, error => {
         this.loading = false;

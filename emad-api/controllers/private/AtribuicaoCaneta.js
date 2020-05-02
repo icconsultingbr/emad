@@ -119,14 +119,14 @@ module.exports = function (app) {
         }
     });
 
-    app.get('/atribuicao-caneta/profissional/:idProfissional/:dataInicial/:horaInicial/:dataFinal/:horaFinal', function(req,res){        
+    app.get('/atribuicao-caneta/profissional/:idProfissional', function(req,res){        
         let usuario = req.usuario;
         let id = req.params.id;
         let idProfissional = req.params.idProfissional;
-        let dataInicial = req.params.dataInicial;
-        let horaInicial = req.params.horaInicial;
-        let dataFinal = req.params.dataFinal;
-        let horaFinal = req.params.horaFinal;
+        let dataInicial = req.query.dataInicial;
+        let horaInicial = req.query.horaInicial;
+        let dataFinal = req.query.dataFinal;
+        let horaFinal = req.query.horaFinal;
 
         let util = new app.util.Util();
         let errors = [];
