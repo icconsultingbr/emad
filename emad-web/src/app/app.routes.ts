@@ -27,8 +27,6 @@ import { ModalidadeFormComponent } from './cadastro/dominio/modalidade/modalidad
 import { PlanoTerapeuticoComponent } from './operacao/plano-terapeutico/plano-terapeutico.component';
 import { HipoteseDiagnosticaComponent } from './cadastro/dominio/hipotese-diagnostica/hipotese-diagnostica.component';
 import { HipoteseDiagnosticaFormComponent } from './cadastro/dominio/hipotese-diagnostica/hipotese-diagnostica-form.component';
-import { MedicamentoComponent } from './cadastro/dominio/medicamento/medicamento.component';
-import { MedicamentoFormComponent } from './cadastro/dominio/medicamento/medicamento-form.component';
 import { GeorreferenciamentoComponent } from './cadastro/georreferenciamento/georreferenciamento.component';
 import { AgendaComponent } from './operacao/agenda/agenda.component';
 import { LogComponent } from './seguranca/log/log.component';
@@ -104,10 +102,6 @@ const appRoutes : Routes = [
     { path : 'hipotese-diagnostica', component : HipoteseDiagnosticaComponent, canActivate: [AuthGuard]  },
     { path : 'hipotese-diagnostica-form', component : HipoteseDiagnosticaFormComponent, canActivate: [AuthGuard]  },
     { path : 'hipotese-diagnostica-form/:id', component : HipoteseDiagnosticaFormComponent, canActivate: [AuthGuard]  },
-
-    { path : 'medicamento', component : MedicamentoComponent, canActivate: [AuthGuard]  },
-    { path : 'medicamento-form', component : MedicamentoFormComponent, canActivate: [AuthGuard]  },
-    { path : 'medicamento-form/:id', component : MedicamentoFormComponent, canActivate: [AuthGuard]  }, 
     
     { path : 'georreferenciamento', component : GeorreferenciamentoComponent, canActivate: [AuthGuard]  },
     { path : 'georreferenciamento', component : GeorreferenciamentoComponent, canActivate: [AuthGuard]  },

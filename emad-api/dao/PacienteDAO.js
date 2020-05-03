@@ -71,7 +71,8 @@ PacienteDAO.prototype.lista = function (addFilter, callback) {
             md.nome AS idModalidade,
             latitude,
             longitude,
-            pac.idSap
+            pac.idSap,
+            pac.idPacienteCorrespondenteDim
         FROM tb_paciente pac
         INNER JOIN tb_nacionalidade nac ON (pac.idNacionalidade = nac.id)
         INNER JOIN tb_uf nat ON (pac.idNaturalidade = nat.id)
@@ -118,7 +119,8 @@ PacienteDAO.prototype.buscaPorId = function (id, callback) {
     DATE_FORMAT(dataCriacao,'%d/%m/%Y') as dataCriacao,
     latitude,
     longitude,
-    idSap
+    idSap,
+    idPacienteCorrespondenteDim
     FROM ${this._table} WHERE id = ?`, id, callback);
 }
 
@@ -161,7 +163,8 @@ PacienteDAO.prototype.buscaPorIdFicha = function (id, callback) {
     DATE_FORMAT(p.dataCriacao,'%d/%m/%Y') as dataCriacao,
     p.latitude,
     p.longitude ,
-    p.idSap
+    p.idSap,
+    p.idPacienteCorrespondenteDim
     FROM ${this._table} p 
     INNER JOIn tb_municipio m ON(p.idMunicipio = m.id) WHERE p.id = ?`, id, callback);
 }
@@ -191,7 +194,10 @@ PacienteDAO.prototype.buscarEstabelecimentos = function (id, raio, idTipoUnidade
             m.nome as idMunicipio,
             u.nome as idUf,
             tu.nome as idTipoUnidade,
-            ROUND(ST_Distance_Sphere(e.geom, p.geom)) AS distancia
+            ROUND(ST_Distance_Sphere(e.geom, p.geom)) AS distancia,
+            e.idUnidadeCorrespondenteDim,
+            e.idUnidadePesquisaMedicamentoDim,
+            e.idUnidadeRegistroReceitaDim
         FROM tb_estabelecimento e
         INNER JOIN tb_municipio as m ON (e.idMunicipio = m.id) 
         INNER JOIN tb_uf as u ON (e.idUf = u.id) 
