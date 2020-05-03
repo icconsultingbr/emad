@@ -70,7 +70,10 @@ EstabelecimentoDAO.prototype.lista = function(addFilter, callback) {
         e.situacao, 
         e.dataCriacao,
         latitude,
-        longitude         
+        longitude,
+        e.idUnidadeCorrespondenteDim,
+        e.idUnidadePesquisaMedicamentoDim,
+        e.idUnidadeRegistroReceitaDim   
     FROM 
         tb_estabelecimento AS e 
     INNER JOIN 

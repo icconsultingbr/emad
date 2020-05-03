@@ -12,5 +12,12 @@
         "username": "root", 
         "password": "zCAV%xf2",
         "database": "e-atend"
+    },
+    "dbConfigDim": {
+        "host": "34.82.145.46",
+        "port": 3306,
+        "username": "root", 
+        "password": "Acesso#10",
+        "database": "dim"
     }
 }

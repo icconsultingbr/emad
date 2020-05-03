@@ -230,6 +230,33 @@ export class EstabelecimentoService extends GenericsService {
       form: true,
       required: true,
       validator: ['', Validators.required]
+    },      
+    {
+      field: "idUnidadeCorrespondenteDim",
+      type: "text",
+      label: "Und. E-care correspondente",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
+    },        
+    {
+      field: "idUnidadePesquisaMedicamentoDim",
+      type: "text",
+      label: "Und. E-care pesquisa de medicamentos",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
+    },     
+    {
+      field: "idUnidadeRegistroReceitaDim",
+      type: "text",
+      label: "Und. E-care registro de receita",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
     }, 
     {
       field: "situacao",
@@ -249,6 +276,6 @@ export class EstabelecimentoService extends GenericsService {
       required: false,
       validator: ['', ''],
       isDateTime: true
-    }, 
+    }
   ];
 }

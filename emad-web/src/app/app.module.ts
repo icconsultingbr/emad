@@ -62,8 +62,6 @@ import { ModalidadeFormComponent } from './cadastro/dominio/modalidade/modalidad
 import { PlanoTerapeuticoComponent } from './operacao/plano-terapeutico/plano-terapeutico.component';
 import { HipoteseDiagnosticaComponent } from './cadastro/dominio/hipotese-diagnostica/hipotese-diagnostica.component';
 import { HipoteseDiagnosticaFormComponent } from './cadastro/dominio/hipotese-diagnostica/hipotese-diagnostica-form.component';
-import { MedicamentoComponent } from './cadastro/dominio/medicamento/medicamento.component';
-import { MedicamentoFormComponent } from './cadastro/dominio/medicamento/medicamento-form.component';
 import { NgxLoadingModule, ngxLoadingAnimationTypes } from 'ngx-loading';
 import { GeorreferenciamentoComponent } from './cadastro/georreferenciamento/georreferenciamento.component';
 import { AgendaComponent } from './operacao/agenda/agenda.component';
@@ -148,8 +146,6 @@ defineLocale('pt-br', deLocale);
         PlanoTerapeuticoComponent,
         HipoteseDiagnosticaComponent,
         HipoteseDiagnosticaFormComponent,
-        MedicamentoComponent,
-        MedicamentoFormComponent,
         GeorreferenciamentoComponent,
         AgendaComponent,
         AtendimentoComponent,

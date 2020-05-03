@@ -12,6 +12,7 @@ import { PacienteHipotese } from '../../_core/_models/PacenteHipotese';
 import { Encaminhamento } from '../../_core/_models/Encaminhamento';
 import { isObject } from 'util';
 import { AtendimentoMedicamento } from '../../_core/_models/AtendimentoMedicamento';
+import { MedicamentoDim } from '../../_core/_models/MedicamentoDim';
 
 @Component({
   selector: 'app-atendimento-form',
@@ -37,8 +38,10 @@ export class AtendimentoFormComponent implements OnInit {
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
   encaminhamento: Encaminhamento = new Encaminhamento();
   atendimentoMedicamento: AtendimentoMedicamento = new AtendimentoMedicamento();
+  medicamentoDim: MedicamentoDim = new MedicamentoDim();
 
   pacienteSelecionado: any = null;
+  medicamentoSelecionado: any = null;
   domains: any[] = [];
 
   //PAGINATION
@@ -51,6 +54,7 @@ export class AtendimentoFormComponent implements OnInit {
   allItemsHipotese: any[] = [];
   allItemsEncaminhamento: any[] = [];
   allItemsMedicamento: any[] = [];
+  allMedicamentosDim: any[] = [];
   removeId: Number;
 
   id: Number;
@@ -117,7 +121,6 @@ export class AtendimentoFormComponent implements OnInit {
 
     this.formMedicamento = this.fbMedicamento.group({
       idPaciente: [Validators.required],
-      idMedicamento: [Validators.required],
       uso: [Validators.required],
       tipoVia: [Validators.required],
       quantidade: [Validators.required],
@@ -149,6 +152,31 @@ export class AtendimentoFormComponent implements OnInit {
       this.setPage(1);
       this.loading = false;
 
+    }, erro => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(erro);
+    });
+  }
+
+  buscaMedicamento() {
+    this.loading = true;
+    let params = "";
+    this.allMedicamentosDim = [];
+
+    if (Util.isEmpty(this.medicamentoDim.descricao) || this.medicamentoDim.descricao.length<3)
+    {
+      this.errors = [{message:"Informe a descrição do medicamento, ao menos 3 caracteres"}];
+      this.loading = false;
+      return;
+    }
+    
+    params = "?descricao=" + this.medicamentoDim.descricao;
+
+    this.service.list('medicamento/dim' + params).subscribe(result => {
+      this.allMedicamentosDim = result;
+      this.setPage(1);
+      this.loading = false;
+      this.errors = [];
     }, erro => {
       this.loading = false;
       this.errors = Util.customHTTPResponse(erro);
@@ -206,6 +234,9 @@ export class AtendimentoFormComponent implements OnInit {
     this.atendimentoMedicamento = new AtendimentoMedicamento();
     this.atendimentoMedicamento.idPaciente = this.object.idPaciente;
     this.atendimentoMedicamento.idAtendimento = this.object.id;
+    this.medicamentoDim.descricao = "";
+    this.medicamentoSelecionado = null;    
+    this.allMedicamentosDim = [];
 
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
@@ -251,6 +282,10 @@ export class AtendimentoFormComponent implements OnInit {
 
   selecionaPaciente(item) {
     this.pacienteSelecionado = item;
+  }
+
+  selecionaMedicamento(item) {
+    this.medicamentoSelecionado = item;
   }
 
   confirmaPaciente() {
@@ -400,14 +435,11 @@ export class AtendimentoFormComponent implements OnInit {
   loadDomains() {
     this.loading = true;
     this.service.listDomains('hipotese-diagnostica').subscribe(hipoteses => {
-      this.service.listDomains('medicamento').subscribe(medicamentos => {
         this.service.listDomains('especialidade').subscribe(especialidades => {
           this.domains.push({
             hipoteses: hipoteses,
-            medicamentos: medicamentos,
             especialidades: especialidades
           });
-        });
       });
       this.loading = false;
     });
@@ -425,7 +457,7 @@ export class AtendimentoFormComponent implements OnInit {
 
   disableMedicamentoButton() {
     return Util.isEmpty(this.atendimentoMedicamento.idPaciente) ||
-      Util.isEmpty(this.atendimentoMedicamento.idMedicamento) ||
+      Util.isEmpty(this.medicamentoSelecionado) ||
       Util.isEmpty(this.atendimentoMedicamento.uso) ||
       Util.isEmpty(this.atendimentoMedicamento.tipoVia) ||
       Util.isEmpty(this.atendimentoMedicamento.quantidade) ||
@@ -471,6 +503,9 @@ export class AtendimentoFormComponent implements OnInit {
     this.message = "";
     this.errors = [];
     this.loading = true;
+
+    this.atendimentoMedicamento.idMaterialDim = this.medicamentoSelecionado.id_material;
+    this.atendimentoMedicamento.descricaoMaterialDim = this.medicamentoSelecionado.descricao;
 
     this.service.saveMedicamento(this.atendimentoMedicamento).subscribe(result => {
       this.message = "Medicamento inserido com sucesso!"

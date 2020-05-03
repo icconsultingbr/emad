@@ -1,15 +1,52 @@
 function MedicamentoDAO(connection) {
     this._connection = connection;
-    this._table = "tb_medicamento";
+    this._table = "material";
 }
 
+MedicamentoDAO.prototype.listaMedicamentosDim = function(descricao, callback) {
+    
+    let where = "";
 
-MedicamentoDAO.prototype.lista = function(callback) {
-    this._connection.query("select * FROM "+this._table+" WHERE situacao = 1 ORDER BY nome ASC",callback);
+    if (descricao) {
+        where+=" AND m.descricao like '%"+descricao + "%'";
+    }
+    
+    this._connection.query(`select
+    m.id_material, 
+    m.codigo_material, 
+    m.descricao, 
+    u.unidade
+    from
+        material m, unidade_material u
+    where
+    m.flg_dispensavel = 'S'
+    and m.status_2='A'
+    ${where}
+    and m.unidade_material_id_unidade_material=u.id_unidade_material
+    order by
+    m.descricao`,callback);    
 }
 
 MedicamentoDAO.prototype.dominio = function(callback) {
-    this._connection.query("select id, nome FROM "+this._table+" WHERE situacao = 1 ORDER BY nome ASC",callback);
+    // let where = "";
+
+    // if (addFilter.descricao) {
+    //     where+=" AND m.descricao like '%"+addFilter.descricao + "%'";
+    // }
+    
+    this._connection.query(`select
+    m.id_material as id, 
+    m.codigo_material, 
+    m.descricao as nome, 
+    u.unidade
+    from
+        material m, unidade_material u
+    where
+    m.flg_dispensavel = 'S'
+    and m.status_2='A'
+    and m.unidade_material_id_unidade_material=u.id_unidade_material
+    order by
+    m.descricao`,callback); 
 }
 
 MedicamentoDAO.prototype.buscaPorId = function (id,callback) {

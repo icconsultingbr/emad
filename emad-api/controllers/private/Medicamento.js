@@ -1,6 +1,6 @@
 module.exports = function (app) {
 
-    const _table = "tb_medicamento";
+    const _table = "material";
 
     app.post('/medicamento', function(req,res){
         let obj = req.body;
@@ -58,13 +58,14 @@ module.exports = function (app) {
         }
     });
    
-    app.get('/medicamento', function (req, res) {
+    app.get('/medicamento/dim', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
+        let descricao = req.query.descricao;
 
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
-            lista(res).then(function (response) {
+            listaMedicamentosDim(res, descricao).then(function (response) {
                 res.status(200).json(response);
                 return;
             });
@@ -115,16 +116,16 @@ module.exports = function (app) {
         }
     });
 
-    function lista(res) {
+    function listaMedicamentosDim(res, descricao) {
         let q = require('q');
         let d = q.defer();
         let util = new app.util.Util();
-        let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GenericDAO(connection, _table);
-
+        let connection = app.dao.ConnectionFactoryDim();
+        let objDAO = new app.dao.MedicamentoDAO(connection);
+        
         let errors = [];
 
-        objDAO.lista(function (exception, result) {
+        objDAO.listaMedicamentosDim(descricao, function (exception, result) {
             if (exception) {
                 d.reject(exception);
                 console.log(exception);

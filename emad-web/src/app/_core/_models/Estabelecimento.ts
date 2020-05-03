@@ -26,4 +26,7 @@ export class Estabelecimento {
     @Input() latitude: number;
     @Input() longitude: number;
     @Input() distancia: number;
+    @Input() idUnidadeCorrespondenteDim: Number = null;
+    @Input() idUnidadePesquisaMedicamentoDim: Number = null;
+    @Input() idUnidadeRegistroReceitaDim: Number = null;
 }

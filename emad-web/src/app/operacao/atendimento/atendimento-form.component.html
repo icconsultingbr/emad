@@ -323,7 +323,7 @@
             </tbody>
             <tbody *ngIf="allItemsMedicamento.length">
                 <tr class="text-left" *ngFor="let item of allItemsMedicamento">
-                  <td class="text-secondary">{{item.idMedicamento}}</td>
+                  <td class="text-secondary">{{item.descricaoMaterialDim}}</td>
                   <td class="text-secondary">{{item.uso}}</td>
                   <td class="text-secondary">{{item.tipoVia}}</td>
                   <td class="text-secondary">{{item.quantidade}}</td>
@@ -744,18 +744,105 @@
     </div>
 
     <div class="form-group row">
-      <label class="col-xl-4 col-form-label text-left">
-        Medicamento <span class="text-danger font-weight-bold"> *</span>
+      <label class="col-xl-4 col-sm-12 col-form-label text-left">
+        Nome do medicamento:
       </label>
-      <div class="col-xl-8">
-        <input type="hidden" [(ngModel)]="atendimentoMedicamento.idPaciente" />
-        <input type="hidden" [(ngModel)]="atendimentoMedicamento.idAtendimento" />
-
-        <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="atendimentoMedicamento.idMedicamento">
-          <option [value]="null">Selecione...</option>
-          <option *ngFor="let item of domains[0].medicamentos" [value]="item.id">{{item.nome}}</option>
-        </select>
+      <div class="col-xl-7 col-sm-12">
+        <input type="text" class="form-control has-error" [(ngModel)]="medicamentoDim.descricao">
       </div>
+      <div class="col-xl-1 col-sm-12">
+        <button [routerLink]="" class="btn btn-primary float-right" (click)="buscaMedicamento()">
+          <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin text-left">
+            <i class="fa fa-spinner"></i>
+          </i>
+          <i *ngIf="!loading" class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      
+    </div>
+
+    <div class="form-group row">
+      <div class="col-12 table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th></th>                      
+              <th>Código</th>
+              <th>Descrição do medicamento</th>
+              <th>Unidade</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let item of allMedicamentosDim let index=index; let odd='odd'; let even='even';">
+            <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
+              <td class="text-secondary">
+                <div class="custom-control custom-radio float-left">
+                  <input type="radio" (change)="selecionaMedicamento(item)" class="custom-control-input" id="{{ item.id_material }}"
+                    name="radio-item">
+                  <label class="custom-control-label" for="{{ item.id_material }}">&nbsp;</label>
+                </div>
+              </td>           
+              <td class="text-secondary">{{item.codigo_material}}</td>              
+              <td class="text-secondary">{{item.descricao}}</td>              
+              <td class="text-secondary">{{item.unidade}}</td>              
+            </tr>
+          </tbody>
+
+          <tbody *ngIf="!allMedicamentosDim || allMedicamentosDim.length==0">
+            <tr class="text-left">
+              <td colspan="99" class="text-secondary">
+                <i>Não há resultados...</i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div *ngIf="pager.pages && pager.pages.length" class="text text-secondary col-md-12 pr-0 mx-auto">
+        <i>
+          Exibindo
+          {{pager.currentPage === pager.totalPages?allMedicamentosDim.length:pager.currentPage*pagedItems.length}}
+          de
+          {{allMedicamentosDim.length}}
+          resultado(s).
+        </i>
+      </div>
+    </div>
+
+    <div class="row">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination mx-auto">
+        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === 1}">
+          <a class="page-link" (click)="setPage(1)">
+            <i class="fas fa-angle-double-left"></i>
+          </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === 1}">
+          <a class="page-link" (click)="setPage(pager.currentPage - 1)">
+            <i class="fas fa-angle-left"></i>
+          </a>
+        </li>
+        <li>
+          <select (change)="loadQuantityPerPage($event)" class="custom-select d-block w-100"
+            style="border: 1px solid #dee2e6">
+            <option [ngValue]="10">10</option>
+            <option [ngValue]="25">25</option>
+            <option [ngValue]="50">50</option>
+          </select>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === pager.totalPages}">
+          <a class="page-link" (click)="setPage(pager.currentPage + 1)">
+            <i class="fas fa-angle-right"></i>
+          </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === pager.totalPages}">
+          <a class="page-link" (click)="setPage(pager.totalPages)">
+            <i class="fas fa-angle-double-right"></i>
+          </a>
+        </li>
+      </ul>
     </div>
 
     <div class="form-group row">
@@ -763,6 +850,8 @@
         Uso<span class="text-danger font-weight-bold"> *</span>
       </label>
       <div class="col-xl-8">
+        <input type="hidden" [(ngModel)]="atendimentoMedicamento.idPaciente" />
+        <input type="hidden" [(ngModel)]="atendimentoMedicamento.idAtendimento" />
         <input type="text" class="form-control has-error" [(ngModel)]="atendimentoMedicamento.uso" />
       </div>
     </div>

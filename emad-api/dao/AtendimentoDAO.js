@@ -72,7 +72,8 @@ AtendimentoDAO.prototype.lista = function(addFilter, callback) {
         WHEN a.dataCancelamento IS NULL  AND a.dataFinalizacao IS NULL THEN 'Pendente'
     END AS situacaoAtendimento,
     p.idSap,
-    a.tipoFicha
+    a.tipoFicha,
+    p.idPacienteCorrespondenteDim
     FROM ${this._table} a 
     INNER JOIN tb_paciente p ON(a.idPaciente = p.id)  
     INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
@@ -148,7 +149,8 @@ AtendimentoDAO.prototype.listaPorUsuario = function(id, addFilter, callback) {
             WHEN a.dataCancelamento IS NULL  AND a.dataFinalizacao IS NULL THEN 'Pendente'
         END AS situacaoAtendimento,
         p.idSap,
-        a.tipoFicha     
+        a.tipoFicha,
+        p.idPacienteCorrespondenteDim    
     FROM ${this._table} a 
     INNER JOIN tb_paciente p ON(a.idPaciente = p.id)  
     INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
