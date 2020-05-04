@@ -9,13 +9,14 @@ import { Router } from '@angular/router';
 import { AgendaProfissional } from '../../_core/_models/AgendaProfissional';
 import { environment } from "../../../environments/environment";
 import { AtendimentoService } from '../atendimento/atendimento.service';
-import { AtribuicaoCaneta } from '../../_core/_models/AtribuicaoCaneta';
+import { AtribuicaoCaneta, AtribuicaoCanetaHorario } from '../../_core/_models/AtribuicaoCaneta';
+import { EscalaProfissionalService } from '../escala-profissional/escala-profissional.service';
 
 @Component({
   selector: 'app-atribuicao-caneta-form',
   templateUrl: './atribuicao-caneta-form.component.html',
   styleUrls: ['./atribuicao-caneta-form.component.css'],
-  providers: [AtribuicaoCanetaService, AtendimentoService]
+  providers: [AtribuicaoCanetaService, AtendimentoService, EscalaProfissionalService]
 })
 export class AtribuicaoCanetaFormComponent implements OnInit {
 
@@ -31,10 +32,12 @@ export class AtribuicaoCanetaFormComponent implements OnInit {
   historicoAtribuicoes: any[] = [];
   object: AtribuicaoCaneta = new AtribuicaoCaneta();
   domains: any[] = [];
+  horarios: AtribuicaoCanetaHorario = new AtribuicaoCanetaHorario();
 
   constructor(
     private fb: FormBuilder,
     private service: AtribuicaoCanetaService,
+    private serviceEscala: EscalaProfissionalService,
     private router: Router) {
 
     for (let field of this.service.fields) {
@@ -73,6 +76,66 @@ export class AtribuicaoCanetaFormComponent implements OnInit {
     });
   }
 
+  findHorarioEscalaPorProfissional(anoMes, diaSemana) {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.serviceEscala.carregaEscalaProfissionalAnoMes(this.object.idProfissional, anoMes).subscribe(result => {
+
+      if(result[0])        
+      {
+        switch(diaSemana) { 
+          case 0: {              
+              this.horarios.horarioInicial = result[0].domingoHorarioInicial;
+              this.horarios.horarioFinal = result[0].domingoHorarioFinal;
+            break; 
+          } 
+          case 1: { 
+              this.horarios.horarioInicial = result[0].segundaHorarioInicial;
+              this.horarios.horarioFinal = result[0].segundaHorarioFinal;
+            break; 
+          } 
+          case 2: { 
+              this.horarios.horarioInicial = result[0].tercaHorarioInicial;
+              this.horarios.horarioFinal = result[0].tercaHorarioFinal;
+            break; 
+          } 
+          case 3: { 
+              this.horarios.horarioInicial = result[0].quartaHorarioInicial;
+              this.horarios.horarioFinal = result[0].quartaHorarioFinal;
+            break; 
+          } 
+          case 4: { 
+              this.horarios.horarioInicial = result[0].quintaHorarioInicial;
+              this.horarios.horarioFinal = result[0].quintaHorarioFinal;
+            break; 
+          } 
+          case 5: { 
+              this.horarios.horarioInicial = result[0].sextaHorarioInicial;
+              this.horarios.horarioFinal = result[0].sextaHorarioFinal;
+            break; 
+          } 
+          case 6: { 
+              this.horarios.horarioInicial = result[0].sabadoHorarioInicial;
+              this.horarios.horarioFinal = result[0].sabadoHorarioFinal;
+            break; 
+         }
+          default: { 
+            this.horarios.horarioInicial = "";
+            this.horarios.horarioFinal = "";
+             break; 
+          } 
+       }
+            
+      }
+      this.loading = false;
+      this.carregarCanetasDisponiveis();
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+
   removeAtribuicao(item) {
     this.service.removeAtribuicao(item.id).subscribe(result => {
       this.message = "Atribuição removida com sucesso!"
@@ -86,14 +149,51 @@ export class AtribuicaoCanetaFormComponent implements OnInit {
     this.errors = [];
     this.loading = true;
 
-    this.service.saveAtribuicao(this.object).subscribe(result => {
-      this.message = "Atribuição inserida com sucesso!"
+    if (Util.isEmpty(this.object.periodoInicial) || Util.isEmpty(this.object.periodoFinal))
+    {
+      this.errors = [{message:"O período informado é inválido"}];
       this.loading = false;
-      this.clearAtribuicao();           
+      return;
+    }
+
+    if (this.object.idCaneta <= 0)
+    {
+      this.errors = [{message:"Obrigatório selecionar a caneta"}];
+      this.loading = false;
+      return;
+    }
+
+    this.serviceEscala.carregaAusenciaPorProfissional(this.object.idProfissional).subscribe(result => {      
+      if (result[0])
+      {
+        result.forEach(element => {
+          if(this.object.periodoInicial >= element.periodoInicialCompleto && this.object.periodoInicial <= element.periodoFinalCompleto)
+          {
+            this.errors = [{message:"Atribuição não foi realizada, pois a data encontra-se dentro do período de ausência da escala do profissional - (" 
+              + element.periodoInicial + " - " + element.periodoFinal + ")" + " - Tipo da ausência: "+ element.nomeTipoAusencia  } ];
+            this.loading = false;
+            return;
+          }
+        });
+        
+        if(this.errors.length>0)
+            return;
+      }      
+
+      this.service.saveAtribuicao(this.object).subscribe(result => {
+          this.message = "Atribuição inserida com sucesso!"
+          this.loading = false;
+          this.clearAtribuicao();           
+        }, error => {
+          this.loading = false;
+          this.errors = Util.customHTTPResponse(error);
+        });
+
     }, error => {
       this.loading = false;
       this.errors = Util.customHTTPResponse(error);
-    });
+      return;
+    });   
   }
 
   loadDomains() {
@@ -139,21 +239,39 @@ export class AtribuicaoCanetaFormComponent implements OnInit {
       });
   }
 
+  carregarHorarios()
+  {
+    this.horarios.horarioInicial = "";
+    this.horarios.horarioFinal = "";
+
+    if(!Util.isEmpty(this.form.value.dataAtribuicao))
+    {
+      var ano = new Date(this.form.value.dataAtribuicao).getFullYear();
+      var mes = (new Date(this.form.value.dataAtribuicao).getMonth() + 1).toString();      
+      var anoMes = ano + mes.padStart(2,'0');
+
+      var diaSemana = new Date(this.form.value.dataAtribuicao).getDay();
+
+      this.findHorarioEscalaPorProfissional(anoMes, diaSemana);
+    }    
+  }
+
   carregarCanetasDisponiveis() {
-    if (!Util.isEmpty(this.form.value.horarioInicial) && !Util.isEmpty(this.form.value.horarioFinal) && !Util.isEmpty(this.form.value.dataAtribuicao))
+    this.object.idCaneta = 0;
+    if (!Util.isEmpty(this.horarios.horarioInicial) && !Util.isEmpty(this.horarios.horarioFinal) && !Util.isEmpty(this.form.value.dataAtribuicao))
     {     
         var periodoinicial = new Date(this.form.value.dataAtribuicao.getFullYear(),
                                this.form.value.dataAtribuicao.getMonth(),                                
                                this.form.value.dataAtribuicao.getDate(),                               
-                               this.form.value.horarioInicial.substring(2,0),
-                               this.form.value.horarioInicial.substring(3),
+                               parseInt(this.horarios.horarioInicial.substring(2,0)),
+                               parseInt(this.horarios.horarioInicial.substring(3)),
                                0);
 
         var periodofinal = new Date(this.form.value.dataAtribuicao.getFullYear(),
                                this.form.value.dataAtribuicao.getMonth(),                                
                                this.form.value.dataAtribuicao.getDate(),                               
-                               this.form.value.horarioFinal.substring(2,0),
-                               this.form.value.horarioFinal.substring(3),
+                               parseInt(this.horarios.horarioFinal.substring(2,0)),
+                               parseInt(this.horarios.horarioFinal.substring(3)),
                                0);
 
         var dateInicialFormatada;
@@ -179,12 +297,12 @@ export class AtribuicaoCanetaFormComponent implements OnInit {
         this.loading = true;
         this.service.list('caneta/estabelecimento/' + JSON.parse(localStorage.getItem("est"))[0].id 
         + '?dataInicial=' +  dataAtribuicao  
-        + '&horaInicial=' + this.form.value.horarioInicial 
+        + '&horaInicial=' + this.horarios.horarioInicial 
         + '&dataFinal=' + dataAtribuicao 
-        + '&horaFinal=' + this.form.value.horarioFinal).subscribe(result => {
+        + '&horaFinal=' + this.horarios.horarioFinal).subscribe(result => {
         this.domains[0].idCaneta = result;
         
-        this.findHistoricoAtribuicoesPorProfissional(dataAtribuicao, this.form.value.horarioInicial, dataAtribuicao, this.form.value.horarioFinal);
+        this.findHistoricoAtribuicoesPorProfissional(dataAtribuicao, this.horarios.horarioInicial, dataAtribuicao, this.horarios.horarioFinal);
         this.loading = false;
       }, error => {
         this.loading = false;

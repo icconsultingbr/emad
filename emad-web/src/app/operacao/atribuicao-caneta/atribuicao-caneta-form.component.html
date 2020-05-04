@@ -48,21 +48,21 @@
                 </div>
                 <input type="text" formControlName="dataAtribuicao" placeholder="dd/mm/aaaa" bsDatepicker 
                     [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control" autocomplete="off"
-                    (change)="carregarCanetasDisponiveis()">
+                    (change)="carregarHorarios()">
             </div>
         </div>    
         <div class="col-xl-2">
             Horário inicial<span class="text-danger font-weight-bold"> *</span>
         </div>
         <div class="col-xl-2">
-            <input type="text" class="form-control has-error" formControlName="horarioInicial"  mask="99:99" placeholder="99:99"
+            <input type="text" class="form-control has-error" [(ngModel)]="horarios.horarioInicial"  formControlName="horarioInicial"  mask="99:99" placeholder="99:99"
             (change)="carregarCanetasDisponiveis()"/>
         </div>
         <div class="col-xl-2">
             Horário final<span class="text-danger font-weight-bold"> *</span>
         </div>
         <div class="col-xl-2">
-            <input type="text" class="form-control has-error" formControlName="horarioFinal" mask="99:99" placeholder="99:99"
+            <input type="text" class="form-control has-error" [(ngModel)]="horarios.horarioFinal"  formControlName="horarioFinal" mask="99:99" placeholder="99:99"
             (change)="carregarCanetasDisponiveis()" />
         </div>
 

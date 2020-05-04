@@ -31,7 +31,9 @@ AusenciaProfissionalDAO.prototype.buscaPorProfissionalId = function (idProfissio
     CASE  
         WHEN ausencia.situacao = 0  THEN 'Inativo'  
         WHEN ausencia.situacao =  1 THEN 'Ativo'  
-    END as situacao
+    END as situacao,
+    DATE_FORMAT(ausencia.periodoInicial, '%Y-%m-%d 00:00:00') as periodoInicialCompleto,
+    DATE_FORMAT(ausencia.periodoFinal, '%Y-%m-%d 23:59:59') as periodoFinalCompleto
     FROM ${this._table} ausencia       
     INNER JOIN tb_profissional c on ausencia.idProfissional = c.id         
     WHERE ausencia.situacao = 1 AND ausencia.idProfissional = ${idProfissional}
