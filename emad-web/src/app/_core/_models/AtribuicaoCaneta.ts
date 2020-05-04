@@ -8,3 +8,8 @@ export class AtribuicaoCaneta {
     @Input() periodoFinal: Date;
     @Input() situacao: Boolean;
 }
+
+export class AtribuicaoCanetaHorario {        
+    @Input() horarioInicial: String;
+    @Input() horarioFinal: String;    
+}

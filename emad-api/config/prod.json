@@ -14,7 +14,7 @@
         "database": "e-atend"
     },
     "dbConfigDim": {
-        "host": "34.82.145.46",
+        "host": "10.138.0.6",
         "port": 3306,
         "username": "root", 
         "password": "Acesso#10",
