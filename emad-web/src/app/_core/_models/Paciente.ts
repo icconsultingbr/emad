@@ -36,4 +36,5 @@ export class Paciente {
     @Input() distancia: number;
     @Input() idade: number = null;
     @Input() idSap: Number = null ;
+    @Input() idEstabelecimentoCadastro : Number = +JSON.parse(localStorage.getItem("est"))[0].id;
 }

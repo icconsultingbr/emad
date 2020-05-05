@@ -361,6 +361,15 @@ export class PacienteService extends GenericsService {
       form: true,
       required: true,
       validator: ['', Validators.required]
-    }
+    },
+    {
+        field: "idEstabelecimentoCadastro",
+        type: "hidden",
+        label: "Id do estabelecimento",
+        grid: false,
+        form: true,
+        required: false,
+        validator: ['', '']
+    },
   ];
 }

@@ -4,13 +4,12 @@ function PacienteDAO(connection, connectionDim) {
     this._table = "tb_paciente";
 }
 
-PacienteDAO.prototype.salva = function (paciente, idEstabelecimento, callback) {
+PacienteDAO.prototype.salva = function (paciente, callback) {
     const conn = this._connection;
     const table = this._table;
 
     const connDim = this._connectionDim;
     let novoprod = {};
-    console.log('Estabelecimento ' + idEstabelecimento);
 
     conn.beginTransaction(function(err) {
         if (err) { throw err; }
@@ -23,8 +22,8 @@ PacienteDAO.prototype.salva = function (paciente, idEstabelecimento, callback) {
                 console.log('Criou no e-atend o ID ' + results.insertId);
                 conn.query(`SELECT
                 CASE WHEN tp.situacao = 1 THEN 1 ELSE 2 END as id_status_paciente,
-                (SELECT idUnidadeCorrespondenteDim FROM tb_estabelecimento te where id=17) AS unidade_cadastro,
-                (SELECT idUnidadeCorrespondenteDim FROM tb_estabelecimento te where id=17) AS unidade_referida,
+                est.idUnidadeCorrespondenteDim AS unidade_cadastro,
+                est.idUnidadeCorrespondenteDim AS unidade_referida,
                 UPPER(mun.nome) AS cidade_id_cidade,
                 mun.uf,
                 UPPER(tp.nome) nome,
@@ -45,7 +44,9 @@ PacienteDAO.prototype.salva = function (paciente, idEstabelecimento, callback) {
                 UPPER(REPLACE(tp.nomeMae, ' ', '')) nome_mae_sem_espaco,
                 null as	num_pasta
             from tb_paciente tp 
-            inner join tb_municipio mun on mun.id = tp.idMunicipio where tp.id = ?`, results.insertId, 
+            inner join tb_municipio mun on mun.id = tp.idMunicipio 
+            inner join tb_estabelecimento est on est.id = tp.idEstabelecimentoCadastro
+            where tp.id = ?`, results.insertId, 
                     
             function (error, dadosPaciente) {
                 if (error) {return conn.rollback(function() {console.log('Erro' + error);throw error;});}                
@@ -104,7 +105,7 @@ PacienteDAO.prototype.salva = function (paciente, idEstabelecimento, callback) {
     }); 
 }
 
-PacienteDAO.prototype.atualiza = function (paciente, id, idEstabelecimento, callback) {
+PacienteDAO.prototype.atualiza = function (paciente, id, callback) {
     const conn = this._connection;
     const connDim = this._connectionDim;
     const table = this._table;
@@ -122,8 +123,8 @@ PacienteDAO.prototype.atualiza = function (paciente, id, idEstabelecimento, call
                 console.log('Update no e-atend do ID ' + id);
                 conn.query(`SELECT 
                                 CASE WHEN tp.situacao = 1 THEN 1 ELSE 2 END as id_status_paciente,
-                                (SELECT idUnidadeCorrespondenteDim FROM tb_estabelecimento te where id=17) AS unidade_cadastro,
-                                (SELECT idUnidadeCorrespondenteDim FROM tb_estabelecimento te where id=17) AS unidade_referida,
+                                est.idUnidadeCorrespondenteDim AS unidade_cadastro,
+                                est.idUnidadeCorrespondenteDim AS unidade_referida,
                                 UPPER(mun.nome) AS cidade_id_cidade,
                                 mun.uf,
                                 UPPER(tp.nome) nome,
@@ -145,7 +146,9 @@ PacienteDAO.prototype.atualiza = function (paciente, id, idEstabelecimento, call
                                 null as	num_pasta,                     
                                 idPacienteCorrespondenteDim
                             from tb_paciente tp 
-                            inner join tb_municipio mun on mun.id = tp.idMunicipio where tp.id = ?`, id, 
+                            inner join tb_municipio mun on mun.id = tp.idMunicipio 
+                            inner join tb_estabelecimento est on est.id = tp.idEstabelecimentoCadastro
+                            where tp.id = ?`, id, 
                     
             function (error, dadosPaciente) {
                 if (error) {return conn.rollback(function() {console.log('Erro' + error);throw error;});}                
