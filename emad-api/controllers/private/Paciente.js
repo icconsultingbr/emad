@@ -148,7 +148,7 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
 
-        if (usuario.idTipoUsuario == util.ADMIN) {
+        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
             deletaPorId(id, res).then(function (response) {
                 res.status(200).json(obj);
                 return;
@@ -184,7 +184,7 @@ module.exports = function (app) {
         var d = q.defer();
         var util = new app.util.Util();
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.PacienteDAO(connection);
+        var objDAO = new app.dao.PacienteDAO(connection, null);
 
         var errors = [];
 
@@ -208,7 +208,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.PacienteDAO(connection);
+        var objDAO = new app.dao.PacienteDAO(connection, null);
         var errors = [];
 
         objDAO.buscaPorId(id, function (exception, result) {
@@ -233,7 +233,8 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.PacienteDAO(connection);
+        var connectionDim = app.dao.ConnectionFactoryDim();
+        var objDAO = new app.dao.PacienteDAO(connection, connectionDim);
         var errors = [];
 
         objDAO.deletaPorId(id, function (exception, result) {
@@ -253,10 +254,11 @@ module.exports = function (app) {
     function atualizaPorId(obj, id, res) {
         var q = require('q');
         var d = q.defer();
-        var util = new app.util.Util();
+        var util = new app.util.Util();        
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.PacienteDAO(connection);
+        var connectionDim = app.dao.ConnectionFactoryDim();
+        var objDAO = new app.dao.PacienteDAO(connection, connectionDim);
         var errors = [];
 
         objDAO.atualiza(obj, id, function (exception, result) {
@@ -276,7 +278,8 @@ module.exports = function (app) {
     function salva(paciente, res) {
         delete paciente.id;
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.PacienteDAO(connection);
+        var connectionDim = app.dao.ConnectionFactoryDim();
+        var objDAO = new app.dao.PacienteDAO(connection, connectionDim);
         var q = require('q');
         var d = q.defer();
 
