@@ -1,10 +1,84 @@
-function ProfissionalDAO(connection) {
+function ProfissionalDAO(connection, connectionDim) {
     this._connection = connection;
+    this._connectionDim = connectionDim;
     this._table = "tb_profissional";
 }
 
 ProfissionalDAO.prototype.salva = function(profissional, callback) {
-    this._connection.query(`INSERT INTO ${this._table} SET geom = POINT(?, ?), ?`, [profissional.longitude, profissional.latitude, profissional], callback);
+    const conn = this._connection;
+    const table = this._table;
+
+    const connDim = this._connectionDim;
+    let novoprod = {};
+
+    conn.beginTransaction(function(err) {
+        if (err) { throw err; }
+        conn.query(`INSERT INTO ${table} SET geom = POINT(?, ?), ?`, [profissional.longitude, profissional.latitude, profissional], function (error, results) {
+          if (error) {
+            return conn.rollback(function() {
+                throw err;                
+            });
+          }   
+          novoprod = results;
+          console.log('Criou no e-atend o ID ' + results.insertId);
+          conn.query(`SELECT
+                        null as	cidade_id_cidade,
+                        tabelauf.uf as estado_id_estado,
+                        esp.id_tipo_conselho as tipo_conselho_id_tipo_conselho,
+                        esp.id_tipo_prescritor as tipo_prescritor_id_tipo_prescritor,
+                        UPPER(tp.nome) as nome,
+                        CASE WHEN tp.situacao = 1 THEN 'A' ELSE 'I' END as status_2,
+                        tp.crm inscricao,
+                        null as	data_inscricao,
+                        UPPER(cargoProfissional) as especialidade,
+                        6 usua_incl,
+                        now() as	data_incl
+                    from tb_profissional tp 
+                    inner join tb_especialidade esp on esp.id = tp.idEspecialidade 
+                    inner join tb_uf tabelauf on tabelauf.id=tp.idUf 
+                    where tp.id = ?`, results.insertId, function (error, dadosProfissionais) {
+
+                if (error) {
+                return conn.rollback(function() {
+                    console.log('Erro' + err);
+                    throw err;
+                });
+                }                
+                console.log('Select ' + JSON.stringify(dadosProfissionais));
+
+                connDim.query(`INSERT INTO profissional (cidade_id_cidade, estado_id_estado, tipo_conselho_id_tipo_conselho, 
+                    tipo_prescritor_id_tipo_prescritor, nome, status_2, inscricao, data_inscricao, especialidade, usua_incl,
+                    data_incl) VALUES (?,(SELECT id_estado from estado where uf=?),?,?,?,?,?,?,?,?,?) `
+                , [dadosProfissionais[0].cidade_id_cidade,dadosProfissionais[0].estado_id_estado,
+                   dadosProfissionais[0].tipo_conselho_id_tipo_conselho,dadosProfissionais[0].tipo_prescritor_id_tipo_prescritor,
+                   dadosProfissionais[0].nome,dadosProfissionais[0].status_2,dadosProfissionais[0].inscricao,
+                   dadosProfissionais[0].data_inscricao,dadosProfissionais[0].especialidade,dadosProfissionais[0].usua_incl,
+                   dadosProfissionais[0].data_incl]
+                
+                , function (error, novoProfissional) {
+                    if (error) {
+                    return conn.rollback(function() {
+                        console.log('Erro no insert ' + error);
+                        throw error;
+                    });
+                    }
+
+            console.log('Criou no dim o ID ' + novoProfissional.insertId);
+            console.log('Ultimo ' + JSON.stringify(novoProfissional));
+
+            conn.commit(function(err) {
+              if (err) {
+                return conn.rollback(function() {                  
+                    throw err;
+                });
+              }
+              console.log('Sucesso!');              
+              return callback(null,novoprod);              
+            });
+          });
+        });
+      });    
+    }); 
 }
 
 ProfissionalDAO.prototype.atualiza = function(profissional, id, callback) {
@@ -190,11 +264,6 @@ ProfissionalDAO.prototype.buscaPorEquipe = function(id, callback) {
         INNER JOIN tb_profissional_equipe as pe ON (p.id = pe.idProfissional) 
         WHERE pe.idEquipe = ?`, id, callback);
 }
-
-
-
-
-
 
 module.exports = function(){
     return ProfissionalDAO;

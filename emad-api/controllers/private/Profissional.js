@@ -452,7 +452,8 @@ module.exports = function (app) {
     function salva(profissional, res) {
         delete profissional.id;
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.ProfissionalDAO(connection);
+        var connectionDim = app.dao.ConnectionFactoryDim();
+        var objDAO = new app.dao.ProfissionalDAO(connection, connectionDim);
         var q = require('q');
         var d = q.defer();
 
