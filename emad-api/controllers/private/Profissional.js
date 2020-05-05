@@ -262,7 +262,7 @@ module.exports = function (app) {
         var d = q.defer();
         var util = new app.util.Util();
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.ProfissionalDAO(connection);
+        var objDAO = new app.dao.ProfissionalDAO(connection, null);
 
         var errors = [];
 
@@ -285,7 +285,7 @@ module.exports = function (app) {
         var d = q.defer();
         var util = new app.util.Util();
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.ProfissionalDAO(connection);
+        var objDAO = new app.dao.ProfissionalDAO(connection, null);
 
         var errors = [];
 
@@ -309,7 +309,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.ProfissionalDAO(connection);
+        var objDAO = new app.dao.ProfissionalDAO(connection, null);
         var errors = [];
 
         objDAO.buscaPorId(id, function (exception, result) {
@@ -333,7 +333,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.ProfissionalDAO(connection);
+        var objDAO = new app.dao.ProfissionalDAO(connection, null);
         var errors = [];
 
         objDAO.buscaPorEquipe(id, function (exception, result) {
@@ -357,7 +357,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.ProfissionalDAO(connection);
+        var objDAO = new app.dao.ProfissionalDAO(connection, null);
         var errors = [];
 
         objDAO.buscarPorEstabelecimento(id, function (exception, result) {
@@ -381,7 +381,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.EstabelecimentoProfissionalDAO(connection);
+        var objDAO = new app.dao.EstabelecimentoProfissionalDAO(connection, null);
         var errors = [];
 
         objDAO.buscaPorUsuario(id, function (exception, result) {
@@ -406,7 +406,8 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.ProfissionalDAO(connection);
+        var connectionDim = app.dao.ConnectionFactoryDim();
+        var objDAO = new app.dao.ProfissionalDAO(connection, connectionDim);
         var errors = [];
 
         objDAO.deletaPorId(id, function (exception, result) {
@@ -431,7 +432,8 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.ProfissionalDAO(connection);
+        var connectionDim = app.dao.ConnectionFactoryDim();
+        var objDAO = new app.dao.ProfissionalDAO(connection, connectionDim);
         var errors = [];
 
         objDAO.atualiza(obj, id, function (exception, result) {
@@ -478,7 +480,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.EstabelecimentoProfissionalDAO(connection);
+        var objDAO = new app.dao.EstabelecimentoProfissionalDAO(connection, null);
         var errors = [];
 
         objDAO.deletaEstabelecimentosPorProfissional(id, function (exception, result) {
@@ -501,7 +503,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.EstabelecimentoProfissionalDAO(connection);
+        var objDAO = new app.dao.EstabelecimentoProfissionalDAO(connection, null);
         var errors = [];
 
         objDAO.atualizaEstabelecimentosPorProfissional(estabelecimentos, function (exception, result) {

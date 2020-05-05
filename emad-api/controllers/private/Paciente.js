@@ -39,6 +39,7 @@ module.exports = function (app) {
         var usuario = req.usuario;
         var util = new app.util.Util();
         var errors = [];
+        let idEstabelecimento = req.headers.est;
 
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
             req.assert("cartaoSus").notEmpty().withMessage("Cartão do SUS é um campo obrigatório;");
@@ -71,7 +72,7 @@ module.exports = function (app) {
             }
             obj.dataNascimento = util.dateToISO(obj.dataNascimento);
 
-            salva(obj, res).then(function (response) {
+            salva(obj, res, idEstabelecimento).then(function (response) {
                 obj.id = response.insertId;
                 res.status(201).send(obj);
             });
@@ -89,6 +90,7 @@ module.exports = function (app) {
         let errors = [];
         let id = obj.id;
         delete obj.id;
+        let idEstabelecimento = req.headers.est;
 
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
             req.assert("cartaoSus").notEmpty().withMessage("Cartão do SUS é um campo obrigatório;");
@@ -123,7 +125,7 @@ module.exports = function (app) {
 
             buscarPorId(id, res).then(function (response) {
                 if (typeof response != 'undefined') {
-                    atualizaPorId(obj, id, res).then(function (response2) {
+                    atualizaPorId(obj, id, res, idEstabelecimento).then(function (response2) {
                         res.status(200).json(obj);
                         return;
                     });
@@ -148,7 +150,7 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
 
-        if (usuario.idTipoUsuario == util.ADMIN) {
+        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
             deletaPorId(id, res).then(function (response) {
                 res.status(200).json(obj);
                 return;
@@ -184,7 +186,7 @@ module.exports = function (app) {
         var d = q.defer();
         var util = new app.util.Util();
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.PacienteDAO(connection);
+        var objDAO = new app.dao.PacienteDAO(connection, null);
 
         var errors = [];
 
@@ -208,7 +210,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.PacienteDAO(connection);
+        var objDAO = new app.dao.PacienteDAO(connection, null);
         var errors = [];
 
         objDAO.buscaPorId(id, function (exception, result) {
@@ -233,7 +235,8 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.PacienteDAO(connection);
+        var connectionDim = app.dao.ConnectionFactoryDim();
+        var objDAO = new app.dao.PacienteDAO(connection, connectionDim);
         var errors = [];
 
         objDAO.deletaPorId(id, function (exception, result) {
@@ -250,16 +253,17 @@ module.exports = function (app) {
         return d.promise;
     }
 
-    function atualizaPorId(obj, id, res) {
+    function atualizaPorId(obj, id, res, idEstabelecimento) {
         var q = require('q');
         var d = q.defer();
-        var util = new app.util.Util();
+        var util = new app.util.Util();        
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.PacienteDAO(connection);
+        var connectionDim = app.dao.ConnectionFactoryDim();
+        var objDAO = new app.dao.PacienteDAO(connection, connectionDim);
         var errors = [];
 
-        objDAO.atualiza(obj, id, function (exception, result) {
+        objDAO.atualiza(obj, id, idEstabelecimento, function (exception, result) {
             if (exception) {
                 d.reject(exception);
                 console.log(exception);
@@ -273,14 +277,15 @@ module.exports = function (app) {
         return d.promise;
     }
 
-    function salva(paciente, res) {
+    function salva(paciente, res, idEstabelecimento) {
         delete paciente.id;
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.PacienteDAO(connection);
+        var connectionDim = app.dao.ConnectionFactoryDim();
+        var objDAO = new app.dao.PacienteDAO(connection, connectionDim);
         var q = require('q');
         var d = q.defer();
 
-        objDAO.salva(paciente, function (exception, result) {
+        objDAO.salva(paciente, idEstabelecimento, function (exception, result) {
             if (exception) {
                 console.log('Erro ao inserir Tipo de servico', exception);
                 res.status(500).send(exception);

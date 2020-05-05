@@ -13,76 +13,116 @@ ProfissionalDAO.prototype.salva = function(profissional, callback) {
 
     conn.beginTransaction(function(err) {
         if (err) { throw err; }
-        conn.query(`INSERT INTO ${table} SET geom = POINT(?, ?), ?`, [profissional.longitude, profissional.latitude, profissional], function (error, results) {
-          if (error) {
-            return conn.rollback(function() {
-                throw err;                
-            });
-          }   
-          novoprod = results;
-          console.log('Criou no e-atend o ID ' + results.insertId);
-          conn.query(`SELECT
-                        null as	cidade_id_cidade,
-                        tabelauf.uf as estado_id_estado,
-                        esp.id_tipo_conselho as tipo_conselho_id_tipo_conselho,
-                        esp.id_tipo_prescritor as tipo_prescritor_id_tipo_prescritor,
-                        UPPER(tp.nome) as nome,
-                        CASE WHEN tp.situacao = 1 THEN 'A' ELSE 'I' END as status_2,
-                        tp.crm inscricao,
-                        null as	data_inscricao,
-                        UPPER(cargoProfissional) as especialidade,
-                        6 usua_incl,
-                        now() as	data_incl
+        conn.query(`INSERT INTO ${table} SET geom = POINT(?, ?), ?`, [profissional.longitude, profissional.latitude, profissional], 
+        
+        function (error, results) {
+            if (error) {return conn.rollback(function() {throw error;});}   
+            
+                novoprod = results;
+                console.log('Criou no e-atend o ID ' + results.insertId);
+                conn.query(`SELECT null as	cidade_id_cidade, tabelauf.uf as estado_id_estado,
+                        esp.id_tipo_conselho as tipo_conselho_id_tipo_conselho, esp.id_tipo_prescritor as tipo_prescritor_id_tipo_prescritor,
+                        UPPER(tp.nome) as nome, CASE WHEN tp.situacao = 1 THEN 'A' ELSE 'I' END as status_2,
+                        tp.crm inscricao, null as	data_inscricao, UPPER(cargoProfissional) as especialidade, 6 usua_incl, now() as data_incl
                     from tb_profissional tp 
                     inner join tb_especialidade esp on esp.id = tp.idEspecialidade 
-                    inner join tb_uf tabelauf on tabelauf.id=tp.idUf 
-                    where tp.id = ?`, results.insertId, function (error, dadosProfissionais) {
+                    inner join tb_uf tabelauf on tabelauf.id=tp.idUf where tp.id = ?`, results.insertId, 
+                    
+            function (error, dadosProfissionais) {
+                if (error) {return conn.rollback(function() {console.log('Erro' + error);throw error;});}                
 
-                if (error) {
-                return conn.rollback(function() {
-                    console.log('Erro' + err);
-                    throw err;
-                });
-                }                
-                console.log('Select ' + JSON.stringify(dadosProfissionais));
-
-                connDim.query(`INSERT INTO profissional (cidade_id_cidade, estado_id_estado, tipo_conselho_id_tipo_conselho, 
-                    tipo_prescritor_id_tipo_prescritor, nome, status_2, inscricao, data_inscricao, especialidade, usua_incl,
-                    data_incl) VALUES (?,(SELECT id_estado from estado where uf=?),?,?,?,?,?,?,?,?,?) `
-                , [dadosProfissionais[0].cidade_id_cidade,dadosProfissionais[0].estado_id_estado,
-                   dadosProfissionais[0].tipo_conselho_id_tipo_conselho,dadosProfissionais[0].tipo_prescritor_id_tipo_prescritor,
-                   dadosProfissionais[0].nome,dadosProfissionais[0].status_2,dadosProfissionais[0].inscricao,
-                   dadosProfissionais[0].data_inscricao,dadosProfissionais[0].especialidade,dadosProfissionais[0].usua_incl,
-                   dadosProfissionais[0].data_incl]
-                
-                , function (error, novoProfissional) {
-                    if (error) {
-                    return conn.rollback(function() {
-                        console.log('Erro no insert ' + error);
-                        throw error;
+                    console.log('Select ' + JSON.stringify(dadosProfissionais));
+                    connDim.query(`INSERT INTO profissional (cidade_id_cidade, estado_id_estado, tipo_conselho_id_tipo_conselho, 
+                        tipo_prescritor_id_tipo_prescritor, nome, status_2, inscricao, data_inscricao, especialidade, usua_incl,
+                        data_incl) VALUES (?,(SELECT id_estado from estado where uf=?),?,?,?,?,?,?,?,?,?) `
+                        , [dadosProfissionais[0].cidade_id_cidade,dadosProfissionais[0].estado_id_estado,
+                        dadosProfissionais[0].tipo_conselho_id_tipo_conselho,dadosProfissionais[0].tipo_prescritor_id_tipo_prescritor,
+                        dadosProfissionais[0].nome,dadosProfissionais[0].status_2,dadosProfissionais[0].inscricao,
+                        dadosProfissionais[0].data_inscricao,dadosProfissionais[0].especialidade,dadosProfissionais[0].usua_incl,
+                        dadosProfissionais[0].data_incl], 
+                        
+                        function (error, novoProfissional) {                    
+                            if (error) {return conn.rollback(function() {console.log('Erro no insert ' + error);throw error;});}
+        
+                                console.log('Criou no dim o ID ' + novoProfissional.insertId);                        
+        
+                                conn.query(`UPDATE ${table} SET idProfissionalCorrespondenteDim=? where id=?`,[novoProfissional.insertId,results.insertId],
+                                    
+                            function (error, atualizacaoInterna) {                    
+                                if (error) {return conn.rollback(function() {console.log('Erro no update inerno ' + error);throw error;});}
+                                console.log('Atualizou internamente ' + atualizacaoInterna); 
+                                
+                                conn.commit(
+                                    
+                                function(err) 
+                                    {if (err) {return conn.rollback(function() {throw err;});}
+                                
+                                    console.log('Sucesso!');              
+                                    return callback(null,novoprod);          
+                        });  
                     });
-                    }
-
-            console.log('Criou no dim o ID ' + novoProfissional.insertId);
-            console.log('Ultimo ' + JSON.stringify(novoProfissional));
-
-            conn.commit(function(err) {
-              if (err) {
-                return conn.rollback(function() {                  
-                    throw err;
                 });
-              }
-              console.log('Sucesso!');              
-              return callback(null,novoprod);              
             });
-          });
-        });
-      });    
+        });    
     }); 
 }
 
 ProfissionalDAO.prototype.atualiza = function(profissional, id, callback) {
-    this._connection.query(`UPDATE ${this._table} SET geom = POINT(?, ?), ? WHERE id= ?`, [profissional.longitude, profissional.latitude, profissional, id], callback);
+    const conn = this._connection;
+    const connDim = this._connectionDim;
+    const table = this._table;
+
+    let novoprod = {};
+
+    conn.beginTransaction(function(err) {
+        if (err) { throw err; }
+        conn.query(`UPDATE ${table} SET geom = POINT(?, ?), ? WHERE id= ?`, [profissional.longitude, profissional.latitude, profissional, id], 
+        
+        function (error, results) {
+            if (error) {return conn.rollback(function() {throw error;});}   
+            
+                novoprod = results;
+                console.log('Update no e-atend do ID ' + id);
+                conn.query(`SELECT null as	cidade_id_cidade, tabelauf.uf as estado_id_estado,
+                        esp.id_tipo_conselho as tipo_conselho_id_tipo_conselho, esp.id_tipo_prescritor as tipo_prescritor_id_tipo_prescritor,
+                        UPPER(tp.nome) as nome, CASE WHEN tp.situacao = 1 THEN 'A' ELSE 'I' END as status_2,
+                        tp.crm inscricao, null as	data_inscricao, UPPER(cargoProfissional) as especialidade, 6 usua_alt, now() as data_alt, 
+                        idProfissionalCorrespondenteDim
+                    from tb_profissional tp 
+                    inner join tb_especialidade esp on esp.id = tp.idEspecialidade 
+                    inner join tb_uf tabelauf on tabelauf.id=tp.idUf where tp.id = ?`, id, 
+                    
+            function (error, dadosProfissionais) {
+                if (error) {return conn.rollback(function() {console.log('Erro' + error);throw error;});}                
+
+                    console.log('Select ' + JSON.stringify(dadosProfissionais));
+                    connDim.query(`UPDATE profissional SET cidade_id_cidade=?, estado_id_estado=(SELECT id_estado from estado where uf=?), tipo_conselho_id_tipo_conselho=?,
+                        tipo_prescritor_id_tipo_prescritor=?, nome=?, status_2=?, inscricao=?, data_inscricao=?, especialidade=?, usua_alt=?,
+                        data_alt=? WHERE id_profissional=?`
+                        , [dadosProfissionais[0].cidade_id_cidade,dadosProfissionais[0].estado_id_estado,
+                        dadosProfissionais[0].tipo_conselho_id_tipo_conselho,dadosProfissionais[0].tipo_prescritor_id_tipo_prescritor,
+                        dadosProfissionais[0].nome,dadosProfissionais[0].status_2,dadosProfissionais[0].inscricao,
+                        dadosProfissionais[0].data_inscricao,dadosProfissionais[0].especialidade,dadosProfissionais[0].usua_alt,
+                        dadosProfissionais[0].data_alt, dadosProfissionais[0].idProfissionalCorrespondenteDim], 
+                        
+                function (error, novoProfissional) {                    
+                    if (error) {return conn.rollback(function() {console.log('Erro no update ' + error);throw error;});}
+
+                        console.log('Atualizou no dim o ID ' + dadosProfissionais[0].idProfissionalCorrespondenteDim);
+                        console.log('Ultimo ' + JSON.stringify(novoProfissional));
+
+                        conn.commit(
+                        
+                    function(err) 
+                        {if (err) {return conn.rollback(function() {throw err;});}
+                        
+                        console.log('Sucesso!');              
+                        return callback(null,novoprod);             
+                    });
+                });
+            });
+        });    
+    }); 
 }
 
 ProfissionalDAO.prototype.listaPorEstabelecimento = function(estabelecimento, callback) {
@@ -242,7 +282,55 @@ ProfissionalDAO.prototype.buscaDominio = function (callback) {
 }
 
 ProfissionalDAO.prototype.deletaPorId = function (id,callback) {
-    this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
+    const conn = this._connection;
+    const connDim = this._connectionDim;
+    const table = this._table;
+
+    let novoprod = {};
+
+    conn.beginTransaction(function(err) {
+        if (err) { throw err; }
+        conn.query(`UPDATE ${table} SET situacao = 0 WHERE id = ?`, id, 
+        
+        function (error, results) {
+            if (error) {return conn.rollback(function() {throw error;});}   
+            
+                novoprod = results;
+                console.log('Update no e-atend do ID ' + id);
+                conn.query(`SELECT 
+                        CASE WHEN tp.situacao = 1 THEN 'A' ELSE 'I' END as status_2,
+                        6 usua_alt, 
+                        now() as data_alt, 
+                        idProfissionalCorrespondenteDim
+                    from tb_profissional tp where tp.id = ?`, id, 
+                    
+            function (error, dadosProfissionais) {
+                if (error) {return conn.rollback(function() {console.log('Erro' + error);throw error;});}                
+
+                    console.log('Select ' + JSON.stringify(dadosProfissionais));
+                    connDim.query(`UPDATE profissional SET status_2=?, usua_alt=?,
+                    data_alt=? WHERE id_profissional=?`
+                        , [dadosProfissionais[0].status_2,dadosProfissionais[0].usua_alt,
+                        dadosProfissionais[0].data_alt, dadosProfissionais[0].idProfissionalCorrespondenteDim], 
+                        
+                function (error, novoProfissional) {                    
+                    if (error) {return conn.rollback(function() {console.log('Erro no update ' + error);throw error;});}
+
+                        console.log('Atualizou no dim o ID ' + dadosProfissionais[0].idProfissionalCorrespondenteDim);
+                        console.log('Ultimo ' + JSON.stringify(novoProfissional));
+
+                        conn.commit(
+                        
+                    function(err) 
+                        {if (err) {return conn.rollback(function() {throw err;});}
+                        
+                        console.log('Sucesso!');              
+                        return callback(null,novoprod);             
+                    });
+                });
+            });
+        });    
+    }); 
 }
 
 ProfissionalDAO.prototype.dominio = function(callback) {

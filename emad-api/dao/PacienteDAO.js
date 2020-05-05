@@ -1,14 +1,205 @@
-function PacienteDAO(connection) {
+function PacienteDAO(connection, connectionDim) {
     this._connection = connection;
+    this._connectionDim = connectionDim;
     this._table = "tb_paciente";
 }
 
-PacienteDAO.prototype.salva = function (paciente, callback) {
-    this._connection.query(`INSERT INTO ${this._table} SET geom = POINT(?, ?), ?`, [paciente.longitude, paciente.latitude, paciente], callback);
+PacienteDAO.prototype.salva = function (paciente, idEstabelecimento, callback) {
+    const conn = this._connection;
+    const table = this._table;
+
+    const connDim = this._connectionDim;
+    let novoprod = {};
+    console.log('Estabelecimento ' + idEstabelecimento);
+
+    conn.beginTransaction(function(err) {
+        if (err) { throw err; }
+        conn.query(`INSERT INTO ${table} SET geom = POINT(?, ?), ?`, [paciente.longitude, paciente.latitude, paciente], 
+        
+        function (error, results) {
+            if (error) {return conn.rollback(function() {throw error;});}   
+            
+                novoprod = results;
+                console.log('Criou no e-atend o ID ' + results.insertId);
+                conn.query(`SELECT
+                CASE WHEN tp.situacao = 1 THEN 1 ELSE 2 END as id_status_paciente,
+                (SELECT idUnidadeCorrespondenteDim FROM tb_estabelecimento te where id=17) AS unidade_cadastro,
+                (SELECT idUnidadeCorrespondenteDim FROM tb_estabelecimento te where id=17) AS unidade_referida,
+                UPPER(mun.nome) AS cidade_id_cidade,
+                mun.uf,
+                UPPER(tp.nome) nome,
+                81 as tipo_logradouro,
+                UPPER(tp.logradouro) as nome_logradouro,
+                UPPER(tp.numero) as numero,
+                UPPER(tp.complemento) as complemento,
+                UPPER(tp.bairro) as bairro,
+                UPPER(tp.nomeMae) as nome_mae,
+                tp.sexo as sexo,
+                tp.dataNascimento as data_nasc,
+                CASE WHEN tp.situacao = 1 THEN 'A' ELSE 'I' END as status_2,
+                now() data_incl,
+                6 usua_incl,
+                tp.foneCelular as telefone,
+                REPLACE(REPLACE(tp.cpf,'.',''),'-','') as cpf,
+                UPPER(tp.nomeMae) as nome_mae_nasc,
+                UPPER(REPLACE(tp.nomeMae, ' ', '')) nome_mae_sem_espaco,
+                null as	num_pasta
+            from tb_paciente tp 
+            inner join tb_municipio mun on mun.id = tp.idMunicipio where tp.id = ?`, results.insertId, 
+                    
+            function (error, dadosPaciente) {
+                if (error) {return conn.rollback(function() {console.log('Erro' + error);throw error;});}                
+
+                    console.log('Select ' + JSON.stringify(dadosPaciente));
+                    connDim.query(`INSERT INTO paciente (id_status_paciente,unidade_cadastro,unidade_referida,cidade_id_cidade,nome,tipo_logradouro,
+                        nome_logradouro,numero,complemento,bairro,nome_mae,sexo,data_nasc,status_2,data_incl,usua_incl,telefone,cpf,nome_mae_nasc,
+                        nome_mae_sem_espaco,num_pasta) VALUES (?,?,?,
+                        (select cid.id_cidade from cidade cid inner join estado est on est.id_estado = cid.estado_id_estado where cid.nome=? and est.uf=? LIMIT 1),
+                        ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) `
+                        , [dadosPaciente[0].id_status_paciente,
+                        dadosPaciente[0].unidade_cadastro,
+                        dadosPaciente[0].unidade_referida,
+                        dadosPaciente[0].cidade_id_cidade,
+                        dadosPaciente[0].uf,
+                        dadosPaciente[0].nome,
+                        dadosPaciente[0].tipo_logradouro,
+                        dadosPaciente[0].nome_logradouro,
+                        dadosPaciente[0].numero,
+                        dadosPaciente[0].complemento,
+                        dadosPaciente[0].bairro,
+                        dadosPaciente[0].nome_mae,
+                        dadosPaciente[0].sexo,
+                        dadosPaciente[0].data_nasc,
+                        dadosPaciente[0].status_2,
+                        dadosPaciente[0].data_incl,
+                        dadosPaciente[0].usua_incl,
+                        dadosPaciente[0].telefone,
+                        dadosPaciente[0].cpf,
+                        dadosPaciente[0].nome_mae_nasc,
+                        dadosPaciente[0].nome_mae_sem_espaco,
+                        dadosPaciente[0].num_pasta], 
+                        
+                function (error, novoPaciente) {                    
+                    if (error) {return conn.rollback(function() {console.log('Erro no insert ' + error);throw error;});}
+
+                        console.log('Criou no dim o ID ' + novoPaciente.insertId);                        
+
+                        conn.query(`UPDATE ${table} SET idPacienteCorrespondenteDim=? where id=?`,[novoPaciente.insertId,results.insertId],
+                            
+                    function (error, atualizacaoInterna) {                    
+                        if (error) {return conn.rollback(function() {console.log('Erro no update inerno ' + error);throw error;});}
+                        console.log('Atualizou internamente ' + atualizacaoInterna); 
+
+                        conn.commit(                        
+                        function(err) 
+                            {if (err) {return conn.rollback(function() {throw err;});}
+                        
+                            console.log('Sucesso!');              
+                            return callback(null,novoprod);             
+                        });
+                    });
+                });
+            });    
+        }); 
+    }); 
 }
 
-PacienteDAO.prototype.atualiza = function (paciente, id, callback) {
-    this._connection.query(`UPDATE ${this._table} SET geom = POINT(?, ?), ? WHERE id= ?`, [paciente.longitude, paciente.latitude, paciente, id], callback);
+PacienteDAO.prototype.atualiza = function (paciente, id, idEstabelecimento, callback) {
+    const conn = this._connection;
+    const connDim = this._connectionDim;
+    const table = this._table;
+
+    let novoprod = {};
+
+    conn.beginTransaction(function(err) {
+        if (err) { throw err; }
+        conn.query(`UPDATE ${table} SET geom = POINT(?, ?), ? WHERE id= ?`, [paciente.longitude, paciente.latitude, paciente, id], 
+        
+        function (error, results) {
+            if (error) {return conn.rollback(function() {throw error;});}   
+            
+                novoprod = results;
+                console.log('Update no e-atend do ID ' + id);
+                conn.query(`SELECT 
+                                CASE WHEN tp.situacao = 1 THEN 1 ELSE 2 END as id_status_paciente,
+                                (SELECT idUnidadeCorrespondenteDim FROM tb_estabelecimento te where id=17) AS unidade_cadastro,
+                                (SELECT idUnidadeCorrespondenteDim FROM tb_estabelecimento te where id=17) AS unidade_referida,
+                                UPPER(mun.nome) AS cidade_id_cidade,
+                                mun.uf,
+                                UPPER(tp.nome) nome,
+                                81 as tipo_logradouro,
+                                UPPER(tp.logradouro) as nome_logradouro,
+                                UPPER(tp.numero) as numero,
+                                UPPER(tp.complemento) as complemento,
+                                UPPER(tp.bairro) as bairro,
+                                UPPER(tp.nomeMae) as nome_mae,
+                                tp.sexo as sexo,
+                                tp.dataNascimento as data_nasc,
+                                CASE WHEN tp.situacao = 1 THEN 'A' ELSE 'I' END as status_2,
+                                6 usua_alt, 
+                                now() as data_alt, 
+                                tp.foneCelular as telefone,
+                                REPLACE(REPLACE(tp.cpf,'.',''),'-','') as cpf,
+                                UPPER(tp.nomeMae) as nome_mae_nasc,
+                                UPPER(REPLACE(tp.nomeMae, ' ', '')) nome_mae_sem_espaco,
+                                null as	num_pasta,                     
+                                idPacienteCorrespondenteDim
+                            from tb_paciente tp 
+                            inner join tb_municipio mun on mun.id = tp.idMunicipio where tp.id = ?`, id, 
+                    
+            function (error, dadosPaciente) {
+                if (error) {return conn.rollback(function() {console.log('Erro' + error);throw error;});}                
+
+                    console.log('Select ' + JSON.stringify(dadosPaciente));
+                    connDim.query(`UPDATE paciente SET                     
+                                    id_status_paciente=?, unidade_cadastro=?, unidade_referida=?, 
+                                    cidade_id_cidade=(select cid.id_cidade from cidade cid inner join estado est on est.id_estado = cid.estado_id_estado where cid.nome=? and est.uf=? LIMIT 1),
+                                    nome=?, tipo_logradouro=?, 
+                                    nome_logradouro=?, numero=?, complemento=?, bairro=?, nome_mae=?, sexo=?, data_nasc=?, status_2=?, 
+                                    data_alt=?, usua_alt=?, telefone=?, cpf=?, nome_mae_nasc=?, nome_mae_sem_espaco=?, num_pasta=? 
+                                    WHERE id_paciente=?`,
+                                    [dadosPaciente[0].id_status_paciente,
+                                    dadosPaciente[0].unidade_cadastro,
+                                    dadosPaciente[0].unidade_referida,
+                                    dadosPaciente[0].cidade_id_cidade,
+                                    dadosPaciente[0].uf,
+                                    dadosPaciente[0].nome,
+                                    dadosPaciente[0].tipo_logradouro,
+                                    dadosPaciente[0].nome_logradouro,
+                                    dadosPaciente[0].numero,
+                                    dadosPaciente[0].complemento,
+                                    dadosPaciente[0].bairro,
+                                    dadosPaciente[0].nome_mae,
+                                    dadosPaciente[0].sexo,
+                                    dadosPaciente[0].data_nasc,
+                                    dadosPaciente[0].status_2,
+                                    dadosPaciente[0].data_alt,
+                                    dadosPaciente[0].usua_alt,
+                                    dadosPaciente[0].telefone,
+                                    dadosPaciente[0].cpf,
+                                    dadosPaciente[0].nome_mae_nasc,
+                                    dadosPaciente[0].nome_mae_sem_espaco,
+                                    dadosPaciente[0].num_pasta,
+                                    dadosPaciente[0].idPacienteCorrespondenteDim], 
+                        
+                function (error, novoPaciente) {                    
+                    if (error) {return conn.rollback(function() {console.log('Erro no update ' + error);throw error;});}
+
+                        console.log('Atualizou no dim o ID ' + dadosPaciente[0].idPacienteCorrespondenteDim);
+                        console.log('Ultimo ' + JSON.stringify(novoPaciente));
+
+                        conn.commit(
+                        
+                    function(err) 
+                        {if (err) {return conn.rollback(function() {throw err;});}
+                        
+                        console.log('Sucesso!');              
+                        return callback(null,novoprod);             
+                    });
+                });
+            });
+        });    
+    }); 
 }
 
 PacienteDAO.prototype.lista = function (addFilter, callback) {
@@ -174,7 +365,59 @@ PacienteDAO.prototype.buscaDominio = function (callback) {
 }
 
 PacienteDAO.prototype.deletaPorId = function (id,callback) {
-    this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
+    const conn = this._connection;
+    const connDim = this._connectionDim;
+    const table = this._table;
+
+    let novoprod = {};
+
+    conn.beginTransaction(function(err) {
+        if (err) { throw err; }
+        conn.query(`UPDATE ${table} SET situacao = 0 WHERE id = ?`, id, 
+        
+        function (error, results) {
+            if (error) {return conn.rollback(function() {throw error;});}   
+            
+                novoprod = results;
+                console.log('Update no e-atend do ID ' + id);
+                conn.query(`SELECT 
+                        CASE WHEN tp.situacao = 1 THEN 1 ELSE 2 END as id_status_paciente,
+                        CASE WHEN tp.situacao = 1 THEN 'A' ELSE 'I' END as status_2,
+                        6 usua_alt, 
+                        now() as data_alt, 
+                        idPacienteCorrespondenteDim
+                    from tb_paciente tp where tp.id = ?`, id, 
+                    
+            function (error, dadosPaciente) {
+                if (error) {return conn.rollback(function() {console.log('Erro' + error);throw error;});}                
+
+                    console.log('Select ' + JSON.stringify(dadosPaciente));
+                    connDim.query(`UPDATE paciente SET id_status_paciente=?, status_2=?, usua_alt=?,
+                    data_alt=? WHERE id_paciente=?`,
+                       [dadosPaciente[0].id_status_paciente,
+                        dadosPaciente[0].status_2,
+                        dadosPaciente[0].usua_alt,
+                        dadosPaciente[0].data_alt, 
+                        dadosPaciente[0].idPacienteCorrespondenteDim], 
+                        
+                function (error, novoPaciente) {                    
+                    if (error) {return conn.rollback(function() {console.log('Erro no update ' + error);throw error;});}
+
+                        console.log('Atualizou no dim o ID ' + dadosPaciente[0].idPacienteCorrespondenteDim);
+                        console.log('Ultimo ' + JSON.stringify(novoPaciente));
+
+                        conn.commit(
+                        
+                    function(err) 
+                        {if (err) {return conn.rollback(function() {throw err;});}
+                        
+                        console.log('Sucesso!');              
+                        return callback(null,novoprod);             
+                    });
+                });
+            });
+        });    
+    }); 
 }
 
 PacienteDAO.prototype.buscarEstabelecimentos = function (id, raio, idTipoUnidade, callback) {
