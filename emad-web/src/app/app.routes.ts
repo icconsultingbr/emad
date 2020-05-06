@@ -79,6 +79,7 @@ const appRoutes : Routes = [
     { path : 'atribuicao-caneta-form', component : AtribuicaoCanetaFormComponent, canActivate: [AuthGuard]  },
 
     { path : 'escala-profissional-form', component : EscalaProfissionalFormComponent, canActivate: [AuthGuard]  },
+    { path : 'escala-profissional-form/id/:id', component : EscalaProfissionalFormComponent, canActivate: [AuthGuard]  }, 
 
     { path : 'tipo-unidade', component : TipoUnidadeComponent, canActivate: [AuthGuard]  },
     { path : 'tipo-unidade-form', component : TipoUnidadeFormComponent, canActivate: [AuthGuard]  },

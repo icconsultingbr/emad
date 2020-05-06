@@ -90,7 +90,8 @@ module.exports = function (app) {
         var errors = [];
         let estabelecimentos = obj.estabelecimentos;
         let arrEstabelecimentos = [];
-
+        let arrEstabelecimentosDim = [];
+        
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
             req.assert("cpf").notEmpty().withMessage("CPF é um campo obrigatório;");
             req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");
@@ -143,8 +144,19 @@ module.exports = function (app) {
 
                 deletaEstabelecimentosPorProfissional(obj.id, res).then(function (response3) {
                     atualizaEstabelecimentosPorProfissional(arrEstabelecimentos, res).then(function (response4) {
-                        res.status(201).json(obj);
-                        return;
+                        buscaEstabelecimentoPorProfissionalParaDim(obj.id, res).then(function (response5) {
+                            
+                            estabelecimentosDIM = response5;                           
+
+                            for (var i = 0; i < estabelecimentosDIM.length; i++) {
+                                arrEstabelecimentosDim.push("(" + estabelecimentosDIM[i].idUnidadeCorrespondenteDim + ", " + estabelecimentosDIM[i].idProfissionalCorrespondenteDim + ", NOW(), 6)");
+                            }
+                            
+                            atualizaEstabelecimentosPorProfissionalDim(arrEstabelecimentosDim, res).then(function (response6) {
+                                res.status(201).json(obj);
+                                return;
+                            });
+                        });
                     });
                 });
             });
@@ -163,6 +175,7 @@ module.exports = function (app) {
         let id = obj.id;
         let estabelecimentos = obj.estabelecimentos;
         let arrEstabelecimentos = [];
+        let arrEstabelecimentosDim = [];
 
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
             req.assert("cpf").notEmpty().withMessage("CPF é um campo obrigatório;");
@@ -202,11 +215,9 @@ module.exports = function (app) {
             }
             obj.dataNascimento = util.dateToISO(obj.dataNascimento);
 
-
             delete obj.estabelecimentos;
 
             buscarPorId(id, res).then(function (response) {
-
 
                 if (typeof response != 'undefined') {
                     atualizaPorId(obj, id, res).then(function (response2) {
@@ -216,10 +227,22 @@ module.exports = function (app) {
                         for (var i = 0; i < estabelecimentos.length; i++) {
                             arrEstabelecimentos.push("(" + obj.id + ", " + estabelecimentos[i].id + ")");
                         }
+
                         deletaEstabelecimentosPorProfissional(obj.id, res).then(function (response3) {
                             atualizaEstabelecimentosPorProfissional(arrEstabelecimentos, res).then(function (response4) {
-                                res.status(201).json(obj);
-                                return;
+                                buscaEstabelecimentoPorProfissionalParaDim(obj.id, res).then(function (response5) {
+                                    
+                                    estabelecimentosDIM = response5;                           
+        
+                                    for (var i = 0; i < estabelecimentosDIM.length; i++) {
+                                        arrEstabelecimentosDim.push("(" + estabelecimentosDIM[i].idUnidadeCorrespondenteDim + ", " + estabelecimentosDIM[i].idProfissionalCorrespondenteDim + ", NOW(), 6)");
+                                    }
+                                    
+                                    atualizaEstabelecimentosPorProfissionalDim(arrEstabelecimentosDim, res).then(function (response6) {
+                                        res.status(201).json(obj);
+                                        return;
+                                    });
+                                });
                             });
                         });
                     });
@@ -480,7 +503,8 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.EstabelecimentoProfissionalDAO(connection, null);
+        var connectionDim = app.dao.ConnectionFactoryDim();
+        var objDAO = new app.dao.EstabelecimentoProfissionalDAO(connection, connectionDim);
         var errors = [];
 
         objDAO.deletaEstabelecimentosPorProfissional(id, function (exception, result) {
@@ -503,7 +527,8 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.EstabelecimentoProfissionalDAO(connection, null);
+        var connectionDim = app.dao.ConnectionFactoryDim();
+        var objDAO = new app.dao.EstabelecimentoProfissionalDAO(connection, connectionDim);
         var errors = [];
 
         objDAO.atualizaEstabelecimentosPorProfissional(estabelecimentos, function (exception, result) {
@@ -520,4 +545,50 @@ module.exports = function (app) {
         return d.promise;
     }
 
+    function atualizaEstabelecimentosPorProfissionalDim(estabelecimentos, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connectionDim = app.dao.ConnectionFactoryDim();
+        var objDAO = new app.dao.EstabelecimentoProfissionalDAO(null, connectionDim);
+        var errors = [];
+
+        objDAO.atualizaEstabelecimentosPorProfissionalDim(estabelecimentos, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao editar os dados", "apagar permissoes");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }
+
+    function buscaEstabelecimentoPorProfissionalParaDim(id, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.EstabelecimentoProfissionalDAO(connection, null);
+        var errors = [];
+
+        objDAO.buscaEstabelecimentoPorProfissionalParaDim(id, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
+                res.status(500).send(errors);
+                return;
+            } else {
+
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }
 }

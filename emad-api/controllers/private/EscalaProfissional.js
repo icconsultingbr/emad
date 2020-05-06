@@ -137,6 +137,14 @@ module.exports = function (app) {
         }
     }); 
 
+    app.post('/escala-profissional/view-escala', function (req, res) {
+        let object = {};
+        object.msg = 'success';
+        res.status(200).json(object);
+        return;
+
+    });
+
     function buscarEscalaPorProfissionalAnoMes(id, anomes, res) {
         let q = require('q');
         let d = q.defer();
