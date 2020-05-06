@@ -5,5 +5,6 @@ export const environment = {
   avancado : 2,
   admin: 1, 
   socketUrl:'http://saude.icconsulting.com.br/api-eatende',
-  utc : 3
+  utc : 3,
+  virtualDirectory: "e-atende"
 };
