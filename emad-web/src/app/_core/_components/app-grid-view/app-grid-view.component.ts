@@ -631,7 +631,7 @@ export class AppGridViewComponent implements AfterViewInit {
       this.loading = false;
       window.open(
         uri,
-        '_blank'
+        url.self ? '_self' : '_blank'
       );
     });
   }

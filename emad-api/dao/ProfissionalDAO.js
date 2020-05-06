@@ -342,7 +342,7 @@ ProfissionalDAO.prototype.buscarPorEstabelecimento = function(id, callback) {
         SELECT t.id, t.nome 
         FROM ${this._table} as t 
         INNER JOIN tb_estabelecimento_profissional as ep ON (t.id = ep.idProfissional) 
-        WHERE ep.idEstabelecimento = ?`, id, callback);
+        WHERE ep.idEstabelecimento = ? AND t.situacao = 1 `, id, callback);
 }
 
 ProfissionalDAO.prototype.buscaPorEquipe = function(id, callback) {

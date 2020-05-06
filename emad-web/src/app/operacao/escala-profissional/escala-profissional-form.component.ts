@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { NgbModalRef, NgbModal, NgbCalendarIslamicUmalqura } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Util } from '../../_core/_util/Util';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { EscalaProfissionalService } from './escala-profissional.service';
 import { EscalaProfissional } from '../../_core/_models/EscalaProfissional';
 import { AusenciaProfissional } from '../../_core/_models/AusenciaProfissional';
@@ -28,11 +28,13 @@ export class EscalaProfissionalFormComponent implements OnInit {
   object: EscalaProfissional = new EscalaProfissional();
   domains: any[] = [];
   allItemsAusencia: any[] = [];
+  idProfissional: Number;
 
   constructor(
     private fb: FormBuilder,
     private service: EscalaProfissionalService,
     private modalService: NgbModal,
+    private route: ActivatedRoute,
     private router: Router) {
 
     for (let field of this.service.fields) {
@@ -43,10 +45,20 @@ export class EscalaProfissionalFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadDomains();
-    this.buscaProfissionais();   
-    this.createGroup();
+    this.route.params.subscribe(params => {
+      this.idProfissional = params['id'];
+
+      this.loadDomains();
+      this.buscaProfissionais(); 
+      this.createGroup();      
+
+      if (!Util.isEmpty(this.idProfissional)) {
+        this.object.idProfissional = this.idProfissional;
+        this.carregaAusenciaPorProfissional();
+      }
+    });
   }
+
 
   clear() {
     this.clearEscala();
