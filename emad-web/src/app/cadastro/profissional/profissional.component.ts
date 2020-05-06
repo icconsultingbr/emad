@@ -3,6 +3,7 @@ import { ProfissionalService } from './profissional.service';
 import { Profissional } from '../../_core/_models/Profissional';
 import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.service';
 import { Router } from '@angular/router';
+import { environment } from "../../../environments/environment";
 
 @Component({
   selector: 'app-profissional',
@@ -17,11 +18,13 @@ export class ProfissionalComponent implements OnInit {
   fields = [];
   fieldsSearch = [];
   object: Profissional = new Profissional();
+  virtualDirectory: String = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
+
   urls : any[] = [
     { 
       icon : 'fa-calendar',
       label : 'Escala',
-      url : this.router.url.replace('profissional','') + "escala-profissional-form/id/{id}",
+      url : this.router.url.replace('profissional','') + this.virtualDirectory + "escala-profissional-form/id/{id}",
       log: 'escala-profissional/view-escala',
       title: 'Visualizar escala',
       self: true

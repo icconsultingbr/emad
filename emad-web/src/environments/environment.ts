@@ -10,5 +10,6 @@ export const environment = {
   avancado : 2,
   admin: 1, 
   socketUrl:'http://localhost:4000',
-  utc : 0
+  utc : 0,
+  virtualDirectory: ""
 };
