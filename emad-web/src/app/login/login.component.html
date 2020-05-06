@@ -27,11 +27,6 @@
       obrigatória</span>
   </div>
 
-  <re-captcha name="captcha" formControlName="captcha" id="captcha" (resolved)="resolved($event)" siteKey="6LfS74QUAAAAAKduZqHaV2ljDSfgwTTqq_oY5wj-">
-
-  </re-captcha>
-
-
   <button class="btn btn-lg btn-primary btn-block mt-3" type="submit" [disabled]="loginForm.invalid || carregando">
     <i class="fa fa-circle-o-notch fa-spin text-left">
       <i *ngIf="carregando" class="fa fa-spinner"></i>
@@ -66,10 +61,7 @@
     <span *ngIf="forgotForm.controls.emailForgot.errors.required && forgotForm.controls.emailForgot.length >0" class="form-control alert-danger">Insira
       um email válido</span>
   </div>
-
-  <re-captcha name="captcha2" formControlName="captcha2" id="captcha2" (resolved)="resolved($event)" siteKey="6LfS74QUAAAAAKduZqHaV2ljDSfgwTTqq_oY5wj-"></re-captcha>
-
-
+  
   <button class="btn btn-lg btn-primary btn-block mt-2" type="submit" [disabled]="forgotForm.invalid || carregando">
     <i class="fa fa-circle-o-notch fa-spin text-left">
       <i *ngIf="carregando" class="fa fa-spinner"></i>

@@ -47,13 +47,11 @@ export class LoginComponent implements OnInit {
 
     this.loginForm = fb.group({
       email: ['', Validators.compose([Validators.required, Validators.email])],
-      senha: ['', Validators.required],
-      captcha: ['', Validators.required]
+      senha: ['', Validators.required]
     });
 
     this.forgotForm = fb.group({
-      emailForgot: ['', Validators.compose([Validators.required])],
-      captcha2: ['', Validators.required]
+      emailForgot: ['', Validators.compose([Validators.required])]
     });
 
   }
