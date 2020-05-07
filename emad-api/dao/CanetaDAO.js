@@ -23,6 +23,7 @@ CanetaDAO.prototype.lista = function(addFilter, callback) {
     c.id,
     c.idModeloCaneta,
     m.nome as nomeModeloCaneta,
+    concat(serialNumber,' (',m.nome,')') as nome,
     c.serialNumber, 
     c.situacao,
     c.idEstabelecimento,    
@@ -31,7 +32,7 @@ CanetaDAO.prototype.lista = function(addFilter, callback) {
     FROM ${this._table} c     
     INNER JOIN tb_estabelecimento e ON(c.idEstabelecimento = e.id) 
     INNER JOIN tb_modelo_caneta m ON(c.idModeloCaneta = m.id) 
-    WHERE 1=1 ${where}`,callback);    
+    WHERE 1=1  AND c.situacao = 1  ${where}`,callback);    
 }
 
 CanetaDAO.prototype.buscaPorId = function (id, callback) {
@@ -80,7 +81,8 @@ CanetaDAO.prototype.deletaPorId = function (id,callback) {
 }
 
 CanetaDAO.prototype.dominio = function(callback) {
-    this._connection.query("select c.id, concat(serialNumber,' (',m.nome,')') as nome FROM "+this._table+" c INNER JOIN tb_modelo_caneta m ON(c.idModeloCaneta = m.id) WHERE c.situacao = 1 ORDER BY c.serialNumber ASC",callback);
+    this._connection.query(`select c.id, concat(serialNumber,' (',m.nome,')') as nome FROM "+this._table+" c INNER JOIN tb_modelo_caneta m ON(c.idModeloCaneta = m.id) 
+    WHERE c.situacao = 1 ORDER BY c.serialNumber ASC`,callback);
 }
 
 module.exports = function(){

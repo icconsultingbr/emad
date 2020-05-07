@@ -19,3 +19,7 @@ export class EscalaProfissional {
     @Input() sabadoHorarioInicial: String;
     @Input() sabadoHorarioFinal: String;
 }
+
+export class EscalaProfissionalAnoMes {  
+    @Input() idMesEscala: Number;  
+}

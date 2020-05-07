@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Util } from '../../_core/_util/Util';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EscalaProfissionalService } from './escala-profissional.service';
-import { EscalaProfissional } from '../../_core/_models/EscalaProfissional';
+import { EscalaProfissional, EscalaProfissionalAnoMes } from '../../_core/_models/EscalaProfissional';
 import { AusenciaProfissional } from '../../_core/_models/AusenciaProfissional';
 
 @Component({
@@ -26,6 +26,7 @@ export class EscalaProfissionalFormComponent implements OnInit {
   ausenciaProfissional: AusenciaProfissional = new AusenciaProfissional();
   fields: any[] = [];
   object: EscalaProfissional = new EscalaProfissional();
+  mes: EscalaProfissionalAnoMes = new EscalaProfissionalAnoMes();
   domains: any[] = [];
   allItemsAusencia: any[] = [];
   idProfissional: Number;
@@ -66,8 +67,21 @@ export class EscalaProfissionalFormComponent implements OnInit {
   }
 
   clearEscala() {         
-    //this.object.anoEscala = "2020";
-    //this.object.idMesEscala = "";
+    this.mes.idMesEscala = 0;
+    this.object.domingoHorarioInicial = "";
+    this.object.domingoHorarioFinal = "";
+    this.object.segundaHorarioInicial = "";
+    this.object.segundaHorarioFinal = "";
+    this.object.tercaHorarioInicial = "";
+    this.object.tercaHorarioFinal = "";
+    this.object.quartaHorarioInicial = "";
+    this.object.quartaHorarioFinal = "";
+    this.object.quintaHorarioInicial = "";
+    this.object.quintaHorarioFinal = "";
+    this.object.sextaHorarioInicial = "";
+    this.object.sextaHorarioFinal = "";
+    this.object.sabadoHorarioInicial = "";
+    this.object.sabadoHorarioFinal = "";
   }
 
   clearAusencia() {    
@@ -87,7 +101,7 @@ export class EscalaProfissionalFormComponent implements OnInit {
         { id: 7, nome: "JULHO" },
         { id: 8, nome: "AGOSTO" },
         { id: 9, nome: "SETEMBRO" },
-        { id: 10, nome: "NOVEMBRO" },
+        { id: 10, nome: "OUTUBRO" },
         { id: 11, nome: "NOVEMBRO" },
         { id: 12, nome: "DEZEMBRO" },
       ],  

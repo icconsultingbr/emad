@@ -12,4 +12,5 @@ export class AtribuicaoCaneta {
 export class AtribuicaoCanetaHorario {        
     @Input() horarioInicial: String;
     @Input() horarioFinal: String;    
+    @Input() dataAtribuicao: Date;       
 }

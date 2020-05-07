@@ -52,7 +52,7 @@
                             Mês da escala<span class="text-danger font-weight-bold"> *</span>
                         </div>
                         <div class="col-xl-4">
-                            <select *ngIf="domains" class="custom-select d-block w-100" formControlName="idMesEscala" (change)="carregaEscalaPorProfissionalAnoMes()">
+                            <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="mes.idMesEscala" formControlName="idMesEscala" (change)="carregaEscalaPorProfissionalAnoMes()">
                                 <option [value]="null">Selecione...</option>
                                 <option *ngFor="let domain of domains[0]['idMesEscala']" value="{{domain.id}}">{{domain.nome}}
                                 </option>

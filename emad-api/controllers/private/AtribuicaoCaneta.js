@@ -8,6 +8,11 @@ module.exports = function (app) {
         let errors = [];
         let addFilter = req.query;
 
+        let idEstabelecimento = req.headers.est;
+
+        if(idEstabelecimento)
+            addFilter.idEstabelecimento = idEstabelecimento;    
+
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
             lista(addFilter, res).then(function (resposne) {
                 res.status(200).json(resposne);

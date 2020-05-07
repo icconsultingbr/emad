@@ -28,6 +28,10 @@ AtribuicaoCanetaDAO.prototype.lista = function(addFilter, callback) {
         where+=" AND profissional_caneta.idCaneta  = "+addFilter.idCaneta;
     }
 
+    if (addFilter.idEstabelecimento) {
+        where+=" AND c.idEstabelecimento  = "+addFilter.idEstabelecimento;
+    }
+
     this._connection.query(`SELECT 
     profissional_caneta.id,
     concat(c.serialNumber,' (',m.nome,')') AS nomeCaneta,
