@@ -121,17 +121,21 @@ module.exports = function (app) {
                     var client = new app.services.FichaDigitalService();
 
                     client.enviaFicha(result, function (status) {
+                        console.log("STATUS" + status);
 
                         if (status != 200) {
                             errors = util.customError(status, "FICHA DIGITAL", "Erro ao criar a ficha digital", null);
                             res.status(404).json(errors);
                         }
 
+                        console.log(result.email);
+
                         if(result.email != null){
                             obj.email = result.email;
                             mail.enviaEmailFicha(obj, "Abertura de atendimento", "createTreatment.html");
                         }
 
+                        console.log(result.email);
 
                         res.status(201).json(obj);
                     });

@@ -14,7 +14,8 @@ Mail.prototype.sendMail = function (usuario, _subject, _html) {
     const transporter = nodemailer.createTransport({
         host: "smtp.icconsulting.com.br",
         port: 587,
-        secure: false, // true for 465, false for other ports
+        secure: false,
+        requireTLS: true,
         auth: {
             user: "icconsulting@icconsulting.com.br",
             pass: "Acesso#01"
@@ -32,7 +33,7 @@ Mail.prototype.sendMail = function (usuario, _subject, _html) {
         var htmlResult = template.replace(/{{nome}}/g, usuario.nome).replace(/{{ano}}/g, year).replace(/{{email}}/g, usuario.email).replace(/{{SERVER_URL}}/g, SERVER_URL).replace(/{{TOKEN}}/g, usuario.hash).replace(/{{PASSWORD}}/g, usuario.generatedPassword);
 
         var mailOptions = {
-            from: '"EMAD" <icconsulting@icconsulting.com.br>',
+            from: '"E-ATENDE" <icconsulting@icconsulting.com.br>',
             to: usuario.email,
             subject: _subject,
             html: htmlResult
@@ -50,7 +51,7 @@ Mail.prototype.sendMail = function (usuario, _subject, _html) {
 
 Mail.prototype.enviaEmailFicha = function (obj, _subject, _html) {
 
-    console.log('teste');
+    console.log('testeficha');
     'use strict';
     const nodemailer = require('nodemailer');
     const fs = require('fs');
@@ -62,6 +63,7 @@ Mail.prototype.enviaEmailFicha = function (obj, _subject, _html) {
         host: "smtp.icconsulting.com.br",
         port: 587,
         secure: false, // true for 465, false for other ports
+        requireTLS: true,
         auth: {
             user: "icconsulting@icconsulting.com.br",
             pass: "Acesso#01"
@@ -104,9 +106,9 @@ Mail.prototype.enviaEmailFicha = function (obj, _subject, _html) {
             .replace(/{{hora}}/g, time);
 
         var mailOptions = {
-            from: '"EMAD" <icconsulting@icconsulting.com.br>',
+            from: '"E-ATENDE" <icconsulting@icconsulting.com.br>',
             to: obj.email ,
-            bcc: 'mauro@icconsulting.com.br, malmeida@icconsulting.com.br, sansonny@gmail.com',
+            bcc: 'mauro@icconsulting.com.br, malmeida@icconsulting.com.br',
             subject: _subject,
             html: htmlResult
         };
