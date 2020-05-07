@@ -33,6 +33,7 @@ export class AtribuicaoCanetaFormComponent implements OnInit {
   object: AtribuicaoCaneta = new AtribuicaoCaneta();
   domains: any[] = [];
   horarios: AtribuicaoCanetaHorario = new AtribuicaoCanetaHorario();
+  public today = new Date();
 
   constructor(
     private fb: FormBuilder,
@@ -59,7 +60,9 @@ export class AtribuicaoCanetaFormComponent implements OnInit {
   }
 
   clearAtribuicao() {    
-    this.object.idCaneta = 0;    
+    this.object.idCaneta = 0;  
+    this.object.periodoInicial = null;
+    this.object.periodoFinal = null;
     this.carregarCanetasDisponiveis();
   }
 
@@ -140,7 +143,8 @@ export class AtribuicaoCanetaFormComponent implements OnInit {
     this.service.removeAtribuicao(item.id).subscribe(result => {
       this.message = "Atribuição removida com sucesso!"
       this.loading = false;
-      this.clearAtribuicao();
+      this.object.idCaneta = 0;  
+      this.carregarCanetasDisponiveis();
     });
   }
 
@@ -156,7 +160,7 @@ export class AtribuicaoCanetaFormComponent implements OnInit {
       return;
     }
 
-    if (this.object.idCaneta <= 0)
+    if (this.object.idCaneta <= 0 || this.object.idCaneta.toString() == "null")
     {
       this.errors = [{message:"Obrigatório selecionar a caneta"}];
       this.loading = false;
@@ -244,32 +248,35 @@ export class AtribuicaoCanetaFormComponent implements OnInit {
     this.horarios.horarioInicial = "";
     this.horarios.horarioFinal = "";
 
-    if(!Util.isEmpty(this.form.value.dataAtribuicao))
+    var teste = this.horarios.dataAtribuicao;
+
+    if(!Util.isEmpty(this.horarios.dataAtribuicao))
     {
-      var ano = new Date(this.form.value.dataAtribuicao).getFullYear();
-      var mes = (new Date(this.form.value.dataAtribuicao).getMonth() + 1).toString();      
+      var ano = new Date(this.horarios.dataAtribuicao).getFullYear();
+      var mes = (new Date(this.horarios.dataAtribuicao).getMonth() + 1).toString();      
       var anoMes = ano + mes.padStart(2,'0');
 
-      var diaSemana = new Date(this.form.value.dataAtribuicao).getDay();
-
+      var diaSemana = new Date(this.horarios.dataAtribuicao).getDay();
+      
       this.findHorarioEscalaPorProfissional(anoMes, diaSemana);
     }    
   }
 
   carregarCanetasDisponiveis() {
     this.object.idCaneta = 0;
-    if (!Util.isEmpty(this.horarios.horarioInicial) && !Util.isEmpty(this.horarios.horarioFinal) && !Util.isEmpty(this.form.value.dataAtribuicao))
+    this.domains[0].idCaneta = [];
+    if (!Util.isEmpty(this.horarios.horarioInicial) && !Util.isEmpty(this.horarios.horarioFinal) && !Util.isEmpty(this.horarios.dataAtribuicao))
     {     
-        var periodoinicial = new Date(this.form.value.dataAtribuicao.getFullYear(),
-                               this.form.value.dataAtribuicao.getMonth(),                                
-                               this.form.value.dataAtribuicao.getDate(),                               
+        var periodoinicial = new Date(this.horarios.dataAtribuicao.getFullYear(),
+                               this.horarios.dataAtribuicao.getMonth(),                                
+                               this.horarios.dataAtribuicao.getDate(),                               
                                parseInt(this.horarios.horarioInicial.substring(2,0)),
                                parseInt(this.horarios.horarioInicial.substring(3)),
                                0);
 
-        var periodofinal = new Date(this.form.value.dataAtribuicao.getFullYear(),
-                               this.form.value.dataAtribuicao.getMonth(),                                
-                               this.form.value.dataAtribuicao.getDate(),                               
+        var periodofinal = new Date(this.horarios.dataAtribuicao.getFullYear(),
+                               this.horarios.dataAtribuicao.getMonth(),                                
+                               this.horarios.dataAtribuicao.getDate(),                               
                                parseInt(this.horarios.horarioFinal.substring(2,0)),
                                parseInt(this.horarios.horarioFinal.substring(3)),
                                0);
@@ -309,6 +316,11 @@ export class AtribuicaoCanetaFormComponent implements OnInit {
         this.errors = Util.customHTTPResponse(error);
       });
 
+    }
+    else if(!Util.isEmpty(this.horarios.dataAtribuicao))
+    {
+      var dataAtribuicao = this.horarios.dataAtribuicao.getFullYear() + "-" + this.twoDigits(1 + this.horarios.dataAtribuicao.getMonth()) + "-" + this.twoDigits(this.horarios.dataAtribuicao.getDate());
+      this.findHistoricoAtribuicoesPorProfissional(dataAtribuicao, "00:00", dataAtribuicao, "23:59");
     }
   }
 
