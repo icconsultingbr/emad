@@ -620,10 +620,18 @@ export class AppGridViewComponent implements AfterViewInit {
     }
   }
 
-  openCustomUrl(url : any, id : any) : void {
+  openCustomUrl(url : any, id : any, item : any) : void {
 
     let uri = url.url.replace("{id}", id);
 
+    if(item.ano_receita)
+      uri = uri.replace("{ano_receita}", item.ano_receita);
+
+    if(item.numero_receita)
+      uri = uri.replace("{numero_receita}", item.numero_receita);
+
+    if(item.unidade_receita)
+      uri = uri.replace("{unidade_receita}", item.unidade_receita);
 
     this.loading = true;
 

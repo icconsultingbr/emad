@@ -34,7 +34,13 @@ module.exports = function (app) {
         object.msg = 'success';
         res.status(200).json(object);
         return;
+    });
 
+    app.post('/atendimento/receita-medica', function (req, res) {
+        let object = {};
+        object.msg = 'success';
+        res.status(200).json(object);
+        return;
     });
 
     app.get('/atendimento/:id', function (req, res) {
@@ -121,17 +127,21 @@ module.exports = function (app) {
                     var client = new app.services.FichaDigitalService();
 
                     client.enviaFicha(result, function (status) {
+                        console.log("STATUS" + status);
 
                         if (status != 200) {
                             errors = util.customError(status, "FICHA DIGITAL", "Erro ao criar a ficha digital", null);
                             res.status(404).json(errors);
                         }
 
+                        console.log(result.email);
+
                         if(result.email != null){
                             obj.email = result.email;
                             mail.enviaEmailFicha(obj, "Abertura de atendimento", "createTreatment.html");
                         }
 
+                        console.log(result.email);
 
                         res.status(201).json(obj);
                     });
@@ -144,8 +154,6 @@ module.exports = function (app) {
             res.status(401).send(errors);
         }
     });
-
-
 
     app.put('/atendimento/parar-atendimento', function (req, res) {
 
@@ -189,7 +197,6 @@ module.exports = function (app) {
         }
     });
 
-
     app.put('/atendimento', function (req, res) {
 
         let usuario = req.usuario;
@@ -224,12 +231,99 @@ module.exports = function (app) {
                 return;
             }
 
+            let cabecalho = "";
+            let medicamentos = [];
+
             buscarPorId(id, res).then(function (response) {
                 if (typeof response != 'undefined') {
-                    atualizaPorId(obj, id, res).then(function (response2) {
-                        obj.id = id;
-                        res.status(200).json(obj);
-                        return;
+                    atualizaPorId(obj, id, res).then(function (response2) {                       
+                        if(!obj)
+                            return;    
+                    
+                        obj.unidade_receita = response.unidade_receita;
+                        obj.ano_receita = response.ano_receita;
+                        if(response.numero_receita)
+                            obj.numero_receita = response.numero_receita;
+
+                        buscaCabecalhoReceitaDim(id, res).then(function (response3) {
+                            cabecalho = response3;
+
+                            if(cabecalho)
+                            {
+                                if (!cabecalho.paciente) {
+                                    errors = util.customError(errors, "body", "O paciente não está cadastro no E-CARE", null);
+                                    res.status(404).json(errors);
+                                    return;
+                                } 
+
+                                if (!cabecalho.prescritor) {
+                                    errors = util.customError(errors, "body", "O profissional não está cadastro no E-CARE", null);
+                                    res.status(404).json(errors);
+                                    return;
+                                } 
+
+                                buscaPorUfNomeDim(cabecalho.cidade, cabecalho.uf, res).then(function (response4) {   
+
+                                    if (!response4.id_cidade || response4.id_cidade == 0) {
+                                        errors = util.customError(errors, "RECEITA MÉDICA", "Cidade " + cabecalho.cidade + " não encontrada no E-CARE", null);
+                                        res.status(404).json(errors);
+                                        return;
+                                    } 
+
+                                    cabecalho.cidade = response4.id_cidade;                                         
+                                    delete cabecalho.uf;
+
+                                    buscaMedicamentoParaReceitaDim(id, res).then(function (response5) { 
+                                        medicamentos = response5;                                                                           
+    
+                                        var dim = new app.services.DimMedicamentoService();
+    
+                                        if(medicamentos && medicamentos.length>0){
+                                                dim.enviaReceitaMedicaDim(cabecalho, medicamentos, function (response6, status) {   
+
+                                                    if (status != 200) {
+                                                        errors = util.customError(status, "RECEITA MÉDICA", "Erro ao enviar a receita médica", null);
+                                                        res.status(404).json(errors);
+                                                        return;
+                                                    }                                        
+            
+                                                    var idReceita;
+                                                    var numeroReceita;
+            
+                                                    if(response6.split("|") && response6.includes("RIS-")){
+                                                        idReceita = response6.split("|")[1].substr(0,response6.split("|")[1].indexOf('*'));
+                                                        numeroReceita = response6.substr(0,response6.indexOf('|')).replace("RIS-",""); 
+                                                                                                                
+                                                        console.log("numeroReceita" + numeroReceita);
+
+                                                        confirmaMedicamentoParaReceitaDim(id, idReceita, numeroReceita, res).then(function (response7) {
+                                                            obj.id = id;   
+                                                            obj.numero_receita = numeroReceita;
+                                                            res.status(200).json(obj);
+                                                            return;                    
+                                                        });
+                                                    }
+                                                    else{
+                                                        obj.id = id;   
+                                                        res.status(200).json(obj);
+                                                        return; 
+                                                    }                                                                                                  
+                                                });
+                                        }
+                                        else{
+                                            obj.id = id;   
+                                            res.status(200).json(obj);
+                                            return;  
+                                        }                                         
+                                    });
+                                });
+                            }
+                            else{
+                                obj.id = id;   
+                                res.status(200).json(obj);
+                                return;  
+                            }                            
+                        });
                     });
                 }
                 else {
@@ -335,6 +429,79 @@ module.exports = function (app) {
         return d.promise;
     }
 
+    function buscaCabecalhoReceitaDim(id, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.AtendimentoDAO(connection);
+        var errors = [];
+
+        objDAO.buscaCabecalhoReceitaDim(id, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao carregar o cabeçalho dos medicamentos", "obj");
+                res.status(500).send(errors);
+                return;
+            } else {
+
+                d.resolve(result[0]);
+            }
+        });
+        return d.promise;
+    }
+
+    function buscaMedicamentoParaReceitaDim(id, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.AtendimentoMedicamentoDAO(connection);
+        var errors = [];
+
+        objDAO.buscaMedicamentoParaReceitaDim(id, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao carregar medicamentos para envio da receita", "obj");
+                res.status(500).send(errors);
+                return;
+            } else {
+
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }
+
+    function buscaPorUfNomeDim(nomecidade, uf, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var connectionDim = app.dao.ConnectionFactoryDim();
+        var objDAO = new app.dao.MunicipioDAO(connection, connectionDim);
+        var errors = [];
+
+        objDAO.buscaPorUfNomeDim(nomecidade, uf, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao carregar a cidade do DIM", "obj");
+                res.status(500).send(errors);
+                return;
+            } else {
+
+                d.resolve(result[0]);
+            }
+        });
+        return d.promise;
+    }    
+
     function buscaPorPacienteId(id, usuario, idEstabelecimento, res) {
         var q = require('q');
         var d = q.defer();
@@ -407,6 +574,28 @@ module.exports = function (app) {
         return d.promise;
     }
 
+    function confirmaMedicamentoParaReceitaDim(id, idReceita, numeroReceita, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.AtendimentoMedicamentoDAO(connection);
+        var errors = [];
+
+        objDAO.confirmaMedicamentoParaReceitaDim(id, idReceita, numeroReceita, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao atualizar os dados dos medicamentos", "atendimento");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result[0]);
+            }
+        });
+        return d.promise;
+    }
 
     function finalizaAtendmento(obj, id, res) {
 

@@ -36,6 +36,10 @@
       <button *ngIf="object.id" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreAtendimentoFichaDigital(object.id)">
         <i class="fa fa-file-alt"></i>
       </button>
+
+      <button *ngIf="object.id && object.ano_receita && object.numero_receita && object.unidade_receita" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreReceitaMedica(object.ano_receita, object.numero_receita, object.unidade_receita)">
+        <i class="fa fa-file-medical-alt"></i>
+      </button>
     </div>
     <div class="card-body text-left">
       <div class="row">
@@ -91,6 +95,29 @@
                 <option value="2">Tipo ficha 2</option>
                 <option value="3">Tipo ficha 3</option>
               </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4" *ngIf="object.idPaciente">
+    <div class="card-header text-left">
+      Profissional responsável
+    </div>
+    <div class="card-body text-left">
+      <div class="row">
+        <div class="col-xl-6">
+          <div class="form-group row">
+            <label class="col-xl-4 col-form-label text-left">
+              Profissional<span class="text-danger font-weight-bold"> *</span>
+            </label>
+            <div class="col-xl-8">   
+              <select *ngIf="domains" class="custom-select d-block w-100" formControlName="idProfissional" [(ngModel)]="object.idProfissional">
+                <option [value]="null">Selecione...</option>
+                <option *ngFor="let item of domains[0]?.profissionais" [value]="item.id">{{item.nome}}</option>
+              </select>   
             </div>
           </div>
         </div>

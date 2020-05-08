@@ -93,7 +93,7 @@ EstabelecimentoDAO.prototype.buscaDominio = function (callback) {
 }
 
 EstabelecimentoDAO.prototype.dominio = function (callback) {
-    this._connection.query("select id, razaoSocial as nome FROM "+this._table, callback);
+    this._connection.query("select id, razaoSocial as nome FROM "+this._table + " WHERE situacao = 1", callback);
 }
 
 EstabelecimentoDAO.prototype.deletaPorId = function (id,callback) {
