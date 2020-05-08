@@ -19,4 +19,5 @@ export class Atendimento {
     @Input() dataFinalizacao : String = null;
     @Input() dataCancelamento : String = null;
     @Input() idEstabelecimento : Number = +JSON.parse(localStorage.getItem("est"))[0].id;
+    @Input() idProfissional: Number = null;
 }

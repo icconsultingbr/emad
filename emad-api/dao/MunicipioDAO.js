@@ -1,5 +1,6 @@
-function MunicipioDAO(connection) {
+function MunicipioDAO(connection,connectionDim) {
     this._connection = connection;
+    this._connectionDim = connectionDim;
     this._table = "tb_municipio";
 }
 
@@ -22,7 +23,12 @@ MunicipioDAO.prototype.buscarPorMunicipio = function (municipio,callback) {
     this._connection.query("select id from "+this._table+" where nome = ?",municipio,callback);
 }
 
-
+MunicipioDAO.prototype.buscaPorUfNomeDim = function (nome_cidade, uf,callback) {
+    this._connectionDim.query(
+    `select cid.id_cidade 
+    from cidade cid inner join estado est on est.id_estado = cid.estado_id_estado 
+    where cid.nome=? and est.uf=? LIMIT 1`,[nome_cidade,uf],callback);
+}
 
 module.exports = function(){
     return MunicipioDAO;

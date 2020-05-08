@@ -3,10 +3,7 @@ function AtendimentoDAO(connection) {
     this._table = "tb_atendimento";
 }
 
-
-
-AtendimentoDAO.prototype.lista = function(addFilter, callback) {   
-
+AtendimentoDAO.prototype.lista = function(addFilter, callback) { 
     let where = "";
 
     if(addFilter != null){       
@@ -64,7 +61,7 @@ AtendimentoDAO.prototype.lista = function(addFilter, callback) {
         a.idEstabelecimento, 
         e.nomeFantasia, 
         a.idUsuario, 
-        u.nome, 
+        pro.nome, 
         a.situacao,
     CASE
         WHEN a.dataFinalizacao IS NOT NULL THEN 'Finalizado'
@@ -78,10 +75,10 @@ AtendimentoDAO.prototype.lista = function(addFilter, callback) {
     INNER JOIN tb_paciente p ON(a.idPaciente = p.id)  
     INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
     INNER JOIN tb_usuario u ON(a.idUsuario = u.id) 
+    INNER JOIN tb_profissional pro on pro.id = a.idProfissional
     WHERE 1=1 ${where} 
     ORDER BY a.id DESC`, callback);
 }
-
 
 AtendimentoDAO.prototype.listaPorUsuario = function(id, addFilter, callback) {   
     let where = "";
@@ -141,7 +138,7 @@ AtendimentoDAO.prototype.listaPorUsuario = function(id, addFilter, callback) {
         a.idEstabelecimento, 
         e.nomeFantasia, 
         a.idUsuario, 
-        u.nome, 
+        pro.nome, 
         a.situacao, 
         CASE
             WHEN a.dataFinalizacao IS NOT NULL THEN 'Finalizado'
@@ -155,14 +152,13 @@ AtendimentoDAO.prototype.listaPorUsuario = function(id, addFilter, callback) {
     INNER JOIN tb_paciente p ON(a.idPaciente = p.id)  
     INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
     INNER JOIN tb_usuario u ON(a.idUsuario = u.id) 
+    INNER JOIN tb_profissional pro on pro.id = a.idProfissional
     WHERE a.idUsuario = ? ${where} 
     ORDER BY a.id DESC`, id, callback);
 }
 
-
 AtendimentoDAO.prototype.buscaPorId = function (id,callback) {
     this._connection.query("select p.nome, a.* from " +this._table + " a INNER JOIN tb_paciente p ON(a.idPaciente = p.id) WHERE a.id = ?" ,id,callback); 
-
 }
 
 AtendimentoDAO.prototype.buscaPorPacienteId = function (idPaciente, usuario, idEstabelecimento, callback) {
@@ -179,21 +175,38 @@ AtendimentoDAO.prototype.atualiza = function(objeto,id, callback) {
 }
 
 AtendimentoDAO.prototype.finaliza = function(objeto,id, callback) {
-
     if(objeto.tipo == 'C'){
         this._connection.query("UPDATE "+this._table+" SET dataCancelamento = CURRENT_TIMESTAMP where id= ?", id, callback);
 
     } else if(objeto.tipo == 'F'){
         this._connection.query("UPDATE "+this._table+" SET dataFinalizacao = CURRENT_TIMESTAMP where id= ?", id, callback);
     }
-
-
 }
 
 AtendimentoDAO.prototype.deletaPorId = function (id,callback) {
     this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
 }
 
+AtendimentoDAO.prototype.buscaCabecalhoReceitaDim = function (id, callback) {
+    this._connection.query(`SELECT 
+                                YEAR(now()) as ano,
+                                est.idUnidadeRegistroReceitaDim as unidade,
+                                pac.idPacienteCorrespondenteDim as paciente,
+                                pro.idProfissionalCorrespondenteDim as prescritor,
+                                0 as id_mandado_judicial,
+                                6 as id_login, 
+                                pac.idPacienteCorrespondenteDim as id_paciente,
+                                est.idUnidadeRegistroReceitaDim as id_unidade_sistema,
+                                UUID() as num_controle,
+                                mun.nome cidade,
+                                mun.uf      
+                            from tb_atendimento atend
+                            inner join tb_estabelecimento est on est.id = atend.idEstabelecimento 
+                            inner join tb_paciente pac on pac.id = atend.idPaciente 
+                            inner join tb_profissional pro on pro.id = atend.idProfissional
+                            inner join tb_municipio mun on mun.id = est.idMunicipio 
+                            WHERE  atend.id = ?` , id, callback); 
+}
 
 module.exports = function(){
     return AtendimentoDAO;
