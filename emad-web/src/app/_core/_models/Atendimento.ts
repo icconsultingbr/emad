@@ -20,4 +20,7 @@ export class Atendimento {
     @Input() dataCancelamento : String = null;
     @Input() idEstabelecimento : Number = +JSON.parse(localStorage.getItem("est"))[0].id;
     @Input() idProfissional: Number = null;
+    @Input() ano_receita: Number = null;
+    @Input() numero_receita: Number = null;
+    @Input() unidade_receita: Number = null;
 }

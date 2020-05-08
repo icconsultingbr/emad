@@ -339,9 +339,20 @@ export class AtendimentoFormComponent implements OnInit {
       .subscribe(res => {
 
         this.object.id = res.id;
+        if(res.ano_receita)        
+          this.object.ano_receita = res.ano_receita;
+
+        if(res.numero_receita)
+          this.object.numero_receita = res.numero_receita;
+
+        if(res.unidade_receita)
+          this.object.unidade_receita = res.unidade_receita;
 
         if (this.form.value.id) {
           this.message = "Alteração efetuada com sucesso!";
+
+          if(!Util.isEmpty(this.object.ano_receita) && !Util.isEmpty(this.object.numero_receita) && !Util.isEmpty(this.object.unidade_receita))
+            this.abreReceitaMedica(this.object.ano_receita, this.object.numero_receita, this.object.unidade_receita);
         } else {
           this.abreFichaDigital(this.object.id);
         }
@@ -599,6 +610,22 @@ export class AtendimentoFormComponent implements OnInit {
   abreFichaDigital(id: Number) {
     this.errors = [];
     let url = `http://saude.icconsulting.com.br/aps/download?fileName=${id}.pdf`;
+    this.loading = true;
+    this.service.printDocument(url).subscribe(result => {
+      this.loading = false;
+      window.open(
+        url,
+        '_blank'
+      );
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+
+  abreReceitaMedica(ano_receita: Number, numero_receita: Number, unidade_receita: Number) {
+    this.errors = [];
+    let url = `http://saude.icconsulting.com.br/ecare//modulos/consulta/recibo_receita_pdf.php?ano=${ano_receita}&numero=${numero_receita}&unidade=${unidade_receita}`;
     this.loading = true;
     this.service.printDocument(url).subscribe(result => {
       this.loading = false;

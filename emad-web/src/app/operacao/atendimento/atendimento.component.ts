@@ -32,6 +32,13 @@ export class AtendimentoComponent implements OnInit {
       log: 'atendimento/open-document',
       title: 'Ver ficha'
     }, 
+    { 
+      icon : 'fa-file-medical-alt',
+      label : '',
+      url : 'http://saude.icconsulting.com.br/ecare//modulos/consulta/recibo_receita_pdf.php?ano={ano_receita}&numero={numero_receita}&unidade={unidade_receita}',    
+      log: 'atendimento/receita-medica',
+      title: 'Ver receita'
+    },
   ]
 
   constructor(

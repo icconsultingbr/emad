@@ -34,7 +34,13 @@ module.exports = function (app) {
         object.msg = 'success';
         res.status(200).json(object);
         return;
+    });
 
+    app.post('/atendimento/receita-medica', function (req, res) {
+        let object = {};
+        object.msg = 'success';
+        res.status(200).json(object);
+        return;
     });
 
     app.get('/atendimento/:id', function (req, res) {
@@ -232,43 +238,91 @@ module.exports = function (app) {
                 if (typeof response != 'undefined') {
                     atualizaPorId(obj, id, res).then(function (response2) {                       
                         if(!obj)
-                            return;
+                            return;    
+                    
+                        obj.unidade_receita = response.unidade_receita;
+                        obj.ano_receita = response.ano_receita;
+                        if(response.numero_receita)
+                            obj.numero_receita = response.numero_receita;
 
                         buscaCabecalhoReceitaDim(id, res).then(function (response3) {
                             cabecalho = response3;
-                            console.log("cabeçalho" + JSON.stringify(cabecalho));
 
-                            buscaPorUfNomeDim(cabecalho.cidade, cabecalho.uf, res).then(function (response4) {   
-                                cabecalho.cidade = response4.id_cidade;                                
-                                console.log("cidadeid do dim" + cabecalho.cidade);                                
-                                delete cabecalho.uf;
+                            if(cabecalho)
+                            {
+                                if (!cabecalho.paciente) {
+                                    errors = util.customError(errors, "body", "O paciente não está cadastro no E-CARE", null);
+                                    res.status(404).json(errors);
+                                    return;
+                                } 
 
-                                buscaMedicamentoParaReceitaDim(id, res).then(function (response5) { 
-                                    medicamentos = response5;                                    
-                                    console.log("medicamentos" + JSON.stringify(medicamentos));
+                                if (!cabecalho.prescritor) {
+                                    errors = util.customError(errors, "body", "O profissional não está cadastro no E-CARE", null);
+                                    res.status(404).json(errors);
+                                    return;
+                                } 
 
-                                    var dim = new app.services.DimMedicamentoService();
+                                buscaPorUfNomeDim(cabecalho.cidade, cabecalho.uf, res).then(function (response4) {   
 
-                                    dim.enviaReceitaMedicaDim(cabecalho, medicamentos, function (response6, status) { 
-                                        console.log(status);
-                                        console.log(response6);
-                
-                                        if (status != 200) {
-                                            errors = util.customError(status, "RECEITA MÉDICA", "Erro ao enviar a receita médica", null);
-                                            res.status(404).json(errors);
-                                        }                                        
+                                    if (!response4.id_cidade || response4.id_cidade == 0) {
+                                        errors = util.customError(errors, "RECEITA MÉDICA", "Cidade " + cabecalho.cidade + " não encontrada no E-CARE", null);
+                                        res.status(404).json(errors);
+                                        return;
+                                    } 
 
-                                        var idReceita = response6.split("|")[1].substr(0,response6.split("|")[1].indexOf('*'));
-                                        var numeroReceita = response6.substr(0,response6.indexOf('|')).replace("RIS-","");                                       
-                                        
-                                        confirmaMedicamentoParaReceitaDim(id, idReceita, numeroReceita, res).then(function (response7) {
+                                    cabecalho.cidade = response4.id_cidade;                                         
+                                    delete cabecalho.uf;
+
+                                    buscaMedicamentoParaReceitaDim(id, res).then(function (response5) { 
+                                        medicamentos = response5;                                                                           
+    
+                                        var dim = new app.services.DimMedicamentoService();
+    
+                                        if(medicamentos && medicamentos.length>0){
+                                                dim.enviaReceitaMedicaDim(cabecalho, medicamentos, function (response6, status) {   
+
+                                                    if (status != 200) {
+                                                        errors = util.customError(status, "RECEITA MÉDICA", "Erro ao enviar a receita médica", null);
+                                                        res.status(404).json(errors);
+                                                        return;
+                                                    }                                        
+            
+                                                    var idReceita;
+                                                    var numeroReceita;
+            
+                                                    if(response6.split("|") && response6.includes("RIS-")){
+                                                        idReceita = response6.split("|")[1].substr(0,response6.split("|")[1].indexOf('*'));
+                                                        numeroReceita = response6.substr(0,response6.indexOf('|')).replace("RIS-",""); 
+                                                                                                                
+                                                        console.log("numeroReceita" + numeroReceita);
+
+                                                        confirmaMedicamentoParaReceitaDim(id, idReceita, numeroReceita, res).then(function (response7) {
+                                                            obj.id = id;   
+                                                            obj.numero_receita = numeroReceita;
+                                                            res.status(200).json(obj);
+                                                            return;                    
+                                                        });
+                                                    }
+                                                    else{
+                                                        obj.id = id;   
+                                                        res.status(200).json(obj);
+                                                        return; 
+                                                    }                                                                                                  
+                                                });
+                                        }
+                                        else{
                                             obj.id = id;   
                                             res.status(200).json(obj);
-                                            return;                    
-                                        });
+                                            return;  
+                                        }                                         
                                     });
                                 });
-                            });
+                            }
+                            else{
+                                obj.id = id;   
+                                res.status(200).json(obj);
+                                return;  
+                            }                            
                         });
                     });
                 }

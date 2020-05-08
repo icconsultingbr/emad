@@ -36,6 +36,10 @@
       <button *ngIf="object.id" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreAtendimentoFichaDigital(object.id)">
         <i class="fa fa-file-alt"></i>
       </button>
+
+      <button *ngIf="object.id && object.ano_receita && object.numero_receita && object.unidade_receita" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreReceitaMedica(object.ano_receita, object.numero_receita, object.unidade_receita)">
+        <i class="fa fa-file-medical-alt"></i>
+      </button>
     </div>
     <div class="card-body text-left">
       <div class="row">
@@ -112,12 +116,8 @@
             <div class="col-xl-8">   
               <select *ngIf="domains" class="custom-select d-block w-100" formControlName="idProfissional" [(ngModel)]="object.idProfissional">
                 <option [value]="null">Selecione...</option>
-                <option *ngFor="let item of domains[0].profissionais" [value]="item.id">{{item.nome}}</option>
-              </select>           
-              <!-- <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idProfissional">
-                <option [value]="null">Selecione...</option>
-                <option *ngFor="let item of domains[0].profissionais" [value]="item.id">{{item.nome}}</option>
-              </select> -->
+                <option *ngFor="let item of domains[0]?.profissionais" [value]="item.id">{{item.nome}}</option>
+              </select>   
             </div>
           </div>
         </div>

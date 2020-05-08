@@ -221,7 +221,7 @@
                         <i class="fa fa-trash-alt"></i> {{showLabels ? 'Remover' : ''}}
                     </a>
 
-                    <a *ngFor="let url of customUrls" class="btn btn-link" [routerLink]="" (click)="openCustomUrl(url, item.id)">
+                    <a *ngFor="let url of customUrls" class="btn btn-link" [routerLink]="" (click)="openCustomUrl(url, item.id, item)">
                         <i class="fa {{ url.icon }}" title="{{ url.title }}"></i> {{url.label}}
                     </a>
 
