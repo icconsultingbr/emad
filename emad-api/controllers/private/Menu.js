@@ -366,7 +366,7 @@ module.exports = function (app) {
         menuDAO.deletaPorId(id, function (exception, result) {
             if (exception) {
                 d.reject(exception);
-                errors = util.customError(errors, "data", "Erro ao apagar os dados", "menu");
+                errors = util.customError(errors, "data", "Erro ao remover os dados", "menu");
                 res.status(500).send(errors);
                 return;
             } else {

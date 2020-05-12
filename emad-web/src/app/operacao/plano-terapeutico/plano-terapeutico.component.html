@@ -691,7 +691,7 @@
 
                 <button *ngIf="object.id && !readonly" class="btn btn-danger mr-2" type="button"
                     (click)="openRemoveSchedule(contentRemove)" [disabled]="isValid()">
-                    <i class="fa fa-trash"></i> Apagar Agenda
+                    <i class="fa fa-trash"></i> Remover Agenda
                 </button>
 
                 <button class="btn btn-default" (click)="close()" type="button">
@@ -705,16 +705,16 @@
 <ng-template #contentRemove>
 
     <div class="modal-header">
-        <h4 class="modal-title">Apagar agenda</h4>
+        <h4 class="modal-title">Remover agenda</h4>
         <button type="button" class="close" aria-label="Close" (click)="removeCancel()">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
     <div class="modal-body">
-        <p>Deseja realmente apagar este registro?</p>
+        <p>Deseja realmente remover este registro?</p>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-danger" (click)="removeSchedule()">Apagar</button>
+        <button type="button" class="btn btn-danger" (click)="removeSchedule()">Remover</button>
         <button type="button" class="btn btn-outline-dark" (click)="removeCancel()">Cancelar</button>
     </div>
 

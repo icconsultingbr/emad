@@ -135,6 +135,17 @@ module.exports = function (app) {
         });
     });
 
+    app.get('/dominios/tipo-ficha', function (req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.TipoFichaDAO(connection);
+        
+        listaDominios(dao, "Tipo de ficha", res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
     function listaDominios(dao, dom, res) {
         var q = require('q');
         var d = q.defer();

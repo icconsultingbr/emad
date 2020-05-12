@@ -182,7 +182,7 @@ module.exports = function (app) {
         objDAO.deletaPorId(id, function (exception, result) {
             if (exception) {
                 d.reject(exception);
-                errors = util.customError(errors, "data", "Erro ao apagar os dados", "Ausência do profissional");
+                errors = util.customError(errors, "data", "Erro ao remover os dados", "Ausência do profissional");
                 res.status(500).send(errors);
                 return;
             } else {

@@ -49,7 +49,7 @@ export class AtendimentoComponent implements OnInit {
       if (field.grid) {
         this.fields.push(field);
       }
-      if (field.filter && field.grid) {
+      if (field.filter && field.filter.grid) {        
         this.fieldsSearch.push(field);
       }
     }
