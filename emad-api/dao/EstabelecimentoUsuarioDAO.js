@@ -16,7 +16,7 @@ EstabelecimentoUsuarioDAO.prototype.atualizaEstabelecimentosPorUsuario = functio
 EstabelecimentoUsuarioDAO.prototype.buscaPorUsuario = function (id, callback) {
 
     this._connection.query(`
-        SELECT e.id, e.razaoSocial as nome FROM ${this._table} as ep 
+        SELECT e.id, e.nomeFantasia as nome, e.nomeFantasia FROM ${this._table} as ep 
         INNER JOIN tb_estabelecimento e ON(ep.idEstabelecimento = e.id) 
         WHERE ep.idUsuario = ? AND e.situacao = 1`, id, callback);
 }

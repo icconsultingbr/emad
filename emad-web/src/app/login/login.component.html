@@ -27,6 +27,11 @@
       obrigatória</span>
   </div>
 
+  <select *ngIf="loginRealizado" class="custom-select d-block w-100" [(ngModel)]="estabelecimentoLogin" formControlName="estabelecimentoLogin">
+    <option [value]="0">Selecione o estabelecimento</option>
+    <option *ngFor="let item of domains[0]?.estabelecimentos" [value]="item.id">{{item.nomeFantasia}}</option>
+  </select>
+
   <button class="btn btn-lg btn-primary btn-block mt-3" type="submit" [disabled]="loginForm.invalid || carregando">
     <i class="fa fa-circle-o-notch fa-spin text-left">
       <i *ngIf="carregando" class="fa fa-spinner"></i>

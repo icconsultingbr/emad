@@ -19,10 +19,13 @@ export class LoginComponent implements OnInit {
   route: ActivatedRoute;
   router: Router;
   carregando: boolean = false;
+  loginRealizado: boolean = false;
   erro: String = "";
   isErro: Boolean = false;
   logo: String = Util.urlapi + "/logos/logo_" + window.location.hostname + ".png";
-
+  domains: any[] = [];
+  estabelecimentosCompleto: any[] = [];
+  estabelecimentoLogin: "0";
 
   sucesso: String = "";
   isSucesso: Boolean = false;
@@ -47,7 +50,8 @@ export class LoginComponent implements OnInit {
 
     this.loginForm = fb.group({
       email: ['', Validators.compose([Validators.required, Validators.email])],
-      senha: ['', Validators.required]
+      senha: ['', Validators.required],
+      estabelecimentoLogin: ['', ''],
     });
 
     this.forgotForm = fb.group({
@@ -62,18 +66,42 @@ export class LoginComponent implements OnInit {
     this.erro = "";
 
     this.carregando = true;
+    
+    if(this.loginForm.value.estabelecimentoLogin && this.loginForm.value.estabelecimentoLogin > 0)
+    {
+        var estabelecimento = this.estabelecimentosCompleto.filter((estabelecimento) => estabelecimento.id == this.loginForm.value.estabelecimentoLogin);      
+        localStorage.setItem('est', JSON.stringify(estabelecimento));
+        this.carregando = false;
+        window.location.href = "/";
+        return;     
+    } 
+
+    if(this.loginForm.value.estabelecimentoLogin == "0" && this.estabelecimentosCompleto.length > 0)
+    {
+        this.isErro = true;
+        this.erro = "Selecione o estabelecimento";
+        this.carregando = false;
+        return;     
+    } 
+
     this.service.login(this.loginForm.value)
       .subscribe(res => {
         if (res.token) {
+          this.domains.push({
+            estabelecimentos: res.estabelecimentos
+          });
+          this.estabelecimentoLogin = "0";
+          this.estabelecimentosCompleto = res.estabelecimentos;
+          this.loginRealizado = true;
           localStorage.setItem('currentUser', JSON.stringify(res));
           if(localStorage.getItem('est')){
             localStorage.removeItem('est');
           }
-          window.location.href = "/";
-          //window.location.href = "/emad/";
+          this.carregando = false;
         }
       }, error => {
-
+        
+        this.loginRealizado = false;
         this.isErro = true;
 
         if (error.status != 0) {
@@ -94,7 +122,6 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     this.nav.hide();
     this.elementRef.nativeElement.ownerDocument.body.style.background = "url(assets/imgs/bglogin2.jpg)";
-    //this.carregando = false;
   }
 
   resolved(captchaResponse: string) {
