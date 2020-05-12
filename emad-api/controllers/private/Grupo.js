@@ -220,7 +220,7 @@ module.exports = function (app) {
         grupoDAO.deletaPorId(id, function (exception, result) {
             if (exception) {
                 d.reject(exception);
-                errors = util.customError(errors, "data", "Erro ao apagar os dados", "grupo");
+                errors = util.customError(errors, "data", "Erro ao remover os dados", "grupo");
                 res.status(500).send(errors);
                 return;
             } else {

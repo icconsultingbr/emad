@@ -447,18 +447,31 @@ export class AtendimentoFormComponent implements OnInit {
   loadDomains() {
     this.loading = true;
     this.service.listDomains('hipotese-diagnostica').subscribe(hipoteses => {
-        this.service.listDomains('especialidade').subscribe(especialidades => {
-          this.domains.push({
-            hipoteses: hipoteses,
-            especialidades: especialidades,
-            profissionais: []
+        this.service.listDomains('especialidade').subscribe(especialidades => {            
+                this.domains.push({
+                  hipoteses: hipoteses,
+                  especialidades: especialidades,
+                  tipoFichas: [],
+                  profissionais: []
           });
       });
       this.loading = false;
+      this.buscaTipoFicha();
       this.buscaProfissionais();
     });
   }
 
+  buscaTipoFicha() {
+    this.loading = true;
+       this.service.list('tipo-ficha').subscribe(result => {
+        this.domains[0].tipoFichas = result;
+        this.loading = false;
+      }, error => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(error);
+      });
+  }
+  
   buscaProfissionais() {
     this.loading = true;
        this.service.list('profissional/estabelecimento/' + JSON.parse(localStorage.getItem("est"))[0].id).subscribe(result => {
@@ -469,7 +482,7 @@ export class AtendimentoFormComponent implements OnInit {
         this.errors = Util.customHTTPResponse(error);
       });
   }
-  
+
   disableHipoteseButton() {
     return Util.isEmpty(this.pacienteHipotese.idHipoteseDiagnostica) || Util.isEmpty(this.pacienteHipotese.idPaciente);
   }

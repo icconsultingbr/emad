@@ -74,6 +74,12 @@ import { CanetaFormComponent } from './cadastro/caneta/caneta-form.component';
 import { AtribuicaoCanetaComponent } from './operacao/atribuicao-caneta/atribuicao-caneta.component';
 import { AtribuicaoCanetaFormComponent } from './operacao/atribuicao-caneta/atribuicao-caneta-form.component';
 import { EscalaProfissionalFormComponent } from './operacao/escala-profissional/escala-profissional-form.component';
+import { ModeloCanetaComponent } from './cadastro/dominio/modelo-caneta/modelo-caneta.component';
+import { ModeloCanetaFormComponent } from './cadastro/dominio/modelo-caneta/modelo-caneta-form.component';
+import { TipoFichaComponent } from './cadastro/dominio/tipo-ficha/tipo-ficha.component';
+import { TipoFichaFormComponent } from './cadastro/dominio/tipo-ficha/tipo-ficha-form.component';
+import { ParametroSegurancaComponent } from './seguranca/parametro-seguranca/parametro-seguranca.component';
+import { ParametroSegurancaFormComponent } from './seguranca/parametro-seguranca/parametro-seguranca-form.component';
 
 if (environment.production) {
     enableProdMode();
@@ -141,6 +147,12 @@ defineLocale('pt-br', deLocale);
         TipoUnidadeFormComponent,
         EspecialidadeComponent,
         EspecialidadeFormComponent,
+        ModeloCanetaComponent,
+        ModeloCanetaFormComponent,
+        TipoFichaComponent,
+        TipoFichaFormComponent,
+        ParametroSegurancaComponent, 
+        ParametroSegurancaFormComponent,
         ModalidadeComponent,
         ModalidadeFormComponent,
         PlanoTerapeuticoComponent,

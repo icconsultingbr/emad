@@ -25,20 +25,22 @@ export class AtendimentoService extends GenericsService {
             required: true,
             validator: ['', ''],
             filter: {
-                type: "text"
+                type: "text",
+                grid: true
             }
         },
         {
             field: "idSap",
             type: "text",
-            label: "ID SAP do paciente",
+            label: "ID SAP",
             grid: true,
             form: false,
             required: true,
             validator: ['', ''],
             autoFocus: true,
             filter: {
-                type: "text"
+                type: "text",
+                grid: true
             }
         },
         {
@@ -47,14 +49,15 @@ export class AtendimentoService extends GenericsService {
             label: "CPF",
             mask: '999.999.999-99',
             placeHolder: '999.999.999-99',
-            grid: true,
+            grid: false,
             form: false,
             required: true,
             validator: ['', ''],
             filter: {
                 type: 'text',
                 placeHolder: '999.999.999-99',
-                mask: '999.999.999-99'
+                mask: '999.999.999-99',
+                grid: true
             }
         },
         {
@@ -66,7 +69,8 @@ export class AtendimentoService extends GenericsService {
             required: true,
             validator: ['', ''],
             filter: {
-                type: 'text'
+                type: 'text',
+                grid: true
             }
         },
         {
@@ -80,7 +84,8 @@ export class AtendimentoService extends GenericsService {
             validator: ['', ''],
             filter: {
                 type: 'date',
-                placeHolder: '99/99/9999'
+                placeHolder: '99/99/9999',
+                grid: true
             }
         },
         {
@@ -92,8 +97,7 @@ export class AtendimentoService extends GenericsService {
             required: true,
             validator: ['', ''],
             filter: {
-                type: "select",
-                grid: true
+                type: "select"
             }
         },
         {
@@ -134,7 +138,8 @@ export class AtendimentoService extends GenericsService {
             required: true,
             validator: ['', ''],
             filter : {
-                type: "select"
+                type: "select",
+                grid: true
               }
         },
         {
@@ -146,7 +151,8 @@ export class AtendimentoService extends GenericsService {
             required: true,
             validator: ['', ''],
             filter : {
-                type: "select"
+                type: "select",
+                grid: true
               }
         },
 

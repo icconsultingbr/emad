@@ -22,6 +22,8 @@ import { TipoUnidadeFormComponent } from './cadastro/dominio/tipo-unidade/tipo-u
 import { TipoUnidadeComponent } from './cadastro/dominio/tipo-unidade/tipo-unidade.component';
 import { EspecialidadeComponent } from './cadastro/dominio/especialidade/especialidade.component';
 import { EspecialidadeFormComponent } from './cadastro/dominio/especialidade/especialidade-form.component';
+import { ModeloCanetaComponent } from './cadastro/dominio/modelo-caneta/modelo-caneta.component';
+import { ModeloCanetaFormComponent } from './cadastro/dominio/modelo-caneta/modelo-caneta-form.component';
 import { ModalidadeComponent } from './cadastro/dominio/modalidade/modalidade.component';
 import { ModalidadeFormComponent } from './cadastro/dominio/modalidade/modalidade-form.component';
 import { PlanoTerapeuticoComponent } from './operacao/plano-terapeutico/plano-terapeutico.component';
@@ -37,6 +39,10 @@ import { CanetaFormComponent } from './cadastro/caneta/caneta-form.component';
 import { AtribuicaoCanetaComponent } from './operacao/atribuicao-caneta/atribuicao-caneta.component';
 import { AtribuicaoCanetaFormComponent } from './operacao/atribuicao-caneta/atribuicao-caneta-form.component';
 import { EscalaProfissionalFormComponent } from './operacao/escala-profissional/escala-profissional-form.component';
+import { TipoFichaFormComponent } from './cadastro/dominio/tipo-ficha/tipo-ficha-form.component';
+import { TipoFichaComponent } from './cadastro/dominio/tipo-ficha/tipo-ficha.component';
+import { ParametroSegurancaComponent } from './seguranca/parametro-seguranca/parametro-seguranca.component';
+import { ParametroSegurancaFormComponent } from './seguranca/parametro-seguranca/parametro-seguranca-form.component';
 
 const appRoutes : Routes = [
     { path : '', component : MainComponent, canActivate: [AuthGuard] },
@@ -89,6 +95,18 @@ const appRoutes : Routes = [
     { path : 'especialidade-form', component : EspecialidadeFormComponent, canActivate: [AuthGuard]  },
     { path : 'especialidade-form/:id', component : EspecialidadeFormComponent, canActivate: [AuthGuard]  }, 
 
+    { path : 'modelo-caneta', component : ModeloCanetaComponent, canActivate: [AuthGuard]  },
+    { path : 'modelo-caneta-form', component : ModeloCanetaFormComponent, canActivate: [AuthGuard]  },
+    { path : 'modelo-caneta-form/:id', component : ModeloCanetaFormComponent, canActivate: [AuthGuard]  }, 
+
+    { path : 'tipo-ficha', component : TipoFichaComponent, canActivate: [AuthGuard]  },
+    { path : 'tipo-ficha-form', component : TipoFichaFormComponent, canActivate: [AuthGuard]  },
+    { path : 'tipo-ficha-form/:id', component : TipoFichaFormComponent, canActivate: [AuthGuard]  }, 
+
+    { path : 'parametro-seguranca', component : ParametroSegurancaComponent, canActivate: [AuthGuard]  },
+    { path : 'parametro-seguranca-form', component : ParametroSegurancaFormComponent, canActivate: [AuthGuard]  },
+    { path : 'parametro-seguranca-form/:id', component : ParametroSegurancaFormComponent, canActivate: [AuthGuard]  }, 
+
     { path : 'modalidade', component : ModalidadeComponent, canActivate: [AuthGuard]  },
     { path : 'modalidade-form', component : ModalidadeFormComponent, canActivate: [AuthGuard]  },
     { path : 'modalidade-form/:id', component : ModalidadeFormComponent, canActivate: [AuthGuard]  }, 
@@ -111,7 +129,7 @@ const appRoutes : Routes = [
     { path : 'log', component : LogComponent, canActivate: [AuthGuard]  }, 
     
     { path: 'not-found', component: NotFoundComponent },
-    { path: '**', component: NotFoundComponent }
+    { path: '**', component: NotFoundComponent },    
 ];
 
 export const routing = RouterModule.forRoot(appRoutes);

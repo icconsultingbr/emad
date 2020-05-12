@@ -335,7 +335,7 @@ module.exports = function (app) {
         objDAO.deletaPorId(id, function (exception, result) {
             if (exception) {
                 d.reject(exception);
-                errors = util.customError(errors, "data", "Erro ao apagar os dados", "equipe");
+                errors = util.customError(errors, "data", "Erro ao remover os dados", "equipe");
                 res.status(500).send(errors);
                 return;
             } else {
