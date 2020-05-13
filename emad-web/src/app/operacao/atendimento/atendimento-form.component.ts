@@ -109,8 +109,7 @@ export class AtendimentoFormComponent implements OnInit {
       observacoesGerais: ['', ''],
       situacao: [Validators.required],
       idEstabelecimento: [Validators.required],
-      tipoFicha: [Validators.required],
-      idProfissional: [Validators.required]
+      tipoFicha: [Validators.required]
     });
 
 
@@ -451,13 +450,11 @@ export class AtendimentoFormComponent implements OnInit {
                 this.domains.push({
                   hipoteses: hipoteses,
                   especialidades: especialidades,
-                  tipoFichas: [],
-                  profissionais: []
+                  tipoFichas: []
           });
       });
       this.loading = false;
       this.buscaTipoFicha();
-      this.buscaProfissionais();
     });
   }
 
@@ -472,17 +469,6 @@ export class AtendimentoFormComponent implements OnInit {
       });
   }
   
-  buscaProfissionais() {
-    this.loading = true;
-       this.service.list('profissional/estabelecimento/' + JSON.parse(localStorage.getItem("est"))[0].id).subscribe(result => {
-        this.domains[0].profissionais = result;
-        this.loading = false;
-      }, error => {
-        this.loading = false;
-        this.errors = Util.customHTTPResponse(error);
-      });
-  }
-
   disableHipoteseButton() {
     return Util.isEmpty(this.pacienteHipotese.idHipoteseDiagnostica) || Util.isEmpty(this.pacienteHipotese.idPaciente);
   }

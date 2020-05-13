@@ -69,14 +69,9 @@ module.exports = function (app) {
 
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
             buscarPorId(id, res).then(function (response) {
-                buscarEstabelecimentosPorUsuario(id, res).then(function (response2) {
-
-                    response.estabelecimentos = response2;
-
-                    res.status(200).json(response);
-                    return;
-                });
-            });
+                res.status(200).json(response);
+                return;
+        });
         } else {
             errors = util.customError(errors, "header", "Não autorizado!", "acesso");
             res.status(401).send(errors);
@@ -88,8 +83,6 @@ module.exports = function (app) {
         var usuario = req.usuario;
         var util = new app.util.Util();
         var errors = [];
-        let estabelecimentos = obj.estabelecimentos;
-        let arrEstabelecimentos = [];
         let arrEstabelecimentosDim = [];
         
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
@@ -116,7 +109,7 @@ module.exports = function (app) {
             req.assert("vinculo").notEmpty().withMessage("Especialidade é um campo obrigatório;");
             req.assert("cargaHorariaSemanal").notEmpty().withMessage("Carga Horária Semanal é um campo obrigatório;");
             req.assert("cargoProfissional").notEmpty().withMessage("Cargo Profissional é um campo obrigatório;");
-            req.assert("estabelecimentos").notEmpty().withMessage("Estabelecimento é um campo obrigatório;");
+            req.assert("idUsuario").notEmpty().withMessage("Usuário vinculado é um campo obrigatório;");
 
             var errors = req.validationErrors();
 
@@ -131,32 +124,20 @@ module.exports = function (app) {
             }
             obj.dataNascimento = util.dateToISO(obj.dataNascimento);
 
-
-            delete obj.estabelecimentos;
-
-
             salva(obj, res).then(function (response) {
                 obj.id = response.insertId;
 
-                for (var i = 0; i < estabelecimentos.length; i++) {
-                    arrEstabelecimentos.push("(" + obj.id + ", " + estabelecimentos[i].id + ")");
-                }
-
-                deletaEstabelecimentosPorProfissional(obj.id, res).then(function (response3) {
-                    atualizaEstabelecimentosPorProfissional(arrEstabelecimentos, res).then(function (response4) {
-                        buscaEstabelecimentoPorProfissionalParaDim(obj.id, res).then(function (response5) {
+                buscaEstabelecimentoPorProfissionalParaDim(obj.idUsuario, res).then(function (response5){
                             
-                            estabelecimentosDIM = response5;                           
+                    estabelecimentosDIM = response5;                           
 
-                            for (var i = 0; i < estabelecimentosDIM.length; i++) {
-                                arrEstabelecimentosDim.push("(" + estabelecimentosDIM[i].idUnidadeCorrespondenteDim + ", " + estabelecimentosDIM[i].idProfissionalCorrespondenteDim + ", NOW(), 6)");
-                            }
-                            
-                            atualizaEstabelecimentosPorProfissionalDim(arrEstabelecimentosDim, res).then(function (response6) {
-                                res.status(201).json(obj);
-                                return;
-                            });
-                        });
+                    for (var i = 0; i < estabelecimentosDIM.length; i++) {
+                        arrEstabelecimentosDim.push("(" + estabelecimentosDIM[i].idUnidadeCorrespondenteDim + ", " + estabelecimentosDIM[i].idProfissionalCorrespondenteDim + ", NOW(), 6)");
+                    }
+                    
+                    atualizaEstabelecimentosPorProfissionalDim(obj.idUsuario, arrEstabelecimentosDim, res).then(function (response6) {
+                        res.status(201).json(obj);
+                        return;
                     });
                 });
             });
@@ -173,8 +154,6 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
         let id = obj.id;
-        let estabelecimentos = obj.estabelecimentos;
-        let arrEstabelecimentos = [];
         let arrEstabelecimentosDim = [];
 
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
@@ -201,7 +180,7 @@ module.exports = function (app) {
             req.assert("vinculo").notEmpty().withMessage("Especialidade é um campo obrigatório;");
             req.assert("cargaHorariaSemanal").notEmpty().withMessage("Carga Horária Semanal é um campo obrigatório;");
             req.assert("cargoProfissional").notEmpty().withMessage("Cargo Profissional é um campo obrigatório;");
-            req.assert("estabelecimentos").notEmpty().withMessage("Estabelecimento é um campo obrigatório;");
+            req.assert("idUsuario").notEmpty().withMessage("Usuário vinculado é um campo obrigatório;");
 
             errors = req.validationErrors();
 
@@ -224,25 +203,17 @@ module.exports = function (app) {
 
                         obj.id = id;
 
-                        for (var i = 0; i < estabelecimentos.length; i++) {
-                            arrEstabelecimentos.push("(" + obj.id + ", " + estabelecimentos[i].id + ")");
-                        }
+                        buscaEstabelecimentoPorProfissionalParaDim(obj.idUsuario, res).then(function (response5) {
+                                    
+                            estabelecimentosDIM = response5;                           
 
-                        deletaEstabelecimentosPorProfissional(obj.id, res).then(function (response3) {
-                            atualizaEstabelecimentosPorProfissional(arrEstabelecimentos, res).then(function (response4) {
-                                buscaEstabelecimentoPorProfissionalParaDim(obj.id, res).then(function (response5) {
-                                    
-                                    estabelecimentosDIM = response5;                           
-        
-                                    for (var i = 0; i < estabelecimentosDIM.length; i++) {
-                                        arrEstabelecimentosDim.push("(" + estabelecimentosDIM[i].idUnidadeCorrespondenteDim + ", " + estabelecimentosDIM[i].idProfissionalCorrespondenteDim + ", NOW(), 6)");
-                                    }
-                                    
-                                    atualizaEstabelecimentosPorProfissionalDim(arrEstabelecimentosDim, res).then(function (response6) {
-                                        res.status(201).json(obj);
-                                        return;
-                                    });
-                                });
+                            for (var i = 0; i < estabelecimentosDIM.length; i++) {
+                                arrEstabelecimentosDim.push("(" + estabelecimentosDIM[i].idUnidadeCorrespondenteDim + ", " + estabelecimentosDIM[i].idProfissionalCorrespondenteDim + ", NOW(), 6)");
+                            }
+                            
+                            atualizaEstabelecimentosPorProfissionalDim(obj.idUsuario, arrEstabelecimentosDim, res).then(function (response6) {
+                                res.status(201).json(obj);
+                                return;
                             });
                         });
                     });
@@ -398,31 +369,6 @@ module.exports = function (app) {
         return d.promise;
     }
 
-    function buscarEstabelecimentosPorUsuario(id, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.EstabelecimentoProfissionalDAO(connection, null);
-        var errors = [];
-
-        objDAO.buscaPorUsuario(id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
-                res.status(500).send(errors);
-                return;
-            } else {
-
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-
     function deletaPorId(id, res) {
         var q = require('q');
         var d = q.defer();
@@ -496,65 +442,17 @@ module.exports = function (app) {
         return d.promise;
     }
 
-
-    function deletaEstabelecimentosPorProfissional(id, res) {
+    function atualizaEstabelecimentosPorProfissionalDim(idUsuario, estabelecimentos, res) {
         var q = require('q');
         var d = q.defer();
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
         var connectionDim = app.dao.ConnectionFactoryDim();
-        var objDAO = new app.dao.EstabelecimentoProfissionalDAO(connection, connectionDim);
+        var objDAO = new app.dao.ProfissionalDAO(connection, connectionDim);
         var errors = [];
 
-        objDAO.deletaEstabelecimentosPorProfissional(id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao editar os dados", "apagar permissoes");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-    function atualizaEstabelecimentosPorProfissional(estabelecimentos, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var connectionDim = app.dao.ConnectionFactoryDim();
-        var objDAO = new app.dao.EstabelecimentoProfissionalDAO(connection, connectionDim);
-        var errors = [];
-
-        objDAO.atualizaEstabelecimentosPorProfissional(estabelecimentos, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao editar os dados", "apagar permissoes");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-    function atualizaEstabelecimentosPorProfissionalDim(estabelecimentos, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connectionDim = app.dao.ConnectionFactoryDim();
-        var objDAO = new app.dao.EstabelecimentoProfissionalDAO(null, connectionDim);
-        var errors = [];
-
-        objDAO.atualizaEstabelecimentosPorProfissionalDim(estabelecimentos, function (exception, result) {
+        objDAO.atualizaEstabelecimentosPorProfissionalDim(idUsuario, estabelecimentos, function (exception, result) {
             if (exception) {
                 d.reject(exception);
                 console.log(exception);
@@ -574,7 +472,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.EstabelecimentoProfissionalDAO(connection, null);
+        var objDAO = new app.dao.ProfissionalDAO(connection, null);
         var errors = [];
 
         objDAO.buscaEstabelecimentoPorProfissionalParaDim(id, function (exception, result) {

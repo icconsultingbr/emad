@@ -166,6 +166,10 @@ UsuarioDAO.prototype.buscaUsuario = function (usuario, callback) {
     from ${this._table} as u INNER JOIN tb_tipo_usuario as tu ON(u.idTipoUsuario = tu.id) WHERE u.situacao = 1 AND u.id = ? `, usuario.id, callback);
 }
 
+UsuarioDAO.prototype.dominio = function(callback) {
+    this._connection.query("select id, nome FROM "+this._table+" WHERE situacao = 1 ORDER BY nome ASC",callback);
+}
+
 module.exports = function () {
     return UsuarioDAO;
 };

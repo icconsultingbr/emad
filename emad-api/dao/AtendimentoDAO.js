@@ -74,12 +74,12 @@ AtendimentoDAO.prototype.lista = function(addFilter, callback) {
     YEAR(a.dataCriacao) as ano_receita,
     a.numeroReceita as numero_receita,
     e.idUnidadeRegistroReceitaDim as unidade_receita,
-    a.idProfissional
+    pro.id as idProfissional
     FROM ${this._table} a 
     INNER JOIN tb_paciente p ON(a.idPaciente = p.id)  
     INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
     INNER JOIN tb_usuario u ON(a.idUsuario = u.id) 
-    INNER JOIN tb_profissional pro on pro.id = a.idProfissional
+    INNER JOIN tb_profissional pro on pro.idUsuario = u.id
     WHERE 1=1 ${where} 
     ORDER BY a.id DESC`, callback);
 }
@@ -155,12 +155,12 @@ AtendimentoDAO.prototype.listaPorUsuario = function(id, addFilter, callback) {
         YEAR(a.dataCriacao) as ano_receita,
         a.numeroReceita as numero_receita,
         e.idUnidadeRegistroReceitaDim as unidade_receita,
-        a.idProfissional
+        pro.id as idProfissional
     FROM ${this._table} a 
     INNER JOIN tb_paciente p ON(a.idPaciente = p.id)  
     INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
     INNER JOIN tb_usuario u ON(a.idUsuario = u.id) 
-    INNER JOIN tb_profissional pro on pro.id = a.idProfissional
+    INNER JOIN tb_profissional pro on pro.idUsuario = u.id
     WHERE a.idUsuario = ? ${where} 
     ORDER BY a.id DESC`, id, callback);
 }
@@ -173,7 +173,6 @@ AtendimentoDAO.prototype.buscaPorId = function (id,callback) {
                                 a.* from ${this._table} a 
     INNER JOIN tb_paciente p ON(a.idPaciente = p.id) 
     INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
-    LEFT JOIN tb_profissional pro on pro.id = a.idProfissional
     WHERE a.id = ?` ,id,callback); 
 }
 
@@ -219,7 +218,8 @@ AtendimentoDAO.prototype.buscaCabecalhoReceitaDim = function (id, callback) {
                             from tb_atendimento atend
                             inner join tb_estabelecimento est on est.id = atend.idEstabelecimento 
                             inner join tb_paciente pac on pac.id = atend.idPaciente 
-                            inner join tb_profissional pro on pro.id = atend.idProfissional
+                            inner join tb_usuario usu on usu.id = atend.idUsuario
+                            inner join tb_profissional pro on pro.idUsuario = usu.id
                             inner join tb_municipio mun on mun.id = est.idMunicipio 
                             WHERE  atend.id = ?
                             and exists (select 1 from tb_atendimento_medicamento tam where tam.idAtendimento = atend.id and enviado=0)` , id, callback); 

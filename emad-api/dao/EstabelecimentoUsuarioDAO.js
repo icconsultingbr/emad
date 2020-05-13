@@ -1,4 +1,4 @@
-function EstabelecimentoUsuarioDAO(connection) {
+function EstabelecimentoUsuarioDAO(connection, connectionDim) {
     this._connection = connection;
     this._table = "tb_estabelecimento_usuario";
 }

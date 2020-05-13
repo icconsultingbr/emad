@@ -694,7 +694,7 @@ module.exports = function (app) {
         var d = q.defer();
         var util = new app.util.Util();
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.EstabelecimentoDAO(connection);
+        var objDAO = new app.dao.AtendimentoDAO(connection);
 
         var errors = [];
 

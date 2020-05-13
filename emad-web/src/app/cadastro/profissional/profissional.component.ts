@@ -52,16 +52,10 @@ export class ProfissionalComponent implements OnInit {
   }
 
   loadDomains() {
-    this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
-      this.service.listDomains('especialidade').subscribe(especialidades => {
+    this.service.listDomains('especialidade').subscribe(especialidades => {
         this.domains.push({
-          estabelecimentos : estabelecimentos,
-          idEspecialidade : especialidades
+          idEspecialidade : especialidades          
         })
-
-      });
-
     });
   }
-
 }

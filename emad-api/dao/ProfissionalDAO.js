@@ -129,7 +129,7 @@ ProfissionalDAO.prototype.listaPorEstabelecimento = function(estabelecimento, ca
     this._connection.query(`
         SELECT * 
         FROM ${this._table} as t 
-        INNER JOIN tb_estabelecimento_profissional as ep ON (t.id = ep.idProfissional) 
+        INNER JOIN tb_estabelecimento_usuario as ep ON (t.idUsuario = ep.idUsuario) 
         WHERE ep.idEstabelecimento = ?`, 
     estabelecimento.id, 
     callback);
@@ -190,9 +190,10 @@ ProfissionalDAO.prototype.lista = function(addFilter, callback) {
             prof.cargoProfissional,
             prof.situacao,
             prof.latitude,
-            prof.longitude
+            prof.longitude,
+            prof.idUsuario
         FROM tb_profissional prof 
-        INNER JOIN tb_estabelecimento_profissional ep ON (ep.idProfissional = prof.id)
+        INNER JOIN tb_estabelecimento_usuario ep ON (ep.idUsuario = prof.idUsuario)
         INNER JOIN tb_estabelecimento e ON (ep.idEstabelecimento = e.id AND e.situacao = 1)
         INNER JOIN tb_nacionalidade nac ON (prof.idNacionalidade = nac.id)
         INNER JOIN tb_uf nat ON (prof.idNaturalidade = nat.id)
@@ -235,7 +236,8 @@ ProfissionalDAO.prototype.lista = function(addFilter, callback) {
             prof.cargoProfissional,
             prof.situacao,
             prof.latitude,
-            prof.longitude `,
+            prof.longitude,
+            prof.idUsuario `,
     callback);
 }
 
@@ -273,7 +275,8 @@ ProfissionalDAO.prototype.buscaPorId = function (id,callback) {
         situacao, 
         dataCriacao,
         latitude,
-        longitude
+        longitude,
+        idUsuario
      FROM ${this._table} WHERE id = ?`,id,callback);
 }
 
@@ -290,7 +293,7 @@ ProfissionalDAO.prototype.deletaPorId = function (id,callback) {
 
     conn.beginTransaction(function(err) {
         if (err) { throw err; }
-        conn.query(`UPDATE ${table} SET situacao = 0 WHERE id = ?`, id, 
+        conn.query(`UPDATE ${table} SET situacao = 0, idUsuario = null WHERE id = ?`, id, 
         
         function (error, results) {
             if (error) {return conn.rollback(function() {throw error;});}   
@@ -341,7 +344,7 @@ ProfissionalDAO.prototype.buscarPorEstabelecimento = function(id, callback) {
     this._connection.query(`
         SELECT t.id, t.nome 
         FROM ${this._table} as t 
-        INNER JOIN tb_estabelecimento_profissional as ep ON (t.id = ep.idProfissional) 
+        INNER JOIN tb_estabelecimento_usuario as ep ON (t.idUsuario = ep.idUsuario) 
         WHERE ep.idEstabelecimento = ? AND t.situacao = 1 `, id, callback);
 }
 
@@ -351,6 +354,69 @@ ProfissionalDAO.prototype.buscaPorEquipe = function(id, callback) {
         FROM ${this._table} as p 
         INNER JOIN tb_profissional_equipe as pe ON (p.id = pe.idProfissional) 
         WHERE pe.idEquipe = ?`, id, callback);
+}
+
+ProfissionalDAO.prototype.atualizaEstabelecimentosPorProfissionalDim = function (idUsuario, estabelecimentos, callback) {
+    const conn = this._connection;
+    const connDim = this._connectionDim;
+
+    let novoprod = {};
+
+    connDim.beginTransaction(function(err) {
+    if (err) { throw err; }        
+            conn.query(`SELECT 
+                        idProfissionalCorrespondenteDim
+                        from tb_profissional tp where tp.idUsuario = ?`, idUsuario, 
+                    
+        function (error, dadosProfissionais) {
+            if (error) {return connDim.rollback(function() {console.log('Erro' + error);throw error;});}                
+
+                novoprod = dadosProfissionais;
+                console.log('Select ' + JSON.stringify(dadosProfissionais));
+
+                connDim.query(`DELETE FROM unidade_has_profissional WHERE profissional_id_profissional=?`
+                , [dadosProfissionais[0].idProfissionalCorrespondenteDim], 
+                        
+            function (error, resultDelete) {                    
+                if (error) {return connDim.rollback(function() {console.log('Erro no delete ' + error);throw error;});}
+
+                    console.log('Delete no dim o ID profissional ' + dadosProfissionais[0].idProfissionalCorrespondenteDim);
+                    console.log(JSON.stringify(resultDelete));
+
+                    connDim.query("INSERT INTO unidade_has_profissional (unidade_id_unidade, profissional_id_profissional, date_incl, usua_incl) VALUES " + estabelecimentos
+                    ,                            
+                function (error, resultInsert) {                    
+                    if (error) {return connDim.rollback(function() {console.log('Erro no INSERT ' + error);throw error;});}
+
+                    console.log(JSON.stringify(resultInsert));
+
+                    connDim.commit(
+                        
+                    function(err) 
+                        {if (err) {return connDim.rollback(function() {throw err;});}
+                        
+                        console.log('Sucesso!');              
+                        return callback(null,novoprod);             
+                    });
+                });
+            });
+        });  
+    });  
+}
+
+ProfissionalDAO.prototype.buscaEstabelecimentoPorProfissionalParaDim = function (idUsuario, callback) {
+    this._connection.query(`SELECT pro.idProfissionalCorrespondenteDim , est.idUnidadeCorrespondenteDim 
+            FROM tb_estabelecimento_usuario tep 
+        INNER JOIN tb_estabelecimento est on est.id = tep.idEstabelecimento 
+        INNER JOIN tb_profissional pro on tep.idUsuario = pro.idUsuario 
+        WHERE tep.idUsuario = ?  AND est.situacao = 1`, idUsuario, callback);
+}
+
+ProfissionalDAO.prototype.buscaPorUsuario = function (idUsuario, callback) {
+    this._connection.query(`
+        SELECT e.id, e.razaoSocial as nome FROM tb_estabelecimento_usuario as ep 
+        INNER JOIN tb_estabelecimento e ON(ep.idEstabelecimento = e.id) 
+        WHERE ep.idUsuario = ? AND e.situacao = 1`, id, callback);
 }
 
 module.exports = function(){

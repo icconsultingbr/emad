@@ -36,7 +36,16 @@ export class ProfissionalService extends GenericsService {
       mask: "999.999.999-99",
       placeholder: "999.999.999-99",
       required: true,
-      validator: ['', Validators.required],
+      validator: ['', Validators.required]
+    },    
+    {
+      field: "idUsuario",
+      type: "select",
+      label: "Usuário vinculado",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
     },
     {
       field: "nomeMae",
@@ -333,18 +342,6 @@ export class ProfissionalService extends GenericsService {
       form: true,
       required: true,
       validator: ['', Validators.required]
-    },
-    {
-      field: "estabelecimentos",
-      type: "multiSelect",
-      label: "Estabelecimentos",
-      grid: true,
-      form: true,
-      required: true,
-      validator: ['', Validators.required],
-      filter: {
-        type: "select"
-      }
-    }    
+    }   
   ];
 }
