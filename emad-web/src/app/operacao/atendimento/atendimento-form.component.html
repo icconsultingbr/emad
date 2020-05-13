@@ -95,29 +95,6 @@
 
   <div class="card mb-4" *ngIf="object.idPaciente">
     <div class="card-header text-left">
-      Profissional responsável
-    </div>
-    <div class="card-body text-left">
-      <div class="row">
-        <div class="col-xl-6">
-          <div class="form-group row">
-            <label class="col-xl-4 col-form-label text-left">
-              Profissional<span class="text-danger font-weight-bold"> *</span>
-            </label>
-            <div class="col-xl-8">   
-              <select *ngIf="domains" class="custom-select d-block w-100" formControlName="idProfissional" [(ngModel)]="object.idProfissional">
-                <option [value]="null">Selecione...</option>
-                <option *ngFor="let item of domains[0]?.profissionais" [value]="item.id">{{item.nome}}</option>
-              </select>   
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mb-4" *ngIf="object.idPaciente">
-    <div class="card-header text-left">
       Sinais vitais
     </div>
     <div class="card-body text-left">
@@ -128,7 +105,7 @@
               Pressão arterial
             </label>
             <div class="col-xl-8">
-              <input type="text" class="form-control has-error" [(ngModel)]="object.pressaoArterial"
+              <input type="number" class="form-control has-error" [(ngModel)]="object.pressaoArterial"
                 formControlName="pressaoArterial" [readonly]="disableFields()"/>
             </div>
           </div>
@@ -139,7 +116,7 @@
               Pulso
             </label>
             <div class="col-xl-8">
-              <input type="text" class="form-control has-error" [(ngModel)]="object.pulso" formControlName="pulso" [readonly]="disableFields()"/>
+              <input type="number" class="form-control has-error" [(ngModel)]="object.pulso" formControlName="pulso" [readonly]="disableFields()"/>
             </div>
           </div>
         </div>
@@ -151,7 +128,7 @@
               Saturação 02
             </label>
             <div class="col-xl-8">
-              <input type="text" class="form-control has-error" [(ngModel)]="object.saturacao"
+              <input type="number" class="form-control has-error" [(ngModel)]="object.saturacao"
                 formControlName="saturacao" [readonly]="disableFields()" />
             </div>
           </div>
@@ -162,7 +139,7 @@
               Temperatura
             </label>
             <div class="col-xl-8">
-              <input type="text" class="form-control has-error" [(ngModel)]="object.temperatura"
+              <input type="number" class="form-control has-error" [(ngModel)]="object.temperatura"
                 formControlName="temperatura" [readonly]="disableFields()" />
             </div>
           </div>
@@ -175,7 +152,7 @@
               Altura
             </label>
             <div class="col-xl-8">
-              <input type="text" class="form-control has-error" [(ngModel)]="object.altura" formControlName="altura" [readonly]="disableFields()" />
+              <input type="number" class="form-control has-error" [(ngModel)]="object.altura" formControlName="altura" [readonly]="disableFields()" />
             </div>
           </div>
         </div>
@@ -185,7 +162,7 @@
               Peso
             </label>
             <div class="col-xl-8">
-              <input type="text" class="form-control has-error" [(ngModel)]="object.peso" formControlName="peso" [readonly]="disableFields()" />
+              <input type="number" class="form-control has-error" [(ngModel)]="object.peso" formControlName="peso" [readonly]="disableFields()" />
             </div>
           </div>
         </div>

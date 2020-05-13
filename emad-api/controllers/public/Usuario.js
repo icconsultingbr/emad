@@ -114,7 +114,7 @@ module.exports = function (app) {
         if (errors) {
             res.status(400).send(errors);
             return;
-        }
+        }          
 
         buscaPorEmail(usuario).then(function (responseEmail) {
             let hash = "";
@@ -175,13 +175,15 @@ module.exports = function (app) {
                             delete usuario.nomeMae;
                             delete usuario.dataNascimento;
     
-                            res.status(200).json(usuario);
-    
+                            return listaEstabelecimentoPorUsuarioLogin(usuarioID, usuario.idTipoUsuario, res);
+
+                        }).then(function (responseEstabelecimento) {
+
+                            usuario.estabelecimentos = responseEstabelecimento;
+                            res.status(200).json(usuario);   
                             return;
-                        });
+                        })
                     }
-
-
                 }
                 else {
                     badPassword(responseEmail[0], res);
@@ -395,6 +397,43 @@ module.exports = function (app) {
                 d.resolve(result);
             }
         });
+        return d.promise;
+    }
+
+    function listaEstabelecimentoPorUsuarioLogin(idUsuario, idTipoUsuario, res) {
+        let q = require('q');
+        let d = q.defer();
+        let util = new app.util.Util();
+
+        let connection = app.dao.ConnectionFactory();
+        let estabelecimentoUsuarioDAO = new app.dao.EstabelecimentoUsuarioDAO(connection);
+        let estabelecimentoDAO = new app.dao.EstabelecimentoDAO(connection);
+        let errors = [];
+
+        if (idTipoUsuario == util.SUPER_ADMIN) {
+            estabelecimentoDAO.lista(null, function (exception, result) {
+                if (exception) {
+                    d.reject(exception);
+                    errors = util.customError(errors, "data", "Erro ao acessar os dados", "estabelecimento");
+                    res.status(500).send(errors);
+                    return;
+                } else {
+                    d.resolve(result);
+                }
+            });
+        }
+        else {
+            estabelecimentoUsuarioDAO.buscaPorUsuario(idUsuario, function (exception, result) {
+                if (exception) {
+                    d.reject(exception);
+                    errors = util.customError(errors, "data", "Erro ao acessar os dados", "estabelecimento");
+                    res.status(500).send(errors);
+                    return;
+                } else {
+                    d.resolve(result);
+                }
+            });
+        }       
         return d.promise;
     }
 
