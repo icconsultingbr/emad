@@ -191,10 +191,10 @@ AtendimentoDAO.prototype.atualiza = function(objeto,id, callback) {
 
 AtendimentoDAO.prototype.finaliza = function(objeto,id, callback) {
     if(objeto.tipo == 'C'){
-        this._connection.query("UPDATE "+this._table+" SET dataCancelamento = CURRENT_TIMESTAMP where id= ?", id, callback);
+        this._connection.query("UPDATE "+this._table+" SET dataCancelamento = CURRENT_TIMESTAMP, situacao = 'X' where id= ?", id, callback);
 
     } else if(objeto.tipo == 'F'){
-        this._connection.query("UPDATE "+this._table+" SET dataFinalizacao = CURRENT_TIMESTAMP where id= ?", id, callback);
+        this._connection.query("UPDATE "+this._table+" SET dataFinalizacao = CURRENT_TIMESTAMP, situacao = 'F' where id= ?", id, callback);
     }
 }
 

@@ -66,7 +66,9 @@ export class AtendimentoComponent implements OnInit {
         s: estabelecimentos,
         situacao: [
           { id: "A", nome: "Alta" },
-          { id: "C", nome: "Continuidade" }
+          { id: "C", nome: "Continuidade" },
+          { id: "F", nome: "Finalizar" },
+          { id: "X", nome: "Cancelar" }
         ],
         situacaoAtendimento: [
           { id: "F", nome: "Finalizado" },

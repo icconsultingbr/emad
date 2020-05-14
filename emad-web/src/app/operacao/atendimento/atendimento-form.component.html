@@ -105,8 +105,9 @@
               Pressão arterial
             </label>
             <div class="col-xl-8">
-              <input type="number" class="form-control has-error" [(ngModel)]="object.pressaoArterial"
-                formControlName="pressaoArterial" [readonly]="disableFields()"/>
+              <input type="text"  class="form-control has-error" [(ngModel)]="object.pressaoArterial"
+                formControlName="pressaoArterial" [readonly]="disableFields()"
+                currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
             </div>
           </div>
         </div>
@@ -116,7 +117,8 @@
               Pulso
             </label>
             <div class="col-xl-8">
-              <input type="number" class="form-control has-error" [(ngModel)]="object.pulso" formControlName="pulso" [readonly]="disableFields()"/>
+              <input type="text" class="form-control has-error" [(ngModel)]="object.pulso" formControlName="pulso" [readonly]="disableFields()"
+              currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
             </div>
           </div>
         </div>
@@ -128,8 +130,9 @@
               Saturação 02
             </label>
             <div class="col-xl-8">
-              <input type="number" class="form-control has-error" [(ngModel)]="object.saturacao"
-                formControlName="saturacao" [readonly]="disableFields()" />
+              <input type="text" class="form-control has-error" [(ngModel)]="object.saturacao"
+                formControlName="saturacao" [readonly]="disableFields()" 
+                currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
             </div>
           </div>
         </div>
@@ -139,8 +142,9 @@
               Temperatura
             </label>
             <div class="col-xl-8">
-              <input type="number" class="form-control has-error" [(ngModel)]="object.temperatura"
-                formControlName="temperatura" [readonly]="disableFields()" />
+              <input type="text" class="form-control has-error" [(ngModel)]="object.temperatura"
+                formControlName="temperatura" [readonly]="disableFields()"
+                currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }" />
             </div>
           </div>
         </div>
@@ -152,7 +156,8 @@
               Altura
             </label>
             <div class="col-xl-8">
-              <input type="number" class="form-control has-error" [(ngModel)]="object.altura" formControlName="altura" [readonly]="disableFields()" />
+              <input type="text" class="form-control has-error" [(ngModel)]="object.altura" formControlName="altura" [readonly]="disableFields()"
+              currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }" />
             </div>
           </div>
         </div>
@@ -162,7 +167,8 @@
               Peso
             </label>
             <div class="col-xl-8">
-              <input type="number" class="form-control has-error" [(ngModel)]="object.peso" formControlName="peso" [readonly]="disableFields()" />
+              <input type="text" class="form-control has-error" [(ngModel)]="object.peso" formControlName="peso" [readonly]="disableFields()" 
+              currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
             </div>
           </div>
         </div>
@@ -401,12 +407,16 @@
                 <option [value]="null">Selecione...</option>
                 <option value="C">Continuidade</option>
                 <option value="A">Alta</option>
+                <option value="F">Finalizar</option>
+                <option value="X">Cancelar</option>
               </select>
 
               <select *ngIf="disableFields()" class="custom-select d-block w-100" [(ngModel)]="object.situacao" formControlName="situacao" disabled>
                 <option [value]="null">Selecione...</option>
                 <option value="C">Continuidade</option>
-                <option value="A">Alta</option>
+                <option value="A">Alta</option>                
+                <option value="F">Finalizar</option>
+                <option value="X">Cancelar</option>
               </select>
             </div>
           </div>
@@ -416,14 +426,6 @@
   </div>
 
   <div class="form-group text-right">
-
-    <button class="btn btn-secondary " type="button" *ngIf="canStop()" (click)="stopProcess('F')">
-      <i class="fa fa-save"></i> Finalizar
-    </button>
-
-    <button class="btn btn-danger" type="button" [disabled]="form.invalid" *ngIf="canStop()" (click)="stopProcess('C')">
-      <i class="fa fa-save"></i> Cancelar
-    </button>
 
     <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="object.idPaciente && !disableFields()"
       [disabled]="form.invalid">
