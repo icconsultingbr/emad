@@ -80,6 +80,7 @@ import { TipoFichaComponent } from './cadastro/dominio/tipo-ficha/tipo-ficha.com
 import { TipoFichaFormComponent } from './cadastro/dominio/tipo-ficha/tipo-ficha-form.component';
 import { ParametroSegurancaComponent } from './seguranca/parametro-seguranca/parametro-seguranca.component';
 import { ParametroSegurancaFormComponent } from './seguranca/parametro-seguranca/parametro-seguranca-form.component';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
 
 if (environment.production) {
     enableProdMode();
@@ -109,6 +110,7 @@ defineLocale('pt-br', deLocale);
         BsDatepickerModule.forRoot(),
         BsDropdownModule.forRoot(),
         ChartsModule,
+        CurrencyMaskModule,
         NgxLoadingModule.forRoot({
             animationType: ngxLoadingAnimationTypes.none ,
             backdropBackgroundColour: 'rgba(0,0,0,0.1)',

@@ -333,6 +333,16 @@ export class AtendimentoFormComponent implements OnInit {
     this.loading = true;
     event.preventDefault();
 
+    if(this.object.situacao == "F"){
+      this.stopProcess('F');
+      return;
+    }      
+
+    if(this.object.situacao == "X"){
+      this.stopProcess('C');
+      return;
+    }
+
     this.service
       .save(this.form.value, this.method)
       .subscribe(res => {

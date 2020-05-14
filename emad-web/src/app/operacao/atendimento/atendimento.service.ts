@@ -134,7 +134,7 @@ export class AtendimentoService extends GenericsService {
             label: "Situação",
             grid: true,
             form: false,
-            translate: { "A": "Alta", "C": "Continuidade" },
+            translate: { "A": "Alta", "C": "Continuidade", "F": "Finalizar", "X": "Cancelar" },
             required: true,
             validator: ['', ''],
             filter : {
