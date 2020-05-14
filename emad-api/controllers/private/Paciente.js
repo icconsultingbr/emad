@@ -6,7 +6,7 @@ module.exports = function (app) {
         let addFilter = req.query;
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             lista(addFilter, res).then(function (resposne) {
                 res.status(200).json(resposne);
                 return;
@@ -23,7 +23,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             buscarPorId(id, res).then(function (response) {
                 res.status(200).json(response);
                 return;
@@ -40,7 +40,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
         var errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             req.assert("cartaoSus").notEmpty().withMessage("Cartão do SUS é um campo obrigatório;");
             req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");
             req.assert("nomeMae").notEmpty().withMessage("Nome da mãe é um campo obrigatório;");
@@ -91,7 +91,7 @@ module.exports = function (app) {
         let id = obj.id;
         delete obj.id;
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             req.assert("cartaoSus").notEmpty().withMessage("Cartão do SUS é um campo obrigatório;");
             req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");
             req.assert("nomeMae").notEmpty().withMessage("Nome da mãe é um campo obrigatório;");
@@ -149,7 +149,7 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             deletaPorId(id, res).then(function (response) {
                 res.status(200).json(obj);
                 return;
@@ -169,7 +169,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             buscarEstabelecimentos(id, raio, idTipoUnidade, res).then(function (response) {
                 res.status(200).json(response);
                 return;

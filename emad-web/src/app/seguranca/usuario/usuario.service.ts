@@ -142,7 +142,7 @@ export class UsuarioService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ['', '']
     }    
   ];
 
