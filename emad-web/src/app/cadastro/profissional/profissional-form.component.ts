@@ -3,6 +3,7 @@ import { ProfissionalService } from './profissional.service';
 import { Profissional } from '../../_core/_models/Profissional';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Util } from '../../_core/_util/Util';
 
 @Component({
   selector: 'app-profissional-form',
@@ -18,6 +19,8 @@ export class ProfissionalFormComponent implements OnInit {
   label: String = "Profissional";
   id: Number = null;
   domains: any[] = [];
+  loading: Boolean = false;
+  errors: any[] = [];
 
   constructor(
     fb: FormBuilder,
@@ -39,7 +42,7 @@ export class ProfissionalFormComponent implements OnInit {
     this.service.listDomains('uf').subscribe(ufs => {
       this.service.listDomains('nacionalidade').subscribe(paises => {
         this.service.listDomains('especialidade').subscribe(especialidades => {
-            this.service.listDomains('usuario').subscribe(usuarios => {
+            //this.service.listDomains('usuario').subscribe(usuarios => {
               this.domains.push({
                 idUf: ufs,
                 idNacionalidade: paises,
@@ -68,12 +71,24 @@ export class ProfissionalFormComponent implements OnInit {
                   { id: "F", nome: "Feminino" },
                   { id: "M", nome: "Masculino" }
                 ],
-                idUsuario: usuarios,
-            });
-          });
+                idUsuario: [], //usuarios,
+            });            
+            this.buscaUsuariosSemProfissional();
+          //});
         });
       });
     });
+  }
+
+  buscaUsuariosSemProfissional() {
+    this.loading = true;
+       this.service.list('usuario/usuario-sem-profissional/' + (this.id ? this.id : 0)).subscribe(result => {
+        this.domains[0].idUsuario = result;
+        this.loading = false;
+      }, error => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(error);
+      });
   }
 
   getGeocodeAddress(event) {

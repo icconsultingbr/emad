@@ -65,7 +65,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= 3) {
             lista(res).then(function (resposne) {
                 res.status(200).json(resposne);
                 return;
@@ -84,7 +84,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if(usuario.idTipoUsuario == util.SUPER_ADMIN){		
+        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
             buscarPorId(id, res).then(function(response) {
                 res.status(200).json(response);
                 return;      
@@ -104,7 +104,7 @@ module.exports = function (app) {
         let tipoFicha = {};
         tipoFicha.id = id;
         
-        if(usuario.idTipoUsuario == util.SUPER_ADMIN){	
+        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){	
             deletaPorId(id, res).then(function(response) {
                 res.status(200).json(tipoFicha);
                 return;      

@@ -127,18 +127,18 @@ module.exports = function (app) {
             salva(obj, res).then(function (response) {
                 obj.id = response.insertId;
 
-                buscaEstabelecimentoPorProfissionalParaDim(obj.idUsuario, res).then(function (response5){
-                            
+                buscaEstabelecimentoPorProfissionalParaDim(obj.idUsuario, res).then(function (response5){                            
                     estabelecimentosDIM = response5;                           
-
                     for (var i = 0; i < estabelecimentosDIM.length; i++) {
                         arrEstabelecimentosDim.push("(" + estabelecimentosDIM[i].idUnidadeCorrespondenteDim + ", " + estabelecimentosDIM[i].idProfissionalCorrespondenteDim + ", NOW(), 6)");
                     }
                     
-                    atualizaEstabelecimentosPorProfissionalDim(obj.idUsuario, arrEstabelecimentosDim, res).then(function (response6) {
-                        res.status(201).json(obj);
-                        return;
-                    });
+                    if(arrEstabelecimentosDim.length > 0){
+                        atualizaEstabelecimentosPorProfissionalDim(obj.idUsuario, arrEstabelecimentosDim, res).then(function (response6) {
+                            res.status(201).json(obj);
+                            return;
+                        });
+                    }
                 });
             });
 
@@ -202,19 +202,19 @@ module.exports = function (app) {
                     atualizaPorId(obj, id, res).then(function (response2) {
 
                         obj.id = id;
-
-                        buscaEstabelecimentoPorProfissionalParaDim(obj.idUsuario, res).then(function (response5) {
-                                    
+                        buscaEstabelecimentoPorProfissionalParaDim(obj.idUsuario, res).then(function (response5) {                                    
                             estabelecimentosDIM = response5;                           
 
                             for (var i = 0; i < estabelecimentosDIM.length; i++) {
                                 arrEstabelecimentosDim.push("(" + estabelecimentosDIM[i].idUnidadeCorrespondenteDim + ", " + estabelecimentosDIM[i].idProfissionalCorrespondenteDim + ", NOW(), 6)");
                             }
                             
-                            atualizaEstabelecimentosPorProfissionalDim(obj.idUsuario, arrEstabelecimentosDim, res).then(function (response6) {
-                                res.status(201).json(obj);
-                                return;
-                            });
+                            if(arrEstabelecimentosDim.length > 0){
+                                atualizaEstabelecimentosPorProfissionalDim(obj.idUsuario, arrEstabelecimentosDim, res).then(function (response6) {
+                                    res.status(201).json(obj);
+                                    return;
+                                });
+                            }
                         });
                     });
 

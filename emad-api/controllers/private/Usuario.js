@@ -89,7 +89,8 @@ module.exports = function (app) {
 
         let estabelecimentos = cadastro.estabelecimentos;
         let arrEstabelecimentos = [];
-
+        let arrEstabelecimentosDim = [];
+        
         if (usuario.idTipoUsuario == util.SUPER_ADMIN || (usuario.idTipoUsuario == util.ADMIN && cadastro.idTipoUsuario != util.SUPER_ADMIN)) {
 
             cadastro.cpf = cadastro.cpf.replace(/[.-]/g, '');
@@ -107,6 +108,8 @@ module.exports = function (app) {
             req.assert("senha").notEmpty().withMessage("A senha é um campo obrigatório;").matches(/^(?=.*[a-z])(?=.*\d)[A-Za-z\d$@$!%*?&]{8,}/).withMessage("A senha deve conter pelo menos 8 caracteres, letras e números;");
             req.assert("confirmaSenha").notEmpty().withMessage("A confirmação da senha é um campo obrigatório;").equals(cadastro.senha).withMessage("A senha e confirmação devem ser idênticas;");
 
+            if(cadastro.idTipoUsuario != util.SUPER_ADMIN)
+                req.assert("estabelecimentos").notEmpty().withMessage("Selecione o(s) estabelecimento(s) vinculado(s) ao usuário");
 
             errors = req.validationErrors();
 
@@ -163,16 +166,29 @@ module.exports = function (app) {
                 deletaEstabelecimentosPorUsuario(cadastro.id, res).then(function (response3) {
 
                     atualizaEstabelecimentosPorUsuario(arrEstabelecimentos, res).then(function (response4) {
-
                         delete cadastro.senha;
                         delete cadastro.hash;
-
 
                         token = util.createWebToken(app, req, cadastro);
                         cadastro.token = token;
 
-                        res.status(201).json(cadastro);
-                        return;
+                        buscaEstabelecimentoPorProfissionalParaDim(cadastro.id, res).then(function (response5){                            
+                            estabelecimentosDIM = response5;                           
+                            for (var i = 0; i < estabelecimentosDIM.length; i++) {
+                                arrEstabelecimentosDim.push("(" + estabelecimentosDIM[i].idUnidadeCorrespondenteDim + ", " + estabelecimentosDIM[i].idProfissionalCorrespondenteDim + ", NOW(), 6)");
+                            }
+                            
+                            if(arrEstabelecimentosDim.length > 0){
+                                atualizaEstabelecimentosPorProfissionalDim(cadastro.id, arrEstabelecimentosDim, res).then(function (response6) {
+                                    res.status(201).json(cadastro);
+                                    return;
+                                });
+                            }
+                            else{
+                                res.status(201).json(cadastro);
+                                return;
+                            }
+                        });
                     });
                 });
             });
@@ -191,6 +207,7 @@ module.exports = function (app) {
 
         let estabelecimentos = cadastro.estabelecimentos;
         let arrEstabelecimentos = [];
+        let arrEstabelecimentosDim = [];
 
         let util = new app.util.Util();
         let token = "";
@@ -214,6 +231,9 @@ module.exports = function (app) {
             req.assert("celular").notEmpty().withMessage("Telefone celular é um campo obrigatório;").isLength({ min: 10, max: 11 }).withMessage("Telefone celular inválido;");
             req.assert("dataNascimento").notEmpty().withMessage("Data de nascimento deve ser preenchida;").custom(util.isValidDate).withMessage("Data de nascimento inválida;");
 
+            if(cadastro.idTipoUsuario != util.SUPER_ADMIN)
+                req.assert("estabelecimentos").notEmpty().withMessage("Selecione o(s) estabelecimento(s) vinculado(s) ao usuário");
+                
             errors = req.validationErrors();
 
             if (errors) {
@@ -269,8 +289,24 @@ module.exports = function (app) {
 
                         console.log('cadastro alterado!');
                         res.location('/usuario/update/' + cad.id);
-                        res.status(201).json(cadastro);
-                        return;
+                        
+                        buscaEstabelecimentoPorProfissionalParaDim(id, res).then(function (response5){                            
+                            estabelecimentosDIM = response5;                           
+                            for (var i = 0; i < estabelecimentosDIM.length; i++) {
+                                arrEstabelecimentosDim.push("(" + estabelecimentosDIM[i].idUnidadeCorrespondenteDim + ", " + estabelecimentosDIM[i].idProfissionalCorrespondenteDim + ", NOW(), 6)");
+                            }
+                            
+                            if(arrEstabelecimentosDim.length > 0){
+                                atualizaEstabelecimentosPorProfissionalDim(id, arrEstabelecimentosDim, res).then(function (response6) {
+                                    res.status(201).json(cadastro);
+                                    return;
+                                });
+                            }
+                            else{
+                                res.status(201).json(cadastro);
+                                return;
+                            }
+                        });
                     });
                 });
             });
@@ -279,6 +315,16 @@ module.exports = function (app) {
             errors = util.customError(errors, "header", "Não autorizado!", "acesso");
             res.status(401).send(errors);
         }
+    });
+
+    app.get('/usuario/usuario-sem-profissional/:id', function (req, res) {
+        let usuario = req.usuario;
+        let idProfissional = req.params.id;
+
+        listaUsuarioSemProfissional(idProfissional, res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
     });
 
 
@@ -554,6 +600,29 @@ module.exports = function (app) {
         return d.promise;
     }
 
+    function listaUsuarioSemProfissional(idProfissional, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+        var connection = app.dao.ConnectionFactory();
+        var usuarioDAO = new app.dao.UsuarioDAO(connection);
+
+        var errors = [];
+
+        usuarioDAO.listaUsuarioSemProfissional(idProfissional, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "usuarios");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }
+    
     function listaPorTipoUsuario(idTipoUsuario, res) {
         var q = require('q');
         var d = q.defer();
@@ -749,17 +818,22 @@ module.exports = function (app) {
         var objDAO = new app.dao.EstabelecimentoUsuarioDAO(connection);
         var errors = [];
 
-        objDAO.atualizaEstabelecimentosPorUsuario(estabelecimentos, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao editar os dados", "apagar permissoes");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
+        if(estabelecimentos.length > 0)
+        {             
+            objDAO.atualizaEstabelecimentosPorUsuario(estabelecimentos, function (exception, result) {
+                if (exception) {
+                    d.reject(exception);
+                    console.log(exception);
+                    errors = util.customError(errors, "data", "Erro ao editar os dados", "apagar permissoes");
+                    res.status(500).send(errors);
+                    return;
+                } else {
+                    d.resolve(result);
+                }
+            });
+        }
+        else
+            d.resolve(null);
         return d.promise;
     }
 
@@ -787,7 +861,53 @@ module.exports = function (app) {
         return d.promise;
     }
 
+    function atualizaEstabelecimentosPorProfissionalDim(idUsuario, estabelecimentos, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
 
+        var connection = app.dao.ConnectionFactory();
+        var connectionDim = app.dao.ConnectionFactoryDim();
+        var objDAO = new app.dao.ProfissionalDAO(connection, connectionDim);
+        var errors = [];
+
+        objDAO.atualizaEstabelecimentosPorProfissionalDim(idUsuario, estabelecimentos, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao editar os dados", "apagar permissoes");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }
+
+    function buscaEstabelecimentoPorProfissionalParaDim(id, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.ProfissionalDAO(connection, null);
+        var errors = [];
+
+        objDAO.buscaEstabelecimentoPorProfissionalParaDim(id, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
+                res.status(500).send(errors);
+                return;
+            } else {
+
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }
 
 }
 
