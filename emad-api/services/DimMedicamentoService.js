@@ -1,7 +1,7 @@
 function DimMedicamentoService(){
 }
 
-DimMedicamentoService.prototype.enviaReceitaMedicaDim = function(cabecalho, medicamentos, callback){    
+DimMedicamentoService.prototype.enviaReceitaMedicaDim = function(cabecalho, medicamentos, url, callback){    
     var Client = require('node-rest-client').Client;
     var client = new Client();
     
@@ -45,7 +45,7 @@ DimMedicamentoService.prototype.enviaReceitaMedicaDim = function(cabecalho, medi
 
     console.log("Comando que será enviado" +  consulta);   
 
-    client.get("http://saude.icconsulting.com.br/ecare/xml_dispensacao/proc_salvar_receita_v2.php?" + consulta,
+    client.get(url.VALOR + consulta,
            function (data, res) {
 
             if(Buffer.isBuffer(data)){

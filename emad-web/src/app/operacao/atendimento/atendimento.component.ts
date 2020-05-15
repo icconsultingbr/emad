@@ -10,7 +10,6 @@ import { AtendimentoService } from './atendimento.service';
   providers: [AtendimentoService]
 })
 export class AtendimentoComponent implements OnInit {
-
   method: String = "atendimento";
   domains: any[] = [];
   fields = [];
@@ -20,7 +19,11 @@ export class AtendimentoComponent implements OnInit {
     { 
       icon : 'fa-print',
       label : '',
-      url : 'http://saude.icconsulting.com.br/aps/download?fileName={id}.pdf',
+      url : 
+        JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")
+        ?
+        JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")[0].valor
+        :"",
       log: 'atendimento/print-document',
       title: 'Imprimir ficha'
 
@@ -28,14 +31,22 @@ export class AtendimentoComponent implements OnInit {
     { 
       icon : 'fa-file-alt',
       label : '',
-      url : 'http://saude.icconsulting.com.br/afs/view?id={id}',
+      url :  
+        JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")
+        ?
+        JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")[0].valor
+        :"",
       log: 'atendimento/open-document',
       title: 'Ver ficha'
     }, 
     { 
       icon : 'fa-file-medical-alt',
       label : '',
-      url : 'http://saude.icconsulting.com.br/ecare//modulos/consulta/recibo_receita_pdf.php?ano={ano_receita}&numero={numero_receita}&unidade={unidade_receita}',    
+      url :  
+        JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_RECEITA_MEDICA_VISUALIZACAO")
+        ?
+        JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_RECEITA_MEDICA_VISUALIZACAO")[0].valor
+        :"",
       log: 'atendimento/receita-medica',
       title: 'Ver receita'
     },

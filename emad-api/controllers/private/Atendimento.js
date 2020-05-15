@@ -107,11 +107,12 @@ module.exports = function (app) {
                 return;
             }
 
-            buscaProfissionalPorUsuario(usuario.id).then(function (response) {
-                if (response.length > 0) {
+            buscaProfissionalPorUsuario(usuario.id).then(function (responseProfissional) {
+                if (responseProfissional.length > 0) {
                     salva(obj, res).then(function (response) {
                         obj.id = response.insertId;
-        
+                        obj.emailProfissional = responseProfissional[0].email;
+
                         buscarPacientePorId(obj.idPaciente, res).then(function (respPaciente) {
         
                             let result = respPaciente[0];
@@ -121,24 +122,44 @@ module.exports = function (app) {
         
                             var client = new app.services.FichaDigitalService();
         
-                            client.enviaFicha(result, function (status) {
-                                console.log("STATUS" + status);
-        
-                                if (status != 200) {
-                                    errors = util.customError(status, "FICHA DIGITAL", "Erro ao criar a ficha digital", null);
+                            buscaParametroSegurancaPorChave("URL_FICHA_DIGITAL_SERVICO", res).then(function (responseURL) {                                
+                                if(responseURL)
+                                {
+                                    client.enviaFicha(result, responseURL, function (status) {
+                                        console.log("STATUS" + status);
+                
+                                        if (status != 200) {
+                                            errors = util.customError(status, "FICHA DIGITAL", "Erro ao criar a ficha digital", null);
+                                            res.status(400).json(errors);
+                                        }
+                
+                                        console.log(result.email);
+                
+                                        if(result.email != null){
+                                            obj.email = result.email;
+
+                                            buscaParametroSegurancaPorChave("CONTA_EMAIL", res).then(function (responseEMAIL) {                                
+                                                if(responseEMAIL){
+                                                    mail.enviaEmailFicha(obj, responseEMAIL, "Abertura de atendimento", "createTreatment.html");
+                                                }
+                                                else{
+                                                    errors = util.customError(errors, "FICHA DIGITAL", "URL PARA ACESSO A FICHA DIGITAL NÃO ENCONTRADA", null);
+                                                    res.status(400).json(errors);
+                                                    return;
+                                                }                                                               
+                                            });
+                                        }
+                
+                                        console.log(result.email);                
+                                        res.status(201).json(obj);
+                                    });
+                                }
+                                else
+                                {
+                                    errors = util.customError(errors, "FICHA DIGITAL", "URL PARA ACESSO A FICHA DIGITAL NÃO ENCONTRADA", null);
                                     res.status(400).json(errors);
-                                }
-        
-                                console.log(result.email);
-        
-                                if(result.email != null){
-                                    obj.email = result.email;
-                                    mail.enviaEmailFicha(obj, "Abertura de atendimento", "createTreatment.html");
-                                }
-        
-                                console.log(result.email);
-        
-                                res.status(201).json(obj);
+                                    return;
+                                }                                                               
                             });
                         });
                     });
@@ -286,36 +307,47 @@ module.exports = function (app) {
                                                 var dim = new app.services.DimMedicamentoService();
             
                                                 if(medicamentos && medicamentos.length>0){
-                                                        dim.enviaReceitaMedicaDim(cabecalho, medicamentos, function (response6, status) {   
+                                                    buscaParametroSegurancaPorChave("URL_RECEITA_MEDICA_ENVIO", res).then(function (response7) { 
+                                                        if(response7)
+                                                        {
+                                                            dim.enviaReceitaMedicaDim(cabecalho, medicamentos, response7, function (response6, status) {   
         
-                                                            if (status != 200) {
-                                                                errors = util.customError(status, "RECEITA MÉDICA", "Erro ao enviar a receita médica", null);
-                                                                res.status(400).json(errors);
-                                                                return;
-                                                            }                                        
-                    
-                                                            var idReceita;
-                                                            var numeroReceita;
-                    
-                                                            if(response6.split("|") && response6.includes("RIS-")){
-                                                                idReceita = response6.split("|")[1].substr(0,response6.split("|")[1].indexOf('*'));
-                                                                numeroReceita = response6.substr(0,response6.indexOf('|')).replace("RIS-",""); 
-                                                                                                                        
-                                                                console.log("numeroReceita" + numeroReceita);
-        
-                                                                confirmaMedicamentoParaReceitaDim(id, idReceita, numeroReceita, res).then(function (response7) {
+                                                                if (status != 200) {
+                                                                    errors = util.customError(status, "RECEITA MÉDICA", "Erro ao enviar a receita médica", null);
+                                                                    res.status(400).json(errors);
+                                                                    return;
+                                                                }                                        
+                        
+                                                                var idReceita;
+                                                                var numeroReceita;
+                        
+                                                                if(response6.split("|") && response6.includes("RIS-")){
+                                                                    idReceita = response6.split("|")[1].substr(0,response6.split("|")[1].indexOf('*'));
+                                                                    numeroReceita = response6.substr(0,response6.indexOf('|')).replace("RIS-",""); 
+                                                                                                                            
+                                                                    console.log("numeroReceita" + numeroReceita);
+            
+                                                                    confirmaMedicamentoParaReceitaDim(id, idReceita, numeroReceita, res).then(function (response7) {
+                                                                        obj.id = id;   
+                                                                        obj.numero_receita = numeroReceita;
+                                                                        res.status(200).json(obj);
+                                                                        return;                    
+                                                                    });
+                                                                }
+                                                                else{
                                                                     obj.id = id;   
-                                                                    obj.numero_receita = numeroReceita;
                                                                     res.status(200).json(obj);
-                                                                    return;                    
-                                                                });
-                                                            }
-                                                            else{
-                                                                obj.id = id;   
-                                                                res.status(200).json(obj);
-                                                                return; 
-                                                            }                                                                                                  
-                                                        });
+                                                                    return; 
+                                                                }                                                                                                  
+                                                            });
+                                                        }
+                                                        else
+                                                        {
+                                                            errors = util.customError(errors, "RECEITA MÉDICA", "URL PARA ENVIO DA RECEITA NÃO ENCONTRADA", null);
+                                                            res.status(400).json(errors);
+                                                            return;
+                                                        }
+                                                    });                                                        
                                                 }
                                                 else{
                                                     obj.id = id;   
@@ -614,7 +646,6 @@ module.exports = function (app) {
     }
 
     function finalizaAtendmento(obj, id, res) {
-
         var q = require('q');
         var d = q.defer();
         var util = new app.util.Util();
@@ -761,6 +792,30 @@ module.exports = function (app) {
                 d.reject(exception);
             } else {
                 d.resolve(result);
+            }
+        });
+        return d.promise;
+    }
+
+    function buscaParametroSegurancaPorChave(chave, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.ParametroSegurancaDAO(connection);
+        var errors = [];
+        result = [];
+        
+        objDAO.buscarValorPorChave(chave, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao editar os dados", "atendimento");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result[0]);
             }
         });
         return d.promise;

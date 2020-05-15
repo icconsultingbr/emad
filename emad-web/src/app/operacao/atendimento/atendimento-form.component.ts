@@ -414,9 +414,6 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
-
-
-
   findHipotesePorAtendimento() {
     this.message = "";
     this.errors = [];
@@ -503,7 +500,6 @@ export class AtendimentoFormComponent implements OnInit {
       Util.isEmpty(this.atendimentoMedicamento.apresentacao) ||
       Util.isEmpty(this.atendimentoMedicamento.posologia) ||
       Util.isEmpty(this.atendimentoMedicamento.idAtendimento);
-
   }
 
   saveHipotese() {
@@ -629,7 +625,11 @@ export class AtendimentoFormComponent implements OnInit {
 
   abreFichaDigital(id: Number) {
     this.errors = [];
-    let url = `http://saude.icconsulting.com.br/aps/download?fileName=${id}.pdf`;
+    let url = 
+      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")
+      ?
+      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")[0].valor.replace('{id}', id)
+      :"";
     this.loading = true;
     this.service.printDocument(url).subscribe(result => {
       this.loading = false;
@@ -645,7 +645,14 @@ export class AtendimentoFormComponent implements OnInit {
 
   abreReceitaMedica(ano_receita: Number, numero_receita: Number, unidade_receita: Number) {
     this.errors = [];
-    let url = `http://saude.icconsulting.com.br/ecare//modulos/consulta/recibo_receita_pdf.php?ano=${ano_receita}&numero=${numero_receita}&unidade=${unidade_receita}`;
+    let url =
+      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_RECEITA_MEDICA_VISUALIZACAO")
+      ?
+      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_RECEITA_MEDICA_VISUALIZACAO")[0].valor
+      .replace('{ano_receita}', ano_receita)
+      .replace('{numero_receita}', numero_receita)
+      .replace('{unidade_receita}', unidade_receita)
+      :"";
     this.loading = true;
     this.service.printDocument(url).subscribe(result => {
       this.loading = false;
@@ -661,7 +668,11 @@ export class AtendimentoFormComponent implements OnInit {
 
   abreAtendimentoFichaDigital(id: Number) {
     this.errors = [];
-    let url = `http://saude.icconsulting.com.br/afs/view?id=${id}`
+    let url = 
+      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")
+      ?
+      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")[0].valor.replace('{id}', id)
+      :"";
     this.loading = true;
     this.service.openDocument(url).subscribe(result => {
       this.loading = false;
@@ -674,5 +685,4 @@ export class AtendimentoFormComponent implements OnInit {
       this.errors = Util.customHTTPResponse(error);
     });
   }
-
 }

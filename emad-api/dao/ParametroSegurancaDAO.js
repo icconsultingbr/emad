@@ -15,12 +15,18 @@ ParametroSegurancaDAO.prototype.lista = function(callback) {
     this._connection.query(`SELECT id, nome, valor, observacao FROM ${this._table}  WHERE situacao = 1`,callback);    
 }
 
+ParametroSegurancaDAO.prototype.listaStorage = function(callback) {    
+    this._connection.query(`SELECT id, nome, valor FROM ${this._table}  WHERE situacao = 1 
+    and nome in ('CONTA_EMAIL','URL_FICHA_MEDICA_IMPRESSAO','URL_FICHA_MEDICA_VISUALIZACAO',
+    'URL_RECEITA_MEDICA_VISUALIZACAO','URL_RECEITA_MEDICA_ENVIO','URL_FICHA_DIGITAL_SERVICO')`,callback);    
+}
+
 ParametroSegurancaDAO.prototype.buscaPorId = function (id, callback) {
     this._connection.query(`SELECT * FROM ${this._table} WHERE id = ?`,id,callback);
 }
 
 ParametroSegurancaDAO.prototype.buscarValorPorChave = function (id, callback) {
-    this._connection.query(`SELECT VALOR FROM ${this._table} WHERE CHAVE = ?`,id,callback);
+    this._connection.query(`SELECT VALOR FROM ${this._table} WHERE NOME = ?`,id,callback);
 }
 
 ParametroSegurancaDAO.prototype.buscaDominio = function (callback) {
