@@ -7,8 +7,8 @@ import { AuthGuard } from './_core/_guards';
 import { Usuario } from './_core/_models/Usuario';
 import { Util } from './_core/_util/Util';
 import { LoginService } from './login/login.service';
+import { ParametroSeguranca } from './_core/_models/ParametroSeguranca';
 import * as $ from 'jquery';
-
 
 @Component({
   selector: 'app-root',
@@ -24,6 +24,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   auth : AuthGuard;
   route: String = "";
   menus: Menu[];
+  parametrosSeguranca: ParametroSeguranca[];
 
   teste2 : String = "";
 
@@ -55,10 +56,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     if(auth.canActivate()){
       this.getMenuLista();
+      this.getUrlsParametroLista();
     }
   }
-
-  
 
   getMenuLista(){
     this.service.list().subscribe(menu=>{
@@ -66,6 +66,22 @@ export class AppComponent implements OnInit, AfterViewInit {
     
     this.usuario = this.auth.getUser();
     localStorage.setItem('menu', JSON.stringify(menu));
+    
+    }, erro => {
+      //console.log(erro);
+      if(erro.status==401){
+        this.loginService.logout(); 
+        this.router.navigate(['/login']);
+      }
+    });
+  } 
+
+  getUrlsParametroLista(){
+    this.service.listUrls().subscribe(url=>{
+    this.parametrosSeguranca = url;
+    
+    this.usuario = this.auth.getUser();
+    localStorage.setItem('parametro_seguranca', JSON.stringify(url));
     
     }, erro => {
       //console.log(erro);

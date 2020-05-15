@@ -1,11 +1,7 @@
 function FichaDigitalService() {
 }
 
-
-
-FichaDigitalService.prototype.enviaFicha = function (obj, callback) {
-
-    
+FichaDigitalService.prototype.enviaFicha = function (obj, url, callback) {    
     const fs = require('fs');
     fs.readFile(__dirname + '/../xml/pattern.xml', "utf8", function (err, html) {        
        
@@ -34,7 +30,7 @@ FichaDigitalService.prototype.enviaFicha = function (obj, callback) {
 
             //console.log(fs.createReadStream(__dirname +'/../xml/pattern.xml').toString());
 
-            form.submit('http://saude.icconsulting.com.br/aps/APSServlet/', function (err, res) {
+            form.submit(url.VALOR, function (err, res) {
                 callback(res.statusCode);                
             });
         });

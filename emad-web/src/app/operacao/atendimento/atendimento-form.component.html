@@ -93,7 +93,7 @@
     </div>
   </div>
 
-  <div class="card mb-4" *ngIf="object.idPaciente">
+  <div class="card mb-4" *ngIf="object.idPaciente && object.id">
     <div class="card-header text-left">
       Sinais vitais
     </div>
@@ -176,7 +176,7 @@
     </div>
   </div>
 
-  <div class="card mb-4" *ngIf="object.idPaciente">
+  <div class="card mb-4" *ngIf="object.idPaciente && object.id">
     <div class="card-header text-left">
       Dados do atendimento
     </div>
@@ -235,7 +235,7 @@
     </div>
   </div>
 
-  <div class="card mb-4" *ngIf="object.idPaciente">
+  <div class="card mb-4" *ngIf="object.idPaciente && object.id">
     <div class="card-header text-left">
       Hipótese diagnostica
     </div>
@@ -285,7 +285,7 @@
     </div>
   </div>
 
-  <div class="card mb-4" *ngIf="object.idPaciente">
+  <div class="card mb-4" *ngIf="object.idPaciente && object.id">
     <div class="card-header text-left">
       Prescrição Medicamentos
     </div>
@@ -343,7 +343,7 @@
     </div>
   </div>
 
-  <div class="card mb-4" *ngIf="object.idPaciente">
+  <div class="card mb-4" *ngIf="object.idPaciente && object.id">
     <div class="card-header text-left">
       Encaminhamento
     </div>
@@ -394,10 +394,10 @@
     </div>
   </div>
 
-  <div class="card mb-4" *ngIf="object.idPaciente">
+  <div class="card mb-4" *ngIf="object.idPaciente && object.id">
     <div class="card-body text-left">
       <div class="row">
-        <div class="col-xl-6">
+        <div class="col-xl-5">
           <div class="form-group row">
             <label class="col-xl-4 col-form-label text-left">
               Situação<span class="text-danger font-weight-bold"> *</span>
@@ -405,19 +405,31 @@
             <div class="col-xl-8">
               <select *ngIf="!disableFields()" class="custom-select d-block w-100" [(ngModel)]="object.situacao" formControlName="situacao">
                 <option [value]="null">Selecione...</option>
-                <option value="C">Continuidade</option>
+                <option value="C">Em aberto</option>
                 <option value="A">Alta</option>
-                <option value="F">Finalizar</option>
-                <option value="X">Cancelar</option>
+                <option value="E">Evasão</option>
+                <option value="O">Óbito</option>
+                <option value="X">Cancelado</option>
               </select>
 
               <select *ngIf="disableFields()" class="custom-select d-block w-100" [(ngModel)]="object.situacao" formControlName="situacao" disabled>
                 <option [value]="null">Selecione...</option>
-                <option value="C">Continuidade</option>
-                <option value="A">Alta</option>                
-                <option value="F">Finalizar</option>
-                <option value="X">Cancelar</option>
+                <option value="C">Em aberto</option>
+                <option value="A">Alta</option>
+                <option value="E">Evasão</option>
+                <option value="O">Óbito</option>
+                <option value="X">Cancelado</option>
               </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-6" *ngIf="object.situacao == 'X'">
+          <div class="form-group row">
+            <label class="col-xl-4 col-form-label text-left">
+              Motivo cancelamento
+            </label>
+            <div class="col-xl-8">
+              <input type="text" class="form-control has-error" [(ngModel)]="object.motivoCancelamento" formControlName="motivoCancelamento" [readonly]="disableFields()"/>
             </div>
           </div>
         </div>
@@ -601,7 +613,6 @@
 
 
 <ng-template #contentRemove>
-
   <div class="modal-header">
     <h4 class="modal-title">Remover registro</h4>
     <button type="button" class="close" (click)="close()">
@@ -614,6 +625,22 @@
   <div class="modal-footer">
     <button type="button" class="btn btn-danger">Remover</button>
     <button type="button" class="btn btn-outline-dark" (click)="close()">Cancelar</button>
+  </div>
+</ng-template>
+
+<ng-template #contentConfirmacao>
+  <div class="modal-header">
+    <h4 class="modal-title">Editar atendimento</h4>
+    <button type="button" class="close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Deseja editar o atendimento?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="close()">Sim</button>
+    <button type="button" class="btn btn-danger"  (click)="back()">Não</button>    
   </div>
 </ng-template>
 

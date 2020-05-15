@@ -49,7 +49,7 @@ Mail.prototype.sendMail = function (usuario, _subject, _html) {
     });
 }
 
-Mail.prototype.enviaEmailFicha = function (obj, _subject, _html) {
+Mail.prototype.enviaEmailFicha = function (obj, url, _subject, _html) {
 
     console.log('testeficha');
     'use strict';
@@ -65,7 +65,7 @@ Mail.prototype.enviaEmailFicha = function (obj, _subject, _html) {
         secure: false, // true for 465, false for other ports
         requireTLS: true,
         auth: {
-            user: "icconsulting@icconsulting.com.br",
+            user: url.VALOR,
             pass: "Acesso#01"
         },
         tls: { rejectUnauthorized: false }
@@ -106,9 +106,9 @@ Mail.prototype.enviaEmailFicha = function (obj, _subject, _html) {
             .replace(/{{hora}}/g, time);
 
         var mailOptions = {
-            from: '"E-ATENDE" <icconsulting@icconsulting.com.br>',
+            from: '"E-ATENDE" <' + url.VALOR + '>',
             to: obj.email ,
-            bcc: 'mauro@icconsulting.com.br, malmeida@icconsulting.com.br',
+            bcc: '' + obj.emailProfissional + '' ,
             subject: _subject,
             html: htmlResult
         };

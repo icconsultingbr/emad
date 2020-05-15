@@ -36,18 +36,6 @@ AtendimentoDAO.prototype.lista = function(addFilter, callback) {
         if(addFilter.idSap){
             where+=" AND p.idSap like '%"+addFilter.idSap+"%'";
         }
-
-        if(addFilter.situacaoAtendimento){
-
-            if(addFilter.situacaoAtendimento == "F")
-                where+=" AND a.dataFinalizacao IS NOT NULL";
-            
-            if(addFilter.situacaoAtendimento == "C")
-                where+=" AND a.dataCancelamento IS NOT NULL";
-
-            if(addFilter.situacaoAtendimento == "P")
-                where+=" AND a.dataCancelamento IS NULL  AND a.dataFinalizacao IS NULL";
-        }
     }
 
     this._connection.query(`SELECT 
@@ -63,18 +51,13 @@ AtendimentoDAO.prototype.lista = function(addFilter, callback) {
         a.idUsuario, 
         pro.nome, 
         a.situacao,
-    CASE
-        WHEN a.dataFinalizacao IS NOT NULL THEN 'Finalizado'
-        WHEN a.dataCancelamento IS NOT NULL THEN 'Cancelado'
-        WHEN a.dataCancelamento IS NULL  AND a.dataFinalizacao IS NULL THEN 'Pendente'
-    END AS situacaoAtendimento,
-    p.idSap,
-    a.tipoFicha,
-    p.idPacienteCorrespondenteDim,
-    YEAR(a.dataCriacao) as ano_receita,
-    a.numeroReceita as numero_receita,
-    e.idUnidadeRegistroReceitaDim as unidade_receita,
-    pro.id as idProfissional
+        p.idSap,
+        a.tipoFicha,
+        p.idPacienteCorrespondenteDim,
+        YEAR(a.dataCriacao) as ano_receita,
+        a.numeroReceita as numero_receita,
+        e.idUnidadeRegistroReceitaDim as unidade_receita,
+        pro.id as idProfissional
     FROM ${this._table} a 
     INNER JOIN tb_paciente p ON(a.idPaciente = p.id)  
     INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
@@ -117,18 +100,6 @@ AtendimentoDAO.prototype.listaPorUsuario = function(id, addFilter, callback) {
         if(addFilter.idSap){
             where+=" AND p.idSap like '%"+addFilter.idSap+"%'";
         }
-
-        if(addFilter.situacaoAtendimento){
-
-            if(addFilter.situacaoAtendimento == "F")
-                where+=" AND a.dataFinalizacao IS NOT NULL";
-            
-            if(addFilter.situacaoAtendimento == "C")
-                where+=" AND a.dataCancelamento IS NOT NULL";
-
-            if(addFilter.situacaoAtendimento == "P")
-                where+=" AND a.dataCancelamento IS NULL  AND a.dataFinalizacao IS NULL";
-        }
     }
 
     this._connection.query(`SELECT 
@@ -144,11 +115,6 @@ AtendimentoDAO.prototype.listaPorUsuario = function(id, addFilter, callback) {
         a.idUsuario, 
         pro.nome, 
         a.situacao, 
-        CASE
-            WHEN a.dataFinalizacao IS NOT NULL THEN 'Finalizado'
-            WHEN a.dataCancelamento IS NOT NULL THEN 'Cancelado'
-            WHEN a.dataCancelamento IS NULL  AND a.dataFinalizacao IS NULL THEN 'Pendente'
-        END AS situacaoAtendimento,
         p.idSap,
         a.tipoFicha,
         p.idPacienteCorrespondenteDim,
@@ -190,12 +156,11 @@ AtendimentoDAO.prototype.atualiza = function(objeto,id, callback) {
 }
 
 AtendimentoDAO.prototype.finaliza = function(objeto,id, callback) {
-    if(objeto.tipo == 'C'){
-        this._connection.query("UPDATE "+this._table+" SET dataCancelamento = CURRENT_TIMESTAMP, situacao = 'X' where id= ?", id, callback);
-
-    } else if(objeto.tipo == 'F'){
-        this._connection.query("UPDATE "+this._table+" SET dataFinalizacao = CURRENT_TIMESTAMP, situacao = 'F' where id= ?", id, callback);
-    }
+    if(objeto.tipo == 'X'){
+        this._connection.query("UPDATE "+this._table+" SET dataCancelamento = CURRENT_TIMESTAMP, idUsuarioAlteracao=?, motivoCancelamento =?,  situacao=? where id= ?", [objeto.idUsuarioAlteracao, objeto.motivoCancelamento, objeto.tipo, id], callback);
+    } else if(objeto.tipo == 'A' || objeto.tipo == 'E' || objeto.tipo == 'O'){
+        this._connection.query("UPDATE "+this._table+" SET dataFinalizacao = CURRENT_TIMESTAMP, idUsuarioAlteracao=?, motivoCancelamento='', situacao =? where id= ?", [objeto.idUsuarioAlteracao, objeto.tipo, id], callback);
+    } 
 }
 
 AtendimentoDAO.prototype.deletaPorId = function (id,callback) {

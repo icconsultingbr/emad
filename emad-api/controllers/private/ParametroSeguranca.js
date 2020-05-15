@@ -79,6 +79,22 @@ module.exports = function (app) {
         }
     });
 
+    app.get('/parametro-seguranca/urls', function (req, res) {
+        let usuario = req.usuario;
+        let util = new app.util.Util();
+        let errors = [];
+
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
+            listaStorage(res).then(function (resposne) {
+                res.status(200).json(resposne);
+                return;
+            });
+        }
+        else {
+            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
+            res.status(401).send(errors);
+        }
+    });
 
     app.get('/parametro-seguranca/:id', function(req,res){        
         let usuario = req.usuario;
@@ -158,6 +174,29 @@ module.exports = function (app) {
         });
         return d.promise;
     }
+
+    function listaStorage(res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+        var connection = app.dao.ConnectionFactory();
+        var ParametroSegurancaDAO = new app.dao.ParametroSegurancaDAO(connection);
+
+        var errors = [];
+
+        ParametroSegurancaDAO.listaStorage(function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "parametroSeguranca");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }    
  
     function buscarPorId(id,  res) {
         var q = require('q');

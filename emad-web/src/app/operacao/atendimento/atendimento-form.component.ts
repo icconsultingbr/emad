@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AtendimentoService } from './atendimento.service';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -21,7 +21,9 @@ import { MedicamentoDim } from '../../_core/_models/MedicamentoDim';
   providers: [AtendimentoService, PlanoTerapeuticoService]
 })
 export class AtendimentoFormComponent implements OnInit {
-
+  
+  @ViewChild('contentConfirmacao') contentConfirmacao: any;
+  
   loading: Boolean = false;
   message: String = "";
   errors: any[] = [];
@@ -108,6 +110,7 @@ export class AtendimentoFormComponent implements OnInit {
       exameFisico: ['', ''],
       observacoesGerais: ['', ''],
       situacao: [Validators.required],
+      motivoCancelamento: ['',''],
       idEstabelecimento: [Validators.required],
       tipoFicha: [Validators.required]
     });
@@ -246,10 +249,7 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
-  openRemove(content: any, item: any) {
-
-    this.removeId = item.id;
-
+  openConfirmacao(content: any) {
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
       keyboard: false,
@@ -333,13 +333,13 @@ export class AtendimentoFormComponent implements OnInit {
     this.loading = true;
     event.preventDefault();
 
-    if(this.object.situacao == "F"){
-      this.stopProcess('F');
+    if(this.object.situacao == "E" || this.object.situacao == "O"){
+      this.stopProcess(this.object.situacao);
       return;
     }      
 
     if(this.object.situacao == "X"){
-      this.stopProcess('C');
+      this.stopProcess('X');
       return;
     }
 
@@ -366,11 +366,18 @@ export class AtendimentoFormComponent implements OnInit {
           this.abreFichaDigital(this.object.id);
         }
 
-        this.message = this.message ? this.message : "Cadastro efetuado com sucesso!";
-        this.loading = false;
+        if(!this.message)
+        {
+          this.message = "Cadastro efetuado com sucesso!";
+          this.openConfirmacao(this.contentConfirmacao);
+        }
 
+        if(this.object.situacao == "A"){
+          this.stopProcess('A');
+          return;
+        }
 
-
+        this.loading = false;        
       }, erro => {
         setTimeout(() => this.loading = false, 300);
         this.errors = Util.customHTTPResponse(erro);
@@ -406,9 +413,6 @@ export class AtendimentoFormComponent implements OnInit {
       });
     });
   }
-
-
-
 
   findHipotesePorAtendimento() {
     this.message = "";
@@ -496,7 +500,6 @@ export class AtendimentoFormComponent implements OnInit {
       Util.isEmpty(this.atendimentoMedicamento.apresentacao) ||
       Util.isEmpty(this.atendimentoMedicamento.posologia) ||
       Util.isEmpty(this.atendimentoMedicamento.idAtendimento);
-
   }
 
   saveHipotese() {
@@ -587,11 +590,12 @@ export class AtendimentoFormComponent implements OnInit {
     let obj: any = {};
     obj.id = this.object.id;
     obj.tipo = val;
+    obj.motivoCancelamento = this.object.motivoCancelamento;
 
     this.loading = true;
     this.service.stopProcess(obj).subscribe(result => {
       this.loading = false;
-      this.message = (val == 'C') ? "Atendimento cancelado com sucesso" : "Atendimento finalizado com sucesso!";
+      this.message = (val == 'X') ? "Atendimento cancelado com sucesso" : "Atendimento finalizado com sucesso!";
       this.object = new Atendimento();
     }, error => {
       this.loading = false;
@@ -612,13 +616,20 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   back() {
-    this.router.navigate([this.method]);
+    if(this.modalRef)
+      this.modalRef.close();
+
+    this.router.navigate([this.method]);    
   }
 
 
   abreFichaDigital(id: Number) {
     this.errors = [];
-    let url = `http://saude.icconsulting.com.br/aps/download?fileName=${id}.pdf`;
+    let url = 
+      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")
+      ?
+      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")[0].valor.replace('{id}', id)
+      :"";
     this.loading = true;
     this.service.printDocument(url).subscribe(result => {
       this.loading = false;
@@ -634,7 +645,14 @@ export class AtendimentoFormComponent implements OnInit {
 
   abreReceitaMedica(ano_receita: Number, numero_receita: Number, unidade_receita: Number) {
     this.errors = [];
-    let url = `http://saude.icconsulting.com.br/ecare//modulos/consulta/recibo_receita_pdf.php?ano=${ano_receita}&numero=${numero_receita}&unidade=${unidade_receita}`;
+    let url =
+      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_RECEITA_MEDICA_VISUALIZACAO")
+      ?
+      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_RECEITA_MEDICA_VISUALIZACAO")[0].valor
+      .replace('{ano_receita}', ano_receita)
+      .replace('{numero_receita}', numero_receita)
+      .replace('{unidade_receita}', unidade_receita)
+      :"";
     this.loading = true;
     this.service.printDocument(url).subscribe(result => {
       this.loading = false;
@@ -650,7 +668,11 @@ export class AtendimentoFormComponent implements OnInit {
 
   abreAtendimentoFichaDigital(id: Number) {
     this.errors = [];
-    let url = `http://saude.icconsulting.com.br/afs/view?id=${id}`
+    let url = 
+      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")
+      ?
+      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")[0].valor.replace('{id}', id)
+      :"";
     this.loading = true;
     this.service.openDocument(url).subscribe(result => {
       this.loading = false;
@@ -663,5 +685,4 @@ export class AtendimentoFormComponent implements OnInit {
       this.errors = Util.customHTTPResponse(error);
     });
   }
-
 }
