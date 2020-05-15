@@ -419,6 +419,12 @@ ProfissionalDAO.prototype.buscaPorUsuario = function (idUsuario, callback) {
         WHERE ep.idUsuario = ? AND e.situacao = 1`, id, callback);
 }
 
+ProfissionalDAO.prototype.buscaProfissionalPorUsuario = function (idUsuario, callback) {
+    this._connection.query(`
+        SELECT * FROM tb_profissional as p         
+        WHERE p.idUsuario = ? AND p.situacao = 1`, idUsuario, callback);
+}
+
 module.exports = function(){
     return ProfissionalDAO;
 };

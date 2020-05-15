@@ -16,6 +16,7 @@ export class Atendimento {
     @Input() exameFisico: String = null;
     @Input() observacoesGerais: String = null;
     @Input() situacao: String = null;
+    @Input() motivoCancelamento: String = null;    
     @Input() dataFinalizacao : String = null;
     @Input() dataCancelamento : String = null;
     @Input() idEstabelecimento : Number = +JSON.parse(localStorage.getItem("est"))[0].id;

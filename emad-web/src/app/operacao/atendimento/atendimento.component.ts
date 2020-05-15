@@ -65,15 +65,11 @@ export class AtendimentoComponent implements OnInit {
       this.domains.push({
         s: estabelecimentos,
         situacao: [
-          { id: "A", nome: "Alta" },
-          { id: "C", nome: "Continuidade" },
-          { id: "F", nome: "Finalizar" },
-          { id: "X", nome: "Cancelar" }
-        ],
-        situacaoAtendimento: [
-          { id: "F", nome: "Finalizado" },
-          { id: "C", nome: "Cancelado" },
-          { id: "P", nome: "Pendente" }
+          { id: "C", nome: "Em aberto" },
+          { id: "A", nome: "Alta" },          
+          { id: "E", nome: "Evasão" },
+          { id: "O", nome: "Óbito" },
+          { id: "X", nome: "Cancelado" }
         ]
       });
     });        

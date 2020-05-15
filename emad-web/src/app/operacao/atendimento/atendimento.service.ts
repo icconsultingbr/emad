@@ -134,29 +134,14 @@ export class AtendimentoService extends GenericsService {
             label: "Situação",
             grid: true,
             form: false,
-            translate: { "A": "Alta", "C": "Continuidade", "F": "Finalizar", "X": "Cancelar" },
+            translate: { "A": "Alta", "C": "Em aberto", "E": "Evasão", "O" : "Óbito", "X": "Cancelado" },
             required: true,
             validator: ['', ''],
             filter : {
                 type: "select",
                 grid: true
               }
-        },
-        {
-            field: "situacaoAtendimento",
-            type: "text",
-            label: "Atendimento",
-            grid: true,
-            form: false,
-            required: true,
-            validator: ['', ''],
-            filter : {
-                type: "select",
-                grid: true
-              }
-        },
-
-
+        }
     ];
 
     findByIdPaciente(id: any, idEstabelecimento: Number, method: String): Observable<any> {
