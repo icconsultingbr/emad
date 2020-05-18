@@ -72,6 +72,24 @@ module.exports = function (app) {
         }
     });
 
+    app.get('/menu/ordem-menu-filho/:id', function (req, res) {
+        var usuario = req.usuario;
+        var util = new app.util.Util();
+        var errors = [];
+        let idMenuPai = req.params.id;
+
+        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+            listaOrdemMenuFilhoPorMenuPai(idMenuPai, res).then(function (response) {
+                res.status(200).json(response);
+                return;
+            });
+        } else {
+            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
+            res.status(401).send(errors);
+        }
+    });
+    
+
     app.get('/menu/tipo-usuario', function (req, res) {
         var usuario = req.usuario;
         var util = new app.util.Util();
@@ -376,5 +394,28 @@ module.exports = function (app) {
         });
         return d.promise;
     }
+
+    function listaOrdemMenuFilhoPorMenuPai(idMenuPai, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var menuDAO = new app.dao.MenuDAO(connection);
+        var errors = [];
+
+        menuDAO.listaOrdemMenuFilhoPorMenuPai(idMenuPai, function (exception, result) {
+            if (exception) {
+                console.log(exception);
+                d.reject(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "menu");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }    
 }
 

@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { Menu } from '../../_core/_models/Menu';
 import { MenuService } from './menu.service'; 
 import { ActivatedRoute } from '@angular/router';
+import { Util } from '../../_core/_util/Util';
 
 @Component({
   selector: 'app-menu-form',
@@ -15,25 +16,46 @@ export class MenuFormComponent {
   method : String = 'menu';
   fields = []; 
   domains = [];
+  loading: Boolean = false;
+  errors: any[] = [];
 
   label : String = "Menu";
   id : Number = null;
 
   constructor(
-    service : MenuService, 
+    private service : MenuService, 
     private route: ActivatedRoute) {
 
     this.fields = service.fields;
  
     service.list(this.method).subscribe(menus=>{
       this.domains.push({
-        menuPai:menus
+        menuPai:menus,
+        ordem: []
       });
+      this.buscaOrdemDisponivelMenu();
     });
 
     this.route.params.subscribe( params => this.id = params.id );
   }
+
+  buscaOrdemDisponivelMenu() {
+    this.loading = true;
+       this.service.listOrdem('menu/ordem-menu-filho/0').subscribe(result => {
+        this.domains[0].ordem = result;
+        this.loading = false;
+      }, error => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(error);
+      });
+  }
 }
   
+
+
+
+
+
+
 
  
