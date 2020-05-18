@@ -72,7 +72,7 @@ export class LoginComponent implements OnInit {
         var estabelecimento = this.estabelecimentosCompleto.filter((estabelecimento) => estabelecimento.id == this.loginForm.value.estabelecimentoLogin);      
         localStorage.setItem('est', JSON.stringify(estabelecimento));
         this.carregando = false;
-        window.location.href = window.location.href.replace("login", "");
+        window.location.href = window.location.href.replace("#/login", "");
 
         return;     
     } 
