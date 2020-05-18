@@ -4,6 +4,15 @@ var jwt = require('jsonwebtoken');
 
 var server = app.listen(config.get('apiPort'), function(){
     console.log('Server listen at '+config.get('apiPort'));
+
+    setTimeout(() => {
+        const connection = app.dao.ConnectionFactory();
+        const cache = new app.cache.DimCache(connection);
+        cache.configurar()
+        .then(result =>{
+            console.log('ok');
+        });
+    }, 2000);
 });
 
 

@@ -41,6 +41,11 @@ ParametroSegurancaDAO.prototype.deletaPorId = function (id,callback) {
     this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
 }
 
+ParametroSegurancaDAO.prototype.obterConexaoDim = function(callback) {
+    const sql = `SELECT nome, valor from ${this._table} where nome in ('ECARE_HOST', 'ECARE_USERNAME', 'ECARE_PASSWORD', 'ECARE_DATABASE', 'ECARE_PORT')`;
+    this._connection.query(sql, callback);
+}
+
 module.exports = function(){
     return ParametroSegurancaDAO;
 };

@@ -1,16 +1,22 @@
 let mysql  = require('mysql');
-let config = require('config');
+const dim = require('../cache/DimCache');
 let connection;
 
 function createDBConnection(){
-    if(!connection){
-        connection = mysql.createConnection({
-            host: config.dbConfigDim.host,
-            user: config.dbConfigDim.username,
-            password: config.dbConfigDim.password,
-            database: config.dbConfigDim.database
-        }); 
+    if(connection){
+        return connection;
     }
+
+    let config = dim();
+    let dimConnection = new config();
+
+    connection = mysql.createConnection({
+        host: dimConnection.host,
+        user: dimConnection.username,
+        password: dimConnection.password,
+        database: dimConnection.database
+    }); 
+    
     return connection;
 }
 
