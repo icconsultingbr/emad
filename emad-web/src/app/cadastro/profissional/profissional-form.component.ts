@@ -82,7 +82,7 @@ export class ProfissionalFormComponent implements OnInit {
 
   buscaUsuariosSemProfissional() {
     this.loading = true;
-       this.service.list('usuario/usuario-sem-profissional/' + (this.id ? this.id : 0)).subscribe(result => {
+       this.service.list('usuario/usuario-sem-profissional?id=' + (this.id ? this.id : 0) + '&idEstabelecimento=' +  JSON.parse(localStorage.getItem("est"))[0].id  ).subscribe(result => {
         this.domains[0].idUsuario = result;
         this.loading = false;
       }, error => {

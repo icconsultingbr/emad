@@ -49,6 +49,26 @@ MenuDAO.prototype.listaRotasPorTipoUsuario = function(idTipoUsuario, callback) {
         idTipoUsuario, callback);
 }
 
+MenuDAO.prototype.listaOrdemMenuFilhoPorMenuPai = function(idMenuPai, callback) {
+
+    if(idMenuPai>0){
+        this._connection.query(
+            `select a.id as id, a.nome from 
+            (select ordem as id, CONCAT(@row_num:= @row_num + 1,'-',nome) nome from tb_menu tm, (SELECT @row_num:= 0 AS num) AS c where menuPai=?
+            union
+            select COALESCE(max(ordem),0)+1 as id, CONCAT(COUNT(*)+1, '- Vazio') nome from tb_menu tm where menuPai=?) a
+            order by a.nome asc`, 
+            [idMenuPai,idMenuPai], callback);
+        }
+    else{
+            this._connection.query(
+                `select a.id as id, a.nome from 
+                (select ordem as id, CONCAT(@row_num:= @row_num + 1,'-',nome) nome from tb_menu tm, (SELECT @row_num:= 0 AS num) AS c where menuPai is null
+                union
+                select COALESCE(max(ordem),0)+1 as id, CONCAT(COUNT(*)+1, '- Vazio') nome from tb_menu tm where menuPai is null) a
+                order by a.nome asc`, callback);
+        }
+}
 
 MenuDAO.prototype.listaPorTipoUsuarioDescricao = function(idTipoUsuario, callback) {
     this._connection.query(
@@ -76,6 +96,10 @@ MenuDAO.prototype.buscaPorId = function (id,callback) {
 }
 
 MenuDAO.prototype.atualizaPorId = function (menu, id,callback) {
+
+    if(menu.ordem && menu.menuPai)
+        this._connection.query("UPDATE "+this._table+" SET ordem=ordem+1 where menuPai=? and ordem>= ?", [menu.menuPai, menu.ordem], callback);
+
     this._connection.query("UPDATE "+this._table+" SET ? where id= ?", [menu, id], callback);
 }
 

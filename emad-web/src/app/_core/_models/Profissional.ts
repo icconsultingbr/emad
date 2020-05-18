@@ -34,4 +34,5 @@ export class Profissional {
     @Input() estabelecimentos : any[];
     @Input() latitude: number;
     @Input() longitude: number;
+    @Input() idEstabelecimento : Number = +JSON.parse(localStorage.getItem("est"))[0].id;
 }

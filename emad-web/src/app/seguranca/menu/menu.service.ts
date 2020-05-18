@@ -16,10 +16,24 @@ export class MenuService {
   fields : any[] = [
     {field:"id", type:"hidden", label:"Id", grid:false, form:true, required:false, validator:['', '']},
     {field:"nome", type:"text", label:"Nome", grid:true,  form:true,  required:true, validator:['', Validators.required]},
-    {field:"menuPai", type:"select", label:"Menu Pai", grid:true, form:true,  required:false, validator:['', '']},
+    {
+      field:"menuPai", 
+      type:"select", 
+      label:"Menu Pai", 
+      grid:true, 
+      form:true,  
+      required:false, 
+      validator:['', ''],
+      filter: {
+        type: "select",
+        changeMethod: 'menu/ordem-menu-filho',
+        changeTarget: 'ordem'
+      }, 
+  
+  },
     {field:"icone", type:"text", label:"Ícone", grid:false, form:true,  required:false, validator:['', '']},
     {field:"rota", type:"text", label:"Rota", grid:true, form:true,  required:true, validator:['', Validators.required]},
-    {field:"ordem", type:"text", label:"Ordem", grid:false, form:true,  required:true, validator:['', Validators.required]},
+    {field:"ordem", type:"select", label:"Ordem", grid:false, form:true,  required:true, validator:['1', Validators.required]},
     {field:"situacao", type:"checkbox", label:"Situação", form:true, grid:true,  required:true, validator:['', '']},
   ]; 
  
@@ -36,4 +50,7 @@ export class MenuService {
     return this.http.get(Util.urlapi+'/'+method, { headers: this.headers }).map(res => res.json());
   }
 
+  listOrdem(method: String): Observable<any> {
+    return this.http.get(Util.urlapi+'/'+method, { headers: this.headers }).map(res => res.json());
+  }
 }
