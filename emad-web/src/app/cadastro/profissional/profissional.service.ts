@@ -342,6 +342,29 @@ export class ProfissionalService extends GenericsService {
       form: true,
       required: true,
       validator: ['', Validators.required]
-    }   
+    },
+    {
+      field: "nomeUsuario",
+      type: "text",
+      label: "Usuário vinculado",
+      grid: true,
+      form: false,
+      required: false,
+      validator: ['', '']
+    },    
+    {
+      field: "idEstabelecimento",
+      type: "hidden",
+      label: "Estabelecimento",
+      grid: false,
+      form: true,
+      required: true,
+      readonly: true,
+      validator: ['', ''],
+      filter: {
+          type: "select",
+          grid: true
+      }
+    }, 
   ];
 }

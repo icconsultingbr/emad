@@ -124,6 +124,8 @@ module.exports = function (app) {
             }
             obj.dataNascimento = util.dateToISO(obj.dataNascimento);
 
+            delete obj.idEstabelecimento;
+
             salva(obj, res).then(function (response) {
                 obj.id = response.insertId;
 
@@ -195,7 +197,8 @@ module.exports = function (app) {
             obj.dataNascimento = util.dateToISO(obj.dataNascimento);
 
             delete obj.estabelecimentos;
-
+            delete obj.idEstabelecimento;
+            
             buscarPorId(id, res).then(function (response) {
 
                 if (typeof response != 'undefined') {

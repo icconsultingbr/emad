@@ -151,8 +151,8 @@ ProfissionalDAO.prototype.lista = function(addFilter, callback) {
             where += ` AND prof.idEspecialidade = ${addFilter.idEspecialidade}`;
         }
 
-        if(addFilter.estabelecimentos) {
-            where += ` AND ep.idEstabelecimento = ${addFilter.estabelecimentos}`;
+        if(addFilter.idEstabelecimento) {
+            where += ` AND ep.idEstabelecimento = ${addFilter.idEstabelecimento}`;
         }
     }
 
@@ -191,9 +191,11 @@ ProfissionalDAO.prototype.lista = function(addFilter, callback) {
             prof.situacao,
             prof.latitude,
             prof.longitude,
-            prof.idUsuario
+            prof.idUsuario,
+            usu.nome nomeUsuario
         FROM tb_profissional prof 
         INNER JOIN tb_estabelecimento_usuario ep ON (ep.idUsuario = prof.idUsuario)
+        INNER JOIN tb_usuario usu ON (prof.idUsuario = usu.id)
         INNER JOIN tb_estabelecimento e ON (ep.idEstabelecimento = e.id AND e.situacao = 1)
         INNER JOIN tb_nacionalidade nac ON (prof.idNacionalidade = nac.id)
         INNER JOIN tb_uf nat ON (prof.idNaturalidade = nat.id)
@@ -201,8 +203,7 @@ ProfissionalDAO.prototype.lista = function(addFilter, callback) {
         INNER JOIN tb_uf uf ON (prof.idUf = uf.id)
         INNER JOIN tb_especialidade esp ON (prof.idEspecialidade = esp.id)  
         WHERE prof.situacao = 1 
-        ${where}  
-        
+        ${where}          
         GROUP BY         
             prof.id,
             prof.cpf,
@@ -237,7 +238,8 @@ ProfissionalDAO.prototype.lista = function(addFilter, callback) {
             prof.situacao,
             prof.latitude,
             prof.longitude,
-            prof.idUsuario `,
+            prof.idUsuario,
+            usu.nome `,
     callback);
 }
 

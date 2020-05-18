@@ -317,11 +317,12 @@ module.exports = function (app) {
         }
     });
 
-    app.get('/usuario/usuario-sem-profissional/:id', function (req, res) {
+    app.get('/usuario/usuario-sem-profissional', function (req, res) {
         let usuario = req.usuario;
-        let idProfissional = req.params.id;
+        let idProfissional = req.query.id;
+        let idestabelecimento = req.query.idEstabelecimento;
 
-        listaUsuarioSemProfissional(idProfissional, res).then(function (resposne) {
+        listaUsuarioSemProfissional(idProfissional, idestabelecimento, res).then(function (resposne) {
             res.status(200).json(resposne);
             return;
         });
@@ -600,7 +601,7 @@ module.exports = function (app) {
         return d.promise;
     }
 
-    function listaUsuarioSemProfissional(idProfissional, res) {
+    function listaUsuarioSemProfissional(idProfissional, idestabelecimento, res) {
         var q = require('q');
         var d = q.defer();
         var util = new app.util.Util();
@@ -609,7 +610,7 @@ module.exports = function (app) {
 
         var errors = [];
 
-        usuarioDAO.listaUsuarioSemProfissional(idProfissional, function (exception, result) {
+        usuarioDAO.listaUsuarioSemProfissional(idProfissional, idestabelecimento, function (exception, result) {
             if (exception) {
                 d.reject(exception);
                 console.log(exception);

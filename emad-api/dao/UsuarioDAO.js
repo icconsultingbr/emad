@@ -170,15 +170,16 @@ UsuarioDAO.prototype.dominio = function(callback) {
     this._connection.query("select id, nome FROM "+this._table+" WHERE situacao = 1 ORDER BY nome ASC",callback);
 }
 
-UsuarioDAO.prototype.listaUsuarioSemProfissional = function(idProfissional, callback) {    
+UsuarioDAO.prototype.listaUsuarioSemProfissional = function(idProfissional, idEstabelecimento, callback) {    
     let where = "";
 
     if (idProfissional > 0) {
         where += " and tp.id <> " + idProfissional;
     }
 
-    this._connection.query(`select tu.id, tu.nome FROM ${this._table} tu WHERE tu.situacao = 1 
-    and not exists (select 1 from tb_profissional tp where tp.idUsuario = tu.id ${where}) ORDER BY tu.nome ASC`,callback);
+    this._connection.query(`select tu.id, tu.nome FROM ${this._table} tu WHERE tu.situacao = 1  and tu.idTipoUsuario <> 3
+    and not exists (select 1 from tb_profissional tp where tp.idUsuario = tu.id ${where}) 
+    and exists (select 1 from tb_estabelecimento_usuario eu where eu.idUsuario = tu.id and eu.idEstabelecimento = ?) ORDER BY tu.nome ASC`,idEstabelecimento, callback);
 }
 
 module.exports = function () {
