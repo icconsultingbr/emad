@@ -3,8 +3,6 @@ let config = require('config');
 let connection;
 
 function createDBConnection(){
-
-
     if(!connection){
         connection = mysql.createConnection({
             host: config.dbConfig.host,

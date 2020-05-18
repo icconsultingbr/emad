@@ -22,6 +22,7 @@ module.exports = function () {
         .then('controllers/public')
         .then('middlewares/AutenticacaoRotas.js')
         .then('controllers/private')
+        .then('cache')
         .then('dao')
         .then('util')
         .then('services')
