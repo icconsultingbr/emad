@@ -17,7 +17,7 @@ module.exports = function (app) {
         let errors = [];
 
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             buscarPorId(id, res).then(function (response) {
                 res.status(200).json(response);
                 return;
@@ -37,7 +37,7 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
         
-        if(usuario.idTipoUsuario == util.SUPER_ADMIN){	
+        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){	
             deletaPorId(id, res).then(function(response) {
                 res.status(200).json(obj);
                 return;      
@@ -99,7 +99,7 @@ module.exports = function (app) {
         json.idEstabelecimento = obj.idEstabelecimento;
 
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             salvar(json, res).then(function (response) {
                 json.id = response.insertId;
                 res.status(201).send(json);
@@ -162,7 +162,7 @@ module.exports = function (app) {
         json.situacao = 1;
 
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             editar(json, res).then(function (response) {
                 res.status(201).send(response);
             });

@@ -5,7 +5,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             lista(res).then(function (resposne) {
                 res.status(200).json(resposne);
                 return;
@@ -46,7 +46,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN || usuario.id == id) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN || usuario.id == id) {
             buscarPorId(id, res).then(function (response) {
                 res.status(200).json(response);
                 return;
@@ -66,7 +66,7 @@ module.exports = function (app) {
         let notificacao = {};
         notificacao.id = id;
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             deletaPorId(id, res).then(function (response) {
                 res.status(200).json(notificacao);
                 return;
@@ -147,7 +147,7 @@ module.exports = function (app) {
         obj.dataCriacao = new Date;
         var errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             salvaNotificacao(obj, res).then(function (response) {
                 obj.id = response.insertId;
                 geraNotificacoesUsuarios(obj, res).then(function (response2) {

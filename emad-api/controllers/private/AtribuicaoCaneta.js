@@ -13,7 +13,7 @@ module.exports = function (app) {
         if(idEstabelecimento)
             addFilter.idEstabelecimento = idEstabelecimento;    
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             lista(addFilter, res).then(function (resposne) {
                 res.status(200).json(resposne);
                 return;
@@ -30,7 +30,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             buscarPorId(id, res).then(function (response) {
                 res.status(200).json(response);
                 return;
@@ -48,7 +48,7 @@ module.exports = function (app) {
         var errors = [];
         let idEstabelecimento = req.params.idEstabelecimento;
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {            
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {            
             req.assert("idCaneta").notEmpty().withMessage("Caneta é um campo obrigatório");
             req.assert("idProfissional").notEmpty().withMessage("Profissional é um campo obrigatório");
             req.assert("periodoInicial").notEmpty().withMessage("Data/hora de atribuição inicial é um campo obrigatório");
@@ -82,7 +82,7 @@ module.exports = function (app) {
         let id = obj.id;
         let idEstabelecimento = req.params.idEstabelecimento;
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             req.assert("idCaneta").isNumeric().notEmpty().withMessage("Caneta é um campo obrigatório");
             req.assert("idProfissional").notEmpty().withMessage("Profissional é um campo obrigatório");
             req.assert("periodoInicial").notEmpty().withMessage("Data/hora de atribuição inicial é um campo obrigatório");
@@ -112,7 +112,7 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             deletaPorId(id, res).then(function (response) {
                 res.status(200).json(obj);
                 return;
@@ -137,7 +137,7 @@ module.exports = function (app) {
         let errors = [];
 
 
-        if(usuario.idTipoUsuario == util.SUPER_ADMIN){		
+        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
             buscarAtribuicaoPorProfissionalId(idProfissional, dataInicial, horaInicial , dataFinal, horaFinal, res).then(function(response) {
                 res.status(200).json(response);
                 return;      

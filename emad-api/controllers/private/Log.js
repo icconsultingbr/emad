@@ -10,7 +10,7 @@ module.exports = function (app) {
         var util = new app.util.Util();    
         
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             lista(addFilter,usuario, dao, "uf", res).then(function (response) {
                 res.status(200).json(response);
                 return;

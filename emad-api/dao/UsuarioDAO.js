@@ -91,8 +91,6 @@ UsuarioDAO.prototype.buscaPorId = function (id, callback) {
 }
 
 UsuarioDAO.prototype.listaPorEmpresa = function (id, callback) {
-    console.log(usuario);
-
     this._connection.query(`select 
         id, 
         nome, 
