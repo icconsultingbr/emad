@@ -5,4 +5,5 @@ export class ParametroSeguranca {
     @Input() nome: String;
     @Input() valor: String;
     @Input() situacao : Boolean;
+    @Input() mascaraGrid : Boolean;
 }

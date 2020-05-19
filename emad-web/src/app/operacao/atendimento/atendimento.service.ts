@@ -9,7 +9,7 @@ export class AtendimentoService extends GenericsService {
         {
             field: "id",
             type: "hidden",
-            label: "ID",
+            label: "Código",
             grid: true,
             form: false,
             required: false,
@@ -32,7 +32,7 @@ export class AtendimentoService extends GenericsService {
         {
             field: "idSap",
             type: "text",
-            label: "ID SAP",
+            label: "Número Sap",
             grid: true,
             form: false,
             required: true,

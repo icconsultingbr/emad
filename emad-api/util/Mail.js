@@ -2,7 +2,7 @@ function Mail() {
 }
 
 
-Mail.prototype.sendMail = function (usuario, _subject, _html) {
+Mail.prototype.sendMail = function (usuario, urlEmail, urlSenha, _subject, _html) {
 
     'use strict';
     const nodemailer = require('nodemailer');
@@ -17,8 +17,8 @@ Mail.prototype.sendMail = function (usuario, _subject, _html) {
         secure: false,
         requireTLS: true,
         auth: {
-            user: "icconsulting@icconsulting.com.br",
-            pass: "Acesso#01"
+            user: urlEmail.VALOR,
+            pass: urlSenha.VALOR
         },
         tls: { rejectUnauthorized: false }
     });
@@ -33,7 +33,7 @@ Mail.prototype.sendMail = function (usuario, _subject, _html) {
         var htmlResult = template.replace(/{{nome}}/g, usuario.nome).replace(/{{ano}}/g, year).replace(/{{email}}/g, usuario.email).replace(/{{SERVER_URL}}/g, SERVER_URL).replace(/{{TOKEN}}/g, usuario.hash).replace(/{{PASSWORD}}/g, usuario.generatedPassword);
 
         var mailOptions = {
-            from: '"E-ATENDE" <icconsulting@icconsulting.com.br>',
+            from: '"E-ATENDE" <' + urlEmail.VALOR + '>',
             to: usuario.email,
             subject: _subject,
             html: htmlResult
@@ -49,7 +49,7 @@ Mail.prototype.sendMail = function (usuario, _subject, _html) {
     });
 }
 
-Mail.prototype.enviaEmailFicha = function (obj, url, _subject, _html) {
+Mail.prototype.enviaEmailFicha = function (obj, urlEmail, urlSenha, _subject, _html) {
 
     console.log('testeficha');
     'use strict';
@@ -65,8 +65,8 @@ Mail.prototype.enviaEmailFicha = function (obj, url, _subject, _html) {
         secure: false, // true for 465, false for other ports
         requireTLS: true,
         auth: {
-            user: url.VALOR,
-            pass: "Acesso#01"
+            user: urlEmail.VALOR,
+            pass: urlSenha.VALOR
         },
         tls: { rejectUnauthorized: false }
     });
@@ -103,10 +103,11 @@ Mail.prototype.enviaEmailFicha = function (obj, url, _subject, _html) {
         var htmlResult = template
             .replace(/{{idAtendimento}}/g, obj.id)
             .replace(/{{dataAbertura}}/g, dia + "/" + mountA + "/" + year)
+            .replace(/{{ano}}/g, year)
             .replace(/{{hora}}/g, time);
 
         var mailOptions = {
-            from: '"E-ATENDE" <' + url.VALOR + '>',
+            from: '"E-ATENDE" <' + urlEmail.VALOR + '>',
             to: obj.email ,
             bcc: '' + obj.emailProfissional + '' ,
             subject: _subject,

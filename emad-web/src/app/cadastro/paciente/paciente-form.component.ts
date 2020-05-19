@@ -38,29 +38,42 @@ export class PacienteFormComponent implements OnInit {
     this.service.listDomains('uf').subscribe(ufs => {
       this.service.listDomains('nacionalidade').subscribe(paises => {
         this.service.listDomains('modalidade').subscribe(modalidades => {
+          this.service.listDomains('raca').subscribe(racas => {
+            this.domains.push({
+              idUf: ufs,
+              idNacionalidade: paises,
+              idNaturalidade: [],
+              idMunicipio: [],
 
-          this.domains.push({
-            idUf: ufs,
-            idNacionalidade: paises,
-            idNaturalidade: [],
-            idMunicipio: [],
-
-            escolaridade: [
-              { id: 1, nome: "Educação infantil" },
-              { id: 2, nome: "Fundamental" },
-              { id: 3, nome: "Médio" },
-              { id: 4, nome: "Superior (Graduação)" },
-              { id: 5, nome: "Pós-graduação" },
-              { id: 6, nome: "Mestrado" },
-              { id: 7, nome: "Doutorado" },
-              { id: 8, nome: "Escola" }
-            ],
-            idModalidade: modalidades,
-            sexo: [
-              { id: "F", nome: "Feminino" },
-              { id: "M", nome: "Masculino" }
-            ]
-
+              escolaridade: [
+                { id: 1, nome: "Educação infantil" },
+                { id: 2, nome: "Fundamental" },
+                { id: 3, nome: "Médio" },
+                { id: 4, nome: "Superior (Graduação)" },
+                { id: 5, nome: "Pós-graduação" },
+                { id: 6, nome: "Mestrado" },
+                { id: 7, nome: "Doutorado" },
+                { id: 8, nome: "Escola" }
+              ],
+              idModalidade: modalidades,
+              sexo: [
+                { id: "1", nome: "Masculino" },
+                { id: "2", nome: "Feminino" },
+                { id: "3", nome: "Ambos" },
+                { id: "4", nome: "Não informado" }
+              ],
+              idTipoSanguineo: [
+                { id: "1", nome: "A_POSITIVO" },
+                { id: "2", nome: "A_NEGATIVO" },
+                { id: "3", nome: "B_POSITIVO" },
+                { id: "4", nome: "B_NEGATIVO" },
+                { id: "5", nome: "AB_POSITIVO" },
+                { id: "6", nome: "AB_NEGATIVO" },
+                { id: "7", nome: "O_POSITIVO" },
+                { id: "8", nome: "O_NEGATIVO" },
+              ],
+              idRaca: racas
+            });
           });
         });
       });
