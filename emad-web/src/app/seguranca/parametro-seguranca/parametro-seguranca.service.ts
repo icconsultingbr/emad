@@ -43,6 +43,15 @@ export class ParametroSegurancaService extends GenericsService {
       validator:['', '']
     },
     {
+      field: "mascaraGrid", 
+      type: "checkbox", 
+      label: "Aplicar máscara no grid", 
+      grid: false,  
+      form: true,      
+      required: false, 
+      validator:['', '']
+    },
+    {
       field: "situacao", 
       type: "checkbox", 
       label: "Situação", 

@@ -53,13 +53,30 @@ module.exports = function (app) {
 
 
                     atualizaUsuario(usuario).then(function (responseAtualiza) {
-                        mail.sendMail(responseEmail[0], "Esqueceu a senha?", "forgotPassword.html");
-                        let retorno = {};
-                        retorno.email = responseEmail[0].email;
-                        retorno.timezone = timezone;
+                        buscaParametroSegurancaPorChave("CONTA_EMAIL", res).then(function (responseEMAIL) {                                
+                            if(responseEMAIL){
+                                buscaParametroSegurancaPorChave("SENHA_EMAIL", res).then(function (responseSENHA) {                                
+                                    if(responseSENHA){
+                                        mail.sendMail(responseEmail[0], responseEMAIL, responseSENHA, "Esqueceu a senha?", "forgotPassword.html");
+                                        let retorno = {};
+                                        retorno.email = responseEmail[0].email;
+                                        retorno.timezone = timezone;
+                                        res.status(200).json(retorno);
+                                    }
+                                    else{
+                                        errors = util.customError(errors, "ESQUECEU A SENHA", "DADOS DE ACESSO DO E-MAIL REMETENTE NÃO ENCONTRADO", null);
+                                        res.status(400).json(errors);
+                                        return;
+                                    }                                                               
+                                });
 
-
-                        res.status(200).json(retorno);
+                            }
+                            else{
+                                errors = util.customError(errors, "ESQUECEU A SENHA", "CONTA DE E-MAIL REMETENTE NÃO ENCONTRADA", null);
+                                res.status(400).json(errors);
+                                return;
+                            }                                                               
+                        });                        
                     });
 
                 }
@@ -83,10 +100,30 @@ module.exports = function (app) {
                     delete usuario.email;
 
                     atualizaUsuario(usuario).then(function (responseAtualiza) {
-                        mail.sendMail(responseCPF[0], "Redefinição de senha", "forgotPassword.html");
-                        let retorno = {};
-                        retorno.cpf = usuario.cpf;
-                        res.status(200).json(retorno);
+
+                        buscaParametroSegurancaPorChave("CONTA_EMAIL", res).then(function (responseEMAIL) {                                
+                            if(responseEMAIL){
+                                buscaParametroSegurancaPorChave("SENHA_EMAIL", res).then(function (responseSENHA) {                                
+                                    if(responseSENHA){
+                                        mail.sendMail(responseCPF[0], responseEMAIL, responseSENHA, "Redefinição de senha", "forgotPassword.html");
+                                        let retorno = {};
+                                        retorno.cpf = usuario.cpf;
+                                        res.status(200).json(retorno);
+                                    }
+                                    else{
+                                        errors = util.customError(errors, "ESQUECEU A SENHA", "DADOS DE ACESSO DO E-MAIL REMETENTE NÃO ENCONTRADO", null);
+                                        res.status(400).json(errors);
+                                        return;
+                                    }                                                               
+                                });
+                            }
+                            else{
+                                errors = util.customError(errors, "ESQUECEU A SENHA", "CONTA DE E-MAIL REMETENTE NÃO ENCONTRADA", null);
+                                res.status(400).json(errors);
+                                return;
+                            }                                                               
+                        });
+                        
                     });
                 }
                 else {
@@ -469,7 +506,29 @@ module.exports = function (app) {
 
     }
 
+    function buscaParametroSegurancaPorChave(chave, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
 
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.ParametroSegurancaDAO(connection);
+        var errors = [];
+        result = [];
+        
+        objDAO.buscarValorPorChave(chave, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao editar os dados", "atendimento");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result[0]);
+            }
+        });
+        return d.promise;
+    }
     
 }
 

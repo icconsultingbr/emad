@@ -1,8 +1,10 @@
+const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
+
 function FichaDigitalService() {
 }
 
 FichaDigitalService.prototype.enviaFicha = function (obj, url, callback) {    
-    const fs = require('fs');
     fs.readFile(__dirname + '/../xml/pattern.xml', "utf8", function (err, html) {        
        
         var template = html;  
@@ -17,8 +19,11 @@ FichaDigitalService.prototype.enviaFicha = function (obj, url, callback) {
             .replace(/{{numero_atendimento}}/g, obj.idAtendimento)
             .replace(/{{numero_sus}}/g, obj.cartaoSus)
             .replace(/{{sexo_paciente}}/g, obj.sexo);
+        
+        var guid =  uuidv4();
+        var arquivoCompleto = __dirname + '/../xml/file-' + guid + '.xml';
 
-        fs.writeFile(__dirname + '/../xml/pattern2.xml', htmlResult, (err) => {
+        fs.writeFile(arquivoCompleto, htmlResult, (err) => {
             if (err) throw err;
 
             var FormData = require('form-data');
@@ -26,26 +31,15 @@ FichaDigitalService.prototype.enviaFicha = function (obj, url, callback) {
             form.append('userName', 'admin');
             form.append('password', 'admin');
             form.append('action', 'print');
-            form.append('xmlFile', fs.createReadStream(__dirname + '/../xml/pattern2.xml'));
-
-            //console.log(fs.createReadStream(__dirname +'/../xml/pattern.xml').toString());
+            form.append('xmlFile', fs.createReadStream(arquivoCompleto));            
 
             form.submit(url.VALOR, function (err, res) {
-                callback(res.statusCode);                
+                callback(res.statusCode);  
+                fs.unlinkSync(arquivoCompleto);     
             });
         });
     });
-
-
-
-
-
-
-
 }
-
-
-
 
 module.exports = function () {
     return FichaDigitalService;

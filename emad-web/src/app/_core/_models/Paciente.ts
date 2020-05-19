@@ -35,6 +35,11 @@ export class Paciente {
     @Input() longitude: number;
     @Input() distancia: number;
     @Input() idade: number = null;
-    @Input() idSap: Number = null ;
+    @Input() idSap: Number = null ;    
+    @Input() idTipoSanguineo: String = null ;
+    @Input() idRaca: Number = null ;
+    @Input() numeroProntuario: String = null ;
+    @Input() numeroProntuarioCnes: String = null ;
+    @Input() falecido: Boolean = null ;
     @Input() idEstabelecimentoCadastro : Number = +JSON.parse(localStorage.getItem("est"))[0].id;
 }

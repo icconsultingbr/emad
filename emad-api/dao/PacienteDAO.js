@@ -366,7 +366,12 @@ PacienteDAO.prototype.buscaPorId = function (id, callback) {
     latitude,
     longitude,
     idSap,
-    idPacienteCorrespondenteDim
+    idPacienteCorrespondenteDim,
+    idTipoSanguineo,
+    idRaca,
+    numeroProntuario,
+    numeroProntuarioCnes,
+    falecido
     FROM ${this._table} WHERE id = ?`, id, callback);
 }
 
@@ -410,7 +415,12 @@ PacienteDAO.prototype.buscaPorIdFicha = function (id, callback) {
     p.latitude,
     p.longitude ,
     p.idSap,
-    p.idPacienteCorrespondenteDim
+    p.idPacienteCorrespondenteDim,
+    p.idTipoSanguineo,
+    p.idRaca,
+    p.numeroProntuario,
+    p.numeroProntuarioCnes,
+    p.falecido
     FROM ${this._table} p 
     INNER JOIn tb_municipio m ON(p.idMunicipio = m.id) WHERE p.id = ?`, id, callback);
 }

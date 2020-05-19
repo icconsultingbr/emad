@@ -99,7 +99,7 @@ export class PacienteService extends GenericsService {
       label: "Sexo",
       grid: true,
       form: true,
-      translate: { "M": "Masculino", "F": "Feminino" },
+      translate: { "1": "Masculino", "2": "Feminino", "3": "Ambos", "4": "Não informado" },
       required: true,
       validator: ['', Validators.required]
     },
@@ -350,8 +350,61 @@ export class PacienteService extends GenericsService {
       label: "Modalidade",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required]
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "idTipoSanguineo",
+      type: "select",
+      label: "Tipo sanguíneo",
+      grid: false,
+      form: true,
+      translate: {  "1" : "A_POSITIVO", 
+                    "2" : "A_NEGATIVO", 
+                    "3" : "B_POSITIVO", 
+                    "4" : "B_NEGATIVO",
+                    "5" : "AB_POSITIVO",
+                    "6" : "AB_NEGATIVO",
+                    "7" : "O_POSITIVO",
+                    "8" : "O_NEGATIVO" },
+      required: false,
+      validator: ['','']
+    },
+    {
+      field: "idRaca",
+      type: "select",
+      label: "Raça/Cor",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "numeroProntuario",
+      type: "text",
+      label: "Número prontuário",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "numeroProntuarioCnes",
+      type: "text",
+      label: "Número prontuário Cnes",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "falecido",
+      type: "checkbox",
+      label: "Falecido",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
     },
     {
       field: "situacao",

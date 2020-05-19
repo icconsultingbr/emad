@@ -140,10 +140,19 @@ module.exports = function (app) {
 
                                             buscaParametroSegurancaPorChave("CONTA_EMAIL", res).then(function (responseEMAIL) {                                
                                                 if(responseEMAIL){
-                                                    mail.enviaEmailFicha(obj, responseEMAIL, "Abertura de atendimento", "createTreatment.html");
+                                                    buscaParametroSegurancaPorChave("SENHA_EMAIL", res).then(function (responseSENHA) {                                
+                                                        if(responseSENHA){
+                                                            mail.enviaEmailFicha(obj, responseEMAIL, responseSENHA, "Abertura de atendimento", "createTreatment.html");
+                                                        }
+                                                        else{
+                                                            errors = util.customError(errors, "ENVIO FICHA DIGITAL", "DADOS DE ACESSO AO EMAIL REMETENTE NÃO ENCONTRADO", null);
+                                                            res.status(400).json(errors);
+                                                            return;
+                                                        }                                                               
+                                                    });
                                                 }
                                                 else{
-                                                    errors = util.customError(errors, "FICHA DIGITAL", "URL PARA ACESSO A FICHA DIGITAL NÃO ENCONTRADA", null);
+                                                    errors = util.customError(errors, "ENVIO FICHA DIGITAL", "CONTA DE EMAIL REMETENTE NÃO ENCONTRADA", null);
                                                     res.status(400).json(errors);
                                                     return;
                                                 }                                                               

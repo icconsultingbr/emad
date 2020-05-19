@@ -37,7 +37,7 @@ export class AtendimentoComponent implements OnInit {
         JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")[0].valor
         :"",
       log: 'atendimento/open-document',
-      title: 'Ver ficha'
+      title: 'Visualizar ficha'
     }, 
     { 
       icon : 'fa-file-medical-alt',
@@ -48,7 +48,7 @@ export class AtendimentoComponent implements OnInit {
         JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_RECEITA_MEDICA_VISUALIZACAO")[0].valor
         :"",
       log: 'atendimento/receita-medica',
-      title: 'Ver receita'
+      title: 'Visualizar receita'
     },
   ]
 

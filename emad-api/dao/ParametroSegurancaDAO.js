@@ -12,7 +12,7 @@ ParametroSegurancaDAO.prototype.atualiza = function(obj, id, callback) {
 }
 
 ParametroSegurancaDAO.prototype.lista = function(callback) {    
-    this._connection.query(`SELECT id, nome, valor, observacao FROM ${this._table}  WHERE situacao = 1`,callback);    
+    this._connection.query(`SELECT id, nome, case when mascaraGrid then '*********' else valor end as valor, observacao, situacao FROM ${this._table}  WHERE situacao = 1`,callback);    
 }
 
 ParametroSegurancaDAO.prototype.listaStorage = function(callback) {    
