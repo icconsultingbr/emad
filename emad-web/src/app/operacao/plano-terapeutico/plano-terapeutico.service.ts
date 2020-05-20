@@ -22,6 +22,15 @@ export class PlanoTerapeuticoService extends GenericsService{
           form: false,
           required: false,
           validator: ['', '']
+        },        
+        {
+          field: "idSap",
+          type: "text",
+          label: "Número SAP",
+          grid: true,
+          form: false,
+          required: false,
+          validator: ['', '']
         },
         {
             field: "nome",

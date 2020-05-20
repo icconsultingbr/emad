@@ -103,7 +103,7 @@ module.exports = function (app) {
             var errors = req.validationErrors();
 
             if (errors) {
-                res.status(400).send(errors);
+                res.status(401).send(errors);
                 return;
             }
 
@@ -125,48 +125,61 @@ module.exports = function (app) {
                             buscaParametroSegurancaPorChave("URL_FICHA_DIGITAL_SERVICO", res).then(function (responseURL) {                                
                                 if(responseURL)
                                 {
-                                    client.enviaFicha(result, responseURL, function (status) {
-                                        console.log("STATUS" + status);
-                
-                                        if (status != 200) {
-                                            errors = util.customError(status, "FICHA DIGITAL", "Erro ao criar a ficha digital", null);
-                                            res.status(400).json(errors);
-                                        }
-                
-                                        console.log(result.email);
-                
-                                        if(result.email != null){
-                                            obj.email = result.email;
+                                    buscaTemplatePorTipoFicha(obj.tipoFicha, res).then(function (template) {                                
+                                        if(template)
+                                        {
+                                            client.enviaFicha(result, responseURL, template, function (status) {
+                                                console.log("STATUS" + status);
+                        
+                                                if (status != 200) {
+                                                    errors = util.customError(errors, "FICHA DIGITAL", "Erro ao criar a ficha digital", status);
+                                                    res.status(401).json(errors);
+                                                    return;
+                                                }
+                        
+                                                console.log(result.email);
+                        
+                                                if(result.email != null){
+                                                    obj.email = result.email;
 
-                                            buscaParametroSegurancaPorChave("CONTA_EMAIL", res).then(function (responseEMAIL) {                                
-                                                if(responseEMAIL){
-                                                    buscaParametroSegurancaPorChave("SENHA_EMAIL", res).then(function (responseSENHA) {                                
-                                                        if(responseSENHA){
-                                                            mail.enviaEmailFicha(obj, responseEMAIL, responseSENHA, "Abertura de atendimento", "createTreatment.html");
+                                                    buscaParametroSegurancaPorChave("CONTA_EMAIL", res).then(function (responseEMAIL) {                                
+                                                        if(responseEMAIL){
+                                                            buscaParametroSegurancaPorChave("SENHA_EMAIL", res).then(function (responseSENHA) {                                
+                                                                if(responseSENHA){
+                                                                    mail.enviaEmailFicha(obj, responseEMAIL, responseSENHA, "Abertura de atendimento", "createTreatment.html");
+                                                                }
+                                                                else{
+                                                                    errors = util.customError(errors, "ENVIO FICHA DIGITAL", "DADOS DE ACESSO AO EMAIL REMETENTE NÃO ENCONTRADO", null);
+                                                                    res.status(401).json(errors);
+                                                                    return;
+                                                                }                                                               
+                                                            });
                                                         }
                                                         else{
-                                                            errors = util.customError(errors, "ENVIO FICHA DIGITAL", "DADOS DE ACESSO AO EMAIL REMETENTE NÃO ENCONTRADO", null);
-                                                            res.status(400).json(errors);
+                                                            errors = util.customError(errors, "ENVIO FICHA DIGITAL", "CONTA DE EMAIL REMETENTE NÃO ENCONTRADA", null);
+                                                            res.status(401).json(errors);
                                                             return;
                                                         }                                                               
                                                     });
                                                 }
-                                                else{
-                                                    errors = util.customError(errors, "ENVIO FICHA DIGITAL", "CONTA DE EMAIL REMETENTE NÃO ENCONTRADA", null);
-                                                    res.status(400).json(errors);
-                                                    return;
-                                                }                                                               
+                        
+                                                console.log(result.email);                
+                                                res.status(201).json(obj);
+                                                return;
                                             });
                                         }
-                
-                                        console.log(result.email);                
-                                        res.status(201).json(obj);
+                                        else
+                                        {
+                                            errors = util.customError(errors, "TEMPLATE FICHA", "TEMPLATE DA FICHA DIGITAL NÃO ENCONTRADA", null);
+                                            res.status(401).json(errors);
+                                            return;
+                                        } 
                                     });
                                 }
                                 else
                                 {
                                     errors = util.customError(errors, "FICHA DIGITAL", "URL PARA ACESSO A FICHA DIGITAL NÃO ENCONTRADA", null);
-                                    res.status(400).json(errors);
+                                    res.status(401).json(errors);
                                     return;
                                 }                                                               
                             });
@@ -175,7 +188,7 @@ module.exports = function (app) {
                 }
                 else {
                     errors = util.customError(errors, "usuário", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos");                    
-                    res.status(400).json(errors);
+                    res.status(401).json(errors);
                     return;
                 }
             });
@@ -208,7 +221,7 @@ module.exports = function (app) {
             errors = req.validationErrors();
 
             if (errors) {
-                res.status(400).send(errors);
+                res.status(401).send(errors);
                 return;
             }
 
@@ -231,7 +244,7 @@ module.exports = function (app) {
                 }
                 else {
                     errors = util.customError(errors, "usuário", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos");                    
-                    res.status(400).json(errors);
+                    res.status(401).json(errors);
                     return;
                 }
             })
@@ -262,7 +275,7 @@ module.exports = function (app) {
             errors = req.validationErrors();
 
             if (errors) {
-                res.status(400).send(errors);
+                res.status(401).send(errors);
                 return;
             }
 
@@ -289,13 +302,13 @@ module.exports = function (app) {
                                     {
                                         if (!cabecalho.paciente) {
                                             errors = util.customError(errors, "body", "O paciente não está cadastro no E-CARE", null);
-                                            res.status(400).json(errors);
+                                            res.status(401).json(errors);
                                             return;
                                         } 
         
                                         if (!cabecalho.prescritor) {
                                             errors = util.customError(errors, "body", "O profissional não está cadastro no E-CARE", null);
-                                            res.status(400).json(errors);
+                                            res.status(401).json(errors);
                                             return;
                                         } 
         
@@ -303,7 +316,7 @@ module.exports = function (app) {
         
                                             if (!response4.id_cidade || response4.id_cidade == 0) {
                                                 errors = util.customError(errors, "RECEITA MÉDICA", "Cidade " + cabecalho.cidade + " não encontrada no E-CARE", null);
-                                                res.status(400).json(errors);
+                                                res.status(401).json(errors);
                                                 return;
                                             } 
         
@@ -323,7 +336,7 @@ module.exports = function (app) {
         
                                                                 if (status != 200) {
                                                                     errors = util.customError(status, "RECEITA MÉDICA", "Erro ao enviar a receita médica", null);
-                                                                    res.status(400).json(errors);
+                                                                    res.status(401).json(errors);
                                                                     return;
                                                                 }                                        
                         
@@ -353,7 +366,7 @@ module.exports = function (app) {
                                                         else
                                                         {
                                                             errors = util.customError(errors, "RECEITA MÉDICA", "URL PARA ENVIO DA RECEITA NÃO ENCONTRADA", null);
-                                                            res.status(400).json(errors);
+                                                            res.status(401).json(errors);
                                                             return;
                                                         }
                                                     });                                                        
@@ -383,7 +396,7 @@ module.exports = function (app) {
                 }
                 else {                    
                     errors = util.customError(errors, "usuário", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos");                    
-                    res.status(400).json(errors);
+                    res.status(401).json(errors);
                     return;
                 }
             });
@@ -829,4 +842,28 @@ module.exports = function (app) {
         });
         return d.promise;
     }
+
+    function buscaTemplatePorTipoFicha(tipoFicha, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.TipoFichaDAO(connection);
+        var errors = [];
+        result = [];
+        
+        objDAO.buscaTemplatePorId(tipoFicha, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao editar os dados", "atendimento");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result[0]);
+            }
+        });
+        return d.promise;
+    }    
 }

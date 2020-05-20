@@ -23,6 +23,24 @@ export class TipoFichaService extends GenericsService {
       form: true,
       required: true, 
       validator:['', Validators.required]
+    },    
+    {
+      field: "xmlTemplate", 
+      type: "textarea", 
+      label: "XML Template", 
+      grid: false,  
+      form: true,
+      required: false, 
+      validator:['', '']
+    },    
+    {
+      field: "queryTemplate", 
+      type: "textarea", 
+      label: "Query template", 
+      grid: false,  
+      form: true,
+      required: false, 
+      validator:['', '']
     },
     {
       field: "situacao", 

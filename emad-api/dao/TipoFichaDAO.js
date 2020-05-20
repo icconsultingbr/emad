@@ -19,6 +19,10 @@ TipoFichaDAO.prototype.buscaPorId = function (id, callback) {
     this._connection.query(`SELECT * FROM ${this._table} WHERE id = ?`,id,callback);
 }
 
+TipoFichaDAO.prototype.buscaTemplatePorId = function (id, callback) {
+    this._connection.query(`SELECT xmlTemplate FROM ${this._table} WHERE id = ?`,id,callback);
+}
+
 TipoFichaDAO.prototype.buscaDominio = function (callback) {
     this._connection.query(`SELECT id, nome FROM ${this._table}`, callback);
 }

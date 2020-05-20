@@ -7,6 +7,8 @@ module.exports = function (app) {
         var errors = [];
 
         req.assert("nome").notEmpty().withMessage("Nome é um campo Obrigatório");
+        req.assert("xmlTemplate").notEmpty().withMessage("XML Template é um campo Obrigatório");
+        req.assert("queryTemplate").notEmpty().withMessage("Query Template é um campo Obrigatório");
 
         errors = req.validationErrors();
         
@@ -18,7 +20,7 @@ module.exports = function (app) {
         obj.dataCriacao = new Date;
         var errors = [];
 
-        if(usuario.idTipoUsuario == util.SUPER_ADMIN){
+        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){
             salvar(obj, res).then(function(response) {
                 obj.id = response.insertId;
                 res.status(201).send(obj);
@@ -36,7 +38,8 @@ module.exports = function (app) {
         let util = new app.util.Util();
         var errors = [];
 
-        req.assert("nome").notEmpty().withMessage("Nome é um campo Obrigatório");
+        req.assert("xmlTemplate").notEmpty().withMessage("XML Template é um campo Obrigatório");
+        req.assert("queryTemplate").notEmpty().withMessage("Query Template é um campo Obrigatório");
 
         errors = req.validationErrors();
         
@@ -48,7 +51,7 @@ module.exports = function (app) {
         obj.dataCriacao = new Date;
         var errors = [];
 
-        if(usuario.idTipoUsuario == util.SUPER_ADMIN){
+        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){
             atualizar(obj, res).then(function(response) {
                 obj.id = response.insertId;
                 res.status(201).send(obj);

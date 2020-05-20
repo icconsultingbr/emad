@@ -72,16 +72,16 @@
 
   <div class="card mb-4" *ngIf="object.idPaciente">
     <div class="card-header text-left">
-      Tipo de ficha
+      Dados da abertura do atendimento
     </div>
     <div class="card-body text-left">
       <div class="row">
-        <div class="col-xl-6">
+        <div class="col-xl-12">
           <div class="form-group row">
-            <label class="col-xl-4 col-form-label text-left">
-              Tipo de ficha<span class="text-danger font-weight-bold"> *</span>
+            <label class="col-xl-2 col-form-label text-left">
+              Tipo de atendimento<span class="text-danger font-weight-bold"> *</span>
             </label>
-            <div class="col-xl-8">
+            <div class="col-xl-10">
                 <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.tipoFicha" formControlName="tipoFicha">
                     <option [value]="null">Selecione...</option>
                     <option *ngFor="let item of domains[0]?.tipoFichas" [value]="item.id">{{item.nome}}</option>
@@ -90,9 +90,21 @@
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="form-group row">
+            <label class="col-xl-2 col-form-label text-left">
+              Motivo da queixa<span class="text-danger font-weight-bold"></span>
+            </label>
+            <div class="col-xl-10">
+              <textarea rows="4" class="form-control has-error" [(ngModel)]="object.motivoQueixa"
+                formControlName="motivoQueixa" [readonly]="disableFields()"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-
   <div class="card mb-4" *ngIf="object.idPaciente && object.id">
     <div class="card-header text-left">
       Sinais vitais
@@ -472,10 +484,20 @@
 
     <div class="form-group row">
       <label class="col-xl-4 col-sm-12 col-form-label text-left">
-        Cartao SUS:
+        Cartao SUS do paciente:
       </label>
       <div class="col-xl-8 col-sm-12">
         <input type="text" mask="9999999999999999999999" class="form-control has-error" [(ngModel)]="paciente.cartaoSus"
+          autofocus>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-xl-4 col-sm-12 col-form-label text-left">
+        Número SAP do paciente:
+      </label>
+      <div class="col-xl-8 col-sm-12">
+        <input type="text" mask="99999999999999999999" class="form-control has-error" [(ngModel)]="paciente.idSap"
           autofocus>
       </div>
     </div>
