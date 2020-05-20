@@ -30,8 +30,8 @@ export class TipoFichaService extends GenericsService {
       label: "XML Template", 
       grid: false,  
       form: true,
-      required: false, 
-      validator:['', '']
+      required: true, 
+      validator:['', Validators.required]
     },    
     {
       field: "queryTemplate", 
@@ -39,8 +39,8 @@ export class TipoFichaService extends GenericsService {
       label: "Query template", 
       grid: false,  
       form: true,
-      required: false, 
-      validator:['', '']
+      required: true, 
+      validator:['', Validators.required]
     },
     {
       field: "situacao", 
