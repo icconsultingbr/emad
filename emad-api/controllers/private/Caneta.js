@@ -6,7 +6,7 @@ module.exports = function (app) {
         let errors = [];
         let addFilter = req.query;
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             lista(addFilter, res).then(function (resposne) {
                 res.status(200).json(resposne);
                 return;
@@ -23,7 +23,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             buscarPorId(id, res).then(function (response) {
                 res.status(200).json(response);
                 return;
@@ -46,7 +46,7 @@ module.exports = function (app) {
 
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             buscarPorEstabelecimento(idEstabelecimento, dataInicial, horaInicial, dataFinal, horaFinal, res).then(function (response) {
                 console.log(response);
                 res.status(200).json(response);
@@ -66,7 +66,7 @@ module.exports = function (app) {
         var errors = [];
         let idEstabelecimento = req.params.idEstabelecimento;
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             
             req.assert("idModeloCaneta").notEmpty().withMessage("Modelo é um campo obrigatório");
             req.assert("serialNumber").notEmpty().withMessage("Serial number é um campo obrigatório").isLength({ min: 1, max: 15 }).withMessage("Serial number deve ter no máximo 15 caracteres");
@@ -100,7 +100,7 @@ module.exports = function (app) {
         let errors = [];
         let id = obj.id;
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
 
 
             req.assert("idModeloCaneta").notEmpty().withMessage("Modelo é um campo obrigatório");
@@ -132,7 +132,7 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             deletaPorId(id, res).then(function (response) {
                 res.status(200).json(obj);
                 return;

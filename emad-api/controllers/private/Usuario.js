@@ -20,7 +20,7 @@ module.exports = function (app) {
 
         } else if (usuario.idTipoUsuario == util.ADMIN) {
 
-            listaPorEmpresa(usuario, addFilter, res).then(function (resposne) {
+            listaPorEmpresa(usuario.id, res).then(function (resposne) {
                 res.status(200).json(resposne);
                 return;
             });
@@ -578,7 +578,7 @@ module.exports = function (app) {
         return d.promise;
     }
 
-    function listaPorEmpresa(usuario, addFilter, res) {
+    function listaPorEmpresa(usuario, res) {
         var q = require('q');
         var d = q.defer();
         var util = new app.util.Util();
@@ -587,7 +587,7 @@ module.exports = function (app) {
 
         var errors = [];
 
-        usuarioDAO.listaPorEmpresa(usuario, addFilter, function (exception, result) {
+        usuarioDAO.listaPorEmpresa(usuario, function (exception, result) {
             if (exception) {
                 d.reject(exception);
                 console.log(exception);

@@ -112,7 +112,8 @@ export class AtendimentoFormComponent implements OnInit {
       situacao: [Validators.required],
       motivoCancelamento: ['',''],
       idEstabelecimento: [Validators.required],
-      tipoFicha: [Validators.required]
+      tipoFicha: [Validators.required],
+      motivoQueixa: ['','']
     });
 
 
@@ -277,7 +278,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   togglePaciente() {
-    return Util.isEmpty(this.paciente.cartaoSus) && Util.isEmpty(this.paciente.nome);
+    return Util.isEmpty(this.paciente.cartaoSus) && Util.isEmpty(this.paciente.nome) && Util.isEmpty(this.paciente.idSap);
   }
 
   selecionaPaciente(item) {

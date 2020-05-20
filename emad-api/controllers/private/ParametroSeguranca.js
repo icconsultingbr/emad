@@ -19,7 +19,7 @@ module.exports = function (app) {
         obj.dataCriacao = new Date;
         var errors = [];
 
-        if(usuario.idTipoUsuario == util.SUPER_ADMIN){
+        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){
             salvar(obj, res).then(function(response) {
                 obj.id = response.insertId;
                 res.status(201).send(obj);
@@ -50,7 +50,7 @@ module.exports = function (app) {
         obj.dataCriacao = new Date;
         var errors = [];
 
-        if(usuario.idTipoUsuario == util.SUPER_ADMIN){
+        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){
             atualizar(obj, res).then(function(response) {
                 obj.id = response.insertId;
                 res.status(201).send(obj);
@@ -67,7 +67,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             lista(res).then(function (resposne) {
                 res.status(200).json(resposne);
                 return;
@@ -102,7 +102,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if(usuario.idTipoUsuario == util.SUPER_ADMIN){		
+        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
             buscarPorId(id, res).then(function(response) {
                 res.status(200).json(response);
                 return;      
@@ -120,7 +120,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if(usuario.idTipoUsuario == util.SUPER_ADMIN){		
+        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
             buscarValorPorChave(id, res).then(function(response) {
                 res.status(200).json(response);
                 return;      
@@ -140,7 +140,7 @@ module.exports = function (app) {
         let parametroSeguranca = {};
         parametroSeguranca.id = id;
         
-        if(usuario.idTipoUsuario == util.SUPER_ADMIN){	
+        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){	
             deletaPorId(id, res).then(function(response) {
                 res.status(200).json(parametroSeguranca);
                 return;      

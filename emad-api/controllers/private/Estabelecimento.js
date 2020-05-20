@@ -13,7 +13,7 @@ module.exports = function (app) {
             });
         }
         else {
-            listaPorUsuario(usuario, addFilter, res).then(function (resposne) {
+            listaPorUsuario(usuario, res).then(function (resposne) {
                 res.status(200).json(resposne);
                 return;
             });
@@ -27,7 +27,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             buscarPorId(id, res).then(function (response) {
                 res.status(200).json(response);
                 return;
@@ -45,7 +45,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
         var errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
 
             req.assert("cnes").notEmpty().withMessage("CNES é um campo obrigatório;");
             req.assert("cnpj").notEmpty().withMessage("CNPJ é um campo obrigatório;");
@@ -94,7 +94,7 @@ module.exports = function (app) {
         let id = obj.id;
         delete obj.id;
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
 
             req.assert("cnes").notEmpty().withMessage("CNES é um campo obrigatório;");
             req.assert("cnpj").notEmpty().withMessage("CNPJ é um campo obrigatório;");
@@ -145,7 +145,7 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             deletaPorId(id, res).then(function (response) {
                 res.status(200).json(obj);
                 return;
@@ -164,7 +164,7 @@ module.exports = function (app) {
         let addFilter = req.query;
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             lista(addFilter, res).then(function (resposne) {
                 res.status(200).json(resposne);
                 return;
@@ -190,7 +190,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             buscarPacientes(id, raio, idModalidade, sexo, idadeDe, idadeAte,  res).then(function (response) {
                 res.status(200).json(response);
                 return;
@@ -202,7 +202,7 @@ module.exports = function (app) {
     });
 
 
-    function listaPorUsuario(usuario, addFilter, res) {
+    function listaPorUsuario(usuario, res) {
         var q = require('q');
         var d = q.defer();
         var util = new app.util.Util();

@@ -5,7 +5,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             lista(res).then(function (resposne) {
                 res.status(200).json(resposne);
                 return;
@@ -27,7 +27,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             buscarPorId(id, res).then(function (response) {
                 res.status(200).json(response);
                 return;
@@ -60,7 +60,7 @@ module.exports = function (app) {
         delete obj.permissoes;
         obj.situacao = 1;
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
 
             salva(obj, res).then(function (response) {
                 obj.id = response.insertId;
@@ -106,7 +106,7 @@ module.exports = function (app) {
             return;
         }
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             for (var i = 0; i < permissoes.length; i++) {
                 arrPermissoes.push("(" + id + ", " + permissoes[i].id + ")");
             }

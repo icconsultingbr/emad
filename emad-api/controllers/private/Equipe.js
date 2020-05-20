@@ -5,7 +5,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             lista(res).then(function (resposne) {
                 res.status(200).json(resposne);
                 return;
@@ -22,7 +22,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             buscarPorId(id, res).then(function (response) {
                 buscarProfissionaisPorEquipe(id, res).then(function (response2) {
                     response.profissionais = response2;
@@ -44,7 +44,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             buscarPorEquipe(equipe, idEstabelecimento, res).then(function (response) {
                 console.log(response);
                 res.status(200).json(response);
@@ -65,7 +65,7 @@ module.exports = function (app) {
         let profissionais = obj.profissionais;
         let arrProfissionais = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
 
             if (obj.equipe == "EMAD") {
                 req.assert("equipe").notEmpty().withMessage("Equipe é um campo obrigatório;");
@@ -127,7 +127,7 @@ module.exports = function (app) {
         let profissionais = obj.profissionais;
         let arrProfissionais = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             if (obj.equipe == "EMAD") {
                 req.assert("equipe").notEmpty().withMessage("Equipe é um campo obrigatório;");
                 req.assert("tipo").notEmpty().withMessage("Tipo é um campo obrigatório;");
@@ -191,7 +191,7 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             deletaPorId(id, res).then(function (response) {
                 res.status(200).json(obj);
                 return;

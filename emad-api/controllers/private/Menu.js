@@ -25,7 +25,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
         var errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
 
             salvaMenu(menu, res).then(function (response) {
                 menu.id = response.insertId;
@@ -45,7 +45,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
         var errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             lista(res).then(function (response) {
                 res.status(200).json(response);
                 return;
@@ -61,7 +61,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
         var errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             listaDescricao(res).then(function (response) {
                 res.status(200).json(response);
                 return;
@@ -78,7 +78,7 @@ module.exports = function (app) {
         var errors = [];
         let idMenuPai = req.params.id;
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             listaOrdemMenuFilhoPorMenuPai(idMenuPai, res).then(function (response) {
                 res.status(200).json(response);
                 return;
@@ -109,7 +109,7 @@ module.exports = function (app) {
         let id = req.params.id;
         var util = new app.util.Util();
         var errors = [];
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             listaPorTipoUsuarioDescricao(id, res).then(function (response) {
                 res.status(200).json(response);
                 return;
@@ -163,7 +163,7 @@ module.exports = function (app) {
             menu.menuPai = null;
         }
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             buscarPorId(id, res).then(function (response) {
                 if (typeof response != 'undefined') {
                     atualizaPorId(menu, id, res).then(function (response2) {
@@ -194,7 +194,7 @@ module.exports = function (app) {
         menu.id = id;
 
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             deletaPorId(id, res).then(function (response) {
                 res.status(200).json(menu);
                 return;
