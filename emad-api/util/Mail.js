@@ -65,8 +65,8 @@ Mail.prototype.enviaEmailFicha = function (obj, urlEmail, urlSenha, _subject, _h
             secure: false, // true for 465, false for other ports
             requireTLS: true,
             auth: {
-                user: urlEmail.VALOR,
-                pass: urlSenha.VALOR
+                user: urlEmail,
+                pass: urlSenha
             },
             tls: { rejectUnauthorized: false }
         });
@@ -104,7 +104,7 @@ Mail.prototype.enviaEmailFicha = function (obj, urlEmail, urlSenha, _subject, _h
                 .replace(/{{hora}}/g, time);
     
             var mailOptions = {
-                from: '"E-ATENDE" <' + urlEmail.VALOR + '>',
+                from: '"E-ATENDE" <' + urlEmail + '>',
                 to: obj.email ,
                 bcc: '' + obj.emailProfissional + '' ,
                 subject: _subject,

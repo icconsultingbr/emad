@@ -38,7 +38,7 @@ AtendimentoDAO.prototype.lista = function(addFilter, callback) {
         }
 
         if(addFilter.idPaciente){
-            where+=" AND p.idPaciente = "+addFilter.idPaciente + " ";
+            where+=" AND p.id = "+addFilter.idPaciente + " ";
         }
     }
 
@@ -106,7 +106,7 @@ AtendimentoDAO.prototype.listaPorUsuario = function(id, addFilter, callback) {
         }
 
         if(addFilter.idPaciente){
-            where+=" AND p.idPaciente = "+addFilter.idPaciente + " ";
+            where+=" AND p.id = "+addFilter.idPaciente + " ";
         }
     }
 

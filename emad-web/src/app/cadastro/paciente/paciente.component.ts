@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Paciente } from '../../_core/_models/Paciente';
 import { PacienteService } from './paciente.service';
 import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.service';
+import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-paciente',
@@ -16,10 +18,23 @@ export class PacienteComponent implements OnInit {
   fields = [];
   fieldsSearch = [];
   object: Paciente = new Paciente();
+  virtualDirectory: String = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
+
+  urls : any[] = [
+    { 
+      icon : 'fa-file-medical-alt',
+      label : 'Atendimentos',
+      url : this.router.url.replace('paciente','') + this.virtualDirectory + "#/atendimento/idPaciente/{id}",
+      log: 'atendimento/consulta-por-paciente',
+      title: 'Visualizar atendimentos',
+      self: true
+    }
+  ]
 
   constructor(
     public nav: AppNavbarService,
-    private service: PacienteService) {
+    private service: PacienteService,
+    private router: Router) {
 
     for (let field of this.service.fields) {
       if (field.grid) {

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Atendimento } from '../../_core/_models/Atendimento';
 import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.service';
 import { AtendimentoService } from './atendimento.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-atendimento',
@@ -15,6 +16,8 @@ export class AtendimentoComponent implements OnInit {
   fields = [];
   fieldsSearch = [];
   object: Atendimento = new Atendimento();
+  idPaciente: 0;
+
   urls : any[] = [
     { 
       icon : 'fa-print',
@@ -54,7 +57,8 @@ export class AtendimentoComponent implements OnInit {
 
   constructor(
     public nav: AppNavbarService,
-    private service: AtendimentoService) {
+    private service: AtendimentoService,
+    private route: ActivatedRoute) {
 
     for (let field of this.service.fields) {
       if (field.grid) {
@@ -69,6 +73,14 @@ export class AtendimentoComponent implements OnInit {
 
   ngOnInit() {
     this.nav.show();
+
+    this.route.params.subscribe(params => {
+      this.idPaciente = params['idPaciente'];
+    });
+
+    if (this.idPaciente>0) {
+      this.object.idPaciente = this.idPaciente;      
+    }
   }
 
   loadDomains() {      

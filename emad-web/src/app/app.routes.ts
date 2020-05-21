@@ -115,6 +115,7 @@ const appRoutes : Routes = [
     { path : 'agenda', component : AgendaComponent, canActivate: [AuthGuard]  },
     
     { path : 'atendimento', component : AtendimentoComponent, canActivate: [AuthGuard]  },
+    { path : 'atendimento/idPaciente/:idPaciente', component : AtendimentoComponent, canActivate: [AuthGuard]  },
     { path : 'atendimento-form', component : AtendimentoFormComponent, canActivate: [AuthGuard]  },
     { path : 'atendimento-view/:id', component : AtendimentoFormComponent, canActivate: [AuthGuard]  },
     
