@@ -57,7 +57,7 @@ module.exports = function (app) {
         }
         else {
             errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
+            res.status(400).send(errors);
         }
     });
 
@@ -76,7 +76,7 @@ module.exports = function (app) {
         }
         else {
             errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
+            res.status(400).send(errors);
         }
     });
 
@@ -100,102 +100,109 @@ module.exports = function (app) {
             req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
             req.assert("tipoFicha").notEmpty().withMessage("Tipo de ficha é um campo obrigatório;");
 
-            var errors = req.validationErrors();
+            let errors = req.validationErrors();
 
             if (errors) {
-                res.status(401).send(errors);
+                res.status(400).send(errors);
                 return;
             }
+            
+            let dadosPaciente = [];
+            let templateFicha = [];
+            let urlFicha = "";
+            let emailRemetente = "";
+            let senhaRemetente = "";
+            let emailProfissional = "";
+            let emailPaciente = "";
 
             buscaProfissionalPorUsuario(usuario.id).then(function (responseProfissional) {
-                if (responseProfissional.length > 0) {
-                    salva(obj, res).then(function (response) {
-                        obj.id = response.insertId;
-                        obj.emailProfissional = responseProfissional[0].email;
-
-                        buscarPacientePorId(obj.idPaciente, res).then(function (respPaciente) {
-        
-                            let result = respPaciente[0];
-        
-                            result.idEstabelecimento = idEstabelecimento;
-                            result.idAtendimento = obj.id;
-        
-                            var client = new app.services.FichaDigitalService();
-        
-                            buscaParametroSegurancaPorChave("URL_FICHA_DIGITAL_SERVICO", res).then(function (responseURL) {                                
-                                if(responseURL)
-                                {
-                                    buscaTemplatePorTipoFicha(obj.tipoFicha, res).then(function (template) {                                
-                                        if(template)
-                                        {
-                                            client.enviaFicha(result, responseURL, template, function (status) {
-                                                console.log("STATUS" + status);
-                        
-                                                if (status != 200) {
-                                                    errors = util.customError(errors, "FICHA DIGITAL", "Erro ao criar a ficha digital", status);
-                                                    res.status(401).json(errors);
-                                                    return;
-                                                }
-                        
-                                                console.log(result.email);
-                        
-                                                if(result.email != null){
-                                                    obj.email = result.email;
-
-                                                    buscaParametroSegurancaPorChave("CONTA_EMAIL", res).then(function (responseEMAIL) {                                
-                                                        if(responseEMAIL){
-                                                            buscaParametroSegurancaPorChave("SENHA_EMAIL", res).then(function (responseSENHA) {                                
-                                                                if(responseSENHA){
-                                                                    mail.enviaEmailFicha(obj, responseEMAIL, responseSENHA, "Abertura de atendimento", "createTreatment.html");
-                                                                }
-                                                                else{
-                                                                    errors = util.customError(errors, "ENVIO FICHA DIGITAL", "DADOS DE ACESSO AO EMAIL REMETENTE NÃO ENCONTRADO", null);
-                                                                    res.status(401).json(errors);
-                                                                    return;
-                                                                }                                                               
-                                                            });
-                                                        }
-                                                        else{
-                                                            errors = util.customError(errors, "ENVIO FICHA DIGITAL", "CONTA DE EMAIL REMETENTE NÃO ENCONTRADA", null);
-                                                            res.status(401).json(errors);
-                                                            return;
-                                                        }                                                               
-                                                    });
-                                                }
-                        
-                                                console.log(result.email);                
-                                                res.status(201).json(obj);
-                                                return;
-                                            });
-                                        }
-                                        else
-                                        {
-                                            errors = util.customError(errors, "TEMPLATE FICHA", "TEMPLATE DA FICHA DIGITAL NÃO ENCONTRADA", null);
-                                            res.status(401).json(errors);
-                                            return;
-                                        } 
-                                    });
-                                }
-                                else
-                                {
-                                    errors = util.customError(errors, "FICHA DIGITAL", "URL PARA ACESSO A FICHA DIGITAL NÃO ENCONTRADA", null);
-                                    res.status(401).json(errors);
-                                    return;
-                                }                                                               
-                            });
-                        });
-                    });
+                if (responseProfissional.length > 0){                    
+                    emailProfissional = responseProfissional[0].email;
+                    return salva(obj, res);              
                 }
                 else {
-                    errors = util.customError(errors, "usuário", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos");                    
-                    res.status(401).json(errors);
+                    errors = util.customError(errors, "usuário", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos", "404");                                       
+                    return Promise.reject(errors);                    
+                }
+            })
+            .then(function (response) {
+                if (response) {
+                    obj.id = response.insertId;                    
+                    obj.emailProfissional = emailProfissional;
+                    let buscaChaves = "'URL_FICHA_DIGITAL_SERVICO','CONTA_EMAIL', 'SENHA_EMAIL'";
+                    return buscaParametroSegurancaPorChave(buscaChaves, res);
+                }
+                else {
+                    errors = util.customError(errors, "atendimento", "Erro ao salvar o atendimento");                    
+                    return Promise.reject(errors);    
+                }
+            })
+            .then(function (responseURL) {
+                if (responseURL)  {               
+                    urlFicha = responseURL.filter((url) => url.NOME == "URL_FICHA_DIGITAL_SERVICO")[0].VALOR;
+                    emailRemetente = responseURL.filter((url) => url.NOME == "CONTA_EMAIL")[0].VALOR;
+                    senhaRemetente = responseURL.filter((url) => url.NOME == "SENHA_EMAIL")[0].VALOR;                    
+                    return buscaTemplatePorTipoFicha(obj.tipoFicha, res);                
+                }
+                else {
+                    errors = util.customError(errors, "FICHA DIGITAL", "URL para envio da ficha digital não foi encontrada", null);
+                    return Promise.reject(errors);    
+                }
+            }).then(function (template) {
+                if (template) {                    
+                    templateFicha = template;
+                    return buscaDadosEnvioFicha(templateFicha.queryTemplate, obj.id);
+                }
+                else {
+                    errors = util.customError(errors, "TEMPLATE FICHA", "Template da ficha digital não foi encontrado", null);
+                    return Promise.reject(errors);    
+                }
+            }).then(function (dadosFicha) {
+                if (dadosFicha) {
+                    emailPaciente = dadosFicha.emailPaciente;
+                    var client = new app.services.FichaDigitalService();
+                    return client.enviaFicha(dadosFicha, urlFicha, templateFicha.xmlTemplate);
+                }
+                else {
+                    errors = util.customError(errors, "TEMPLATE FICHA", "TEMPLATE DA FICHA DIGITAL NÃO ENCONTRADA", null);
+                    return Promise.reject(errors);    
+                }
+            }).then(function (status) {
+                if (status == 200) {
+                    console.log("STATUS" + status);
+                    console.log(emailPaciente);
+
+                    if(emailPaciente != null){
+                        obj.email = emailPaciente;
+                        return mail.enviaEmailFicha(obj, emailRemetente, senhaRemetente, "Abertura de atendimento", "createTreatment.html");
+                    }
+                    else{
+                        console.log(dadosPaciente.email);                
+                        res.status(201).json(obj);
+                        return;
+                    }                       
+                }
+                else {
+                    errors = util.customError(errors, "FICHA DIGITAL", "Erro ao criar a ficha digital", status);
+                    return Promise.reject(errors);    
+                }
+            })
+            .then(function (responseEnvioEmail) {
+                if(responseEnvioEmail){
+                    res.status(201).json(obj);
                     return;
                 }
+                else{
+                    errors = util.customError(errors, "ENVIO FICHA DIGITAL", "Erro no envio do e-mail de abertura do atendimento", null);
+                    return Promise.reject(errors);    
+                } 
+            }).catch(function(error) {
+                return res.status(400).json(error);
             });
         }
         else {
             errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
+            res.status(400).send(errors);
         }
     });
 
@@ -221,7 +228,7 @@ module.exports = function (app) {
             errors = req.validationErrors();
 
             if (errors) {
-                res.status(401).send(errors);
+                res.status(400).send(errors);
                 return;
             }
 
@@ -244,13 +251,13 @@ module.exports = function (app) {
                 }
                 else {
                     errors = util.customError(errors, "usuário", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos");                    
-                    res.status(401).json(errors);
+                    res.status(404).json(errors);
                     return;
                 }
             })
         } else {
             errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
+            res.status(400).send(errors);
         }
     });
 
@@ -275,136 +282,135 @@ module.exports = function (app) {
             errors = req.validationErrors();
 
             if (errors) {
-                res.status(401).send(errors);
+                res.status(400).send(errors);
                 return;
             }
 
-            let cabecalho = "";
             let medicamentos = [];
+            let cabecalho = [];
+            let responsePorId = [];
+            let numeroReceita = 0;
 
-            buscaProfissionalPorUsuario(usuario.id).then(function (response0) {
-                if (response0.length > 0) {
-                    buscarPorId(id, res).then(function (response) {
-                        if (typeof response != 'undefined') {
-                            atualizaPorId(obj, id, res).then(function (response2) {                       
-                                if(!obj)
-                                    return;    
-                            
-                                obj.unidade_receita = response.unidade_receita;
-                                obj.ano_receita = response.ano_receita;
-                                if(response.numero_receita)
-                                    obj.numero_receita = response.numero_receita;
-        
-                                buscaCabecalhoReceitaDim(id, res).then(function (response3) {
-                                    cabecalho = response3;
-        
-                                    if(cabecalho)
-                                    {
-                                        if (!cabecalho.paciente) {
-                                            errors = util.customError(errors, "body", "O paciente não está cadastro no E-CARE", null);
-                                            res.status(401).json(errors);
-                                            return;
-                                        } 
-        
-                                        if (!cabecalho.prescritor) {
-                                            errors = util.customError(errors, "body", "O profissional não está cadastro no E-CARE", null);
-                                            res.status(401).json(errors);
-                                            return;
-                                        } 
-        
-                                        buscaPorUfNomeDim(cabecalho.cidade, cabecalho.uf, res).then(function (response4) {   
-        
-                                            if (!response4.id_cidade || response4.id_cidade == 0) {
-                                                errors = util.customError(errors, "RECEITA MÉDICA", "Cidade " + cabecalho.cidade + " não encontrada no E-CARE", null);
-                                                res.status(401).json(errors);
-                                                return;
-                                            } 
-        
-                                            cabecalho.cidade = response4.id_cidade;                                         
-                                            delete cabecalho.uf;
-        
-                                            buscaMedicamentoParaReceitaDim(id, res).then(function (response5) { 
-                                                medicamentos = response5;                                                                           
-            
-                                                var dim = new app.services.DimMedicamentoService();
-            
-                                                if(medicamentos && medicamentos.length>0){
-                                                    buscaParametroSegurancaPorChave("URL_RECEITA_MEDICA_ENVIO", res).then(function (response7) { 
-                                                        if(response7)
-                                                        {
-                                                            dim.enviaReceitaMedicaDim(cabecalho, medicamentos, response7, function (response6, status) {   
-        
-                                                                if (status != 200) {
-                                                                    errors = util.customError(status, "RECEITA MÉDICA", "Erro ao enviar a receita médica", null);
-                                                                    res.status(401).json(errors);
-                                                                    return;
-                                                                }                                        
-                        
-                                                                var idReceita;
-                                                                var numeroReceita;
-                        
-                                                                if(response6.split("|") && response6.includes("RIS-")){
-                                                                    idReceita = response6.split("|")[1].substr(0,response6.split("|")[1].indexOf('*'));
-                                                                    numeroReceita = response6.substr(0,response6.indexOf('|')).replace("RIS-",""); 
-                                                                                                                            
-                                                                    console.log("numeroReceita" + numeroReceita);
-            
-                                                                    confirmaMedicamentoParaReceitaDim(id, idReceita, numeroReceita, res).then(function (response7) {
-                                                                        obj.id = id;   
-                                                                        obj.numero_receita = numeroReceita;
-                                                                        res.status(200).json(obj);
-                                                                        return;                    
-                                                                    });
-                                                                }
-                                                                else{
-                                                                    obj.id = id;   
-                                                                    res.status(200).json(obj);
-                                                                    return; 
-                                                                }                                                                                                  
-                                                            });
-                                                        }
-                                                        else
-                                                        {
-                                                            errors = util.customError(errors, "RECEITA MÉDICA", "URL PARA ENVIO DA RECEITA NÃO ENCONTRADA", null);
-                                                            res.status(401).json(errors);
-                                                            return;
-                                                        }
-                                                    });                                                        
-                                                }
-                                                else{
-                                                    obj.id = id;   
-                                                    res.status(200).json(obj);
-                                                    return;  
-                                                }                                         
-                                            });
-                                        });
-                                    }
-                                    else{
-                                        obj.id = id;   
-                                        res.status(200).json(obj);
-                                        return;  
-                                    }                            
-                                });
-                            });
-                        }
-                        else {
-                            errors = util.customError(errors, "body", "Atendimento não encontrado!", obj.nome);
-                            res.status(404).send(errors);
-                            return;
-                        }
-                    });
+            buscaProfissionalAberturaAtendimento(usuario.id, id).then(function (responseUsuarioDivergente) {
+                if (responseUsuarioDivergente.length > 0){                                        
+                    return buscaProfissionalPorUsuario(usuario.id);
                 }
-                else {                    
-                    errors = util.customError(errors, "usuário", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos");                    
-                    res.status(401).json(errors);
+                else {
+                    errors = util.customError(errors, "usuário", "O atendimento não pode ser alterado pois for aberto por outro profissional", "");                                       
+                    return Promise.reject(errors);                    
+                }
+            }).then(function (responseProfissional) {
+                if (responseProfissional.length > 0){                    
+                    return buscarPorId(id, res);              
+                }
+                else {
+                    errors = util.customError(errors, "usuário", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos", "");                                       
+                    return Promise.reject(errors);                    
+                }
+            }).then(function (response) {
+                if (response){         
+                    responsePorId = response; 
+                    return atualizaPorId(obj, id, res); 
+                }
+                else {
+                    errors = util.customError(errors, "atendimento", "Atendimento não encontrado", "");                                       
+                    return Promise.reject(errors);                    
+                }
+            }).then(function (response2) {
+                if (obj){ 
+                    obj.unidade_receita = responsePorId.unidade_receita;
+                    obj.ano_receita = responsePorId.ano_receita;
+                    if(responsePorId.numero_receita)
+                        obj.numero_receita = responsePorId.numero_receita;
+                    
+                    return buscaCabecalhoReceitaDim(id, res);
+                }
+                else {
+                    errors = util.customError(errors, "atendimento", "Atendimento não encontrado", "");                                       
+                    return Promise.reject(errors);                    
+                }
+            }).then(function (responseCabecalho) {
+                if (responseCabecalho){ 
+                    cabecalho = responseCabecalho;
+
+                    if (!cabecalho.paciente) {
+                        errors = util.customError(errors, "body", "O paciente não está cadastro no E-CARE", null);
+                        return Promise.reject(errors); 
+                    } 
+
+                    if (!cabecalho.prescritor) {
+                        errors = util.customError(errors, "body", "O profissional não está cadastro no E-CARE", null);
+                        return Promise.reject(errors); 
+                    } 
+                    return buscaPorUfNomeDim(cabecalho.cidade, cabecalho.uf, res);
+                }
+                else {
+                    obj.id = id;   
+                    res.status(200).json(obj);
+                    return;                     
+                }
+            }).then(function (response4) {
+                if (!response4.id_cidade || response4.id_cidade == 0) {
+                    errors = util.customError(errors, "RECEITA MÉDICA", "Cidade " + cabecalho.cidade + " não encontrada no E-CARE", null);
+                    return Promise.reject(errors);   
+                } 
+                else{
+                    cabecalho.cidade = response4.id_cidade;                                         
+                    delete cabecalho.uf;
+                    return buscaMedicamentoParaReceitaDim(id, res);
+                }
+            }).then(function (responseMedicamentos) {
+                if (responseMedicamentos.length>0){ 
+                    medicamentos = responseMedicamentos;                     
+                    return buscaParametroSegurancaPorChave("'URL_RECEITA_MEDICA_ENVIO'", res);
+                }
+                else
+                {
+                    obj.id = id;   
+                    res.status(200).json(obj);
+                    return;  
+                }
+            }).then(function (responseUrl) {
+                if (responseUrl){   
+                    var dim = new app.services.DimMedicamentoService();                                                          
+                    return dim.enviaReceitaMedicaDim(cabecalho, medicamentos, responseUrl[0]);
+                }
+                else {
+                    errors = util.customError(errors, "RECEITA MÉDICA", "URL para envio da receita não foi encontrada", null);
+                    return Promise.reject(errors);                    
+                }
+            }).then(function (responseReceita) {
+                if (responseReceita.status != 200) {
+                    errors = util.customError(status, "RECEITA MÉDICA", "Erro ao enviar a receita médica", null);
+                    res.status(400).json(errors);
                     return;
-                }
-            });
+                }                                        
 
-            
+                var idReceita;
+
+                if(responseReceita.data.split("|") && responseReceita.data.includes("RIS-")){
+                    idReceita = responseReceita.data.split("|")[1].substr(0,responseReceita.data.split("|")[1].indexOf('*'));
+                    numeroReceita = responseReceita.data.substr(0,responseReceita.data.indexOf('|')).replace("RIS-","");                                                                             
+                    console.log("numeroReceita" + numeroReceita);
+
+                    return confirmaMedicamentoParaReceitaDim(id, idReceita, numeroReceita, res);
+                }
+                else{
+                    obj.id = id;   
+                    res.status(200).json(obj);
+                    return; 
+                } 
+            }).then(function (responseConfirmaMedicamento) {
+                obj.id = id;   
+                obj.numero_receita = numeroReceita;
+                res.status(200).json(obj);
+                return; 
+            }).catch(function(error) {
+                return res.status(400).json(error);
+            });             
         } else {
             errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
+            res.status(400).send(errors);
         }
     });
 
@@ -424,7 +430,7 @@ module.exports = function (app) {
 
         } else {
             errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
+            res.status(400).send(errors);
         }
     });
 
@@ -781,6 +787,29 @@ module.exports = function (app) {
         return d.promise;
     }
 
+    function buscaDadosEnvioFicha(query, id, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.AtendimentoDAO(connection);
+
+        var errors = [];
+
+        objDAO.buscaDadosFichaAtendimento(query, id, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result[0]);
+            }
+        });
+        return d.promise;
+    }   
+
     function buscarPacientePorId(id) {
         var q = require('q');
         var d = q.defer();
@@ -819,6 +848,22 @@ module.exports = function (app) {
         return d.promise;
     }
 
+    function buscaProfissionalAberturaAtendimento(idUsuario, id) {
+        let q = require('q');
+        let d = q.defer();
+        let connection = app.dao.ConnectionFactory();
+        let objDAO = new app.dao.AtendimentoDAO(connection);
+
+        objDAO.buscaProfissionalAberturaAtendimento(idUsuario, id, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+            } else {
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }
+    
     function buscaParametroSegurancaPorChave(chave, res) {
         var q = require('q');
         var d = q.defer();
@@ -837,7 +882,7 @@ module.exports = function (app) {
                 res.status(500).send(errors);
                 return;
             } else {
-                d.resolve(result[0]);
+                d.resolve(result);
             }
         });
         return d.promise;

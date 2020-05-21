@@ -476,7 +476,11 @@ export class AtendimentoFormComponent implements OnInit {
   buscaTipoFicha() {
     this.loading = true;
        this.service.list('tipo-ficha').subscribe(result => {
-        this.domains[0].tipoFichas = result;
+        if(!this.domains[0].tipoFichas)
+          this.loadDomains();
+        else
+          this.domains[0].tipoFichas = result;
+          
         this.loading = false;
       }, error => {
         this.loading = false;

@@ -190,6 +190,19 @@ AtendimentoDAO.prototype.buscaCabecalhoReceitaDim = function (id, callback) {
                             and exists (select 1 from tb_atendimento_medicamento tam where tam.idAtendimento = atend.id and enviado=0)` , id, callback); 
 }
 
+AtendimentoDAO.prototype.buscaDadosFichaAtendimento = function (command, id ,callback) {
+    this._connection.query(command + id,callback);
+}
+
+AtendimentoDAO.prototype.buscaProfissionalAberturaAtendimento = function (idUsuario, idAtendimento, callback) {    
+    this._connection.query(`select 1 from tb_atendimento atend 
+    inner join tb_profissional proAbertura on proAbertura.idUsuario = atend.idUsuario 
+    inner join tb_profissional proAlteracao on proAlteracao.idUsuario = ?
+    where atend.id = ? and (proAbertura.idUsuario = proAlteracao.idUsuario || proAbertura.situacao = 0)` ,[idUsuario,idAtendimento],callback); 
+}
+
+
+
 module.exports = function(){
     return AtendimentoDAO;
 };
