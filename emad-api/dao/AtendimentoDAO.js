@@ -190,6 +190,10 @@ AtendimentoDAO.prototype.buscaCabecalhoReceitaDim = function (id, callback) {
                             and exists (select 1 from tb_atendimento_medicamento tam where tam.idAtendimento = atend.id and enviado=0)` , id, callback); 
 }
 
+AtendimentoDAO.prototype.buscaDadosFichaAtendimento = function (command, id ,callback) {
+    this._connection.query(command + id,callback);
+}
+
 module.exports = function(){
     return AtendimentoDAO;
 };

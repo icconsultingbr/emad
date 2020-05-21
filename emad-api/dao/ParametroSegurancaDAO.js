@@ -25,8 +25,8 @@ ParametroSegurancaDAO.prototype.buscaPorId = function (id, callback) {
     this._connection.query(`SELECT * FROM ${this._table} WHERE id = ?`,id,callback);
 }
 
-ParametroSegurancaDAO.prototype.buscarValorPorChave = function (id, callback) {
-    this._connection.query(`SELECT VALOR FROM ${this._table} WHERE NOME = ?`,id,callback);
+ParametroSegurancaDAO.prototype.buscarValorPorChave = function (nomeChave, callback) {
+    this._connection.query(`SELECT NOME, VALOR FROM ${this._table} WHERE NOME IN (${nomeChave})`, callback);
 }
 
 ParametroSegurancaDAO.prototype.buscaDominio = function (callback) {
