@@ -53,9 +53,9 @@ module.exports = function (app) {
 
 
                     atualizaUsuario(usuario).then(function (responseAtualiza) {
-                        buscaParametroSegurancaPorChave("CONTA_EMAIL", res).then(function (responseEMAIL) {                                
+                        buscaParametroSegurancaPorChave("'CONTA_EMAIL'", res).then(function (responseEMAIL) {                                
                             if(responseEMAIL){
-                                buscaParametroSegurancaPorChave("SENHA_EMAIL", res).then(function (responseSENHA) {                                
+                                buscaParametroSegurancaPorChave("'SENHA_EMAIL'", res).then(function (responseSENHA) {                                
                                     if(responseSENHA){
                                         mail.sendMail(responseEmail[0], responseEMAIL, responseSENHA, "Esqueceu a senha?", "forgotPassword.html");
                                         let retorno = {};
@@ -101,9 +101,9 @@ module.exports = function (app) {
 
                     atualizaUsuario(usuario).then(function (responseAtualiza) {
 
-                        buscaParametroSegurancaPorChave("CONTA_EMAIL", res).then(function (responseEMAIL) {                                
+                        buscaParametroSegurancaPorChave("'CONTA_EMAIL'", res).then(function (responseEMAIL) {                                
                             if(responseEMAIL){
-                                buscaParametroSegurancaPorChave("SENHA_EMAIL", res).then(function (responseSENHA) {                                
+                                buscaParametroSegurancaPorChave("'SENHA_EMAIL'", res).then(function (responseSENHA) {                                
                                     if(responseSENHA){
                                         mail.sendMail(responseCPF[0], responseEMAIL, responseSENHA, "Redefinição de senha", "forgotPassword.html");
                                         let retorno = {};
