@@ -26,7 +26,13 @@ module.exports = function (app) {
 
         console.log('teste')
         res.status(200).json({ id: 1 });
+    });
 
+    app.post('/atendimento/consulta-por-paciente', function (req, res) {
+        let usuario = req.usuario;
+
+        console.log('teste')
+        res.status(200).json({ id: 1 });
     });
 
     app.post('/atendimento/open-document', function (req, res) {
@@ -296,7 +302,7 @@ module.exports = function (app) {
                     return buscaProfissionalPorUsuario(usuario.id);
                 }
                 else {
-                    errors = util.customError(errors, "usuário", "O atendimento não pode ser alterado pois for aberto por outro profissional", "");                                       
+                    errors = util.customError(errors, "usuário", "O atendimento não pôde ser alterado pois foi aberto por outro profissional", "");                                       
                     return Promise.reject(errors);                    
                 }
             }).then(function (responseProfissional) {

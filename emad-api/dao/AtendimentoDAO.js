@@ -36,6 +36,10 @@ AtendimentoDAO.prototype.lista = function(addFilter, callback) {
         if(addFilter.idSap){
             where+=" AND p.idSap like '%"+addFilter.idSap+"%'";
         }
+
+        if(addFilter.idPaciente){
+            where+=" AND p.id = "+addFilter.idPaciente + " ";
+        }
     }
 
     this._connection.query(`SELECT 
@@ -99,6 +103,10 @@ AtendimentoDAO.prototype.listaPorUsuario = function(id, addFilter, callback) {
 
         if(addFilter.idSap){
             where+=" AND p.idSap like '%"+addFilter.idSap+"%'";
+        }
+
+        if(addFilter.idPaciente){
+            where+=" AND p.id = "+addFilter.idPaciente + " ";
         }
     }
 
