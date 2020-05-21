@@ -20,6 +20,17 @@ module.exports = function (app) {
         obj.dataCriacao = new Date;
         var errors = [];
 
+        if(obj.queryTemplate.toUpperCase().includes('DROP') 
+        || obj.queryTemplate.toUpperCase().includes('DELETE') 
+        || obj.queryTemplate.toUpperCase().includes('INSERT') 
+        || obj.queryTemplate.toUpperCase().includes('UPDATE')
+        || obj.queryTemplate.toUpperCase().includes('TRUNCATE'))
+        {
+            errors = util.customError(errors, "header", "Existem palavras não permitidas no campo queryTemplate", null);
+            res.status(400).send(errors);
+            return; 
+        }
+
         if(usuario.idTipoUsuario <= util.SUPER_ADMIN){
             salvar(obj, res).then(function(response) {
                 obj.id = response.insertId;
@@ -48,6 +59,17 @@ module.exports = function (app) {
             return; 
         }
 
+        if(obj.queryTemplate.toUpperCase().includes('DROP') 
+        || obj.queryTemplate.toUpperCase().includes('DELETE') 
+        || obj.queryTemplate.toUpperCase().includes('INSERT') 
+        || obj.queryTemplate.toUpperCase().includes('UPDATE')
+        || obj.queryTemplate.toUpperCase().includes('TRUNCATE'))
+        {
+            errors = util.customError(errors, "header", "Existem palavras não permitidas no campo queryTemplate", null);
+            res.status(400).send(errors);
+            return; 
+        }
+        
         obj.dataCriacao = new Date;
         var errors = [];
 
