@@ -4,7 +4,8 @@ function UsuarioDAO(connection) {
 }
 
 UsuarioDAO.prototype.salva = function (usuario, callback) {
-    this._connection.query("INSERT INTO " + this._table + " SET ?", usuario, callback);
+    var query = this._connection.query("INSERT INTO " + this._table + " SET ?", usuario, callback);
+    console.log(query.sql);
 }
 
 UsuarioDAO.prototype.atualiza = function (usuario, id, callback) {
