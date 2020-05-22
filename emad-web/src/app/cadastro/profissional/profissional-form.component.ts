@@ -39,42 +39,49 @@ export class ProfissionalFormComponent implements OnInit {
   }
 
   loadDomains() {
-    this.service.listDomains('uf').subscribe(ufs => {
-      this.service.listDomains('nacionalidade').subscribe(paises => {
-        this.service.listDomains('especialidade').subscribe(especialidades => {
-            //this.service.listDomains('usuario').subscribe(usuarios => {
-              this.domains.push({
-                idUf: ufs,
-                idNacionalidade: paises,
-                idNaturalidade: [],
-                idMunicipio: [],
-                profissionalSus: [
-                  { id: "N", nome: "Não" },
-                  { id: "S", nome: "Sim" },
-                ],
-                escolaridade: [
-                  { id: 1, nome: "Educação infantil" },
-                  { id: 2, nome: "Fundamental" },
-                  { id: 3, nome: "Médio" },
-                  { id: 4, nome: "Superior (Graduação)" },
-                  { id: 5, nome: "Pós-graduação" },
-                  { id: 6, nome: "Mestrado" },
-                  { id: 7, nome: "Doutorado" },
-                  { id: 8, nome: "Escola" }
-                ],
-                idEspecialidade: especialidades,
-                vinculo: [
-                  { id: "A", nome: "Autônomo" },
-                  { id: "E", nome: "Empregatício" }
-                ],
-                sexo: [
-                  { id: "F", nome: "Feminino" },
-                  { id: "M", nome: "Masculino" }
-                ],
-                idUsuario: [], //usuarios,
-            });            
-            this.buscaUsuariosSemProfissional();
-          //});
+    this.service.list('tipo-usuario-profissional').subscribe(tiposUsuario => {
+      this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
+        this.service.listDomains('uf').subscribe(ufs => {
+          this.service.listDomains('nacionalidade').subscribe(paises => {
+            this.service.listDomains('especialidade').subscribe(especialidades => {
+                //this.service.listDomains('usuario').subscribe(usuarios => {
+                  this.domains.push({
+                    idUf: ufs,
+                    idNacionalidade: paises,
+                    idNaturalidade: [],
+                    idMunicipio: [],
+                    profissionalSus: [
+                      { id: "N", nome: "Não" },
+                      { id: "S", nome: "Sim" },
+                    ],
+                    escolaridade: [
+                      { id: 1, nome: "Educação infantil" },
+                      { id: 2, nome: "Fundamental" },
+                      { id: 3, nome: "Médio" },
+                      { id: 4, nome: "Superior (Graduação)" },
+                      { id: 5, nome: "Pós-graduação" },
+                      { id: 6, nome: "Mestrado" },
+                      { id: 7, nome: "Doutorado" },
+                      { id: 8, nome: "Escola" }
+                    ],
+                    idEspecialidade: especialidades,
+                    vinculo: [
+                      { id: "A", nome: "Autônomo" },
+                      { id: "E", nome: "Empregatício" }
+                    ],
+                    sexo: [
+                      { id: "F", nome: "Feminino" },
+                      { id: "M", nome: "Masculino" }
+                    ],
+                    idUsuario: [], //usuarios,
+                    idTipoUsuario: tiposUsuario,
+                    estabelecimentos: estabelecimentos,
+
+                });            
+                this.buscaUsuariosSemProfissional();
+              //});
+            });
+          });
         });
       });
     });

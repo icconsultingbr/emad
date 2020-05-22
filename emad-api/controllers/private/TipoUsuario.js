@@ -21,6 +21,22 @@ module.exports = function (app) {
         }
     });
 
+    app.get('/tipo-usuario-profissional', function (req, res) {
+        let usuario = req.usuario;
+        let util = new app.util.Util();
+        let errors = [];
+
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
+            listaTipoUsuarioProfissional(res).then(function (resposne) {
+                res.status(200).json(resposne);
+                return;
+            });        
+        } else {
+            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
+            res.status(401).send(errors);
+        }
+    });
+
     app.get('/tipo-usuario/:id', function (req, res) {
         let usuario = req.usuario;
         let id = req.params.id;
@@ -202,6 +218,29 @@ module.exports = function (app) {
         });
         return d.promise;
     }
+
+    function listaTipoUsuarioProfissional(res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.TipoUsuarioDAO(connection);
+
+        var errors = [];
+
+        objDAO.listaTipoUsuarioProfissional(function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }   
 
     function buscarPorId(id, res) {
         var q = require('q');

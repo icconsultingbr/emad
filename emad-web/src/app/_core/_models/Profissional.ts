@@ -35,4 +35,7 @@ export class Profissional {
     @Input() latitude: number;
     @Input() longitude: number;
     @Input() idEstabelecimento : Number = +JSON.parse(localStorage.getItem("est"))[0].id;
+    @Input() idTipoUsuario: number;
+    @Input() senha : String;
+    @Input() confirmaSenha : String;
 }

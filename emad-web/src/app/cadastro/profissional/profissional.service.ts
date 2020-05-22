@@ -37,16 +37,7 @@ export class ProfissionalService extends GenericsService {
       placeholder: "999.999.999-99",
       required: true,
       validator: ['', Validators.required]
-    },    
-    {
-      field: "idUsuario",
-      type: "select",
-      label: "Usuário vinculado",
-      grid: false,
-      form: true,
-      required: true,
-      validator: ['', Validators.required]
-    },
+    },  
     {
       field: "nomeMae",
       type: "text",
@@ -366,5 +357,43 @@ export class ProfissionalService extends GenericsService {
           grid: true
       }
     }, 
+    {
+      field: "idTipoUsuario",
+      type: "select",
+      label: "Grupo de Usuário",
+      grid: false,
+      required: true,
+      form: true,
+      validator: ['', Validators.required] 
+    },
+    {
+      field: "senha",
+      type: "password",
+      label: "Senha",
+      grid: false,
+      required: true,
+      form: true,
+      validator: ['', Validators.required],
+      onlyCreate : true
+    },
+    {
+      field: "confirmaSenha",
+      type: "password",
+      label: "Cofirme a Senha",
+      grid: false,
+      required: true,
+      form: true,
+      validator: ['', Validators.required],
+      onlyCreate : true
+    },    
+    {
+      field: "estabelecimentos",
+      type: "multiSelect",
+      label: "Estabelecimentos",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', '']
+    }  
   ];
 }
