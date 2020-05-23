@@ -1,32 +1,138 @@
 import { Component, OnInit } from '@angular/core';
 import { AppComponent } from '../app.component';
 import { AppNavbarService } from '../_core/_components/app-navbar/app-navbar.service';
+import { MainChartLine } from '../_core/_models/MainChart';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Util } from '../_core/_util/Util';
+import { MainService } from './main.service';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
-  styleUrls: ['./main.component.css']
+  styleUrls: ['./main.component.css'],
+  providers:[MainService]
 })
+
 export class MainComponent implements OnInit {
-
+  
+  objectAtendimento: MainChartLine = new MainChartLine();  
+  objectMedicamento: MainChartLine = new MainChartLine();  
+  objectTipoAtendimento: MainChartLine = new MainChartLine();    
+  method: String = 'profissional';
+  fields = [];
+  label: String = "Profissional";
+  id: Number = null;
+  domains: any[] = [];
+  loading: Boolean = false;
+  errors: any[] = [];
   dash : Boolean = false;
+  form: FormGroup;
 
-  constructor(public nav: AppNavbarService, public ap: AppComponent) {
+  public lineChartDataAtendimento: Array<any> = [ { data: [] } ];
+  public lineChartLabelsAtendimento: Array<any> = [];
+  public lineChartDataMedicamento: Array<any> = [ { data: [] } ];
+  public lineChartLabelsMedicamento: Array<any> = [];
+  public lineChartDataTipoAtendimento: Array<any> = [ { data: [] } ];
+  public lineChartLabelsTipoAtendimento: Array<any> = [];
+
+  constructor(
+    public nav: AppNavbarService, 
+    private fb: FormBuilder,
+    public ap: AppComponent,
+    private service: MainService) {
     ap.ngOnInit();
 
   }
 
   ngOnInit() {
     this.nav.show();
+    this.loadDomains();
+    this.createGroup();
+    this.carregaDashboard();
   }
 
+  loadDomains() {
+    this.domains.push({
+      periodos: [
+        { id: 7, nome: "Últimos 7 dias" },
+        { id: 15, nome: "Últimos 15 dias" },
+        { id: 30, nome: "Últimos 30 dias" },
+        { id: 60, nome: "Últimos 60 dias" },
+        { id: 90, nome: "Últimos 90 dias" },
+      ]
+    });    
+  }
 
-  public lineChartData: Array<any> = [
-    { data: [100, 324, 112, 355, 400, 100, 40] }
-  ];
+  createGroup() {
+    this.form = this.fb.group({
+      periodoAtendimento: ['']
+    });
+  }
 
+  carregaDashboard() {    
+      this.carregaDashboardAtendimento(null);
+      this.carregaDashboardMedicamento(null);
+      this.carregaDashboardTipoAtendimento(null);
+  }
 
-  public lineChartLabels: Array<any> = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho'];
+  carregaDashboardAtendimento(item) {    
+    this.loading = true;
+    this.objectAtendimento.periodo = item ? item.id : 7;    
+    this.objectAtendimento.periodoNome = item ? item.nome : 'Últimos 7 dias';    
+    this.lineChartDataAtendimento = [ { data: [] }];    
+
+    this.service.carregaQtdAtendimentosPorPeriodo(this.objectAtendimento.periodo).subscribe(result => {     
+      this.objectAtendimento.qtdTotal = result ? result.qtd : 0;
+
+      this.service.carregaAtendimentosPorPeriodo(this.objectAtendimento.periodo).subscribe(result => {            
+        this.lineChartLabelsAtendimento = result ? result.label : [];
+        var teste = [];
+        for(var item in result){        
+          teste.push(result[item].label);
+        } 
+        this.lineChartLabelsAtendimento = teste;
+  
+        var teste2 = [];
+        for(var item in result){        
+          teste2.push(result[item].data);
+        } 
+        this.lineChartDataAtendimento[0].data = teste2;
+        this.loading = false;
+      }, error => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(error);
+      }); 
+
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    }); 
+  }
+
+  carregaDashboardMedicamento(item) {    
+    this.objectMedicamento.periodo = item ? item.id : 1;    
+    this.objectMedicamento.periodoNome = item ? item.nome : 'Últimos 7 dias';
+    this.objectMedicamento.qtdTotal = 300;
+    this.lineChartDataMedicamento = [
+      { data: [100, 324, 112, 355, 400, 100, 40] }
+    ];
+    this.lineChartLabelsMedicamento = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho'];
+  }
+
+  carregaDashboardTipoAtendimento(item) {    
+    this.objectTipoAtendimento.periodo = item ? item.id : 1;    
+    this.objectTipoAtendimento.periodoNome = item ? item.nome : 'Últimos 7 dias';
+    this.objectTipoAtendimento.qtdTotal = 400;
+    this.lineChartDataTipoAtendimento = [
+      { data: [100, 324, 112, 355, 400, 100, 40] }
+    ];
+    this.lineChartLabelsTipoAtendimento = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho'];
+  }
+  
+  metodoHeleno(item){
+    var teste = item;
+  }
+
   public lineChartOptions: any = {
     responsive: true,
     layout: {

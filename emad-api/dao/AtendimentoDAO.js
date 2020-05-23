@@ -209,7 +209,24 @@ AtendimentoDAO.prototype.buscaProfissionalAberturaAtendimento = function (idUsua
     where atend.id = ? and (proAbertura.idUsuario = proAlteracao.idUsuario || proAbertura.situacao = 0)` ,[idUsuario,idAtendimento],callback); 
 }
 
+AtendimentoDAO.prototype.carregaQtdAtendimentosPorPeriodo = function (periodo, idEstabelecimento, callback) {    
+    this._connection.query(`select count(1) as qtd from tb_atendimento ta where idEstabelecimento = ? and  dataCriacao >=  DATE(NOW()) - INTERVAL ? DAY` ,[idEstabelecimento,periodo],callback); 
+}
 
+AtendimentoDAO.prototype.carregaAtendimentosPorPeriodo = function (periodo, idEstabelecimento, callback) {       
+    if(periodo>30){
+        this._connection.query(`select CONCAT(LPAD(a.mes,2,'0'),'/',a.ano) as label, qtd as data from (SELECT YEAR(dataCriacao) ano, MONTH(dataCriacao) mes, COUNT(1) qtd
+        FROM tb_atendimento ta where idEstabelecimento = ? and  dataCriacao >=  DATE(NOW()) - INTERVAL ? DAY
+        GROUP BY YEAR(dataCriacao), MONTH(dataCriacao)
+        order by YEAR(dataCriacao), MONTH(dataCriacao) desc) a` ,[idEstabelecimento,periodo],callback); 
+    }
+    else{
+        this._connection.query(`select DATE_FORMAT(dataCriacao,'%d/%m/%Y') as label , count(1) as data  from tb_atendimento ta 
+        where idEstabelecimento = ? and  dataCriacao >=  DATE(NOW()) - INTERVAL ? DAY
+        group by DATE_FORMAT(dataCriacao,'%d/%m/%Y')
+        order by DATE_FORMAT(dataCriacao,'%d/%m/%Y') desc` ,[idEstabelecimento,periodo],callback); 
+    }
+}
 
 module.exports = function(){
     return AtendimentoDAO;
