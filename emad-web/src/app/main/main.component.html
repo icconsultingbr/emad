@@ -57,7 +57,7 @@
                 <span class="caret"></span>
               </button>  
               <ul id="tipoAtendimento" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-basic">                
-                <li role="menuitem" *ngFor="let item of domains[0]?.periodos" [value]="item.id" 
+                <li role="menuitem" *ngFor="let item of domains[0]?.periodos15" [value]="item.id" 
                 (click)="carregaDashboardTipoAtendimento(item)">
                   <div class="dropdown-item">{{item.nome}}</div>
                 </li>
@@ -112,16 +112,16 @@
               </button>  
               <ul id="situacaoAtendimento" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-basic">                
                 <li role="menuitem" *ngFor="let item of domains[0]?.periodos" [value]="item.id" 
-                (click)="carregaDashboardSituacao(item)">
+                (click)="carregaDashboardAtendimentoSituacao(item)">
                   <div class="dropdown-item">{{item.nome}}</div>
                 </li>
               </ul> 
             </div>  
-            <div class="text-value text-left h4 text-primary">Atendimento por situação</div>
+            <div class="text-value text-left h4 text-primary">Atendimento por situação nos <label style="font-weight:bold;">{{objectAtendimentoSituacao.periodoNome}}</label></div>
             <div class="text-left small text-primary"> </div>
   
             <div style="display: block">
-              <canvas baseChart [datasets]="barChartDataSituacao" [colors]="barchartColor" [labels]="barChartLabelsSituacao"
+              <canvas baseChart [datasets]="barChartDataAtendimentoSituacao" [colors]="barchartColor" [labels]="barChartLabelsAtendimentoSituacao"
                 [legend]="barChartLegend" height="100" [chartType]="barChartType" (chartHover)="chartHovered($event)"
                 (chartClick)="chartClicked($event)"></canvas>
             </div>

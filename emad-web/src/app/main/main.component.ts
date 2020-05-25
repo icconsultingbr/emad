@@ -18,6 +18,7 @@ export class MainComponent implements OnInit {
   objectAtendimento: MainChartLine = new MainChartLine();  
   objectMedicamento: MainChartLine = new MainChartLine();  
   objectTipoAtendimento: MainChartLine = new MainChartLine();    
+  objectAtendimentoSituacao: MainChartLine = new MainChartLine();    
   method: String = 'profissional';
   fields = [];
   label: String = "Profissional";
@@ -38,10 +39,10 @@ export class MainComponent implements OnInit {
   public lineChartType: string = 'line';  
   public barChartType: string = 'bar';
   public barChartLegend: boolean = true;  
-  public barChartDataTipoAtendimento: any[];
+  public barChartDataTipoAtendimento: any[] = [ { data: [], label: '' } ];
   public barChartLabelsTipoAtendimento: string[] = [];
-  public barChartDataSituacao: any[] = [ { data: [], label: '' } ];
-  public barChartLabelsSituacao: string[] = [];
+  public barChartDataAtendimentoSituacao: any[] = [ { data: [], label: '' } ];
+  public barChartLabelsAtendimentoSituacao: string[] = [];
 
   constructor(
     public nav: AppNavbarService, 
@@ -67,6 +68,10 @@ export class MainComponent implements OnInit {
         { id: 30, nome: "Últimos 30 dias" },
         { id: 60, nome: "Últimos 60 dias" },
         { id: 90, nome: "Últimos 90 dias" },
+      ],
+      periodos15: [
+        { id: 7, nome: "Últimos 7 dias" },
+        { id: 15, nome: "Últimos 15 dias" }
       ]
     });    
   }
@@ -81,6 +86,7 @@ export class MainComponent implements OnInit {
       this.carregaDashboardAtendimento(null);
       this.carregaDashboardMedicamento(null);
       this.carregaDashboardTipoAtendimento(null);
+      this.carregaDashboardAtendimentoSituacao(null);
   }
 
   carregaDashboardAtendimento(item) {    
@@ -175,21 +181,23 @@ export class MainComponent implements OnInit {
     
           this.service.carregaTipoAtendimentoPorPeriodo(this.objectTipoAtendimento.periodo).subscribe(resultPorPeriodo => {                  
             var contador = 0;
-            var barChartData = [];     
-            this.barChartDataTipoAtendimento = [ { data: [], label: '' } , { data: [], label: '' } ];
+            var barChartData = []; 
+            this.barChartDataTipoAtendimento = [ { data: [], label: '' } ];
 
             //verifico os tipos de ficha
             for(var itemTipo in tiposAtendimentosExistentes){ 
-              var data = [];         
-              this.barChartDataTipoAtendimento[contador].label = tiposAtendimentosExistentes[itemTipo];  
+              var data = [];   
+              barChartData.push({ data: [], label:tiposAtendimentosExistentes[itemTipo] });  
+
               //verifico os dias
               for(var itemDia in datasExistentes){               
                 var t = resultPorPeriodo.filter((item) => item.label == datasExistentes[itemDia] && item.nome == tiposAtendimentosExistentes[itemTipo]);
                 data.push(t[0] ? t[0].data : "0");
               } 
-              this.barChartDataTipoAtendimento[contador].data = data;
+              barChartData[contador].data = data;
               contador++;
-            } 
+            }            
+            this.barChartDataTipoAtendimento = barChartData;
             this.loading = false;
           }, error => {
             this.loading = false;
@@ -208,6 +216,66 @@ export class MainComponent implements OnInit {
 
   }
   
+  carregaDashboardAtendimentoSituacao(item) {    
+    this.loading = true;
+    this.objectAtendimentoSituacao.periodo = item ? item.id : 7;    
+    this.objectAtendimentoSituacao.periodoNome = item ? item.nome : 'Últimos 7 dias';   
+
+    let atendimentosSituacoesExistentes = [];
+    let datasExistentes = [];
+
+    this.service.carregaAtendimentosPorPeriodo(this.objectAtendimentoSituacao.periodo).subscribe(result => {     
+      var labels = [];
+        for(var item in result){        
+          labels.push(result[item].label);
+        } 
+        this.barChartLabelsAtendimentoSituacao = labels;
+        datasExistentes = labels;
+
+        this.service.carregaAtendimentoSituacaoExistentePorPeriodo(this.objectAtendimentoSituacao.periodo).subscribe(result => {     
+          var situacoes = [];
+            for(var item in result){        
+              situacoes.push(result[item].situacao);
+            } 
+            atendimentosSituacoesExistentes = situacoes;
+    
+          this.service.carregaAtendimentoSituacaoPorPeriodo(this.objectAtendimentoSituacao.periodo).subscribe(resultPorPeriodo => {                  
+            var contador = 0;
+            var barChartData = []; 
+            this.barChartDataAtendimentoSituacao = [ { data: [], label: '' } ];
+
+            //verifico os tipos de ficha
+            for(var itemTipo in atendimentosSituacoesExistentes){ 
+              var data = [];   
+              barChartData.push({ data: [], label:atendimentosSituacoesExistentes[itemTipo] });  
+
+              //verifico os dias
+              for(var itemDia in datasExistentes){               
+                var t = resultPorPeriodo.filter((item) => item.label == datasExistentes[itemDia] && item.situacao == atendimentosSituacoesExistentes[itemTipo]);
+                data.push(t[0] ? t[0].data : "0");
+              } 
+              barChartData[contador].data = data;
+              contador++;
+            }            
+            this.barChartDataAtendimentoSituacao = barChartData;
+            this.loading = false;
+          }, error => {
+            this.loading = false;
+            this.errors = Util.customHTTPResponse(error);
+          });
+    
+        }, error => {
+          this.loading = false;
+          this.errors = Util.customHTTPResponse(error);
+        });
+
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+
+  }
+
   public lineChartOptions: any = {
     responsive: true,
     layout: {
@@ -252,12 +320,20 @@ export class MainComponent implements OnInit {
   public lineChartColors: Array<any> = this.renderBgChart('rgba(0, 0, 0, 0)', 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', '#fff', '#B4B4B4', 'rgba(255,255,255,0.8)');
   public lineChartColors2: Array<any> = this.renderBgChart('rgba(0, 0, 0, 0)', 'rgba(219,219,219,1)', 'rgba(219,219,219,1)', '#00929c', 'rgb(77, 111, 160,1)', 'rgba(46,79,143,0.8)');
   public barchartColor: Array<any> =  [
-    { // grey
+    { 
       backgroundColor:'rgb(77, 111, 160, 1)',
       hoverBackgroundColor: 'rgb(85, 124, 178, 0.8)'
-    }, { // grey
+    }, { 
       backgroundColor: 'rgb(70, 78, 86, 1)',
       hoverBackgroundColor: 'rgba(219,219,219,0.8)',
+    },
+    { 
+      backgroundColor: 'rgb(0, 90, 47, 1)',
+      hoverBackgroundColor: 'rgba(87, 142, 116, 0.8)',
+    },
+    { 
+      backgroundColor: 'rgb(95, 64, 0, 1)',
+      hoverBackgroundColor: 'rgba(150, 127, 79, 0.8)',
     },
   ];
 

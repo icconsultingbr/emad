@@ -234,7 +234,7 @@ AtendimentoDAO.prototype.carregaTipoAtendimentoExistentesPorPeriodo = function (
                             tb_atendimento ta on ta.tipoFicha = ttf.id 
                             where ta.idEstabelecimento = ? and  ta.dataCriacao >=  DATE(NOW()) - INTERVAL ? DAY
                             group by ttf.nome
-                            order by ttf.nome desc` ,[idEstabelecimento,periodo],callback); 
+                            order by ttf.nome asc` ,[idEstabelecimento,periodo],callback); 
 }  
 
 AtendimentoDAO.prototype.carregaTipoAtendimentoPorPeriodo = function (periodo, idEstabelecimento, callback) {       
@@ -252,6 +252,49 @@ AtendimentoDAO.prototype.carregaTipoAtendimentoPorPeriodo = function (periodo, i
         where ta.idEstabelecimento = ? and  ta.dataCriacao >=  DATE(NOW()) - INTERVAL ? DAY
         group by DATE_FORMAT(ta.dataCriacao,'%d/%m/%Y'), ttf.nome
         order by DATE_FORMAT(ta.dataCriacao,'%d/%m/%Y') desc  ` ,[idEstabelecimento,periodo],callback); 
+    }
+}
+
+AtendimentoDAO.prototype.carregaAtendimentoSituacaoExistentesPorPeriodo = function (periodo, idEstabelecimento, callback) {    
+    this._connection.query(`SELECT   CASE  
+                                WHEN ta.situacao = 'A'  THEN 'Alta'  
+                                WHEN ta.situacao = 'C' THEN 'Em aberto'  
+                                WHEN ta.situacao = 'E' THEN 'Evasão'  
+                                WHEN ta.situacao = '0' THEN 'Óbito'  
+                                ELSE 'Cancelado'
+                                END as situacao from                             
+                            tb_atendimento ta 
+                            where ta.idEstabelecimento = ? and  ta.dataCriacao >=  DATE(NOW()) - INTERVAL ? DAY
+                            group by ta.situacao
+                            order by ta.situacao asc` ,[idEstabelecimento,periodo],callback); 
+}  
+
+AtendimentoDAO.prototype.carregaAtendimentoSituacaoPorPeriodo = function (periodo, idEstabelecimento, callback) {       
+    if(periodo>30){
+        this._connection.query(`select CONCAT(LPAD(a.mes,2,'0'),'/',a.ano) as label, qtd as data, a.situacao from (SELECT YEAR(ta.dataCriacao) ano, MONTH(ta.dataCriacao) mes, COUNT(1) qtd,  CASE  
+                                        WHEN ta.situacao = 'A'  THEN 'Alta'  
+                                        WHEN ta.situacao = 'C' THEN 'Em aberto'  
+                                        WHEN ta.situacao = 'E' THEN 'Evasão'  
+                                        WHEN ta.situacao = '0' THEN 'Óbito'  
+                                        ELSE 'Cancelado'
+                                        END as situacao
+                                FROM tb_atendimento ta 
+                                where ta.idEstabelecimento = ? and  ta.dataCriacao >=  DATE(NOW()) - INTERVAL ? DAY
+                                GROUP BY YEAR(ta.dataCriacao), MONTH(ta.dataCriacao),  ta.situacao
+                                order by YEAR(ta.dataCriacao), MONTH(ta.dataCriacao) desc) a      ` ,[idEstabelecimento,periodo],callback); 
+    }
+    else{
+        this._connection.query(`select DATE_FORMAT(ta.dataCriacao,'%d/%m/%Y') as label , count(1) as data, CASE  
+                                WHEN ta.situacao = 'A'  THEN 'Alta'  
+                                WHEN ta.situacao = 'C' THEN 'Em aberto'  
+                                WHEN ta.situacao = 'E' THEN 'Evasão'  
+                                WHEN ta.situacao = '0' THEN 'Óbito'  
+                                ELSE 'Cancelado'
+                                END as situacao  from         
+                                tb_atendimento ta 
+                                where ta.idEstabelecimento = ? and  ta.dataCriacao >=  DATE(NOW()) - INTERVAL ? DAY
+                                group by DATE_FORMAT(ta.dataCriacao,'%d/%m/%Y'), ta.situacao
+                                order by DATE_FORMAT(ta.dataCriacao,'%d/%m/%Y') desc` ,[idEstabelecimento,periodo],callback); 
     }
 }
 

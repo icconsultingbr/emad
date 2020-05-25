@@ -46,5 +46,19 @@ export class MainService extends GenericsService{
       + periodo + "&idEstabelecimento="
       + JSON.parse(localStorage.getItem("est"))[0].id,
       { headers: this.headers }).map(res => res.json());
-    }    
+    } 
+    
+    carregaAtendimentoSituacaoExistentePorPeriodo(periodo: number): Observable<any> {
+      return this.http.get(this.url + "atendimento-situacao-existente-por-periodo?periodo=" 
+      + periodo + "&idEstabelecimento="
+      + JSON.parse(localStorage.getItem("est"))[0].id,
+      { headers: this.headers }).map(res => res.json());
+    }  
+
+    carregaAtendimentoSituacaoPorPeriodo(periodo: number): Observable<any> {
+      return this.http.get(this.url + "atendimento-situacao-por-periodo?periodo=" 
+      + periodo + "&idEstabelecimento="
+      + JSON.parse(localStorage.getItem("est"))[0].id,
+      { headers: this.headers }).map(res => res.json());
+    }   
 }
