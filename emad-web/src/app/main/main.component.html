@@ -46,40 +46,12 @@
           </div>
         </div>
       </div>
-
+      
       <div class="col-sm-6 col-md-4 col-xl-4 mb-4">
         <div class="card text-white bg-light pb-4">
           <div class="card-body pb-0">
             <div class="btn-group float-right" dropdown>
               <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle text-primary float-right"
-                aria-controls="medicamentos" style="background: none">
-                <i class="fa fa-sliders-h"></i>
-                <span class="caret"></span>
-              </button>  
-              <ul id="medicamentos" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-basic">                
-                <li role="menuitem" *ngFor="let item of domains[0]?.periodos" [value]="item.id" 
-                (click)="carregaDashboardMedicamento(item)">
-                  <div class="dropdown-item">{{item.nome}}</div>
-                </li>
-              </ul> 
-            </div>  
-            <div class="text-value text-left h4 text-primary"><label>{{objectMedicamento.qtdTotal}}</label></div>
-            <div class="text-left medium text-primary">Medicamentos dispensados nos <label style="font-weight:bold;">{{objectMedicamento.periodoNome}}</label>
-            </div>
-            <br/>
-            <canvas baseChart height="80" [datasets]="lineChartDataMedicamento" [labels]="lineChartLabelsMedicamento"
-              [options]="lineChartOptions" [colors]="lineChartColors2" [legend]="lineChartLegend"
-              [chartType]="lineChartType" (chartHover)="chartHovered($event)"
-              (chartClick)="chartClicked($event)"></canvas>
-          </div>
-        </div>
-      </div>
-  
-      <div class="col-sm-6 col-md-4 col-xl-4 mb-4">
-        <div class="card text-white bg-primary pb-4">
-          <div class="card-body pb-0">
-            <div class="btn-group float-right" dropdown>
-              <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle text-white float-right"
                 aria-controls="tipoAtendimento" style="background: none">
                 <i class="fa fa-sliders-h"></i>
                 <span class="caret"></span>
@@ -91,18 +63,44 @@
                 </li>
               </ul> 
             </div>  
-            <div class="text-value text-left h4"><label>{{objectTipoAtendimento.qtdTotal}}</label></div>
-            <div class="text-left medium">Atendimentos realizados nos <label style="font-weight:bold;">{{objectTipoAtendimento.periodoNome}}</label>
+            <div class="text-value text-left h4 text-primary"><label></label></div>
+            <div class="text-left medium text-primary">Atendimentos por tipo nos <label style="font-weight:bold;">{{objectTipoAtendimento.periodoNome}}</label>    </div>         
+            <br/>
+            <canvas baseChart [datasets]="barChartDataTipoAtendimento" [colors]="barchartColor" [labels]="barChartLabelsTipoAtendimento"
+                [legend]="barChartLegend" height="80" [chartType]="barChartType" (chartHover)="chartHovered($event)"
+                (chartClick)="chartClicked($event)"></canvas>
+          </div>
+        </div>
+      </div> 
+      
+      <div class="col-sm-6 col-md-4 col-xl-4 mb-4">
+        <div class="card text-white bg-primary pb-4">
+          <div class="card-body pb-0">
+            <div class="btn-group float-right" dropdown>
+              <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle text-white float-right"
+                aria-controls="medicamentos" style="background: none">
+                <i class="fa fa-sliders-h"></i>
+                <span class="caret"></span>
+              </button>  
+              <ul id="medicamentos" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-basic">                
+                <li role="menuitem" *ngFor="let item of domains[0]?.periodos" [value]="item.id" 
+                (click)="carregaDashboardMedicamento(item)">
+                  <div class="dropdown-item">{{item.nome}}</div>
+                </li>
+              </ul> 
+            </div>  
+            <div class="text-value text-left h4"><label>{{objectMedicamento.qtdTotal}}</label></div>
+            <div class="text-left medium">Medicamentos dispensados nos <label style="font-weight:bold;">{{objectMedicamento.periodoNome}}</label>
             </div>
             <br/>
-            <canvas baseChart height="80" [datasets]="lineChartDataTipoAtendimento" [labels]="lineChartLabelsTipoAtendimento"
+            <canvas baseChart height="80" [datasets]="lineChartDataMedicamento" [labels]="lineChartLabelsMedicamento"
               [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend"
               [chartType]="lineChartType" (chartHover)="chartHovered($event)"
               (chartClick)="chartClicked($event)"></canvas>
           </div>
         </div>
-      </div>     
-  
+      </div>
+      
       <div class="col-12 mb-4">
         <div class="card text-white bg-light pb-4">
           <div class="card-body pb-0">
@@ -111,21 +109,19 @@
                 aria-controls="dropdown-basic" style="background: none">
                 <i class="fa fa-sliders-h"></i>
                 <span class="caret"></span>
-              </button>
-  
-              <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu"
-                aria-labelledby="button-basic">
-                <li role="menuitem"><a class="dropdown-item" href="#">Últimos 7 dias</a></li>
-                <li role="menuitem"><a class="dropdown-item" href="#">Últimos 15 dias</a></li>
-                <li role="menuitem"><a class="dropdown-item" href="#">Últimos 30 dias</a></li>
-              </ul>
-            </div>
-  
-            <div class="text-value text-left h4 text-primary">Atendimento por tipo de unidade</div>
+              </button>  
+              <ul id="situacaoAtendimento" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-basic">                
+                <li role="menuitem" *ngFor="let item of domains[0]?.periodos" [value]="item.id" 
+                (click)="carregaDashboardSituacao(item)">
+                  <div class="dropdown-item">{{item.nome}}</div>
+                </li>
+              </ul> 
+            </div>  
+            <div class="text-value text-left h4 text-primary">Atendimento por situação</div>
             <div class="text-left small text-primary"> </div>
   
             <div style="display: block">
-              <canvas baseChart [datasets]="barChartData" [colors]="barchartColor" [labels]="barChartLabels"
+              <canvas baseChart [datasets]="barChartDataSituacao" [colors]="barchartColor" [labels]="barChartLabelsSituacao"
                 [legend]="barChartLegend" height="100" [chartType]="barChartType" (chartHover)="chartHovered($event)"
                 (chartClick)="chartClicked($event)"></canvas>
             </div>

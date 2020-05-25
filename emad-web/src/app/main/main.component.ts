@@ -34,6 +34,14 @@ export class MainComponent implements OnInit {
   public lineChartLabelsMedicamento: Array<any> = [];
   public lineChartDataTipoAtendimento: Array<any> = [ { data: [] } ];
   public lineChartLabelsTipoAtendimento: Array<any> = [];
+  public lineChartLegend: boolean = false;
+  public lineChartType: string = 'line';  
+  public barChartType: string = 'bar';
+  public barChartLegend: boolean = true;  
+  public barChartDataTipoAtendimento: any[];
+  public barChartLabelsTipoAtendimento: string[] = [];
+  public barChartDataSituacao: any[] = [ { data: [], label: '' } ];
+  public barChartLabelsSituacao: string[] = [];
 
   constructor(
     public nav: AppNavbarService, 
@@ -83,20 +91,20 @@ export class MainComponent implements OnInit {
 
     this.service.carregaQtdAtendimentosPorPeriodo(this.objectAtendimento.periodo).subscribe(result => {     
       this.objectAtendimento.qtdTotal = result ? result.qtd : 0;
+      this.objectTipoAtendimento.qtdTotal = result ? result.qtd : 0;
 
-      this.service.carregaAtendimentosPorPeriodo(this.objectAtendimento.periodo).subscribe(result => {            
-        this.lineChartLabelsAtendimento = result ? result.label : [];
-        var teste = [];
+      this.service.carregaAtendimentosPorPeriodo(this.objectAtendimento.periodo).subscribe(result => {                    
+        var labels = [];
         for(var item in result){        
-          teste.push(result[item].label);
+          labels.push(result[item].label);
         } 
-        this.lineChartLabelsAtendimento = teste;
+        this.lineChartLabelsAtendimento = labels;
   
-        var teste2 = [];
+        var data = [];
         for(var item in result){        
-          teste2.push(result[item].data);
+          data.push(result[item].data);
         } 
-        this.lineChartDataAtendimento[0].data = teste2;
+        this.lineChartDataAtendimento[0].data = data;
         this.loading = false;
       }, error => {
         this.loading = false;
@@ -109,30 +117,104 @@ export class MainComponent implements OnInit {
     }); 
   }
 
-  carregaDashboardMedicamento(item) {    
-    this.objectMedicamento.periodo = item ? item.id : 1;    
-    this.objectMedicamento.periodoNome = item ? item.nome : 'Últimos 7 dias';
-    this.objectMedicamento.qtdTotal = 300;
-    this.lineChartDataMedicamento = [
-      { data: [100, 324, 112, 355, 400, 100, 40] }
-    ];
-    this.lineChartLabelsMedicamento = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho'];
+  carregaDashboardMedicamento(item) {  
+    this.loading = true;
+    this.objectMedicamento.periodo = item ? item.id : 7;    
+    this.objectMedicamento.periodoNome = item ? item.nome : 'Últimos 7 dias';    
+    this.lineChartDataMedicamento = [ { data: [] }];    
+
+    this.service.carregaQtdMedicamentosPorPeriodo(this.objectMedicamento.periodo).subscribe(result => {     
+      this.objectMedicamento.qtdTotal = result ? result.qtd : 0;
+
+      this.service.carregaMedicamentosPorPeriodo(this.objectMedicamento.periodo).subscribe(result => {                    
+        var labels = [];
+        for(var item in result){        
+          labels.push(result[item].label);
+        } 
+        this.lineChartLabelsMedicamento = labels;
+  
+        var data = [];
+        for(var item in result){        
+          data.push(result[item].data);
+        } 
+        this.lineChartDataMedicamento[0].data = data;
+        this.loading = false;
+      }, error => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(error);
+      }); 
+
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    }); 
   }
 
   carregaDashboardTipoAtendimento(item) {    
-    this.objectTipoAtendimento.periodo = item ? item.id : 1;    
-    this.objectTipoAtendimento.periodoNome = item ? item.nome : 'Últimos 7 dias';
-    this.objectTipoAtendimento.qtdTotal = 400;
-    this.lineChartDataTipoAtendimento = [
-      { data: [100, 324, 112, 355, 400, 100, 40] }
-    ];
-    this.lineChartLabelsTipoAtendimento = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho'];
+    this.loading = true;
+    this.objectTipoAtendimento.periodo = item ? item.id : 7;    
+    this.objectTipoAtendimento.periodoNome = item ? item.nome : 'Últimos 7 dias';   
+
+    let tiposAtendimentosExistentes = [];
+    let datasExistentes = [];
+
+    this.service.carregaAtendimentosPorPeriodo(this.objectTipoAtendimento.periodo).subscribe(result => {     
+      var labels = [];
+        for(var item in result){        
+          labels.push(result[item].label);
+        } 
+        this.barChartLabelsTipoAtendimento = labels;
+        datasExistentes = labels;
+
+        this.service.carregaTipoAtendimentoExistentePorPeriodo(this.objectTipoAtendimento.periodo).subscribe(result => {     
+          var nomes = [];
+            for(var item in result){        
+              nomes.push(result[item].nome);
+            } 
+            tiposAtendimentosExistentes = nomes;
+    
+          this.service.carregaTipoAtendimentoPorPeriodo(this.objectTipoAtendimento.periodo).subscribe(resultPorPeriodo => {                  
+            var contador = 0;
+            //verifico os tipos de ficha
+            for(var itemTipo in tiposAtendimentosExistentes){ 
+              var data = [];              
+              this.barChartDataTipoAtendimento.push([ { data: [], label: '' } ]);
+              this.barChartDataTipoAtendimento[contador].label = tiposAtendimentosExistentes[itemTipo];  
+              //verifico os dias
+              for(var itemDia in datasExistentes){       
+                //verifico naquele dia para aquele tipo de ficha a quantidade
+                for(var itemValor in resultPorPeriodo){        
+                
+                  if(tiposAtendimentosExistentes[itemTipo] ==  resultPorPeriodo[itemValor].nome 
+                    && datasExistentes[itemDia] == resultPorPeriodo[itemValor].label){
+                      data.push(resultPorPeriodo[item].data);
+                    }                    
+                  else{
+                    data.push("0");
+                  }
+                } 
+              } 
+              this.barChartDataTipoAtendimento[contador].data = data;
+              contador++;
+            } 
+            this.loading = false;
+          }, error => {
+            this.loading = false;
+            this.errors = Util.customHTTPResponse(error);
+          });
+    
+        }, error => {
+          this.loading = false;
+          this.errors = Util.customHTTPResponse(error);
+        });
+
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+
   }
   
-  metodoHeleno(item){
-    var teste = item;
-  }
-
   public lineChartOptions: any = {
     responsive: true,
     layout: {
@@ -186,26 +268,6 @@ export class MainComponent implements OnInit {
     },
   ];
 
-  public lineChartLegend: boolean = false;
-  public lineChartType: string = 'line';
-
-  public barChartLabels: string[] = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
-  public barChartType: string = 'bar';
-  public barChartLegend: boolean = true;
-  public barChartData: any[] = [
-    {
-      data: [65, 59, 80, 81, 56, 55, 40],
-      label: 'Pronto atendimento'
-    },
-    {
-      data: [28, 48, 40, 19, 86, 27, 90],
-      label: 'Unidade básica de saúde'
-    }
-  ];
-
-
-
-
   // events
   public chartClicked(e: any): void {
     console.log(e);
@@ -214,7 +276,6 @@ export class MainComponent implements OnInit {
   public chartHovered(e: any): void {
     console.log(e);
   }
-
 
   public renderBgChart(bg, border, pointBg, pointBorder, pointHoverBg, pointHoverBorder) {
     let lineChartColors: Array<any> = [
@@ -230,6 +291,4 @@ export class MainComponent implements OnInit {
 
     return lineChartColors;
   }
-
-
 } 

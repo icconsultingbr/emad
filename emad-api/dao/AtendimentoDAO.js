@@ -228,6 +228,33 @@ AtendimentoDAO.prototype.carregaAtendimentosPorPeriodo = function (periodo, idEs
     }
 }
 
+AtendimentoDAO.prototype.carregaTipoAtendimentoExistentesPorPeriodo = function (periodo, idEstabelecimento, callback) {    
+    this._connection.query(`select  ttf.nome  from 
+                            tb_tipo_ficha ttf inner join
+                            tb_atendimento ta on ta.tipoFicha = ttf.id 
+                            where ta.idEstabelecimento = ? and  ta.dataCriacao >=  DATE(NOW()) - INTERVAL ? DAY
+                            group by ttf.nome
+                            order by ttf.nome desc` ,[idEstabelecimento,periodo],callback); 
+}  
+
+AtendimentoDAO.prototype.carregaTipoAtendimentoPorPeriodo = function (periodo, idEstabelecimento, callback) {       
+    if(periodo>30){
+        this._connection.query(`select CONCAT(LPAD(a.mes,2,'0'),'/',a.ano) as label, qtd as data, a.nome from (SELECT YEAR(ta.dataCriacao) ano, MONTH(ta.dataCriacao) mes, COUNT(1) qtd,  ttf.nome
+        FROM tb_atendimento ta inner join tb_tipo_ficha ttf on ttf.id = ta.tipoFicha 
+        where ta.idEstabelecimento = ? and  ta.dataCriacao >=  DATE(NOW()) - INTERVAL ? DAY
+        GROUP BY YEAR(ta.dataCriacao), MONTH(ta.dataCriacao),  ttf.nome
+        order by YEAR(ta.dataCriacao), MONTH(ta.dataCriacao) desc) a` ,[idEstabelecimento,periodo],callback); 
+    }
+    else{
+        this._connection.query(`select DATE_FORMAT(ta.dataCriacao,'%d/%m/%Y') as label , count(1) as data, ttf.nome  from 
+        tb_tipo_ficha ttf inner join
+        tb_atendimento ta on ta.tipoFicha = ttf.id 
+        where ta.idEstabelecimento = ? and  ta.dataCriacao >=  DATE(NOW()) - INTERVAL ? DAY
+        group by DATE_FORMAT(ta.dataCriacao,'%d/%m/%Y'), ttf.nome
+        order by DATE_FORMAT(ta.dataCriacao,'%d/%m/%Y') desc  ` ,[idEstabelecimento,periodo],callback); 
+    }
+}
+
 module.exports = function(){
     return AtendimentoDAO;
 };

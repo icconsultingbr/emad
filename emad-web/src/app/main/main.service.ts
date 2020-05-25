@@ -18,5 +18,33 @@ export class MainService extends GenericsService{
       + periodo + "&idEstabelecimento="
       + JSON.parse(localStorage.getItem("est"))[0].id,
       { headers: this.headers }).map(res => res.json());
-  }
+    }
+
+    carregaQtdMedicamentosPorPeriodo(periodo: number): Observable<any> {
+      return this.http.get(this.url + "medicamentos-quantidade?periodo=" 
+      + periodo + "&idEstabelecimento="
+      + JSON.parse(localStorage.getItem("est"))[0].id,
+      { headers: this.headers }).map(res => res.json());
+    }
+
+    carregaMedicamentosPorPeriodo(periodo: number): Observable<any> {
+      return this.http.get(this.url + "medicamentos-por-periodo?periodo=" 
+      + periodo + "&idEstabelecimento="
+      + JSON.parse(localStorage.getItem("est"))[0].id,
+      { headers: this.headers }).map(res => res.json());
+    }
+
+    carregaTipoAtendimentoExistentePorPeriodo(periodo: number): Observable<any> {
+      return this.http.get(this.url + "tipo-atendimento-existente-por-periodo?periodo=" 
+      + periodo + "&idEstabelecimento="
+      + JSON.parse(localStorage.getItem("est"))[0].id,
+      { headers: this.headers }).map(res => res.json());
+    }  
+
+    carregaTipoAtendimentoPorPeriodo(periodo: number): Observable<any> {
+      return this.http.get(this.url + "tipo-atendimento-por-periodo?periodo=" 
+      + periodo + "&idEstabelecimento="
+      + JSON.parse(localStorage.getItem("est"))[0].id,
+      { headers: this.headers }).map(res => res.json());
+    }    
 }

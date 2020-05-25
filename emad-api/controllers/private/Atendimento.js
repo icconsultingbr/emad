@@ -250,14 +250,14 @@ module.exports = function (app) {
                         }
                         else {
                             errors = util.customError(errors, "body", "Atendimento não encontrado!", obj.nome);
-                            res.status(404).send(errors);
+                            res.status(400).send(errors);
                             return;
                         }
                     });
                 }
                 else {
                     errors = util.customError(errors, "usuário", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos");                    
-                    res.status(404).json(errors);
+                    res.status(400).json(errors);
                     return;
                 }
             })

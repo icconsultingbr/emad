@@ -9,6 +9,6 @@ export class MainChartLine {
 export class MainChartBar {
     public label: Array<string>;
     public titulo: Array<string>;
-    public data: Array<number>;
+    public data: Array<any>;
     public periodo: number;
 }
