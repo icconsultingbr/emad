@@ -324,7 +324,7 @@ PacienteDAO.prototype.lista = function (addFilter, callback) {
         INNER JOIN tb_uf nat ON (pac.idNaturalidade = nat.id)
         INNER JOIN tb_municipio mun ON (pac.idMunicipio = mun.id)
         INNER JOIN tb_uf uf ON (pac.idUf = uf.id)
-        INNER JOIN tb_modalidade md ON (pac.idModalidade = md.id) 
+        LEFT JOIN tb_modalidade md ON (pac.idModalidade = md.id) 
         ${where} AND pac.situacao = 1`,
         callback);
 }
