@@ -260,7 +260,7 @@ AtendimentoDAO.prototype.carregaAtendimentoSituacaoExistentesPorPeriodo = functi
                                 WHEN ta.situacao = 'A'  THEN 'Alta'  
                                 WHEN ta.situacao = 'C' THEN 'Em aberto'  
                                 WHEN ta.situacao = 'E' THEN 'Evasão'  
-                                WHEN ta.situacao = '0' THEN 'Óbito'  
+                                WHEN ta.situacao = 'O' THEN 'Óbito'  
                                 ELSE 'Cancelado'
                                 END as situacao from                             
                             tb_atendimento ta 
@@ -275,7 +275,7 @@ AtendimentoDAO.prototype.carregaAtendimentoSituacaoPorPeriodo = function (period
                                         WHEN ta.situacao = 'A'  THEN 'Alta'  
                                         WHEN ta.situacao = 'C' THEN 'Em aberto'  
                                         WHEN ta.situacao = 'E' THEN 'Evasão'  
-                                        WHEN ta.situacao = '0' THEN 'Óbito'  
+                                        WHEN ta.situacao = 'O' THEN 'Óbito'  
                                         ELSE 'Cancelado'
                                         END as situacao
                                 FROM tb_atendimento ta 
@@ -288,7 +288,7 @@ AtendimentoDAO.prototype.carregaAtendimentoSituacaoPorPeriodo = function (period
                                 WHEN ta.situacao = 'A'  THEN 'Alta'  
                                 WHEN ta.situacao = 'C' THEN 'Em aberto'  
                                 WHEN ta.situacao = 'E' THEN 'Evasão'  
-                                WHEN ta.situacao = '0' THEN 'Óbito'  
+                                WHEN ta.situacao = 'O' THEN 'Óbito'  
                                 ELSE 'Cancelado'
                                 END as situacao  from         
                                 tb_atendimento ta 
