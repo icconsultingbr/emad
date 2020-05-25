@@ -175,24 +175,17 @@ export class MainComponent implements OnInit {
     
           this.service.carregaTipoAtendimentoPorPeriodo(this.objectTipoAtendimento.periodo).subscribe(resultPorPeriodo => {                  
             var contador = 0;
+            var barChartData = [];     
+            this.barChartDataTipoAtendimento = [ { data: [], label: '' } , { data: [], label: '' } ];
+
             //verifico os tipos de ficha
             for(var itemTipo in tiposAtendimentosExistentes){ 
-              var data = [];              
-              this.barChartDataTipoAtendimento = [ { data: [], label: '' } ];
+              var data = [];         
               this.barChartDataTipoAtendimento[contador].label = tiposAtendimentosExistentes[itemTipo];  
               //verifico os dias
-              for(var itemDia in datasExistentes){       
-                //verifico naquele dia para aquele tipo de ficha a quantidade
-                for(var itemValor in resultPorPeriodo){        
-                
-                  if(tiposAtendimentosExistentes[itemTipo] ==  resultPorPeriodo[itemValor].nome 
-                    && datasExistentes[itemDia] == resultPorPeriodo[itemValor].label){
-                      data.push(resultPorPeriodo[item].data);
-                    }                    
-                  else{
-                    data.push("0");
-                  }
-                } 
+              for(var itemDia in datasExistentes){               
+                var t = resultPorPeriodo.filter((item) => item.label == datasExistentes[itemDia] && item.nome == tiposAtendimentosExistentes[itemTipo]);
+                data.push(t[0] ? t[0].data : "0");
               } 
               this.barChartDataTipoAtendimento[contador].data = data;
               contador++;
