@@ -178,7 +178,7 @@ export class MainComponent implements OnInit {
             //verifico os tipos de ficha
             for(var itemTipo in tiposAtendimentosExistentes){ 
               var data = [];              
-              this.barChartDataTipoAtendimento.push([ { data: [], label: '' } ]);
+              this.barChartDataTipoAtendimento = [ { data: [], label: '' } ];
               this.barChartDataTipoAtendimento[contador].label = tiposAtendimentosExistentes[itemTipo];  
               //verifico os dias
               for(var itemDia in datasExistentes){       
