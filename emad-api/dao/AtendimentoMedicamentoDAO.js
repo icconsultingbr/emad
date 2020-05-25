@@ -66,6 +66,32 @@ AtendimentoMedicamentoDAO.prototype.confirmaMedicamentoParaReceitaDim = function
     }); 
 }
 
+AtendimentoMedicamentoDAO.prototype.carregaQtdMedicamentosPorPeriodo = function (periodo, idEstabelecimento, callback) {    
+    this._connection.query(`select count(1) as qtd from tb_atendimento_medicamento med inner join
+    tb_atendimento atend on atend.id = med.idAtendimento 
+    where med.enviado = 1 and atend.idEstabelecimento = ? and  med.dataCriacao >=  DATE(NOW()) - INTERVAL ? DAY` ,[idEstabelecimento,periodo],callback); 
+}
+
+AtendimentoMedicamentoDAO.prototype.carregaMedicamentosPorPeriodo = function (periodo, idEstabelecimento, callback) {       
+    if(periodo>30){
+        this._connection.query(`select CONCAT(LPAD(a.mes,2,'0'),'/',a.ano) as label, qtd as data from (		
+            SELECT YEAR(med.dataCriacao) ano, MONTH(med.dataCriacao) mes, COUNT(1) qtd
+            FROM tb_atendimento_medicamento med inner join
+            tb_atendimento ta on ta.id = med.idAtendimento 
+            where med.enviado = 1 and  ta.idEstabelecimento = ? and  med.dataCriacao >=  DATE(NOW()) - INTERVAL ? DAY
+            GROUP BY YEAR(med.dataCriacao), MONTH(med.dataCriacao)
+            order by YEAR(med.dataCriacao), MONTH(med.dataCriacao) desc) a    ` ,[idEstabelecimento,periodo],callback); 
+    }
+    else{
+        this._connection.query(`select DATE_FORMAT(med.dataCriacao,'%d/%m/%Y') as label , count(1) as data  from 
+		tb_atendimento_medicamento med inner join
+		tb_atendimento ta on ta.id = med.idAtendimento 
+        where med.enviado = 1 and  ta.idEstabelecimento = ? and  med.dataCriacao >=  DATE(NOW()) - INTERVAL ? DAY
+        group by DATE_FORMAT(med.dataCriacao,'%d/%m/%Y')
+        order by DATE_FORMAT(med.dataCriacao,'%d/%m/%Y') desc` ,[idEstabelecimento,periodo],callback); 
+    }
+}
+
 module.exports = function(){
     return AtendimentoMedicamentoDAO;
 };

@@ -1,32 +1,281 @@
 import { Component, OnInit } from '@angular/core';
 import { AppComponent } from '../app.component';
 import { AppNavbarService } from '../_core/_components/app-navbar/app-navbar.service';
+import { MainChartLine } from '../_core/_models/MainChart';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Util } from '../_core/_util/Util';
+import { MainService } from './main.service';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
-  styleUrls: ['./main.component.css']
+  styleUrls: ['./main.component.css'],
+  providers:[MainService]
 })
+
 export class MainComponent implements OnInit {
-
+  
+  objectAtendimento: MainChartLine = new MainChartLine();  
+  objectMedicamento: MainChartLine = new MainChartLine();  
+  objectTipoAtendimento: MainChartLine = new MainChartLine();    
+  objectAtendimentoSituacao: MainChartLine = new MainChartLine();    
+  method: String = 'profissional';
+  fields = [];
+  label: String = "Profissional";
+  id: Number = null;
+  domains: any[] = [];
+  loading: Boolean = false;
+  errors: any[] = [];
   dash : Boolean = false;
+  form: FormGroup;
 
-  constructor(public nav: AppNavbarService, public ap: AppComponent) {
+  public lineChartDataAtendimento: Array<any> = [ { data: [] } ];
+  public lineChartLabelsAtendimento: Array<any> = [];
+  public lineChartDataMedicamento: Array<any> = [ { data: [] } ];
+  public lineChartLabelsMedicamento: Array<any> = [];
+  public lineChartDataTipoAtendimento: Array<any> = [ { data: [] } ];
+  public lineChartLabelsTipoAtendimento: Array<any> = [];
+  public lineChartLegend: boolean = false;
+  public lineChartType: string = 'line';  
+  public barChartType: string = 'bar';
+  public barChartLegend: boolean = true;  
+  public barChartDataTipoAtendimento: any[] = [ { data: [], label: '' } ];
+  public barChartLabelsTipoAtendimento: string[] = [];
+  public barChartDataAtendimentoSituacao: any[] = [ { data: [], label: '' } ];
+  public barChartLabelsAtendimentoSituacao: string[] = [];
+
+  constructor(
+    public nav: AppNavbarService, 
+    private fb: FormBuilder,
+    public ap: AppComponent,
+    private service: MainService) {
     ap.ngOnInit();
 
   }
 
   ngOnInit() {
     this.nav.show();
+    this.loadDomains();
+    this.createGroup();
+    this.carregaDashboard();
   }
 
+  loadDomains() {
+    this.domains.push({
+      periodos: [
+        { id: 7, nome: "Últimos 7 dias" },
+        { id: 15, nome: "Últimos 15 dias" },
+        { id: 30, nome: "Últimos 30 dias" },
+        { id: 60, nome: "Últimos 60 dias" },
+        { id: 90, nome: "Últimos 90 dias" },
+      ],
+      periodos15: [
+        { id: 7, nome: "Últimos 7 dias" },
+        { id: 15, nome: "Últimos 15 dias" }
+      ]
+    });    
+  }
 
-  public lineChartData: Array<any> = [
-    { data: [100, 324, 112, 355, 400, 100, 40] }
-  ];
+  createGroup() {
+    this.form = this.fb.group({
+      periodoAtendimento: ['']
+    });
+  }
 
+  carregaDashboard() {    
+      this.carregaDashboardAtendimento(null);
+      this.carregaDashboardMedicamento(null);
+      this.carregaDashboardTipoAtendimento(null);
+      this.carregaDashboardAtendimentoSituacao(null);
+  }
 
-  public lineChartLabels: Array<any> = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho'];
+  carregaDashboardAtendimento(item) {    
+    this.loading = true;
+    this.objectAtendimento.periodo = item ? item.id : 7;    
+    this.objectAtendimento.periodoNome = item ? item.nome : 'Últimos 7 dias';    
+    this.lineChartDataAtendimento = [ { data: [] }];    
+
+    this.service.carregaQtdAtendimentosPorPeriodo(this.objectAtendimento.periodo).subscribe(result => {     
+      this.objectAtendimento.qtdTotal = result ? result.qtd : 0;
+      this.objectTipoAtendimento.qtdTotal = result ? result.qtd : 0;
+
+      this.service.carregaAtendimentosPorPeriodo(this.objectAtendimento.periodo).subscribe(result => {                    
+        var labels = [];
+        for(var item in result){        
+          labels.push(result[item].label);
+        } 
+        this.lineChartLabelsAtendimento = labels;
+  
+        var data = [];
+        for(var item in result){        
+          data.push(result[item].data);
+        } 
+        this.lineChartDataAtendimento[0].data = data;
+        this.loading = false;
+      }, error => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(error);
+      }); 
+
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    }); 
+  }
+
+  carregaDashboardMedicamento(item) {  
+    this.loading = true;
+    this.objectMedicamento.periodo = item ? item.id : 7;    
+    this.objectMedicamento.periodoNome = item ? item.nome : 'Últimos 7 dias';    
+    this.lineChartDataMedicamento = [ { data: [] }];    
+
+    this.service.carregaQtdMedicamentosPorPeriodo(this.objectMedicamento.periodo).subscribe(result => {     
+      this.objectMedicamento.qtdTotal = result ? result.qtd : 0;
+
+      this.service.carregaMedicamentosPorPeriodo(this.objectMedicamento.periodo).subscribe(result => {                    
+        var labels = [];
+        for(var item in result){        
+          labels.push(result[item].label);
+        } 
+        this.lineChartLabelsMedicamento = labels;
+  
+        var data = [];
+        for(var item in result){        
+          data.push(result[item].data);
+        } 
+        this.lineChartDataMedicamento[0].data = data;
+        this.loading = false;
+      }, error => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(error);
+      }); 
+
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    }); 
+  }
+
+  carregaDashboardTipoAtendimento(item) {    
+    this.loading = true;
+    this.objectTipoAtendimento.periodo = item ? item.id : 7;    
+    this.objectTipoAtendimento.periodoNome = item ? item.nome : 'Últimos 7 dias';   
+
+    let tiposAtendimentosExistentes = [];
+    let datasExistentes = [];
+
+    this.service.carregaAtendimentosPorPeriodo(this.objectTipoAtendimento.periodo).subscribe(result => {     
+      var labels = [];
+        for(var item in result){        
+          labels.push(result[item].label);
+        } 
+        this.barChartLabelsTipoAtendimento = labels;
+        datasExistentes = labels;
+
+        this.service.carregaTipoAtendimentoExistentePorPeriodo(this.objectTipoAtendimento.periodo).subscribe(result => {     
+          var nomes = [];
+            for(var item in result){        
+              nomes.push(result[item].nome);
+            } 
+            tiposAtendimentosExistentes = nomes;
+    
+          this.service.carregaTipoAtendimentoPorPeriodo(this.objectTipoAtendimento.periodo).subscribe(resultPorPeriodo => {                  
+            var contador = 0;
+            var barChartData = []; 
+            this.barChartDataTipoAtendimento = [ { data: [], label: '' } ];
+
+            //verifico os tipos de ficha
+            for(var itemTipo in tiposAtendimentosExistentes){ 
+              var data = [];   
+              barChartData.push({ data: [], label:tiposAtendimentosExistentes[itemTipo] });  
+
+              //verifico os dias
+              for(var itemDia in datasExistentes){               
+                var t = resultPorPeriodo.filter((item) => item.label == datasExistentes[itemDia] && item.nome == tiposAtendimentosExistentes[itemTipo]);
+                data.push(t[0] ? t[0].data : "0");
+              } 
+              barChartData[contador].data = data;
+              contador++;
+            }            
+            this.barChartDataTipoAtendimento = barChartData;
+            this.loading = false;
+          }, error => {
+            this.loading = false;
+            this.errors = Util.customHTTPResponse(error);
+          });
+    
+        }, error => {
+          this.loading = false;
+          this.errors = Util.customHTTPResponse(error);
+        });
+
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+
+  }
+  
+  carregaDashboardAtendimentoSituacao(item) {    
+    this.loading = true;
+    this.objectAtendimentoSituacao.periodo = item ? item.id : 7;    
+    this.objectAtendimentoSituacao.periodoNome = item ? item.nome : 'Últimos 7 dias';   
+
+    let atendimentosSituacoesExistentes = [];
+    let datasExistentes = [];
+
+    this.service.carregaAtendimentosPorPeriodo(this.objectAtendimentoSituacao.periodo).subscribe(result => {     
+      var labels = [];
+        for(var item in result){        
+          labels.push(result[item].label);
+        } 
+        this.barChartLabelsAtendimentoSituacao = labels;
+        datasExistentes = labels;
+
+        this.service.carregaAtendimentoSituacaoExistentePorPeriodo(this.objectAtendimentoSituacao.periodo).subscribe(result => {     
+          var situacoes = [];
+            for(var item in result){        
+              situacoes.push(result[item].situacao);
+            } 
+            atendimentosSituacoesExistentes = situacoes;
+    
+          this.service.carregaAtendimentoSituacaoPorPeriodo(this.objectAtendimentoSituacao.periodo).subscribe(resultPorPeriodo => {                  
+            var contador = 0;
+            var barChartData = []; 
+            this.barChartDataAtendimentoSituacao = [ { data: [], label: '' } ];
+
+            //verifico os tipos de ficha
+            for(var itemTipo in atendimentosSituacoesExistentes){ 
+              var data = [];   
+              barChartData.push({ data: [], label:atendimentosSituacoesExistentes[itemTipo] });  
+
+              //verifico os dias
+              for(var itemDia in datasExistentes){               
+                var t = resultPorPeriodo.filter((item) => item.label == datasExistentes[itemDia] && item.situacao == atendimentosSituacoesExistentes[itemTipo]);
+                data.push(t[0] ? t[0].data : "0");
+              } 
+              barChartData[contador].data = data;
+              contador++;
+            }            
+            this.barChartDataAtendimentoSituacao = barChartData;
+            this.loading = false;
+          }, error => {
+            this.loading = false;
+            this.errors = Util.customHTTPResponse(error);
+          });
+    
+        }, error => {
+          this.loading = false;
+          this.errors = Util.customHTTPResponse(error);
+        });
+
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+
+  }
+
   public lineChartOptions: any = {
     responsive: true,
     layout: {
@@ -71,34 +320,22 @@ export class MainComponent implements OnInit {
   public lineChartColors: Array<any> = this.renderBgChart('rgba(0, 0, 0, 0)', 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', '#fff', '#B4B4B4', 'rgba(255,255,255,0.8)');
   public lineChartColors2: Array<any> = this.renderBgChart('rgba(0, 0, 0, 0)', 'rgba(219,219,219,1)', 'rgba(219,219,219,1)', '#00929c', 'rgb(77, 111, 160,1)', 'rgba(46,79,143,0.8)');
   public barchartColor: Array<any> =  [
-    { // grey
+    { 
       backgroundColor:'rgb(77, 111, 160, 1)',
       hoverBackgroundColor: 'rgb(85, 124, 178, 0.8)'
-    }, { // grey
+    }, { 
       backgroundColor: 'rgb(70, 78, 86, 1)',
       hoverBackgroundColor: 'rgba(219,219,219,0.8)',
     },
-  ];
-
-  public lineChartLegend: boolean = false;
-  public lineChartType: string = 'line';
-
-  public barChartLabels: string[] = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
-  public barChartType: string = 'bar';
-  public barChartLegend: boolean = true;
-  public barChartData: any[] = [
-    {
-      data: [65, 59, 80, 81, 56, 55, 40],
-      label: 'Pronto atendimento'
+    { 
+      backgroundColor: 'rgb(0, 90, 47, 1)',
+      hoverBackgroundColor: 'rgba(87, 142, 116, 0.8)',
     },
-    {
-      data: [28, 48, 40, 19, 86, 27, 90],
-      label: 'Unidade básica de saúde'
-    }
+    { 
+      backgroundColor: 'rgb(95, 64, 0, 1)',
+      hoverBackgroundColor: 'rgba(150, 127, 79, 0.8)',
+    },
   ];
-
-
-
 
   // events
   public chartClicked(e: any): void {
@@ -108,7 +345,6 @@ export class MainComponent implements OnInit {
   public chartHovered(e: any): void {
     console.log(e);
   }
-
 
   public renderBgChart(bg, border, pointBg, pointBorder, pointHoverBg, pointHoverBorder) {
     let lineChartColors: Array<any> = [
@@ -124,6 +360,4 @@ export class MainComponent implements OnInit {
 
     return lineChartColors;
   }
-
-
 } 
