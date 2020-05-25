@@ -95,10 +95,17 @@ MenuDAO.prototype.buscaPorId = function (id,callback) {
     this._connection.query("select * from "+this._table+" where  id = ?",id,callback);
 }
 
-MenuDAO.prototype.atualizaPorId = function (menu, id,callback) {
-
-    if(menu.ordem && menu.menuPai)
-        this._connection.query("UPDATE "+this._table+" SET ordem=ordem+1 where menuPai=? and ordem>= ?", [menu.menuPai, menu.ordem], callback);
+MenuDAO.prototype.atualizaPorId = function (menu, id, ordemAtual, callback) {
+    if(menu.ordem && menu.menuPai){
+        if (ordemAtual){
+            if(menu.ordem > ordemAtual){
+                this._connection.query("UPDATE "+this._table+" SET ordem=ordem-1 where menuPai=? and ordem>= ? and ordem<= ?", [menu.menuPai, ordemAtual, menu.ordem], callback);
+            }
+            else{
+                this._connection.query("UPDATE "+this._table+" SET ordem=ordem+1 where menuPai=? and ordem>= ?", [menu.menuPai, menu.ordem], callback);
+            }
+        }        
+    }       
 
     this._connection.query("UPDATE "+this._table+" SET ? where id= ?", [menu, id], callback);
 }
