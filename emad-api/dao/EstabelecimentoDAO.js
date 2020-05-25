@@ -14,7 +14,7 @@ EstabelecimentoDAO.prototype.atualiza = function(estabelecimento, id, callback) 
 
 EstabelecimentoDAO.prototype.listaPorUsuario = function(id, callback) {
     
-    this._connection.query(`select * FROM ${this._table} as t 
+    this._connection.query(`select t.* FROM ${this._table} as t 
     INNER JOIN tb_estabelecimento_usuario as eu ON(t.id = eu.idEstabelecimento) 
     WHERE eu.idUsuario = ? ORDER BY t.nomeFantasia ASC`,id, callback);
 }
