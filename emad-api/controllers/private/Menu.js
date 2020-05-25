@@ -166,7 +166,7 @@ module.exports = function (app) {
         if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             buscarPorId(id, res).then(function (response) {
                 if (typeof response != 'undefined') {
-                    atualizaPorId(menu, id, res).then(function (response2) {
+                    atualizaPorId(menu, id, response.ordem, res).then(function (response2) {
                         res.status(200).json(menu);
                         return;
                     });
@@ -326,7 +326,7 @@ module.exports = function (app) {
         return d.promise;
     }
 
-    function atualizaPorId(menu, id, res) {
+    function atualizaPorId(menu, id, ordemAtual, res) {
         var q = require('q');
         var d = q.defer();
         var util = new app.util.Util();
@@ -336,7 +336,7 @@ module.exports = function (app) {
         var errors = [];
 
 
-        menuDAO.atualizaPorId(menu, id, function (exception, result) {
+        menuDAO.atualizaPorId(menu, id, ordemAtual ,function (exception, result) {
             if (exception) {
                 console.log(exception);
                 d.reject(exception);

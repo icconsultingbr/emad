@@ -166,16 +166,16 @@ export class MainComponent implements OnInit {
 
     this.service.carregaAtendimentosPorPeriodo(this.objectTipoAtendimento.periodo).subscribe(result => {     
       var labels = [];
-        for(var item in result){        
-          labels.push(result[item].label);
+        for(var itemLabel in result){        
+          labels.push(result[itemLabel].label);
         } 
         this.barChartLabelsTipoAtendimento = labels;
         datasExistentes = labels;
 
         this.service.carregaTipoAtendimentoExistentePorPeriodo(this.objectTipoAtendimento.periodo).subscribe(result => {     
           var nomes = [];
-            for(var item in result){        
-              nomes.push(result[item].nome);
+            for(var itemNome in result){        
+              nomes.push(result[itemNome].nome);
             } 
             tiposAtendimentosExistentes = nomes;
     
@@ -191,7 +191,7 @@ export class MainComponent implements OnInit {
 
               //verifico os dias
               for(var itemDia in datasExistentes){               
-                var t = resultPorPeriodo.filter((item) => item.label == datasExistentes[itemDia] && item.nome == tiposAtendimentosExistentes[itemTipo]);
+                var t = resultPorPeriodo.filter((itemResultPorPeriodo) => itemResultPorPeriodo.label == datasExistentes[itemDia] && itemResultPorPeriodo.nome == tiposAtendimentosExistentes[itemTipo]);
                 data.push(t[0] ? t[0].data : "0");
               } 
               barChartData[contador].data = data;
@@ -199,6 +199,10 @@ export class MainComponent implements OnInit {
             }            
             this.barChartDataTipoAtendimento = barChartData;
             this.loading = false;
+
+            if(!item)
+              this.carregaDashboardTipoAtendimento({id:7, nome:'Últimos 7 dias'});
+
           }, error => {
             this.loading = false;
             this.errors = Util.customHTTPResponse(error);
@@ -226,16 +230,16 @@ export class MainComponent implements OnInit {
 
     this.service.carregaAtendimentosPorPeriodo(this.objectAtendimentoSituacao.periodo).subscribe(result => {     
       var labels = [];
-        for(var item in result){        
-          labels.push(result[item].label);
+        for(var itemLabel in result){        
+          labels.push(result[itemLabel].label);
         } 
         this.barChartLabelsAtendimentoSituacao = labels;
         datasExistentes = labels;
 
         this.service.carregaAtendimentoSituacaoExistentePorPeriodo(this.objectAtendimentoSituacao.periodo).subscribe(result => {     
           var situacoes = [];
-            for(var item in result){        
-              situacoes.push(result[item].situacao);
+            for(var itemSituacao in result){        
+              situacoes.push(result[itemSituacao].situacao);
             } 
             atendimentosSituacoesExistentes = situacoes;
     
@@ -251,7 +255,7 @@ export class MainComponent implements OnInit {
 
               //verifico os dias
               for(var itemDia in datasExistentes){               
-                var t = resultPorPeriodo.filter((item) => item.label == datasExistentes[itemDia] && item.situacao == atendimentosSituacoesExistentes[itemTipo]);
+                var t = resultPorPeriodo.filter((itemResultPorPeriodo) => itemResultPorPeriodo.label == datasExistentes[itemDia] && itemResultPorPeriodo.situacao == atendimentosSituacoesExistentes[itemTipo]);
                 data.push(t[0] ? t[0].data : "0");
               } 
               barChartData[contador].data = data;
@@ -259,6 +263,10 @@ export class MainComponent implements OnInit {
             }            
             this.barChartDataAtendimentoSituacao = barChartData;
             this.loading = false;
+            
+            if(!item)
+              this.carregaDashboardAtendimentoSituacao({id:7, nome:'Últimos 7 dias'});
+
           }, error => {
             this.loading = false;
             this.errors = Util.customHTTPResponse(error);
