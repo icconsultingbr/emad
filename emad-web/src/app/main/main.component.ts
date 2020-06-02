@@ -196,8 +196,12 @@ export class MainComponent implements OnInit {
               } 
               barChartData[contador].data = data;
               contador++;
-            }            
-            this.barChartDataTipoAtendimento = barChartData;
+            }
+
+            if(barChartData.length > 0){
+              this.barChartDataTipoAtendimento = barChartData;
+            }
+
             this.loading = false;
 
             if(!item)
@@ -260,8 +264,12 @@ export class MainComponent implements OnInit {
               } 
               barChartData[contador].data = data;
               contador++;
-            }            
-            this.barChartDataAtendimentoSituacao = barChartData;
+            }
+
+            if(barChartData.length > 0){
+              this.barChartDataAtendimentoSituacao = barChartData;
+            }
+
             this.loading = false;
             
             if(!item)

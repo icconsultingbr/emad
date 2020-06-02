@@ -20,8 +20,6 @@ import { EquipeComponent } from './cadastro/equipe/equipe.component';
 import { EquipeFormComponent } from './cadastro/equipe/equipe-form.component';
 import { TipoUnidadeFormComponent } from './cadastro/dominio/tipo-unidade/tipo-unidade-form.component';
 import { TipoUnidadeComponent } from './cadastro/dominio/tipo-unidade/tipo-unidade.component';
-import { EspecialidadeComponent } from './cadastro/dominio/especialidade/especialidade.component';
-import { EspecialidadeFormComponent } from './cadastro/dominio/especialidade/especialidade-form.component';
 import { ModeloCanetaComponent } from './cadastro/dominio/modelo-caneta/modelo-caneta.component';
 import { ModeloCanetaFormComponent } from './cadastro/dominio/modelo-caneta/modelo-caneta-form.component';
 import { ModalidadeComponent } from './cadastro/dominio/modalidade/modalidade.component';
@@ -90,11 +88,6 @@ const appRoutes : Routes = [
     { path : 'tipo-unidade', component : TipoUnidadeComponent, canActivate: [AuthGuard]  },
     { path : 'tipo-unidade-form', component : TipoUnidadeFormComponent, canActivate: [AuthGuard]  },
     { path : 'tipo-unidade-form/:id', component : TipoUnidadeFormComponent, canActivate: [AuthGuard]  }, 
-
-    { path : 'especialidade', component : EspecialidadeComponent, canActivate: [AuthGuard]  },
-    { path : 'especialidade-form', component : EspecialidadeFormComponent, canActivate: [AuthGuard]  },
-    { path : 'especialidade-form/:id', component : EspecialidadeFormComponent, canActivate: [AuthGuard]  }, 
-
     { path : 'modelo-caneta', component : ModeloCanetaComponent, canActivate: [AuthGuard]  },
     { path : 'modelo-caneta-form', component : ModeloCanetaFormComponent, canActivate: [AuthGuard]  },
     { path : 'modelo-caneta-form/:id', component : ModeloCanetaFormComponent, canActivate: [AuthGuard]  }, 
@@ -126,11 +119,10 @@ const appRoutes : Routes = [
     { path : 'georreferenciamento', component : GeorreferenciamentoComponent, canActivate: [AuthGuard]  },
     { path : 'georreferenciamento', component : GeorreferenciamentoComponent, canActivate: [AuthGuard]  },
     { path : 'georreferenciamento/:id', component : GeorreferenciamentoComponent, canActivate: [AuthGuard]  }, 
-
     { path : 'log', component : LogComponent, canActivate: [AuthGuard]  }, 
-    
+    { path: 'especialidades', canActivate: [AuthGuard], loadChildren: () => import('./cadastro/dominio/especialidade/especialidade.module').then(m => m.EspecialidadeModule) },
     { path: 'not-found', component: NotFoundComponent },
-    { path: '**', component: NotFoundComponent },    
+    { path: '**', component: NotFoundComponent }, 
 ];
 
 export const routing = RouterModule.forRoot(appRoutes, { useHash: true });

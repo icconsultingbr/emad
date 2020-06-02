@@ -1,10 +1,22 @@
 FROM node:8.11.4
-MAINTAINER Rodrigo Castilho
-ENV NODE_ENV=prod
-COPY . /var/www
+
+LABEL maintainer="THREEO IT COMPANY"
+
+#ENV NODE_ENV=prod
+
 WORKDIR /var/www
-#RUN npm i npm@latest -g
+
+# Copy only package.json because image layer caching
+ADD package.json /var/www
+
 RUN npm install
+
+COPY . /var/www
+
 VOLUME /var/www/img/profile
-ENTRYPOINT node cluster.js
+
+ENTRYPOINT ["node"]
+
+CMD ["cluster.js"] 
+
 EXPOSE 4000

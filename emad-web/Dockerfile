@@ -12,7 +12,7 @@
 # We label our stage as 'builder'
 
 FROM node:8.11.4 as builder
-MAINTAINER Rodrigo Castilho
+LABEL maintainer="THREEO IT COMPANY"
 COPY package.json package-lock.json ./
 
 #RUN npm set progress=false && npm config set depth 0 && npm cache clean --force
