@@ -5,12 +5,10 @@ import { AppComponent } from './app.component';
 import 'rxjs/add/operator/map';
 import { routing } from './app.routes';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxMaskModule } from "ngx-mask";
 import { NgbModule, NgbCollapseModule, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoginComponent } from './login/login.component';
 import { MainComponent } from './main/main.component';
 import { LoginService } from './login/login.service';
-import { AuthGuard } from './_core/_guards';
 import { PagerService } from './_core/_services';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { AppService } from './app.service';
@@ -21,8 +19,6 @@ import { MenuService } from './seguranca/menu/menu.service';
 import { UsuarioComponent } from './seguranca/usuario/usuario.component';
 import { UsuarioFormComponent } from './seguranca/usuario/usuario-form.component';
 import { UsuarioService } from './seguranca/usuario/usuario.service';
-import { SocketService } from './_core/_services/socket.service';
-import { NotificacaoSistemaService } from './_core/_services/notificacao-sistema.service';
 import { TipoUsuarioComponent } from './seguranca/tipo-usuario/tipo-usuario.component';
 import { TipoUsuarioFormComponent } from './seguranca/tipo-usuario/tipo-usuario-form.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
@@ -43,44 +39,22 @@ import { AppFormService } from './_core/_components/app-form/app-form.service';
 import { AppGridViewService } from './_core/_components/app-grid-view/app-grid-view.service';
 import { AppModalModule } from './_core/_components/app-modal/app-modal.module';
 import { AppNavbarComponent } from './_core/_components/app-navbar/app-navbar.component';
-import { AppNavbarService } from './_core/_components/app-navbar/app-navbar.service';
 import { EstabelecimentoFormComponent } from './seguranca/estabelecimento/estabelecimento-form.component';
 import { EstabelecimentoService } from './seguranca/estabelecimento/estabelecimento.service';
 import { EstabelecimentoComponent } from './seguranca/estabelecimento/estabelecimento.component';
-import { ProfissionalComponent } from './cadastro/profissional/profissional.component';
-import { ProfissionalFormComponent } from './cadastro/profissional/profissional-form.component';
-import { PacienteComponent } from './cadastro/paciente/paciente.component';
-import { PacienteFormComponent } from './cadastro/paciente/paciente-form.component';
-import { EquipeComponent } from './cadastro/equipe/equipe.component';
-import { EquipeFormComponent } from './cadastro/equipe/equipe-form.component';
-import { TipoUnidadeComponent } from './cadastro/dominio/tipo-unidade/tipo-unidade.component';
-import { TipoUnidadeFormComponent } from './cadastro/dominio/tipo-unidade/tipo-unidade-form.component';
-import { EspecialidadeComponent } from './cadastro/dominio/especialidade/especialidade.component';
-import { EspecialidadeFormComponent } from './cadastro/dominio/especialidade/especialidade-form.component';
-import { ModalidadeComponent } from './cadastro/dominio/modalidade/modalidade.component';
-import { ModalidadeFormComponent } from './cadastro/dominio/modalidade/modalidade-form.component';
 import { PlanoTerapeuticoComponent } from './operacao/plano-terapeutico/plano-terapeutico.component';
-import { HipoteseDiagnosticaComponent } from './cadastro/dominio/hipotese-diagnostica/hipotese-diagnostica.component';
-import { HipoteseDiagnosticaFormComponent } from './cadastro/dominio/hipotese-diagnostica/hipotese-diagnostica-form.component';
-import { NgxLoadingModule, ngxLoadingAnimationTypes } from 'ngx-loading';
 import { GeorreferenciamentoComponent } from './cadastro/georreferenciamento/georreferenciamento.component';
 import { AgendaComponent } from './operacao/agenda/agenda.component';
 import { LogComponent } from './seguranca/log/log.component';
 import { LogService } from './seguranca/log/log.service';
 import { AtendimentoFormComponent } from './operacao/atendimento/atendimento-form.component';
 import { AtendimentoComponent } from './operacao/atendimento/atendimento.component';
-import { CanetaComponent } from './cadastro/caneta/caneta.component';
-import { CanetaFormComponent } from './cadastro/caneta/caneta-form.component';
 import { AtribuicaoCanetaComponent } from './operacao/atribuicao-caneta/atribuicao-caneta.component';
 import { AtribuicaoCanetaFormComponent } from './operacao/atribuicao-caneta/atribuicao-caneta-form.component';
 import { EscalaProfissionalFormComponent } from './operacao/escala-profissional/escala-profissional-form.component';
-import { ModeloCanetaComponent } from './cadastro/dominio/modelo-caneta/modelo-caneta.component';
-import { ModeloCanetaFormComponent } from './cadastro/dominio/modelo-caneta/modelo-caneta-form.component';
-import { TipoFichaComponent } from './cadastro/dominio/tipo-ficha/tipo-ficha.component';
-import { TipoFichaFormComponent } from './cadastro/dominio/tipo-ficha/tipo-ficha-form.component';
 import { ParametroSegurancaComponent } from './seguranca/parametro-seguranca/parametro-seguranca.component';
 import { ParametroSegurancaFormComponent } from './seguranca/parametro-seguranca/parametro-seguranca-form.component';
-import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { CoreModule } from './_core/core.module';
 
 if (environment.production) {
     enableProdMode();
@@ -101,7 +75,6 @@ defineLocale('pt-br', deLocale);
         AppModalModule,
         NgbCollapseModule.forRoot(),
         NgbDatepickerModule.forRoot(),
-        NgxMaskModule.forRoot({ dropSpecialCharacters: false }),
         NgMultiSelectDropDownModule.forRoot(),
         ReactiveFormsModule,
         RecaptchaModule,
@@ -110,15 +83,7 @@ defineLocale('pt-br', deLocale);
         BsDatepickerModule.forRoot(),
         BsDropdownModule.forRoot(),
         ChartsModule,
-        CurrencyMaskModule,
-        NgxLoadingModule.forRoot({
-            animationType: ngxLoadingAnimationTypes.none ,
-            backdropBackgroundColour: 'rgba(0,0,0,0.1)',
-            backdropBorderRadius: '4px',
-            primaryColour: '#FDBA31',
-            secondaryColour: '#FDBA31',
-            tertiaryColour: '#ffffff'
-        }),
+        CoreModule,
     ], declarations: [
         AppComponent,
         AppNavbarComponent,
@@ -134,32 +99,12 @@ defineLocale('pt-br', deLocale);
         UsuarioResetComponent,
         EstabelecimentoComponent,
         EstabelecimentoFormComponent,
-        ProfissionalComponent,
-        ProfissionalFormComponent,
-        PacienteComponent,
-        PacienteFormComponent,
-        EquipeComponent,
-        EquipeFormComponent,
-        CanetaComponent,
-        CanetaFormComponent,
         AtribuicaoCanetaComponent,
         AtribuicaoCanetaFormComponent,
-        EscalaProfissionalFormComponent,
-        TipoUnidadeComponent,
-        TipoUnidadeFormComponent,
-        EspecialidadeComponent,
-        EspecialidadeFormComponent,
-        ModeloCanetaComponent,
-        ModeloCanetaFormComponent,
-        TipoFichaComponent,
-        TipoFichaFormComponent,
+        EscalaProfissionalFormComponent,        
         ParametroSegurancaComponent, 
-        ParametroSegurancaFormComponent,
-        ModalidadeComponent,
-        ModalidadeFormComponent,
+        ParametroSegurancaFormComponent,        
         PlanoTerapeuticoComponent,
-        HipoteseDiagnosticaComponent,
-        HipoteseDiagnosticaFormComponent,
         GeorreferenciamentoComponent,
         AgendaComponent,
         AtendimentoComponent,
@@ -169,21 +114,16 @@ defineLocale('pt-br', deLocale);
     ],
     bootstrap: [AppComponent],
     providers: [
-        AppNavbarService,
         LoginService,
-        AuthGuard,
         PagerService,
         AppService,
         AppFormService,
         AppGridViewService,
         MenuService,
         UsuarioService,
-        SocketService,
-        NotificacaoSistemaService,
         PreviousRouteService,
         EstabelecimentoService,
         LogService
-
     ]
 
 })

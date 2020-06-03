@@ -30,5 +30,4 @@ export class HipoteseDiagnosticaFormComponent implements OnInit {
       this.id = params['id'];
     });
   }
-
 }

@@ -8,7 +8,6 @@ import { FormBuilder } from '@angular/forms';
   selector: 'app-especialidade-form',
   templateUrl: './especialidade-form.component.html',
   styleUrls: ['./especialidade-form.component.css'],
-  providers: [EspecialidadeService]
 })
 export class EspecialidadeFormComponent implements OnInit {
 

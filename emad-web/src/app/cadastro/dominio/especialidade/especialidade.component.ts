@@ -6,8 +6,7 @@ import { AppNavbarService } from '../../../_core/_components/app-navbar/app-navb
 @Component({
   selector: 'app-especialidade',
   templateUrl: './especialidade.component.html',
-  styleUrls: ['./especialidade.component.css'],
-  providers: [EspecialidadeService]
+  styleUrls: ['./especialidade.component.css']
 })
 export class EspecialidadeComponent implements OnInit {
 

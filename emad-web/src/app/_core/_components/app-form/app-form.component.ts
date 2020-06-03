@@ -350,7 +350,12 @@ export class AppFormComponent implements OnInit, AfterViewInit {
 
         setTimeout(() => {
           this.loading = false;
-          this.router.navigate([this.method])
+
+          const route = this.redirectAfterInsert 
+                ? this.redirectAfterInsert 
+                : this.method;
+
+          this.router.navigate([route])
         }, 1000);
 
       }, erro => {
@@ -361,7 +366,11 @@ export class AppFormComponent implements OnInit, AfterViewInit {
   }
 
   back() {
-    this.router.navigate([this.method]);
+    const route = this.redirectAfterInsert 
+                ? this.redirectAfterInsert 
+                : this.method;
+                
+    this.router.navigate([route]);
   }
 
   loadDomain(field: any, $event) {
