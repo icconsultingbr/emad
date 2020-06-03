@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { AppNavbarService } from '../../../_core/_components/app-navbar/app-navbar.service';
 import { ModeloCanetaService } from './modelo-caneta.service';
 import { ModeloCaneta } from '../../../_core/_models/ModeloCaneta';
-import { AppNavbarService } from '../../../_core/_components/app-navbar/app-navbar.service';
 
 @Component({
-  selector: 'app-modelo-caneta',
-  templateUrl: './modelo-caneta.component.html',
-  styleUrls: ['./modelo-caneta.component.css'],
-  providers: [ModeloCanetaService]
+    selector: 'app-modelo-caneta',
+    templateUrl: './modelo-caneta.component.html',
+    styleUrls: ['./modelo-caneta.component.css'],
+    providers: [ModeloCanetaService]
 })
+
 export class ModeloCanetaComponent implements OnInit {
 
   method: String = "modelo-caneta";
@@ -24,15 +25,12 @@ export class ModeloCanetaComponent implements OnInit {
         this.fields.push(field);
       }
       if (field.filter) {
-        this.fieldsSearch.push(field)
+        this.fieldsSearch.push(field);
       }
-
     }
-
   }
 
   ngOnInit() {
     this.nav.show();
   }
-
 }

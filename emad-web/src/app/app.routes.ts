@@ -12,33 +12,15 @@ import { TipoUsuarioFormComponent } from './seguranca/tipo-usuario/tipo-usuario-
 import { UsuarioResetComponent } from './seguranca/usuario/usuario-reset.component';
 import { EstabelecimentoComponent } from './seguranca/estabelecimento/estabelecimento.component';
 import { EstabelecimentoFormComponent } from './seguranca/estabelecimento/estabelecimento-form.component';
-import { ProfissionalComponent } from './cadastro/profissional/profissional.component';
-import { ProfissionalFormComponent } from './cadastro/profissional/profissional-form.component';
-import { PacienteComponent } from './cadastro/paciente/paciente.component';
-import { PacienteFormComponent } from './cadastro/paciente/paciente-form.component';
-import { EquipeComponent } from './cadastro/equipe/equipe.component';
-import { EquipeFormComponent } from './cadastro/equipe/equipe-form.component';
-import { TipoUnidadeFormComponent } from './cadastro/dominio/tipo-unidade/tipo-unidade-form.component';
-import { TipoUnidadeComponent } from './cadastro/dominio/tipo-unidade/tipo-unidade.component';
-import { ModeloCanetaComponent } from './cadastro/dominio/modelo-caneta/modelo-caneta.component';
-import { ModeloCanetaFormComponent } from './cadastro/dominio/modelo-caneta/modelo-caneta-form.component';
-import { ModalidadeComponent } from './cadastro/dominio/modalidade/modalidade.component';
-import { ModalidadeFormComponent } from './cadastro/dominio/modalidade/modalidade-form.component';
 import { PlanoTerapeuticoComponent } from './operacao/plano-terapeutico/plano-terapeutico.component';
-import { HipoteseDiagnosticaComponent } from './cadastro/dominio/hipotese-diagnostica/hipotese-diagnostica.component';
-import { HipoteseDiagnosticaFormComponent } from './cadastro/dominio/hipotese-diagnostica/hipotese-diagnostica-form.component';
 import { GeorreferenciamentoComponent } from './cadastro/georreferenciamento/georreferenciamento.component';
 import { AgendaComponent } from './operacao/agenda/agenda.component';
 import { LogComponent } from './seguranca/log/log.component';
 import { AtendimentoFormComponent } from './operacao/atendimento/atendimento-form.component';
 import { AtendimentoComponent } from './operacao/atendimento/atendimento.component';
-import { CanetaComponent } from './cadastro/caneta/caneta.component';
-import { CanetaFormComponent } from './cadastro/caneta/caneta-form.component';
 import { AtribuicaoCanetaComponent } from './operacao/atribuicao-caneta/atribuicao-caneta.component';
 import { AtribuicaoCanetaFormComponent } from './operacao/atribuicao-caneta/atribuicao-caneta-form.component';
 import { EscalaProfissionalFormComponent } from './operacao/escala-profissional/escala-profissional-form.component';
-import { TipoFichaFormComponent } from './cadastro/dominio/tipo-ficha/tipo-ficha-form.component';
-import { TipoFichaComponent } from './cadastro/dominio/tipo-ficha/tipo-ficha.component';
 import { ParametroSegurancaComponent } from './seguranca/parametro-seguranca/parametro-seguranca.component';
 import { ParametroSegurancaFormComponent } from './seguranca/parametro-seguranca/parametro-seguranca-form.component';
 
@@ -63,46 +45,15 @@ const appRoutes : Routes = [
     { path : 'estabelecimento-form', component : EstabelecimentoFormComponent, canActivate: [AuthGuard]  },
     { path : 'estabelecimento-form/:id', component : EstabelecimentoFormComponent, canActivate: [AuthGuard]  }, 
 
-    { path : 'profissional', component : ProfissionalComponent, canActivate: [AuthGuard]  },
-    { path : 'profissional-form', component : ProfissionalFormComponent, canActivate: [AuthGuard]  },
-    { path : 'profissional-form/:id', component : ProfissionalFormComponent, canActivate: [AuthGuard]  }, 
-
-    { path : 'paciente', component : PacienteComponent, canActivate: [AuthGuard]  },
-    { path : 'paciente-form', component : PacienteFormComponent, canActivate: [AuthGuard]  },
-    { path : 'paciente-form/:id', component : PacienteFormComponent, canActivate: [AuthGuard]  }, 
-
-    { path : 'equipe', component : EquipeComponent, canActivate: [AuthGuard]  },
-    { path : 'equipe-form', component : EquipeFormComponent, canActivate: [AuthGuard]  },
-    { path : 'equipe-form/:id', component : EquipeFormComponent, canActivate: [AuthGuard]  },     
-
-    { path : 'caneta', component : CanetaComponent, canActivate: [AuthGuard]  },
-    { path : 'caneta-form', component : CanetaFormComponent, canActivate: [AuthGuard]  },
-    { path : 'caneta-form/:id', component : CanetaFormComponent, canActivate: [AuthGuard]  }, 
-
     { path : 'atribuicao-caneta', component : AtribuicaoCanetaComponent, canActivate: [AuthGuard]  },
     { path : 'atribuicao-caneta-form', component : AtribuicaoCanetaFormComponent, canActivate: [AuthGuard]  },
 
     { path : 'escala-profissional-form', component : EscalaProfissionalFormComponent, canActivate: [AuthGuard]  },
     { path : 'escala-profissional-form/id/:id', component : EscalaProfissionalFormComponent, canActivate: [AuthGuard]  }, 
 
-    { path : 'tipo-unidade', component : TipoUnidadeComponent, canActivate: [AuthGuard]  },
-    { path : 'tipo-unidade-form', component : TipoUnidadeFormComponent, canActivate: [AuthGuard]  },
-    { path : 'tipo-unidade-form/:id', component : TipoUnidadeFormComponent, canActivate: [AuthGuard]  }, 
-    { path : 'modelo-caneta', component : ModeloCanetaComponent, canActivate: [AuthGuard]  },
-    { path : 'modelo-caneta-form', component : ModeloCanetaFormComponent, canActivate: [AuthGuard]  },
-    { path : 'modelo-caneta-form/:id', component : ModeloCanetaFormComponent, canActivate: [AuthGuard]  }, 
-
-    { path : 'tipo-ficha', component : TipoFichaComponent, canActivate: [AuthGuard]  },
-    { path : 'tipo-ficha-form', component : TipoFichaFormComponent, canActivate: [AuthGuard]  },
-    { path : 'tipo-ficha-form/:id', component : TipoFichaFormComponent, canActivate: [AuthGuard]  }, 
-
     { path : 'parametro-seguranca', component : ParametroSegurancaComponent, canActivate: [AuthGuard]  },
     { path : 'parametro-seguranca-form', component : ParametroSegurancaFormComponent, canActivate: [AuthGuard]  },
     { path : 'parametro-seguranca-form/:id', component : ParametroSegurancaFormComponent, canActivate: [AuthGuard]  }, 
-
-    { path : 'modalidade', component : ModalidadeComponent, canActivate: [AuthGuard]  },
-    { path : 'modalidade-form', component : ModalidadeFormComponent, canActivate: [AuthGuard]  },
-    { path : 'modalidade-form/:id', component : ModalidadeFormComponent, canActivate: [AuthGuard]  }, 
 
     { path : 'plano-terapeutico', component : PlanoTerapeuticoComponent, canActivate: [AuthGuard]  },
     { path : 'agenda', component : AgendaComponent, canActivate: [AuthGuard]  },
@@ -112,15 +63,22 @@ const appRoutes : Routes = [
     { path : 'atendimento-form', component : AtendimentoFormComponent, canActivate: [AuthGuard]  },
     { path : 'atendimento-view/:id', component : AtendimentoFormComponent, canActivate: [AuthGuard]  },
     
-    { path : 'hipotese-diagnostica', component : HipoteseDiagnosticaComponent, canActivate: [AuthGuard]  },
-    { path : 'hipotese-diagnostica-form', component : HipoteseDiagnosticaFormComponent, canActivate: [AuthGuard]  },
-    { path : 'hipotese-diagnostica-form/:id', component : HipoteseDiagnosticaFormComponent, canActivate: [AuthGuard]  },
-    
     { path : 'georreferenciamento', component : GeorreferenciamentoComponent, canActivate: [AuthGuard]  },
     { path : 'georreferenciamento', component : GeorreferenciamentoComponent, canActivate: [AuthGuard]  },
     { path : 'georreferenciamento/:id', component : GeorreferenciamentoComponent, canActivate: [AuthGuard]  }, 
     { path : 'log', component : LogComponent, canActivate: [AuthGuard]  }, 
+
     { path: 'especialidades', canActivate: [AuthGuard], loadChildren: () => import('./cadastro/dominio/especialidade/especialidade.module').then(m => m.EspecialidadeModule) },
+    { path: 'hipoteses-diagnosticas', canActivate: [AuthGuard], loadChildren: () => import('./cadastro/dominio/hipotese-diagnostica/hipotese-diagnostica.module').then(m => m.HipoteseDiagnosticaModule) },
+    { path: 'modalidades', canActivate: [AuthGuard], loadChildren: () => import('./cadastro/dominio/modalidade/modalidade.module').then(m => m.ModalidadeModule) },    
+    { path: 'modelos-canetas', canActivate: [AuthGuard], loadChildren: () => import('./cadastro/dominio/modelo-caneta/modelo-caneta.module').then(m => m.ModeloCanetaModule) },    
+    { path: 'tipos-unidades', canActivate: [AuthGuard], loadChildren: () => import('./cadastro/dominio/tipo-unidade/tipo-unidade.module').then(m => m.TipoUnidadeModule) },
+    { path: 'tipos-fichas', canActivate: [AuthGuard], loadChildren: () => import('./cadastro/dominio/tipo-ficha/tipo-ficha.module').then(m => m.TipoFichaModule) },
+    { path: 'canetas', canActivate: [AuthGuard], loadChildren: () => import('./cadastro/caneta/caneta.module').then(m => m.CanetaModule) },
+    { path: 'pacientes', canActivate: [AuthGuard], loadChildren: () => import('./cadastro/paciente/paciente.module').then(m => m.PacienteModule) },
+    { path: 'equipes', canActivate: [AuthGuard], loadChildren: () => import('./cadastro/equipe/equipe.module').then(m => m.EquipeModule) },
+    { path: 'profissionais', canActivate: [AuthGuard], loadChildren: () => import('./cadastro/profissional/profissional.module').then(m => m.ProfissionalModule) },
+    
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 
 ];

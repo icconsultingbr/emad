@@ -262,7 +262,7 @@ PacienteDAO.prototype.lista = function (addFilter, callback) {
 
     if (addFilter != null) {
         if (addFilter.cartaoSus) {
-            where += ` AND pac.cartaoSus = ${addFilter.cartaoSus}`;
+            where += ` AND pac.cartaoSus LIKE '%${addFilter.cartaoSus}%'`;
         }
 
         if (addFilter.nome) {
@@ -325,7 +325,8 @@ PacienteDAO.prototype.lista = function (addFilter, callback) {
         INNER JOIN tb_municipio mun ON (pac.idMunicipio = mun.id)
         INNER JOIN tb_uf uf ON (pac.idUf = uf.id)
         LEFT JOIN tb_modalidade md ON (pac.idModalidade = md.id) 
-        ${where} AND pac.situacao = 1`,
+        WHERE pac.situacao = 1
+        ${where}`,
         callback);
 }
 

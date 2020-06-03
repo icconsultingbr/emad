@@ -4,11 +4,12 @@ import { TipoUnidadeService } from './tipo-unidade.service';
 import { TipoUnidade } from '../../../_core/_models/TipoUnidade';
 
 @Component({
-  selector: 'app-tipo-unidade',
-  templateUrl: './tipo-unidade.component.html',
-  styleUrls: ['./tipo-unidade.component.css'],
-  providers: [TipoUnidadeService],
+    selector: 'app-tipo-unidade',
+    templateUrl: './tipo-unidade.component.html',
+    styleUrls: ['./tipo-unidade.component.css'],
+    providers: [TipoUnidadeService]
 })
+
 export class TipoUnidadeComponent implements OnInit {
 
   method: String = "tipo-unidade";
@@ -19,7 +20,6 @@ export class TipoUnidadeComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: TipoUnidadeService) {
-
     for (let field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
@@ -33,5 +33,4 @@ export class TipoUnidadeComponent implements OnInit {
   ngOnInit() {
     this.nav.show();
   }
-
 }

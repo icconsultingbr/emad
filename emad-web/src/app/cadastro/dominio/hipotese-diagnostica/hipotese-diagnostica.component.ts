@@ -32,5 +32,4 @@ export class HipoteseDiagnosticaComponent implements OnInit {
   ngOnInit() {
     this.nav.show();
   }
-
 }
