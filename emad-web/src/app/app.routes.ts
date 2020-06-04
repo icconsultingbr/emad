@@ -3,71 +3,14 @@ import { LoginComponent } from './login/login.component';
 import { MainComponent } from './main/main.component';
 import { AuthGuard } from './_core/_guards';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { MenuComponent } from './seguranca/menu/menu.component';
-import { MenuFormComponent } from './seguranca/menu/menu-form.component';
-import { UsuarioComponent } from './seguranca/usuario/usuario.component';
-import { UsuarioFormComponent } from './seguranca/usuario/usuario-form.component';
-import { TipoUsuarioComponent } from './seguranca/tipo-usuario/tipo-usuario.component';
-import { TipoUsuarioFormComponent } from './seguranca/tipo-usuario/tipo-usuario-form.component';
 import { UsuarioResetComponent } from './seguranca/usuario/usuario-reset.component';
-import { EstabelecimentoComponent } from './seguranca/estabelecimento/estabelecimento.component';
-import { EstabelecimentoFormComponent } from './seguranca/estabelecimento/estabelecimento-form.component';
-import { PlanoTerapeuticoComponent } from './operacao/plano-terapeutico/plano-terapeutico.component';
-import { GeorreferenciamentoComponent } from './cadastro/georreferenciamento/georreferenciamento.component';
-import { AgendaComponent } from './operacao/agenda/agenda.component';
-import { LogComponent } from './seguranca/log/log.component';
-import { AtendimentoFormComponent } from './operacao/atendimento/atendimento-form.component';
-import { AtendimentoComponent } from './operacao/atendimento/atendimento.component';
-import { AtribuicaoCanetaComponent } from './operacao/atribuicao-caneta/atribuicao-caneta.component';
-import { AtribuicaoCanetaFormComponent } from './operacao/atribuicao-caneta/atribuicao-caneta-form.component';
-import { EscalaProfissionalFormComponent } from './operacao/escala-profissional/escala-profissional-form.component';
-import { ParametroSegurancaComponent } from './seguranca/parametro-seguranca/parametro-seguranca.component';
-import { ParametroSegurancaFormComponent } from './seguranca/parametro-seguranca/parametro-seguranca-form.component';
 
 const appRoutes : Routes = [
     { path : '', component : MainComponent, canActivate: [AuthGuard] },
     { path : 'login', component : LoginComponent},
-    
-    { path : 'menu', component : MenuComponent, canActivate: [AuthGuard]  },
-    { path : 'menu-form', component : MenuFormComponent, canActivate: [AuthGuard]  },
-    { path : 'menu-form/:id', component : MenuFormComponent, canActivate: [AuthGuard]  },
-    
-    { path : 'usuario', component : UsuarioComponent, canActivate: [AuthGuard]  },
-    { path : 'usuario-form', component : UsuarioFormComponent, canActivate: [AuthGuard]  },
-    { path : 'usuario-form/:id', component : UsuarioFormComponent, canActivate: [AuthGuard]  }, 
-    { path : 'usuario-reset', component : UsuarioResetComponent, canActivate: [AuthGuard]  },   
 
-    { path : 'tipo-usuario', component : TipoUsuarioComponent, canActivate: [AuthGuard]  },
-    { path : 'tipo-usuario-form', component : TipoUsuarioFormComponent, canActivate: [AuthGuard]  },
-    { path : 'tipo-usuario-form/:id', component : TipoUsuarioFormComponent, canActivate: [AuthGuard]  }, 
-
-    { path : 'estabelecimento', component : EstabelecimentoComponent, canActivate: [AuthGuard]  },
-    { path : 'estabelecimento-form', component : EstabelecimentoFormComponent, canActivate: [AuthGuard]  },
-    { path : 'estabelecimento-form/:id', component : EstabelecimentoFormComponent, canActivate: [AuthGuard]  }, 
-
-    { path : 'atribuicao-caneta', component : AtribuicaoCanetaComponent, canActivate: [AuthGuard]  },
-    { path : 'atribuicao-caneta-form', component : AtribuicaoCanetaFormComponent, canActivate: [AuthGuard]  },
-
-    { path : 'escala-profissional-form', component : EscalaProfissionalFormComponent, canActivate: [AuthGuard]  },
-    { path : 'escala-profissional-form/id/:id', component : EscalaProfissionalFormComponent, canActivate: [AuthGuard]  }, 
-
-    { path : 'parametro-seguranca', component : ParametroSegurancaComponent, canActivate: [AuthGuard]  },
-    { path : 'parametro-seguranca-form', component : ParametroSegurancaFormComponent, canActivate: [AuthGuard]  },
-    { path : 'parametro-seguranca-form/:id', component : ParametroSegurancaFormComponent, canActivate: [AuthGuard]  }, 
-
-    { path : 'plano-terapeutico', component : PlanoTerapeuticoComponent, canActivate: [AuthGuard]  },
-    { path : 'agenda', component : AgendaComponent, canActivate: [AuthGuard]  },
-    
-    { path : 'atendimento', component : AtendimentoComponent, canActivate: [AuthGuard]  },
-    { path : 'atendimento/idPaciente/:idPaciente', component : AtendimentoComponent, canActivate: [AuthGuard]  },
-    { path : 'atendimento-form', component : AtendimentoFormComponent, canActivate: [AuthGuard]  },
-    { path : 'atendimento-view/:id', component : AtendimentoFormComponent, canActivate: [AuthGuard]  },
-    
-    { path : 'georreferenciamento', component : GeorreferenciamentoComponent, canActivate: [AuthGuard]  },
-    { path : 'georreferenciamento', component : GeorreferenciamentoComponent, canActivate: [AuthGuard]  },
-    { path : 'georreferenciamento/:id', component : GeorreferenciamentoComponent, canActivate: [AuthGuard]  }, 
-    { path : 'log', component : LogComponent, canActivate: [AuthGuard]  }, 
-
+    { path : 'usuario-reset', component : UsuarioResetComponent, canActivate: [AuthGuard]  },  
+     
     { path: 'especialidades', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/especialidade/especialidade.module#EspecialidadeModule' },
     { path: 'hipoteses-diagnosticas', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/hipotese-diagnostica/hipotese-diagnostica.module#HipoteseDiagnosticaModule' },
     { path: 'modalidades', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/modalidade/modalidade.module#ModalidadeModule' },    
@@ -78,6 +21,26 @@ const appRoutes : Routes = [
     { path: 'pacientes', canActivate: [AuthGuard], loadChildren: './cadastro/paciente/paciente.module#PacienteModule' },
     { path: 'equipes', canActivate: [AuthGuard], loadChildren: './cadastro/equipe/equipe.module#EquipeModule' },
     { path: 'profissionais', canActivate: [AuthGuard], loadChildren: './cadastro/profissional/profissional.module#ProfissionalModule' },
+    { path: 'georreferenciamentos', canActivate: [AuthGuard], loadChildren: './cadastro/georreferenciamento/georreferenciamento.module#GeorreferenciamentoModule' },
+    { path: 'atribuicoes-canetas', canActivate: [AuthGuard], loadChildren: './operacao/atribuicao-caneta/atribuicao-caneta.module#AtribuicaoCanetaModule' },
+    { path: 'escalas-profissionais', canActivate: [AuthGuard], loadChildren: './operacao/escala-profissional/escala-profissional.module#EscalaProfissionalModule' },
+    { path: 'planos-terapeuticos', canActivate: [AuthGuard], loadChildren: './operacao/plano-terapeutico/plano-terapeutico.module#PlanoTerapeuticoModule' },
+    { path: 'agendas', canActivate: [AuthGuard], loadChildren: './operacao/agenda/agenda.module#AgendaModule' },
+    { path: 'estabelecimentos', canActivate: [AuthGuard], loadChildren: './seguranca/estabelecimento/estabelecimento.module#EstabelecimentoModule' },
+    { path: 'menus', canActivate: [AuthGuard], loadChildren: './seguranca/menu/menu.module#MenuModule' },
+    { path: 'parametros-segurancas', canActivate: [AuthGuard], loadChildren: './seguranca/parametro-seguranca/parametro-seguranca.module#ParametroSegurancaModule' },
+    { path: 'usuarios', canActivate: [AuthGuard], loadChildren: './seguranca/usuario/usuario.module#UsuarioModule' },
+    { path: 'tipos-usuarios', canActivate: [AuthGuard], loadChildren: './seguranca/tipo-usuario/tipo-usuario.module#TipoUsuarioModule' },
+    { path: 'atendimentos', canActivate: [AuthGuard], loadChildren: './operacao/atendimento/atendimento.module#AtendimentoModule' },
+    { path: 'logs', canActivate: [AuthGuard], loadChildren: './seguranca/log/log.module#LogModule' },
+    { path: 'atencoes-continuadas', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/atencao-continuada/atencao-continuada.module#AtencaoContinuadaModule' },
+    { path: 'grupos-materiais', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/grupo-material/grupo-material.module#GrupoMaterialModule' },
+    { path: 'motivos-fim-receitas', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/motivo-fim-receita/motivo-fim-receita.module#MotivoFimReceitaModule' },
+    { path: 'livros', canActivate: [AuthGuard], loadChildren: './cadastro/livro/livro.module#LivroModule' },
+    { path: 'fabricantes-materiais', canActivate: [AuthGuard], loadChildren: './cadastro/fabricante-material/fabricante-material.module#FabricanteMaterialModule' },
+    { path: 'grupos-origens-receitas', canActivate: [AuthGuard], loadChildren: './cadastro/grupo-origem-receita/grupo-origem-receita.module#GrupoOrigemReceitaModule' },
+    { path: 'sub-grupos-origens-receitas', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/sub-grupo-origem-receita/sub-grupo-origem-receita.module#SubGrupoOrigemReceitaModule' },
+    { path: 'sub-grupos-materiais', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/sub-grupo-material/sub-grupo-material.module#SubGrupoMaterialModule' },
     
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 

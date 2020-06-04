@@ -21,7 +21,11 @@ GenericDAO.prototype.buscaPorId = function (id, callback) {
 }
 
 GenericDAO.prototype.buscaDominio = function (callback) {
-    this._connection.query(`SELECT id, nome FROM ${this._table}`, callback);
+    this._connection.query(`SELECT id, nome FROM ${this._table} WHERE situacao = 1`, callback);
+}
+
+GenericDAO.prototype.dominio = function (callback) {
+    this._connection.query(`SELECT id, nome FROM ${this._table} WHERE situacao = 1`, callback);
 }
 
 GenericDAO.prototype.deletaPorId = function (id,callback) {

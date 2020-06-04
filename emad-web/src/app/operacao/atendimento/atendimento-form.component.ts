@@ -35,6 +35,7 @@ export class AtendimentoFormComponent implements OnInit {
   formMedicamento: FormGroup;
 
   method: String = "atendimento";
+  url: String = "atendimentos";
   object: Atendimento = new Atendimento();
   paciente: Paciente = new Paciente();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
@@ -624,7 +625,7 @@ export class AtendimentoFormComponent implements OnInit {
     if(this.modalRef)
       this.modalRef.close();
 
-    this.router.navigate([this.method]);    
+    this.router.navigate([this.url]);    
   }
 
 

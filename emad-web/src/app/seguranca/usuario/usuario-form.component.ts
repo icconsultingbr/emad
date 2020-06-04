@@ -74,7 +74,7 @@ export class UsuarioFormComponent implements OnInit {
       .cadastra(this.usuarioForm.value)
       .subscribe(res => {
         if (this.usuarioForm.value.id) {
-          this.router.navigate(['usuario']);
+          this.router.navigate(['usuarios']);
         }
 
         this.mensagem = "Cadastro efetuado com sucesso!";

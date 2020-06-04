@@ -24,7 +24,7 @@ export class ProfissionalComponent implements OnInit {
     { 
       icon : 'fa-calendar',
       label : 'Escala',
-      url : this.router.url.replace('profissional','') + this.virtualDirectory + "#/escala-profissional-form/id/{id}",
+      url : this.router.url.replace('profissional','') + this.virtualDirectory + "#/escalas-profissionais/id/{id}",
       log: 'escala-profissional/view-escala',
       title: 'Visualizar escala',
       self: true
