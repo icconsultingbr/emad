@@ -188,7 +188,6 @@ module.exports = function (app) {
         return d.promise;
     }
 
-
 }
 
 

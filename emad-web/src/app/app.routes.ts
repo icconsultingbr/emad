@@ -34,6 +34,12 @@ const appRoutes : Routes = [
     { path: 'tipos-usuarios', canActivate: [AuthGuard], loadChildren: './seguranca/tipo-usuario/tipo-usuario.module#TipoUsuarioModule' },
     { path: 'atendimentos', canActivate: [AuthGuard], loadChildren: './operacao/atendimento/atendimento.module#AtendimentoModule' },
     { path: 'logs', canActivate: [AuthGuard], loadChildren: () => import('./seguranca/log/log.module').then(m => m.LogModule) },
+    { path: 'atencoes-continuadas', canActivate: [AuthGuard], loadChildren: () => import('./cadastro/dominio/atencao-continuada/atencao-continuada.module').then(m => m.AtencaoContinuadaModule) },
+    { path: 'grupos-materiais', canActivate: [AuthGuard], loadChildren: () => import('./cadastro/dominio/grupo-material/grupo-material.module').then(m => m.GrupoMaterialModule) },
+    { path: 'motivos-fim-receitas', canActivate: [AuthGuard], loadChildren: () => import('./cadastro/dominio/motivo-fim-receita/motivo-fim-receita.module').then(m => m.MotivoFimReceitaModule) },
+    { path: 'livros', canActivate: [AuthGuard], loadChildren: () => import('./cadastro/livro/livro.module').then(m => m.LivroModule) },
+    { path: 'fabricantes-materiais', canActivate: [AuthGuard], loadChildren: () => import('./cadastro/fabricante-material/fabricante-material.module').then(m => m.FabricanteMaterialModule) },
+    { path: 'grupos-origens-receitas', canActivate: [AuthGuard], loadChildren: () => import('./cadastro/grupo-origem-receita/grupo-origem-receita.module').then(m => m.GrupoOrigemReceitaModule) },
     
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 
