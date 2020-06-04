@@ -167,7 +167,40 @@ module.exports = function (app) {
             return;
         });
     });
+        
+    app.get('/dominios/grupo-origem-receita', function(req, res) {
 
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_grupo_origem_receita");
+
+        listaDominios(dao, "Grupo origem de receita", res).then(function(response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+        
+    app.get('/dominios/livro', function(req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_livro");
+
+        listaDominios(dao, "Livros", res).then(function(response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
+    app.get('/dominios/grupo-material', function(req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_grupo_material");
+
+        listaDominios(dao, "Grupo origem de receita", res).then(function(response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+        
     function listaDominios(dao, dom, res) {
         var q = require('q');
         var d = q.defer();

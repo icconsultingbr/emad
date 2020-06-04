@@ -4,7 +4,6 @@ import { MainComponent } from './main/main.component';
 import { AuthGuard } from './_core/_guards';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { UsuarioResetComponent } from './seguranca/usuario/usuario-reset.component';
-import { LogComponent } from './seguranca/log/log.component';
 
 const appRoutes : Routes = [
     { path : '', component : MainComponent, canActivate: [AuthGuard] },
@@ -40,6 +39,8 @@ const appRoutes : Routes = [
     { path: 'livros', canActivate: [AuthGuard], loadChildren: './cadastro/livro/livro.module#LivroModule' },
     { path: 'fabricantes-materiais', canActivate: [AuthGuard], loadChildren: './cadastro/fabricante-material/fabricante-material.module#FabricanteMaterialModule' },
     { path: 'grupos-origens-receitas', canActivate: [AuthGuard], loadChildren: './cadastro/grupo-origem-receita/grupo-origem-receita.module#GrupoOrigemReceitaModule' },
+    { path: 'sub-grupos-origens-receitas', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/sub-grupo-origem-receita/sub-grupo-origem-receita.module#SubGrupoOrigemReceitaModule' },
+    { path: 'sub-grupos-materiais', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/sub-grupo-material/sub-grupo-material.module#SubGrupoMaterialModule' },
     
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 
