@@ -365,8 +365,12 @@ export class AppGridViewComponent implements AfterViewInit {
 
   viewer(id) {
     this.message = "";
-    let route = this.method.split("/");
-    this.router.navigate(['/' + route[0] + '-view/' + id]);
+    if (this.urlForm != undefined) {
+      this.router.navigate(['/' + this.urlForm + '/' + id]);
+    } else {
+      let route = this.method.split("/");
+      this.router.navigate(['/' + route[0] + '-view/' + id]);
+    }
   }
 
   ngOnInit(): void {

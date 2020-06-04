@@ -28,6 +28,7 @@ export class AtribuicaoCanetaFormComponent implements OnInit {
   modalRemoveRef: NgbModalRef = null;
   form: FormGroup;
   method: String = "atribuicao-caneta";
+  url: String = "atribuicoes-canetas";
   fields: any[] = [];
   historicoAtribuicoes: any[] = [];
   object: AtribuicaoCaneta = new AtribuicaoCaneta();
@@ -331,6 +332,6 @@ export class AtribuicaoCanetaFormComponent implements OnInit {
   }
 
   back() {
-    this.router.navigate([this.method]);
+    this.router.navigate([this.url]);
   }
 }

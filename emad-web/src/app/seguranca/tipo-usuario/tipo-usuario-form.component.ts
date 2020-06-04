@@ -95,7 +95,7 @@ export class TipoUsuarioFormComponent implements OnInit {
       .cadastra(this.tipoUsuarioForm.value)
       .subscribe(res => {
         if (this.tipoUsuarioForm.value.id) {
-          this.router.navigate(['tipo-usuario']);
+          this.router.navigate(['tipos-usuarios']);
         }
         this.mensagem = "Cadastro efetuado com sucesso!";
         this.warning = "";

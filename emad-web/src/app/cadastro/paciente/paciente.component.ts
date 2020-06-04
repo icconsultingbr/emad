@@ -24,7 +24,7 @@ export class PacienteComponent implements OnInit {
     { 
       icon : 'fa-file-medical-alt',
       label : 'Atendimentos',
-      url : this.router.url.replace('paciente','') + this.virtualDirectory + "#/atendimento/idPaciente/{id}",
+      url : this.router.url.replace('paciente','') + this.virtualDirectory + "#/atendimentos/idPaciente/{id}",
       log: 'atendimento/consulta-por-paciente',
       title: 'Visualizar atendimentos',
       self: true
