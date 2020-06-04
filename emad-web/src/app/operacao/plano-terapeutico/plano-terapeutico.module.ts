@@ -39,6 +39,9 @@ import 'rxjs/add/operator/map';
     ],
     providers: [
         PlanoTerapeuticoService
+    ],
+    exports:[
+        PlanoTerapeuticoComponent
     ]
 })
 export class PlanoTerapeuticoModule {

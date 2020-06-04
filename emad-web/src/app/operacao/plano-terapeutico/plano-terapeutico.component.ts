@@ -44,7 +44,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
 
   @ViewChild('contentScheduler') contentScheduler: ElementRef;
   selectedSchedule : any = null;
-  @Input() readonly : Boolean = false;
+  @Input() public readonly : Boolean = false;
 
 
   //MODELS (OBJECTS)
