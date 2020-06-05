@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { GenericsService } from '../../_core/_services/generics.service';
+import { GenericsService } from '../../../_core/_services/generics.service';
 import { Validators } from '@angular/forms';
 
 @Injectable()
-export class LivroService extends GenericsService {
+export class TipoMaterialService extends GenericsService {
 
   public fields: any[] = [    
     {

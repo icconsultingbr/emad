@@ -1,13 +1,15 @@
 module.exports = function (app) {
 
-    const _table = "tb_fabricante_material";
+    const _table = "tb_familia_material";
 
-    app.post('/fabricante-material', function(req,res){
+    app.post('/familia-material', function(req,res){
         let obj = req.body;
         let usuario = req.usuario; 
         let util = new app.util.Util();
         let errors = [];
 
+        req.assert("idGrupoMaterial").notEmpty().withMessage("O campo Grupo de material é um campo obrigatório");
+        req.assert("idSubGrupoMaterial").notEmpty().withMessage("O campo Subgrupo de material é um campo obrigatório");
         req.assert("nome").notEmpty().withMessage("O campo Nome é um campo obrigatório");
         req.assert("nome").isLength({ min: 0, max: 60 }).withMessage("O campo Nome deve ter no máximo 60 caractere(s)");
 
@@ -33,12 +35,14 @@ module.exports = function (app) {
         }
     });
 
-    app.put('/fabricante-material', function(req,res){
+    app.put('/familia-material', function(req,res){
         let obj = req.body;
         let usuario = req.usuario; 
         let util = new app.util.Util();
         let errors = [];
 
+        req.assert("idGrupoMaterial").notEmpty().withMessage("O campo Grupo de material é um campo obrigatório");
+        req.assert("idSubGrupoMaterial").notEmpty().withMessage("O campo Subgrupo de material é um campo obrigatório");
         req.assert("nome").notEmpty().withMessage("O campo Nome é um campo obrigatório");
         req.assert("nome").isLength({ min: 0, max: 60 }).withMessage("O campo Nome deve ter no máximo 60 caractere(s)");
         
@@ -64,7 +68,7 @@ module.exports = function (app) {
         }
     });
    
-    app.get('/fabricante-material', function (req, res) {
+    app.get('/familia-material', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
@@ -82,7 +86,7 @@ module.exports = function (app) {
     });
 
 
-    app.get('/fabricante-material/:id', function(req,res){        
+    app.get('/familia-material/:id', function(req,res){        
         let usuario = req.usuario;
         let id = req.params.id;
         let util = new app.util.Util();
@@ -101,7 +105,7 @@ module.exports = function (app) {
         }
     }); 
 
-    app.delete('/fabricante-material/:id', function(req,res){     
+    app.delete('/familia-material/:id', function(req,res){     
         let util = new app.util.Util();
         let usuario = req.usuario;
         let errors = [];
@@ -126,7 +130,7 @@ module.exports = function (app) {
         let d = q.defer();
         let util = new app.util.Util();
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GenericDAO(connection, _table);
+        let objDAO = new app.dao.FamiliaMaterialDAO(connection);
 
         let errors = [];
 
@@ -150,7 +154,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
        
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GenericDAO(connection, _table);
+        let objDAO = new app.dao.FamiliaMaterialDAO(connection);
         let errors =[];
      
         objDAO.buscaPorId(id, function(exception, result){
@@ -172,7 +176,7 @@ module.exports = function (app) {
     function salvar(obj, res){
         delete obj.id;
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GenericDAO(connection, _table);
+        let objDAO = new app.dao.FamiliaMaterialDAO(connection);
         let q = require('q');
         let d = q.defer();
 
@@ -194,7 +198,7 @@ module.exports = function (app) {
         let id = obj.id;
         delete obj.id;
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GenericDAO(connection, _table);
+        let objDAO = new app.dao.FamiliaMaterialDAO(connection);
         let q = require('q');
         let d = q.defer();
 
@@ -217,7 +221,7 @@ module.exports = function (app) {
         let d = q.defer();
         let util = new app.util.Util();
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GenericDAO(connection, _table);
+        let objDAO = new app.dao.FamiliaMaterialDAO(connection);
         let errors = [];
 
         objDAO.deletaPorId(id, function (exception, result) {

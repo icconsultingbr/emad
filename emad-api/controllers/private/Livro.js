@@ -8,8 +8,8 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        req.assert("livro").notEmpty().withMessage("O campo Livro é um campo obrigatório");
-        req.assert("livro").isLength({ min: 0, max: 40 }).withMessage("O campo Livro deve ter no máximo 40 caractere(s)");
+        req.assert("nome").notEmpty().withMessage("O campo Nome é um campo obrigatório");
+        req.assert("nome").isLength({ min: 0, max: 40 }).withMessage("O campo Nome deve ter no máximo 40 caractere(s)");
 
         errors = req.validationErrors();
         
@@ -39,8 +39,8 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        req.assert("livro").notEmpty().withMessage("O campo Livro é um campo obrigatório");
-        req.assert("livro").isLength({ min: 0, max: 40 }).withMessage("O campo Livro deve ter no máximo 40 caractere(s)");
+        req.assert("nome").notEmpty().withMessage("O campo Nome é um campo obrigatório");
+        req.assert("nome").isLength({ min: 0, max: 40 }).withMessage("O campo Nome deve ter no máximo 40 caractere(s)");
         
         errors = req.validationErrors();
         

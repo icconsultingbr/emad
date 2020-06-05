@@ -81,6 +81,23 @@ module.exports = function (app) {
         }
     });
 
+    app.get('/sub-grupo-material/grupo-material/:id', function (req, res) {
+        let usuario = req.usuario;
+        let id = req.params.id;
+        let util = new app.util.Util();
+        let errors = [];
+
+        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
+            buscarPorGrupoMaterial(id, res).then(function (response) {
+                res.status(200).json(response);
+                return;
+            });
+        }
+        else {
+            errors = util.customError(errors, "header", "Não autorizado!", "UF");
+            res.status(401).send(errors);
+        }
+    });
 
     app.get('/sub-grupo-material/:id', function(req,res){        
         let usuario = req.usuario;
@@ -143,6 +160,29 @@ module.exports = function (app) {
         });
         return d.promise;
     }
+
+    function buscarPorGrupoMaterial(id,  res) {
+        let q = require('q');
+        let d = q.defer();
+        let util = new app.util.Util();
+        let connection = app.dao.ConnectionFactory();
+        let objDAO = new app.dao.SubGrupoMaterialDAO(connection);
+
+        let errors = [];
+
+        objDAO.buscarPorGrupoMaterial(id, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }    
  
     function buscarPorId(id,  res) {
         let q = require('q');

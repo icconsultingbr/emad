@@ -1,15 +1,15 @@
 module.exports = function (app) {
 
-    const _table = "tb_fabricante_material";
+    const _table = "tb_tipo_material";
 
-    app.post('/fabricante-material', function(req,res){
+    app.post('/tipo-material', function(req,res){
         let obj = req.body;
         let usuario = req.usuario; 
         let util = new app.util.Util();
         let errors = [];
 
         req.assert("nome").notEmpty().withMessage("O campo Nome é um campo obrigatório");
-        req.assert("nome").isLength({ min: 0, max: 60 }).withMessage("O campo Nome deve ter no máximo 60 caractere(s)");
+        req.assert("nome").isLength({ min: 0, max: 40 }).withMessage("O campo Nome deve ter no máximo 40 caractere(s)");
 
         errors = req.validationErrors();
         
@@ -33,14 +33,14 @@ module.exports = function (app) {
         }
     });
 
-    app.put('/fabricante-material', function(req,res){
+    app.put('/tipo-material', function(req,res){
         let obj = req.body;
         let usuario = req.usuario; 
         let util = new app.util.Util();
         let errors = [];
 
         req.assert("nome").notEmpty().withMessage("O campo Nome é um campo obrigatório");
-        req.assert("nome").isLength({ min: 0, max: 60 }).withMessage("O campo Nome deve ter no máximo 60 caractere(s)");
+        req.assert("nome").isLength({ min: 0, max: 40 }).withMessage("O campo Nome deve ter no máximo 40 caractere(s)");
         
         errors = req.validationErrors();
         
@@ -64,7 +64,7 @@ module.exports = function (app) {
         }
     });
    
-    app.get('/fabricante-material', function (req, res) {
+    app.get('/tipo-material', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
@@ -82,7 +82,7 @@ module.exports = function (app) {
     });
 
 
-    app.get('/fabricante-material/:id', function(req,res){        
+    app.get('/tipo-material/:id', function(req,res){        
         let usuario = req.usuario;
         let id = req.params.id;
         let util = new app.util.Util();
@@ -101,7 +101,7 @@ module.exports = function (app) {
         }
     }); 
 
-    app.delete('/fabricante-material/:id', function(req,res){     
+    app.delete('/tipo-material/:id', function(req,res){     
         let util = new app.util.Util();
         let usuario = req.usuario;
         let errors = [];

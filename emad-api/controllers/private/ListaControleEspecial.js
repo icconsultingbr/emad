@@ -1,15 +1,17 @@
 module.exports = function (app) {
 
-    const _table = "tb_fabricante_material";
+    const _table = "tb_lista_controle_especial";
 
-    app.post('/fabricante-material', function(req,res){
+    app.post('/lista-controle-especial', function(req,res){
         let obj = req.body;
         let usuario = req.usuario; 
         let util = new app.util.Util();
         let errors = [];
 
-        req.assert("nome").notEmpty().withMessage("O campo Nome é um campo obrigatório");
-        req.assert("nome").isLength({ min: 0, max: 60 }).withMessage("O campo Nome deve ter no máximo 60 caractere(s)");
+        req.assert("codigoLista").notEmpty().withMessage("O campo Código é um campo obrigatório");
+        req.assert("codigoLista").isLength({ min: 0, max: 10 }).withMessage("O campo Código deve ter no máximo 10 caractere(s)");
+        req.assert("listaControleEspecial").notEmpty().withMessage("O campo Descrição da lista é um campo obrigatório");
+        req.assert("listaControleEspecial").isLength({ min: 0, max: 60 }).withMessage("O campo Descrição da lista deve ter no máximo 60 caractere(s)");
 
         errors = req.validationErrors();
         
@@ -33,14 +35,16 @@ module.exports = function (app) {
         }
     });
 
-    app.put('/fabricante-material', function(req,res){
+    app.put('/lista-controle-especial', function(req,res){
         let obj = req.body;
         let usuario = req.usuario; 
         let util = new app.util.Util();
         let errors = [];
 
-        req.assert("nome").notEmpty().withMessage("O campo Nome é um campo obrigatório");
-        req.assert("nome").isLength({ min: 0, max: 60 }).withMessage("O campo Nome deve ter no máximo 60 caractere(s)");
+        req.assert("codigoLista").notEmpty().withMessage("O campo Código é um campo obrigatório");
+        req.assert("codigoLista").isLength({ min: 0, max: 10 }).withMessage("O campo Código deve ter no máximo 10 caractere(s)");
+        req.assert("listaControleEspecial").notEmpty().withMessage("O campo Descrição da lista é um campo obrigatório");
+        req.assert("listaControleEspecial").isLength({ min: 0, max: 60 }).withMessage("O campo Descrição da lista deve ter no máximo 60 caractere(s)");
         
         errors = req.validationErrors();
         
@@ -64,7 +68,7 @@ module.exports = function (app) {
         }
     });
    
-    app.get('/fabricante-material', function (req, res) {
+    app.get('/lista-controle-especial', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
@@ -82,7 +86,7 @@ module.exports = function (app) {
     });
 
 
-    app.get('/fabricante-material/:id', function(req,res){        
+    app.get('/lista-controle-especial/:id', function(req,res){        
         let usuario = req.usuario;
         let id = req.params.id;
         let util = new app.util.Util();
@@ -101,7 +105,7 @@ module.exports = function (app) {
         }
     }); 
 
-    app.delete('/fabricante-material/:id', function(req,res){     
+    app.delete('/lista-controle-especial/:id', function(req,res){     
         let util = new app.util.Util();
         let usuario = req.usuario;
         let errors = [];
@@ -126,7 +130,7 @@ module.exports = function (app) {
         let d = q.defer();
         let util = new app.util.Util();
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GenericDAO(connection, _table);
+        let objDAO = new app.dao.ListaControleEspecialDAO(connection);
 
         let errors = [];
 
@@ -150,7 +154,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
        
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GenericDAO(connection, _table);
+        let objDAO = new app.dao.ListaControleEspecialDAO(connection);
         let errors =[];
      
         objDAO.buscaPorId(id, function(exception, result){
@@ -172,7 +176,7 @@ module.exports = function (app) {
     function salvar(obj, res){
         delete obj.id;
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GenericDAO(connection, _table);
+        let objDAO = new app.dao.ListaControleEspecialDAO(connection);
         let q = require('q');
         let d = q.defer();
 
@@ -194,7 +198,7 @@ module.exports = function (app) {
         let id = obj.id;
         delete obj.id;
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GenericDAO(connection, _table);
+        let objDAO = new app.dao.ListaControleEspecialDAO(connection);
         let q = require('q');
         let d = q.defer();
 
@@ -217,7 +221,7 @@ module.exports = function (app) {
         let d = q.defer();
         let util = new app.util.Util();
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GenericDAO(connection, _table);
+        let objDAO = new app.dao.ListaControleEspecialDAO(connection);
         let errors = [];
 
         objDAO.deletaPorId(id, function (exception, result) {
