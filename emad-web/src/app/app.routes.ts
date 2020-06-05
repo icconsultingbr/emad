@@ -41,6 +41,7 @@ const appRoutes : Routes = [
     { path: 'grupos-origens-receitas', canActivate: [AuthGuard], loadChildren: './cadastro/grupo-origem-receita/grupo-origem-receita.module#GrupoOrigemReceitaModule' },
     { path: 'sub-grupos-origens-receitas', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/sub-grupo-origem-receita/sub-grupo-origem-receita.module#SubGrupoOrigemReceitaModule' },
     { path: 'sub-grupos-materiais', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/sub-grupo-material/sub-grupo-material.module#SubGrupoMaterialModule' },
+    { path: 'familias-materiais', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/familia-material/familia-material.module#FamiliaMaterialModule' },
     
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 
