@@ -16,9 +16,9 @@ export class FabricanteMaterialService extends GenericsService {
       validator: ['', '']
     },
     {
-      field: "fabricante",
+      field: "nome",
       type: "text",
-      label: "Fabricante",
+      label: "Nome",
       grid: true,
       form: true,
       required: true,

@@ -16,8 +16,9 @@ export class LivroFormComponent implements OnInit {
   object: Livro = new Livro();
   method: String = "livro";
   fields: any[] = [];
-  label: String = "Livro";
+  label: String = "Livros";
   id: Number = null;
+  domains: any[] = [];
 
   constructor(
     fb: FormBuilder,
@@ -30,5 +31,7 @@ export class LivroFormComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.id = params['id'];
     });
+
   }
+
 }

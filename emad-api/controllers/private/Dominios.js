@@ -201,6 +201,50 @@ module.exports = function (app) {
         });
     });
         
+    app.get('/dominios/tipo-material', function(req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection);
+
+        listaDominios(dao, "Tipo de material", res).then(function(response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+        
+    app.get('/dominios/tipo-movimento', function(req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection);
+
+        listaDominios(dao, "Tipo de movimento", res).then(function(response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+        
+    app.get('/dominios/motivo-fim-receita', function(req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection);
+
+        listaDominios(dao, "Motivo fim receita", res).then(function(response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+        
+    app.get('/dominios/fabricante-material', function(req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection);
+
+        listaDominios(dao, "Fabricante de material", res).then(function(response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+        
     function listaDominios(dao, dom, res) {
         var q = require('q');
         var d = q.defer();

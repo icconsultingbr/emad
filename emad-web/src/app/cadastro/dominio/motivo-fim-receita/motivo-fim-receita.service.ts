@@ -16,9 +16,9 @@ export class MotivoFimReceitaService extends GenericsService {
       validator: ['', '']
     },
     {
-      field: "motivo",
+      field: "nome",
       type: "text",
-      label: "Motivo",
+      label: "Nome",
       grid: true,
       form: true,
       required: true,

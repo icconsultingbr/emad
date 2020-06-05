@@ -140,8 +140,8 @@ export class ProfissionalService extends GenericsService {
       label: "Órgão emissor",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required],
+      required: false,
+      validator: ['', ''],
 
     },
     {

@@ -2,6 +2,6 @@ import { Input } from "@angular/core";
 
 export class MotivoFimReceita {
     id: Number;
-    @Input() motivo: string;
+    @Input() nome: string;
     @Input() situacao: Boolean;
 }

@@ -16,8 +16,9 @@ export class FabricanteMaterialFormComponent implements OnInit {
   object: FabricanteMaterial = new FabricanteMaterial();
   method: String = "fabricante-material";
   fields: any[] = [];
-  label: String = "Fabricantes de material";
+  label: String = "Fabricante de material";
   id: Number = null;
+  domains: any[] = [];
 
   constructor(
     fb: FormBuilder,
@@ -30,5 +31,7 @@ export class FabricanteMaterialFormComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.id = params['id'];
     });
+
   }
+
 }

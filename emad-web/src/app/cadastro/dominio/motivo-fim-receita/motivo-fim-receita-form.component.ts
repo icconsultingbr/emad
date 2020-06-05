@@ -18,6 +18,7 @@ export class MotivoFimReceitaFormComponent implements OnInit {
   fields: any[] = [];
   label: String = "Motivo fim receita";
   id: Number = null;
+  domains: any[] = [];
 
   constructor(
     fb: FormBuilder,
@@ -30,5 +31,7 @@ export class MotivoFimReceitaFormComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.id = params['id'];
     });
+
   }
+
 }
