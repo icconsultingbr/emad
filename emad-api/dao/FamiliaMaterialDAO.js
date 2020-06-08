@@ -37,6 +37,11 @@ FamiliaMaterialDAO.prototype.lista = function(callback) {
                             INNER JOIN tb_sub_grupo_material subGrupoMaterial ON (a.idSubGrupoMaterial = subGrupoMaterial.id)
                             WHERE a.situacao = 1`, callback);
 }
+
+FamiliaMaterialDAO.prototype.buscarPorSubGrupoMaterial = function (id, callback) {
+    this._connection.query(`SELECT id, nome FROM ${this._table} WHERE idSubGrupoMaterial = ? and situacao = 1`,id,callback);
+}
+
 module.exports = function(){
     return FamiliaMaterialDAO;
 };
