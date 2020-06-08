@@ -1,15 +1,25 @@
 module.exports = function (app) {
 
-    const _table = "tb_grupo_material";
+    const _table = "tb_material";
 
-    app.post('/grupo-material', function(req,res){
+    app.post('/material', function(req,res){
         let obj = req.body;
         let usuario = req.usuario; 
         let util = new app.util.Util();
         let errors = [];
 
-        req.assert("nome").notEmpty().withMessage("O campo Nome é um campo obrigatório");
-        req.assert("nome").isLength({ min: 0, max: 60 }).withMessage("O campo Nome deve ter no máximo 60 caractere(s)");
+        obj.periodoDispensavel = (!obj.periodoDispensavel || obj.periodoDispensavel.trim() == "") ?  0: obj.periodoDispensavel;
+        obj.estoqueMinimo = (!obj.estoqueMinimo || obj.estoqueMinimo.trim() == "") ?  0: obj.estoqueMinimo;
+
+        req.assert("codigo").notEmpty().withMessage("O campo Código é um campo obrigatório").matches(/^[0-9]+$/).withMessage("O campo Código deve conter somente números");
+        req.assert("codigo").isLength({ min: 0, max: 9 }).withMessage("O campo Código deve ter no máximo 9 dígitos");
+        req.assert("descricao").notEmpty().withMessage("O campo Descrição é um campo obrigatório");
+        req.assert("descricao").isLength({ min: 0, max: 60 }).withMessage("O campo Descrição deve ter no máximo 60 caractere(s)");
+        req.assert("idUnidadeMaterial").notEmpty().withMessage("O campo Unidade dispensada é um campo obrigatório");
+        req.assert("periodoDispensavel").matches(/^[0-9]+$/).withMessage("O campo Período dispensável deve conter somente números");
+        req.assert("periodoDispensavel").isLength({ min: 0, max: 5 }).withMessage("O campo Período dispensável deve ter no máximo 5 dígitos");
+        req.assert("estoqueMinimo").matches(/^[0-9]+$/).withMessage("O campo Estoque mínimo deve conter somente números");
+        req.assert("estoqueMinimo").isLength({ min: 0, max: 10 }).withMessage("O campo Estoque mínimo deve ter no máximo 10 dígitos");
 
         errors = req.validationErrors();
         
@@ -33,21 +43,37 @@ module.exports = function (app) {
         }
     });
 
-    app.put('/grupo-material', function(req,res){
+    app.put('/material', function(req,res){
         let obj = req.body;
         let usuario = req.usuario; 
         let util = new app.util.Util();
         let errors = [];
 
-        req.assert("nome").notEmpty().withMessage("O campo Nome é um campo obrigatório");
-        req.assert("nome").isLength({ min: 0, max: 60 }).withMessage("O campo Nome deve ter no máximo 60 caractere(s)");
-        
+        obj.periodoDispensavel = (!obj.periodoDispensavel || obj.periodoDispensavel.trim() == "") ?  0: obj.periodoDispensavel;
+        obj.estoqueMinimo = (!obj.estoqueMinimo || obj.estoqueMinimo.trim() == "") ?  0: obj.estoqueMinimo;        
+
+        req.assert("codigo").notEmpty().withMessage("O campo Código é um campo obrigatório").matches(/^[0-9]+$/).withMessage("O campo Código deve conter somente números");
+        req.assert("codigo").isLength({ min: 0, max: 9 }).withMessage("O campo Código deve ter no máximo 9 dígitos");
+        req.assert("descricao").notEmpty().withMessage("O campo Descrição é um campo obrigatório");
+        req.assert("descricao").isLength({ min: 0, max: 60 }).withMessage("O campo Descrição deve ter no máximo 60 caractere(s)");
+        req.assert("idUnidadeMaterial").notEmpty().withMessage("O campo Unidade dispensada é um campo obrigatório");
+        req.assert("periodoDispensavel").matches(/^[0-9]+$/).withMessage("O campo Período dispensável deve conter somente números");
+        req.assert("periodoDispensavel").isLength({ min: 0, max: 5 }).withMessage("O campo Período dispensável deve ter no máximo 5 dígitos");
+        req.assert("estoqueMinimo").matches(/^[0-9]+$/).withMessage("O campo Estoque mínimo deve conter somente números");
+        req.assert("estoqueMinimo").isLength({ min: 0, max: 10 }).withMessage("O campo Estoque mínimo deve ter no máximo 10 dígitos");
+
         errors = req.validationErrors();
         
         if(errors){
             res.status(400).send(errors);
             return; 
         }
+
+        obj.idTipoMaterial = (!obj.idTipoMaterial) ? null : obj.idTipoMaterial;
+        obj.idFamiliaMaterial = (!obj.idFamiliaMaterial) ? null : obj.idFamiliaMaterial;
+        obj.idSubGrupoMaterial = (!obj.idSubGrupoMaterial) ? null : obj.idSubGrupoMaterial;
+        obj.idGrupoMaterial = (!obj.idGrupoMaterial) ? null : obj.idGrupoMaterial;
+        obj.idListaControleEspecial = (!obj.idListaControleEspecial) ? null : obj.idListaControleEspecial;
 
         obj.dataAlteracao = new Date;
         obj.idUsuarioAlteracao = usuario.id;
@@ -64,7 +90,7 @@ module.exports = function (app) {
         }
     });
    
-    app.get('/grupo-material', function (req, res) {
+    app.get('/material', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
@@ -81,27 +107,8 @@ module.exports = function (app) {
         }
     });
 
-    app.get('/grupo-material/estabelecimento/:idEstabelecimento', function (req, res) {
-        let usuario = req.usuario;
-        let util = new app.util.Util();
-        let errors = [];
-        let idEstabelecimento = req.params.idEstabelecimento;        
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscaSemVinculoEstabelecimento(idEstabelecimento, res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
-    });
-
-    
-
-    app.get('/grupo-material/:id', function(req,res){        
+    app.get('/material/:id', function(req,res){        
         let usuario = req.usuario;
         let id = req.params.id;
         let util = new app.util.Util();
@@ -120,7 +127,7 @@ module.exports = function (app) {
         }
     }); 
 
-    app.delete('/grupo-material/:id', function(req,res){     
+    app.delete('/material/:id', function(req,res){     
         let util = new app.util.Util();
         let usuario = req.usuario;
         let errors = [];
@@ -145,34 +152,11 @@ module.exports = function (app) {
         let d = q.defer();
         let util = new app.util.Util();
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GrupoMaterialDAO(connection, _table);
+        let objDAO = new app.dao.MaterialDAO(connection);
 
         let errors = [];
 
         objDAO.lista(function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-    function buscaSemVinculoEstabelecimento(idEstabelecimento, res) {
-        let q = require('q');
-        let d = q.defer();
-        let util = new app.util.Util();
-        let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GrupoMaterialDAO(connection, _table);
-
-        let errors = [];
-
-        objDAO.buscaSemVinculoEstabelecimento(idEstabelecimento, function (exception, result) {
             if (exception) {
                 d.reject(exception);
                 console.log(exception);
@@ -192,7 +176,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
        
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GrupoMaterialDAO(connection, _table);
+        let objDAO = new app.dao.MaterialDAO(connection);
         let errors =[];
      
         objDAO.buscaPorId(id, function(exception, result){
@@ -214,7 +198,7 @@ module.exports = function (app) {
     function salvar(obj, res){
         delete obj.id;
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GrupoMaterialDAO(connection, _table);
+        let objDAO = new app.dao.MaterialDAO(connection);
         let q = require('q');
         let d = q.defer();
 
@@ -236,7 +220,7 @@ module.exports = function (app) {
         let id = obj.id;
         delete obj.id;
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GrupoMaterialDAO(connection, _table);
+        let objDAO = new app.dao.MaterialDAO(connection);
         let q = require('q');
         let d = q.defer();
 
@@ -259,7 +243,7 @@ module.exports = function (app) {
         let d = q.defer();
         let util = new app.util.Util();
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GrupoMaterialDAO(connection, _table);
+        let objDAO = new app.dao.MaterialDAO(connection);
         let errors = [];
 
         objDAO.deletaPorId(id, function (exception, result) {

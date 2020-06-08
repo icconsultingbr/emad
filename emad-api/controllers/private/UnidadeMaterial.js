@@ -1,15 +1,17 @@
 module.exports = function (app) {
 
-    const _table = "tb_grupo_material";
+    const _table = "tb_unidade_material";
 
-    app.post('/grupo-material', function(req,res){
+    app.post('/unidade-material', function(req,res){
         let obj = req.body;
         let usuario = req.usuario; 
         let util = new app.util.Util();
         let errors = [];
 
         req.assert("nome").notEmpty().withMessage("O campo Nome é um campo obrigatório");
-        req.assert("nome").isLength({ min: 0, max: 60 }).withMessage("O campo Nome deve ter no máximo 60 caractere(s)");
+        req.assert("nome").isLength({ min: 0, max: 10 }).withMessage("O campo Nome deve ter no máximo 10 caractere(s)");
+        req.assert("descricao").notEmpty().withMessage("O campo Descrição é um campo obrigatório");
+        req.assert("descricao").isLength({ min: 0, max: 20 }).withMessage("O campo Descrição deve ter no máximo 20 caractere(s)");
 
         errors = req.validationErrors();
         
@@ -33,14 +35,16 @@ module.exports = function (app) {
         }
     });
 
-    app.put('/grupo-material', function(req,res){
+    app.put('/unidade-material', function(req,res){
         let obj = req.body;
         let usuario = req.usuario; 
         let util = new app.util.Util();
         let errors = [];
 
         req.assert("nome").notEmpty().withMessage("O campo Nome é um campo obrigatório");
-        req.assert("nome").isLength({ min: 0, max: 60 }).withMessage("O campo Nome deve ter no máximo 60 caractere(s)");
+        req.assert("nome").isLength({ min: 0, max: 10 }).withMessage("O campo Nome deve ter no máximo 10 caractere(s)");
+        req.assert("descricao").notEmpty().withMessage("O campo Descrição é um campo obrigatório");
+        req.assert("descricao").isLength({ min: 0, max: 20 }).withMessage("O campo Descrição deve ter no máximo 20 caractere(s)");
         
         errors = req.validationErrors();
         
@@ -64,7 +68,7 @@ module.exports = function (app) {
         }
     });
    
-    app.get('/grupo-material', function (req, res) {
+    app.get('/unidade-material', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
@@ -81,27 +85,8 @@ module.exports = function (app) {
         }
     });
 
-    app.get('/grupo-material/estabelecimento/:idEstabelecimento', function (req, res) {
-        let usuario = req.usuario;
-        let util = new app.util.Util();
-        let errors = [];
-        let idEstabelecimento = req.params.idEstabelecimento;        
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscaSemVinculoEstabelecimento(idEstabelecimento, res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
-    });
-
-    
-
-    app.get('/grupo-material/:id', function(req,res){        
+    app.get('/unidade-material/:id', function(req,res){        
         let usuario = req.usuario;
         let id = req.params.id;
         let util = new app.util.Util();
@@ -120,7 +105,7 @@ module.exports = function (app) {
         }
     }); 
 
-    app.delete('/grupo-material/:id', function(req,res){     
+    app.delete('/unidade-material/:id', function(req,res){     
         let util = new app.util.Util();
         let usuario = req.usuario;
         let errors = [];
@@ -145,34 +130,11 @@ module.exports = function (app) {
         let d = q.defer();
         let util = new app.util.Util();
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GrupoMaterialDAO(connection, _table);
+        let objDAO = new app.dao.GenericDAO(connection, _table);
 
         let errors = [];
 
         objDAO.lista(function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-    function buscaSemVinculoEstabelecimento(idEstabelecimento, res) {
-        let q = require('q');
-        let d = q.defer();
-        let util = new app.util.Util();
-        let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GrupoMaterialDAO(connection, _table);
-
-        let errors = [];
-
-        objDAO.buscaSemVinculoEstabelecimento(idEstabelecimento, function (exception, result) {
             if (exception) {
                 d.reject(exception);
                 console.log(exception);
@@ -192,7 +154,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
        
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GrupoMaterialDAO(connection, _table);
+        let objDAO = new app.dao.GenericDAO(connection, _table);
         let errors =[];
      
         objDAO.buscaPorId(id, function(exception, result){
@@ -214,7 +176,7 @@ module.exports = function (app) {
     function salvar(obj, res){
         delete obj.id;
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GrupoMaterialDAO(connection, _table);
+        let objDAO = new app.dao.GenericDAO(connection, _table);
         let q = require('q');
         let d = q.defer();
 
@@ -236,7 +198,7 @@ module.exports = function (app) {
         let id = obj.id;
         delete obj.id;
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GrupoMaterialDAO(connection, _table);
+        let objDAO = new app.dao.GenericDAO(connection, _table);
         let q = require('q');
         let d = q.defer();
 
@@ -259,7 +221,7 @@ module.exports = function (app) {
         let d = q.defer();
         let util = new app.util.Util();
         let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GrupoMaterialDAO(connection, _table);
+        let objDAO = new app.dao.GenericDAO(connection, _table);
         let errors = [];
 
         objDAO.deletaPorId(id, function (exception, result) {

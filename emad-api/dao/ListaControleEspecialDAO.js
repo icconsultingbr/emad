@@ -19,6 +19,10 @@ ListaControleEspecialDAO.prototype.buscaDominio = function (callback) {
     this._connection.query(`SELECT id, nome FROM ${this._table} WHERE situacao = 1`, callback);
 }
 
+ListaControleEspecialDAO.prototype.dominio = function (callback) {
+    this._connection.query(`SELECT id, listaControleEspecial as nome FROM ${this._table} WHERE situacao = 1`, callback);
+}
+
 ListaControleEspecialDAO.prototype.deletaPorId = function (id,callback) {
     this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
 }

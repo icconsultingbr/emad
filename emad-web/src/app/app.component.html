@@ -46,7 +46,7 @@
                                 <div *ngFor="let menu2 of menus">
 
                                     <li *ngIf="menu2.invisivel==false && menu2.menuPai==menu.id" class="nav-item"
-                                        style="margin-left: 26px">
+                                        style="margin-left: 39px">
                                         <a *ngIf="menu2.rota!='#'" class="nav-link"
                                             [ngClass]="route==menu2.rota?'active':''" [routerLink]="menu2.rota"
                                             (click)="ativo=false">
@@ -67,7 +67,7 @@
                                                 <div *ngFor="let menu3 of menus">
 
                                                     <li *ngIf="menu3.invisivel==false && menu3.menuPai==menu2.id"
-                                                        class="nav-item" style="margin-left: 26px">
+                                                        class="nav-item" style="margin-left: 52px">
                                                         <a *ngIf="menu3.rota!='#'" class="nav-link"
                                                             [ngClass]="route==menu3.rota?'active':''"
                                                             [routerLink]="menu3.rota" (click)="ativo=false">
