@@ -56,6 +56,28 @@ MaterialDAO.prototype.lista = function(callback) {
                             LEFT JOIN tb_tipo_material tipoMaterial ON (a.idTipoMaterial = tipoMaterial.id)
                             WHERE a.situacao = 1`, callback);
 }
+
+MaterialDAO.prototype.listaPorDescricao = function(addFilter, callback) {      
+    let where = "";
+
+    if(addFilter != null){   
+        if (addFilter.descricao) {
+            where+=" AND a.descricao LIKE '%"+addFilter.descricao+"%'";
+        }
+    }
+
+    this._connection.query(`SELECT
+                             a.id
+                            ,a.codigo
+                            ,a.descricao
+                            ,a.idUnidadeMaterial
+                            ,unidadeMaterial.nome nomeUnidadeMaterial
+                            FROM ${this._table} a
+                            INNER JOIN tb_unidade_material unidadeMaterial ON (a.idUnidadeMaterial = unidadeMaterial.id)
+                            WHERE a.situacao = 1 ${where} 
+                            ORDER BY a.id DESC`, callback);
+}
+
 module.exports = function(){
     return MaterialDAO;
 };

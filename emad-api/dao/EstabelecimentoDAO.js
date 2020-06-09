@@ -11,7 +11,6 @@ EstabelecimentoDAO.prototype.atualiza = function(estabelecimento, id, callback) 
     this._connection.query(`UPDATE ${this._table} SET geom = POINT(?, ?), ? WHERE id= ?`, [estabelecimento.longitude, estabelecimento.latitude, estabelecimento, id], callback);
 }
 
-
 EstabelecimentoDAO.prototype.listaPorUsuario = function(id, callback) {
     
     this._connection.query(`select t.* FROM ${this._table} as t 
@@ -19,8 +18,12 @@ EstabelecimentoDAO.prototype.listaPorUsuario = function(id, callback) {
     WHERE eu.idUsuario = ? ORDER BY t.nomeFantasia ASC`,id, callback);
 }
 
-EstabelecimentoDAO.prototype.lista = function(addFilter, callback) {
+EstabelecimentoDAO.prototype.listaEstabelecimentosNivelSuperior = function(id, callback) {    
+    this._connection.query(`select e.id, e.razaoSocial as nome FROM ${this._table} as e     
+    WHERE e.situacao = 1 and nivelSuperior = 1 and e.id <> ? ORDER BY e.nomeFantasia ASC`,id, callback);
+}
 
+EstabelecimentoDAO.prototype.lista = function(addFilter, callback) {
     let where = "";
 
     if(addFilter != null){       
@@ -73,7 +76,9 @@ EstabelecimentoDAO.prototype.lista = function(addFilter, callback) {
         longitude,
         e.idUnidadeCorrespondenteDim,
         e.idUnidadePesquisaMedicamentoDim,
-        e.idUnidadeRegistroReceitaDim   
+        e.idUnidadeRegistroReceitaDim,
+        e.nivelSuperior,
+        e.idEstabelecimentoNivelSuperior   
     FROM 
         tb_estabelecimento AS e 
     INNER JOIN 

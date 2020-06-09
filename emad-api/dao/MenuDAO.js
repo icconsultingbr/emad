@@ -57,7 +57,7 @@ MenuDAO.prototype.listaOrdemMenuFilhoPorMenuPai = function(idMenuPai, callback) 
             (select b.id, b.nome from (select ordem as id, CONCAT(@row_num:= @row_num + 1,'-',nome) nome from tb_menu tm, (SELECT @row_num:= 0 AS num) AS c where menuPai=? order by ordem) b
             union
             select COALESCE(max(ordem),0)+1 as id, CONCAT(COUNT(*)+1, '- Vazio') nome from tb_menu tm where menuPai=?) a
-            order by a.nome asc`, 
+            order by CAST(a.nome AS UNSIGNED INTEGER) asc`, 
             [idMenuPai,idMenuPai], callback);
         }
     else{
@@ -66,7 +66,7 @@ MenuDAO.prototype.listaOrdemMenuFilhoPorMenuPai = function(idMenuPai, callback) 
                 (select b.id, b.nome from (select ordem as id, CONCAT(@row_num:= @row_num + 1,'-',nome) nome from tb_menu tm, (SELECT @row_num:= 0 AS num) AS c where menuPai is null order by ordem) b
                 union
                 select COALESCE(max(ordem),0)+1 as id, CONCAT(COUNT(*)+1, '- Vazio') nome from tb_menu tm where menuPai is null) a
-                order by a.nome asc`, callback);
+                order by CAST(a.nome AS UNSIGNED INTEGER) asc`, callback);
         }
 }
 
