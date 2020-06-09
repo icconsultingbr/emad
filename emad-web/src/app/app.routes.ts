@@ -46,7 +46,9 @@ const appRoutes : Routes = [
     { path: 'tipos-movimentos', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/tipo-movimento/tipo-movimento.module#TipoMovimentoModule' },
     { path: 'listas-controles-especiais', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/lista-controle-especial/lista-controle-especial.module#ListaControleEspecialModule' },
     { path: 'estabelecimentos-grupos-materiais', canActivate: [AuthGuard], loadChildren: './seguranca/estabelecimento-grupo-material/estabelecimento-grupo-material.module#EstabelecimentoGrupoMaterialModule' },
-    
+    { path: 'materiais', canActivate: [AuthGuard], loadChildren: './cadastro/material/material.module#MaterialModule' },
+    { path: 'unidades-materiais', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/unidade-material/unidade-material.module#UnidadeMaterialModule' },
+
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 
 ];
