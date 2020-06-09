@@ -38,21 +38,23 @@ export class EstabelecimentoFormComponent implements OnInit {
   loadDomains() {
     this.service.listDomains('uf').subscribe(ufs => {
       this.service.listDomains('tipo-unidade').subscribe(tipos => {  
-        this.domains.push({
-          idUf: ufs,
-          idMunicipio: [],
-          idTipoUnidade: tipos,
-          grauDependencia: [
-            { id: "I", nome: "Individual" },
-            { id: "M", nome: "Mantida" }
-          ],
-          esferaAdministradora: [
-            { id: "E", nome: "Estadual" },
-            { id: "F", nome: "Federal" },
-            { id: "M", nome: "Municipal" }
-          ]
+        this.service.list('estabelecimento/nivel-superior/' + this.id).subscribe(estabelecimentos => {
+          this.domains.push({
+            idUf: ufs,
+            idMunicipio: [],
+            idTipoUnidade: tipos,
+            grauDependencia: [
+              { id: "I", nome: "Individual" },
+              { id: "M", nome: "Mantida" }
+            ],
+            esferaAdministradora: [
+              { id: "E", nome: "Estadual" },
+              { id: "F", nome: "Federal" },
+              { id: "M", nome: "Municipal" }
+            ],
+            idEstabelecimentoNivelSuperior: estabelecimentos
+          });
         });
-
       });
     });
   }

@@ -257,7 +257,26 @@ export class EstabelecimentoService extends GenericsService {
       form: true,
       required: true,
       validator: ['', Validators.required]
-    }, 
+    },     
+    {
+      field: "nivelSuperior",
+      type: "checkbox",
+      label: "Nível superior",
+      grid: true,
+      form: true,
+      required: false,
+      translate: {1: "Sim", 0: "Não"},
+      validator: ['', '']
+    },
+    {
+      field: "idEstabelecimentoNivelSuperior",
+      type: "select",
+      label: "Estabelecimento superior",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
     {
       field: "situacao",
       type: "checkbox",
