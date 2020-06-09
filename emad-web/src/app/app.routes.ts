@@ -48,7 +48,8 @@ const appRoutes : Routes = [
     { path: 'estabelecimentos-grupos-materiais', canActivate: [AuthGuard], loadChildren: './seguranca/estabelecimento-grupo-material/estabelecimento-grupo-material.module#EstabelecimentoGrupoMaterialModule' },
     { path: 'materiais', canActivate: [AuthGuard], loadChildren: './cadastro/material/material.module#MaterialModule' },
     { path: 'unidades-materiais', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/unidade-material/unidade-material.module#UnidadeMaterialModule' },
-
+    { path: 'especialidades-materiais', canActivate: [AuthGuard], loadChildren: './cadastro/especialidade-material/especialidade-material.module#EspecialidadeMaterialModule' },
+    
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 
 ];
