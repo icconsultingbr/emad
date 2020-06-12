@@ -8,16 +8,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
-            carregaQtdAtendimentosPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
-                res.status(200).json(response);
-                return;      
-            });
-        }
-        else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        carregaQtdAtendimentosPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
+            res.status(200).json(response);
+            return;      
+        });
     }); 
 
     app.get('/atendimentos-por-periodo', function(req,res){        
@@ -28,16 +22,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
-            carregaAtendimentosPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
-                res.status(200).json(response);
-                return;      
-            });
-        }
-        else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        carregaAtendimentosPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
+            res.status(200).json(response);
+            return;      
+        });
     }); 
 
     app.get('/medicamentos-quantidade', function(req,res){        
@@ -48,16 +36,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
-            carregaQtdMedicamentosPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
-                res.status(200).json(response);
-                return;      
-            });
-        }
-        else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        carregaQtdMedicamentosPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
+            res.status(200).json(response);
+            return;      
+        });
     }); 
 
     app.get('/medicamentos-por-periodo', function(req,res){        
@@ -68,16 +50,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
-            carregaMedicamentosPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
-                res.status(200).json(response);
-                return;      
-            });
-        }
-        else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        carregaMedicamentosPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
+            res.status(200).json(response);
+            return;      
+        });
     }); 
 
     app.get('/medicamentos-por-periodo', function(req,res){        
@@ -88,16 +64,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
-            carregaMedicamentosPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
-                res.status(200).json(response);
-                return;      
-            });
-        }
-        else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        carregaMedicamentosPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
+            res.status(200).json(response);
+            return;      
+        });
     }); 
 
     app.get('/tipo-atendimento-por-periodo', function(req,res){        
@@ -108,16 +78,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
-            carregaTipoAtendimentoPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
-                res.status(200).json(response);
-                return;      
-            });
-        }
-        else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        carregaTipoAtendimentoPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
+            res.status(200).json(response);
+            return;      
+        });
     }); 
 
     app.get('/tipo-atendimento-existente-por-periodo', function(req,res){        
@@ -128,16 +92,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
-            carregaTipoAtendimentoExistentesPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
-                res.status(200).json(response);
-                return;      
-            });
-        }
-        else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        carregaTipoAtendimentoExistentesPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
+            res.status(200).json(response);
+            return;      
+        });
     }); 
          
     app.get('/atendimento-situacao-por-periodo', function(req,res){        
@@ -148,16 +106,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
-            carregaAtendimentoSituacaoPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
-                res.status(200).json(response);
-                return;      
-            });
-        }
-        else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        carregaAtendimentoSituacaoPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
+            res.status(200).json(response);
+            return;      
+        });
     }); 
 
     app.get('/atendimento-situacao-existente-por-periodo', function(req,res){        
@@ -168,16 +120,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
-            carregaAtendimentoSituacaoExistentesPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
-                res.status(200).json(response);
-                return;      
-            });
-        }
-        else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        carregaAtendimentoSituacaoExistentesPorPeriodo(periodo, idEstabelecimento, res).then(function(response) {
+            res.status(200).json(response);
+            return;      
+        });
     }); 
 
     function carregaQtdAtendimentosPorPeriodo(periodo, idEstabelecimento, res) {

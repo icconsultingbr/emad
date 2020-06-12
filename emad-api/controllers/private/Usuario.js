@@ -328,7 +328,6 @@ module.exports = function (app) {
         });
     });
 
-
     app.get('/usuario/validaToken', function (req, res) {
         res.status(200).json({ success: true });
     });
@@ -339,19 +338,11 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
-            listaPorTipoUsuario(idTipoUsuario, res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        listaPorTipoUsuario(idTipoUsuario, res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
     });
-
-
 
     app.put('/usuario/redefinir-senha', function (req, res) {
         var util = new app.util.Util();

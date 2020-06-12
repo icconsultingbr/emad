@@ -6,15 +6,10 @@ module.exports = function (app) {
         let errors = [];
         let addFilter = req.query;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            lista(addFilter, res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        lista(addFilter, res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
     });
 
     app.get('/caneta/:id', function (req, res) {
@@ -23,15 +18,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarPorId(id, res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        buscarPorId(id, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
 
@@ -46,16 +36,11 @@ module.exports = function (app) {
 
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarPorEstabelecimento(idEstabelecimento, dataInicial, horaInicial, dataFinal, horaFinal, res).then(function (response) {
-                console.log(response);
-                res.status(200).json(response);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        buscarPorEstabelecimento(idEstabelecimento, dataInicial, horaInicial, dataFinal, horaFinal, res).then(function (response) {
+            console.log(response);
+            res.status(200).json(response);
+            return;
+        });
     }); 
 
 
@@ -66,8 +51,6 @@ module.exports = function (app) {
         var errors = [];
         let idEstabelecimento = req.params.idEstabelecimento;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            
             req.assert("idModeloCaneta").notEmpty().withMessage("Modelo é um campo obrigatório");
             req.assert("serialNumber").notEmpty().withMessage("Serial number é um campo obrigatório").isLength({ min: 1, max: 15 }).withMessage("Serial number deve ter no máximo 15 caracteres");
             req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório");
@@ -85,12 +68,7 @@ module.exports = function (app) {
             salva(obj, res).then(function(response) {
                 obj.id = response.insertId;
                 res.status(201).send(obj);
-            });  
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+            }); 
     });
 
     app.put('/caneta', function (req, res) {
@@ -99,9 +77,6 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
         let id = obj.id;
-
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-
 
             req.assert("idModeloCaneta").notEmpty().withMessage("Modelo é um campo obrigatório");
             req.assert("serialNumber").notEmpty().withMessage("Serial number é um campo obrigatório").isLength({ min: 1, max: 15 }).withMessage("Serial number deve ter no máximo 15 caracteres");
@@ -118,10 +93,6 @@ module.exports = function (app) {
                 id = id;
                 res.status(201).send(obj);
             });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
     });
 
     app.delete('/caneta/:id', function (req, res) {
@@ -132,16 +103,10 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            deletaPorId(id, res).then(function (response) {
-                res.status(200).json(obj);
-                return;
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        deletaPorId(id, res).then(function (response) {
+            res.status(200).json(obj);
+            return;
+        });
     });
 
     function buscarPorEstabelecimento(estabelecimento, dataInicial, horaInicial, dataFinal, horaFinal, res) {

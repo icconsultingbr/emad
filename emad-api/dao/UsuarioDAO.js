@@ -181,8 +181,13 @@ UsuarioDAO.prototype.listaUsuarioSemProfissional = function(idProfissional, idEs
     and exists (select 1 from tb_estabelecimento_usuario eu where eu.idUsuario = tu.id and eu.idEstabelecimento = ?) ORDER BY tu.nome ASC`,idEstabelecimento, callback);
 }
 
+UsuarioDAO.prototype.listaPorTipoUsuario = function (idTipoUsuario, callback) {
+    this._connection.query(`select 
+        id, 
+        nome
+        FROM ${this._table} WHERE idTipoUsuario = ?`, [idTipoUsuario], callback);
+}
+
 module.exports = function () {
     return UsuarioDAO;
 };
-
-//and idTipoUsuario<>3 

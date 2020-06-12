@@ -1,28 +1,17 @@
 module.exports = function (app) {
-
     app.get('/notificacao', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            lista(res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        lista(res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
     });
 
     app.get('/notificacao/usuario', function (req, res) {
-
-
         console.log(req.usuario);
-
-
         let usuario = req.usuario;
         listaPorUsuarioId(usuario.id, res).then(function (resposne) {
             res.status(200).json(resposne);
@@ -39,23 +28,16 @@ module.exports = function (app) {
         });
     });
 
-
     app.get('/notificacao/:id(\\d+)', function (req, res) {
         let usuario = req.usuario;
         let id = req.params.id;
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN || usuario.id == id) {
-            buscarPorId(id, res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        buscarPorId(id, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
     app.delete('/notificacao/:id', function (req, res) { 
@@ -66,16 +48,10 @@ module.exports = function (app) {
         let notificacao = {};
         notificacao.id = id;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            deletaPorId(id, res).then(function (response) {
-                res.status(200).json(notificacao);
-                return;
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        deletaPorId(id, res).then(function (response) {
+            res.status(200).json(notificacao);
+            return;
+        });
     });
 
     app.put('/notificacao', function (req, res) {
@@ -147,28 +123,12 @@ module.exports = function (app) {
         obj.dataCriacao = new Date;
         var errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            salvaNotificacao(obj, res).then(function (response) {
-                obj.id = response.insertId;
-                geraNotificacoesUsuarios(obj, res).then(function (response2) {
-                    res.status(201).send(obj);
-                });
+        salvaNotificacao(obj, res).then(function (response) {
+            obj.id = response.insertId;
+            geraNotificacoesUsuarios(obj, res).then(function (response2) {
+                res.status(201).send(obj);
             });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
-
-
-
-
-
-
-
-
-
-
+        });
     });
 
     function listaPorUsuarioId(id, res) {
@@ -182,8 +142,6 @@ module.exports = function (app) {
 
         notificacaoDAO.listaPorUsuarioId(id, function (exception, result) {
             if (exception) {
-
-
                 d.reject(exception);
                 console.log(exception);
                 errors = util.customError(errors, "data", "Erro ao acessar os dados", "planos");
@@ -218,7 +176,6 @@ module.exports = function (app) {
         });
         return d.promise;
     }
-
 
     function lista(res) {
         var q = require('q');

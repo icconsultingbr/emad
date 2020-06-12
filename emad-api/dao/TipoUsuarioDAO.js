@@ -8,6 +8,10 @@ TipoUsuarioDAO.prototype.lista = function(callback) {
     this._connection.query("select * FROM "+this._table+" WHERE situacao = 1 ORDER BY nome ASC",callback);
 }
 
+TipoUsuarioDAO.prototype.dominio = function(callback) {
+    this._connection.query("select id, nome FROM "+this._table+" WHERE situacao = 1 ORDER BY nome ASC",callback);
+}
+
 TipoUsuarioDAO.prototype.listaTipoUsuarioProfissional = function(callback) {
     this._connection.query("select * FROM "+this._table+" WHERE situacao = 1 and id in (1,2) ORDER BY nome ASC",callback);
 }

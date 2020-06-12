@@ -41,5 +41,6 @@ export class Paciente {
     @Input() numeroProntuario: String = null ;
     @Input() numeroProntuarioCnes: String = null ;
     @Input() falecido: Boolean = null ;
+    @Input() idAtencaoContinuada: String = null ;
     @Input() idEstabelecimentoCadastro : Number = +JSON.parse(localStorage.getItem("est"))[0].id;
 }

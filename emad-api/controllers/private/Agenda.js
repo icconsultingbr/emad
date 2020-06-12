@@ -16,17 +16,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarPorId(id, res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        buscarPorId(id, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
     app.delete('/agenda/:id', function(req,res){     
@@ -37,16 +30,10 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
         
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){	
-            deletaPorId(id, res).then(function(response) {
-                res.status(200).json(obj);
-                return;      
-            });
-
-        } else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        deletaPorId(id, res).then(function(response) {
+            res.status(200).json(obj);
+            return;      
+        });
     });
 
     app.post('/agenda', function (req, res) {
@@ -98,18 +85,10 @@ module.exports = function (app) {
         json.situacao = 1;
         json.idEstabelecimento = obj.idEstabelecimento;
 
-
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            salvar(json, res).then(function (response) {
-                json.id = response.insertId;
-                res.status(201).send(json);
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
-
+        salvar(json, res).then(function (response) {
+            json.id = response.insertId;
+            res.status(201).send(json);
+        });
     });
 
     app.put('/agenda', function (req, res) {
@@ -161,17 +140,9 @@ module.exports = function (app) {
         json.observacoes = obj.observacoes;
         json.situacao = 1;
 
-
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            editar(json, res).then(function (response) {
-                res.status(201).send(response);
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
-
+        editar(json, res).then(function (response) {
+            res.status(201).send(response);
+        });
     });
 
     function listaAgendas(addFilter, dom, res) {

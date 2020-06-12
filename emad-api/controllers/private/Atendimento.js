@@ -55,16 +55,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarPorId(id, res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(400).send(errors);
-        }
+        buscarPorId(id, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
     app.get('/atendimento/paciente/:id/:idEstabelecimento', function (req, res) {
@@ -74,16 +68,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscaPorPacienteId(id, usuario, idEstabelecimento, res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(400).send(errors);
-        }
+        buscaPorPacienteId(id, usuario, idEstabelecimento, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
     app.post('/atendimento', function (req, res) {
@@ -93,18 +81,16 @@ module.exports = function (app) {
         delete obj.pacienteNome;
         obj.idUsuario = usuario.id;
         obj.idUsuarioAlteracao = null;
-        var errors = [];
         let idEstabelecimento = req.headers.est;
         let mail = new app.util.Mail();
 
         if(!obj.situacao)
             obj.situacao = "C";
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-
             req.assert("idPaciente").notEmpty().withMessage("Paciente um campo obrigatório;");
             req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
             req.assert("tipoFicha").notEmpty().withMessage("Tipo de ficha é um campo obrigatório;");
+            req.assert("idClassificacaoRisco").notEmpty().withMessage("Classificação de risco é um campo obrigatório;");
 
             let errors = req.validationErrors();
 
@@ -148,68 +134,55 @@ module.exports = function (app) {
                     urlFicha = responseURL.filter((url) => url.NOME == "URL_FICHA_DIGITAL_SERVICO")[0].VALOR;
                     emailRemetente = responseURL.filter((url) => url.NOME == "CONTA_EMAIL")[0].VALOR;
                     senhaRemetente = responseURL.filter((url) => url.NOME == "SENHA_EMAIL")[0].VALOR;                    
-                    return buscaTemplatePorTipoFicha(obj.tipoFicha, res);                
+                    return buscaEmailPaciente(obj.idPaciente, res);                
                 }
                 else {
                     errors = util.customError(errors, "FICHA DIGITAL", "URL para envio da ficha digital não foi encontrada", null);
                     return Promise.reject(errors);    
                 }
+            }).then(function (responseEmailPaciente) {
+                if (responseEmailPaciente) {                    
+                    console.log(responseEmailPaciente.email);
+
+                    if(responseEmailPaciente.email != null){
+                        obj.email = responseEmailPaciente.email;
+                        mail.enviaEmailFicha(obj, emailRemetente, senhaRemetente, "Abertura de atendimento", "createTreatment.html");
+                        return buscaTemplatePorTipoFicha(obj.tipoFicha, res); 
+                    }
+                    else{                        
+                        return buscaTemplatePorTipoFicha(obj.tipoFicha, res); 
+                    }                       
+                }
+                else {
+                    errors = util.customError(errors, "FICHA DIGITAL", "Erro ao buscar o e-mail do paciente", status);
+                    return Promise.reject(errors);    
+                }
             }).then(function (template) {
-                if (template) {                    
+                if (template.queryTemplate != null && template.xmlTemplate  != null) {                    
                     templateFicha = template;
+                    obj.templateFicha = templateFicha;
                     return buscaDadosEnvioFicha(templateFicha.queryTemplate, obj.id);
                 }
                 else {
-                    errors = util.customError(errors, "TEMPLATE FICHA", "Template da ficha digital não foi encontrado", null);
-                    return Promise.reject(errors);    
+                    res.status(201).json(obj);
+                    return Promise.resolve(obj);
                 }
             }).then(function (dadosFicha) {
-                if (dadosFicha) {
-                    emailPaciente = dadosFicha.emailPaciente;
+                if (dadosFicha != null  && obj.templateFicha.queryTemplate != null && obj.templateFicha.xmlTemplate  != null) {                          
+                    obj.dadosFicha = dadosFicha;              
                     var client = new app.services.FichaDigitalService();
                     return client.enviaFicha(dadosFicha, urlFicha, templateFicha.xmlTemplate);
                 }
                 else {
-                    errors = util.customError(errors, "TEMPLATE FICHA", "TEMPLATE DA FICHA DIGITAL NÃO ENCONTRADA", null);
-                    return Promise.reject(errors);    
+                    res.status(201).json(obj);
+                    return Promise.resolve(obj); 
                 }
             }).then(function (status) {
-                if (status == 200) {
-                    console.log("STATUS" + status);
-                    console.log(emailPaciente);
-
-                    if(emailPaciente != null){
-                        obj.email = emailPaciente;
-                        return mail.enviaEmailFicha(obj, emailRemetente, senhaRemetente, "Abertura de atendimento", "createTreatment.html");
-                    }
-                    else{
-                        console.log(dadosPaciente.email);                
-                        res.status(201).json(obj);
-                        return;
-                    }                       
-                }
-                else {
-                    errors = util.customError(errors, "FICHA DIGITAL", "Erro ao criar a ficha digital", status);
-                    return Promise.reject(errors);    
-                }
-            })
-            .then(function (responseEnvioEmail) {
-                if(responseEnvioEmail){
-                    res.status(201).json(obj);
-                    return;
-                }
-                else{
-                    errors = util.customError(errors, "ENVIO FICHA DIGITAL", "Erro no envio do e-mail de abertura do atendimento", null);
-                    return Promise.reject(errors);    
-                } 
+                res.status(201).json(obj);
+                return Promise.resolve(obj);                
             }).catch(function(error) {
                 return res.status(400).json(error);
             });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(400).send(errors);
-        }
     });
 
     app.put('/atendimento/parar-atendimento', function (req, res) {
@@ -223,9 +196,7 @@ module.exports = function (app) {
         obj.idUsuarioAlteracao = usuario.id;
         delete obj.idUsuario;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-
-            req.assert("tipo").notEmpty().withMessage("Tipo um campo obrigatório;");
+        req.assert("tipo").notEmpty().withMessage("Tipo um campo obrigatório;");
 
             if(obj.tipo == "X")
                 req.assert("motivoCancelamento").notEmpty().withMessage("Motivo do cancelamento é obrigatório;");
@@ -261,10 +232,6 @@ module.exports = function (app) {
                     return;
                 }
             })
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(400).send(errors);
-        }
     });
 
     app.put('/atendimento', function (req, res) {
@@ -279,11 +246,10 @@ module.exports = function (app) {
         obj.idUsuarioAlteracao = usuario.id;
         delete obj.idUsuario;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-
             req.assert("idPaciente").notEmpty().withMessage("Paciente um campo obrigatório;");
             req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
             req.assert("tipoFicha").notEmpty().withMessage("Tipo de ficha é um campo obrigatório;");
+            req.assert("idClassificacaoRisco").notEmpty().withMessage("Classificação de risco é um campo obrigatório;");
 
             errors = req.validationErrors();
 
@@ -413,11 +379,7 @@ module.exports = function (app) {
                 return; 
             }).catch(function(error) {
                 return res.status(400).json(error);
-            });             
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(400).send(errors);
-        }
+            });  
     });
 
     app.delete('/atendimento/:id', function (req, res) {
@@ -428,16 +390,10 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            deletaPorId(id, res).then(function (response) {
-                res.status(200).json(obj);
-                return;
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(400).send(errors);
-        }
+        deletaPorId(id, res).then(function (response) {
+            res.status(200).json(obj);
+            return;
+        });
     });
 
 
@@ -447,18 +403,10 @@ module.exports = function (app) {
         let addFilter = req.query;
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            lista(addFilter, res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        }
-        /*else{
-            listaPorUsuario(usuario, addFilter, res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        }*/
+        lista(addFilter, res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
 
     });
 
@@ -917,4 +865,28 @@ module.exports = function (app) {
         });
         return d.promise;
     }    
+
+    function buscaEmailPaciente(idPaciente, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.PacienteDAO(connection);
+        var errors = [];
+        result = [];
+        
+        objDAO.buscaEmailPaciente(idPaciente, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao editar os dados", "atendimento");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result[0]);
+            }
+        });
+        return d.promise;
+    }       
 }

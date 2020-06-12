@@ -190,6 +190,17 @@ module.exports = function (app) {
         });
     });
 
+    app.get('/dominios/atencao-continuada', function(req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_atencao_continuada");
+
+        listaDominios(dao, "Grupo de atençao continuada", res).then(function(response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
     app.get('/dominios/grupo-material', function(req, res) {
 
         var connection = app.dao.ConnectionFactory();
@@ -255,6 +266,17 @@ module.exports = function (app) {
             return;
         });
     });
+
+    app.get('/dominios/tipo-usuario', function (req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.TipoUsuarioDAO(connection);
+
+        listaDominios(dao, "tipo-usuario", res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
         
     app.get('/dominios/unidade-material', function(req, res) {
 
@@ -262,6 +284,39 @@ module.exports = function (app) {
         var dao = new app.dao.GenericDAO(connection, "tb_unidade_material");
 
         listaDominios(dao, "Unidade de material", res).then(function(response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+        
+    app.get('/dominios/tipo-notificacao', function(req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_tipo_notificacao");
+
+        listaDominios(dao, "Tipos de notificações", res).then(function(response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+        
+    app.get('/dominios/cor-classificacao-risco', function(req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_cor_classificacao_risco");
+
+        listaDominios(dao, "Cor de classificação do risco", res).then(function(response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+        
+    app.get('/dominios/classificacao-risco', function(req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_classificacao_risco");
+
+        listaDominios(dao, "Classificação de risco", res).then(function(response) {
             res.status(200).json(response);
             return;
         });
