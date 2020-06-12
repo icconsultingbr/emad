@@ -114,6 +114,7 @@ export class AtendimentoFormComponent implements OnInit {
       motivoCancelamento: ['',''],
       idEstabelecimento: [Validators.required],
       tipoFicha: [Validators.required],
+      idClassificacaoRisco: [Validators.required],
       motivoQueixa: ['','']
     });
 
@@ -359,13 +360,16 @@ export class AtendimentoFormComponent implements OnInit {
         if(res.unidade_receita)
           this.object.unidade_receita = res.unidade_receita;
 
+        if(res.dadosFicha)
+          this.object.dadosFicha = res.dadosFicha;
+
         if (this.form.value.id) {
           this.message = "Alteração efetuada com sucesso!";
 
           if(!Util.isEmpty(this.object.ano_receita) && !Util.isEmpty(this.object.numero_receita) && !Util.isEmpty(this.object.unidade_receita))
             this.abreReceitaMedica(this.object.ano_receita, this.object.numero_receita, this.object.unidade_receita);
         } else {
-          this.abreFichaDigital(this.object.id);
+          this.abreFichaDigital(this.object.id, false);
         }
 
         if(!this.message)
@@ -466,11 +470,13 @@ export class AtendimentoFormComponent implements OnInit {
                 this.domains.push({
                   hipoteses: hipoteses,
                   especialidades: especialidades,
-                  tipoFichas: []
+                  tipoFichas: [],
+                  classificacaoRiscos: []
           });
       });
       this.loading = false;
       this.buscaTipoFicha();
+      this.buscaClassificacaoRisco();
     });
   }
 
@@ -488,6 +494,23 @@ export class AtendimentoFormComponent implements OnInit {
         this.errors = Util.customHTTPResponse(error);
       });
   }
+
+  buscaClassificacaoRisco() {
+    this.loading = true;
+       this.service.list('classificacao-risco').subscribe(result => {
+        if(!this.domains[0].classificacaoRiscos)
+          this.loadDomains();
+        else
+          this.domains[0].classificacaoRiscos = result;
+          
+        this.loading = false;
+      }, error => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(error);
+      });
+  }
+
+  idClassificacaoRisco
   
   disableHipoteseButton() {
     return Util.isEmpty(this.pacienteHipotese.idHipoteseDiagnostica) || Util.isEmpty(this.pacienteHipotese.idPaciente);
@@ -629,7 +652,10 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
 
-  abreFichaDigital(id: Number) {
+  abreFichaDigital(id: Number, grid: boolean) {
+    if((!this.object.dadosFicha || this.object.dadosFicha.length == 0) && !grid)
+      return;
+      
     this.errors = [];
     let url = 
       JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")

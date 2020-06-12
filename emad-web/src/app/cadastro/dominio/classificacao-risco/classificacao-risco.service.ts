@@ -1,0 +1,56 @@
+import { Injectable } from '@angular/core';
+import { GenericsService } from '../../../_core/_services/generics.service';
+import { Validators } from '@angular/forms';
+
+@Injectable()
+export class ClassificacaoRiscoService extends GenericsService {
+
+  public fields: any[] = [    
+    {
+      field: "id",
+      type: "hidden",
+      label: "Id",
+      grid: true,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "nome",
+      type: "text",
+      label: "Nome",
+      grid: true,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
+    },
+    {
+      field: "idCorClassificacaoRisco",
+      type: "select",
+      label: "Cor",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
+    },
+    {
+      field: "nomeCorClassificacaoRisco",
+      type: "text",
+      label: "Cor",
+      grid: true,
+      form: false,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "situacao",
+      type: "checkbox",
+      label: "Situação",
+      grid: true,
+      form: true,
+      translate: {1: "Ativo", 0: "Inativo"},
+      required: true,
+      validator:['', Validators.required]
+    }
+  ];
+}

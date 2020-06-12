@@ -398,6 +398,15 @@ export class PacienteService extends GenericsService {
       validator: ['', '']
     },
     {
+      field: "idAtencaoContinuada",
+      type: "select",
+      label: "Grupo de atenção continuada",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
       field: "falecido",
       type: "checkbox",
       label: "Falecido",

@@ -13,15 +13,10 @@ module.exports = function (app) {
         if(idEstabelecimento)
             addFilter.idEstabelecimento = idEstabelecimento;    
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             lista(addFilter, res).then(function (resposne) {
                 res.status(200).json(resposne);
                 return;
             });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
     });
 
     app.get('/atribuicao-caneta/:id', function (req, res) {
@@ -30,15 +25,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarPorId(id, res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        buscarPorId(id, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
     app.post('/atribuicao-caneta', function (req, res) {
@@ -47,8 +37,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
         var errors = [];
         let idEstabelecimento = req.params.idEstabelecimento;
-
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {            
+           
             req.assert("idCaneta").notEmpty().withMessage("Caneta é um campo obrigatório");
             req.assert("idProfissional").notEmpty().withMessage("Profissional é um campo obrigatório");
             req.assert("periodoInicial").notEmpty().withMessage("Data/hora de atribuição inicial é um campo obrigatório");
@@ -67,11 +56,6 @@ module.exports = function (app) {
                 obj.id = response.insertId;
                 res.status(201).send(obj);
             });  
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
     });
 
     app.put('/atribuicao-caneta', function (req, res) {
@@ -82,7 +66,6 @@ module.exports = function (app) {
         let id = obj.id;
         let idEstabelecimento = req.params.idEstabelecimento;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             req.assert("idCaneta").isNumeric().notEmpty().withMessage("Caneta é um campo obrigatório");
             req.assert("idProfissional").notEmpty().withMessage("Profissional é um campo obrigatório");
             req.assert("periodoInicial").notEmpty().withMessage("Data/hora de atribuição inicial é um campo obrigatório");
@@ -98,10 +81,6 @@ module.exports = function (app) {
                 id = id;
                 res.status(201).send(obj);
             });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
     });
 
     app.delete('/atribuicao-caneta/:id', function (req, res) {
@@ -112,16 +91,10 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            deletaPorId(id, res).then(function (response) {
-                res.status(200).json(obj);
-                return;
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        deletaPorId(id, res).then(function (response) {
+            res.status(200).json(obj);
+            return;
+        });
     });
 
     app.get('/atribuicao-caneta/profissional/:idProfissional', function(req,res){        
@@ -136,17 +109,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
-            buscarAtribuicaoPorProfissionalId(idProfissional, dataInicial, horaInicial , dataFinal, horaFinal, res).then(function(response) {
-                res.status(200).json(response);
-                return;      
-            });
-        }
-        else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        buscarAtribuicaoPorProfissionalId(idProfissional, dataInicial, horaInicial , dataFinal, horaFinal, res).then(function(response) {
+            res.status(200).json(response);
+            return;      
+        });
     }); 
 
     function buscarAtribuicaoPorProfissionalId(id, dataInicial, horaInicial , dataFinal, horaFinal, res) {

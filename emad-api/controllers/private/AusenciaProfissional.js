@@ -8,15 +8,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarPorId(id, res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        buscarPorId(id, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
     app.post('/ausencia-profissional', function (req, res) {
@@ -25,8 +20,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
         var errors = [];
         let idEstabelecimento = req.params.idEstabelecimento;
-
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {            
+            
             req.assert("idProfissional").notEmpty().withMessage("Profissional é um campo obrigatório");
             req.assert("idTipoAusencia").notEmpty().withMessage("Tipo da ausência é um campo obrigatório");            
             req.assert("periodoInicial").notEmpty().withMessage("Período inicial é um campo obrigatório");
@@ -45,11 +39,6 @@ module.exports = function (app) {
                 obj.id = response.insertId;
                 res.status(201).send(obj);
             });  
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
     });
 
     app.put('/ausencia-profissional', function (req, res) {
@@ -60,7 +49,6 @@ module.exports = function (app) {
         let id = obj.id;
         let idEstabelecimento = req.params.idEstabelecimento;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
             req.assert("idProfissional").notEmpty().withMessage("Profissional é um campo obrigatório");
             req.assert("idTipoAusencia").notEmpty().withMessage("Tipo da ausência é um campo obrigatório");
             req.assert("periodoInicial").notEmpty().withMessage("Período inicial é um campo obrigatório");
@@ -76,10 +64,6 @@ module.exports = function (app) {
                 id = id;
                 res.status(201).send(obj);
             });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
     });
 
     app.delete('/ausencia-profissional/:id', function (req, res) {
@@ -90,16 +74,10 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            deletaPorId(id, res).then(function (response) {
-                res.status(200).json(obj);
-                return;
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        deletaPorId(id, res).then(function (response) {
+            res.status(200).json(obj);
+            return;
+        });
     });
 
     app.get('/ausencia-profissional/profissional/:idProfissional', function(req,res){        
@@ -109,17 +87,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
-            buscarAusenciaPorProfissionalId(idProfissional, res).then(function(response) {
-                res.status(200).json(response);
-                return;      
-            });
-        }
-        else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        buscarAusenciaPorProfissionalId(idProfissional, res).then(function(response) {
+            res.status(200).json(response);
+            return;      
+        });
     }); 
 
     function buscarAusenciaPorProfissionalId(id, res) {

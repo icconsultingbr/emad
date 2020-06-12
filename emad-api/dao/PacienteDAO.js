@@ -372,7 +372,8 @@ PacienteDAO.prototype.buscaPorId = function (id, callback) {
     idRaca,
     numeroProntuario,
     numeroProntuarioCnes,
-    falecido
+    falecido,
+    idAtencaoContinuada
     FROM ${this._table} WHERE id = ?`, id, callback);
 }
 
@@ -421,9 +422,14 @@ PacienteDAO.prototype.buscaPorIdFicha = function (id, callback) {
     p.idRaca,
     p.numeroProntuario,
     p.numeroProntuarioCnes,
-    p.falecido
+    p.falecido,
+    p.idAtencaoContinuada
     FROM ${this._table} p 
     INNER JOIn tb_municipio m ON(p.idMunicipio = m.id) WHERE p.id = ?`, id, callback);
+}
+
+PacienteDAO.prototype.buscaEmailPaciente = function (id, callback) {
+    this._connection.query(`SELECT p.email FROM ${this._table} p WHERE p.id = ?`, id, callback);
 }
 
 PacienteDAO.prototype.buscaDominio = function (callback) {

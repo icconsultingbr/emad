@@ -25,4 +25,5 @@ export class Atendimento {
     @Input() numero_receita: Number = null;
     @Input() unidade_receita: Number = null;
     @Input() motivoQueixa : String = null;
+    @Input() dadosFicha: any[] = [];
 }

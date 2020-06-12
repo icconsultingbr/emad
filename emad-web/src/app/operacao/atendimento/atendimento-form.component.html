@@ -29,7 +29,7 @@
     <div class="card-header text-left">
       Paciente
 
-      <button *ngIf="object.id" class="btn btn-primary float-right rounded" type="button" (click)="abreFichaDigital(object.id)">
+      <button *ngIf="object.id" class="btn btn-primary float-right rounded" type="button" (click)="abreFichaDigital(object.id, true)">
         <i class="fa fa-print"></i>
       </button>
 
@@ -85,6 +85,21 @@
                 <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.tipoFicha" formControlName="tipoFicha">
                     <option [value]="null">Selecione...</option>
                     <option *ngFor="let item of domains[0]?.tipoFichas" [value]="item.id">{{item.nome}}</option>
+                </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="form-group row">
+            <label class="col-xl-2 col-form-label text-left">
+              Classificação de risco<span class="text-danger font-weight-bold"> *</span>
+            </label>
+            <div class="col-xl-10">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idClassificacaoRisco" formControlName="idClassificacaoRisco">
+                    <option [value]="null">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.classificacaoRiscos" [value]="item.id">{{item.nome}}</option>
                 </select>
             </div>
           </div>
@@ -652,13 +667,13 @@
 
 <ng-template #contentConfirmacao>
   <div class="modal-header">
-    <h4 class="modal-title">Editar atendimento</h4>
+    <h4 class="modal-title">Complementar atendimento</h4>
     <button type="button" class="close" (click)="close()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
-    <p>Deseja editar o atendimento?</p>
+    <p>Deseja complementar o atendimento?</p>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="close()">Sim</button>

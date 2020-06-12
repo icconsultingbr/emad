@@ -49,6 +49,10 @@ const appRoutes : Routes = [
     { path: 'materiais', canActivate: [AuthGuard], loadChildren: './cadastro/material/material.module#MaterialModule' },
     { path: 'unidades-materiais', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/unidade-material/unidade-material.module#UnidadeMaterialModule' },
     { path: 'especialidades-materiais', canActivate: [AuthGuard], loadChildren: './cadastro/especialidade-material/especialidade-material.module#EspecialidadeMaterialModule' },
+    { path: 'notificacoes', canActivate: [AuthGuard], loadChildren: './cadastro/notificacao/notificacao.module#NotificacaoModule' },
+    { path: 'tipos-notificacoes', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/tipo-notificacao/tipo-notificacao.module#TipoNotificacaoModule' },
+    { path: 'cores-classificacoes-riscos', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/cor-classificacao-risco/cor-classificacao-risco.module#CorClassificacaoRiscoModule' },
+    { path: 'classificacoes-riscos', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/classificacao-risco/classificacao-risco.module#ClassificacaoRiscoModule' },
     
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 
