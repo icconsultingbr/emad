@@ -88,10 +88,6 @@ export class AtendimentoFormComponent implements OnInit {
 
       this.createGroup();
       this.loadDomains();
-
-      if (!Util.isEmpty(this.id)) {
-        this.encontraAtendimento();
-      }
     });
   }
 
@@ -466,51 +462,25 @@ export class AtendimentoFormComponent implements OnInit {
   loadDomains() {
     this.loading = true;
     this.service.listDomains('hipotese-diagnostica').subscribe(hipoteses => {
-        this.service.listDomains('especialidade').subscribe(especialidades => {            
+      this.service.listDomains('especialidade').subscribe(especialidades => {            
+        this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {            
+          this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {            
                 this.domains.push({
                   hipoteses: hipoteses,
                   especialidades: especialidades,
-                  tipoFichas: [],
-                  classificacaoRiscos: []
+                  tipoFichas: tipoFichas,
+                  classificacaoRiscos:classificacaoRiscos
+              });
+            if (!Util.isEmpty(this.id)) {
+              this.encontraAtendimento();
+            }
+            else            
+              this.loading = false;
+            });
           });
       });
-      this.loading = false;
-      this.buscaTipoFicha();
-      this.buscaClassificacaoRisco();
     });
   }
-
-  buscaTipoFicha() {
-    this.loading = true;
-       this.service.list('tipo-ficha').subscribe(result => {
-        if(!this.domains[0].tipoFichas)
-          this.loadDomains();
-        else
-          this.domains[0].tipoFichas = result;
-          
-        this.loading = false;
-      }, error => {
-        this.loading = false;
-        this.errors = Util.customHTTPResponse(error);
-      });
-  }
-
-  buscaClassificacaoRisco() {
-    this.loading = true;
-       this.service.list('classificacao-risco').subscribe(result => {
-        if(!this.domains[0].classificacaoRiscos)
-          this.loadDomains();
-        else
-          this.domains[0].classificacaoRiscos = result;
-          
-        this.loading = false;
-      }, error => {
-        this.loading = false;
-        this.errors = Util.customHTTPResponse(error);
-      });
-  }
-
-  idClassificacaoRisco
   
   disableHipoteseButton() {
     return Util.isEmpty(this.pacienteHipotese.idHipoteseDiagnostica) || Util.isEmpty(this.pacienteHipotese.idPaciente);
