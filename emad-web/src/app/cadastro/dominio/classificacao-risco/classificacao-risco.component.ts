@@ -12,7 +12,7 @@ import { ClassificacaoRisco } from '../../../_core/_models/ClassificacaoRisco';
 
 export class ClassificacaoRiscoComponent implements OnInit {
 
-  method: String = "classificacao-risco";
+  method: string = "classificacao-risco";
   object: ClassificacaoRisco = new ClassificacaoRisco();
   fields: any[] = [];
   fieldsSearch: any[] = [];

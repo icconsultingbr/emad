@@ -11,7 +11,7 @@ import { EquipeService } from './equipe.service';
 })
 export class EquipeComponent implements OnInit {
 
-  method: String = "equipe";
+  method: string = "equipe";
   domains: any[] = [];
   fields = [];
   fieldsSearch = [];

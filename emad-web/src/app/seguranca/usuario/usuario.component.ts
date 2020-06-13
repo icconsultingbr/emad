@@ -10,7 +10,7 @@ import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.
 })
 export class UsuarioComponent implements OnInit {
 
-  method: String = "usuario";
+  method: string = "usuario";
   service: UsuarioService;
   fields = [];
   fieldsSearch = [];

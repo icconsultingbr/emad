@@ -9,11 +9,11 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 })
 export class AppModalComponent {
 
-  closeResult: String;
-  @Input() title : String = "Title";
-  @Input() description : String = "Description";
-  @Input() agree : String;
-  @Input() disagree : String;
+  closeResult: string;
+  @Input() title : string = "Title";
+  @Input() description : string = "Description";
+  @Input() agree : string;
+  @Input() disagree : string;
  
   constructor(private modalService: NgbModal) {}
 

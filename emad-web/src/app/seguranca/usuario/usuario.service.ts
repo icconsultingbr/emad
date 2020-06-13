@@ -1,18 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers } from '@angular/http';
-import { Util } from '../../_core/_util/Util';
 import { Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Usuario } from '../../_core/_models/Usuario';
 import { Senha } from '../../_core/_models/Senha';
 import { GenericsService } from '../../_core/_services/generics.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class UsuarioService extends GenericsService {
 
-  http: Http;
-  headers: Headers;
-  url: string = Util.urlapi + '/usuario';
+  constructor(public http: HttpClient) {
+    super(http);
+  }
 
   fields: any[] = [
     {
@@ -30,7 +29,7 @@ export class UsuarioService extends GenericsService {
       grid: true,
       required: false,
       validator: ['', ''],
-      path: Util.urlapi + '/profile/',
+      path: 'profile/',
       imgDefault: "user_default.jpg"
     },
     {
@@ -146,36 +145,33 @@ export class UsuarioService extends GenericsService {
     }    
   ];
 
-  list(method: String): Observable<Usuario[]> {
-    return this.http.get(Util.urlapi + '/' + method, { headers: this.headers }).map(res => res.json());
+  list(method: string): Observable<Usuario[]> {
+    return this.http.get<Usuario[]>(method);
   }
 
   
-  public buscaPorId(id: Number) : Observable<any>{
-    return this.http.get(this.url+"/"+id, { headers: this.headers }).map(res => res.json());
+  public buscaPorId(id: number) : Observable<any>{
+    return this.http.get("usuario/"+id);
   }
 
   public cadastra(plano: Usuario){ 
     if(plano.id){
       return this.http
-      .put(this.url, JSON.stringify(plano), { headers: this.headers })
-      .map((res)=>res.json());
+      .put('usuario', JSON.stringify(plano));
     } 
     else{
       return this.http
-      .post(this.url, JSON.stringify(plano), { headers: this.headers })
-      .map((res)=>res.json());
+      .post('usuario', JSON.stringify(plano));
     }
   }
 
   public redefinirSenha(senha: Senha){
     return this.http
-      .put(this.url+'/redefinir-senha', JSON.stringify(senha), { headers: this.headers })
-      .map((res)=>res.json());
+      .put('usuario/redefinir-senha', JSON.stringify(senha));
   }
 
-  listaServicos(method : String) : Observable<any[]>{
-    return this.http.get(Util.urlapi+'/'+method, { headers: this.headers }).map(res => res.json());
+  listaServicos(method : string) : Observable<any[]>{
+    return this.http.get<any[]>(method);
   }
 }
  

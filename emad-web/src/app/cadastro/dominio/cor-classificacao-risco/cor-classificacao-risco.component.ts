@@ -12,7 +12,7 @@ import { CorClassificacaoRisco } from '../../../_core/_models/CorClassificacaoRi
 
 export class CorClassificacaoRiscoComponent implements OnInit {
 
-  method: String = "cor-classificacao-risco";
+  method: string = "cor-classificacao-risco";
   object: CorClassificacaoRisco = new CorClassificacaoRisco();
   fields: any[] = [];
   fieldsSearch: any[] = [];

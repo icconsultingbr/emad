@@ -22,13 +22,13 @@ export class AtribuicaoCanetaFormComponent implements OnInit {
 
   //MESSAGES
   loading: Boolean = false;
-  message: String = "";
+  message: string = "";
   errors: any[] = [];
   modalRef: NgbModalRef = null;
   modalRemoveRef: NgbModalRef = null;
   form: FormGroup;
-  method: String = "atribuicao-caneta";
-  url: String = "atribuicoes-canetas";
+  method: string = "atribuicao-caneta";
+  url: string = "atribuicoes-canetas";
   fields: any[] = [];
   historicoAtribuicoes: any[] = [];
   object: AtribuicaoCaneta = new AtribuicaoCaneta();

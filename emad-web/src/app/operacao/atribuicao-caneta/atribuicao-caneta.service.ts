@@ -2,10 +2,15 @@ import { Injectable } from '@angular/core';
 import { GenericsService } from '../../_core/_services/generics.service';
 import { Observable } from 'rxjs';
 import { Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
-export class AtribuicaoCanetaService extends GenericsService{
-  
+export class AtribuicaoCanetaService extends GenericsService {
+
+  constructor(public http: HttpClient) {
+    super(http);
+  }
+
   fields: any[] = [
     {
       field: "id",
@@ -44,11 +49,11 @@ export class AtribuicaoCanetaService extends GenericsService{
       grid: false,
       form: false,
       required: false,
-      validator: ['',  ''],
+      validator: ['', ''],
       filter: {
         type: "select"
       }
-    },    
+    },
     {
       field: "nomeProfissional",
       type: "text",
@@ -57,7 +62,7 @@ export class AtribuicaoCanetaService extends GenericsService{
       form: false,
       required: false,
       validator: ['', ''],
-    },	      
+    },
     {
       field: "periodoInicial",
       type: "text",
@@ -70,7 +75,7 @@ export class AtribuicaoCanetaService extends GenericsService{
         type: 'date',
         placeHolder: '99/99/9999'
       }
-    },	  	      
+    },
     {
       field: "periodoFinal",
       type: "text",
@@ -89,31 +94,28 @@ export class AtribuicaoCanetaService extends GenericsService{
       required: true,
       validator: ['', Validators.required]
     }
-    ];
+  ];
 
-    findHistoricoAtribuicaoByProfissional(id: any, dateInicial: string, horaInicial: string, dateFinal: string, horaFinal: string): Observable<any> {
-      return this.http.get(this.url + "atribuicao-caneta/profissional/" + id 
-      + '?dataInicial=' +  dateInicial  
-      + '&horaInicial=' + horaInicial 
-      + '&dataFinal=' + dateFinal 
-      + '&horaFinal=' + horaFinal, { headers: this.headers }).map(res => res.json());
+  findHistoricoAtribuicaoByProfissional(id: any, dateInicial: string, horaInicial: string, dateFinal: string, horaFinal: string): Observable<any> {
+    return this.http.get("atribuicao-caneta/profissional/" + id
+      + '?dataInicial=' + dateInicial
+      + '&horaInicial=' + horaInicial
+      + '&dataFinal=' + dateFinal
+      + '&horaFinal=' + horaFinal);
+  }
+
+  saveAtribuicao(obj: any) {
+    if (obj.id) {
+      return this.http
+        .put('atribuicao-caneta', JSON.stringify(obj));
     }
-
-    saveAtribuicao(obj: any) {
-      if (obj.id) {
-          return this.http
-              .put(this.url + 'atribuicao-caneta', JSON.stringify(obj), { headers: this.headers })
-              .map((res) => res.json());
-      }
-      else {
-          return this.http
-              .post(this.url + 'atribuicao-caneta', JSON.stringify(obj), { headers: this.headers })
-              .map((res) => res.json());
-      }
+    else {
+      return this.http
+        .post('atribuicao-caneta', JSON.stringify(obj));
+    }
   }
 
   removeAtribuicao(params: any) {
-    return this.http.delete(this.url + 'atribuicao-caneta/' + params, { headers: this.headers }).map(res => res.json());
-}
-
+    return this.http.delete('atribuicao-caneta/' + params);
+  }
 }

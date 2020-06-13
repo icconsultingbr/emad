@@ -14,9 +14,9 @@ import { Util } from '../../_core/_util/Util';
 export class ProfissionalFormComponent implements OnInit {
 
   object: Profissional = new Profissional();
-  method: String = 'profissional';
+  method: string = 'profissional';
   fields = [];
-  label: String = "Profissional";
+  label: string = "Profissional";
   id: Number = null;
   domains: any[] = [];
   loading: Boolean = false;

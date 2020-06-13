@@ -11,7 +11,7 @@ import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.
 })
 export class ParametroSegurancaComponent implements OnInit {
 
-  method: String = "parametro-seguranca";
+  method: string = "parametro-seguranca";
   object: ParametroSeguranca = new ParametroSeguranca();
   fields: any[] = [];
   fieldsSearch: any[] = [];

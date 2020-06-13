@@ -10,7 +10,7 @@ import { AppNavbarService } from '../../../_core/_components/app-navbar/app-navb
 })
 export class EspecialidadeComponent implements OnInit {
 
-  method: String = "especialidade";
+  method: string = "especialidade";
   object: Especialidade = new Especialidade();
   fields: any[] = [];
   fieldsSearch: any[] = [];

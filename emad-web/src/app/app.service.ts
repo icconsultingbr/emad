@@ -1,23 +1,22 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers } from '@angular/http';
+import { Headers } from '@angular/http';
 import { AuthGuard } from './_core/_guards';
 import { Observable, Subject } from "rxjs";
 import { Menu } from './_core/_models/Menu';
-import { Util } from './_core/_util/Util';
-import { SocketService } from './_core/_services/socket.service';
 import { ParametroSeguranca } from './_core/_models/ParametroSeguranca';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class AppService {
-  http: Http;
+  http: HttpClient;
   headers: Headers;
-  url: string = Util.urlapi + '/menu/tipo-usuario';
-  urlParametroSeguranca: string = Util.urlapi + '/parametro-seguranca/urls';
+  url: string = 'menu/tipo-usuario';
+  urlParametroSeguranca: string = 'parametro-seguranca/urls';
   public menus: any[];
 
   extrato: Subject<any>;
 
-  constructor(http: Http, auth: AuthGuard, private socketService: SocketService) {
+  constructor(http: HttpClient, auth: AuthGuard) {
 
     this.http = http;
     this.headers = new Headers();
@@ -26,10 +25,10 @@ export class AppService {
   }
 
   list(): Observable<Menu[]> {
-    return this.http.get(this.url, { headers: this.headers }).map(res => res.json());
+    return this.http.get<Menu[]>(this.url);
   }
 
   listUrls(): Observable<ParametroSeguranca[]> {
-    return this.http.get(this.urlParametroSeguranca, { headers: this.headers }).map(res => res.json());
+    return this.http.get<ParametroSeguranca[]>(this.urlParametroSeguranca);
   }
 }

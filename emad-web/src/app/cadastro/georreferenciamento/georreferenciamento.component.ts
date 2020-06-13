@@ -21,7 +21,7 @@ export class GeorreferenciamentoComponent implements OnInit {
 
   //MESSAGES
   loading: Boolean = false;
-  message: String = "";
+  message: string = "";
   errors: any[] = [];
 
   modalRef: NgbModalRef = null;

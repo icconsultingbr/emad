@@ -12,7 +12,7 @@ import { AtencaoContinuada } from '../../../_core/_models/AtencaoContinuada';
 
 export class AtencaoContinuadaComponent implements OnInit {
 
-  method: String = "atencao-continuada";
+  method: string = "atencao-continuada";
   object: AtencaoContinuada = new AtencaoContinuada();
   fields: any[] = [];
   fieldsSearch: any[] = [];

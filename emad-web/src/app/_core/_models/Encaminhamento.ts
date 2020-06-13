@@ -5,5 +5,5 @@ export class Encaminhamento {
     @Input() idPaciente: Number = null;
     @Input() idAtendimento : Number = null;
     @Input() idEspecialidade : Number = null;
-    @Input() motivo : String = null;
+    @Input() motivo : string = null;
 }

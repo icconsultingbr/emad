@@ -11,7 +11,7 @@ import { HipoteseDiagnostica } from '../../../_core/_models/HipoteseDiagnostica'
 })
 export class HipoteseDiagnosticaComponent implements OnInit {
 
-  method: String = "hipotese-diagnostica";
+  method: string = "hipotese-diagnostica";
   object: HipoteseDiagnostica = new HipoteseDiagnostica();
   fields: any[] = [];
   fieldsSearch: any[] = [];

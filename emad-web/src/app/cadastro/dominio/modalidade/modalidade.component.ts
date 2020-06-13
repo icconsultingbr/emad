@@ -11,7 +11,7 @@ import { AppNavbarService } from '../../../_core/_components/app-navbar/app-navb
 })
 export class ModalidadeComponent implements OnInit {
 
-  method: String = "modalidade";
+  method: string = "modalidade";
   object: Modalidade = new Modalidade();
   fields: any[] = [];
   fieldsSearch: any[] = [];

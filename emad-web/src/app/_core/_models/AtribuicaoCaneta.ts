@@ -10,7 +10,7 @@ export class AtribuicaoCaneta {
 }
 
 export class AtribuicaoCanetaHorario {        
-    @Input() horarioInicial: String;
-    @Input() horarioFinal: String;    
+    @Input() horarioInicial: string;
+    @Input() horarioFinal: string;    
     @Input() dataAtribuicao: Date;       
 }

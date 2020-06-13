@@ -12,7 +12,7 @@ import { UnidadeMaterial } from '../../../_core/_models/UnidadeMaterial';
 
 export class UnidadeMaterialComponent implements OnInit {
 
-  method: String = "unidade-material";
+  method: string = "unidade-material";
   object: UnidadeMaterial = new UnidadeMaterial();
   fields: any[] = [];
   fieldsSearch: any[] = [];

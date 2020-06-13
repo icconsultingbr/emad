@@ -6,7 +6,7 @@ import { LoginService } from '../../login/login.service';
 @Injectable()
 export class AuthGuard implements CanActivate {
     usuario : Usuario =  new Usuario();
-    menu: String[] = [];
+    menu: string[] = [];
 
     constructor(private router: Router, private loginService:LoginService ) { 
 

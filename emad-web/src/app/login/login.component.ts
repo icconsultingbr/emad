@@ -20,14 +20,14 @@ export class LoginComponent implements OnInit {
   router: Router;
   carregando: boolean = false;
   loginRealizado: boolean = false;
-  erro: String = "";
+  erro: string = "";
   isErro: Boolean = false;
-  logo: String = Util.urlapi + "/logos/logo_" + window.location.hostname + ".png";
+  logo: string = Util.urlapi + "/logos/logo_" + window.location.hostname + ".png";
   domains: any[] = [];
   estabelecimentosCompleto: any[] = [];
   estabelecimentoLogin: "0";
 
-  sucesso: String = "";
+  sucesso: string = "";
   isSucesso: Boolean = false;
 
   ano: number = new Date().getFullYear();
@@ -86,7 +86,7 @@ export class LoginComponent implements OnInit {
     } 
 
     this.service.login(this.loginForm.value)
-      .subscribe(res => {
+      .subscribe((res: any) => {
         if (res.token) {
           this.domains.push({
             estabelecimentos: res.estabelecimentos
@@ -109,7 +109,7 @@ export class LoginComponent implements OnInit {
 
           this.carregando = false;
 
-          var msg = JSON.parse(error._body);
+          var msg = error;
           this.erro = msg[0].msg;
 
         } else {
@@ -158,7 +158,7 @@ export class LoginComponent implements OnInit {
 
       }, error => {
         this.isErro = true;
-        var msg = JSON.parse(error._body);
+        var msg = JSON.parse(error);
         this.erro = msg[0].msg;
 
         this.carregando = false;

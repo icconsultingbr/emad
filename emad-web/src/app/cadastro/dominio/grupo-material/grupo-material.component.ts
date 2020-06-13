@@ -12,7 +12,7 @@ import { GrupoMaterial } from '../../../_core/_models/GrupoMaterial';
 
 export class GrupoMaterialComponent implements OnInit {
 
-  method: String = "grupo-material";
+  method: string = "grupo-material";
   object: GrupoMaterial = new GrupoMaterial();
   fields: any[] = [];
   fieldsSearch: any[] = [];

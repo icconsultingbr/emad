@@ -3,14 +3,20 @@ import { AuthGuard } from "./_guards";
 import { SocketService } from "./_services/socket.service";
 import { NotificacaoSistemaService } from "./_services/notificacao-sistema.service";
 import { AppNavbarService } from "./_components/app-navbar/app-navbar.service";
-import { NgxLoadingModule, ngxLoadingAnimationTypes } from "ngx-loading";
 import { CurrencyMaskModule } from "ng2-currency-mask";
 import { NgxMaskModule } from "ngx-mask";
+import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
+import { EmadHttpInterceptor } from "./interceptors/emad-http.interceptor";
+import { LoaderService } from "./loaders/services/loader.service";
+import { LoaderComponent } from "./loaders/components/loader/loader.component";
+import { NgxLoadingModule, ngxLoadingAnimationTypes } from "ngx-loading";
+import { AuthService } from "./auth/auth.service";
+import { RouterModule } from "@angular/router";
 
 @NgModule({
     imports: [
-        NgxMaskModule.forRoot({ dropSpecialCharacters: false }),
-        CurrencyMaskModule,
+        HttpClientModule,
+        RouterModule,
         NgxLoadingModule.forRoot({
             animationType: ngxLoadingAnimationTypes.none,
             backdropBackgroundColour: 'rgba(0,0,0,0.1)',
@@ -19,14 +25,29 @@ import { NgxMaskModule } from "ngx-mask";
             secondaryColour: '#FDBA31',
             tertiaryColour: '#ffffff'
         }),
+        NgxMaskModule.forRoot({ dropSpecialCharacters: false }),
+        CurrencyMaskModule,
+    ],
+    declarations: [
+        LoaderComponent
     ],
     providers: [
         AuthGuard,
+        AuthService,
         SocketService,
         NotificacaoSistemaService,
-        AppNavbarService
+        AppNavbarService,
+        LoaderService,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: EmadHttpInterceptor,
+            multi: true,
+        }
     ],
-    exports: [NgxLoadingModule, CurrencyMaskModule, NgxMaskModule]
+    entryComponents:[
+        LoaderComponent
+    ],
+    exports: [CurrencyMaskModule, NgxMaskModule, LoaderComponent]
 })
 export class CoreModule {
 }

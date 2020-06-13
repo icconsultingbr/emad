@@ -1,11 +1,17 @@
 import { Injectable } from '@angular/core';
 import { GenericsService } from '../../_core/_services/generics.service';
 import { Validators } from '@angular/forms';
+import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class NotificacaoService extends GenericsService {
 
-  public fields: any[] = [    
+  constructor(public http: HttpClient) {
+    super(http);
+  }
+
+  public fields: any[] = [
     {
       field: "id",
       type: "hidden",
@@ -41,12 +47,12 @@ export class NotificacaoService extends GenericsService {
       form: true,
       required: true,
       validator: ['', Validators.required],
-       filter: {
+      filter: {
         type: "select",
         changeMethod: 'usuario/tipo-usuario',
-        changeTarget: 'idUsuario' 
+        changeTarget: 'idUsuario'
       },
-    },    
+    },
     {
       field: "idUsuario",
       type: "select",
@@ -64,7 +70,7 @@ export class NotificacaoService extends GenericsService {
       form: false,
       required: false,
       validator: ['', '']
-    },      
+    },
     {
       field: "nomeTipoUsuario",
       type: "text",
@@ -82,7 +88,7 @@ export class NotificacaoService extends GenericsService {
       form: false,
       required: false,
       validator: ['', '']
-    },  
+    },
     {
       field: "url",
       type: "text",
@@ -136,10 +142,10 @@ export class NotificacaoService extends GenericsService {
       label: "Situação",
       grid: true,
       form: true,
-      translate: {1: "Ativo", 0: "Inativo"},
+      translate: { 1: "Ativo", 0: "Inativo" },
       required: true,
       onlyCreate: true,
-      validator:['', Validators.required]
+      validator: ['', Validators.required]
     }
   ];
 }

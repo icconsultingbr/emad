@@ -12,7 +12,7 @@ import { Notificacao } from '../../_core/_models/Notificacao';
 
 export class NotificacaoComponent implements OnInit {
 
-  method: String = "notificacao";
+  method: string = "notificacao";
   object: Notificacao = new Notificacao();
   fields: any[] = [];
   fieldsSearch: any[] = [];

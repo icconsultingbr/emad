@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { GenericsService } from '../../_core/_services/generics.service';
+import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class ProfissionalService extends GenericsService {
 
-  
+  constructor(public http: HttpClient) {
+    super(http);
+  }
 
   fields: any[] = [
     {
@@ -25,7 +29,7 @@ export class ProfissionalService extends GenericsService {
       form: true,
       required: true,
       validator: ['', Validators.required],
-      autoFocus : true
+      autoFocus: true
     },
     {
       field: "cpf",
@@ -37,7 +41,7 @@ export class ProfissionalService extends GenericsService {
       placeholder: "999.999.999-99",
       required: true,
       validator: ['', Validators.required]
-    },  
+    },
     {
       field: "nomeMae",
       type: "text",
@@ -59,11 +63,11 @@ export class ProfissionalService extends GenericsService {
     {
       field: "dataNascimento",
       type: "text",
-      mask : "99/99/9999",
-      placeholder : "99/99/9999",
+      mask: "99/99/9999",
+      placeholder: "99/99/9999",
       label: "Data de nascimento",
       grid: true,
-      isDate : true,
+      isDate: true,
       form: true,
       required: true,
       validator: ['', Validators.required],
@@ -74,7 +78,7 @@ export class ProfissionalService extends GenericsService {
       label: "Sexo",
       grid: true,
       form: true,
-      translate: {"M": "Masculino", "F": "Feminino"},
+      translate: { "M": "Masculino", "F": "Feminino" },
       required: true,
       validator: ['', Validators.required]
     },
@@ -89,7 +93,7 @@ export class ProfissionalService extends GenericsService {
       filter: {
         type: "select",
         changeMethod: 'uf/pais',
-        changeTarget: 'idNaturalidade' 
+        changeTarget: 'idNaturalidade'
       },
     },
     {
@@ -126,12 +130,12 @@ export class ProfissionalService extends GenericsService {
       field: "dataEmissao",
       type: "text",
       label: "Data de emissão",
-      mask : "99/99/9999",
-      placeholder : "99/99/9999",
+      mask: "99/99/9999",
+      placeholder: "99/99/9999",
       grid: false,
       form: true,
       required: false,
-      validator: ['',''],
+      validator: ['', ''],
 
     },
     {
@@ -198,7 +202,7 @@ export class ProfissionalService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['','']
+      validator: ['', '']
     },
     {
       field: "bairro",
@@ -220,7 +224,7 @@ export class ProfissionalService extends GenericsService {
       filter: {
         type: "select",
         changeMethod: 'municipio/uf',
-        changeTarget: 'idMunicipio' 
+        changeTarget: 'idMunicipio'
       },
     },
     {
@@ -257,8 +261,8 @@ export class ProfissionalService extends GenericsService {
     {
       field: "foneResidencial",
       type: "text",
-      placeholder : "(99) 9999-9999",
-      mask : "(99) 9999-9999",
+      placeholder: "(99) 9999-9999",
+      mask: "(99) 9999-9999",
       label: "Telefone resid.",
       grid: false,
       form: true,
@@ -268,8 +272,8 @@ export class ProfissionalService extends GenericsService {
     {
       field: "foneCelular",
       type: "text",
-      placeholder : "(99) 99999-9999",
-      mask : "(99) 99999-9999",
+      placeholder: "(99) 99999-9999",
+      mask: "(99) 99999-9999",
       label: "Telefone celular",
       grid: false,
       form: true,
@@ -293,7 +297,7 @@ export class ProfissionalService extends GenericsService {
       form: true,
       required: true,
       validator: ['', Validators.required],
-      filter : {
+      filter: {
         type: "select"
       }
     },
@@ -318,7 +322,7 @@ export class ProfissionalService extends GenericsService {
     {
       field: "cargaHorariaSemanal",
       type: "text",
-      mask : "9999999",
+      mask: "9999999",
       label: "Carga hor. semanal",
       grid: false,
       form: true,
@@ -342,7 +346,7 @@ export class ProfissionalService extends GenericsService {
       form: false,
       required: false,
       validator: ['', '']
-    },    
+    },
     {
       field: "idEstabelecimento",
       type: "hidden",
@@ -353,10 +357,10 @@ export class ProfissionalService extends GenericsService {
       readonly: true,
       validator: ['', ''],
       filter: {
-          type: "select",
-          grid: true
+        type: "select",
+        grid: true
       }
-    }, 
+    },
     {
       field: "idTipoUsuario",
       type: "select",
@@ -364,7 +368,7 @@ export class ProfissionalService extends GenericsService {
       grid: false,
       required: true,
       form: true,
-      validator: ['', Validators.required] 
+      validator: ['', Validators.required]
     },
     {
       field: "senha",
@@ -374,7 +378,7 @@ export class ProfissionalService extends GenericsService {
       required: true,
       form: true,
       validator: ['', Validators.required],
-      onlyCreate : true
+      onlyCreate: true
     },
     {
       field: "confirmaSenha",
@@ -384,8 +388,8 @@ export class ProfissionalService extends GenericsService {
       required: true,
       form: true,
       validator: ['', Validators.required],
-      onlyCreate : true
-    },    
+      onlyCreate: true
+    },
     {
       field: "estabelecimentos",
       type: "multiSelect",
@@ -394,6 +398,6 @@ export class ProfissionalService extends GenericsService {
       form: true,
       required: true,
       validator: ['', '']
-    }  
+    }
   ];
 }

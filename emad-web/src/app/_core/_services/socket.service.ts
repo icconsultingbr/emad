@@ -11,7 +11,7 @@ export class SocketService {
   private socket;
   private usuarioID: number;
   private idEmpresa: number;
-  token: String = "";
+  token: string = "";
 
   constructor(auth: AuthGuard) {
     let user = localStorage.getItem('currentUser');

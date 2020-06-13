@@ -10,7 +10,7 @@ export class Alerta{
     @Input() novo : number;
     @Input() data : string;
 
-    public getCor():String{
+    public getCor():string{
         let cor = 'info';
         if(this.tipo == 'N'){
             cor = 'info';

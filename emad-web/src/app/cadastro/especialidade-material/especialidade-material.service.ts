@@ -2,10 +2,16 @@ import { Injectable } from '@angular/core';
 import { GenericsService } from '../../_core/_services/generics.service';
 import { Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
+import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class EspecialidadeMaterialService extends GenericsService {
 
+  constructor(public http: HttpClient) {
+    super(http);
+  }
+  
   public fields: any[] = [    
     {
       field: "id",
@@ -65,23 +71,21 @@ export class EspecialidadeMaterialService extends GenericsService {
   ];
 
   carregaMaterialPorEspecialidade(id: any): Observable<any> {
-      return this.http.get(this.url + "especialidade-material/especialidade/" + id, { headers: this.headers }).map(res => res.json());
+      return this.http.get("especialidade-material/especialidade/" + id);
   }
 
   salvaMaterial(obj: any) {
     if (obj.id) {
         return this.http
-            .put(this.url + 'especialidade-material', JSON.stringify(obj), { headers: this.headers })
-            .map((res) => res.json());
+            .put('especialidade-material', JSON.stringify(obj));
     }
     else {
         return this.http
-            .post(this.url + 'especialidade-material', JSON.stringify(obj), { headers: this.headers })
-            .map((res) => res.json());
+            .post('especialidade-material', JSON.stringify(obj));
     }
   }
 
   removeMaterial(params: any) {
-    return this.http.delete(this.url + 'especialidade-material/' + params, { headers: this.headers }).map(res => res.json());
+    return this.http.delete('especialidade-material/' + params);
   }
 }

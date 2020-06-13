@@ -19,20 +19,20 @@ import * as $ from 'jquery';
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'app';
   teste : number = (window.innerHeight);
-  urlFoto : String = Util.urlapi+ "/profile/";
+  urlFoto : string = Util.urlapi+ "/profile/";
   usuario : Usuario = new Usuario();
   auth : AuthGuard;
-  route: String = "";
+  route: string = "";
   menus: Menu[];
   parametrosSeguranca: ParametroSeguranca[];
 
-  teste2 : String = "";
+  teste2 : string = "";
 
 
   clicked: string = null;
   showMenu = true;
 
-  estabelecimentoNome : String = null;
+  estabelecimentoNome : string = null;
 
   constructor(
     public service : AppService,  

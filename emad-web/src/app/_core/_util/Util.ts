@@ -3,7 +3,7 @@ import { DatePipe } from "@angular/common";
 import { Translation } from "../_locale/Translation";
 
 export class Util {
-    static urlapi: String = environment.apiUrl;
+    static urlapi: string = environment.apiUrl;
     static superAdmin: number = environment.superAdmin;
 
 
@@ -26,7 +26,7 @@ export class Util {
         let errors = [];
 
         if (erro.status == 400) {
-            let json = JSON.parse(erro._body);
+            let json = erro;
             for (let error of json) {
                 errors.push({ message: error.msg });
             }
@@ -41,7 +41,7 @@ export class Util {
         return errors;
     }
 
-    static dateFormat(val: String, pattern: string) {
+    static dateFormat(val: string, pattern: string) {
         if (val) {
             let parts2;
 
@@ -311,7 +311,7 @@ export class Util {
         }
     }
 
-    static getInitialsOfName(str : String) {
+    static getInitialsOfName(str : string) {
         let matches = str.match(/\b(\w)/g); 
 
         return matches.join('').toUpperCase();

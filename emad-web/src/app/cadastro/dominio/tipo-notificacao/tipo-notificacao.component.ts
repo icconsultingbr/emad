@@ -12,7 +12,7 @@ import { TipoNotificacao } from '../../../_core/_models/TipoNotificacao';
 
 export class TipoNotificacaoComponent implements OnInit {
 
-  method: String = "tipo-notificacao";
+  method: string = "tipo-notificacao";
   object: TipoNotificacao = new TipoNotificacao();
   fields: any[] = [];
   fieldsSearch: any[] = [];

@@ -19,12 +19,12 @@ import { PagerService } from '../../_core/_services/pager.service';
 export class EspecialidadeMaterialFormComponent implements OnInit {
   //MESSAGES
   loading: Boolean = false;
-  message: String = "";
+  message: string = "";
   errors: any[] = [];
   modalRef: NgbModalRef = null;
   modalRemoveRef: NgbModalRef = null;
   form: FormGroup;
-  method: String = "especialidade-material";
+  method: string = "especialidade-material";
   ausenciaProfissional: AusenciaProfissional = new AusenciaProfissional();
   fields: any[] = [];
   object: EspecialidadeMaterial = new EspecialidadeMaterial();  

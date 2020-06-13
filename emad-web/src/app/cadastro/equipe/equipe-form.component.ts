@@ -13,9 +13,9 @@ import { ActivatedRoute } from '@angular/router';
 export class EquipeFormComponent implements OnInit {
 
   object: Equipe = new Equipe();
-  method: String = 'equipe';
+  method: string = 'equipe';
   fields = [];
-  label: String = "Equipe";
+  label: string = "Equipe";
   id: Number = null;
   domains: any[] = [];
 

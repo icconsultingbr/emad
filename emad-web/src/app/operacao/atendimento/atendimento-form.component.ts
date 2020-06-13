@@ -25,7 +25,7 @@ export class AtendimentoFormComponent implements OnInit {
   @ViewChild('contentConfirmacao') contentConfirmacao: any;
   
   loading: Boolean = false;
-  message: String = "";
+  message: string = "";
   errors: any[] = [];
   modalRef: NgbModalRef = null;
 
@@ -34,8 +34,8 @@ export class AtendimentoFormComponent implements OnInit {
   formHipotese: FormGroup;
   formMedicamento: FormGroup;
 
-  method: String = "atendimento";
-  url: String = "atendimentos";
+  method: string = "atendimento";
+  url: string = "atendimentos";
   object: Atendimento = new Atendimento();
   paciente: Paciente = new Paciente();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
@@ -344,7 +344,7 @@ export class AtendimentoFormComponent implements OnInit {
 
     this.service
       .save(this.form.value, this.method)
-      .subscribe(res => {
+      .subscribe((res: any) => {
 
         this.object.id = res.id;
         if(res.ano_receita)        
@@ -583,7 +583,7 @@ export class AtendimentoFormComponent implements OnInit {
     return (this.object.id && Util.isEmpty(this.object.dataCancelamento) && Util.isEmpty(this.object.dataFinalizacao))
   }
 
-  stopProcess(val: String) {
+  stopProcess(val: string) {
     this.message = "";
     this.errors = [];
     let obj: any = {};

@@ -1,10 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { GenericsService } from '../../_core/_services/generics.service';
-import { Observable } from 'rxjs';
+import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class PacienteService extends GenericsService {
+
+  constructor(public http: HttpClient) {
+    super(http);
+  }
 
   fields: any[] = [
     {
@@ -29,18 +34,18 @@ export class PacienteService extends GenericsService {
         type: "text"
       }
     },
-     {
-       field: "idSap",
-       type: "text",
-       label: "ID SAP",
-       grid: true,
-       form: true,
-       required: false,
-       autoFocus: true,
-        filter: {
-          type: "text"
-        }
-     },
+    {
+      field: "idSap",
+      type: "text",
+      label: "ID SAP",
+      grid: true,
+      form: true,
+      required: false,
+      autoFocus: true,
+      filter: {
+        type: "text"
+      }
+    },
     {
       field: "nome",
       type: "text",
@@ -61,7 +66,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['',''],
+      validator: ['', ''],
     },
     {
       field: "nomeMae",
@@ -149,7 +154,7 @@ export class PacienteService extends GenericsService {
         type: 'text',
         placeHolder: '999.999.999-99',
         mask: '999.999.999-99'
-    }
+      }
     },
     {
       field: "rg",
@@ -169,7 +174,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', ],
+      validator: ['',],
 
     },
     {
@@ -359,16 +364,18 @@ export class PacienteService extends GenericsService {
       label: "Tipo sanguíneo",
       grid: false,
       form: true,
-      translate: {  "1" : "A_POSITIVO", 
-                    "2" : "A_NEGATIVO", 
-                    "3" : "B_POSITIVO", 
-                    "4" : "B_NEGATIVO",
-                    "5" : "AB_POSITIVO",
-                    "6" : "AB_NEGATIVO",
-                    "7" : "O_POSITIVO",
-                    "8" : "O_NEGATIVO" },
+      translate: {
+        "1": "A_POSITIVO",
+        "2": "A_NEGATIVO",
+        "3": "B_POSITIVO",
+        "4": "B_NEGATIVO",
+        "5": "AB_POSITIVO",
+        "6": "AB_NEGATIVO",
+        "7": "O_POSITIVO",
+        "8": "O_NEGATIVO"
+      },
       required: false,
-      validator: ['','']
+      validator: ['', '']
     },
     {
       field: "idRaca",
@@ -425,13 +432,13 @@ export class PacienteService extends GenericsService {
       validator: ['', Validators.required]
     },
     {
-        field: "idEstabelecimentoCadastro",
-        type: "hidden",
-        label: "Id do estabelecimento",
-        grid: false,
-        form: true,
-        required: false,
-        validator: ['', '']
+      field: "idEstabelecimentoCadastro",
+      type: "hidden",
+      label: "Id do estabelecimento",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
     },
   ];
 }
