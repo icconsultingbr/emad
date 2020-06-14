@@ -392,27 +392,34 @@ export class AtendimentoFormComponent implements OnInit {
     this.loading = true;
     this.service.findByIdPaciente(idPaciente, this.object.idEstabelecimento, this.method).subscribe(result => {
 
-      this.object = result;
-      this.object.pacienteNome = this.pacienteSelecionado.nome;
-      this.loading = false;
-
-      this.findHipotesePorAtendimento();
-      this.findEncaminhamentoPorAtendimento();
-      this.findMedicamentoPorAtendimento();
-
+      if(result){
+        this.object = result;
+        this.object.pacienteNome = this.pacienteSelecionado.nome;
+        this.loading = false;
+  
+        this.findHipotesePorAtendimento();
+        this.findEncaminhamentoPorAtendimento();
+        this.findMedicamentoPorAtendimento();
+      }
+      else
+        this.limpaAtendimento();
     }, error => {
-      this.object = new Atendimento();
-      this.object.idPaciente = this.pacienteSelecionado.id;
-      this.object.pacienteNome = this.pacienteSelecionado.nome;
-      this.loading = false;
+      this.limpaAtendimento();
+    });
+  }
 
-      this.allItemsEncaminhamento = [];
-      this.allItemsHipotese = [];
-      this.allItemsMedicamento = [];
+  limpaAtendimento(){
+    this.object = new Atendimento();
+    this.object.idPaciente = this.pacienteSelecionado.id;
+    this.object.pacienteNome = this.pacienteSelecionado.nome;
+    this.loading = false;
 
-      this.errors.push({
-        message: "Atendimento não encontrado"
-      });
+    this.allItemsEncaminhamento = [];
+    this.allItemsHipotese = [];
+    this.allItemsMedicamento = [];
+
+    this.errors.push({
+      message: "Atendimento não encontrado"
     });
   }
 
