@@ -8,7 +8,10 @@ import { Usuario } from './_core/_models/Usuario';
 import { Util } from './_core/_util/Util';
 import { LoginService } from './login/login.service';
 import { ParametroSeguranca } from './_core/_models/ParametroSeguranca';
+import { SocketService } from './_core/_services/socket.service';
+import { AuthService } from './_core/auth/auth.service';
 import * as $ from 'jquery';
+import { NotificacaoSistemaService } from './_core/_services/notificacao-sistema.service';
 
 @Component({
   selector: 'app-root',
@@ -18,85 +21,97 @@ import * as $ from 'jquery';
 
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'app';
-  teste : number = (window.innerHeight);
-  urlFoto : string = Util.urlapi+ "/profile/";
-  usuario : Usuario = new Usuario();
-  auth : AuthGuard;
+  teste: number = (window.innerHeight);
+  urlFoto: string = Util.urlapi + "/profile/";
+  usuario: Usuario = new Usuario();
+  auth: AuthGuard;
   route: string = "";
   menus: Menu[];
   parametrosSeguranca: ParametroSeguranca[];
 
-  teste2 : string = "";
+  teste2: string = "";
 
 
   clicked: string = null;
   showMenu = true;
 
-  estabelecimentoNome : string = null;
+  estabelecimentoNome: string = null;
 
   constructor(
-    public service : AppService,  
-    private router: Router, 
-    location : Location, 
-    auth : AuthGuard, 
-    public loginService : LoginService, 
-    private elementRef : ElementRef, 
-    private appService: AppService) { 
-    
+    public service: AppService,
+    private router: Router,
+    location: Location,
+    auth: AuthGuard,
+    public loginService: LoginService,
+    private elementRef: ElementRef,
+    private socketService: SocketService,
+    private authService: AuthService) {
+
     this.auth = auth;
 
     router.events.subscribe((val) => {
-      if(location.path() != ''){
+      if (location.path() != '') {
         this.route = location.path();
       } else {
         this.route = '/';
       }
     });
-    
 
-    if(auth.canActivate()){
+
+    if (auth.canActivate()) {
       this.getMenuLista();
       this.getUrlsParametroLista();
     }
   }
 
-  getMenuLista(){
-    this.service.list().subscribe(menu=>{
-    this.menus = menu;
-    
-    this.usuario = this.auth.getUser();
-    localStorage.setItem('menu', JSON.stringify(menu));
-    
+  getMenuLista() {
+    this.service.list().subscribe(menu => {
+      this.menus = menu;
+
+      this.usuario = this.auth.getUser();
+      localStorage.setItem('menu', JSON.stringify(menu));
+
     }, erro => {
       //console.log(erro);
-      if(erro.status==401){
-        this.loginService.logout(); 
+      if (erro.status == 401) {
+        this.loginService.logout();
         this.router.navigate(['/login']);
       }
     });
-  } 
+  }
 
-  getUrlsParametroLista(){
-    this.service.listUrls().subscribe(url=>{
-    this.parametrosSeguranca = url;
-    
-    this.usuario = this.auth.getUser();
-    localStorage.setItem('parametro_seguranca', JSON.stringify(url));
-    
+  getUrlsParametroLista() {
+    this.service.listUrls().subscribe(url => {
+      this.parametrosSeguranca = url;
+
+      this.usuario = this.auth.getUser();
+      localStorage.setItem('parametro_seguranca', JSON.stringify(url));
+
     }, erro => {
       //console.log(erro);
-      if(erro.status==401){
-        this.loginService.logout(); 
+      if (erro.status == 401) {
+        this.loginService.logout();
         this.router.navigate(['/login']);
       }
     });
-  } 
+  }
 
-  abre(){
+  abre() {
     this.showMenu = !this.showMenu;
   }
 
-  ngOnInit(){
+  ngOnInit() {
+
+    const token = this.authService.getToken();
+    if(!token){
+      return;
+    }
+
+    this.socketService.connect()
+    .subscribe(result => {
+      console.log(`notificação sistema ${result}`);
+    }, (error) => {
+    });
 
     /*if (localStorage.getItem('currentUser')) {
       this.appService.extrato.subscribe(msgSocket => {
@@ -112,8 +127,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   }
 
-  ngAfterViewInit(){
-    if(location.pathname!= "/login"){
+  ngAfterViewInit() {
+    if (location.pathname != "/login") {
 
       //console.log('login');
       //this.elementRef.nativeElement.ownerDocument.body.style.background = "url(../../assets/imgs/bglogin4.jpg)";
@@ -121,10 +136,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     }
 
-    if(localStorage.getItem("est")){
-      this.estabelecimentoNome =  JSON.parse(localStorage.getItem("est"))[0].nomeFantasia;
+    if (localStorage.getItem("est")) {
+      this.estabelecimentoNome = JSON.parse(localStorage.getItem("est"))[0].nomeFantasia;
 
-     }
+    }
   }
 
   sideNavClick(clicked: string) {
@@ -132,6 +147,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   sideNavAlert(): void {
-      alert("sublist item clicked");
+    alert("sublist item clicked");
   }
 }
