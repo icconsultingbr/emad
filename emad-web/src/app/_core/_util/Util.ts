@@ -21,24 +21,23 @@ export class Util {
         return myFormattedDate;
     }
 
-    static customHTTPResponse(erro: any) {
+    static customHTTPResponse(errors: any) {
 
-        let errors = [];
+        const result = [];
 
-        if (erro.status == 400) {
-            let json = erro;
-            for (let error of json) {
-                errors.push({ message: error.msg });
+        if (errors) {
+            for (let error of errors) {
+                result.push({ message: error.msg });
             }
         }
         else {
-            errors.push({
+            result.push({
                 field: "",
                 message: Translation.t("SERVICE_UNAVAILABLE")
             });
         }
 
-        return errors;
+        return result;
     }
 
     static dateFormat(val: string, pattern: string) {

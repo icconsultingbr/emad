@@ -49,7 +49,10 @@ export class EmadHttpInterceptor implements HttpInterceptor {
                 catchError((error: HttpErrorResponse) => {
                     if (error.status === 401) {
                         this.router.navigate(['login']);
+                    } else if(error.status === 500){
+                        return Observable.throw(error.error ? error.error : '');
                     } else {
+                        console.log(error);
                         return Observable.throw(error.error);
                     }
                 }));
