@@ -5,6 +5,7 @@ import { Usuario } from '../../_core/_models/Usuario';
 import { Senha } from '../../_core/_models/Senha';
 import { GenericsService } from '../../_core/_services/generics.service';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class UsuarioService extends GenericsService {
@@ -28,8 +29,8 @@ export class UsuarioService extends GenericsService {
       label: "Foto",
       grid: true,
       required: false,
-      validator: ['', ''],
-      path: 'profile/',
+      validator: ['', ''],  
+      path:`${environment.apiUrl}/profile/`,
       imgDefault: "user_default.jpg"
     },
     {
