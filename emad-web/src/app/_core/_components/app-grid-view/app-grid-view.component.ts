@@ -178,7 +178,7 @@ export class AppGridViewComponent implements AfterViewInit {
 
 
               } else {
-                if (this.object[key].tostring().indexOf('/') >= 0) {
+                if (this.object[key].toString().indexOf('/') >= 0) {
                   params += key + "=" + Util.dateFormat(this.object[key], "yyyy-MM-dd") + "&";
                 } else {
                   params += key + "=" + this.object[key] + "&";
@@ -268,7 +268,7 @@ export class AppGridViewComponent implements AfterViewInit {
                   params += key + "=" + p.substring(0, p.length - 1) + "&";
                 }
               } else {
-                if (this.object[key].tostring().indexOf('/') >= 0) {
+                if (this.object[key].toString().indexOf('/') >= 0) {
                   params += key + "=" + Util.dateFormat(this.object[key], "yyyy-MM-dd") + "&";
                 } else {
                   params += key + "=" + this.object[key] + "&";

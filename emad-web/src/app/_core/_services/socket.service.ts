@@ -12,6 +12,7 @@ export class SocketService {
   private usuarioID: number;
   private idEmpresa: number;
   token: string = "";
+  private isConnected: boolean = false;
 
   constructor(auth: AuthGuard) {
     let user = localStorage.getItem('currentUser');
@@ -25,17 +26,21 @@ export class SocketService {
 
   public connect(): Rx.Subject<MessageEvent> {
 
-    if (this.usuarioID) {
+    if (this.usuarioID && !this.isConnected) {
 
       this.socket = io(environment.socketUrl, {
         query: { token: this.token },
         transports: ['websocket']
 
       });
+
+      this.socket.on('disconnect', function(){
+        this.isConnected = false;
+      });
       
       this.socket.on('connect', function () {
         console.log('connected!');
-
+        this.isConnected = true;
       });
 
 
@@ -58,9 +63,6 @@ export class SocketService {
         next: (data: Object) => {
           this.socket.emit('message', JSON.stringify(data));
         },
-
-
-
       };
 
       return Rx.Subject.create(observer, observable);

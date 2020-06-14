@@ -108,7 +108,7 @@ export class AppFormComponent implements OnInit, AfterViewInit {
                 if (typeof field.filter.changeTarget === 'object') {
 
                   for (let i = 0; i < field.filter.changeTarget.length; i++) {
-                    this.listDomain(field.filter.changeMethod, this.object[field.field], field.filter.changeTarget[i][i].tostring());
+                    this.listDomain(field.filter.changeMethod, this.object[field.field], field.filter.changeTarget[i][i].toString());
                   }
                 }
                 else if (typeof field.filter.changeTarget === 'string') {
