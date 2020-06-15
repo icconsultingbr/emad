@@ -7,6 +7,8 @@ import { AppComponent } from '../../../app.component';
 import { AuthGuard } from '../../_guards';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Util } from '../../_util/Util';
+import { SocketService } from './../../../_core/_services/socket.service';
+import { Notificacao } from '../../_models/Notificacao';
 
 
 @Component({
@@ -26,8 +28,12 @@ export class AppNavbarComponent implements OnInit {
   idEstabelecimento: Number = null;
   modalRef: NgbModalRef;
   estabelecimentos : any[] = [];
+  badge: boolean = false;
+  mensagens: any[] = [];
+  mensagem: Notificacao = new Notificacao();
 
   @ViewChild('content') content: ElementRef;
+  @ViewChild('contentMensagem') contentMensagem: ElementRef;
   allowCancelButton : Boolean = false;
 
   public isCollapsed = true;
@@ -39,6 +45,7 @@ export class AppNavbarComponent implements OnInit {
     app: AppComponent,
     service: AppNavbarService,
     private auth: AuthGuard,
+    private socketService: SocketService,
     private modalService: NgbModal
   ) {
 
@@ -118,7 +125,15 @@ export class AppNavbarComponent implements OnInit {
       this.open();    
       this.allowCancelButton = false;
     }
+
+    this.socketService.connect()
+    .subscribe(result => {
+      console.log(`notificação sistema ${result}`);
+      this.badge=true;
+    }, (error) => {
+    });  
     
+    this.verificaMensagens();
   }
 
   populateEstabelecimento(){
@@ -131,5 +146,44 @@ export class AppNavbarComponent implements OnInit {
     this.modalRef.close();
     window.location.href = "";
 
+  }
+
+  carregaMensagens(){
+    this.mensagens = [];
+    this.badge = false;
+    this.service.list("notificacao/usuario").subscribe(result =>{
+      this.mensagens = result;      
+    }, error =>{
+      console.log("Erro ao carregar notificações");
+    });
+  }
+
+  verificaMensagens(){
+    this.service.get("notificacao/usuario/contador").subscribe(result =>{      
+      this.badge = result.total > 0 ? true : false;
+    }, error =>{
+      console.log("Erro ao carregar notificações");
+    });
+  }
+
+  openMensagem(item){
+    this.service.findById(item.id, "notificacao/usuario").subscribe(result =>{
+      if(result){
+        this.mensagem = result[0];
+        this.modalRef = this.modalService.open(this.contentMensagem, {
+          backdrop: 'static',
+          centered: true,
+          keyboard: false,
+          size: "lg"
+        });
+        this.service.notificacaoVisualizada(result[0]).subscribe(result => {          
+        }, error => {
+          console.log("Erro ao gravar notificações!");
+        });
+
+      }     
+    }, error =>{
+      console.log("Erro ao carregar notificações!");
+    });
   }
 }

@@ -136,8 +136,14 @@
 }
 
 .badge-primary {
-  color: #fff;
-  background-color: #00929c;
+  position: absolute;
+  padding: 1px 3px;  
+  color: #c10000 !important;
+  font-weight: 400;
+  border-radius: 10px;
+  font-size: 6px;
+  background-color: #c10000;
+  right: 9px;
 }
 
 .progress-bar {

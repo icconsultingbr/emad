@@ -28,12 +28,25 @@ NotificacaoDAO.prototype.listaPorUsuarioId = function(id, callback) {
         n.id, n.titulo, n.descricao, n.url,  
         n.tipo, tn.nome as tipoFormatado, 
         case when nu.dataVisualizacao is null then 1 else 0 end as 'novo',    
-        DATE_FORMAT(case when n.dataDisponibilidade is null then n.dataCriacao else n.dataDisponibilidade end, " %d/%m/%Y") as 'data'
+        DATE_FORMAT(case when n.dataDisponibilidade is null then n.dataCriacao else n.dataDisponibilidade end, " %d/%m/%Y %H:%i	") as 'data'
         FROM ${this._table} as n
         INNER JOIN tb_notificacao_usuario as nu ON (nu.idNotificacao = n.id) 
         INNER JOIN tb_tipo_notificacao as tn ON (n.tipo = tn.id) 
-        WHERE n.situacao = 1 AND (n.dataDisponibilidade IS NULL OR n.dataDisponibilidade < now()) AND nu.idUsuario = ? 
+        WHERE n.situacao = 1 
+        AND dataVisualizacao is null
+        AND (n.dataDisponibilidade IS NULL OR n.dataDisponibilidade < now()) AND nu.idUsuario = ? 
         ORDER BY novo desc, n.dataCriacao DESC`, id, callback);
+}
+
+NotificacaoDAO.prototype.carregaQtdPorUsuarioId = function(id, callback) {
+    this._connection.query(`
+        SELECT count(*) total
+        FROM ${this._table} as n
+        INNER JOIN tb_notificacao_usuario as nu ON (nu.idNotificacao = n.id) 
+        INNER JOIN tb_tipo_notificacao as tn ON (n.tipo = tn.id) 
+        WHERE n.situacao = 1 
+        AND dataVisualizacao is null
+        AND (n.dataDisponibilidade IS NULL OR n.dataDisponibilidade < now()) AND nu.idUsuario = ?`, id, callback);
 }
 
 NotificacaoDAO.prototype.listaPorUsuarioIdById = function(id,idNotificacao, callback) {
@@ -42,12 +55,12 @@ NotificacaoDAO.prototype.listaPorUsuarioIdById = function(id,idNotificacao, call
         n.id, n.titulo, n.descricao, n.url,  
         n.tipo, tn.nome as tipoFormatado, 
         case when nu.dataVisualizacao is null then 1 else 0 end as 'novo',    
-        DATE_FORMAT(case when n.dataDisponibilidade is null then n.dataCriacao else n.dataDisponibilidade end, " %d/%m/%Y") as 'data'
+        DATE_FORMAT(case when n.dataDisponibilidade is null then n.dataCriacao else n.dataDisponibilidade end, " %d/%m/%Y %H:%i ") as 'data'
         FROM ${this._table} as n
         INNER JOIN tb_notificacao_usuario as nu ON (nu.idNotificacao = n.id) 
         INNER JOIN tb_tipo_notificacao as tn ON (n.tipo = tn.id) 
         WHERE n.situacao = 1 AND (n.dataDisponibilidade IS NULL OR n.dataDisponibilidade < now()) AND nu.idUsuario = ? AND n.id = ?
-        ORDER BY novo desc, n.dataCriacao DESC`, [id,idNotificacao], callback);
+        ORDER BY novo desc, n.dataCriacao DESC`, [id,idNotificacao], callback);    
 }
 
 NotificacaoDAO.prototype.buscaPorId = function (id,callback) {

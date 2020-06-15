@@ -19,6 +19,15 @@ module.exports = function (app) {
         });
     });
 
+    app.get('/notificacao/usuario/contador', function (req, res) {
+        console.log(req.usuario);
+        let usuario = req.usuario;
+        carregaQtdPorUsuarioId(usuario.id, res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
+    });
+
     app.get('/notificacao/usuario/:id(\\d+)', function (req, res) {
         let usuario = req.usuario;
         let idNotificacao = req.params.id
@@ -153,6 +162,29 @@ module.exports = function (app) {
         });
         return d.promise;
     }
+
+    function carregaQtdPorUsuarioId(id, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var notificacaoDAO = new app.dao.NotificacaoDAO(connection);
+        var errors = [];
+
+        notificacaoDAO.carregaQtdPorUsuarioId(id, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "planos");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result[0]);
+            }
+        });
+        return d.promise;
+    }    
 
     function listaPorUsuarioIdById(id, idNotificacao, res) {
         var q = require('q');
