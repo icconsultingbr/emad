@@ -19,7 +19,7 @@ export class AppNavbarComponent implements OnInit {
 
   route: string = "";
   app: AppComponent;
-  @Input() classe: String;
+  @Input() classe: string;
   menus: any[];
   service: AppNavbarService;
   logo: string = 'assets/imgs/logo.png';

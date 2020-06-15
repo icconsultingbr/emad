@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class CorClassificacaoRiscoFormComponent implements OnInit {
 
   object: CorClassificacaoRisco = new CorClassificacaoRisco();
-  method: String = "cor-classificacao-risco";
+  method: string = "cor-classificacao-risco";
   fields: any[] = [];
-  label: String = "Cor de classificação do risco";
+  label: string = "Cor de classificação do risco";
   id: Number = null;
   domains: any[] = [];
 

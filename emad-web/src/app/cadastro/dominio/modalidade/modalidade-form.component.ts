@@ -13,9 +13,9 @@ import { ActivatedRoute } from '@angular/router';
 export class ModalidadeFormComponent implements OnInit {
 
   object: Modalidade = new Modalidade();
-  method: String = 'modalidade';
+  method: string = 'modalidade';
   fields: any[] = [];
-  label: String = "Modalidade";
+  label: string = "Modalidade";
   id: Number = null;
 
   constructor(

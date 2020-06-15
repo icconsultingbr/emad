@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class TipoFichaFormComponent implements OnInit {
 
   object: TipoFicha = new TipoFicha();
-  method: String = "tipo-ficha";
+  method: string = "tipo-ficha";
   fields: any[] = [];
-  label: String = "Tipo de ficha";
+  label: string = "Tipo de ficha";
   id: Number = null;
 
   constructor(

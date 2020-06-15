@@ -13,12 +13,12 @@ import { environment } from "../../../environments/environment";
 })
 
 export class ProfissionalComponent implements OnInit {  
-  method: String = "profissional";
+  method: string = "profissional";
   domains: any[] = [];
   fields = [];
   fieldsSearch = [];
   object: Profissional = new Profissional();
-  virtualDirectory: String = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
+  virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
 
   urls : any[] = [
     { 

@@ -12,7 +12,7 @@ import { FabricanteMaterial } from '../../_core/_models/FabricanteMaterial';
 
 export class FabricanteMaterialComponent implements OnInit {
 
-  method: String = "fabricante-material";
+  method: string = "fabricante-material";
   object: FabricanteMaterial = new FabricanteMaterial();
   fields: any[] = [];
   fieldsSearch: any[] = [];

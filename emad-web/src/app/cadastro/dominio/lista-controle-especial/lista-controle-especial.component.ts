@@ -12,7 +12,7 @@ import { ListaControleEspecial } from '../../../_core/_models/ListaControleEspec
 
 export class ListaControleEspecialComponent implements OnInit {
 
-  method: String = "lista-controle-especial";
+  method: string = "lista-controle-especial";
   object: ListaControleEspecial = new ListaControleEspecial();
   fields: any[] = [];
   fieldsSearch: any[] = [];

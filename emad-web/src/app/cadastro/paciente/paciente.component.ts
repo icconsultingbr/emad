@@ -13,12 +13,12 @@ import { environment } from '../../../environments/environment';
 })
 export class PacienteComponent implements OnInit {
 
-  method: String = "paciente";
+  method: string = "paciente";
   domains: any[] = [];
   fields = [];
   fieldsSearch = [];
   object: Paciente = new Paciente();
-  virtualDirectory: String = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
+  virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
 
   urls : any[] = [
     { 

@@ -4,20 +4,20 @@ export class EscalaProfissional {
     id: Number;
     @Input() idProfissional: Number;    
     @Input() anoMes: Number;  
-    @Input() domingoHorarioInicial: String;
-    @Input() domingoHorarioFinal: String;
-    @Input() segundaHorarioInicial: String;
-    @Input() segundaHorarioFinal: String;
-    @Input() tercaHorarioInicial: String;
-    @Input() tercaHorarioFinal: String;
-    @Input() quartaHorarioInicial: String;
-    @Input() quartaHorarioFinal: String;
-    @Input() quintaHorarioInicial: String;
-    @Input() quintaHorarioFinal: String;
-    @Input() sextaHorarioInicial: String;
-    @Input() sextaHorarioFinal: String;
-    @Input() sabadoHorarioInicial: String;
-    @Input() sabadoHorarioFinal: String;
+    @Input() domingoHorarioInicial: string;
+    @Input() domingoHorarioFinal: string;
+    @Input() segundaHorarioInicial: string;
+    @Input() segundaHorarioFinal: string;
+    @Input() tercaHorarioInicial: string;
+    @Input() tercaHorarioFinal: string;
+    @Input() quartaHorarioInicial: string;
+    @Input() quartaHorarioFinal: string;
+    @Input() quintaHorarioInicial: string;
+    @Input() quintaHorarioFinal: string;
+    @Input() sextaHorarioInicial: string;
+    @Input() sextaHorarioFinal: string;
+    @Input() sabadoHorarioInicial: string;
+    @Input() sabadoHorarioFinal: string;
 }
 
 export class EscalaProfissionalAnoMes {  

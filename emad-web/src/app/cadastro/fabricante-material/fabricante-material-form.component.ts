@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class FabricanteMaterialFormComponent implements OnInit {
 
   object: FabricanteMaterial = new FabricanteMaterial();
-  method: String = "fabricante-material";
+  method: string = "fabricante-material";
   fields: any[] = [];
-  label: String = "Fabricante de material";
+  label: string = "Fabricante de material";
   id: Number = null;
   domains: any[] = [];
 

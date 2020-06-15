@@ -1,44 +1,34 @@
-import { Http, Headers, Response } from "@angular/http";
 import { Injectable } from "@angular/core";
 import { LoginComponent } from "./login.component";
-import { Util } from "../_core/_util/Util";
 import { Router } from "@angular/router";
-
+import { HttpClient } from "@angular/common/http";
 
 @Injectable()
 export class LoginService {
 
-  http: Http;
-  headers: Headers;
-  url: string = Util.urlapi + '/usuario/login';
-  urlValidaToken: string = Util.urlapi + '/usuario/validaToken';
-  urlRecuperarSenha : string = Util.urlapi + '/usuario/recuperar-senha';
+  http: HttpClient;
+  url: string = 'usuario/login';
+  urlValidaToken: string = 'usuario/validaToken';
+  urlRecuperarSenha: string = 'usuario/recuperar-senha';
 
-  constructor(http: Http, private router: Router) {
+  constructor(http: HttpClient, private router: Router) {
     this.http = http;
-    this.headers = new Headers();
-    this.headers.append('Content-type', 'application/json');
-  } 
+  }
 
   login(login: LoginComponent) {
-    return this.http.post(this.url, JSON.stringify(login), { headers: this.headers })
-      .map((res) => res.json());
+    return this.http.post(this.url, JSON.stringify(login));
   }
 
   validaToken(): Promise<any> {
-    let user = JSON.parse(localStorage.getItem('currentUser'));
-    let headers = new Headers();
-    headers.append('Content-type', 'application/json');
-    headers.append('Authorization', user.token);
-    return this.http.get(this.urlValidaToken, { headers: headers })
+    return this.http.get(this.urlValidaToken)
       .toPromise()
       .then((r: any) => {
-        if (r.status != '200') {
+        if (!r.success) {
           this.logout();
           this.router.navigate(['/login']);
         }
       })
-      .catch((err: Error) => {
+      .catch(() => {
         this.logout();
         this.router.navigate(['/login']);
       });
@@ -52,8 +42,6 @@ export class LoginService {
   }
 
   recuperarSenha(login) {
-    return this.http.post(this.urlRecuperarSenha, JSON.stringify(login), { headers: this.headers })
-      .map((res) => res.json());
+    return this.http.post(this.urlRecuperarSenha, JSON.stringify(login));
   }
-
 }

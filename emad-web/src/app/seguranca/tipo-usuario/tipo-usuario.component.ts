@@ -11,7 +11,7 @@ import { TipoUsuario } from '../../_core/_models/TipoUsuario';
 })
 export class TipoUsuarioComponent implements OnInit {
 
-  method: String = "tipo-usuario";
+  method: string = "tipo-usuario";
 
   fields = [];
   fieldsSearch = [];

@@ -1,9 +1,14 @@
 import { Injectable } from '@angular/core';
 import { GenericsService } from '../../_core/_services/generics.service';
 import { Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class CanetaService extends GenericsService {
+
+  constructor(public http: HttpClient) {
+    super(http);
+  }
 
   fields: any[] = [
     {

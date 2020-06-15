@@ -13,13 +13,13 @@ import { Util } from '../../_core/_util/Util';
 export class MenuFormComponent {
 
   object : Menu = new Menu(); 
-  method : String = 'menu';
+  method : string = 'menu';
   fields = []; 
   domains = [];
   loading: Boolean = false;
   errors: any[] = [];
 
-  label : String = "Menu";
+  label : string = "Menu";
   id : Number = null;
 
   constructor(

@@ -25,7 +25,7 @@ export class AtendimentoFormComponent implements OnInit {
   @ViewChild('contentConfirmacao') contentConfirmacao: any;
   
   loading: Boolean = false;
-  message: String = "";
+  message: string = "";
   errors: any[] = [];
   modalRef: NgbModalRef = null;
 
@@ -34,8 +34,8 @@ export class AtendimentoFormComponent implements OnInit {
   formHipotese: FormGroup;
   formMedicamento: FormGroup;
 
-  method: String = "atendimento";
-  url: String = "atendimentos";
+  method: string = "atendimento";
+  url: string = "atendimentos";
   object: Atendimento = new Atendimento();
   paciente: Paciente = new Paciente();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
@@ -344,7 +344,7 @@ export class AtendimentoFormComponent implements OnInit {
 
     this.service
       .save(this.form.value, this.method)
-      .subscribe(res => {
+      .subscribe((res: any) => {
 
         this.object.id = res.id;
         if(res.ano_receita)        
@@ -392,27 +392,34 @@ export class AtendimentoFormComponent implements OnInit {
     this.loading = true;
     this.service.findByIdPaciente(idPaciente, this.object.idEstabelecimento, this.method).subscribe(result => {
 
-      this.object = result;
-      this.object.pacienteNome = this.pacienteSelecionado.nome;
-      this.loading = false;
-
-      this.findHipotesePorAtendimento();
-      this.findEncaminhamentoPorAtendimento();
-      this.findMedicamentoPorAtendimento();
-
+      if(result){
+        this.object = result;
+        this.object.pacienteNome = this.pacienteSelecionado.nome;
+        this.loading = false;
+  
+        this.findHipotesePorAtendimento();
+        this.findEncaminhamentoPorAtendimento();
+        this.findMedicamentoPorAtendimento();
+      }
+      else
+        this.limpaAtendimento();
     }, error => {
-      this.object = new Atendimento();
-      this.object.idPaciente = this.pacienteSelecionado.id;
-      this.object.pacienteNome = this.pacienteSelecionado.nome;
-      this.loading = false;
+      this.limpaAtendimento();
+    });
+  }
 
-      this.allItemsEncaminhamento = [];
-      this.allItemsHipotese = [];
-      this.allItemsMedicamento = [];
+  limpaAtendimento(){
+    this.object = new Atendimento();
+    this.object.idPaciente = this.pacienteSelecionado.id;
+    this.object.pacienteNome = this.pacienteSelecionado.nome;
+    this.loading = false;
 
-      this.errors.push({
-        message: "Atendimento não encontrado"
-      });
+    this.allItemsEncaminhamento = [];
+    this.allItemsHipotese = [];
+    this.allItemsMedicamento = [];
+
+    this.errors.push({
+      message: "Atendimento não encontrado"
     });
   }
 
@@ -583,7 +590,7 @@ export class AtendimentoFormComponent implements OnInit {
     return (this.object.id && Util.isEmpty(this.object.dataCancelamento) && Util.isEmpty(this.object.dataFinalizacao))
   }
 
-  stopProcess(val: String) {
+  stopProcess(val: string) {
     this.message = "";
     this.errors = [];
     let obj: any = {};

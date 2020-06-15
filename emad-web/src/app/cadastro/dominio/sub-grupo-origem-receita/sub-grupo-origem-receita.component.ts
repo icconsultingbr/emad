@@ -12,7 +12,7 @@ import { SubGrupoOrigemReceita } from '../../../_core/_models/SubGrupoOrigemRece
 
 export class SubGrupoOrigemReceitaComponent implements OnInit {
 
-  method: String = "sub-grupo-origem-receita";
+  method: string = "sub-grupo-origem-receita";
   object: SubGrupoOrigemReceita = new SubGrupoOrigemReceita();
   fields: any[] = [];
   fieldsSearch: any[] = [];

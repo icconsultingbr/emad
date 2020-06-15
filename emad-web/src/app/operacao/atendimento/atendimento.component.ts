@@ -11,7 +11,7 @@ import { ActivatedRoute } from '@angular/router';
   providers: [AtendimentoService]
 })
 export class AtendimentoComponent implements OnInit {
-  method: String = "atendimento";
+  method: string = "atendimento";
   domains: any[] = [];
   fields = [];
   fieldsSearch = [];

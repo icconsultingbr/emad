@@ -1,12 +1,4 @@
-<ng-template #customLoadingTemplate>
-    <div style="position: fixed; z-index:9999; width: 100%; top: 50%; left: 0%">
-        <i class="fa fa-circle-o-notch fa-spin">
-            <img class="image" src="assets/imgs/favicon.png" alt="" width="60">
-        </i>
-    </div>
-</ng-template>
-
-<ngx-loading [show]="loading" [config]="{fullScreenBackdrop: true}" [template]="customLoadingTemplate"></ngx-loading>
+<app-loader [loading]="loading"></app-loader>
 
 <p *ngIf="message.length" class="alert alert-info">
     {{message}}

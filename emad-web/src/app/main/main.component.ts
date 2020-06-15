@@ -19,9 +19,9 @@ export class MainComponent implements OnInit {
   objectMedicamento: MainChartLine = new MainChartLine();  
   objectTipoAtendimento: MainChartLine = new MainChartLine();    
   objectAtendimentoSituacao: MainChartLine = new MainChartLine();    
-  method: String = 'profissional';
+  method: string = 'profissional';
   fields = [];
-  label: String = "Profissional";
+  label: string = "Profissional";
   id: Number = null;
   domains: any[] = [];
   loading: Boolean = false;

@@ -17,8 +17,8 @@ export class UsuarioResetComponent implements OnInit {
   usuarioForm: FormGroup;
   route: ActivatedRoute;
   router: Router;
-  mensagem: String = "";
-  warning: String = "";
+  mensagem: string = "";
+  warning: string = "";
   usuario: Senha = new Senha();
   @Input() ep : Number = 0;
 

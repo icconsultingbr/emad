@@ -10,7 +10,7 @@ import { Estabelecimento } from '../../_core/_models/Estabelecimento';
 })
 export class EstabelecimentoComponent implements OnInit {
 
-  method: String = "estabelecimento";
+  method: string = "estabelecimento";
 
   fields = [];
   fieldsSearch = [];

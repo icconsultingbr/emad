@@ -12,7 +12,7 @@ import { MotivoFimReceita } from '../../../_core/_models/MotivoFimReceita';
 
 export class MotivoFimReceitaComponent implements OnInit {
 
-  method: String = "motivo-fim-receita";
+  method: string = "motivo-fim-receita";
   object: MotivoFimReceita = new MotivoFimReceita();
   fields: any[] = [];
   fieldsSearch: any[] = [];

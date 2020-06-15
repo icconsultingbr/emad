@@ -23,7 +23,6 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { deLocale } from 'ngx-bootstrap/locale';
-import { HttpModule } from '@angular/http';
 import { ChartsModule } from 'ng2-charts';
 import { PreviousRouteService } from './_core/_services/previous-router.service';
 import { AppGridViewModule } from './_core/_components/app-grid-view/app-grid-view.module';
@@ -46,7 +45,7 @@ defineLocale('pt-br', deLocale);
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
-        HttpModule,
+        CoreModule,
         routing,
         FormsModule,
         ReactiveFormsModule,
@@ -64,12 +63,11 @@ defineLocale('pt-br', deLocale);
         BsDatepickerModule.forRoot(),
         BsDropdownModule.forRoot(),
         ChartsModule,
-        CoreModule,
     ], declarations: [
         AppComponent,
         AppNavbarComponent,
         LoginComponent,
-        MainComponent, 
+        MainComponent,
         NotFoundComponent,
         UsuarioResetComponent
     ],

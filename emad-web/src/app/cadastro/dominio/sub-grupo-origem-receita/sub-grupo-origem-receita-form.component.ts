@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class SubGrupoOrigemReceitaFormComponent implements OnInit {
 
   object: SubGrupoOrigemReceita = new SubGrupoOrigemReceita();
-  method: String = "sub-grupo-origem-receita";
+  method: string = "sub-grupo-origem-receita";
   fields: any[] = [];
-  label: String = "Subgrupo origem de receita";
+  label: string = "Subgrupo origem de receita";
   id: Number = null;
   domains: any[] = [];
 

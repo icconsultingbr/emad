@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class TipoUnidadeFormComponent implements OnInit {
 
   object: TipoUnidade = new TipoUnidade();
-  method: String = "tipo-unidade";
+  method: string = "tipo-unidade";
   fields: any[] = [];
-  label: String = "Tipo de unidade";
+  label: string = "Tipo de unidade";
   id: Number = null;
 
   constructor(

@@ -17,12 +17,12 @@ export class EscalaProfissionalFormComponent implements OnInit {
 
   //MESSAGES
   loading: Boolean = false;
-  message: String = "";
+  message: string = "";
   errors: any[] = [];
   modalRef: NgbModalRef = null;
   modalRemoveRef: NgbModalRef = null;
   form: FormGroup;
-  method: String = "escala-profissional";
+  method: string = "escala-profissional";
   ausenciaProfissional: AusenciaProfissional = new AusenciaProfissional();
   fields: any[] = [];
   object: EscalaProfissional = new EscalaProfissional();

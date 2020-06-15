@@ -12,7 +12,7 @@ import { Livro } from '../../_core/_models/Livro';
 
 export class LivroComponent implements OnInit {
 
-  method: String = "livro";
+  method: string = "livro";
   object: Livro = new Livro();
   fields: any[] = [];
   fieldsSearch: any[] = [];

@@ -13,9 +13,9 @@ import { ActivatedRoute } from '@angular/router';
 export class EstabelecimentoFormComponent implements OnInit {
 
   object: Estabelecimento = new Estabelecimento();
-  method: String = 'estabelecimento';
+  method: string = 'estabelecimento';
   fields = [];
-  label: String = "Estabelecimento";
+  label: string = "Estabelecimento";
   id: Number = null;
   domains: any[] = [];
 

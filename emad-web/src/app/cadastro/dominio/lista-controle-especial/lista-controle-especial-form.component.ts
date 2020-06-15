@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class ListaControleEspecialFormComponent implements OnInit {
 
   object: ListaControleEspecial = new ListaControleEspecial();
-  method: String = "lista-controle-especial";
+  method: string = "lista-controle-especial";
   fields: any[] = [];
-  label: String = "Lista de controle especial";
+  label: string = "Lista de controle especial";
   id: Number = null;
   domains: any[] = [];
 

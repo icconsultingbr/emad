@@ -1,8 +1,14 @@
 import { Injectable } from '@angular/core';
 import { GenericsService } from '../../_core/_services/generics.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class LogService extends GenericsService {
+
+  constructor(public http: HttpClient) {
+    super(http);
+  }
+  
   public fields: any[] = [
     {
       field: "id",

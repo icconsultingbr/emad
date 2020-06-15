@@ -1,9 +1,14 @@
 import { Injectable } from '@angular/core';
 import { GenericsService } from '../../_core/_services/generics.service';
 import { Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class ParametroSegurancaService extends GenericsService {
+
+  constructor(public http: HttpClient) {
+    super(http);
+  }
 
   public fields : any[] = [
     {
@@ -62,5 +67,4 @@ export class ParametroSegurancaService extends GenericsService {
       validator:['', Validators.required]
     }
   ];
-
 }

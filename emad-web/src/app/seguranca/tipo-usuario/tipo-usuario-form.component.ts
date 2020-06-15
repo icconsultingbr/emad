@@ -17,8 +17,8 @@ export class TipoUsuarioFormComponent implements OnInit {
   tipoUsuarioForm: FormGroup;
   route: ActivatedRoute;
   router: Router;
-  mensagem: String = "";
-  warning: String = "";
+  mensagem: string = "";
+  warning: string = "";
   tipoUsuario: TipoUsuario = new TipoUsuario(); 
 
   dropdownList = [];

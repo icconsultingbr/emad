@@ -1,45 +1,41 @@
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs";
-import { Http, Headers } from '@angular/http';
-import { Util } from '../../_util/Util';
 import { GenericsService } from '../../_services/generics.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class AppFormService extends GenericsService {
 
-  http : Http; 
-  headers : Headers;
-  url : string = Util.urlapi+""; 
+  constructor(public http: HttpClient) {
+    super(http);
+  }
 
-
-  inserir(obj: any, metodo: String){ 
+  inserir(obj: any, metodo: string){ 
     if(obj.id){
       return this.http
-      .put(this.url+"/"+metodo, JSON.stringify(obj), { headers: this.headers })
-      .map((res)=>res.json());
+      .put(metodo, JSON.stringify(obj));
     }
     else{
       return this.http
-      .post(this.url+"/"+metodo, JSON.stringify(obj), { headers: this.headers })
-      .map((res)=>res.json());
+      .post(metodo, JSON.stringify(obj));
     }
   }
 
-  buscaPorId(id: string, metodo : String) : Observable<any>{
-    return this.http.get(this.url+"/"+metodo+"/"+id, { headers: this.headers }).map(res => res.json());
+  buscaPorId(id: string, metodo : string) : Observable<any>{
+    return this.http.get(metodo+"/"+id);
   }
 
-  remove(obj : any, metodo : String){
-    return this.http.delete(this.url+'/'+metodo+"/"+obj.id, { headers: this.headers }).map(res => res.json());
+  remove(obj : any, metodo : string){
+    return this.http.delete(metodo+"/"+obj.id);
   }
 
-  list(method : String) : Observable<any[]>{
-    return this.http.get(this.url+"/"+method, { headers: this.headers }).map(res => res.json());
+  list(method : string) : Observable<any[]>{
+    return this.http.get<any[]>(method);
   }
 
   
-  findByName(method : String, query : String) : Observable<any>{
-    return this.http.get(this.url+"/"+method+"?q="+query, { headers: this.headers }).map(res => res.json());
+  findByName(method : string, query : string) : Observable<any>{
+    return this.http.get(method+"?q="+query);
   }
 
 }

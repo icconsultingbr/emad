@@ -12,7 +12,7 @@ import { FamiliaMaterial } from '../../../_core/_models/FamiliaMaterial';
 
 export class FamiliaMaterialComponent implements OnInit {
 
-  method: String = "familia-material";
+  method: string = "familia-material";
   object: FamiliaMaterial = new FamiliaMaterial();
   fields: any[] = [];
   fieldsSearch: any[] = [];

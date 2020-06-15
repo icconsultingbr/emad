@@ -13,9 +13,9 @@ import { FormBuilder } from '@angular/forms';
 export class ParametroSegurancaFormComponent implements OnInit {
 
   object: ParametroSeguranca = new ParametroSeguranca();
-  method: String = "parametro-seguranca";
+  method: string = "parametro-seguranca";
   fields: any[] = [];
-  label: String = "Parâmetros de segurança";
+  label: string = "Parâmetros de segurança";
   id: Number = null;
 
   constructor(

@@ -13,9 +13,9 @@ import { ActivatedRoute } from '@angular/router';
 export class HipoteseDiagnosticaFormComponent implements OnInit {
 
   object: HipoteseDiagnostica = new HipoteseDiagnostica();
-  method: String = 'hipotese-diagnostica';
+  method: string = 'hipotese-diagnostica';
   fields: any[] = [];
-  label: String = "Hipótese Diagnóstica";
+  label: string = "Hipótese Diagnóstica";
   id: Number = null;
 
   constructor(

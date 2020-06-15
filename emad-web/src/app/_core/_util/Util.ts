@@ -3,7 +3,7 @@ import { DatePipe } from "@angular/common";
 import { Translation } from "../_locale/Translation";
 
 export class Util {
-    static urlapi: String = environment.apiUrl;
+    static urlapi: string = environment.apiUrl;
     static superAdmin: number = environment.superAdmin;
 
 
@@ -21,27 +21,26 @@ export class Util {
         return myFormattedDate;
     }
 
-    static customHTTPResponse(erro: any) {
+    static customHTTPResponse(errors: any) {
 
-        let errors = [];
+        const result = [];
 
-        if (erro.status == 400) {
-            let json = JSON.parse(erro._body);
-            for (let error of json) {
-                errors.push({ message: error.msg });
+        if (errors) {
+            for (let error of errors) {
+                result.push({ message: error.msg });
             }
         }
         else {
-            errors.push({
+            result.push({
                 field: "",
                 message: Translation.t("SERVICE_UNAVAILABLE")
             });
         }
 
-        return errors;
+        return result;
     }
 
-    static dateFormat(val: String, pattern: string) {
+    static dateFormat(val: string, pattern: string) {
         if (val) {
             let parts2;
 
@@ -311,7 +310,7 @@ export class Util {
         }
     }
 
-    static getInitialsOfName(str : String) {
+    static getInitialsOfName(str : string) {
         let matches = str.match(/\b(\w)/g); 
 
         return matches.join('').toUpperCase();
