@@ -38,6 +38,17 @@ NotificacaoDAO.prototype.listaPorUsuarioId = function(id, callback) {
         ORDER BY novo desc, n.dataCriacao DESC`, id, callback);
 }
 
+NotificacaoDAO.prototype.carregaQtdPorUsuarioId = function(id, callback) {
+    this._connection.query(`
+        SELECT count(*) total
+        FROM ${this._table} as n
+        INNER JOIN tb_notificacao_usuario as nu ON (nu.idNotificacao = n.id) 
+        INNER JOIN tb_tipo_notificacao as tn ON (n.tipo = tn.id) 
+        WHERE n.situacao = 1 
+        AND dataVisualizacao is null
+        AND (n.dataDisponibilidade IS NULL OR n.dataDisponibilidade < now()) AND nu.idUsuario = ?`, id, callback);
+}
+
 NotificacaoDAO.prototype.listaPorUsuarioIdById = function(id,idNotificacao, callback) {
     this._connection.query(`
         SELECT 

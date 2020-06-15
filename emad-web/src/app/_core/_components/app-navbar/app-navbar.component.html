@@ -47,7 +47,7 @@
       </button>
       <ul id="dropdown-msg" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
         <li role="menuitem" *ngFor="let msg of mensagens">
-          <a class="dropdown-item" (click)="openMensagem(msg)">{{msg.tipoFormatado}}: {{msg.titulo}}</a>
+          <a class="dropdown-item dropdown-msg-item" (click)="openMensagem(msg)">{{msg.tipoFormatado}}: {{msg.titulo}}</a>
         </li>
       </ul>
     </div>

@@ -131,7 +131,9 @@ export class AppNavbarComponent implements OnInit {
       console.log(`notificação sistema ${result}`);
       this.badge=true;
     }, (error) => {
-    });    
+    });  
+    
+    this.verificaMensagens();
   }
 
   populateEstabelecimento(){
@@ -151,6 +153,14 @@ export class AppNavbarComponent implements OnInit {
     this.badge = false;
     this.service.list("notificacao/usuario").subscribe(result =>{
       this.mensagens = result;      
+    }, error =>{
+      console.log("Erro ao carregar notificações");
+    });
+  }
+
+  verificaMensagens(){
+    this.service.get("notificacao/usuario/contador").subscribe(result =>{      
+      this.badge = result.total > 0 ? true : false;
     }, error =>{
       console.log("Erro ao carregar notificações");
     });
