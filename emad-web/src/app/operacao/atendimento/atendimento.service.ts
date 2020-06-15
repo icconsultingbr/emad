@@ -5,7 +5,18 @@ import { Validators } from '@angular/forms';
 
 @Injectable()
 export class AtendimentoService extends GenericsService {
-    fields: any[] = [
+    fields: any[] = [        
+        {
+            field: "corIconeGrid",
+            type: "icone",
+            label: "",
+            icon: "fa-square",            
+            grid: true,
+            colunaDescricao: "tooltipIconeGrid",
+            form: false,
+            required: false,
+            validator: ['', '']
+        },  
         {
             field: "id",
             type: "hidden",
@@ -14,7 +25,7 @@ export class AtendimentoService extends GenericsService {
             form: false,
             required: false,
             validator: ['', '']
-        },
+        },      
         {
             field: "cartaoSus",
             type: "text",

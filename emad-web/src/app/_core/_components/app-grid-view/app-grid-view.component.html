@@ -190,12 +190,15 @@
             *ngFor="let item of pagedItems | filtroAppGridView: allItems: textoProcurado.value : fields; let index=index; let odd='odd'; let even='even';">
             <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
                 <td *ngFor="let field of fields;">
+                    <span *ngIf="field.type=='icone'">
+                        <i class="fa {{ field.icon }}" title="{{ item[field.colunaDescricao] }}"
+                            [style.color]="item[field.field]"></i>
+                    </span>
                     <span *ngIf="field.type=='image'">
                         <img class="bioPerson"
                             src="{{field.path+'/'+(item[field.field]?item[field.field]:field.imgDefault)}}">
                     </span>
-
-                    <span *ngIf="field.type!='image'" class="{{field.class?field.class:''}}">
+                    <span *ngIf="field.type!='image' && field.type!='icone'" class="{{field.class?field.class:''}}">
                         {{
                             field.isDate?(item[field.field] | date :'dd/MM/yyyy') :
                                 field.isDateTime?(item[field.field] | date :'dd/MM/yyyy HH:mm') :
