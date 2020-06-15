@@ -12,7 +12,7 @@ import { Material } from '../../_core/_models/Material';
 
 export class MaterialComponent implements OnInit {
 
-  method: String = "material";
+  method: string = "material";
   object: Material = new Material();
   fields: any[] = [];
   fieldsSearch: any[] = [];

@@ -22,7 +22,7 @@ export class AppFormComponent implements OnInit, AfterViewInit {
 
 
   @Input() fields = [];
-  @Input() method: String;
+  @Input() method: string;
   @Input() object: any;
   @Input() domains: any[];
   @Input() redirectAfterInsert: string;
@@ -30,13 +30,13 @@ export class AppFormComponent implements OnInit, AfterViewInit {
   service: AppFormService;
   form: FormGroup;
   groupForm: any = {};
-  type: String;
+  type: string;
   route: ActivatedRoute;
   router: Router;
   message: string = '';
-  warning: String = '';
+  warning: string = '';
   situacao: Number = 0;
-  saveLabel: String = "Salvar";
+  saveLabel: string = "Salvar";
   debounce: Subject<string> = new Subject<string>();
   id: any;
   errors: any[] = [];

@@ -2,10 +2,15 @@ import { Injectable } from '@angular/core';
 import { GenericsService } from '../../_core/_services/generics.service';
 import { Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class EstabelecimentoGrupoMaterialService extends GenericsService {
 
+  constructor(public http: HttpClient) {
+    super(http);
+  }
+  
   public fields: any[] = [    
     {
       field: "id",
@@ -75,6 +80,6 @@ export class EstabelecimentoGrupoMaterialService extends GenericsService {
   ];
 
   carregaGrupoSemEstabelecimento(): Observable<any> {
-    return this.http.get(this.url + "grupo-material/estabelecimento/" + JSON.parse(localStorage.getItem("est"))[0].id, { headers: this.headers }).map(res => res.json());
+    return this.http.get("grupo-material/estabelecimento/" + JSON.parse(localStorage.getItem("est"))[0].id);
   }
 }

@@ -12,9 +12,9 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class PacienteFormComponent implements OnInit {
   object: Paciente = new Paciente();
-  method: String = 'paciente';
+  method: string = 'paciente';
   fields = [];
-  label: String = "Paciente";
+  label: string = "Paciente";
   id: Number = null;
   domains: any[] = [];
 

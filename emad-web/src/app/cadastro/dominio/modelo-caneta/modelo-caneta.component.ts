@@ -12,7 +12,7 @@ import { ModeloCaneta } from '../../../_core/_models/ModeloCaneta';
 
 export class ModeloCanetaComponent implements OnInit {
 
-  method: String = "modelo-caneta";
+  method: string = "modelo-caneta";
   object: ModeloCaneta = new ModeloCaneta();
   fields: any[] = [];
   fieldsSearch: any[] = [];

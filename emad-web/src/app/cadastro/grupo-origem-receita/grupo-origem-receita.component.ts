@@ -12,7 +12,7 @@ import { GrupoOrigemReceita } from '../../_core/_models/GrupoOrigemReceita';
 
 export class GrupoOrigemReceitaComponent implements OnInit {
 
-  method: String = "grupo-origem-receita";
+  method: string = "grupo-origem-receita";
   object: GrupoOrigemReceita = new GrupoOrigemReceita();
   fields: any[] = [];
   fieldsSearch: any[] = [];

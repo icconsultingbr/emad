@@ -22,17 +22,17 @@ export class AppGridViewComponent implements AfterViewInit {
   pager: any = {};
   pagedItems: any[];
   router: Router;
-  token: String = "";
-  message: String = "";
-  mensagem: String = "";
+  token: string = "";
+  message: string = "";
+  mensagem: string = "";
   classMensagem: string = "";
-  closeResult: String;
+  closeResult: string;
   service: AppGridViewService;
   pagerService: PagerService;
-  @Input() loading: Boolean = false;
-  isFilterCollapse: Boolean = false;
+  @Input() loading: boolean = false;
+  isFilterCollapse: boolean = false;
   user: Usuario = new Usuario();
-  warning: String = "";
+  warning: string = "";
   motivoExclusao: string = '';
   pageLimit: number = 10;
   totalPages: Number;
@@ -49,7 +49,7 @@ export class AppGridViewComponent implements AfterViewInit {
   @Input() errors: any[] = [];
   @Input() fields = [];
   @Input() fieldsSearch = [];
-  @Input() method: String;
+  @Input() method: string;
   @Input() domains: any[];
   @Input() object: any;
   @Input() exportXls: Boolean = false;
@@ -77,7 +77,7 @@ export class AppGridViewComponent implements AfterViewInit {
   @Output() emitFilterMultiSelectMethod = new EventEmitter();
 
   actualPage: Number = 0;
-  @Input() methodXls: String = this.method;
+  @Input() methodXls: string = this.method;
   dropdownSettings: any = {
     singleSelection: false,
     idField: 'id',
@@ -167,7 +167,7 @@ export class AppGridViewComponent implements AfterViewInit {
                 if (isDate(this.object[key])) {
                   params += key + "=" + Util.dateFormat(this.object[key], "yyyy-MM-dd") + "&";
                 } else {
-                  let p: String = "";
+                  let p: string = "";
 
                   for (let k of this.object[key]) {
                     p += k.id + ",";
@@ -260,7 +260,7 @@ export class AppGridViewComponent implements AfterViewInit {
                 if (isDate(this.object[key])) {
                   params += key + "=" + Util.dateFormat(this.object[key], "yyyy-MM-dd") + "&";
                 } else {
-                  let p: String = "";
+                  let p: string = "";
 
                   for (let k of this.object[key]) {
                     p += k.id + ",";
@@ -340,7 +340,7 @@ export class AppGridViewComponent implements AfterViewInit {
 
     if (compoundKey.length) {
 
-      let uri: String = "";
+      let uri: string = "";
 
       for (let ck of compoundKey) {
         uri += "/" + item[ck.field];
@@ -410,7 +410,7 @@ export class AppGridViewComponent implements AfterViewInit {
     this.isFilterCollapse = !this.isFilterCollapse;
   }
 
-  loadDomain(route: String, event, object: any) {
+  loadDomain(route: string, event, object: any) {
     this.message = "";
     let id = event.target.value;
     this.listDomain(route, id, object);

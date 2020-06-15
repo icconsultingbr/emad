@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class MotivoFimReceitaFormComponent implements OnInit {
 
   object: MotivoFimReceita = new MotivoFimReceita();
-  method: String = "motivo-fim-receita";
+  method: string = "motivo-fim-receita";
   fields: any[] = [];
-  label: String = "Motivo fim receita";
+  label: string = "Motivo fim receita";
   id: Number = null;
   domains: any[] = [];
 

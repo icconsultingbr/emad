@@ -11,7 +11,7 @@ import { CanetaService } from './caneta.service';
 })
 export class CanetaComponent implements OnInit {
 
-  method: String = "caneta";
+  method: string = "caneta";
   domains: any[] = [];
   fields = [];
   object: Caneta = new Caneta();

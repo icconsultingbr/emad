@@ -12,8 +12,8 @@ import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.
 })
 export class UsuarioFormComponent implements OnInit {
 
-  method: String = 'usuario';
-  label: String = "Usuário";
+  method: string = 'usuario';
+  label: string = "Usuário";
   fields = [];
   domains = [];
   id: Number = null;
@@ -24,8 +24,8 @@ export class UsuarioFormComponent implements OnInit {
   groupForm: any = {};
   route: ActivatedRoute;
   router: Router;
-  mensagem: String = "";
-  warning: String = "";
+  mensagem: string = "";
+  warning: string = "";
   usuario: Usuario = new Usuario();
   dropdownSettings : any;
 

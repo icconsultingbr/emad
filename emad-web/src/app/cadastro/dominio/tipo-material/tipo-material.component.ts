@@ -12,7 +12,7 @@ import { TipoMaterial } from '../../../_core/_models/TipoMaterial';
 
 export class TipoMaterialComponent implements OnInit {
 
-  method: String = "tipo-material";
+  method: string = "tipo-material";
   object: TipoMaterial = new TipoMaterial();
   fields: any[] = [];
   fieldsSearch: any[] = [];

@@ -1,12 +1,4 @@
-<ng-template #customLoadingTemplate>
-    <div style="position: fixed; z-index:9999; width: 100%; top: 50%; left: 0%">
-        <i class="fa fa-circle-o-notch fa-spin">
-            <img class="image" src="assets/imgs/favicon.png" alt="" width="60">
-        </i>
-    </div>
-</ng-template>
-
-<ngx-loading [show]="loading" [config]="{fullScreenBackdrop: true}" [template]="customLoadingTemplate"></ngx-loading>
+<app-loader [loading]="loading"></app-loader>
 
 <p *ngIf="message.length" class="alert alert-info">
     {{message}}
@@ -190,12 +182,15 @@
             *ngFor="let item of pagedItems | filtroAppGridView: allItems: textoProcurado.value : fields; let index=index; let odd='odd'; let even='even';">
             <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
                 <td *ngFor="let field of fields;">
+                    <span *ngIf="field.type=='icone'">
+                        <i class="fa {{ field.icon }}" title="{{ item[field.colunaDescricao] }}"
+                            [style.color]="item[field.field]"></i>
+                    </span>
                     <span *ngIf="field.type=='image'">
                         <img class="bioPerson"
                             src="{{field.path+'/'+(item[field.field]?item[field.field]:field.imgDefault)}}">
                     </span>
-
-                    <span *ngIf="field.type!='image'" class="{{field.class?field.class:''}}">
+                    <span *ngIf="field.type!='image' && field.type!='icone'" class="{{field.class?field.class:''}}">
                         {{
                             field.isDate?(item[field.field] | date :'dd/MM/yyyy') :
                                 field.isDateTime?(item[field.field] | date :'dd/MM/yyyy HH:mm') :

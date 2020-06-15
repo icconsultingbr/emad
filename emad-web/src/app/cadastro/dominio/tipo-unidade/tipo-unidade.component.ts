@@ -12,7 +12,7 @@ import { TipoUnidade } from '../../../_core/_models/TipoUnidade';
 
 export class TipoUnidadeComponent implements OnInit {
 
-  method: String = "tipo-unidade";
+  method: string = "tipo-unidade";
   object: TipoUnidade = new TipoUnidade();
   fields: any[] = [];
   fieldsSearch: any[] = [];

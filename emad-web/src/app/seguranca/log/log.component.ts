@@ -10,7 +10,7 @@ import { LogService } from './log.service';
 })
 export class LogComponent implements OnInit {
 
-  method: String = "log";
+  method: string = "log";
   object: Log = new Log();
   domains: any[] = [];
   fields = [];

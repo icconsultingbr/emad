@@ -12,7 +12,7 @@ import { EstabelecimentoGrupoMaterial } from '../../_core/_models/Estabeleciment
 
 export class EstabelecimentoGrupoMaterialComponent implements OnInit {
 
-  method: String = "estabelecimento-grupo-material";
+  method: string = "estabelecimento-grupo-material";
   object: EstabelecimentoGrupoMaterial = new EstabelecimentoGrupoMaterial();
   fields: any[] = [];
   fieldsSearch: any[] = [];

@@ -2,10 +2,15 @@ import { Injectable } from '@angular/core';
 import { GenericsService } from '../../_core/_services/generics.service';
 import { Observable } from 'rxjs';
 import { Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
-export class EscalaProfissionalService extends GenericsService{
-  
+export class EscalaProfissionalService extends GenericsService {
+
+  constructor(public http: HttpClient) {
+    super(http);
+  }
+
   fields: any[] = [
     {
       field: "id",
@@ -44,11 +49,11 @@ export class EscalaProfissionalService extends GenericsService{
       grid: false,
       form: true,
       required: false,
-      validator: ['',  ''],
+      validator: ['', ''],
       filter: {
         type: "select"
       }
-    },    
+    },
     {
       field: "nomeProfissional",
       type: "text",
@@ -57,7 +62,7 @@ export class EscalaProfissionalService extends GenericsService{
       form: false,
       required: false,
       validator: ['', ''],
-    },	      
+    },
     {
       field: "periodoInicial",
       type: "text",
@@ -70,7 +75,7 @@ export class EscalaProfissionalService extends GenericsService{
         type: 'date',
         placeHolder: '99/99/9999'
       }
-    },	  	      
+    },
     {
       field: "periodoFinal",
       type: "text",
@@ -89,44 +94,41 @@ export class EscalaProfissionalService extends GenericsService{
       required: true,
       validator: ['', Validators.required]
     }
-    ];
+  ];
 
-    carregaAusenciaPorProfissional(id: any): Observable<any> {
-        return this.http.get(this.url + "ausencia-profissional/profissional/" + id, { headers: this.headers }).map(res => res.json());
+  carregaAusenciaPorProfissional(id: any): Observable<any> {
+    return this.http.get("ausencia-profissional/profissional/" + id);
+  }
+
+  salvaAusencia(obj: any) {
+    if (obj.id) {
+      return this.http
+        .put('ausencia-profissional', JSON.stringify(obj));
     }
-
-    salvaAusencia(obj: any) {
-      if (obj.id) {
-          return this.http
-              .put(this.url + 'ausencia-profissional', JSON.stringify(obj), { headers: this.headers })
-              .map((res) => res.json());
-      }
-      else {
-          return this.http
-              .post(this.url + 'ausencia-profissional', JSON.stringify(obj), { headers: this.headers })
-              .map((res) => res.json());
-      }
+    else {
+      return this.http
+        .post('ausencia-profissional', JSON.stringify(obj));
     }
+  }
 
-    removeAusencia(params: any) {
-      return this.http.delete(this.url + 'ausencia-profissional/' + params, { headers: this.headers }).map(res => res.json());
+  removeAusencia(params: any) {
+    return this.http.delete('ausencia-profissional/' + params);
+  }
+
+  carregaEscalaProfissionalAnoMes(id: any, anoMes: string): Observable<any> {
+    return this.http.get('escala-profissional' + "/profissional/" + id + "/anomes/" + anoMes);
+  }
+
+  salvaEscalaProfissional(obj: any) {
+    if (obj.id) {
+      return this.http
+        .put('escala-profissional', JSON.stringify(obj))
+        ;
     }
-
-    carregaEscalaProfissionalAnoMes(id: any, anoMes: string): Observable<any> {
-      return this.http.get(this.url + 'escala-profissional' + "/profissional/" + id + "/anomes/" + anoMes, { headers: this.headers }).map(res => res.json());
+    else {
+      return this.http
+        .post('escala-profissional', JSON.stringify(obj))
+        ;
     }
-
-    salvaEscalaProfissional(obj: any) {
-      if (obj.id) {
-          return this.http
-              .put(this.url + 'escala-profissional', JSON.stringify(obj), { headers: this.headers })
-              .map((res) => res.json());
-      }
-      else {
-          return this.http
-              .post(this.url + 'escala-profissional', JSON.stringify(obj), { headers: this.headers })
-              .map((res) => res.json());
-      }
-    }
-
+  }
 }

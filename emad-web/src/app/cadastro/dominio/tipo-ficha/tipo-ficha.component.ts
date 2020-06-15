@@ -12,7 +12,7 @@ import { TipoFicha } from '../../../_core/_models/TipoFicha';
 
 export class TipoFichaComponent implements OnInit {
 
-  method: String = "tipo-ficha";
+  method: string = "tipo-ficha";
   object: TipoFicha = new TipoFicha();
   fields: any[] = [];
   fieldsSearch: any[] = [];

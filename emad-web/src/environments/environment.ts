@@ -11,5 +11,6 @@ export const environment = {
   admin: 1, 
   socketUrl:'http://localhost:4000',
   utc : 0,
-  virtualDirectory: ""
+  virtualDirectory: "",
+  socketPath: '',
 };

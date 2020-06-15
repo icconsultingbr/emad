@@ -19,12 +19,12 @@ export class PlanoTerapeuticoComponent implements OnInit {
 
   //MESSAGES
   loading: Boolean = false;
-  message: String = "";
+  message: string = "";
   errors: any[] = [];
   modalRef: NgbModalRef = null;
   modalRemoveRef: NgbModalRef = null;
   form: FormGroup;
-  method: String = "agenda";
+  method: string = "agenda";
 
   //PAGINATION
   allItems: any[];
@@ -666,7 +666,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
     return null;
   }
 
-  getInitials(nome : String){
+  getInitials(nome : string){
     return Util.getInitialsOfName(nome)[0] + "" + Util.getInitialsOfName(nome)[Util.getInitialsOfName(nome).length-1];
   }
 

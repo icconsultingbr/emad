@@ -1,11 +1,17 @@
 import { Injectable } from '@angular/core';
 import { GenericsService } from '../../_core/_services/generics.service';
 import { Validators } from '@angular/forms';
+import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class MaterialService extends GenericsService {
 
-  public fields: any[] = [    
+  constructor(public http: HttpClient) {
+    super(http);
+  }
+
+  public fields: any[] = [
     {
       field: "id",
       type: "hidden",
@@ -48,7 +54,7 @@ export class MaterialService extends GenericsService {
       label: "Dispensável",
       grid: true,
       form: true,
-      translate: {1: "Sim", 0: "Não"},
+      translate: { 1: "Sim", 0: "Não" },
       required: false,
       validator: ['', '']
     },
@@ -108,7 +114,7 @@ export class MaterialService extends GenericsService {
       filter: {
         type: "select",
         changeMethod: 'sub-grupo-material/grupo-material',
-        changeTarget: 'idSubGrupoMaterial' 
+        changeTarget: 'idSubGrupoMaterial'
       },
     },
     {
@@ -122,7 +128,7 @@ export class MaterialService extends GenericsService {
       filter: {
         type: "select",
         changeMethod: 'familia-material/sub-grupo-material',
-        changeTarget: 'idFamiliaMaterial' 
+        changeTarget: 'idFamiliaMaterial'
       },
     },
     {
@@ -158,9 +164,9 @@ export class MaterialService extends GenericsService {
       label: "Situação",
       grid: true,
       form: true,
-      translate: {1: "Ativo", 0: "Inativo"},
+      translate: { 1: "Ativo", 0: "Inativo" },
       required: true,
-      validator:['', Validators.required]
+      validator: ['', Validators.required]
     }
   ];
 }

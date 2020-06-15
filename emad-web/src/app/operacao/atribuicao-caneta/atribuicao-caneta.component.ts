@@ -12,7 +12,7 @@ import { Util } from '../../_core/_util/Util';
 })
 export class AtribuicaoCanetaComponent implements OnInit {
 
-  method: String = "atribuicao-caneta";
+  method: string = "atribuicao-caneta";
   domains: any[] = [];
   fields = [];
   fieldsSearch = [];

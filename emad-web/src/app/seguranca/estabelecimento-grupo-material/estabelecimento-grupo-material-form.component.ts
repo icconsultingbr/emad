@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class EstabelecimentoGrupoMaterialFormComponent implements OnInit {
 
   object: EstabelecimentoGrupoMaterial = new EstabelecimentoGrupoMaterial();
-  method: String = "estabelecimento-grupo-material";
+  method: string = "estabelecimento-grupo-material";
   fields: any[] = [];
-  label: String = "Associação de grupo de materiais ao estabelecimento";
+  label: string = "Associação de grupo de materiais ao estabelecimento";
   id: Number = null;
   domains: any[] = [];
 

@@ -1,11 +1,25 @@
 import { Injectable } from '@angular/core';
 import { GenericsService } from '../../_core/_services/generics.service';
 import { Observable } from 'rxjs';
-import { Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class AtendimentoService extends GenericsService {
+    constructor(public http: HttpClient) {
+        super(http);
+    }
     fields: any[] = [
+        {
+            field: "corIconeGrid",
+            type: "icone",
+            label: "",
+            icon: "fa-square",            
+            grid: true,
+            colunaDescricao: "tooltipIconeGrid",
+            form: false,
+            required: false,
+            validator: ['', '']
+        },         
         {
             field: "id",
             type: "hidden",
@@ -14,7 +28,7 @@ export class AtendimentoService extends GenericsService {
             form: false,
             required: false,
             validator: ['', '']
-        },
+        },      
         {
             field: "cartaoSus",
             type: "text",
@@ -134,100 +148,92 @@ export class AtendimentoService extends GenericsService {
             label: "Situação",
             grid: true,
             form: false,
-            translate: { "A": "Alta", "C": "Em aberto", "E": "Evasão", "O" : "Óbito", "X": "Cancelado" },
+            translate: { "A": "Alta", "C": "Em aberto", "E": "Evasão", "O": "Óbito", "X": "Cancelado" },
             required: true,
             validator: ['', ''],
-            filter : {
+            filter: {
                 type: "select",
                 grid: true
-              }
+            }
         }
     ];
 
-    findByIdPaciente(id: any, idEstabelecimento: Number, method: String): Observable<any> {
-        return this.http.get(this.url + method + "/paciente/" + id + "/" + idEstabelecimento, { headers: this.headers }).map(res => res.json());
+    findByIdPaciente(id: any, idEstabelecimento: Number, method: string): Observable<any> {
+        return this.http.get(method + "/paciente/" + id + "/" + idEstabelecimento);
     }
 
     findHipoteseByAtendimento(id: any): Observable<any> {
-        return this.http.get(this.url + "atendimento-hipotese/atendimento/" + id, { headers: this.headers }).map(res => res.json());
+        return this.http.get("atendimento-hipotese/atendimento/" + id);
     }
 
-    printDocument(url): Observable<any> {
+    printDocument(url: string): Observable<any> {
         let object: any = {};
         object.url = url;
-        return this.http.post(this.url + "atendimento/print-document", JSON.stringify(object),  { headers: this.headers }).map(res => res.json());
+        return this.http.post("atendimento/print-document", JSON.stringify(object));
 
     }
 
-    openDocument(url): Observable<any> {
+    openDocument(url: string): Observable<any> {
         let object: any = {};
         object.url = url;
-        return this.http.post(this.url + "atendimento/open-document", JSON.stringify(object), { headers: this.headers }).map(res => res.json());
+        return this.http.post("atendimento/open-document", JSON.stringify(object));
     }
 
     findEncaminhamentoByAtendimento(id: any): Observable<any> {
-        return this.http.get(this.url + "atendimento-encaminhamento/atendimento/" + id, { headers: this.headers }).map(res => res.json());
+        return this.http.get("atendimento-encaminhamento/atendimento/" + id);
     }
 
     findMedicamentoByAtendimento(id: any): Observable<any> {
-        return this.http.get(this.url + "atendimento-medicamento/atendimento/" + id, { headers: this.headers }).map(res => res.json());
+        return this.http.get("atendimento-medicamento/atendimento/" + id);
     }
 
     saveHipotese(obj: any) {
         if (obj.id) {
             return this.http
-                .put(this.url + 'atendimento-hipotese', JSON.stringify(obj), { headers: this.headers })
-                .map((res) => res.json());
+                .put('atendimento-hipotese', JSON.stringify(obj));
         }
         else {
             return this.http
-                .post(this.url + 'atendimento-hipotese', JSON.stringify(obj), { headers: this.headers })
-                .map((res) => res.json());
+                .post('atendimento-hipotese', JSON.stringify(obj));
         }
     }
 
     stopProcess(obj: any) {
-
         return this.http
-            .put(this.url + 'atendimento/parar-atendimento', JSON.stringify(obj), { headers: this.headers })
-            .map((res) => res.json());
+            .put('atendimento/parar-atendimento', JSON.stringify(obj));
     }
 
     saveEncaminhamento(obj: any) {
         if (obj.id) {
             return this.http
-                .put(this.url + 'atendimento-encaminhamento', JSON.stringify(obj), { headers: this.headers })
-                .map((res) => res.json());
+                .put('atendimento-encaminhamento', JSON.stringify(obj));
         }
         else {
             return this.http
-                .post(this.url + 'atendimento-encaminhamento', JSON.stringify(obj), { headers: this.headers })
-                .map((res) => res.json());
+                .post('atendimento-encaminhamento', JSON.stringify(obj));
         }
     }
 
     saveMedicamento(obj: any) {
         if (obj.id) {
             return this.http
-                .put(this.url + 'atendimento-medicamento', JSON.stringify(obj), { headers: this.headers })
-                .map((res) => res.json());
+                .put('atendimento-medicamento', JSON.stringify(obj));
         }
         else {
             return this.http
-                .post(this.url + 'atendimento-medicamento', JSON.stringify(obj), { headers: this.headers })
-                .map((res) => res.json());
+                .post('atendimento-medicamento', JSON.stringify(obj));
         }
     }
 
     removeHipotese(params: any) {
-        return this.http.delete(this.url + 'atendimento-hipotese/' + params, { headers: this.headers }).map(res => res.json());
+        return this.http.delete('atendimento-hipotese/' + params);
     }
 
     removeEncaminhamento(params: any) {
-        return this.http.delete(this.url + 'atendimento-encaminhamento/' + params, { headers: this.headers }).map(res => res.json());
+        return this.http.delete('atendimento-encaminhamento/' + params);
     }
 
     removeMedicamento(params: any) {
-        return this.http.delete(this.url + 'atendimento-medicamento/' + params, { headers: this.headers }).map(res => res.json());
+        return this.http.delete('atendimento-medicamento/' + params);
     }
 }

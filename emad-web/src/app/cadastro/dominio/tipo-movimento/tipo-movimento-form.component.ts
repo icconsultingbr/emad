@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class TipoMovimentoFormComponent implements OnInit {
 
   object: TipoMovimento = new TipoMovimento();
-  method: String = "tipo-movimento";
+  method: string = "tipo-movimento";
   fields: any[] = [];
-  label: String = "Tipo de movimento";
+  label: string = "Tipo de movimento";
   id: Number = null;
   domains: any[] = [];
 

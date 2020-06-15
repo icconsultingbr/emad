@@ -12,7 +12,7 @@ import { TipoMovimento } from '../../../_core/_models/TipoMovimento';
 
 export class TipoMovimentoComponent implements OnInit {
 
-  method: String = "tipo-movimento";
+  method: string = "tipo-movimento";
   object: TipoMovimento = new TipoMovimento();
   fields: any[] = [];
   fieldsSearch: any[] = [];

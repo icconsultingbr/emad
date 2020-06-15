@@ -10,6 +10,7 @@ import { NgMultiSelectDropDownModule } from "ng-multiselect-dropdown";
 import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { BsDropdownModule } from "ngx-bootstrap/dropdown";
 import { PipeModule } from "../../_pipes/pipe.module";
+import { CoreModule } from "../../core.module";
 
 
 @NgModule({
@@ -21,15 +22,8 @@ import { PipeModule } from "../../_pipes/pipe.module";
         NgMultiSelectDropDownModule.forRoot(),
         BsDatepickerModule.forRoot(),
         BsDropdownModule.forRoot(),
-        NgxLoadingModule.forRoot({
-            animationType: ngxLoadingAnimationTypes.none,
-            backdropBackgroundColour: 'rgba(0,0,0,0.1)',
-            backdropBorderRadius: '4px',
-            primaryColour: '#FDBA31',
-            secondaryColour: '#FDBA31',
-            tertiaryColour: '#ffffff'
-        }),
         PipeModule,
+        CoreModule
     ],
     declarations: [
         AppGridViewComponent,

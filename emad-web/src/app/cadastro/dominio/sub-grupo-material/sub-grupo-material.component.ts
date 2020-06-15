@@ -12,7 +12,7 @@ import { SubGrupoMaterial } from '../../../_core/_models/SubGrupoMaterial';
 
 export class SubGrupoMaterialComponent implements OnInit {
 
-  method: String = "sub-grupo-material";
+  method: string = "sub-grupo-material";
   object: SubGrupoMaterial = new SubGrupoMaterial();
   fields: any[] = [];
   fieldsSearch: any[] = [];

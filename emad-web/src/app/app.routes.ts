@@ -53,7 +53,6 @@ const appRoutes : Routes = [
     { path: 'tipos-notificacoes', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/tipo-notificacao/tipo-notificacao.module#TipoNotificacaoModule' },
     { path: 'cores-classificacoes-riscos', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/cor-classificacao-risco/cor-classificacao-risco.module#CorClassificacaoRiscoModule' },
     { path: 'classificacoes-riscos', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/classificacao-risco/classificacao-risco.module#ClassificacaoRiscoModule' },
-    
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 
 ];

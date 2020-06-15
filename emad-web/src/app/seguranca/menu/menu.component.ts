@@ -12,7 +12,7 @@ import { Menu } from '../../_core/_models/Menu';
 })
 export class MenuComponent implements OnInit {
 
-  method: String = "menu";
+  method: string = "menu";
   service: MenuService;
   fields = [];
   object: Menu = new Menu();

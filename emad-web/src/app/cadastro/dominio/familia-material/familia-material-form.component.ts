@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class FamiliaMaterialFormComponent implements OnInit {
 
   object: FamiliaMaterial = new FamiliaMaterial();
-  method: String = "familia-material";
+  method: string = "familia-material";
   fields: any[] = [];
-  label: String = "Família de material";
+  label: string = "Família de material";
   id: Number = null;
   domains: any[] = [];
 
