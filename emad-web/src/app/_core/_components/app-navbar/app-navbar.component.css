@@ -18,6 +18,17 @@ body {
   margin: 0.125rem 0 0 -72px;
 }
 
+.dropdown-item{
+  white-space: normal !important; 
+}
+
+.dropdown-msg{
+  margin: 0.125rem 0 0 -72px;
+  display: block;
+  width: 300px;
+  word-break: break-all;
+}
+
 .nav-item{
   cursor: pointer;
 }

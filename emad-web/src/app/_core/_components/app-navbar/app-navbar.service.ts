@@ -28,4 +28,11 @@ export class AppNavbarService {
     return this.http.get<any[]>(method);
   }
 
+  findById(id: any, method: string): Observable<any> {
+    return this.http.get(method + "/" + id);
+  }
+  
+  notificacaoVisualizada(obj: any) {
+    return this.http.put('notificacao/visualizada/'+ obj.id, JSON.stringify(obj));            
+  }
 }

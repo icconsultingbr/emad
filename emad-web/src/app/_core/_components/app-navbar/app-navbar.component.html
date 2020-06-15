@@ -12,73 +12,61 @@
     </div>
   </div>
 
-
-
-
-
-
-
-
-
-
-
   <div class="col-8">
-
     <div class="d-none d-md-block btn-group float-right" dropdown placement="bottom right">
       <button id="button-alignment" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
         aria-controls="dropdown-alignment">
         <i class="fa fa-user-circle" style="font-size:22px"></i>
         <span class="caret"></span>
       </button>
-
       <ul id="dropdown-alignment" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu"
         aria-labelledby="button-alignment">
-
-
         <li role="menuitem">
           <span class="dropdown-item small text-secondary">
             Versão 1.0
           </span>
         </li>
-
         <li role="menuitem">
           <a class="dropdown-item" [routerLink]="['/usuario-reset']"><i class="fa fa-key"></i>
             Modificar senha</a>
         </li>
-
         <li role="menuitem">
           <a class="dropdown-item" [routerLink]="" (click)="open()"><i class="fa fa-building"></i>
             Trocar Estabelecimento</a>
         </li>
-
         <li role="menuitem">
           <a (click)="sair()" class="dropdown-item" [routerLink]=""><i class="fa fa-sign-out-alt"></i> Sair</a>
+        </li>
+      </ul>
+    </div>    
+    <div class="d-none d-md-block btn-group float-right" dropdown placement="bottom right">
+      <button id="button-alignment" dropdownToggle type="button" class="btn btn-primary" aria-controls="dropdown-msg"
+        (click)="carregaMensagens()">
+        <i class="fa fa-bell" style="font-size:15px"></i>   
+        <span class="badge-primary" *ngIf="badge">0</span>     
+      </button>
+      <ul id="dropdown-msg" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+        <li role="menuitem" *ngFor="let msg of mensagens">
+          <a class="dropdown-item" (click)="openMensagem(msg)">{{msg.tipoFormatado}}: {{msg.titulo}}</a>
         </li>
       </ul>
     </div>
   </div>
 
-
   <button class="navbar-toggler toggler-example ml-2" type="button" data-toggle="collapse"
     (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed" data-target="#navbarSupportedContent1"
     aria-controls="navbarSupportedContent1" aria-expanded="false" aria-label="Toggle navigation">
-
     <span class="dark-blue-text">
       <i class="fa fa-bars fa-1x"></i>
     </span>
-
   </button>
   <a class="navbar-brand mb-1 d-md-none d-xs-block text-left" href="#">
     E-atende
   </a>
-
 </nav>
-
 
 <div class="collapse navbar-collapse bg-light mb-2 d-md-none col-sm-12 col-md-12" id="navbarSupportedContent1"
   [ngbCollapse]="isCollapsed">
-
-
   <ul class="nav flex-column text-left mb-5">
     <div *ngFor="let menu of menus">
       <li *ngIf="menu.menuPai==null" class="nav-item">
@@ -92,7 +80,6 @@
             class="{{menu.isCollapsed?'fa fa-minus float-right mt-1':'fa fa-plus float-right mt-1'}}"></i>
         </a>
       </li>
-
       <div *ngIf="menu.hasChildren">
         <div [id]="menu.nome" [ngbCollapse]="!menu.isCollapsed">
           <ul class="nav flex-column text-left" style="background: #eaeaea; border-radius: 5px">
@@ -115,7 +102,6 @@
     </li>
   </ul>
 </div>
-
 
 <ng-template #content let-c="close" let-d="close" class="bd-example-modal-lg">
   <div class="modal-header">
@@ -156,3 +142,34 @@
     </div>
   </div>
 </ng-template>
+
+<ng-template #contentMensagem let-c="close" let-d="close" class="bd-example-modal-lg">
+  <div class="modal-header">
+    <h4 class="modal-title">Notificação</h4>
+  </div>
+  <div class="modal-body" id="print-section">
+    <div class="col-sm-12 p-0">      
+      <div class="form-group row">
+        <label class="col-xl-2 col-form-label text-left font-weight-bold">
+         Título:
+        </label>
+        <div class="col-xl-10">
+          <input type="label" class="form-control has-error" [(ngModel)]="mensagem.titulo"/>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-xl-2 col-form-label text-left font-weight-bold">
+         Mensagem:
+        </label>
+        <div class="col-xl-10">
+          <textarea rows="10" class="form-control has-error" [(ngModel)]="mensagem.descricao"></textarea>
+        </div>
+      </div>
+      <div class="form-group text-right">
+        <button type="button" class="btn btn-default" *ngIf="allowCancelButton" (click)="d(false)">Fechar</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
