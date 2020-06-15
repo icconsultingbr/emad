@@ -30,8 +30,8 @@ export class SocketService {
 
       this.socket = io(environment.socketUrl, {
         query: { token: this.token },
-        transports: ['websocket']
-
+        transports: ['websocket'],
+        path: environment.socketPath + '/socket.io'
       });
 
       this.socket.on('disconnect', function(){
