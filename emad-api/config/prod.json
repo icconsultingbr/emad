@@ -7,7 +7,7 @@
     "consulta": 6,
     "idUsuarioSistema": 1,
     "dbConfig": {
-        "host": "172.17.0.3",
+        "host": "172.17.0.5",
         "port": 3306,
         "username": "root", 
         "password": "zCAV%xf2",
