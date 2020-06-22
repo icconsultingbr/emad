@@ -322,6 +322,39 @@ module.exports = function (app) {
         });
     });
         
+    app.get('/dominios/grupo-origem', function(req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_grupo_origem");
+
+        listaDominios(dao, "Grupos de origem", res).then(function(response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+                
+    app.get('/dominios/municipios', function(req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_municipio");
+
+        listaDominios(dao, "Municípios", res).then(function(response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
+    app.get('/dominios/subgrupo-origem', function(req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_subgrupo_origem");
+
+        listaDominios(dao, "Sub grupo de origem", res).then(function(response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+        
     function listaDominios(dao, dom, res) {
         var q = require('q');
         var d = q.defer();

@@ -53,6 +53,10 @@ const appRoutes : Routes = [
     { path: 'tipos-notificacoes', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/tipo-notificacao/tipo-notificacao.module#TipoNotificacaoModule' },
     { path: 'cores-classificacoes-riscos', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/cor-classificacao-risco/cor-classificacao-risco.module#CorClassificacaoRiscoModule' },
     { path: 'classificacoes-riscos', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/classificacao-risco/classificacao-risco.module#ClassificacaoRiscoModule' },
+    { path: 'grupos-origens', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/grupo-origem/grupo-origem.module#GrupoOrigemModule' },
+    { path: 'subgrupos-origens', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/subgrupo-origem/subgrupo-origem.module#SubgrupoOrigemModule' },
+    { path: 'receitas', canActivate: [AuthGuard], loadChildren: './farmacia/receita/receita.module#ReceitaModule' },
+    
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 
 ];
