@@ -115,9 +115,9 @@ export class AtendimentoService extends GenericsService {
             }
         },
         {
-            field: "nomeFantasia",
+            field: "tipoFichaNome",
             type: "text",
-            label: "Nome do estabelecimento",
+            label: "Tipo de atendimento",
             grid: true,
             form: false,
             required: true,
