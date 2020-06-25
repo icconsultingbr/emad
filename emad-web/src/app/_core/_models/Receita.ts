@@ -10,6 +10,7 @@ export class Receita {
     @Input() idSubgrupoOrigem: number = 1;
     @Input() ano: number = new Date().getFullYear();
     @Input() numero: number;
+    @Input() nomePaciente: string;    
     @Input() dataEmissao: Date;
     @Input() dataUltimaDispensacao: Date;
     @Input() idMotivoFimReceita: number;

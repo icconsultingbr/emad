@@ -21,6 +21,18 @@ module.exports = function (app) {
 
     });
 
+    app.get('/estabelecimento/:id', function (req, res) {
+        let usuario = req.usuario;
+        let id = req.params.id;
+        let util = new app.util.Util();
+        let errors = [];
+
+        buscarPorId(id, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    }); 
+
     app.get('/estabelecimento/local/:id', function (req, res) {
         let usuario = req.usuario;
         let id = req.params.id;
