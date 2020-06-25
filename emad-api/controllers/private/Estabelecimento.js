@@ -21,23 +21,17 @@ module.exports = function (app) {
 
     });
 
-    app.get('/estabelecimento/:id', function (req, res) {
+    app.get('/estabelecimento/local/:id', function (req, res) {
         let usuario = req.usuario;
         let id = req.params.id;
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarPorId(id, res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
-    });
+        buscaCidadePorIdEstabelecimento(id, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });    
 
     app.post('/estabelecimento', function (req, res) {
         var obj = req.body;
@@ -307,7 +301,30 @@ module.exports = function (app) {
         });
         return d.promise;
     }
+    
+    function buscaCidadePorIdEstabelecimento(id, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
 
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.EstabelecimentoDAO(connection);
+        var errors = [];
+
+        objDAO.buscaCidadePorIdEstabelecimento(id, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
+                res.status(500).send(errors);
+                return;
+            } else {
+
+                d.resolve(result[0]);
+            }
+        });
+        return d.promise;
+    }
 
     function deletaPorId(id, res) {
         var q = require('q');

@@ -93,6 +93,14 @@ EstabelecimentoDAO.prototype.buscaPorId = function (id,callback) {
     this._connection.query("select * from "+this._table+" where id = ?",id,callback);
 }
 
+EstabelecimentoDAO.prototype.buscaCidadePorIdEstabelecimento = function (id,callback) {
+    this._connection.query(`select te.idUf , idMunicipio , CONCAT(mun.nome,'/',uf.uf) textoCidade
+                            from tb_estabelecimento te 
+                            inner join tb_uf uf on uf.id = te.idUf 
+                            inner join tb_municipio mun on mun.id = te.idMunicipio where te.id=?`,id,callback);
+}
+
+
 EstabelecimentoDAO.prototype.buscaDominio = function (callback) {
     this._connection.query("select id, razaoSocial as nome FROM "+this._table, callback);
 }

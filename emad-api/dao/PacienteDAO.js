@@ -273,8 +273,20 @@ PacienteDAO.prototype.lista = function (addFilter, callback) {
             where += ` AND UPPER(pac.nomeSocial) LIKE '%${addFilter.nomeSocial.toUpperCase()}%'`;
         }
 
+        if (addFilter.nomeMae) {
+            where += ` AND UPPER(pac.nomeMae) LIKE '%${addFilter.nomeMae.toUpperCase()}%'`;
+        }
+        
+        if (addFilter.numeroProntuario) {
+            where += ` AND UPPER(pac.numeroProntuario) LIKE '%${addFilter.numeroProntuario.toUpperCase()}%'`;
+        }
+
         if(addFilter.cpf){
-            where+=" AND pac.cpf LIKE '%"+addFilter.cpf+"%'";
+            where+=" AND replace(replace(pac.cpf,'.',''),'-','') = replace(replace('"+addFilter.cpf+"','.',''),'-','')";
+        }
+        
+        if(addFilter.dataNascimento){
+            where+=" AND DATE_FORMAT(dataNascimento ,'%d/%m/%Y') = '"+addFilter.dataNascimento+"'";
         }
 
         if(addFilter.idSap){

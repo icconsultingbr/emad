@@ -1,0 +1,227 @@
+<app-loader [loading]="loading"></app-loader>
+<form [formGroup]="form">
+  <div class="card mb-12">
+    <div class="card-header text-left">
+      Paciente
+    </div>
+    <div class="card-body text-left">
+      <div class="row">
+        <div class="col-12">
+          <div class="row">
+  
+            <label class="col-xl-2 col-form-label text-left">Pesquisar paciente
+              <span class="text-danger font-weight-bold">*</span>
+            </label>
+            <div class="col-xl-10">
+              <input type="hidden" [(ngModel)]="object.id" formControlName="id">
+              <input type="hidden" [(ngModel)]="object.nome" formControlName="nome">
+              <div class="input-group">
+  
+                <input type="text" class="form-control has-error rounded" [(ngModel)]="object.nome"
+                  formControlName="nome" readonly>
+  
+                <div class="input-group-append">
+                  <button class="btn btn-primary ml-3 rounded" type="button" (click)="open(contentClient)" [disabled]="disableFields()">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<ng-template #contentClient>
+  <div class="modal-header">
+    <h4 class="modal-title">Localizar paciente</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+   <div class="modal-body">
+
+    <div *ngIf="errors.length" class="alert alert-danger">
+      <div *ngFor="let error of errors" class="row">
+        <div class="col-12 text-left">
+          {{error.message}}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-xl-2 col-sm-12 col-form-label text-left">
+        Cartao SUS:
+      </label>
+      <div class="col-xl-4 col-sm-12">
+        <input type="text" mask="9999999999999999999999" class="form-control has-error" [(ngModel)]="object.cartaoSus"
+          autofocus>
+      </div>
+      <label class="col-xl-2 col-sm-12 col-form-label text-left">
+        Prontuário:
+      </label>
+      <div class="col-xl-4 col-sm-12">
+        <input type="text" mask="9999999999999999999999" class="form-control has-error" [(ngModel)]="object.numeroProntuario"
+          autofocus>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-xl-2 col-sm-12 col-form-label text-left">
+        Número SAP:
+      </label>
+      <div class="col-xl-4 col-sm-12">
+        <input type="text" mask="99999999999999999999" class="form-control has-error" [(ngModel)]="object.idSap"
+          autofocus>
+      </div>
+      <label class="col-xl-2 col-sm-12 col-form-label text-left">
+        CPF:
+      </label>
+      <div class="col-xl-4 col-sm-12">
+        <input type="text" mask="999.999.999-99" class="form-control has-error" [(ngModel)]="object.cpf">
+      </div>
+    </div>
+
+    <div class="form-group row">      
+      <label class="col-xl-2 col-sm-12 col-form-label text-left">
+        Data nasc.:
+      </label>
+      <div class="col-xl-4 col-sm-12">
+        <input type="text" mask="99/99/9999" class="form-control has-error" [(ngModel)]="object.dataNascimento"
+          autofocus>
+      </div>
+      <label class="col-xl-2 col-sm-12 col-form-label text-left">
+        Nome mãe:
+      </label>
+      <div class="col-xl-4 col-sm-12">
+        <input type="text" class="form-control has-error" [(ngModel)]="object.nomeMae"
+          autofocus>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-xl-2 col-sm-12 col-form-label text-left">
+        Nome:
+      </label>
+      <div class="col-xl-10 col-sm-12">
+        <input type="text" class="form-control has-error" [(ngModel)]="object.nome">
+      </div>
+    </div>  
+
+    <div class="form-group row">
+      <div class="col-12">
+        <button [routerLink]="" class="btn btn-primary float-right" [disabled]="togglePaciente()"
+          (click)="buscaPaciente()">
+          <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin text-left">
+            <i class="fa fa-spinner"></i>
+          </i>
+          <i *ngIf="!loading" class="fas fa-search"></i>
+        </button>
+
+        <a [routerLink]="" (click)="clear()" class="btn btn-default text-secondary mr-2 float-right"
+          style="border: 1px solid #d1d1d1 ">
+          <i class="fas fa-eraser"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-12 table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr class="text-left">
+              <th></th>
+              <th>Cartão SUS</th>
+              <th>ID Sap</th>
+              <th>Nome</th>
+              <th>Nome mãe</th>
+              <th>Data nascto.</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let item of listaPacientes let index=index; let odd='odd'; let even='even';">
+            <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
+              <td class="text-secondary">
+                <div class="custom-control custom-radio float-left">
+                  <input type="radio" (change)="selecionaPaciente(item)" class="custom-control-input" id="{{ item.id }}"
+                    name="radio-item">
+                  <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
+                </div>
+              </td>
+              <td class="text-secondary">{{item.cartaoSus}}</td>
+              <td class="text-secondary">{{item.idSap}}</td>
+              <td class="text-secondary">{{item.nome}}</td>
+              <td class="text-secondary">{{item.nomeMae}}</td>
+              <td class="text-secondary">{{item.dataNascimento}}</td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="!listaPacientes || listaPacientes.length==0">
+            <tr class="text-left">
+              <td colspan="99" class="text-secondary">
+                <i>Não há resultados...</i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div *ngIf="pager.pages && pager.pages.length" class="text text-secondary col-md-12 pr-0 mx-auto">
+        <i>
+          Exibindo
+          {{pager.currentPage === pager.totalPages?listaPacientes.length:pager.currentPage*pagedItems.length}}
+          de
+          {{listaPacientes.length}}
+          resultado(s).
+        </i>
+      </div>
+    </div>
+
+    <div class="row">
+      <ul *ngIf="pager.pages && pager.pages.length" class="pagination mx-auto">
+        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === 1}">
+          <a class="page-link" (click)="setPage(1)">
+            <i class="fas fa-angle-double-left"></i>
+          </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === 1}">
+          <a class="page-link" (click)="setPage(pager.currentPage - 1)">
+            <i class="fas fa-angle-left"></i>
+          </a>
+        </li>
+        <li>
+          <select (change)="loadQuantityPerPage($event)" class="custom-select d-block w-100"
+            style="border: 1px solid #dee2e6">
+            <option [ngValue]="10">10</option>
+            <option [ngValue]="25">25</option>
+            <option [ngValue]="50">50</option>
+          </select>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === pager.totalPages}">
+          <a class="page-link" (click)="setPage(pager.currentPage + 1)">
+            <i class="fas fa-angle-right"></i>
+          </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === pager.totalPages}">
+          <a class="page-link" (click)="setPage(pager.totalPages)">
+            <i class="fas fa-angle-double-right"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="form-group row text-right">
+      <div class="col-12">
+        <button class="btn btn-primary  mr-2" type="button" [disabled]="pacienteSelecionado==null"
+          (click)="confirmaPaciente()">
+          <i class="fa fa-plus-circle"></i> Carregar seleção
+        </button>
+
+        <button class="btn btn-default" (click)="close()" type="button">
+          <i class="fa fa-times"></i> Cancelar
+        </button>
+      </div>
+    </div>
+  </div> 
+</ng-template>

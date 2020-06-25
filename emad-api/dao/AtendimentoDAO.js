@@ -64,7 +64,8 @@ AtendimentoDAO.prototype.lista = function(addFilter, callback) {
         YEAR(a.dataCriacao) as ano_receita,
         a.numeroReceita as numero_receita,
         e.idUnidadeRegistroReceitaDim as unidade_receita,
-        pro.id as idProfissional
+        pro.id as idProfissional,
+        ficha.nome tipoFichaNome
     FROM ${this._table} a 
     INNER JOIN tb_paciente p ON(a.idPaciente = p.id)  
     INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
@@ -72,6 +73,7 @@ AtendimentoDAO.prototype.lista = function(addFilter, callback) {
     INNER JOIN tb_profissional pro on pro.idUsuario = u.id
     INNER JOIN tb_classificacao_risco cla on cla.id = a.idClassificacaoRisco
     INNER JOIN tb_cor_classificacao_risco cor on cor.id = cla.idCorClassificacaoRisco
+    INNER JOIN tb_tipo_ficha ficha on ficha.id = a.tipoFicha
     WHERE 1=1 ${where} 
     ORDER BY a.id DESC`, callback);
 }
@@ -137,7 +139,8 @@ AtendimentoDAO.prototype.listaPorUsuario = function(id, addFilter, callback) {
         YEAR(a.dataCriacao) as ano_receita,
         a.numeroReceita as numero_receita,
         e.idUnidadeRegistroReceitaDim as unidade_receita,
-        pro.id as idProfissional
+        pro.id as idProfissional,
+        ficha.nome tipoFichaNome
     FROM ${this._table} a 
     INNER JOIN tb_paciente p ON(a.idPaciente = p.id)  
     INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
@@ -145,6 +148,7 @@ AtendimentoDAO.prototype.listaPorUsuario = function(id, addFilter, callback) {
     INNER JOIN tb_profissional pro on pro.idUsuario = u.id
     INNER JOIN tb_classificacao_risco cla on cla.id = a.idClassificacaoRisco
     INNER JOIN tb_cor_classificacao_risco cor on cor.id = cla.idCorClassificacaoRisco
+    INNER JOIN tb_tipo_ficha ficha on ficha.id = a.tipoFicha
     WHERE a.idUsuario = ? ${where} 
     ORDER BY a.id DESC`, id, callback);
 }
