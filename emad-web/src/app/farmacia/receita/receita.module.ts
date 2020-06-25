@@ -8,6 +8,12 @@ import { ReceitaComponent } from "./receita.component";
 import { ReceitaFormComponent } from "./receita-form.component";
 import { ReceitaService } from "./receita.service";
 import { receitaRoutes } from "./receita.routing";
+import { PesquisaPacienteModule } from "../../components/pesquisa-pacientes/pesquisa-paciente.module";
+import { NgbDatepickerModule } from "@ng-bootstrap/ng-bootstrap/datepicker/datepicker.module";
+import { NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap/collapse/collapse.module";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
+import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 
 @NgModule({
     imports: [
@@ -15,7 +21,15 @@ import { receitaRoutes } from "./receita.routing";
         CoreModule,
         AppGridViewModule,
         AppFormModule,
-        RouterModule.forChild(receitaRoutes)
+        RouterModule.forChild(receitaRoutes),
+        PesquisaPacienteModule,        
+        ReactiveFormsModule,
+        FormsModule,
+        ReactiveFormsModule,        
+        NgbModule,
+        NgbCollapseModule,
+        NgbDatepickerModule,
+        BsDatepickerModule
     ],
     declarations: [
         ReceitaComponent,

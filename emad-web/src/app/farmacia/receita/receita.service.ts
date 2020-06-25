@@ -175,7 +175,7 @@ export class ReceitaService extends GenericsService {
       label: "Situação",
       grid: true,
       form: false,
-      translate: { "A": "Alta", "C": "Em aberto", "E": "Evasão", "O": "Óbito", "X": "Cancelado" },
+      translate: { "1": "Pendente medicamentos", "2": "Aberta", "3": "Finalizada" },
       required: true,
       validator: ['', ''],
       filter: {
@@ -184,4 +184,16 @@ export class ReceitaService extends GenericsService {
       }
     }
   ];
+
+  inserir(obj: any, metodo: string){ 
+    if(obj.id){
+      return this.http
+      .put(metodo, JSON.stringify(obj));
+    }
+    else{
+      return this.http
+      .post(metodo, JSON.stringify(obj));
+    }
+  }
 }
+

@@ -1,9 +1,141 @@
-<h4 class="mb-5 text-left">{{id!=null?'Editar '+label:'Adicionar '+label}}</h4>
+<h4 class="mb-5 text-left">{{id!=null?'Editar '+label:'Nova '+label}}</h4>
+<app-loader [loading]="loading"></app-loader>
+<p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
+<div *ngIf="errors.length" class="alert alert-danger sticky-top"> 
+  <div *ngFor="let error of errors" class="row">
+    <div class="col-12 text-left">
+      {{error.message}}
+    </div>
+  </div>
+</div>
 
-<app-form
-  [fields]="fields"
-  [object]="object"
-  [method]="method"
-  [domains]="domains"
-  [redirectAfterInsert]="'/receitas'">
-</app-form>
+<div class="card mb-4">
+  <app-pesquisa-paciente (pacienteSelecionadoEvent)="pacienteSelecionado($event)"></app-pesquisa-paciente>
+</div>
+
+<form [formGroup]="form" (submit)="sendForm($event)">
+  <div class="card mb-4">  
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Receita
+      </div>
+      <div class="card-body text-left">
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Ano
+              </label>
+              <div class="col-xl-2">
+                <input type="text" class="form-control" [(ngModel)]="object.ano" formControlName="ano" [readonly]="true"/>
+              </div>
+              <label class="col-xl-2 col-form-label text-left">
+                Unidade
+              </label>
+              <div class="col-xl-2">
+                <input type="text" class="form-control" [(ngModel)]="object.idEstabelecimento" formControlName="idEstabelecimento" [readonly]="true"/>
+              </div>
+              <label class="col-xl-2 col-form-label text-left">
+                Número
+              </label>
+              <div class="col-xl-2">
+                <input type="text" class="form-control" [(ngModel)]="object.numero" formControlName="numero" [readonly]="true"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Data emissão <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-2">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                      <div class="input-group-text btn">
+                          <i class="fa fa-calendar-alt"></i>
+                      </div>
+                  </div>
+                  <input type="text" [(ngModel)]="object.dataEmissao" formControlName="dataEmissao" placeholder="dd/mm/aaaa" bsDatepicker 
+                      [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control" autocomplete="off">
+                </div>
+              </div>
+              <label class="col-xl-2 col-form-label text-left">
+                Origem <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-6">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idSubgrupoOrigem" formControlName="idSubgrupoOrigem">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.idSubgrupoOrigem" [value]="item.id">{{item.nome}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row" *ngIf="object.idSubgrupoOrigem == 1">
+              <label class="col-xl-2 col-form-label text-left">
+                Cidade <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-10">                
+                <input *ngIf="domains && object.idSubgrupoOrigem == 1" type="text" class="form-control" [readonly]="true"
+                    [(ngModel)]="object.textoCidade" formControlName="textoCidade"/>              
+              </div>  
+            </div>
+            <div class="form-group row" *ngIf="object.idSubgrupoOrigem > 1">
+              <label class="col-xl-2 col-form-label text-left">
+                Estado <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-2">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idUf" formControlName="idUf"
+                  (change)="loadDomainMunicipio($event)">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.idUf" [value]="item.id">{{item.nome}}</option>
+                </select>
+              </div>  
+              <label class="col-xl-2 col-form-label text-left">
+                Cidade <span class="text-danger font-weight-bold"> *</span>
+              </label>              
+              <div class="col-xl-6">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idMunicipio" formControlName="idMunicipio">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.idMunicipio" [value]="item.id">{{item.nome}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Profissional <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-10">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idProfissional" formControlName="idProfissional">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.idProfissional" [value]="item.id">{{item.nome}}</option>
+                </select>
+              </div>
+            </div>              
+          </div>
+        </div>
+      </div>
+    </div>  
+  </div>  
+  <div class="form-group text-right">
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="object.idPaciente"
+      [disabled]="form.invalid">
+      <i class="fa fa-save"></i> {{ !object.id ? 'Criar receita' : 'Salvar'}}
+    </button>  
+    <button (click)="back()" class="btn btn-default" type="button">
+      <i class="fa fa-arrow-left"></i> Retornar
+    </button>
+  </div>
+</form>
+
+<div class="card mb-4" *ngIf="object.id && object.numero">
+  <app-pesquisa-paciente (pacienteSelecionadoEvent)="pacienteSelecionado($event)"></app-pesquisa-paciente>
+</div>

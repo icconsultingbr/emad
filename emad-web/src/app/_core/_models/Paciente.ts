@@ -1,7 +1,7 @@
 import { Input } from "@angular/core";
 
 export class Paciente {
-    id: Number = null;
+    id: number = null;
     @Input() cartaoSus: string = null;
     @Input() nome: string = null;
     @Input() nomeSocial: string = null;
@@ -9,38 +9,38 @@ export class Paciente {
     @Input() nomePai: string = null;
     @Input() dataNascimento: string = null;
     @Input() sexo: string = null;
-    @Input() idNacionalidade: Number = null ;
-    @Input() idNaturalidade: Number = null ;
+    @Input() idNacionalidade: number = null ;
+    @Input() idNaturalidade: number = null ;
     @Input() ocupacao: string = null ;
     @Input() cpf: string = null ;
     @Input() rg: string = null ;
     @Input() dataEmissao: string = null ;
     @Input() orgaoEmissor: string = null ;
-    @Input() escolaridade: Number = null ;
+    @Input() escolaridade: number = null ;
     @Input() cep: string = null ;
     @Input() logradouro: string = null ;
     @Input() numero: string = null ;
     @Input() complemento: string = null ;
     @Input() bairro: string = null ;
-    @Input() idMunicipio: Number = null ;
-    @Input() idUf: Number = null ;
+    @Input() idMunicipio: number = null ;
+    @Input() idUf: number = null ;
     @Input() foneResidencial: string = null ;
     @Input() foneCelular: string = null ;
     @Input() foneContato: string = null ;
     @Input() contato: string = null ;
     @Input() email: string = null ;
     @Input() situacao: Boolean = null ;
-    @Input() idModalidade: Number = null ;
+    @Input() idModalidade: number = null ;
     @Input() latitude: number;
     @Input() longitude: number;
     @Input() distancia: number;
     @Input() idade: number = null;
-    @Input() idSap: Number = null ;    
+    @Input() idSap: number = null ;    
     @Input() idTipoSanguineo: string = null ;
-    @Input() idRaca: Number = null ;
+    @Input() idRaca: number = null ;
     @Input() numeroProntuario: string = null ;
     @Input() numeroProntuarioCnes: string = null ;
     @Input() falecido: Boolean = null ;
     @Input() idAtencaoContinuada: string = null ;
-    @Input() idEstabelecimentoCadastro : Number = +JSON.parse(localStorage.getItem("est"))[0].id;
+    @Input() idEstabelecimentoCadastro : number = +JSON.parse(localStorage.getItem("est"))[0].id;
 }

@@ -4,8 +4,41 @@ function ReceitaDAO(connection) {
 }
 
 ReceitaDAO.prototype.salva = function(obj, callback) {
-    this._connection.query(`INSERT INTO ${this._table} SET ?`, obj, callback);
+    const conn = this._connection;    
+    let numeroNovo = {};
+
+    conn.beginTransaction(function(err) {
+        if (err) { throw err; }
+        conn.query(`SELECT max(numero) as num FROM tb_receita where ano=? and idEstabelecimento=? FOR UPDATE`, [obj.ano, obj.idEstabelecimento], 
+        
+        function (error, numeroNovaReceita) {
+            if (error) {return conn.rollback(function() {throw error;});}  
+
+                numeroNovo = numeroNovaReceita[0].num ? numeroNovaReceita[0].num + 1 : 1;                    
+                console.log('Max número' + numeroNovo);
+
+                conn.query(`INSERT INTO tb_receita (idEstabelecimento, idUf, idMunicipio, idProfissional, idPaciente, 
+                            idSubgrupoOrigem, ano, numero, dataEmissao, situacao, idUsuarioCriacao, dataCriacao)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+                            [obj.idEstabelecimento, obj.idUf, obj.idMunicipio, obj.idProfissional,
+                            obj.idPaciente, obj.idSubgrupoOrigem, obj.ano, numeroNovo, 
+                            obj.dataEmissao, obj.situacao, obj.idUsuarioCriacao, obj.dataCriacao], 
+                                           
+                function (error, novaReceita) {                    
+                    if (error) {return conn.rollback(function() {console.log('Erro no update ' + error + conn.query);throw error;});}                        
+                        console.log('Receita criada ' + JSON.stringify(numeroNovo));
+                        conn.commit(                        
+                    function(err) 
+                        {if (err) {return conn.rollback(function() {throw err;});}
+                        
+                        console.log('Sucesso!');              
+                        return callback(null,[novaReceita, numeroNovo]);             
+                    });
+                });
+            });
+        });        
 }
+
 
 ReceitaDAO.prototype.atualiza = function(obj, id, callback) {
     this._connection.query(`UPDATE ${this._table} SET ? WHERE id= ?`, [obj, id], callback);
