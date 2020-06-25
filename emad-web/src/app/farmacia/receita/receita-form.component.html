@@ -9,8 +9,8 @@
   </div>
 </div>
 
-<div class="card mb-4">
-  <app-pesquisa-paciente (pacienteSelecionadoEvent)="pacienteSelecionado($event)"></app-pesquisa-paciente>
+<div class="card mb-4" *ngIf="!object.id || (object.id && object.idPaciente)">
+  <app-pesquisa-paciente (pacienteSelecionadoEvent)="pacienteSelecionado($event)" [idPaciente]="object.idPaciente" [pacienteNome]="object.nomePaciente"></app-pesquisa-paciente>
 </div>
 
 <form [formGroup]="form" (submit)="sendForm($event)">
@@ -65,7 +65,8 @@
                 Origem <span class="text-danger font-weight-bold"> *</span>
               </label>
               <div class="col-xl-6">
-                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idSubgrupoOrigem" formControlName="idSubgrupoOrigem">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idSubgrupoOrigem" formControlName="idSubgrupoOrigem"
+                  (change)="origemSelecionada($event)">
                   <option [value]="null">Selecione...</option>
                   <option *ngFor="let item of domains[0]?.idSubgrupoOrigem" [value]="item.id">{{item.nome}}</option>
                 </select>
@@ -135,7 +136,3 @@
     </button>
   </div>
 </form>
-
-<div class="card mb-4" *ngIf="object.id && object.numero">
-  <app-pesquisa-paciente (pacienteSelecionadoEvent)="pacienteSelecionado($event)"></app-pesquisa-paciente>
-</div>

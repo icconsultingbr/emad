@@ -4,6 +4,7 @@ import { Receita } from '../../_core/_models/Receita';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Util } from '../../_core/_util/Util';
+import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'app-receita-form',
@@ -45,7 +46,8 @@ export class ReceitaFormComponent implements OnInit {
     });    
   }
 
-  loadDomains() {    
+  loadDomains() {   
+    this.loading = true; 
     this.service.listDomains('estabelecimento').subscribe(estabelecimento => {      
         this.service.listDomains('profissional').subscribe(profissional => {          
             this.service.listDomains('subgrupo-origem').subscribe(subgrupoOrigem => {              
@@ -62,14 +64,20 @@ export class ReceitaFormComponent implements OnInit {
                     idPaciente: []
               });                
               
-              this.service.list('estabelecimento/local/' + JSON.parse(localStorage.getItem("est"))[0].id).subscribe(result => {        
-                this.object.idUf = result.idUf;
-                this.object.textoCidade = result.textoCidade;
-                this.service.list(`municipio/uf/${result.idUf}`).subscribe(municipios => {
-                  this.domains[0].idMunicipio = municipios;                              
-                  this.object.idMunicipio = result.idMunicipio;
-                });
-                this.loading = false;
+              this.service.list('estabelecimento/local/' + JSON.parse(localStorage.getItem("est"))[0].id).subscribe(result => {                        
+                if (!Util.isEmpty(this.id)) {
+                  this.carregaReceita();
+                }
+                else
+                {
+                  this.object.idUf = result.idUf;
+                  this.object.textoCidade = result.textoCidade;
+                  this.service.list(`municipio/uf/${result.idUf}`).subscribe(municipios => {
+                    this.domains[0].idMunicipio = municipios;                              
+                    this.object.idMunicipio = result.idMunicipio;
+                  });
+                  this.loading = false;
+                }                
               }, error => {
                 this.loading = false;
                 this.errors = Util.customHTTPResponse(error);
@@ -78,9 +86,7 @@ export class ReceitaFormComponent implements OnInit {
           });                      
         });                                
       });                          
-  }    
-
-  
+  }      
   
   back() {   
     const route = this.method;                 
@@ -91,23 +97,6 @@ export class ReceitaFormComponent implements OnInit {
     this.errors = [];    
     event.preventDefault();
 
-    var dateInicialFormatada;
-    var dataAntiga = this.form.value.dataEmissao;
-
-    if (Util.isEmpty(this.form.value.dataEmissao))
-    {
-      this.errors = [{message:"Data de emissão é um campo obrigatório"}];
-      this.loading = false;
-      return;
-    }
-
-    dateInicialFormatada = this.form.value.dataEmissao.getFullYear() + "-" + this.twoDigits(1 + this.form.value.dataEmissao.getMonth()) + "-" +
-    this.twoDigits(this.form.value.dataEmissao.getDate()) + " " + 
-    this.twoDigits(this.form.value.dataEmissao.getHours()) + ":" + 
-    this.twoDigits(this.form.value.dataEmissao.getMinutes()) + ":" + 
-    this.twoDigits(this.form.value.dataEmissao.getSeconds());
-
-    this.object.dataEmissao = dateInicialFormatada;    
     this.object.situacao = "1";
 
     this.service
@@ -119,18 +108,33 @@ export class ReceitaFormComponent implements OnInit {
           this.message = "Receita " + res.numero + " criada com sucesso!";
 
         this.object.id = res.id;
-        this.object.numero = res.numero;        
-        this.object.dataEmissao = dataAntiga;
+        this.object.numero = res.numero;                
         this.warning = "";
       }, erro => {        
         this.errors = Util.customHTTPResponse(erro);
       });
   }
 
-  twoDigits(d) {
-    if(0 <= d && d < 10) return "0" + d.toString();
-    if(-10 < d && d < 0) return "-0" + (-1*d).toString();
-    return d.toString();
+  carregaReceita() {
+    this.object.id = this.id;
+    this.errors = [];
+    this.message = "";
+    this.loading = true;
+
+    this.service.findById(this.id, "receita").subscribe(result => {
+      this.object = result;        
+      this.object.dataEmissao = new Date(this.object.dataEmissao);
+      this.service.list(`municipio/uf/${result.idUf}`).subscribe(municipios => {
+        this.domains[0].idMunicipio = municipios;                              
+        this.object.idMunicipio = result.idMunicipio;
+      });      
+      this.loading = false;
+    }, error => {
+      this.object = new Receita();      
+      this.errors.push({
+        message: "Receita não encontrada"
+      });
+    });
   }
 
   pacienteSelecionado(idPaciente: number){
@@ -139,6 +143,29 @@ export class ReceitaFormComponent implements OnInit {
   
   loadDomainMunicipio($event){
     let id = $event.target.value;
+    this.service.list(`municipio/uf/${id}`).subscribe(municipios => {
+      this.domains[0].idMunicipio = municipios;                  
+    });
+  } 
+
+  origemSelecionada($event){
+    let id = $event.target.value;
+    if(id=="1"){
+      this.service.list('estabelecimento/local/' + JSON.parse(localStorage.getItem("est"))[0].id).subscribe(result => {                        
+        this.object.idUf = result.idUf;
+          this.object.textoCidade = result.textoCidade;
+          this.service.list(`municipio/uf/${result.idUf}`).subscribe(municipios => {
+            this.domains[0].idMunicipio = municipios;                              
+            this.object.idMunicipio = result.idMunicipio;
+          });
+          this.loading = false;              
+      }, error => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(error);
+      });
+    }
+    else
+
     this.service.list(`municipio/uf/${id}`).subscribe(municipios => {
       this.domains[0].idMunicipio = municipios;                  
     });

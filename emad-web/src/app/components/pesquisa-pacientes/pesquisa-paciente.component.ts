@@ -19,7 +19,8 @@ import { PagerService } from '../../_core/_services/pager.service';
 
 export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
   @Output() pacienteSelecionadoEvent = new EventEmitter<number>();
-  
+  @Input() idPaciente: number;  
+  @Input() pacienteNome: string;  
   object: Paciente = new Paciente();
   loading: Boolean = false;
   modalRef: NgbModalRef = null;
@@ -62,10 +63,6 @@ export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
     this.service = service;
   }
 
-  ngAfterViewInit() {
-
-  }
-
   createGroup() {
     this.form = this.fb.group({
       id: [''],
@@ -83,8 +80,16 @@ export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
     });
   }
 
+  ngAfterViewInit() {
+  }
+
   ngOnInit() {
-    this.createGroup();
+    this.createGroup();    
+    if(this.idPaciente)
+    { 
+      this.object.id = this.idPaciente;
+      this.object.nome = this.pacienteNome;
+    }
   }
 
   disableFields(): boolean {
