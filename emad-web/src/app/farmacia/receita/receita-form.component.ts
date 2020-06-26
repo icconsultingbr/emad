@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Util } from '../../_core/_util/Util';
 import { environment } from '../../../environments/environment';
+import { ItemReceita } from '../../_core/_models/ItemReceita';
 
 @Component({
     selector: 'app-receita-form',
@@ -16,6 +17,7 @@ import { environment } from '../../../environments/environment';
 export class ReceitaFormComponent implements OnInit {
 
   object: Receita = new Receita();
+  itemReceita: ItemReceita = new ItemReceita();
   method: string = "receitas";
   fields: any[] = [];
   label: string = "Receita";
@@ -29,6 +31,8 @@ export class ReceitaFormComponent implements OnInit {
   warning: string = '';  
   saveLabel: string = "Salvar";    
   errors: any[] = [];  
+  listaMaterialLote: any[] = [];
+  listaMaterialLoteDispensado: any[] = [];
   
   constructor(
     private fb: FormBuilder,
@@ -140,7 +144,35 @@ export class ReceitaFormComponent implements OnInit {
   pacienteSelecionado(idPaciente: number){
     this.object.idPaciente = idPaciente;
   }
+
+  medicamentoSelecionado(material: any){
+    this.itemReceita.idMaterial = material.id;
+    this.carregaLotePorMaterial(this.itemReceita.idMaterial);
+  } 
+
+  toggleItemReceita(){
+    return Util.isEmpty(this.itemReceita.idMaterial) 
+    || Util.isEmpty(this.itemReceita.qtdPrescrita)
+    || Util.isEmpty(this.itemReceita.tempoTratamento);    
+  }
+
+  confirmaItemReceita(){
+
+  }
   
+  carregaLotePorMaterial(idMaterial: number){
+    this.loading = true;
+    var params = "?idMaterial=" + idMaterial + "&idEstabelecimento=" + JSON.parse(localStorage.getItem("est"))[0].id;;
+
+    this.service.list(`estoque${params}`).subscribe(estoque => {
+      this.listaMaterialLote = estoque;                  
+      this.loading = false;
+    }, erro => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(erro);
+    });
+  }
+
   loadDomainMunicipio($event){
     let id = $event.target.value;
     this.service.list(`municipio/uf/${id}`).subscribe(municipios => {
@@ -185,6 +217,10 @@ export class ReceitaFormComponent implements OnInit {
       idMunicipio: ['', ''],
       idProfissional: ['', ''],
       textoCidade: ['', ''],
+      qtdPrescrita: ['', ''],
+      tempoTratamento: ['', ''],
+      qtdDispAnterior: ['', ''],
+      qtdDispensar: ['', ''],
       observacoesGerais: ['', ''],
       situacao: [Validators.required],
       motivoCancelamento: ['',''],      
