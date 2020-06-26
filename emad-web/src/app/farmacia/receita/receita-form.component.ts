@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ReceitaService } from './receita.service';
 import { Receita } from '../../_core/_models/Receita';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Util } from '../../_core/_util/Util';
 import { environment } from '../../../environments/environment';
@@ -50,24 +50,36 @@ export class ReceitaFormComponent implements OnInit {
     });    
   }
 
+  buscaProfissionais() {
+    this.loading = true;
+       this.service.list('profissional/estabelecimento/' + JSON.parse(localStorage.getItem("est"))[0].id).subscribe(result => {
+        this.domains[0].idProfissional = result;
+        this.loading = false;
+      }, error => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(error);
+      });
+  }
+
   loadDomains() {   
     this.loading = true; 
-    this.service.listDomains('estabelecimento').subscribe(estabelecimento => {      
-        this.service.listDomains('profissional').subscribe(profissional => {          
-            this.service.listDomains('subgrupo-origem').subscribe(subgrupoOrigem => {              
-                this.service.listDomains('uf').subscribe(ufs => {
-                  this.domains.push({            
-                    idEstabelecimento: estabelecimento,
-                    idUf: ufs,
-                    idMunicipio: [],
-                    idProfissional: profissional,                    
-                    idSubgrupoOrigem: subgrupoOrigem,    
-                    idPacienteOrigem: [],
-                    idMandadoJudicial: [],
-                    idMotivoFimReceita: [],
-                    idPaciente: []
-              });                
+    this.service.listDomains('estabelecimento').subscribe(estabelecimento => {              
+      this.service.listDomains('subgrupo-origem').subscribe(subgrupoOrigem => {              
+        this.service.listDomains('uf').subscribe(ufs => {
+          this.domains.push({            
+            idEstabelecimento: estabelecimento,
+            idUf: ufs,
+            idMunicipio: [],
+            idProfissional: [],                    
+            idSubgrupoOrigem: subgrupoOrigem,    
+            idPacienteOrigem: [],
+            idMandadoJudicial: [],
+            idMotivoFimReceita: [],
+            idPaciente: []
+         });                
               
+              this.buscaProfissionais();
+
               this.service.list('estabelecimento/local/' + JSON.parse(localStorage.getItem("est"))[0].id).subscribe(result => {                        
                 if (!Util.isEmpty(this.id)) {
                   this.carregaReceita();
@@ -88,8 +100,7 @@ export class ReceitaFormComponent implements OnInit {
               });
             });                      
           });                      
-        });                                
-      });                          
+        });                        
   }      
   
   back() {   
@@ -203,6 +214,15 @@ export class ReceitaFormComponent implements OnInit {
     });
   } 
 
+  calculaQtdDispensar()
+  {
+    if(this.itemReceita.qtdPrescrita && this.itemReceita.tempoTratamento)
+    {
+      this.itemReceita.qtdDispensar = ((this.itemReceita.qtdPrescrita/this.itemReceita.tempoTratamento)*30);
+      this.itemReceita.qtdDispensar = (this.itemReceita.qtdPrescrita<this.itemReceita.qtdDispensar) ? Math.round(this.itemReceita.qtdPrescrita) : this.itemReceita.qtdDispensar;
+    }
+  }
+
   createGroup() {
     this.form = this.fb.group({
       id: [''],
@@ -212,10 +232,10 @@ export class ReceitaFormComponent implements OnInit {
       idEstabelecimento: ['', ''],
       numero: ['', ''],
       dataEmissao: ['', ''],
-      idSubgrupoOrigem: ['', ''],
+      idSubgrupoOrigem: new FormControl({value: '', disabled: (this.id > 0 || this.object.id > 0) ? true : false}, Validators.required),
       idUf: ['', ''],
       idMunicipio: ['', ''],
-      idProfissional: ['', ''],
+      idProfissional: new FormControl({value: '', disabled: (this.id > 0 || this.object.id > 0) ? true : false}, Validators.required),
       textoCidade: ['', ''],
       qtdPrescrita: ['', ''],
       tempoTratamento: ['', ''],

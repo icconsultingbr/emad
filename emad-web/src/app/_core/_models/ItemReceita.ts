@@ -8,6 +8,7 @@ export class ItemReceita {
     @Input() tempoTratamento: number;
     @Input() qtdDispAnterior: number;
     @Input() qtdDispMes: number;
+    @Input() qtdDispensar: number;
     @Input() dataUltDisp: Date;
     @Input() numReceitaControlada: string;    
     @Input() idMotivoFimReceita: number;

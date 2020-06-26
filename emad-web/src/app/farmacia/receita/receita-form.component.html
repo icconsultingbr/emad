@@ -57,7 +57,7 @@
                           <i class="fa fa-calendar-alt"></i>
                       </div>
                   </div>
-                  <input type="text" [(ngModel)]="object.dataEmissao" formControlName="dataEmissao" placeholder="dd/mm/aaaa" bsDatepicker 
+                  <input type="text" [(ngModel)]="object.dataEmissao" formControlName="dataEmissao" placeholder="dd/mm/aaaa" bsDatepicker  [readonly]="object.id"
                       [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control" autocomplete="off">
                 </div>
               </div>
@@ -100,7 +100,8 @@
                 Cidade <span class="text-danger font-weight-bold"> *</span>
               </label>              
               <div class="col-xl-6">
-                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idMunicipio" formControlName="idMunicipio">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idMunicipio"
+                 formControlName="idMunicipio" >
                   <option [value]="null">Selecione...</option>
                   <option *ngFor="let item of domains[0]?.idMunicipio" [value]="item.id">{{item.nome}}</option>
                 </select>
@@ -115,7 +116,8 @@
                 Profissional <span class="text-danger font-weight-bold"> *</span>
               </label>
               <div class="col-xl-10">
-                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idProfissional" formControlName="idProfissional">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idProfissional" 
+                  formControlName="idProfissional">
                   <option [value]="null">Selecione...</option>
                   <option *ngFor="let item of domains[0]?.idProfissional" [value]="item.id">{{item.nome}}</option>
                 </select>
@@ -152,13 +154,15 @@
                 Qtd. prescrita <span class="text-danger font-weight-bold"> *</span>
               </label>
               <div class="col-xl-4">
-                <input type="text"  class="form-control has-error" [(ngModel)]="itemReceita.qtdPrescrita" formControlName="qtdPrescrita"/>
+                <input type="text"  class="form-control has-error" [(ngModel)]="itemReceita.qtdPrescrita" formControlName="qtdPrescrita"
+                (change)="calculaQtdDispensar()"/>
               </div>  
               <label class="col-xl-2 col-form-label text-left">
                 Tempo de tratamento <span class="text-danger font-weight-bold"> *</span>
               </label>              
               <div class="col-xl-4">
-                <input type="text"  class="form-control has-error" [(ngModel)]="itemReceita.tempoTratamento" formControlName="tempoTratamento"/>
+                <input type="text"  class="form-control has-error" [(ngModel)]="itemReceita.tempoTratamento" formControlName="tempoTratamento"
+                (change)="calculaQtdDispensar()"/>
               </div>
             </div>         
           </div>          
@@ -208,7 +212,7 @@
                       <td class="text-secondary">{{item.validade | date :'dd/MM/yyyy'}}</td>
                       <td class="text-secondary">{{item.quantidade}}</td>
                       <td class="text-secondary" class="text-center">
-                        <input *ngIf="!item.vencido && !item.bloqueado" type="text"  class="form-control has-error" width="20%"/>
+                        <input *ngIf="!item.vencido && !item.bloqueado" type="text"  class="form-control has-error" width="10%"/>
                         <i *ngIf="item.vencido && item.bloqueado" class="fas fa-exclamation-circle" title="Lote Vencido e Bloqueado" style="color:red"></i>
                         <i *ngIf="item.vencido && !item.bloqueado" class="fas fa-exclamation-triangle" title="Lote Vencido"  style="color:red"></i>
                         <i *ngIf="!item.vencido && item.bloqueado" class="fas fa-exclamation" title="Lote Bloqueado"  style="color:red"></i>                        
@@ -298,8 +302,7 @@
   </div>
 
   <div class="form-group text-right">
-    <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="object.idPaciente"
-      [disabled]="form.invalid">
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="object.idPaciente">
       <i class="fa fa-save"></i> {{ !object.id ? 'Criar receita' : 'Salvar'}}
     </button>  
     <button (click)="back()" class="btn btn-default" type="button">
