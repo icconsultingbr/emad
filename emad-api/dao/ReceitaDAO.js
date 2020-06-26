@@ -74,7 +74,15 @@ ReceitaDAO.prototype.deletaPorId = function (id,callback) {
     this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
 }
 
-ReceitaDAO.prototype.lista = function(callback) {   
+ReceitaDAO.prototype.lista = function(addFilter, callback) {   
+    let where = "";
+
+    if(addFilter != null){   
+        if (addFilter.idEstabelecimento && addFilter.idEstabelecimento != "undefined") {
+            where+=" AND a.idEstabelecimento = " + addFilter.idEstabelecimento + "";
+        }       
+    }
+
     this._connection.query(`SELECT                             
                             a.id
                             ,a.idEstabelecimento
@@ -105,7 +113,8 @@ ReceitaDAO.prototype.lista = function(callback) {
                             INNER JOIN tb_paciente paciente ON (a.idPaciente = paciente.id)
                             INNER JOIN tb_subgrupo_origem subgrupoOrigem ON (a.idSubgrupoOrigem = subgrupoOrigem.id)
                             LEFT JOIN tb_paciente pacienteOrigem ON (a.idPacienteOrigem = paciente.id)
-                            INNER JOIN tb_uf uf on uf.id = a.idUf`, callback);
+                            INNER JOIN tb_uf uf on uf.id = a.idUf
+                            WHERE 1=1 ${where}`, callback);
 }
 module.exports = function(){
     return ReceitaDAO;

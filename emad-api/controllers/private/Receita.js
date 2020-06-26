@@ -100,8 +100,9 @@ module.exports = function (app) {
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
+        let addFilter = req.query;
 
-        lista(res).then(function (resposne) {
+        lista(addFilter, res).then(function (resposne) {
             res.status(200).json(resposne);
             return;
         });
@@ -134,7 +135,7 @@ module.exports = function (app) {
         });
     });
 
-    function lista(res) {
+    function lista(addFilter, res) {
         let q = require('q');
         let d = q.defer();
         let util = new app.util.Util();
@@ -143,7 +144,7 @@ module.exports = function (app) {
 
         let errors = [];
 
-        objDAO.lista(function (exception, result) {
+        objDAO.lista(addFilter, function (exception, result) {
             if (exception) {
                 d.reject(exception);
                 console.log(exception);
