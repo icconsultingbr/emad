@@ -1,44 +1,26 @@
+const { async } = require("q");
+
 function ReceitaDAO(connection) {
     this._connection = connection;
     this._table = `tb_receita`;
 }
 
-ReceitaDAO.prototype.salva = function(obj, callback) {
-    const conn = this._connection;    
-    let numeroNovo = {};
+ReceitaDAO.prototype.salva = async function(receita) {
+    const novaReceita = await this._connection.query(`INSERT INTO tb_receita (idEstabelecimento, idUf, idMunicipio, idProfissional, idPaciente, 
+                                                          idSubgrupoOrigem, ano, numero, dataEmissao, situacao, idUsuarioCriacao, dataCriacao)
+                                                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+                                                          [receita.idEstabelecimento, receita.idUf, receita.idMunicipio, receita.idProfissional,
+                                                           receita.idPaciente, receita.idSubgrupoOrigem, receita.ano, receita.numero, 
+                                                           new Date(receita.dataEmissao), receita.situacao, receita.idUsuarioCriacao, receita.dataCriacao]);
 
-    conn.beginTransaction(function(err) {
-        if (err) { throw err; }
-        conn.query(`SELECT max(numero) as num FROM tb_receita where ano=? and idEstabelecimento=? FOR UPDATE`, [obj.ano, obj.idEstabelecimento], 
-        
-        function (error, numeroNovaReceita) {
-            if (error) {return conn.rollback(function() {throw error;});}  
-
-                numeroNovo = numeroNovaReceita[0].num ? numeroNovaReceita[0].num + 1 : 1;                    
-                console.log('Max número' + numeroNovo);
-
-                conn.query(`INSERT INTO tb_receita (idEstabelecimento, idUf, idMunicipio, idProfissional, idPaciente, 
-                            idSubgrupoOrigem, ano, numero, dataEmissao, situacao, idUsuarioCriacao, dataCriacao)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
-                            [obj.idEstabelecimento, obj.idUf, obj.idMunicipio, obj.idProfissional,
-                            obj.idPaciente, obj.idSubgrupoOrigem, obj.ano, numeroNovo, 
-                            new Date(obj.dataEmissao), obj.situacao, obj.idUsuarioCriacao, obj.dataCriacao], 
-                                           
-                function (error, novaReceita) {                    
-                    if (error) {return conn.rollback(function() {console.log('Erro no update ' + error + conn.query);throw error;});}                        
-                        console.log('Receita criada ' + JSON.stringify(numeroNovo));
-                        conn.commit(                        
-                    function(err) 
-                        {if (err) {return conn.rollback(function() {throw err;});}
-                        
-                        console.log('Sucesso!');              
-                        return callback(null,[novaReceita, numeroNovo]);             
-                    });
-                });
-            });
-        });        
+    return [novaReceita];
 }
 
+ReceitaDAO.prototype.obterProximoNumero = async function(ano, idEstabelecimento){
+    let numeroNovoResult =  await this._connection.query(`SELECT max(numero) as num FROM tb_receita where ano=? and idEstabelecimento=? FOR UPDATE`, [ano, idEstabelecimento]);
+
+    return numeroNovoResult[0].num ? numeroNovoResult[0].num + 1 : 1;
+}
 
 ReceitaDAO.prototype.atualiza = function(obj, id, callback) {
     this._connection.query(`UPDATE ${this._table} SET     
