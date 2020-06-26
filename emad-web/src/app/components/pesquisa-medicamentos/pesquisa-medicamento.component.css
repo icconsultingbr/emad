@@ -1,0 +1,26 @@
+.checkBox{
+    width: 25px;
+    height: 25px;
+    border: none;
+}
+
+.pac-item {
+    cursor: default;
+    padding: 0 4px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    line-height: 30px;
+    text-align: left;
+    border-top: 1px solid #e6e6e6;
+    font-size: 14px;
+    font-family: Roboto;
+    color: #999;
+}
+
+.pac-item-query {
+    font-size: 16px;
+    font-family: Roboto;
+    padding-right: 3px;
+    color: #000;
+}

@@ -8,8 +8,8 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        obj.periodoDispensavel = (!obj.periodoDispensavel || obj.periodoDispensavel.trim() == "") ?  0: obj.periodoDispensavel;
-        obj.estoqueMinimo = (!obj.estoqueMinimo || obj.estoqueMinimo.trim() == "") ?  0: obj.estoqueMinimo;
+        obj.periodoDispensavel = (!obj.periodoDispensavel) ?  0: obj.periodoDispensavel;
+        obj.estoqueMinimo = (!obj.estoqueMinimo) ?  0: obj.estoqueMinimo;   
 
         req.assert("codigo").notEmpty().withMessage("O campo Código é um campo obrigatório").matches(/^[0-9]+$/).withMessage("O campo Código deve conter somente números");
         req.assert("codigo").isLength({ min: 0, max: 9 }).withMessage("O campo Código deve ter no máximo 9 dígitos");
@@ -31,16 +31,10 @@ module.exports = function (app) {
         obj.dataCriacao = new Date;
         obj.idUsuarioCriacao = usuario.id;
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){
-            salvar(obj, res).then(function(response) {
-                obj.id = response.insertId;
-                res.status(201).send(obj);
-            });  
-
-        } else{
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        salvar(obj, res).then(function(response) {
+            obj.id = response.insertId;
+            res.status(201).send(obj);
+        }); 
     });
 
     app.put('/material', function(req,res){
@@ -49,8 +43,8 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        obj.periodoDispensavel = (!obj.periodoDispensavel || obj.periodoDispensavel.trim() == "") ?  0: obj.periodoDispensavel;
-        obj.estoqueMinimo = (!obj.estoqueMinimo || obj.estoqueMinimo.trim() == "") ?  0: obj.estoqueMinimo;        
+        obj.periodoDispensavel = (!obj.periodoDispensavel) ?  0: obj.periodoDispensavel;
+        obj.estoqueMinimo = (!obj.estoqueMinimo) ?  0: obj.estoqueMinimo;        
 
         req.assert("codigo").notEmpty().withMessage("O campo Código é um campo obrigatório").matches(/^[0-9]+$/).withMessage("O campo Código deve conter somente números");
         req.assert("codigo").isLength({ min: 0, max: 9 }).withMessage("O campo Código deve ter no máximo 9 dígitos");
@@ -78,16 +72,10 @@ module.exports = function (app) {
         obj.dataAlteracao = new Date;
         obj.idUsuarioAlteracao = usuario.id;
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){
-            atualizar(obj, res).then(function(response) {
-                obj.id = response.insertId;
-                res.status(201).send(obj);
-            });  
-
-        } else{
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        atualizar(obj, res).then(function(response) {
+            obj.id = response.insertId;
+            res.status(201).send(obj);
+        });  
     });
    
     app.get('/material', function (req, res) {
@@ -96,27 +84,34 @@ module.exports = function (app) {
         let errors = [];
         let addFilter = req.query;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            if(addFilter){
-                if (addFilter.descricao) {
-                    listaPorDescricao(addFilter, res).then(function (resposne) {
-                        res.status(200).json(resposne);
-                        return;
-                    });
-                }                
-                else {
-                    lista(res).then(function (resposne) {
-                        res.status(200).json(resposne);
-                        return;
-                    });
-                }
+        if(addFilter){
+            if (addFilter.descricao) {
+                listaPorDescricao(addFilter, res).then(function (resposne) {
+                    res.status(200).json(resposne);
+                    return;
+                });
             }                
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+            else {
+                lista(res).then(function (resposne) {
+                    res.status(200).json(resposne);
+                    return;
+                });
+            }
+        } 
     });
+
+    app.get('/material/especialidade/:id', function (req, res) {
+        let usuario = req.usuario;
+        let util = new app.util.Util();
+        let errors = [];
+        let addFilter = req.query;
+        let id = req.params.id;
+
+        listaPorDescricaoProfissionalEspecialidade(addFilter, id, res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
+    });    
 
     app.get('/material/:id', function(req,res){        
         let usuario = req.usuario;
@@ -125,16 +120,10 @@ module.exports = function (app) {
         let errors = [];
 
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
-            buscarPorId(id, res).then(function(response) {
-                res.status(200).json(response);
-                return;      
-            });
-        }
-        else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        buscarPorId(id, res).then(function(response) {
+            res.status(200).json(response);
+            return;      
+        });
     }); 
 
     app.delete('/material/:id', function(req,res){     
@@ -145,16 +134,10 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
         
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){	
-            deletaPorId(id, res).then(function(response) {
-                res.status(200).json(obj);
-                return;      
-            });
-
-        } else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        deletaPorId(id, res).then(function(response) {
+            res.status(200).json(obj);
+            return;      
+        });
     });
 
     function lista(res) {
@@ -202,6 +185,29 @@ module.exports = function (app) {
         });
         return d.promise;
     }
+
+    function listaPorDescricaoProfissionalEspecialidade(addFilter, idProfissional, res) {
+        let q = require('q');
+        let d = q.defer();
+        let util = new app.util.Util();
+        let connection = app.dao.ConnectionFactory();
+        let objDAO = new app.dao.MaterialDAO(connection);
+
+        let errors = [];
+
+        objDAO.listaPorDescricaoProfissionalEspecialidade(addFilter, idProfissional, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }   
  
     function buscarPorId(id,  res) {
         let q = require('q');

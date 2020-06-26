@@ -56,6 +56,7 @@ const appRoutes : Routes = [
     { path: 'grupos-origens', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/grupo-origem/grupo-origem.module#GrupoOrigemModule' },
     { path: 'subgrupos-origens', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/subgrupo-origem/subgrupo-origem.module#SubgrupoOrigemModule' },
     { path: 'receitas', canActivate: [AuthGuard], loadChildren: './farmacia/receita/receita.module#ReceitaModule' },
+    { path: 'estoques', canActivate: [AuthGuard], loadChildren: './farmacia/estoque/estoque.module#EstoqueModule' },
     
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 

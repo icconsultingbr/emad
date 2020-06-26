@@ -62,7 +62,7 @@ MaterialDAO.prototype.listaPorDescricao = function(addFilter, callback) {
 
     if(addFilter != null){   
         if (addFilter.descricao) {
-            where+=" AND a.descricao LIKE '%"+addFilter.descricao+"%'";
+            where+=" AND UPPER(a.descricao) LIKE '%"+addFilter.descricao.toUpperCase()+"%'";
         }
     }
 
@@ -76,6 +76,35 @@ MaterialDAO.prototype.listaPorDescricao = function(addFilter, callback) {
                             INNER JOIN tb_unidade_material unidadeMaterial ON (a.idUnidadeMaterial = unidadeMaterial.id)
                             WHERE a.situacao = 1 ${where} 
                             ORDER BY a.id DESC`, callback);
+}
+
+MaterialDAO.prototype.listaPorDescricaoProfissionalEspecialidade = function(addFilter, idProfissional, callback) {      
+    let where = "";
+
+    if(addFilter != null){   
+        if (addFilter.descricao  && addFilter.descricao != "undefined") {
+            where+=" AND UPPER(a.descricao) LIKE '%"+addFilter.descricao.toUpperCase()+"%'";
+        }
+
+        if (addFilter.idGrupoMaterial && addFilter.idGrupoMaterial != "undefined") {
+            where+=" AND a.idGrupoMaterial = " + addFilter.idGrupoMaterial + "";
+        }       
+    }
+
+    this._connection.query(`SELECT
+                             a.id
+                            ,a.codigo
+                            ,a.descricao
+                            ,a.descricaoCompleta
+                            ,a.idUnidadeMaterial
+                            ,unidadeMaterial.nome nomeUnidadeMaterial
+                            ,espec.id autorizado
+                            FROM ${this._table} a
+                            INNER JOIN tb_unidade_material unidadeMaterial ON (a.idUnidadeMaterial = unidadeMaterial.id)
+                            INNER JOIN tb_profissional profissional ON (profissional.situacao = 1 and profissional.id=${idProfissional})
+                            LEFT JOIN tb_especialidade_material espec ON (a.id = espec.idMaterial and espec.situacao = 1 and espec.idEspecialidade = profissional.idEspecialidade)                            
+                            WHERE a.situacao = 1 ${where} 
+                            ORDER BY a.descricao asc`, callback);
 }
 
 module.exports = function(){

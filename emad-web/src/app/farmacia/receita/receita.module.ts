@@ -14,6 +14,7 @@ import { NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap/collapse/collapse.
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
+import { PesquisaMedicamentoModule } from "../../components/pesquisa-medicamentos/pesquisa-medicamento.module";
 
 @NgModule({
     imports: [
@@ -29,7 +30,8 @@ import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
         NgbModule,
         NgbCollapseModule,
         NgbDatepickerModule,
-        BsDatepickerModule
+        BsDatepickerModule,
+        PesquisaMedicamentoModule
     ],
     declarations: [
         ReceitaComponent,

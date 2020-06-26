@@ -21,15 +21,6 @@ export class ReceitaService extends GenericsService {
       validator: ['', '']
     },
     {
-      field: "idEstabelecimento",
-      type: "select",
-      label: "Estabelecimento",
-      grid: false,
-      form: true,
-      required: true,
-      validator: ['', Validators.required]
-    },
-    {
       field: "nomeEstabelecimento",
       type: "text",
       label: "Estabelecimento",
@@ -168,6 +159,18 @@ export class ReceitaService extends GenericsService {
       form: false,
       required: false,
       validator: ['', '']
+    },    
+    {
+      field: "idEstabelecimento",
+      type: "text",
+      label: "Id do estabelecimento",
+      grid: false,
+      form: false,
+      required: true,
+      validator: ['', ''],
+      filter: {
+          type: "select"
+      }
     },
     {
       field: "situacao",
