@@ -263,15 +263,7 @@ module.exports = function (app) {
             let responsePorId = [];
             let numeroReceita = 0;
 
-            buscaProfissionalAberturaAtendimento(usuario.id, id).then(function (responseUsuarioDivergente) {
-                if (responseUsuarioDivergente.length > 0){                                        
-                    return buscaProfissionalPorUsuario(usuario.id);
-                }
-                else {
-                    errors = util.customError(errors, "usuário", "O atendimento não pôde ser alterado pois foi aberto por outro profissional", "");                                       
-                    return Promise.reject(errors);                    
-                }
-            }).then(function (responseProfissional) {
+            buscaProfissionalPorUsuario(usuario.id).    then(function (responseProfissional) {
                 if (responseProfissional.length > 0){                    
                     return buscarPorId(id, res);              
                 }

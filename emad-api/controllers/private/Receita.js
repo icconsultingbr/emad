@@ -61,8 +61,8 @@ module.exports = function (app) {
         }
     });
 
-    app.put('/receita', function (req, res) {
-        let obj = req.body;
+    app.put('/receita', async function (req, res) {
+        let receita = req.body;
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
@@ -82,18 +82,49 @@ module.exports = function (app) {
             return;
         }
 
-        if (obj.idSubgrupoOrigem == "null") {
+        if (receita.idSubgrupoOrigem == "null") {
             errors = util.customError(errors, "header", "Origem é um campo obrigatório", "");
             res.status(401).send(errors);
         }
 
-        obj.dataAlteracao = new Date;
-        obj.idUsuarioAlteracao = usuario.id;
+        
+        const connection = app.dao.connections.EatendConnection();
 
-        atualizar(obj, res).then(function (response) {
-            obj.id = response.insertId;
-            res.status(201).send(obj);
-        });
+        const receitaRepository = new app.dao.ReceitaDAO(connection);
+        const itemReceitaRepository = new app.dao.ItemReceitaDAO(connection);
+        const estoqueRepository = new app.dao.EstoqueDAO(connection);
+        const movimentoGeralRepository = new app.dao.ItemReceitaDAO(connection);
+        const itemMovimentoGeralRepository = new app.dao.ItemReceitaDAO(connection);
+        const movimentoLivroRepository = new app.dao.ItemReceitaDAO(connection);
+
+        try {
+            await connection.beginTransaction();
+
+            receita.dataAlteracao = new Date;
+            receita.idUsuarioAlteracao = usuario.id;
+            
+            var responseReceita = await receitaRepository.atualizaStatus(receita);
+            
+            receita.itensReceita.forEach(async (itemReceita) => {
+                itemReceita.idReceita = receita.id;
+                itemReceita.dataCriacao = new Date;
+                itemReceita.idUsuarioCriacao = usuario.id;
+                itemReceita.situacao = 1;
+
+                await itemReceitaRepository.salva(itemReceita);    
+            });
+
+            res.status(201).send(responseReceita);
+
+            await connection.commit();
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+            await connection.rollback();
+        }
+        finally {
+            connection.close();
+        }
     });
 
     app.get('/receita', function (req, res) {
@@ -109,30 +140,34 @@ module.exports = function (app) {
     });
 
 
-    app.get('/receita/:id', function (req, res) {
+    app.get('/receita/:id', async function (req, res) {
         let usuario = req.usuario;
         let id = req.params.id;
         let util = new app.util.Util();
         let errors = [];
 
-        buscarPorId(id, res).then(function (response) {
-            res.status(200).json(response);
-            return;
-        });
-    });
 
-    app.delete('/receita/:id', function (req, res) {
-        let util = new app.util.Util();
-        let usuario = req.usuario;
-        let errors = [];
-        let id = req.params.id;
-        let obj = {};
-        obj.id = id;
+        const connection = app.dao.connections.EatendConnection();
 
-        deletaPorId(id, res).then(function (response) {
-            res.status(200).json(obj);
-            return;
-        });
+        const receitaRepository = new app.dao.ReceitaDAO(connection);
+        const itemReceitaRepository = new app.dao.ItemReceitaDAO(connection);
+
+        try {
+            
+            var responseReceita = await receitaRepository.buscaPorId(id);
+            var receita = responseReceita[0];
+
+            var itensReceita = await itemReceitaRepository.buscarPorReceita(id);            
+            receita.itensReceita = itensReceita ? itensReceita : null;
+            
+            res.status(200).json(receita);
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            connection.close();
+        }
     });
 
     function lista(addFilter, res) {
@@ -153,74 +188,6 @@ module.exports = function (app) {
                 return;
             } else {
                 d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-    function buscarPorId(id, res) {
-        let q = require('q');
-        let d = q.defer();
-        let util = new app.util.Util();
-
-        let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.ReceitaDAO(connection);
-        let errors = [];
-
-        objDAO.buscaPorId(id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
-                res.status(500).send(errors);
-                return;
-            } else {
-
-                d.resolve(result[0]);
-            }
-        });
-        return d.promise;
-    }
-
-    function atualizar(obj, res) {
-        let id = obj.id;
-        delete obj.id;
-        let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.ReceitaDAO(connection);
-        let q = require('q');
-        let d = q.defer();
-
-        objDAO.atualiza(obj, id, function (exception, result) {
-            if (exception) {
-                console.log('Erro ao alterar o registro', exception);
-                res.status(500).send(exception);
-                d.reject(exception);
-                return;
-            }
-            else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-    function deletaPorId(id, res) {
-        let q = require('q');
-        let d = q.defer();
-        let util = new app.util.Util();
-        let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.ReceitaDAO(connection);
-        let errors = [];
-
-        objDAO.deletaPorId(id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                errors = util.customError(errors, "data", "Erro ao remover os dados", "obj");
-                res.status(500).send(errors);
-                return;
-            } else {
-
-                d.resolve(result[0]);
             }
         });
         return d.promise;

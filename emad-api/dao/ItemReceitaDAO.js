@@ -1,10 +1,20 @@
+const { async } = require("q");
+
 function ItemReceitaDAO(connection) {
     this._connection = connection;
     this._table = `tb_item_receita`;
 }
 
-ItemReceitaDAO.prototype.salva = function(obj, callback) {
-    this._connection.query(`INSERT INTO ${this._table} SET ?`, obj, callback);
+ItemReceitaDAO.prototype.salva = async function(itemReceita) {
+    const novoItemReceita = await this._connection.query(`INSERT INTO tb_item_receita (idReceita, idMaterial, qtdPrescrita, tempoTratamento, qtdDispAnterior, 
+                                                            dataUltDisp, numReceitaControlada, observacao, situacao, idUsuarioCriacao, dataCriacao)
+                                                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+                                                          [itemReceita.idReceita, itemReceita.idMaterial, itemReceita.qtdPrescrita, itemReceita.tempoTratamento,
+                                                            itemReceita.qtdDispAnterior, new Date(itemReceita.dataUltDisp),
+                                                            itemReceita.numReceitaControlada, itemReceita.observacao, itemReceita.situacao, itemReceita.idUsuarioCriacao, 
+                                                            itemReceita.dataCriacao]);
+
+    return [novoItemReceita];
 }
 
 ItemReceitaDAO.prototype.atualiza = function(obj, id, callback) {
@@ -49,8 +59,8 @@ ItemReceitaDAO.prototype.lista = function(callback) {
                                 WHERE a.situacao = 1`, callback);
 }
 
-ItemReceitaDAO.prototype.buscarPorGrupoMaterial = function(idReceita, callback) {   
-    this._connection.query(`SELECT
+ItemReceitaDAO.prototype.buscarPorReceita = async function(idReceita) {   
+    const itemReceita = await  this._connection.query(`SELECT
                                 a.id
                                 ,a.idReceita
                                 ,a.idMaterial
@@ -72,7 +82,9 @@ ItemReceitaDAO.prototype.buscarPorGrupoMaterial = function(idReceita, callback) 
                                 INNER JOIN tb_material material ON (a.idMaterial = material.id)
                                 LEFT JOIN tb_motivo_fim_receita motivoFimReceita ON (a.idMotivoFimReceita = motivoFimReceita.id)                            
                                 LEFT JOIN tb_usuario usuarioFimReceita ON (a.idUsuarioFimReceita = usuarioFimReceita.id)                            
-                                WHERE a.situacao = 1 and idReceita.id=?`,idReceita, callback);
+                                WHERE a.situacao = 1 and a.idReceita=?`,idReceita);
+
+    return itemReceita;
 }
 
 module.exports = function(){

@@ -22,6 +22,11 @@ ReceitaDAO.prototype.obterProximoNumero = async function(ano, idEstabelecimento)
     return numeroNovoResult[0].num ? numeroNovoResult[0].num + 1 : 1;
 }
 
+ReceitaDAO.prototype.atualizaStatus = async function(obj){
+    const receitaAtualizada =  await this._connection.query(`UPDATE tb_receita SET situacao = ?, idUsuarioAlteracao = ?, dataAlteracao  = ? WHERE id= ?`, [obj.situacao, obj.idUsuarioAlteracao, obj.dataAlteracao, obj.id]);
+    return [receitaAtualizada];
+}
+
 ReceitaDAO.prototype.atualiza = function(obj, id, callback) {
     this._connection.query(`UPDATE ${this._table} SET     
     idEstabelecimento = ?, idUf = ?, idMunicipio = ?, idProfissional = ?, idPaciente = ?, 
@@ -31,8 +36,8 @@ ReceitaDAO.prototype.atualiza = function(obj, id, callback) {
         callback);
 }
 
-ReceitaDAO.prototype.buscaPorId = function (id, callback) {
-    this._connection.query(`SELECT                             
+ReceitaDAO.prototype.buscaPorId = async function (id) {
+    const receita = await  this._connection.query(`SELECT                             
                             a.id
                             ,a.idEstabelecimento
                             ,estabelecimento.nomeFantasia nomeEstabelecimento
@@ -63,7 +68,9 @@ ReceitaDAO.prototype.buscaPorId = function (id, callback) {
                             INNER JOIN tb_subgrupo_origem subgrupoOrigem ON (a.idSubgrupoOrigem = subgrupoOrigem.id)
                             LEFT JOIN tb_paciente pacienteOrigem ON (a.idPacienteOrigem = paciente.id)                                                         
                             INNER JOIN tb_uf uf on uf.id = a.idUf
-                            WHERE a.id = ?`, id, callback);
+                            WHERE a.id = ?`, id);
+
+    return receita;
 }
 
 ReceitaDAO.prototype.buscaDominio = function (callback) {
