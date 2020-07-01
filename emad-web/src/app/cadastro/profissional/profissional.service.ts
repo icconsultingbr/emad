@@ -48,8 +48,8 @@ export class ProfissionalService extends GenericsService {
       label: "Nome da mãe",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required],
+      required: false,
+      validator: ['', ''],
     },
     {
       field: "nomePai",
@@ -88,8 +88,8 @@ export class ProfissionalService extends GenericsService {
       label: "Nacionalidade",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required],
+      required: false,
+      validator: ['', ''],
       filter: {
         type: "select",
         changeMethod: 'uf/pais',
@@ -102,8 +102,8 @@ export class ProfissionalService extends GenericsService {
       label: "Naturalidade",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required],
+      required: false,
+      validator: ['', ''],
 
     },
     {
@@ -154,8 +154,8 @@ export class ProfissionalService extends GenericsService {
       label: "Escolaridade",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required],
+      required: false,
+      validator: ['', ''],
     },
     {
       field: "logradouro",
@@ -163,8 +163,8 @@ export class ProfissionalService extends GenericsService {
       label: "Endereço",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required]
+      required: false,
+      validator: ['', '']
     },
     {
       field: "numero",
@@ -172,8 +172,8 @@ export class ProfissionalService extends GenericsService {
       label: "Número",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required]
+      required: false,
+      validator: ['', '']
     },
     {
       field: "latitude",
@@ -210,8 +210,8 @@ export class ProfissionalService extends GenericsService {
       label: "Bairro",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required]
+      required: false,
+      validator: ['', '']
     },
     {
       field: "idUf",
@@ -242,8 +242,8 @@ export class ProfissionalService extends GenericsService {
       label: "CEP",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required],
+      required: false,
+      validator: ['', ''],
       mask: "99999-999",
       placeholder: "00000-000",
       /*
@@ -307,8 +307,8 @@ export class ProfissionalService extends GenericsService {
       label: "Vínculo",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required]
+      required: false,
+      validator: ['', '']
     },
     {
       field: "crm",
@@ -317,7 +317,7 @@ export class ProfissionalService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ['', Validators.required],
     },
     {
       field: "cargaHorariaSemanal",
@@ -326,8 +326,8 @@ export class ProfissionalService extends GenericsService {
       label: "Carga hor. semanal",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required]
+      required: false,
+      validator: ['','']
     },
     {
       field: "cargoProfissional",
@@ -335,8 +335,8 @@ export class ProfissionalService extends GenericsService {
       label: "Cargo profissional",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required]
+      required: false,
+      validator: ['', '']
     },
     {
       field: "nomeUsuario",

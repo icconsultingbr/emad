@@ -181,7 +181,7 @@
                 Qtd. a dispensar <span class="text-danger font-weight-bold"> *</span>
               </label>              
               <div class="col-xl-4">
-                <input type="text"  class="form-control has-error" [(ngModel)]="itemReceita.qtdDispensar" formControlName="qtdDispensar"/>
+                <input type="text"  class="form-control has-error" [(ngModel)]="itemReceita.qtdDispMes" formControlName="qtdDispMes"/>
               </div>
             </div>         
           </div>          
@@ -273,7 +273,7 @@
                       <td class="text-secondary">{{item.validade | date :'dd/MM/yyyy'}}</td>
                       <td class="text-secondary">{{item.qtdDispensar}}</td>
                       <td class="text-secondary text-right">
-                        <a class="btn btn-link" [routerLink]="">
+                        <a class="btn btn-link" [routerLink]="" *ngIf="object.situacao == 1">
                           <i class="fa fa-trash-alt"></i> Remover
                         </a>
                       </td>
@@ -304,8 +304,7 @@
                     <th>Qtd. prescrita</th>
                     <th>Tempo tratamento</th>                    
                     <th>Qtd. dispensada anterior</th>                                        
-                    <th>Qtd. a dispensar</th>                                        
-                    <th></th>
+                    <th>Qtd. a dispensar</th>  
                   </tr>
                 </thead>
                 <tbody>
@@ -322,12 +321,7 @@
                       <td class="text-secondary">{{item.qtdPrescrita}}</td>                      
                       <td class="text-secondary">{{item.tempoTratamento}}</td>
                       <td class="text-secondary">{{item.qtdDispAnterior}}</td>
-                      <td class="text-secondary">{{item.qtdDispAnterior}}</td>
-                      <td class="text-secondary text-right">
-                        <a class="btn btn-link" [routerLink]="">
-                          <i class="fa fa-trash-alt"></i> Remover
-                        </a>
-                      </td>
+                      <td class="text-secondary">0</td>
                     </tr>
                   </tbody>
               </table>
@@ -339,7 +333,7 @@
   </div>
 
   <div class="form-group text-right">
-    <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="object.idPaciente">
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="object.idPaciente && object.situacao != 3">
       <i class="fa fa-save"></i> {{ !object.id ? 'Criar receita' : 'Salvar'}}
     </button>  
     <button (click)="back()" class="btn btn-default" type="button">

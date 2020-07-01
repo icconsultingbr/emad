@@ -241,8 +241,8 @@ export class ReceitaFormComponent implements OnInit {
   {
     if(this.itemReceita.qtdPrescrita && this.itemReceita.tempoTratamento)
     {
-      this.itemReceita.qtdDispensar = ((this.itemReceita.qtdPrescrita/this.itemReceita.tempoTratamento)*30);
-      this.itemReceita.qtdDispensar = (this.itemReceita.qtdPrescrita<this.itemReceita.qtdDispensar) ? Math.round(this.itemReceita.qtdPrescrita) : this.itemReceita.qtdDispensar;
+      this.itemReceita.qtdDispMes = ((this.itemReceita.qtdPrescrita/this.itemReceita.tempoTratamento)*30);
+      this.itemReceita.qtdDispMes = (this.itemReceita.qtdPrescrita<this.itemReceita.qtdDispMes) ? Math.round(this.itemReceita.qtdPrescrita) : this.itemReceita.qtdDispMes;
     }
   }
 
@@ -263,7 +263,7 @@ export class ReceitaFormComponent implements OnInit {
       }
     });
 
-    if(somaDispensar != this.itemReceita.qtdDispensar){
+    if(somaDispensar != this.itemReceita.qtdDispMes){
       erroQtd = true;        
       this.errors.push({
         message: "A soma dos lotes é diferente da quantidade escolhida para dispensar!"
@@ -290,6 +290,7 @@ export class ReceitaFormComponent implements OnInit {
       tempoTratamento: ['', ''],
       qtdDispAnterior: ['', ''],
       qtdDispensar: ['', ''],
+      qtdDispMes: ['', ''],
       observacoesGerais: ['', ''],
       situacao: [Validators.required],
       qtdDispensarLote: ['','']

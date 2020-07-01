@@ -7,12 +7,12 @@ function ItemReceitaDAO(connection) {
 
 ItemReceitaDAO.prototype.salva = async function(itemReceita) {
     const novoItemReceita = await this._connection.query(`INSERT INTO tb_item_receita (idReceita, idMaterial, qtdPrescrita, tempoTratamento, qtdDispAnterior, 
-                                                            dataUltDisp, numReceitaControlada, observacao, situacao, idUsuarioCriacao, dataCriacao)
-                                                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+                                                        qtdDispMes, dataUltDisp, numReceitaControlada, observacao, situacao, idUsuarioCriacao, dataCriacao)
+                                                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
                                                           [itemReceita.idReceita, itemReceita.idMaterial, itemReceita.qtdPrescrita, itemReceita.tempoTratamento,
-                                                            itemReceita.qtdDispAnterior, new Date(itemReceita.dataUltDisp),
-                                                            itemReceita.numReceitaControlada, itemReceita.observacao, itemReceita.situacao, itemReceita.idUsuarioCriacao, 
-                                                            itemReceita.dataCriacao]);
+                                                            itemReceita.qtdDispAnterior, itemReceita.qtdDispMes, new Date(itemReceita.dataUltDisp),
+                                                            itemReceita.numReceitaControlada, itemReceita.observacao, 
+                                                            itemReceita.situacao, itemReceita.idUsuarioCriacao, itemReceita.dataCriacao]);
 
     return [novoItemReceita];
 }
@@ -56,7 +56,7 @@ ItemReceitaDAO.prototype.lista = function(callback) {
                                 INNER JOIN tb_material material ON (a.idMaterial = material.id)
                                 LEFT JOIN tb_motivo_fim_receita motivoFimReceita ON (a.idMotivoFimReceita = motivoFimReceita.id)                            
                                 LEFT JOIN tb_usuario usuarioFimReceita ON (a.idUsuarioFimReceita = usuarioFimReceita.id)                            
-                                WHERE a.situacao = 1`, callback);
+                                WHERE a.situacao > 1`, callback);
 }
 
 ItemReceitaDAO.prototype.buscarPorReceita = async function(idReceita) {   
@@ -82,7 +82,7 @@ ItemReceitaDAO.prototype.buscarPorReceita = async function(idReceita) {
                                 INNER JOIN tb_material material ON (a.idMaterial = material.id)
                                 LEFT JOIN tb_motivo_fim_receita motivoFimReceita ON (a.idMotivoFimReceita = motivoFimReceita.id)                            
                                 LEFT JOIN tb_usuario usuarioFimReceita ON (a.idUsuarioFimReceita = usuarioFimReceita.id)                            
-                                WHERE a.situacao = 1 and a.idReceita=?`,idReceita);
+                                WHERE a.situacao > 1 and a.idReceita=?`,idReceita);
 
     return itemReceita;
 }

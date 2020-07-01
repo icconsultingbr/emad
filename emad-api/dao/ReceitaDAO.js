@@ -1,5 +1,3 @@
-const { async } = require("q");
-
 function ReceitaDAO(connection) {
     this._connection = connection;
     this._table = `tb_receita`;
@@ -23,7 +21,7 @@ ReceitaDAO.prototype.obterProximoNumero = async function(ano, idEstabelecimento)
 }
 
 ReceitaDAO.prototype.atualizaStatus = async function(obj){
-    const receitaAtualizada =  await this._connection.query(`UPDATE tb_receita SET situacao = ?, idUsuarioAlteracao = ?, dataAlteracao  = ? WHERE id= ?`, [obj.situacao, obj.idUsuarioAlteracao, obj.dataAlteracao, obj.id]);
+    const receitaAtualizada =  await this._connection.query(`UPDATE tb_receita SET situacao = ?, idUsuarioAlteracao = ?, dataAlteracao  = ?, dataUltimaDispensacao = ? WHERE id= ?`, [obj.situacao, obj.idUsuarioAlteracao, obj.dataAlteracao, obj.dataUltimaDispensacao,  obj.id]);
     return [receitaAtualizada];
 }
 
@@ -121,7 +119,8 @@ ReceitaDAO.prototype.lista = function(addFilter, callback) {
                             INNER JOIN tb_subgrupo_origem subgrupoOrigem ON (a.idSubgrupoOrigem = subgrupoOrigem.id)
                             LEFT JOIN tb_paciente pacienteOrigem ON (a.idPacienteOrigem = paciente.id)
                             INNER JOIN tb_uf uf on uf.id = a.idUf
-                            WHERE 1=1 ${where}`, callback);
+                            WHERE 1=1 ${where}
+                            ORDER BY a.id desc`, callback);
 }
 module.exports = function(){
     return ReceitaDAO;
