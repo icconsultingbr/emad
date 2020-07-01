@@ -1,4 +1,5 @@
 import { Input } from "@angular/core";
+import { Estoque } from "./Estoque";
 
 export class ItemReceita {
     id: Number;    
@@ -16,4 +17,6 @@ export class ItemReceita {
     @Input() observacao: string;
     @Input() idUsuarioFimReceita: number;
     @Input() situacao: number;
+    @Input() nomeMaterial: string;
+    @Input() itensEstoque: Estoque[] = [];  
 }

@@ -96,36 +96,23 @@ module.exports = function (app) {
         if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
            
             dadosUsuario.cpf = obj.cpf.replace(/[.-]/g, '');
-            dadosUsuario.celular = obj.foneCelular.replace(/[() -]/g, '');
+            if(obj.foneCelular)
+                dadosUsuario.celular = obj.foneCelular.replace(/[() -]/g, '');
 
             req.assert("cpf").notEmpty().withMessage("CPF é um campo obrigatório;");
-            req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");
-            req.assert("nomeMae").notEmpty().withMessage("Nome da Mãe é um campo obrigatório;");
+            req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");            
             req.assert("dataNascimento").notEmpty().withMessage("Data de Nascimento é um campo obrigatório;");
             req.assert("sexo").notEmpty().withMessage("Sexo é um campo obrigatório;");
-            req.assert("idNacionalidade").notEmpty().withMessage("Nacionalidade é um campo obrigatório;");
-            req.assert("idNaturalidade").notEmpty().withMessage("Naturalidade é um campo obrigatório;");
-            req.assert("profissionalSus").notEmpty().withMessage("Profissional SUS é um campo obrigatório;");
-            req.assert("rg").notEmpty().withMessage("RG é um campo obrigatório;");
-            req.assert("orgaoEmissor").notEmpty().withMessage("Órgão Emissor é um campo obrigatório;");
-            req.assert("escolaridade").notEmpty().withMessage("Escolaridade é um campo obrigatório;");
-            req.assert("cep").notEmpty().withMessage("CEP é um campo obrigatório;");
-            req.assert("logradouro").notEmpty().withMessage("Logradouro é um campo obrigatório;");
-            req.assert("numero").notEmpty().withMessage("Número é um campo obrigatório;");
-            req.assert("idMunicipio").notEmpty().withMessage("Munícipio é um campo obrigatório;");
-            req.assert("idUf").notEmpty().withMessage("UF é um campo obrigatório;");
-            req.assert("bairro").notEmpty().withMessage("Bairro é um campo obrigatório;");
-            req.assert("foneCelular").notEmpty().withMessage("Fone Celular é um campo obrigatório;");
-            req.assert("email").notEmpty().withMessage("Email é um campo obrigatório;");
+            req.assert("profissionalSus").notEmpty().withMessage("Profissional SUS é um campo obrigatório;");                                    
             req.assert("idEspecialidade").notEmpty().withMessage("Especialidade é um campo obrigatório;");
-            req.assert("vinculo").notEmpty().withMessage("Especialidade é um campo obrigatório;");
-            req.assert("cargaHorariaSemanal").notEmpty().withMessage("Carga Horária Semanal é um campo obrigatório;");
-            req.assert("cargoProfissional").notEmpty().withMessage("Cargo Profissional é um campo obrigatório;");
+            req.assert("email").notEmpty().withMessage("Email é um campo obrigatório;");            
             req.assert("idTipoUsuario").notEmpty().withMessage("Grupo de usuário é um campo obrigatório");
             req.assert("senha").notEmpty().withMessage("A senha é um campo obrigatório;").matches(/^(?=.*[a-z])(?=.*\d)[A-Za-z\d$@$!%*?&]{8,}/).withMessage("A senha deve conter pelo menos 8 caracteres, letras e números;");
             req.assert("confirmaSenha").notEmpty().withMessage("A confirmação da senha é um campo obrigatório;").equals(obj.senha).withMessage("A senha e confirmação devem ser idênticas;");
             req.assert("estabelecimentos").notEmpty().withMessage("Selecione o(s) estabelecimento(s) vinculado(s) ao usuário");
-
+            req.assert("idMunicipio").notEmpty().withMessage("Munícipio é um campo obrigatório;");
+            req.assert("idUf").notEmpty().withMessage("UF é um campo obrigatório;");
+            
             var errors = req.validationErrors();
 
             if (errors) {
@@ -254,33 +241,20 @@ module.exports = function (app) {
         if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
 
             dadosUsuario.cpf = obj.cpf.replace(/[.-]/g, '');
-            dadosUsuario.celular = obj.foneCelular.replace(/[() -]/g, '');
+            if(obj.foneCelular)
+                dadosUsuario.celular = obj.foneCelular.replace(/[() -]/g, '');
 
             req.assert("cpf").notEmpty().withMessage("CPF é um campo obrigatório;");
-            req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");
-            req.assert("nomeMae").notEmpty().withMessage("Nome da Mãe é um campo obrigatório;");
+            req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");            
             req.assert("dataNascimento").notEmpty().withMessage("Data de Nascimento é um campo obrigatório;");
             req.assert("sexo").notEmpty().withMessage("Sexo é um campo obrigatório;");
-            req.assert("idNacionalidade").notEmpty().withMessage("Nacionalidade é um campo obrigatório;");
-            req.assert("idNaturalidade").notEmpty().withMessage("Naturalidade é um campo obrigatório;");
-            req.assert("profissionalSus").notEmpty().withMessage("Profissional SUS é um campo obrigatório;");
-            req.assert("rg").notEmpty().withMessage("RG é um campo obrigatório;");
-            req.assert("orgaoEmissor").notEmpty().withMessage("Órgão Emissor é um campo obrigatório;");
-            req.assert("escolaridade").notEmpty().withMessage("Escolaridade é um campo obrigatório;");
-            req.assert("cep").notEmpty().withMessage("CEP é um campo obrigatório;");
-            req.assert("logradouro").notEmpty().withMessage("Logradouro é um campo obrigatório;");
-            req.assert("numero").notEmpty().withMessage("Número é um campo obrigatório;");
+            req.assert("profissionalSus").notEmpty().withMessage("Profissional SUS é um campo obrigatório;");                                    
+            req.assert("idEspecialidade").notEmpty().withMessage("Especialidade é um campo obrigatório;");
+            req.assert("email").notEmpty().withMessage("Email é um campo obrigatório;");            
+            req.assert("idTipoUsuario").notEmpty().withMessage("Grupo de usuário é um campo obrigatório");
+            req.assert("estabelecimentos").notEmpty().withMessage("Selecione o(s) estabelecimento(s) vinculado(s) ao usuário");
             req.assert("idMunicipio").notEmpty().withMessage("Munícipio é um campo obrigatório;");
             req.assert("idUf").notEmpty().withMessage("UF é um campo obrigatório;");
-            req.assert("bairro").notEmpty().withMessage("Bairro é um campo obrigatório;");
-            req.assert("foneCelular").notEmpty().withMessage("Fone Celular é um campo obrigatório;");
-            req.assert("email").notEmpty().withMessage("Email é um campo obrigatório;");
-            req.assert("idEspecialidade").notEmpty().withMessage("Especialidade é um campo obrigatório;");
-            req.assert("vinculo").notEmpty().withMessage("Especialidade é um campo obrigatório;");
-            req.assert("cargaHorariaSemanal").notEmpty().withMessage("Carga Horária Semanal é um campo obrigatório;");
-            req.assert("cargoProfissional").notEmpty().withMessage("Cargo Profissional é um campo obrigatório;");
-            req.assert("idTipoUsuario").notEmpty().withMessage("Grupo de usuário é um campo obrigatório");            
-            req.assert("estabelecimentos").notEmpty().withMessage("Selecione o(s) estabelecimento(s) vinculado(s) ao usuário");
 
             errors = req.validationErrors();
 

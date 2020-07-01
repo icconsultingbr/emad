@@ -536,6 +536,11 @@ PacienteDAO.prototype.buscarEstabelecimentos = function (id, raio, idTipoUnidade
     );
 }
 
+PacienteDAO.prototype.carregaNomePaciente = async function(id){
+    let result =  await this._connection.query(`SELECT nome FROM ${this._table} where id=?`, [id]);
+    return result[0].nome ? result[0].nome : "";
+}
+
 module.exports = function () {
     return PacienteDAO;
 };

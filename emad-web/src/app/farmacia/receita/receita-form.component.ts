@@ -6,6 +6,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Util } from '../../_core/_util/Util';
 import { environment } from '../../../environments/environment';
 import { ItemReceita } from '../../_core/_models/ItemReceita';
+import { Estoque } from '../../_core/_models/Estoque';
+import { Material } from '../../_core/_models/Material';
 
 @Component({
     selector: 'app-receita-form',
@@ -17,7 +19,8 @@ import { ItemReceita } from '../../_core/_models/ItemReceita';
 export class ReceitaFormComponent implements OnInit {
 
   object: Receita = new Receita();
-  itemReceita: ItemReceita = new ItemReceita();
+  itemReceita: ItemReceita = new ItemReceita();  
+  itemEstoque: Estoque = new Estoque();  
   method: string = "receitas";
   fields: any[] = [];
   label: string = "Receita";
@@ -33,7 +36,8 @@ export class ReceitaFormComponent implements OnInit {
   errors: any[] = [];  
   listaMaterialLote: any[] = [];
   listaMaterialLoteDispensado: any[] = [];
-  
+  listaMaterialLoteDispensadoConfirmar: any[] = [];
+
   constructor(
     private fb: FormBuilder,
     private service: ReceitaService,
@@ -112,13 +116,16 @@ export class ReceitaFormComponent implements OnInit {
     this.errors = [];    
     event.preventDefault();
 
-    this.object.situacao = "1";
+    if(this.object.id)
+      this.object.situacao = "2"; //Aberta
+    else
+      this.object.situacao = "1"; //Pendente medicamentos
 
     this.service
       .inserir(this.object, "receita")
       .subscribe((res: any) => {
-        if (this.form.value.id) 
-          this.message = "Alteração efetuada com sucesso!";
+        if (this.object.id) 
+          this.back();
         else
           this.message = "Receita " + res.numero + " criada com sucesso!";
 
@@ -137,7 +144,8 @@ export class ReceitaFormComponent implements OnInit {
     this.loading = true;
 
     this.service.findById(this.id, "receita").subscribe(result => {
-      this.object = result;        
+      this.object = result;  
+      this.listaMaterialLoteDispensadoConfirmar = this.object.itensReceita;
       this.object.dataEmissao = new Date(this.object.dataEmissao);
       this.service.list(`municipio/uf/${result.idUf}`).subscribe(municipios => {
         this.domains[0].idMunicipio = municipios;                              
@@ -158,6 +166,7 @@ export class ReceitaFormComponent implements OnInit {
 
   medicamentoSelecionado(material: any){
     this.itemReceita.idMaterial = material.id;
+    this.itemReceita.nomeMaterial = material.descricao;
     this.carregaLotePorMaterial(this.itemReceita.idMaterial);
   } 
 
@@ -167,8 +176,22 @@ export class ReceitaFormComponent implements OnInit {
     || Util.isEmpty(this.itemReceita.tempoTratamento);    
   }
 
-  confirmaItemReceita(){
+  confirmaItemReceita(){    
+    if(this.estoqueContemDivergencias())
+      return;
 
+    if (!this.object.itensReceita)
+      this.object.itensReceita = [];
+
+    this.listaMaterialLote.forEach(novoItemEstoque => {
+      if(novoItemEstoque.qtdDispensar > 0){
+        this.itemReceita.itensEstoque.push(novoItemEstoque);  
+        this.listaMaterialLoteDispensado.push(novoItemEstoque);
+      }        
+    });
+    this.object.itensReceita.push(this.itemReceita);
+    this.itemReceita = new ItemReceita();
+    this.listaMaterialLote = [];
   }
   
   carregaLotePorMaterial(idMaterial: number){
@@ -218,9 +241,35 @@ export class ReceitaFormComponent implements OnInit {
   {
     if(this.itemReceita.qtdPrescrita && this.itemReceita.tempoTratamento)
     {
-      this.itemReceita.qtdDispensar = ((this.itemReceita.qtdPrescrita/this.itemReceita.tempoTratamento)*30);
-      this.itemReceita.qtdDispensar = (this.itemReceita.qtdPrescrita<this.itemReceita.qtdDispensar) ? Math.round(this.itemReceita.qtdPrescrita) : this.itemReceita.qtdDispensar;
+      this.itemReceita.qtdDispMes = ((this.itemReceita.qtdPrescrita/this.itemReceita.tempoTratamento)*30);
+      this.itemReceita.qtdDispMes = (this.itemReceita.qtdPrescrita<this.itemReceita.qtdDispMes) ? Math.round(this.itemReceita.qtdPrescrita) : this.itemReceita.qtdDispMes;
     }
+  }
+
+  estoqueContemDivergencias()
+  {
+    this.errors = [];   
+    var erroQtd = false;
+    let somaDispensar: number = 0;
+    this.listaMaterialLote.forEach(item => {
+      if(item.qtdDispensar > 0 && item.qtdDispensar != "undefined"){
+        if(item.qtdDispensar > item.quantidade){
+          this.errors.push({
+            message: "Quantidade a dispensar por lote é maior que a quantidade existente no lote (" + item.lote + ")"
+          });
+          erroQtd = true;                
+        }
+        somaDispensar = somaDispensar + Number(item.qtdDispensar);
+      }
+    });
+
+    if(somaDispensar != this.itemReceita.qtdDispMes){
+      erroQtd = true;        
+      this.errors.push({
+        message: "A soma dos lotes é diferente da quantidade escolhida para dispensar!"
+      });
+    }
+    return erroQtd;
   }
 
   createGroup() {
@@ -241,12 +290,10 @@ export class ReceitaFormComponent implements OnInit {
       tempoTratamento: ['', ''],
       qtdDispAnterior: ['', ''],
       qtdDispensar: ['', ''],
+      qtdDispMes: ['', ''],
       observacoesGerais: ['', ''],
       situacao: [Validators.required],
-      motivoCancelamento: ['',''],      
-      tipoFicha: [Validators.required],
-      idClassificacaoRisco: [Validators.required],
-      motivoQueixa: ['','']
+      qtdDispensarLote: ['','']
     });
   }
 

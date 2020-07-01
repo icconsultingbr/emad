@@ -23,6 +23,38 @@ EstoqueDAO.prototype.deletaPorId = function (id,callback) {
     this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
 }
 
+EstoqueDAO.prototype.carregaQuantidadePorMaterialEstabelecimento = async function(obj){
+    let quantidade =  await this._connection.query(`select sum(quantidade) as quantidade from tb_estoque where idMaterial = ? and idEstabelecimento = ?`, [obj.idMaterial, obj.idEstabelecimento]);
+    return quantidade[0].quantidade ? quantidade[0].quantidade : 0;
+}
+
+EstoqueDAO.prototype.carregaEstoquePorMaterial = async function(obj){
+    let estoque =  await this._connection.query(`select e.id,
+                                                        e.idFabricanteMaterial ,
+                                                        e.idMaterial ,
+                                                        e.idEstabelecimento ,
+                                                        e.lote,
+                                                        e.validade,
+                                                        e.quantidade,
+                                                        e.bloqueado ,
+                                                        e.motivoBloqueio ,
+                                                        m.descricao nomeMaterial
+                                                from
+                                                        tb_estoque e 
+                                                        inner join tb_material m on e.idMaterial = m.id
+                                                where
+                                                        e.idMaterial = ?
+                                                        and e.idEstabelecimento = ?
+                                                        and e.lote = ?
+                                                        and e.idFabricanteMaterial = ?`, [obj.idMaterial, obj.idEstabelecimento, obj.lote, obj.idFabricanteMaterial]);
+    return estoque;
+}
+
+EstoqueDAO.prototype.atualizaQuantidadeEstoque = async function(qtdDispensar, idUsuario, id){
+    const estoqueAtualizado =  await this._connection.query(`UPDATE tb_estoque SET quantidade = ?, idUsuarioAlteracao = ?, dataAlteracao = NOW() WHERE id= ?`, [qtdDispensar, idUsuario, id]);
+    return [estoqueAtualizado];
+}
+
 EstoqueDAO.prototype.lista = function(addFilter, callback) {   
     let where = "";
 
