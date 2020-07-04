@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ReceitaService } from './receita.service';
 import { Receita } from '../../_core/_models/Receita';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
@@ -8,6 +8,7 @@ import { environment } from '../../../environments/environment';
 import { ItemReceita } from '../../_core/_models/ItemReceita';
 import { Estoque } from '../../_core/_models/Estoque';
 import { Material } from '../../_core/_models/Material';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'app-receita-form',
@@ -17,13 +18,14 @@ import { Material } from '../../_core/_models/Material';
 })
 
 export class ReceitaFormComponent implements OnInit {
-
+  @ViewChild('contentConfirmacao') contentConfirmacao: ElementRef;
+  
   object: Receita = new Receita();
   itemReceita: ItemReceita = new ItemReceita();  
   itemEstoque: Estoque = new Estoque();  
   method: string = "receitas";
   fields: any[] = [];
-  label: string = "Receita";
+  label: string = "";
   id: number = null;
   domains: any[] = [];  
   loading: Boolean = false;
@@ -36,12 +38,15 @@ export class ReceitaFormComponent implements OnInit {
   errors: any[] = [];  
   listaMaterialLote: any[] = [];
   listaMaterialLoteDispensado: any[] = [];
+  listaMaterialLoteDispensadoGravado: any[] = [];
   listaMaterialLoteDispensadoConfirmar: any[] = [];
-
+  modalRef: NgbModalRef = null;
+  
   constructor(
     private fb: FormBuilder,
     private service: ReceitaService,
     private route: ActivatedRoute,
+    private modalService: NgbModal,
     private router: Router) {
       this.fields = service.fields;
     }
@@ -90,6 +95,7 @@ export class ReceitaFormComponent implements OnInit {
                 }
                 else
                 {
+                  this.label = "Nova receita";
                   this.object.idUf = result.idUf;
                   this.object.textoCidade = result.textoCidade;
                   this.service.list(`municipio/uf/${result.idUf}`).subscribe(municipios => {
@@ -116,11 +122,6 @@ export class ReceitaFormComponent implements OnInit {
     this.errors = [];    
     event.preventDefault();
 
-    if(this.object.id)
-      this.object.situacao = "2"; //Aberta
-    else
-      this.object.situacao = "1"; //Pendente medicamentos
-
     this.service
       .inserir(this.object, "receita")
       .subscribe((res: any) => {
@@ -131,6 +132,7 @@ export class ReceitaFormComponent implements OnInit {
 
         this.object.id = res.id;
         this.object.numero = res.numero;                
+        this.object.situacao = res.situacao;
         this.warning = "";
       }, erro => {        
         this.errors = Util.customHTTPResponse(erro);
@@ -142,9 +144,10 @@ export class ReceitaFormComponent implements OnInit {
     this.errors = [];
     this.message = "";
     this.loading = true;
-
     this.service.findById(this.id, "receita").subscribe(result => {
       this.object = result;  
+      this.label = this.object.situacao == '1' ? 'Editar receita (Situação: Pendente medicamentos)' : 
+                   this.object.situacao == '2' ? 'Completar receita (Situação: Aberta)': 'Visualizar receita (Situação: Finalizada)';
       this.listaMaterialLoteDispensadoConfirmar = this.object.itensReceita;
       this.object.dataEmissao = new Date(this.object.dataEmissao);
       this.service.list(`municipio/uf/${result.idUf}`).subscribe(municipios => {
@@ -189,6 +192,15 @@ export class ReceitaFormComponent implements OnInit {
         this.listaMaterialLoteDispensado.push(novoItemEstoque);
       }        
     });
+
+    if(this.listaMaterialLoteDispensado.length == 0)
+    {
+      let novoItemEstoque: any = {};
+      novoItemEstoque.idMaterial = this.itemReceita.idMaterial
+      novoItemEstoque.nomeMaterial = this.itemReceita.nomeMaterial;
+      this.listaMaterialLoteDispensado.push(novoItemEstoque);
+    }
+
     this.object.itensReceita.push(this.itemReceita);
     this.itemReceita = new ItemReceita();
     this.listaMaterialLote = [];
@@ -197,9 +209,26 @@ export class ReceitaFormComponent implements OnInit {
   carregaLotePorMaterial(idMaterial: number){
     this.loading = true;
     var params = "?idMaterial=" + idMaterial + "&idEstabelecimento=" + JSON.parse(localStorage.getItem("est"))[0].id;;
-
     this.service.list(`estoque${params}`).subscribe(estoque => {
       this.listaMaterialLote = estoque;                  
+      this.loading = false;
+    }, erro => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(erro);
+    });
+  }
+
+  carregaEstoque(item: any){
+    this.loading = true;
+    this.listaMaterialLoteDispensadoGravado = [];
+    this.listaMaterialLoteDispensadoConfirmar.forEach(itemEstoque => {      
+      itemEstoque.expandir = (itemEstoque.id == item.id && itemEstoque.expandir == true) ? true : false;
+    });
+
+    item.expandir = !item.expandir;
+    var params = "?idReceita=" + item.idReceita + "&idItemReceita=" + item.id;
+    this.service.list(`receita/item-estoque${params}`).subscribe(estoque => {
+      this.listaMaterialLoteDispensadoGravado = estoque;                  
       this.loading = false;
     }, erro => {
       this.loading = false;
@@ -231,7 +260,6 @@ export class ReceitaFormComponent implements OnInit {
       });
     }
     else
-
     this.service.list(`municipio/uf/${id}`).subscribe(municipios => {
       this.domains[0].idMunicipio = municipios;                  
     });
@@ -251,6 +279,9 @@ export class ReceitaFormComponent implements OnInit {
     this.errors = [];   
     var erroQtd = false;
     let somaDispensar: number = 0;
+    let listaMaterialLoteExistente = [];
+    listaMaterialLoteExistente =  Object.assign([], this.listaMaterialLoteDispensado);
+
     this.listaMaterialLote.forEach(item => {
       if(item.qtdDispensar > 0 && item.qtdDispensar != "undefined"){
         if(item.qtdDispensar > item.quantidade){
@@ -260,16 +291,49 @@ export class ReceitaFormComponent implements OnInit {
           erroQtd = true;                
         }
         somaDispensar = somaDispensar + Number(item.qtdDispensar);
+
+        let medicamentoExistente = listaMaterialLoteExistente.filter(itemAdicionado => itemAdicionado.idMaterial == this.itemReceita.idMaterial 
+                                                                      && itemAdicionado.lote == item.lote && itemAdicionado.idFabricanteMaterial == item.idFabricanteMaterial);
+        if(medicamentoExistente.length > 0)
+        {
+          this.errors.push({
+            message: "O material "+ this.itemReceita.nomeMaterial +" já foi adicionado com o lote (" + item.lote + "). Para alterar a quantidade remova o item e insira novamente."
+          });
+          erroQtd = true;  
+        }
       }
     });
 
-    if(somaDispensar != this.itemReceita.qtdDispMes){
+    if(somaDispensar != this.itemReceita.qtdDispMes && (somaDispensar > 0 || this.itemReceita.qtdDispMes > 0)){
       erroQtd = true;        
       this.errors.push({
         message: "A soma dos lotes é diferente da quantidade escolhida para dispensar!"
       });
     }
     return erroQtd;
+  }
+
+  openConfirmacao(content: any) {
+    this.modalRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      size: "sm"
+    });
+  }
+
+  removeMedicamento(item) {        
+    this.listaMaterialLoteDispensado = this.listaMaterialLoteDispensado.filter(itemExistente => itemExistente.id != item.id);
+    let limpaItem: boolean = false;
+
+    this.object.itensReceita.forEach(itemReceita => {
+      itemReceita.itensEstoque = itemReceita.itensEstoque.filter(itemReceitaExistente => itemReceitaExistente.lote != item.lote);
+      if(itemReceita.itensEstoque.length == 0)
+        limpaItem = true;
+    });
+    
+    if(limpaItem)
+      this.object.itensReceita = this.object.itensReceita.filter(itemExistente => itemExistente.idMaterial != item.idMaterial);    
   }
 
   createGroup() {

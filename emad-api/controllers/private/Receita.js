@@ -43,7 +43,8 @@ module.exports = function (app) {
 
             receita.dataCriacao = new Date;
             receita.idUsuarioCriacao = usuario.id;
-
+            receita.situacao = 1;
+        
             receita.numero = await receitaRepository.obterProximoNumero(receita.ano, receita.idEstabelecimento);
             
             var response = await receitaRepository.salva(receita);
@@ -68,7 +69,7 @@ module.exports = function (app) {
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
-        let situacao = 3;//FINALIZADA
+        let situacao = 1;//PENDENTE MEDICAMENTOS
         let gravaMovimento = false;
         let movimentoGeral = {};
         let itemMovimentoGeral = {};
@@ -91,9 +92,15 @@ module.exports = function (app) {
 
         if (receita.idSubgrupoOrigem == "null") {
             errors = util.customError(errors, "header", "Origem é um campo obrigatório", "");
-            res.status(401).send(errors);
+            res.status(400).send(errors);
+            return;
         }
 
+        if (receita.itensReceita.length == 0) {
+            errors = util.customError(errors, "header", "Nenhum medicamento foi adicionado", "");
+            res.status(400).send(errors);
+            return;
+        }
         
         const connection = app.dao.connections.EatendConnection();
 
@@ -106,16 +113,18 @@ module.exports = function (app) {
         const pacienteLivroRepository = new app.dao.PacienteDAO(connection);
 
         try {
-            await connection.beginTransaction();
-            
-            //Verifica se existe número de controle duplicado
+            await connection.beginTransaction();           
+
+            if(receita.itensReceita.length > 0)
+                situacao = 3;//FINALIZADA            
 
             //Gravar itens da receita
-            for (const itemReceita of receita.itensReceita) {                
+            for (const itemReceita of receita.itensReceita) {  
+                itemReceita.qtdDispMes = itemReceita.qtdDispMes == "" ? 0 : itemReceita.qtdDispMes;
                 itemReceita.idReceita = receita.id;
                 itemReceita.dataCriacao = new Date;
                 itemReceita.dataUltDisp = itemReceita.qtdDispMes > 0 ? itemReceita.dataCriacao : null;
-                itemReceita.qtdDispAnterior = itemReceita.qtdDispMes;
+                itemReceita.qtdDispAnterior = itemReceita.qtdDispMes > 0 ? itemReceita.qtdDispMes : 0;
                 itemReceita.idUsuarioCriacao = usuario.id;
                 itemReceita.situacao = 2;//FINALIZADO
                 itemReceita.dataFimReceita = new Date;
@@ -278,6 +287,30 @@ module.exports = function (app) {
         });
     });
 
+    app.get('/receita/item-estoque', async function (req, res) {
+        let usuario = req.usuario;
+        let id = req.params.id;
+        let util = new app.util.Util();
+        let errors = [];
+        let addFilter = req.query;
+
+        const connection = app.dao.connections.EatendConnection();
+
+        const itemMovimentoGeralRepository = new app.dao.ItemMovimentoGeralDAO(connection);
+
+        try {            
+            var responseItemMovimentoGeral = await itemMovimentoGeralRepository.buscarPorItemReceita(addFilter.idReceita, addFilter.idItemReceita);
+            var itemEstoque = responseItemMovimentoGeral;
+
+            res.status(200).json(itemEstoque);
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            connection.close();
+        }
+    });
 
     app.get('/receita/:id', async function (req, res) {
         let usuario = req.usuario;
@@ -298,7 +331,7 @@ module.exports = function (app) {
 
             var itensReceita = await itemReceitaRepository.buscarPorReceita(id);            
             receita.itensReceita = itensReceita ? itensReceita : null;
-            
+
             res.status(200).json(receita);
         }
         catch (exception) {
