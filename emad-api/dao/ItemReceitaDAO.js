@@ -10,15 +10,22 @@ ItemReceitaDAO.prototype.salva = async function(itemReceita) {
                                                         qtdDispMes, dataUltDisp, numReceitaControlada, observacao, situacao, idUsuarioCriacao, dataCriacao)
                                                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
                                                           [itemReceita.idReceita, itemReceita.idMaterial, itemReceita.qtdPrescrita, itemReceita.tempoTratamento,
-                                                            itemReceita.qtdDispAnterior, itemReceita.qtdDispMes, new Date(itemReceita.dataUltDisp),
+                                                            itemReceita.qtdDispAnterior, itemReceita.qtdDispMes, itemReceita.dataUltDisp ? new Date(itemReceita.dataUltDisp) : null,
                                                             itemReceita.numReceitaControlada, itemReceita.observacao, 
                                                             itemReceita.situacao, itemReceita.idUsuarioCriacao, itemReceita.dataCriacao]);
 
     return [novoItemReceita];
 }
 
-ItemReceitaDAO.prototype.atualiza = function(obj, id, callback) {
-    this._connection.query(`UPDATE ${this._table} SET ? WHERE id= ?`, [obj, id], callback);
+ItemReceitaDAO.prototype.atualiza = async function(itemReceita) {
+    const itemReceitaAtualizado = await this._connection.query(`UPDATE tb_item_receita SET qtdDispAnterior=?, qtdDispMes=?, dataUltDisp=?, observacao=?, 
+                                                            idMotivoFimReceita=?, dataFimReceita=?, idUsuarioFimReceita=?, situacao=?, idUsuarioAlteracao=?, dataAlteracao=? 
+                                                            WHERE id=?`, 
+                                                          [ itemReceita.qtdDispAnterior, itemReceita.qtdDispMes, itemReceita.dataUltDisp ? new Date(itemReceita.dataUltDisp) : null,
+                                                            itemReceita.observacao, itemReceita.idMotivoFimReceita, itemReceita.dataFimReceita ? new Date(itemReceita.dataFimReceita) : null,
+                                                            itemReceita.idUsuarioFimReceita, itemReceita.situacao, itemReceita.idUsuarioAlteracao, itemReceita.dataAlteracao, itemReceita.id]);
+
+    return [itemReceitaAtualizado];
 }
 
 ItemReceitaDAO.prototype.buscaPorId = function (id, callback) {
@@ -82,7 +89,7 @@ ItemReceitaDAO.prototype.buscarPorReceita = async function(idReceita) {
                                 INNER JOIN tb_material material ON (a.idMaterial = material.id)
                                 LEFT JOIN tb_motivo_fim_receita motivoFimReceita ON (a.idMotivoFimReceita = motivoFimReceita.id)                            
                                 LEFT JOIN tb_usuario usuarioFimReceita ON (a.idUsuarioFimReceita = usuarioFimReceita.id)                            
-                                WHERE a.situacao > 1 and a.idReceita=?`,idReceita);
+                                WHERE a.situacao > 0 and a.idReceita=?`,idReceita);
 
     return itemReceita;
 }

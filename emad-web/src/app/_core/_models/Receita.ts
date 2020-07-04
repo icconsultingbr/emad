@@ -19,6 +19,8 @@ export class Receita {
     @Input() idMandadoJudicial: number;
     @Input() situacao: string;
     @Input() textoCidade: string;
-    @Input() itensReceita: ItemReceita[] = [];  
+    @Input() itensReceita: ItemReceita[] = [];      
+    @Input() itensReceitaFinalizado: ItemReceita[] = [];  
+    @Input() acao: string;
 }
 
