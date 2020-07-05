@@ -99,6 +99,7 @@ MaterialDAO.prototype.listaPorDescricaoProfissionalEspecialidade = function(addF
                             ,a.idUnidadeMaterial
                             ,unidadeMaterial.nome nomeUnidadeMaterial
                             ,espec.id autorizado
+                            ,a.dispensavel
                             FROM ${this._table} a
                             INNER JOIN tb_unidade_material unidadeMaterial ON (a.idUnidadeMaterial = unidadeMaterial.id)
                             INNER JOIN tb_profissional profissional ON (profissional.situacao = 1 and profissional.id=${idProfissional})

@@ -9,6 +9,7 @@ import { ItemReceita } from '../../_core/_models/ItemReceita';
 import { Estoque } from '../../_core/_models/Estoque';
 import { Material } from '../../_core/_models/Material';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+const { v4: uuidv4 } = require('uuid');
 
 @Component({
     selector: 'app-receita-form',
@@ -197,16 +198,20 @@ export class ReceitaFormComponent implements OnInit {
     if (!this.object.itensReceita)
       this.object.itensReceita = [];
 
+    let existeItemDispensa = false;
+
     this.listaMaterialLote.forEach(novoItemEstoque => {
       if(novoItemEstoque.qtdDispensar > 0){
         this.itemReceita.itensEstoque.push(novoItemEstoque);  
         this.listaMaterialLoteDispensado.push(novoItemEstoque);
+        existeItemDispensa = true;
       }        
     });
 
-    if(this.listaMaterialLoteDispensado.length == 0)
+    if(!existeItemDispensa)
     {
       let novoItemEstoque: any = {};
+      novoItemEstoque.id = uuidv4();
       novoItemEstoque.idMaterial = this.itemReceita.idMaterial
       novoItemEstoque.nomeMaterial = this.itemReceita.nomeMaterial;
       this.listaMaterialLoteDispensado.push(novoItemEstoque);
@@ -252,6 +257,11 @@ export class ReceitaFormComponent implements OnInit {
       this.itemReceita.idMaterial = item.idMaterial;      
       this.itemReceita.qtdDispMes = item.qtdDispensar;
       this.itemReceita.qtdDispensar = item.qtdDispensar;
+
+      this.listaMaterialAguardandoDispensacao.forEach(itemEstoque => {            
+        itemEstoque.expandir = (itemEstoque.id == item.id && itemEstoque.expandir == true) ? true : false;
+      });
+
       item.expandir = !item.expandir;
     }      
 
@@ -340,17 +350,28 @@ export class ReceitaFormComponent implements OnInit {
         }
         somaDispensar = somaDispensar + Number(item.qtdDispensar);
 
-        let medicamentoExistente = listaMaterialLoteExistente.filter(itemAdicionado => itemAdicionado.idMaterial == this.itemReceita.idMaterial 
+        let medicamentoExistenteComLote = listaMaterialLoteExistente.filter(itemAdicionado => itemAdicionado.idMaterial == this.itemReceita.idMaterial 
                                                                       && itemAdicionado.lote == item.lote && itemAdicionado.idFabricanteMaterial == item.idFabricanteMaterial);
-        if(medicamentoExistente.length > 0)
+
+        if(medicamentoExistenteComLote.length > 0)
         {
           this.errors.push({
             message: "O material "+ this.itemReceita.nomeMaterial +" já foi adicionado com o lote (" + item.lote + "). Para alterar a quantidade remova o item e insira novamente."
           });
           erroQtd = true;  
         }
-      }
+      }        
     });
+
+    let medicamentoExistenteSemLote = listaMaterialLoteExistente.filter(itemAdicionado => itemAdicionado.idMaterial == this.itemReceita.idMaterial && !itemAdicionado.lote && !itemAdicionado.idFabricanteMaterial); 
+
+    if(medicamentoExistenteSemLote.length > 0)
+    {
+      this.errors.push({
+        message: "O material "+ this.itemReceita.nomeMaterial +" já foi adicionado. Para alterar a quantidade remova o item e insira novamente."
+      });
+      erroQtd = true;        
+    }
 
     if(somaDispensar != this.itemReceita.qtdDispMes && (somaDispensar > 0 || this.itemReceita.qtdDispMes > 0)){
       erroQtd = true;        
