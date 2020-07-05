@@ -6,8 +6,8 @@ function AtendimentoMedicamentoDAO(connection) {
 AtendimentoMedicamentoDAO.prototype.buscaPorAtendimentoId = function (idAtendimento,callback) {
     this._connection.query(`SELECT 
         am.id, 
-        am.idMaterialDim,
-        am.descricaoMaterialDim, 
+        am.idMaterial,
+        material.descricao descricaoMaterial, 
         am.uso, 
         am.tipoVia,
         am.quantidade,
@@ -17,7 +17,8 @@ AtendimentoMedicamentoDAO.prototype.buscaPorAtendimentoId = function (idAtendime
         am.situacao, 
         am.idPaciente  
     
-    from ${this._table} am    
+    from ${this._table} am   
+    INNER JOIN tb_material material ON (material.id = am.idMaterial) 
     WHERE am.situacao = 1 AND am.idAtendimento = ?` ,idAtendimento,callback); 
 }
 

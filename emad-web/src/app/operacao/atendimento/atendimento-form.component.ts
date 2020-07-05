@@ -13,6 +13,7 @@ import { Encaminhamento } from '../../_core/_models/Encaminhamento';
 import { isObject } from 'util';
 import { AtendimentoMedicamento } from '../../_core/_models/AtendimentoMedicamento';
 import { MedicamentoDim } from '../../_core/_models/MedicamentoDim';
+import { Material } from '../../_core/_models/Material';
 
 @Component({
   selector: 'app-atendimento-form',
@@ -41,7 +42,7 @@ export class AtendimentoFormComponent implements OnInit {
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
   encaminhamento: Encaminhamento = new Encaminhamento();
   atendimentoMedicamento: AtendimentoMedicamento = new AtendimentoMedicamento();
-  medicamentoDim: MedicamentoDim = new MedicamentoDim();
+  medicamento: Material = new Material();
 
   pacienteSelecionado: any = null;
   medicamentoSelecionado: any = null;
@@ -57,7 +58,7 @@ export class AtendimentoFormComponent implements OnInit {
   allItemsHipotese: any[] = [];
   allItemsEncaminhamento: any[] = [];
   allItemsMedicamento: any[] = [];
-  allMedicamentosDim: any[] = [];
+  allMedicamentos: any[] = [];
   removeId: Number;
 
   id: Number;
@@ -163,19 +164,19 @@ export class AtendimentoFormComponent implements OnInit {
   buscaMedicamento() {
     this.loading = true;
     let params = "";
-    this.allMedicamentosDim = [];
+    this.allMedicamentos = [];
 
-    if (Util.isEmpty(this.medicamentoDim.descricao) || this.medicamentoDim.descricao.length<3)
+    if (Util.isEmpty(this.medicamento.descricao) || this.medicamento.descricao.length<3)
     {
       this.errors = [{message:"Informe a descrição do medicamento, ao menos 3 caracteres"}];
       this.loading = false;
       return;
     }
     
-    params = "?descricao=" + this.medicamentoDim.descricao;
+    params = "?descricao=" + this.medicamento.descricao + "&idGrupoMaterial=" + this.medicamento.idGrupoMaterial;
 
-    this.service.list('medicamento/dim' + params).subscribe(result => {
-      this.allMedicamentosDim = result;
+    this.service.list('material/especialidade-usuario' + params).subscribe(result => {
+      this.allMedicamentos = result;
       this.setPage(1);
       this.loading = false;
       this.errors = [];
@@ -183,6 +184,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.loading = false;
       this.errors = Util.customHTTPResponse(erro);
     });
+
   }
 
   open(content: any) {
@@ -236,9 +238,9 @@ export class AtendimentoFormComponent implements OnInit {
     this.atendimentoMedicamento = new AtendimentoMedicamento();
     this.atendimentoMedicamento.idPaciente = this.object.idPaciente;
     this.atendimentoMedicamento.idAtendimento = this.object.id;
-    this.medicamentoDim.descricao = "";
+    this.medicamento.descricao = "";
     this.medicamentoSelecionado = null;    
-    this.allMedicamentosDim = [];
+    this.allMedicamentos = [];
 
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
@@ -471,12 +473,14 @@ export class AtendimentoFormComponent implements OnInit {
     this.service.listDomains('hipotese-diagnostica').subscribe(hipoteses => {
       this.service.listDomains('especialidade').subscribe(especialidades => {            
         this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {            
-          this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {            
+          this.service.listDomains('grupo-material').subscribe(gruposMateriais => {  
+            this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {            
                 this.domains.push({
                   hipoteses: hipoteses,
                   especialidades: especialidades,
                   tipoFichas: tipoFichas,
-                  classificacaoRiscos:classificacaoRiscos
+                  classificacaoRiscos:classificacaoRiscos,
+                  idGrupoMaterial: gruposMateriais
               });
             if (!Util.isEmpty(this.id)) {
               this.encontraAtendimento();
@@ -485,6 +489,7 @@ export class AtendimentoFormComponent implements OnInit {
               this.loading = false;
             });
           });
+        });
       });
     });
   }
@@ -545,8 +550,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.errors = [];
     this.loading = true;
 
-    this.atendimentoMedicamento.idMaterialDim = this.medicamentoSelecionado.id_material;
-    this.atendimentoMedicamento.descricaoMaterialDim = this.medicamentoSelecionado.descricao;
+    this.atendimentoMedicamento.idMaterial = this.medicamentoSelecionado.id;    
 
     this.service.saveMedicamento(this.atendimentoMedicamento).subscribe(result => {
       this.message = "Medicamento inserido com sucesso!"

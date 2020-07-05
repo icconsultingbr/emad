@@ -11,8 +11,7 @@ module.exports = function (app) {
 
         req.assert("idAtendimento").notEmpty().withMessage("Atendimento é campo Obrigatório");
         req.assert("idPaciente").notEmpty().withMessage("Paciente é campo Obrigatório");
-        req.assert("idMaterialDim").notEmpty().withMessage("Medicamento é um campo Obrigatório");
-        req.assert("descricaoMaterialDim").notEmpty().withMessage("Descrição do medicamento é um campo Obrigatório");
+        req.assert("idMaterial").notEmpty().withMessage("Medicamento é um campo Obrigatório");        
         req.assert("uso").notEmpty().withMessage("Uso é um campo Obrigatório");
         req.assert("tipoVia").notEmpty().withMessage("Tipo de via é um campo Obrigatório");
         req.assert("quantidade").notEmpty().withMessage("Quantidade é um campo Obrigatório");
@@ -42,8 +41,7 @@ module.exports = function (app) {
 
         req.assert("idAtendimento").notEmpty().withMessage("Atendimento é campo Obrigatório");
         req.assert("idPaciente").notEmpty().withMessage("Paciente é campo Obrigatório");
-        req.assert("idMaterialDim").notEmpty().withMessage("Medicamento é um campo Obrigatório");
-        req.assert("descricaoMaterialDim").notEmpty().withMessage("Descrição do medicamento é um campo Obrigatório");
+        req.assert("idMaterial").notEmpty().withMessage("Medicamento é um campo Obrigatório");        
         req.assert("uso").notEmpty().withMessage("Uso é um campo Obrigatório");
         req.assert("tipoVia").notEmpty().withMessage("Tipo de via é um campo Obrigatório");
         req.assert("quantidade").notEmpty().withMessage("Quantidade é um campo Obrigatório");

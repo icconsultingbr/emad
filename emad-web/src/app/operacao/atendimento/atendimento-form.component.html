@@ -339,7 +339,7 @@
             </tbody>
             <tbody *ngIf="allItemsMedicamento.length">
                 <tr class="text-left" *ngFor="let item of allItemsMedicamento">
-                  <td class="text-secondary">{{item.descricaoMaterialDim}}</td>
+                  <td class="text-secondary">{{item.descricaoMaterial}}</td>
                   <td class="text-secondary">{{item.uso}}</td>
                   <td class="text-secondary">{{item.tipoVia}}</td>
                   <td class="text-secondary">{{item.quantidade}}</td>
@@ -794,10 +794,22 @@
 
     <div class="form-group row">
       <label class="col-xl-4 col-sm-12 col-form-label text-left">
+        Grupo do medicamento:
+      </label>
+      <div class="col-xl-8 col-sm-12">
+        <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="medicamento.idGrupoMaterial">
+          <option [value]="null">Selecione...</option>
+          <option *ngFor="let item of domains[0]?.idGrupoMaterial" [value]="item.id">{{item.nome}}</option>
+      </select>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-xl-4 col-sm-12 col-form-label text-left">
         Nome do medicamento:
       </label>
       <div class="col-xl-7 col-sm-12">
-        <input type="text" class="form-control has-error" [(ngModel)]="medicamentoDim.descricao">
+        <input type="text" class="form-control has-error" [(ngModel)]="medicamento.descricao">
       </div>
       <div class="col-xl-1 col-sm-12">
         <button [routerLink]="" class="btn btn-primary float-right" (click)="buscaMedicamento()">
@@ -824,22 +836,28 @@
               <th>Unidade</th>
             </tr>
           </thead>
-          <tbody *ngFor="let item of allMedicamentosDim let index=index; let odd='odd'; let even='even';">
+          <tbody *ngFor="let item of allMedicamentos let index=index; let odd='odd'; let even='even';">
             <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
               <td class="text-secondary">
-                <div class="custom-control custom-radio float-left">
-                  <input type="radio" (change)="selecionaMedicamento(item)" class="custom-control-input" id="{{ item.id_material }}"
+                <div class="custom-control custom-radio float-left" *ngIf="item.autorizado && item.dispensavel">
+                  <input type="radio" (change)="selecionaMedicamento(item)" class="custom-control-input" id="{{ item.id }}"
                     name="radio-item">
-                  <label class="custom-control-label" for="{{ item.id_material }}">&nbsp;</label>
+                  <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
                 </div>
+                <div class="float-left" *ngIf="!item.autorizado">                  
+                    <i class="fa fa-ban text-left" title="Material não autorizado para o profissional" style="color:red"></i>
+                </div>
+                <div class="float-left" *ngIf="!item.dispensavel">                  
+                  <i class="fa fa-ban text-left" title="Material não dispensável" style="color:red"></i>
+              </div>
               </td>           
-              <td class="text-secondary">{{item.codigo_material}}</td>              
-              <td class="text-secondary">{{item.descricao}}</td>              
-              <td class="text-secondary">{{item.unidade}}</td>              
+              <td class="text-secondary">{{item.codigo}}</td>              
+              <td class="text-secondary" title="{{item.descricaoCompleta}}">{{item.descricao}}</td>              
+              <td class="text-secondary">{{item.nomeUnidadeMaterial}}</td>   
             </tr>
           </tbody>
 
-          <tbody *ngIf="!allMedicamentosDim || allMedicamentosDim.length==0">
+          <tbody *ngIf="!allMedicamentos || allMedicamentos.length==0">
             <tr class="text-left">
               <td colspan="99" class="text-secondary">
                 <i>Não há resultados...</i>
@@ -853,9 +871,9 @@
       <div *ngIf="pager.pages && pager.pages.length" class="text text-secondary col-md-12 pr-0 mx-auto">
         <i>
           Exibindo
-          {{pager.currentPage === pager.totalPages?allMedicamentosDim.length:pager.currentPage*pagedItems.length}}
+          {{pager.currentPage === pager.totalPages?allMedicamentos.length:pager.currentPage*pagedItems.length}}
           de
-          {{allMedicamentosDim.length}}
+          {{allMedicamentos.length}}
           resultado(s).
         </i>
       </div>
