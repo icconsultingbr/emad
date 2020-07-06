@@ -349,14 +349,14 @@ export class AtendimentoFormComponent implements OnInit {
       .subscribe((res: any) => {
 
         this.object.id = res.id;
-        if(res.ano_receita)        
-          this.object.ano_receita = res.ano_receita;
+        //if(res.ano_receita)        
+          //this.object.ano_receita = res.ano_receita;
 
-        if(res.numero_receita)
-          this.object.numero_receita = res.numero_receita;
+        //if(res.numero_receita)
+          //this.object.numero_receita = res.numero_receita;
 
-        if(res.unidade_receita)
-          this.object.unidade_receita = res.unidade_receita;
+        //if(res.unidade_receita)
+         // this.object.unidade_receita = res.unidade_receita;
 
         if(res.dadosFicha)
           this.object.dadosFicha = res.dadosFicha;
@@ -364,9 +364,9 @@ export class AtendimentoFormComponent implements OnInit {
         if (this.form.value.id) {
           this.message = "Alteração efetuada com sucesso!";
 
-          if(!Util.isEmpty(this.object.ano_receita) && !Util.isEmpty(this.object.numero_receita) && !Util.isEmpty(this.object.unidade_receita))
-            this.abreReceitaMedica(this.object.ano_receita, this.object.numero_receita, this.object.unidade_receita);
-        } else {
+          //if(!Util.isEmpty(this.object.ano_receita) && !Util.isEmpty(this.object.numero_receita) && !Util.isEmpty(this.object.unidade_receita))
+            //this.abreReceitaMedica(this.object.ano_receita, this.object.numero_receita, this.object.unidade_receita);
+       // } else {
           this.abreFichaDigital(this.object.id, false);
         }
 

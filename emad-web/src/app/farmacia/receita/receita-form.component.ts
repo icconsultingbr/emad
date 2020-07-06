@@ -9,7 +9,8 @@ import { ItemReceita } from '../../_core/_models/ItemReceita';
 import { Estoque } from '../../_core/_models/Estoque';
 import { Material } from '../../_core/_models/Material';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-const { v4: uuidv4 } = require('uuid');
+import * as uuid from 'uuid';
+const myId = uuid.v4();
 
 @Component({
     selector: 'app-receita-form',
@@ -211,7 +212,7 @@ export class ReceitaFormComponent implements OnInit {
     if(!existeItemDispensa)
     {
       let novoItemEstoque: any = {};
-      novoItemEstoque.id = uuidv4();
+      novoItemEstoque.id = myId();
       novoItemEstoque.idMaterial = this.itemReceita.idMaterial
       novoItemEstoque.nomeMaterial = this.itemReceita.nomeMaterial;
       this.listaMaterialLoteDispensado.push(novoItemEstoque);

@@ -19,16 +19,10 @@ module.exports = function (app) {
         obj.dataCriacao = new Date;
         var errors = [];
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){
-            salvar(obj, res).then(function(response) {
-                obj.id = response.insertId;
-                res.status(201).send(obj);
-            });  
-
-        } else{
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        salvar(obj, res).then(function(response) {
+            obj.id = response.insertId;
+            res.status(201).send(obj);
+        }); 
     });
 
     app.put('/grupo', function(req,res){
@@ -50,16 +44,10 @@ module.exports = function (app) {
         obj.dataCriacao = new Date;
         var errors = [];
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){
-            atualizar(obj, res).then(function(response) {
-                obj.id = response.insertId;
-                res.status(201).send(obj);
-            });  
-
-        } else{
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        atualizar(obj, res).then(function(response) {
+            obj.id = response.insertId;
+            res.status(201).send(obj);
+        });
     });
    
     app.get('/grupo', function (req, res) {
@@ -67,16 +55,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            lista(res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        lista(res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
     });
 
 
@@ -86,16 +68,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
-            buscarPorId(id, res).then(function(response) {
-                res.status(200).json(response);
-                return;      
-            });
-        }
-        else{
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        buscarPorId(id, res).then(function(response) {
+            res.status(200).json(response);
+            return;      
+        });
     }); 
 
     app.delete('/grupo/:id', function(req,res){     
@@ -106,16 +82,10 @@ module.exports = function (app) {
         let grupo = {};
         grupo.id = id;
         
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){	
-            deletaPorId(id, res).then(function(response) {
-                res.status(200).json(grupo);
-                return;      
-            });
-
-        } else{
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        deletaPorId(id, res).then(function(response) {
+            res.status(200).json(grupo);
+            return;      
+        });
     });
 
     function lista(res) {

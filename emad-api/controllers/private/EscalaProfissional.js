@@ -8,15 +8,10 @@ module.exports = function (app) {
         let errors = [];
         let addFilter = req.query;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            lista(addFilter, res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        lista(addFilter, res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
     });
 
     app.get('/escala-profissional/:id', function (req, res) {
@@ -25,15 +20,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarPorId(id, res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        buscarPorId(id, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
     app.post('/escala-profissional', function (req, res) {
@@ -43,8 +33,7 @@ module.exports = function (app) {
         var errors = [];
         let idEstabelecimento = req.params.idEstabelecimento;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {            
-            req.assert("idProfissional").notEmpty().withMessage("Profissional é um campo obrigatório");
+        req.assert("idProfissional").notEmpty().withMessage("Profissional é um campo obrigatório");
             req.assert("anoMes").notEmpty().withMessage("Ano/Mês é um campo obrigatório");
             
             var errors = req.validationErrors();
@@ -60,11 +49,6 @@ module.exports = function (app) {
                 obj.id = response.insertId;
                 res.status(201).send(obj);
             });  
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
     });
 
     app.put('/escala-profissional', function (req, res) {
@@ -75,8 +59,7 @@ module.exports = function (app) {
         let id = obj.id;
         let idEstabelecimento = req.params.idEstabelecimento;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            req.assert("idProfissional").notEmpty().withMessage("Profissional é um campo obrigatório");
+        req.assert("idProfissional").notEmpty().withMessage("Profissional é um campo obrigatório");
             req.assert("anoMes").notEmpty().withMessage("Ano/Mês é um campo obrigatório");
 
             errors = req.validationErrors();
@@ -89,10 +72,6 @@ module.exports = function (app) {
                 id = id;
                 res.status(201).send(obj);
             });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
     });
 
     app.delete('/escala-profissional/:id', function (req, res) {
@@ -103,16 +82,10 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            deletaPorId(id, res).then(function (response) {
-                res.status(200).json(obj);
-                return;
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        deletaPorId(id, res).then(function (response) {
+            res.status(200).json(obj);
+            return;
+        });
     });
 
     app.get('/escala-profissional/profissional/:idProfissional/anomes/:anomes', function(req,res){        
@@ -124,17 +97,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
-            buscarEscalaPorProfissionalAnoMes(idProfissional, anomes, res).then(function(response) {
-                res.status(200).json(response);
-                return;      
-            });
-        }
-        else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        buscarEscalaPorProfissionalAnoMes(idProfissional, anomes, res).then(function(response) {
+            res.status(200).json(response);
+            return;      
+        });
     }); 
 
     app.post('/escala-profissional/view-escala', function (req, res) {

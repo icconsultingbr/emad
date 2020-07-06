@@ -7,18 +7,10 @@ module.exports = function (app) {
         let addFilter = req.query;
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            lista(addFilter, res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        }
-        else {
-            listaPorUsuario(usuario, addFilter, res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        }
+        lista(addFilter, res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
     });
 
     app.post('/atendimento/print-document', function (req, res) {
@@ -234,8 +226,7 @@ module.exports = function (app) {
             })
     });
 
-    app.put('/atendimento', function (req, res) {
-
+    app.put('/atendimento', async function (req, res) {
         let usuario = req.usuario;
         let obj = req.body;
         let util = new app.util.Util();
@@ -259,119 +250,115 @@ module.exports = function (app) {
             }
 
             let medicamentos = [];
-            let cabecalho = [];
             let responsePorId = [];
-            let numeroReceita = 0;
+            let receita = {};
 
-            buscaProfissionalPorUsuario(usuario.id).    then(function (responseProfissional) {
-                if (responseProfissional.length > 0){                    
-                    return buscarPorId(id, res);              
-                }
-                else {
-                    errors = util.customError(errors, "usuário", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos", "");                                       
-                    return Promise.reject(errors);                    
-                }
-            }).then(function (response) {
-                if (response){         
-                    responsePorId = response; 
-                    return atualizaPorId(obj, id, res); 
-                }
-                else {
-                    errors = util.customError(errors, "atendimento", "Atendimento não encontrado", "");                                       
-                    return Promise.reject(errors);                    
-                }
-            }).then(function (response2) {
-                if (obj){ 
-                    obj.unidade_receita = responsePorId.unidade_receita;
-                    obj.ano_receita = responsePorId.ano_receita;
-                    if(responsePorId.numero_receita)
-                        obj.numero_receita = responsePorId.numero_receita;
-                    
-                    return buscaCabecalhoReceitaDim(id, res);
-                }
-                else {
-                    errors = util.customError(errors, "atendimento", "Atendimento não encontrado", "");                                       
-                    return Promise.reject(errors);                    
-                }
-            }).then(function (responseCabecalho) {
-                if (responseCabecalho){ 
-                    cabecalho = responseCabecalho;
+            const connection = app.dao.connections.EatendConnection();
 
-                    if (!cabecalho.paciente) {
-                        errors = util.customError(errors, "body", "O paciente não está cadastro no E-CARE", null);
-                        return Promise.reject(errors); 
-                    } 
+            const receitaRepository = new app.dao.ReceitaDAO(connection);
+            const itemReceitaRepository = new app.dao.ItemReceitaDAO(connection);            
+            const profissionalRepository = new app.dao.ProfissionalDAO(connection);
+            const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
+            const atendimentoMedicamentoRepository = new app.dao.AtendimentoMedicamentoDAO(connection);
 
-                    if (!cabecalho.prescritor) {
-                        errors = util.customError(errors, "body", "O profissional não está cadastro no E-CARE", null);
-                        return Promise.reject(errors); 
-                    } 
-                    return buscaPorUfNomeDim(cabecalho.cidade, cabecalho.uf, res);
-                }
-                else {
-                    obj.id = id;   
-                    res.status(200).json(obj);
-                    return;                     
-                }
-            }).then(function (response4) {
-                if (!response4.id_cidade || response4.id_cidade == 0) {
-                    errors = util.customError(errors, "RECEITA MÉDICA", "Cidade " + cabecalho.cidade + " não encontrada no E-CARE", null);
-                    return Promise.reject(errors);   
-                } 
-                else{
-                    cabecalho.cidade = response4.id_cidade;                                         
-                    delete cabecalho.uf;
-                    return buscaMedicamentoParaReceitaDim(id, res);
-                }
-            }).then(function (responseMedicamentos) {
-                if (responseMedicamentos.length>0){ 
-                    medicamentos = responseMedicamentos;                     
-                    return buscaParametroSegurancaPorChave("'URL_RECEITA_MEDICA_ENVIO'", res);
-                }
-                else
-                {
-                    obj.id = id;   
-                    res.status(200).json(obj);
-                    return;  
-                }
-            }).then(function (responseUrl) {
-                if (responseUrl){   
-                    var dim = new app.services.DimMedicamentoService();                                                          
-                    return dim.enviaReceitaMedicaDim(cabecalho, medicamentos, responseUrl[0]);
-                }
-                else {
-                    errors = util.customError(errors, "RECEITA MÉDICA", "URL para envio da receita não foi encontrada", null);
-                    return Promise.reject(errors);                    
-                }
-            }).then(function (responseReceita) {
-                if (responseReceita.status != 200) {
-                    errors = util.customError(status, "RECEITA MÉDICA", "Erro ao enviar a receita médica", null);
-                    res.status(400).json(errors);
+            try {
+
+                await connection.beginTransaction();           
+    
+                var buscaProfissional = await profissionalRepository.buscaProfissionalPorUsuarioSync(usuario.id);               
+
+                if (!buscaProfissional) {
+                    errors = util.customError(errors, "header", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
                     return;
-                }                                        
-
-                var idReceita;
-
-                if(responseReceita.data.split("|") && responseReceita.data.includes("RIS-")){
-                    idReceita = responseReceita.data.split("|")[1].substr(0,responseReceita.data.split("|")[1].indexOf('*'));
-                    numeroReceita = responseReceita.data.substr(0,responseReceita.data.indexOf('|')).replace("RIS-","");                                                                             
-                    console.log("numeroReceita" + numeroReceita);
-
-                    return confirmaMedicamentoParaReceitaDim(id, idReceita, numeroReceita, res);
                 }
-                else{
-                    obj.id = id;   
-                    res.status(200).json(obj);
-                    return; 
-                } 
-            }).then(function (responseConfirmaMedicamento) {
-                obj.id = id;   
-                obj.numero_receita = numeroReceita;
-                res.status(200).json(obj);
-                return; 
-            }).catch(function(error) {
-                return res.status(400).json(error);
-            });  
+
+                var buscaAtendimento = await atendimentoRepository.buscaPorIdSync(id);
+
+                if (!buscaAtendimento) {
+                    errors = util.customError(errors, "header", "Atendimento não encontrado", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
+                }    
+                
+                obj.idReceita = buscaAtendimento.idReceita ? buscaAtendimento.idReceita : 0;
+
+                var receitaExistente = await receitaRepository.buscaPorId(obj.idReceita);
+
+                var buscaMedicamentoAtendimento = await atendimentoMedicamentoRepository.buscaMedicamentoReceitaSync(id);
+
+                receita.itensReceita = buscaMedicamentoAtendimento;
+
+                if(!buscaAtendimento.idReceita && receita.itensReceita.length > 0)
+                {
+                    receita.ano = new Date().getFullYear();
+                    receita.idPaciente = buscaAtendimento.idPaciente;
+                    receita.idProfissional = buscaProfissional.id;
+                    receita.idEstabelecimento = buscaAtendimento.idEstabelecimento;
+                    receita.idUf = buscaAtendimento.idUfEstabelecimento;
+                    receita.idMunicipio = buscaAtendimento.idMunicipioEstabelecimento;
+                    receita.idSubgrupoOrigem = 1;
+                    receita.dataEmissao = new Date();
+                    receita.dataCriacao = new Date;
+                    receita.idUsuarioCriacao = usuario.id;
+                    receita.situacao = 2;
+
+                    receita.numero = await receitaRepository.obterProximoNumero(receita.ano, receita.idEstabelecimento);            
+                    var response = await receitaRepository.salva(receita);
+                    receita.id = response[0].insertId;     
+        
+                    if (receita.id <= 0) {
+                        errors = util.customError(errors, "header", "Erro ao criar a receita", "");
+                        res.status(400).send(errors);
+                        await connection.rollback();
+                        return;
+                    } 
+
+                    obj.idReceita = receita.id;
+                    obj.numeroReceita = receita.numero;
+                }               
+                
+                if(receitaExistente.length == 0 || receitaExistente[0].situacao == '2'){
+                    //Gravar itens da receita
+                    for (const itemReceita of receita.itensReceita) {                      
+                        itemReceita.idReceita = obj.idReceita;
+                        itemReceita.dataCriacao = new Date;
+                        itemReceita.idUsuarioCriacao = usuario.id;                    
+                        itemReceita.situacao = itemReceita.situacao ? itemReceita.situacao : 1; //ABERTO                        
+                        itemReceita.qtdDispAnterior = itemReceita.qtdDispAnterior ? itemReceita.qtdDispAnterior : 0;
+                        itemReceita.qtdDispMes = itemReceita.qtdDispMes ? itemReceita.qtdDispMes : 0;
+                                
+                        if(itemReceita.id){                      
+                            delete itemReceita.dataCriacao;
+                            delete itemReceita.idUsuarioCriacao;
+                            itemReceita.dataAlteracao = new Date;
+                            itemReceita.idUsuarioAlteracao = usuario.id;
+                            var item = await itemReceitaRepository.atualiza(itemReceita);  
+                        }
+                        else{
+                            var responseItemReceita = await itemReceitaRepository.salva(itemReceita);    
+                            itemReceita.id = responseItemReceita[0].insertId; 
+                        }
+                    } 
+                }               
+
+                var atualizaAtendimento = await atendimentoRepository.atualizaPorIdSync(obj, id);
+
+                obj.id = id;                    
+                res.status(201).send(obj);
+    
+                await connection.commit();
+            }
+            catch (exception) {
+                console.log("Erro ao salvar o atendimento (" + id + "), exception: " +  exception);
+                res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+                await connection.rollback();
+            }
+            finally {
+                connection.close();
+            }
     });
 
     app.delete('/atendimento/:id', function (req, res) {

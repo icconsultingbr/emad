@@ -430,6 +430,12 @@ ProfissionalDAO.prototype.buscaProfissionalPorUsuario = function (idUsuario, cal
         WHERE p.idUsuario = ? AND p.situacao = 1`, idUsuario, callback);
 }
 
+ProfissionalDAO.prototype.buscaProfissionalPorUsuarioSync = async function (idUsuario) {    
+    let profissional =  await this._connection.query(`SELECT * FROM tb_profissional as p WHERE p.idUsuario = ? AND p.situacao = 1`, [idUsuario]);
+
+    return profissional[0];
+}
+
 module.exports = function(){
     return ProfissionalDAO;
 };
