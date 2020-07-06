@@ -99,9 +99,40 @@ MaterialDAO.prototype.listaPorDescricaoProfissionalEspecialidade = function(addF
                             ,a.idUnidadeMaterial
                             ,unidadeMaterial.nome nomeUnidadeMaterial
                             ,espec.id autorizado
+                            ,a.dispensavel
                             FROM ${this._table} a
                             INNER JOIN tb_unidade_material unidadeMaterial ON (a.idUnidadeMaterial = unidadeMaterial.id)
                             INNER JOIN tb_profissional profissional ON (profissional.situacao = 1 and profissional.id=${idProfissional})
+                            LEFT JOIN tb_especialidade_material espec ON (a.id = espec.idMaterial and espec.situacao = 1 and espec.idEspecialidade = profissional.idEspecialidade)                            
+                            WHERE a.situacao = 1 ${where} 
+                            ORDER BY a.descricao asc`, callback);
+}
+
+MaterialDAO.prototype.listaPorDescricaoUsuarioEspecialidade = function(addFilter, idUsuario, callback) {      
+    let where = "";
+
+    if(addFilter != null){   
+        if (addFilter.descricao  && addFilter.descricao != "undefined") {
+            where+=" AND UPPER(a.descricao) LIKE '%"+addFilter.descricao.toUpperCase()+"%'";
+        }
+
+        if (addFilter.idGrupoMaterial && addFilter.idGrupoMaterial != "undefined") {
+            where+=" AND a.idGrupoMaterial = " + addFilter.idGrupoMaterial + "";
+        }       
+    }
+
+    this._connection.query(`SELECT
+                             a.id
+                            ,a.codigo
+                            ,a.descricao
+                            ,a.descricaoCompleta
+                            ,a.idUnidadeMaterial
+                            ,unidadeMaterial.nome nomeUnidadeMaterial
+                            ,espec.id autorizado
+                            ,a.dispensavel
+                            FROM ${this._table} a
+                            INNER JOIN tb_unidade_material unidadeMaterial ON (a.idUnidadeMaterial = unidadeMaterial.id)                            
+                            INNER JOIN tb_profissional profissional ON (profissional.situacao = 1 and profissional.idUsuario=${idUsuario})
                             LEFT JOIN tb_especialidade_material espec ON (a.id = espec.idMaterial and espec.situacao = 1 and espec.idEspecialidade = profissional.idEspecialidade)                            
                             WHERE a.situacao = 1 ${where} 
                             ORDER BY a.descricao asc`, callback);

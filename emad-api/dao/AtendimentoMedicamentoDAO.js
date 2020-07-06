@@ -6,8 +6,8 @@ function AtendimentoMedicamentoDAO(connection) {
 AtendimentoMedicamentoDAO.prototype.buscaPorAtendimentoId = function (idAtendimento,callback) {
     this._connection.query(`SELECT 
         am.id, 
-        am.idMaterialDim,
-        am.descricaoMaterialDim, 
+        am.idMaterial,
+        material.descricao descricaoMaterial, 
         am.uso, 
         am.tipoVia,
         am.quantidade,
@@ -17,7 +17,8 @@ AtendimentoMedicamentoDAO.prototype.buscaPorAtendimentoId = function (idAtendime
         am.situacao, 
         am.idPaciente  
     
-    from ${this._table} am    
+    from ${this._table} am   
+    INNER JOIN tb_material material ON (material.id = am.idMaterial) 
     WHERE am.situacao = 1 AND am.idAtendimento = ?` ,idAtendimento,callback); 
 }
 
@@ -35,6 +36,26 @@ AtendimentoMedicamentoDAO.prototype.buscaMedicamentoParaReceitaDim = function (i
                                 am.posologia as obs      
                             from tb_atendimento_medicamento am    
                             WHERE am.situacao = 1 AND am.enviado = 0 AND am.idAtendimento = ?` ,idAtendimento,callback); 
+}
+
+AtendimentoMedicamentoDAO.prototype.buscaMedicamentoReceitaSync = async function (idAtendimento) {
+    let atendimentoMedicamento =  await this._connection.query(`SELECT 
+                        am.idMaterial,                                
+                        am.quantidade as qtdPrescrita,
+                        am.uso as tempoTratamento,
+                        itemReceita.qtdDispAnterior as qtdDispAnterior,
+                        itemReceita.qtdDispMes as qtdDispMes,
+                        0 as numReceitaControlada,
+                        0 as idAutorizador,
+                        am.posologia as observacao,
+                        itemReceita.id,
+                        itemReceita.situacao
+                    from tb_atendimento_medicamento am    
+                    INNER JOIN tb_atendimento atendimento on (atendimento.id = am.idAtendimento )                            
+                    LEFT JOIN tb_item_receita itemReceita on (itemReceita.idReceita = atendimento.idReceita and itemReceita.idMaterial =  am.idMaterial)
+                    WHERE am.situacao = 1 AND am.idAtendimento = ?` , idAtendimento); 
+
+    return atendimentoMedicamento;                            
 }
 
 AtendimentoMedicamentoDAO.prototype.confirmaMedicamentoParaReceitaDim = function (id, idReceita, numeroReceita, callback) {

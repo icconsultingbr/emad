@@ -98,6 +98,19 @@ module.exports = function (app) {
                 });
             }
         } 
+    });       
+
+    app.get('/material/especialidade-usuario', function (req, res) {
+        let usuario = req.usuario;
+        let util = new app.util.Util();
+        let errors = [];
+        let addFilter = req.query;        
+        let id = req.params.id;
+
+        listaPorDescricaoUsuarioEspecialidade(addFilter, usuario.id, res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
     });
 
     app.get('/material/especialidade/:id', function (req, res) {
@@ -111,7 +124,7 @@ module.exports = function (app) {
             res.status(200).json(resposne);
             return;
         });
-    });    
+    });  
 
     app.get('/material/:id', function(req,res){        
         let usuario = req.usuario;
@@ -207,7 +220,30 @@ module.exports = function (app) {
             }
         });
         return d.promise;
-    }   
+    }
+    
+    function listaPorDescricaoUsuarioEspecialidade(addFilter, idUsuario, res) {
+        let q = require('q');
+        let d = q.defer();
+        let util = new app.util.Util();
+        let connection = app.dao.ConnectionFactory();
+        let objDAO = new app.dao.MaterialDAO(connection);
+
+        let errors = [];
+
+        objDAO.listaPorDescricaoUsuarioEspecialidade(addFilter, idUsuario, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }     
  
     function buscarPorId(id,  res) {
         let q = require('q');

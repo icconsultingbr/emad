@@ -1,4 +1,4 @@
-<h4 class="mb-5 text-left">{{id!=null?'Editar '+label:'Nova '+label}}</h4>
+<h4 class="mb-5 text-left">{{label}}</h4>
 <app-loader [loading]="loading"></app-loader>
 <p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
 <div *ngIf="errors.length" class="alert alert-danger sticky-top"> 
@@ -13,7 +13,7 @@
   <app-pesquisa-paciente (pacienteSelecionadoEvent)="pacienteSelecionado($event)" [idPaciente]="object.idPaciente" [pacienteNome]="object.nomePaciente"></app-pesquisa-paciente>
 </div>
 
-<form [formGroup]="form" (submit)="sendForm($event)">
+<form [formGroup]="form" (submit)="sendForm($event,null)">
   <div class="card mb-4">  
     <div class="card mb-12">
       <div class="card-header text-left">
@@ -138,7 +138,7 @@
         <div class="row">
           <div class="col-12">
             <app-pesquisa-medicamento  (medicamentoSelecionadoEvent)="medicamentoSelecionado($event)" [idProfissional]="object.idProfissional" 
-                                       [idMaterial]="itemReceita.idMaterial" [nomeMaterial]="itemReceita.nomeMaterial"></app-pesquisa-medicamento>          
+                                       [idMaterial]="itemReceita.idMaterial"></app-pesquisa-medicamento>          
           </div>          
         </div>
         <div class="row">
@@ -238,7 +238,97 @@
     </div>    
   </div>
 
-  <div class="card mb-4" *ngIf="object.id && object.situacao=='1'">
+  <div class="card mb-4" *ngIf="object.id && object.situacao == '2'">
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Medicamentos aguardando dispensação
+      </div>
+      <div class="card-body text-left">        
+        <div class="row">
+          <div class="col-12 table-responsive">
+            <div class="form-group row">
+              <table class="table table-striped">
+                <thead>
+                    <tr>
+                      <th>Material</th>
+                      <th>Últ. dispensação</th>
+                      <th>Qtd. prescrita</th>
+                      <th>Tempo tratamento</th>                    
+                      <th>Qtd. dispensada anterior</th>                                        
+                      <th>Qtd. a dispensar</th>  
+                      <th></th>
+                    </tr>  
+                </thead>
+                <tbody *ngIf="listaMaterialAguardandoDispensacao.length">
+                  <ng-container *ngFor="let item of listaMaterialAguardandoDispensacao">
+                    <tr class="text-left" >
+                      <td class="text-secondary">{{item.nomeMaterial ? item.nomeMaterial : '' }}</td>
+                      <td class="text-secondary">{{item.dataUltDisp | date :'dd/MM/yyyy'}}</td>
+                      <td class="text-secondary">{{item.qtdPrescrita}}</td>                      
+                      <td class="text-secondary">{{item.tempoTratamento}}</td>
+                      <td class="text-secondary">{{item.qtdDispAnterior}}</td>
+                      <td class="text-secondary">
+                        <input type="text"  class="form-control has-error" width="10%" [(ngModel)]="item.qtdDispensar" formControlName="qtdDispensarAberto"/>
+                      </td>
+                      <td class="text-secondary text-right">
+                        <button type="button" class="btn btn-primary float-left mr-2" (click)="carregaLotePorMaterial(item.idMaterial, item)">
+                          <i class="fa fa-edit"></i>  Dispensar 
+                        </button>
+                      </td>          
+                    </tr>                    
+                    <tr class="text-left" >                      
+                      <td colspan="7"  *ngIf="item.expandir">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th>Lote</th>
+                              <th>Fabricante</th>
+                              <th>Validade</th>
+                              <th>Estoque</th>
+                              <th>Qtd. a dispensar</th>   
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr class="text-left">
+                              <td colspan="99" class="text-secondary"  *ngIf="!listaMaterialLote.length">
+                                <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para prescrever um medicamento!'}}</i>
+                              </td>
+                            </tr>
+                          </tbody>
+                          <tbody *ngIf="listaMaterialLote.length">
+                              <tr class="text-left" *ngFor="let item of listaMaterialLote">
+                                <td class="text-secondary">{{item.lote}}</td>
+                                <td class="text-secondary">{{item.nomeFabricanteMaterial}}</td>
+                                <td class="text-secondary">{{item.validade | date :'dd/MM/yyyy'}}</td>
+                                <td class="text-secondary">{{item.quantidade}}</td>
+                                <td class="text-secondary" class="text-center">
+                                  <input *ngIf="!item.vencido && !item.bloqueado" type="text"  class="form-control has-error" width="10%"
+                                    [(ngModel)]="item.qtdDispensar" formControlName="qtdDispensarLote"/>
+                                  <i *ngIf="item.vencido && item.bloqueado" class="fas fa-exclamation-circle" title="Lote Vencido e Bloqueado" style="color:red"></i>
+                                  <i *ngIf="item.vencido && !item.bloqueado" class="fas fa-exclamation-triangle" title="Lote Vencido"  style="color:red"></i>
+                                  <i *ngIf="!item.vencido && item.bloqueado" class="fas fa-exclamation" title="Lote Bloqueado"  style="color:red"></i>                        
+                                </td>  
+                              </tr>
+                            </tbody>
+                        </table>
+                        <div class="form-group text-right">
+                          <button class="btn btn-primary" type="button" (click)="confirmaItemReceitaEmAberto(item)">
+                            <i class="fa fa-save"></i>Adicionar
+                          </button>  
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-container>
+                  </tbody>
+              </table>
+            </div>            
+          </div>
+        </div>        
+      </div>
+    </div>    
+  </div>
+
+  <div class="card mb-4" *ngIf="object.id && (object.situacao == '1' || (object.situacao == '2' && listaMaterialLoteDispensado.length))">
     <div class="card mb-12">
       <div class="card-header text-left">
         Medicamentos dispensados
@@ -258,22 +348,17 @@
                     <th></th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr class="text-left">
-                    <td colspan="99" class="text-secondary"  *ngIf="!listaMaterialLoteDispensado.length">
-                      <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para prescrever um medicamento!'}}</i>
-                    </td>
-                  </tr>
-                </tbody>
                 <tbody *ngIf="listaMaterialLoteDispensado.length">
                     <tr class="text-left" *ngFor="let item of listaMaterialLoteDispensado">
                       <td class="text-secondary">{{item.nomeMaterial ? item.nomeMaterial : '' }}</td>
                       <td class="text-secondary">{{item.lote}}</td>
                       <td class="text-secondary">{{item.nomeFabricanteMaterial}}</td>                      
                       <td class="text-secondary">{{item.validade | date :'dd/MM/yyyy'}}</td>
-                      <td class="text-secondary">{{item.qtdDispensar}}</td>
+                      <td class="text-secondary">{{item.qtdDispensar}}</td>                      
                       <td class="text-secondary text-right">
-                        <a class="btn btn-link" [routerLink]="" *ngIf="object.situacao == 1">
+                        <i *ngIf="!item.lote" class="fas fa-circle" title="Sem estoque" style="color:#ff8100"></i>
+                        <i *ngIf="item.lote" class="fas fa-circle" title="Com estoque" style="color:green"></i>
+                        <a class="btn btn-link" *ngIf="object.situacao == '1'" (click)="removeMedicamento(item)">
                           <i class="fa fa-trash-alt"></i> Remover
                         </a>
                       </td>
@@ -285,9 +370,9 @@
         </div>
       </div>
     </div>    
-  </div>
+  </div>  
 
-  <div class="card mb-4" *ngIf="object.id && object.situacao != '1'">
+  <div class="card mb-4" *ngIf="object.id && (object.situacao == '3' || (object.situacao == '2' && listaMaterialLoteDispensadoFinalizado.length))">
     <div class="card mb-12">
       <div class="card-header text-left">
         Medicamentos dispensados
@@ -298,31 +383,58 @@
             <div class="form-group row">
               <table class="table table-striped">
                 <thead>
-                  <tr>
-                    <th>Material</th>
-                    <th>Últ. dispensação</th>
-                    <th>Qtd. prescrita</th>
-                    <th>Tempo tratamento</th>                    
-                    <th>Qtd. dispensada anterior</th>                                        
-                    <th>Qtd. a dispensar</th>  
-                  </tr>
+                    <tr>
+                      <th>Material</th>
+                      <th>Últ. dispensação</th>
+                      <th>Qtd. prescrita</th>
+                      <th>Tempo tratamento</th>                    
+                      <th>Qtd. dispensada anterior</th>                                        
+                      <th>Qtd. a dispensar</th>  
+                      <th></th>
+                    </tr>  
                 </thead>
-                <tbody>
-                  <tr class="text-left">
-                    <td colspan="99" class="text-secondary"  *ngIf="!listaMaterialLoteDispensadoConfirmar.length">
-                      <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para prescrever um medicamento!'}}</i>
-                    </td>
-                  </tr>
-                </tbody>
-                <tbody *ngIf="listaMaterialLoteDispensadoConfirmar.length">
-                    <tr class="text-left" *ngFor="let item of listaMaterialLoteDispensadoConfirmar">
+                <tbody *ngIf="listaMaterialLoteDispensadoFinalizado.length">
+                  <ng-container *ngFor="let item of listaMaterialLoteDispensadoFinalizado">
+                    <tr class="text-left" >
                       <td class="text-secondary">{{item.nomeMaterial ? item.nomeMaterial : '' }}</td>
                       <td class="text-secondary">{{item.dataUltDisp | date :'dd/MM/yyyy'}}</td>
                       <td class="text-secondary">{{item.qtdPrescrita}}</td>                      
                       <td class="text-secondary">{{item.tempoTratamento}}</td>
                       <td class="text-secondary">{{item.qtdDispAnterior}}</td>
                       <td class="text-secondary">0</td>
+                      <td class="text-secondary text-right">
+                        <button type="button" class="btn btn-primary float-left mr-2" (click)="carregaEstoque(item)">
+                          <i class="fa fa-eye"></i>  Visualizar lote
+                        </button>
+                      </td>          
+                    </tr>                    
+                    <tr class="text-left" >                      
+                      <td colspan="7"  *ngIf="item.expandir">
+                        <table class="table table-striped" *ngIf="item.expandir">
+                          <thead>
+                              <tr>
+                                <th>Lote</th>
+                                <th>Fabricante</th>
+                                <th>Validade</th>
+                                <th>Quantidade dispensada</th> 
+                                <th>Usuário responsável</th>
+                                <th>Data de execução</th>
+                              </tr>  
+                          </thead>
+                          <tbody>
+                            <tr class="text-left" *ngFor="let item of listaMaterialLoteDispensadoGravado">
+                              <td class="text-secondary">{{item.lote }}</td>                            
+                              <td class="text-secondary">{{item.nome}}</td>                      
+                              <td class="text-secondary">{{item.validade | date :'dd/MM/yyyy'}}</td>
+                              <td class="text-secondary">{{item.quantidade}}</td> 
+                              <td class="text-secondary">{{item.nomeUsuario}}</td>
+                              <td class="text-secondary">{{item.dataUltDis | date :'dd/MM/yyyy HH:mm'}}</td>                              
+                            </tr>        
+                          </tbody>
+                        </table>
+                      </td>
                     </tr>
+                  </ng-container>
                   </tbody>
               </table>
             </div>            
@@ -333,8 +445,16 @@
   </div>
 
   <div class="form-group text-right">
-    <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="object.idPaciente && object.situacao != '3'">
-      <i class="fa fa-save"></i> {{ !object.id ? 'Criar receita' : 'Salvar'}}
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="object.idPaciente && (!object.id || object.situacao == '1')">
+      <i class="fa fa-save"></i> {{ object.situacao == '1' ? 'Salvar' : 'Criar receita' }} 
+    </button>  
+    <button class="btn btn-primary" type="button" (click)="openConfirmacao(contentConfirmacaoCompletar)" 
+      [disabled]="form.invalid" *ngIf="object.idPaciente && object.situacao == '2'">
+      <i class="fa fa-save"></i> Completar receita
+    </button>  
+    <button class="btn btn-primary" type="button" (click)="openConfirmacao(contentConfirmacaoFinalizar)"  
+      [disabled]="form.invalid" *ngIf="object.idPaciente && object.situacao == '2'">
+      <i class="fa fa-save"></i> Finalizar receita
     </button>  
     <button (click)="back()" class="btn btn-default" type="button">
       <i class="fa fa-arrow-left"></i> Retornar
@@ -342,3 +462,34 @@
   </div>
 </form>
 
+<ng-template #contentConfirmacaoFinalizar>
+  <div class="modal-header">
+    <h4 class="modal-title">Mensagem</h4>
+    <button type="button" class="close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Tem certeza que deseja finalizar a receita ?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="sendForm($event, 'F')">Sim</button>
+    <button type="button" class="btn btn-danger"  (click)="close()">Não</button>    
+  </div>
+</ng-template>
+
+<ng-template #contentConfirmacaoCompletar>
+  <div class="modal-header">
+    <h4 class="modal-title">Mensagem</h4>
+    <button type="button" class="close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Tem certeza que deseja completar a receita ?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="sendForm($event, 'C')">Sim</button>
+    <button type="button" class="btn btn-danger"  (click)="close()">Não</button>    
+  </div>
+</ng-template>

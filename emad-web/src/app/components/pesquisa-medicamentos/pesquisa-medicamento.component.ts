@@ -19,9 +19,9 @@ import { Material } from '../../_core/_models/Material';
 
 export class PesquisaMedicamentoComponent implements OnInit, AfterViewInit {
   @Output() medicamentoSelecionadoEvent = new EventEmitter<any>();  
+  @Input() medicamentoClearEvent = new EventEmitter<any>();  
   @Input() idProfissional: number;  
   @Input() idMaterial: number;  
-  @Input() nomeMaterial: string;  
   object: Material = new Material();
   loading: Boolean = false;
   modalRef: NgbModalRef = null;
@@ -71,7 +71,6 @@ export class PesquisaMedicamentoComponent implements OnInit, AfterViewInit {
     if(this.id)
     { 
       this.object.id = this.idMaterial;
-      this.object.descricao = this.nomeMaterial;
     }
   }
 

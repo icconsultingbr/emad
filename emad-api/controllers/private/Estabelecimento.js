@@ -51,43 +51,35 @@ module.exports = function (app) {
         var util = new app.util.Util();
         var errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-
-            req.assert("cnes").notEmpty().withMessage("CNES é um campo obrigatório;");
-            req.assert("cnpj").notEmpty().withMessage("CNPJ é um campo obrigatório;");
-            req.assert("razaoSocial").notEmpty().withMessage("Razão social é um campo obrigatório;");
-            req.assert("nomeFantasia").notEmpty().withMessage("Nome fantasia é um campo obrigatório;");
-            req.assert("logradouro").notEmpty().withMessage("Endereço é um campo obrigatório;");
-            req.assert("numero").notEmpty().withMessage("Número é um campo obrigatório;");
-            req.assert("bairro").notEmpty().withMessage("Bairro é um campo obrigatório;");
-            req.assert("idUf").notEmpty().withMessage("Estado é um campo obrigatório;");
-            req.assert("idMunicipio").notEmpty().withMessage("Município é um campo obrigatório;");
-            req.assert("grauDependencia").notEmpty().withMessage("Grau de dependência é um campo obrigatório;");
-            req.assert("terceiros").notEmpty().withMessage("Terceiros é um campo obrigatório;");
-            req.assert("idTipoUnidade").notEmpty().withMessage("Tipo de unidade é um campo obrigatório;");
-            req.assert("esferaAdministradora").notEmpty().withMessage("Esfera administradora é um campo obrigatório;");
-            req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
+        req.assert("cnes").notEmpty().withMessage("CNES é um campo obrigatório;");
+        req.assert("cnpj").notEmpty().withMessage("CNPJ é um campo obrigatório;");
+        req.assert("razaoSocial").notEmpty().withMessage("Razão social é um campo obrigatório;");
+        req.assert("nomeFantasia").notEmpty().withMessage("Nome fantasia é um campo obrigatório;");
+        req.assert("logradouro").notEmpty().withMessage("Endereço é um campo obrigatório;");
+        req.assert("numero").notEmpty().withMessage("Número é um campo obrigatório;");
+        req.assert("bairro").notEmpty().withMessage("Bairro é um campo obrigatório;");
+        req.assert("idUf").notEmpty().withMessage("Estado é um campo obrigatório;");
+        req.assert("idMunicipio").notEmpty().withMessage("Município é um campo obrigatório;");
+        req.assert("grauDependencia").notEmpty().withMessage("Grau de dependência é um campo obrigatório;");
+        req.assert("terceiros").notEmpty().withMessage("Terceiros é um campo obrigatório;");
+        req.assert("idTipoUnidade").notEmpty().withMessage("Tipo de unidade é um campo obrigatório;");
+        req.assert("esferaAdministradora").notEmpty().withMessage("Esfera administradora é um campo obrigatório;");
+        req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
 
 
-            var errors = req.validationErrors();
+        var errors = req.validationErrors();
 
-            if (errors) {
-                res.status(400).send(errors);
-                return;
-            }
-
-            obj.dataCriacao = new Date;
-
-            salva(obj, res).then(function (response) {
-                obj.id = response.insertId;
-                res.status(201).send(obj);
-            });
-
+        if (errors) {
+            res.status(400).send(errors);
+            return;
         }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+
+        obj.dataCriacao = new Date;
+
+        salva(obj, res).then(function (response) {
+            obj.id = response.insertId;
+            res.status(201).send(obj);
+        });
     });
 
 
@@ -100,9 +92,7 @@ module.exports = function (app) {
         let id = obj.id;
         delete obj.id;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-
-            req.assert("cnes").notEmpty().withMessage("CNES é um campo obrigatório;");
+        req.assert("cnes").notEmpty().withMessage("CNES é um campo obrigatório;");
             req.assert("cnpj").notEmpty().withMessage("CNPJ é um campo obrigatório;");
             req.assert("razaoSocial").notEmpty().withMessage("Razão social é um campo obrigatório;");
             req.assert("nomeFantasia").notEmpty().withMessage("Nome fantasia é um campo obrigatório;");
@@ -137,10 +127,6 @@ module.exports = function (app) {
                     return;
                 }
             });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
     });
 
     app.delete('/estabelecimento/:id', function (req, res) {
@@ -151,16 +137,10 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            deletaPorId(id, res).then(function (response) {
-                res.status(200).json(obj);
-                return;
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        deletaPorId(id, res).then(function (response) {
+            res.status(200).json(obj);
+            return;
+        });
     });
 
 
@@ -170,12 +150,10 @@ module.exports = function (app) {
         let addFilter = req.query;
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            lista(addFilter, res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        }
+        lista(addFilter, res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
     });
 
     app.get('/estabelecimento/nivel-superior/:id', function (req, res) {
@@ -186,15 +164,10 @@ module.exports = function (app) {
         obj.id = id;
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            listaEstabelecimentosNivelSuperior(id, res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        listaEstabelecimentosNivelSuperior(id, res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
     });
 
     app.get('/estabelecimento/pacientes/:id/:raio/:idModalidade/:sexo/:idadeDe/:idadeAte', function (req, res) {
@@ -208,15 +181,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarPacientes(id, raio, idModalidade, sexo, idadeDe, idadeAte,  res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "paciente");
-            res.status(401).send(errors);
-        }
+        buscarPacientes(id, raio, idModalidade, sexo, idadeDe, idadeAte,  res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
 

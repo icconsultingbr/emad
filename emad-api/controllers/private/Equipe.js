@@ -5,15 +5,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            lista(res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        lista(res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
     });
 
     app.get('/equipe/:id', function (req, res) {
@@ -22,18 +17,13 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarPorId(id, res).then(function (response) {
-                buscarProfissionaisPorEquipe(id, res).then(function (response2) {
-                    response.profissionais = response2;
-                    res.status(200).json(response);
-                    return;
-                });
+        buscarPorId(id, res).then(function (response) {
+            buscarProfissionaisPorEquipe(id, res).then(function (response2) {
+                response.profissionais = response2;
+                res.status(200).json(response);
+                return;
             });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        });
     });
 
 
@@ -44,16 +34,12 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarPorEquipe(equipe, idEstabelecimento, res).then(function (response) {
-                console.log(response);
-                res.status(200).json(response);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        buscarPorEquipe(equipe, idEstabelecimento, res).then(function (response) {
+            console.log(response);
+            res.status(200).json(response);
+            return;
+        });
+            
     }); 
 
 
@@ -65,57 +51,50 @@ module.exports = function (app) {
         let profissionais = obj.profissionais;
         let arrProfissionais = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
+        if (obj.equipe == "EMAD") {
+            req.assert("equipe").notEmpty().withMessage("Equipe é um campo obrigatório;");
+            req.assert("tipo").notEmpty().withMessage("Tipo é um campo obrigatório;");
+            req.assert("situacao").notEmpty().withMessage("Situacao é um campo obrigatório;");
+            req.assert("idEstabelecimento").notEmpty().withMessage("Estabelecimento é um campo obrigatório;");
+        } else {
+            req.assert("equipe").notEmpty().withMessage("Equipe é um campo obrigatório;");
+            req.assert("idEquipeEmad").notEmpty().withMessage("Equipe EMAD é um campo obrigatório;");
+        }
 
-            if (obj.equipe == "EMAD") {
-                req.assert("equipe").notEmpty().withMessage("Equipe é um campo obrigatório;");
-                req.assert("tipo").notEmpty().withMessage("Tipo é um campo obrigatório;");
-                req.assert("situacao").notEmpty().withMessage("Situacao é um campo obrigatório;");
-                req.assert("idEstabelecimento").notEmpty().withMessage("Estabelecimento é um campo obrigatório;");
-            } else {
-                req.assert("equipe").notEmpty().withMessage("Equipe é um campo obrigatório;");
-                req.assert("idEquipeEmad").notEmpty().withMessage("Equipe EMAD é um campo obrigatório;");
-            }
+        var errors = req.validationErrors();
 
-            var errors = req.validationErrors();
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
 
-            if (errors) {
-                res.status(400).send(errors);
-                return;
-            }
+        obj.dataCriacao = new Date;
 
-            obj.dataCriacao = new Date;
+        delete obj.profissionais;
 
-            delete obj.profissionais;
+        salva(obj, res).then(function (response) {
+            obj.id = response.insertId;
 
-            salva(obj, res).then(function (response) {
-                obj.id = response.insertId;
+            deletaProfissionaisPorEquipe(obj.id, res).then(function (response3) {
 
-                deletaProfissionaisPorEquipe(obj.id, res).then(function (response3) {
+                
+                if (profissionais.length) {
+                    for (var i = 0; i < profissionais.length; i++) {
+                        arrProfissionais.push("(" + obj.id + ", " + profissionais[i].id + ")");
+                    }
 
-                    
-                    if (profissionais.length) {
-                        for (var i = 0; i < profissionais.length; i++) {
-                            arrProfissionais.push("(" + obj.id + ", " + profissionais[i].id + ")");
-                        }
-
-                        atualizaProfissionaisPorEquipe(arrProfissionais, res).then(function (response4) {
+                    atualizaProfissionaisPorEquipe(arrProfissionais, res).then(function (response4) {
 
 
-                            res.status(201).json(obj);
-                            return;
-                        });
-                    } else {
                         res.status(201).json(obj);
                         return;
-                    }
-                });
+                    });
+                } else {
+                    res.status(201).json(obj);
+                    return;
+                }
             });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        });
     });
 
     app.put('/equipe', function (req, res) {
@@ -127,60 +106,50 @@ module.exports = function (app) {
         let profissionais = obj.profissionais;
         let arrProfissionais = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            if (obj.equipe == "EMAD") {
-                req.assert("equipe").notEmpty().withMessage("Equipe é um campo obrigatório;");
-                req.assert("tipo").notEmpty().withMessage("Tipo é um campo obrigatório;");
-                req.assert("situacao").notEmpty().withMessage("Situacao é um campo obrigatório;");
-                req.assert("idEstabelecimento").notEmpty().withMessage("Estabelecimento é um campo obrigatório;");
-            } else {
-                req.assert("equipe").notEmpty().withMessage("Equipe é um campo obrigatório;");
-                req.assert("idEquipeEmap").notEmpty().withMessage("Equipe EMAP é um campo obrigatório;");
-            }
-            errors = req.validationErrors();
+        if (obj.equipe == "EMAD") {
+            req.assert("equipe").notEmpty().withMessage("Equipe é um campo obrigatório;");
+            req.assert("tipo").notEmpty().withMessage("Tipo é um campo obrigatório;");
+            req.assert("situacao").notEmpty().withMessage("Situacao é um campo obrigatório;");
+            req.assert("idEstabelecimento").notEmpty().withMessage("Estabelecimento é um campo obrigatório;");
+        } else {
+            req.assert("equipe").notEmpty().withMessage("Equipe é um campo obrigatório;");
+            req.assert("idEquipeEmap").notEmpty().withMessage("Equipe EMAP é um campo obrigatório;");
+        }
+        errors = req.validationErrors();
 
-            if (errors) {
-                res.status(400).send(errors);
-                return;
-            }
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
 
-            delete obj.profissionais;
+        delete obj.profissionais;
 
-            buscarPorId(id, res).then(function (response) {
-
-
-                if (typeof response != 'undefined') {
-                    atualizaPorId(obj, id, res).then(function (response2) {
-
-                        id = id;
-
-                        deletaProfissionaisPorEquipe(id, res).then(function (response3) {
-                            if (profissionais.length) {
-                                for (var i = 0; i < profissionais.length; i++) {
-                                    arrProfissionais.push("(" + id + ", " + profissionais[i].id + ")");
-                                }
-                                atualizaProfissionaisPorEquipe(arrProfissionais, res).then(function (response4) {
-                                    res.status(201).json(obj);
-                                    return;
-                                });
-                            } else {
+        buscarPorId(id, res).then(function (response) {
+            if (typeof response != 'undefined') {
+                atualizaPorId(obj, id, res).then(function (response2) {
+                    id = id;
+                    deletaProfissionaisPorEquipe(id, res).then(function (response3) {
+                        if (profissionais.length) {
+                            for (var i = 0; i < profissionais.length; i++) {
+                                arrProfissionais.push("(" + id + ", " + profissionais[i].id + ")");
+                            }
+                            atualizaProfissionaisPorEquipe(arrProfissionais, res).then(function (response4) {
                                 res.status(201).json(obj);
                                 return;
-                            }
-                        });
+                            });
+                        } else {
+                            res.status(201).json(obj);
+                            return;
+                        }
                     });
+                });
 
-                } else {
-                    errors = util.customError(errors, "body", "Equipe não encontrado!", obj.nome);
-                    res.status(404).send(errors);
-                    return;
-                }
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+            } else {
+                errors = util.customError(errors, "body", "Equipe não encontrado!", obj.nome);
+                res.status(404).send(errors);
+                return;
+            }
+        });
     });
 
     app.delete('/equipe/:id', function (req, res) {
@@ -191,16 +160,10 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            deletaPorId(id, res).then(function (response) {
-                res.status(200).json(obj);
-                return;
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        deletaPorId(id, res).then(function (response) {
+            res.status(200).json(obj);
+            return;
+        });
     });
 
     function listaPorEstabelecimento(estabelecimento, addFilter, res) {

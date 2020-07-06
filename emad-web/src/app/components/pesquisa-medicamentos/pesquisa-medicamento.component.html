@@ -81,7 +81,7 @@
           <tbody *ngFor="let item of listaMedicamentos let index=index; let odd='odd'; let even='even';">
             <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
               <td class="text-secondary">
-                <div class="custom-control custom-radio float-left" *ngIf="item.autorizado">
+                <div class="custom-control custom-radio float-left" *ngIf="item.autorizado && item.dispensavel">
                   <input type="radio" (change)="selecionaMedicamento(item)" class="custom-control-input" id="{{ item.id }}"
                     name="radio-item">
                   <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
@@ -89,6 +89,9 @@
                 <div class="float-left" *ngIf="!item.autorizado">                  
                     <i class="fa fa-ban text-left" title="Material não autorizado para o profissional" style="color:red"></i>
                 </div>
+                <div class="float-left" *ngIf="!item.dispensavel">                  
+                  <i class="fa fa-ban text-left" title="Material não dispensável" style="color:red"></i>
+              </div>
               </td>           
               <td class="text-secondary">{{item.codigo}}</td>              
               <td class="text-secondary" title="{{item.descricaoCompleta}}">{{item.descricao}}</td>              

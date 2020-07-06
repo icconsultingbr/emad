@@ -312,6 +312,27 @@ AtendimentoDAO.prototype.carregaAtendimentoSituacaoPorPeriodo = function (period
     }
 }
 
+AtendimentoDAO.prototype.buscaProfissionalPorUsuarioSync = async function (idUsuario) {    
+    let profissional =  await this._connection.query(`SELECT * FROM tb_profissional as p WHERE p.idUsuario = ? AND p.situacao = 1`, [idUsuario]);
+
+    return profissional[0];
+}
+
+AtendimentoDAO.prototype.buscaPorIdSync = async function (id) {
+    let atendimento =  await this._connection.query(`select p.nome, e.idMunicipio as idMunicipioEstabelecimento, e.idUf as idUfEstabelecimento , a.* 
+    from ${this._table} a 
+    INNER JOIN tb_paciente p ON(a.idPaciente = p.id) 
+    INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
+    WHERE a.id = ?`,[id]); 
+    return atendimento[0];
+}
+
+AtendimentoDAO.prototype.atualizaPorIdSync = async function(objeto, id) {
+    let atendimento =  await this._connection.query("UPDATE "+this._table+" SET ?  where id= ?", [objeto, id]);
+
+    return atendimento[0];
+}
+
 module.exports = function(){
     return AtendimentoDAO;
 };
