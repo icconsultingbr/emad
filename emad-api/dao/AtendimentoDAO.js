@@ -3,6 +3,94 @@ function AtendimentoDAO(connection) {
     this._table = "tb_atendimento";
 }
 
+AtendimentoDAO.prototype.listarAsync = async function(addFilter) { 
+    let where = "";
+    let offset = "";
+
+    if(addFilter != null){       
+
+        if(addFilter.cartaoSus){
+            where+=" AND p.cartaoSus LIKE '%"+addFilter.cartaoSus+"%'";
+        }
+
+        if(addFilter.cpf){
+            where+=" AND p.cpf = '"+addFilter.cpf+"'";
+        }
+
+        if (addFilter.nomePaciente) {
+            where+=" AND p.nome LIKE '%"+addFilter.nomePaciente+"%'";
+        }
+
+        if (addFilter.dataCriacao) {
+           
+            where+=" AND a.dataCriacao >= '"+addFilter.dataCriacao+" 00:00:00' AND a.dataCriacao <= '"+addFilter.dataCriacao+" 23:59:59'";
+        }
+
+        if (addFilter.idEstabelecimento) {
+            where+=" AND a.idEstabelecimento  = "+addFilter.idEstabelecimento;
+        }
+
+        if (addFilter.situacao) {
+            where+=" AND a.situacao  = '"+addFilter.situacao+"'";
+        }
+
+        if(addFilter.idSap){
+            where+=" AND p.idSap like '%"+addFilter.idSap+"%'";
+        }
+
+        if(addFilter.idPaciente){
+            where+=" AND p.id = "+addFilter.idPaciente + " ";
+        }
+
+        if(addFilter.limit && addFilter.offset){
+            offset = `LIMIT ${addFilter.limit} OFFSET ${addFilter.limit * addFilter.offset}`;
+        }
+    }
+
+    const join = ` FROM ${this._table} a 
+    INNER JOIN tb_paciente p ON(a.idPaciente = p.id)  
+    INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
+    INNER JOIN tb_usuario u ON(a.idUsuario = u.id) 
+    INNER JOIN tb_profissional pro on pro.idUsuario = u.id
+    INNER JOIN tb_classificacao_risco cla on cla.id = a.idClassificacaoRisco
+    INNER JOIN tb_cor_classificacao_risco cor on cor.id = cla.idCorClassificacaoRisco
+    INNER JOIN tb_tipo_ficha ficha on ficha.id = a.tipoFicha
+    WHERE 1=1 ${where} `;
+
+    const count = await this._connection.query(`SELECT COUNT(1) as total ${join}`);
+
+    const result = await this._connection.query(`SELECT 
+                                                a.id, 
+                                                a.idPaciente, 
+                                                p.cartaoSus,
+                                                p.cpf, 
+                                                p.nome as nomePaciente, 
+                                                a.dataCriacao,
+                                                a.dataFinalizacao, 
+                                                a.idEstabelecimento, 
+                                                e.nomeFantasia, 
+                                                a.idUsuario, 
+                                                pro.nome, 
+                                                a.situacao,
+                                                p.idSap,
+                                                a.tipoFicha,
+                                                a.idClassificacaoRisco,
+                                                cor.cor corIconeGrid,
+                                                cla.nome tooltipIconeGrid,
+                                                p.idPacienteCorrespondenteDim,
+                                                YEAR(a.dataCriacao) as ano_receita,
+                                                a.numeroReceita as numero_receita,
+                                                e.idUnidadeRegistroReceitaDim as unidade_receita,
+                                                pro.id as idProfissional,
+                                                ficha.nome tipoFichaNome
+                                                ${join} 
+                                            ORDER BY a.id DESC ${offset}`);
+    return {
+        total: count[0].total,
+        items: result
+    }
+}
+
 AtendimentoDAO.prototype.lista = function(addFilter, callback) { 
     let where = "";
 
