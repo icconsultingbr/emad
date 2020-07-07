@@ -6,15 +6,10 @@ module.exports = function (app) {
         let addFilter = req.query;
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            lista(addFilter, res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        lista(addFilter, res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
     });
 
     app.get('/profissional/equipe/:id', function (req, res) {
@@ -24,42 +19,23 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-                buscarPorEquipe(id, res).then(function (response) {
-                    res.status(200).json(response);
-                    return;
-                });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        buscarPorEquipe(id, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
-
     app.get('/profissional/estabelecimento/:id', function (req, res) {
-
         let usuario = req.usuario;
         let id = req.params.id;
         let util = new app.util.Util();
         let errors = [];
 
-
-
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-
-            buscarPorEstabelecimento(id, res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        buscarPorEstabelecimento(id, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
-
-
-
 
     app.get('/profissional/:id', function (req, res) {
         let usuario = req.usuario;
@@ -67,23 +43,16 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarPorId(id, res).then(function (response) { 
-                buscarEstabelecimentosPorUsuario(response.idUsuario, res).then(function (response2) {
-                    response.estabelecimentos = response2;
-                    res.status(200).json(response);
-                    return;
-                });
+        buscarPorId(id, res).then(function (response) { 
+            buscarEstabelecimentosPorUsuario(response.idUsuario, res).then(function (response2) {
+                response.estabelecimentos = response2;
+                res.status(200).json(response);
+                return;
             });
-        } 
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
-
+        });
     });
 
-    app.post('/profissional', function (req, res) {
+    app.post('/profissional', async function (req, res) {
         var obj = req.body;
         var usuario = req.usuario;        
         var util = new app.util.Util();
@@ -93,140 +62,139 @@ module.exports = function (app) {
         let dadosUsuario = {};
         let estabelecimentos = obj.estabelecimentos;
         
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-           
-            dadosUsuario.cpf = obj.cpf.replace(/[.-]/g, '');
-            if(obj.foneCelular)
-                dadosUsuario.celular = obj.foneCelular.replace(/[() -]/g, '');
+        dadosUsuario.cpf = obj.cpf.replace(/[.-]/g, '');
+        if(obj.foneCelular)
+            dadosUsuario.celular = obj.foneCelular.replace(/[() -]/g, '');
 
-            req.assert("cpf").notEmpty().withMessage("CPF é um campo obrigatório;");
-            req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");            
-            req.assert("dataNascimento").notEmpty().withMessage("Data de Nascimento é um campo obrigatório;");
-            req.assert("sexo").notEmpty().withMessage("Sexo é um campo obrigatório;");
-            req.assert("profissionalSus").notEmpty().withMessage("Profissional SUS é um campo obrigatório;");                                    
-            req.assert("idEspecialidade").notEmpty().withMessage("Especialidade é um campo obrigatório;");
-            req.assert("email").notEmpty().withMessage("Email é um campo obrigatório;");            
-            req.assert("idTipoUsuario").notEmpty().withMessage("Grupo de usuário é um campo obrigatório");
-            req.assert("senha").notEmpty().withMessage("A senha é um campo obrigatório;").matches(/^(?=.*[a-z])(?=.*\d)[A-Za-z\d$@$!%*?&]{8,}/).withMessage("A senha deve conter pelo menos 8 caracteres, letras e números;");
-            req.assert("confirmaSenha").notEmpty().withMessage("A confirmação da senha é um campo obrigatório;").equals(obj.senha).withMessage("A senha e confirmação devem ser idênticas;");
-            req.assert("estabelecimentos").notEmpty().withMessage("Selecione o(s) estabelecimento(s) vinculado(s) ao usuário");
-            req.assert("idMunicipio").notEmpty().withMessage("Munícipio é um campo obrigatório;");
-            req.assert("idUf").notEmpty().withMessage("UF é um campo obrigatório;");
+        req.assert("cpf").notEmpty().withMessage("CPF é um campo obrigatório;");
+        req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");            
+        req.assert("dataNascimento").notEmpty().withMessage("Data de Nascimento é um campo obrigatório;");
+        req.assert("sexo").notEmpty().withMessage("Sexo é um campo obrigatório;");
+        req.assert("profissionalSus").notEmpty().withMessage("Profissional SUS é um campo obrigatório;");                                    
+        req.assert("idEspecialidade").notEmpty().withMessage("Especialidade é um campo obrigatório;");
+        req.assert("email").notEmpty().withMessage("Email é um campo obrigatório;");            
+        req.assert("idTipoUsuario").notEmpty().withMessage("Grupo de usuário é um campo obrigatório");
+        req.assert("senha").notEmpty().withMessage("A senha é um campo obrigatório;").matches(/^(?=.*[a-z])(?=.*\d)[A-Za-z\d$@$!%*?&]{8,}/).withMessage("A senha deve conter pelo menos 8 caracteres, letras e números;");
+        req.assert("confirmaSenha").notEmpty().withMessage("A confirmação da senha é um campo obrigatório;").equals(obj.senha).withMessage("A senha e confirmação devem ser idênticas;");
+        req.assert("estabelecimentos").notEmpty().withMessage("Selecione o(s) estabelecimento(s) vinculado(s) ao usuário");
+        req.assert("idMunicipio").notEmpty().withMessage("Munícipio é um campo obrigatório;");
+        req.assert("idUf").notEmpty().withMessage("UF é um campo obrigatório;");
+        
+        var errors = req.validationErrors();
+
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
+
+        obj.dataCriacao = new Date;
+        if (obj.dataEmissao != null) {
+            obj.dataEmissao = util.dateToISO(obj.dataEmissao);
+        }
+        obj.dataNascimento = util.dateToISO(obj.dataNascimento);
+
+        delete obj.idEstabelecimento;
+
+        //DADOS PARA CRIAÇÃO DO USUÁRIO
+        dadosUsuario.situacao = 1;
+        dadosUsuario.dataCriacao = new Date;                        
+        dadosUsuario.dataNascimento = obj.dataNascimento;  
+        dadosUsuario.email = obj.email;            
+        dadosUsuario.idTipoUsuario = obj.idTipoUsuario;
+        dadosUsuario.nome = obj.nome;
+        dadosUsuario.nomeMae = obj.nomeMae;            
+        dadosUsuario.sexo = obj.sexo;
+
+        let hash = util.createHashEmail(obj.email);
+        dadosUsuario.hash = hash;
+
+        let senha = util.hashPassword(obj.senha);
+        dadosUsuario.senha = senha;
+        dadosUsuario.tentativasSenha = 0;
+        dadosUsuario.foto = "";
+
+        delete obj.senha;
+        delete obj.confirmaSenha;
+        delete obj.estabelecimentos;
+        delete obj.idTipoUsuario;      
+        
+            const connection = app.dao.connections.EatendConnection();
+
+            const usuarioRepository = new app.dao.UsuarioDAO(connection);
+            const profissionalRepository = new app.dao.ProfissionalDAO(connection);
+            const estabelecimentoUsuarioRepository = new app.dao.EstabelecimentoUsuarioDAO(connection);
             
-            var errors = req.validationErrors();
+            try {
 
-            if (errors) {
-                res.status(400).send(errors);
-                return;
-            }
+                await connection.beginTransaction();           
+    
+                var buscaEmailProfissional = await usuarioRepository.buscaPorEmailSync(dadosUsuario);               
 
-            obj.dataCriacao = new Date;
-            if (obj.dataEmissao != null) {
-                obj.dataEmissao = util.dateToISO(obj.dataEmissao);
-            }
-            obj.dataNascimento = util.dateToISO(obj.dataNascimento);
+                if (buscaEmailProfissional.length > 0) {
+                    errors = util.customError(errors, "header", "Já existe um usuário cadastrado com este e-mail!", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
+                }
 
-            delete obj.idEstabelecimento;
+                var buscaCpfProfissional = await usuarioRepository.buscaPorCPFSync(dadosUsuario);               
 
-            //DADOS PARA CRIAÇÃO DO USUÁRIO
-            dadosUsuario.situacao = 1;
-            dadosUsuario.dataCriacao = new Date;                        
-            dadosUsuario.dataNascimento = obj.dataNascimento;  
-            dadosUsuario.email = obj.email;            
-            dadosUsuario.idTipoUsuario = obj.idTipoUsuario;
-            dadosUsuario.nome = obj.nome;
-            dadosUsuario.nomeMae = obj.nomeMae;            
-            dadosUsuario.sexo = obj.sexo;
+                if (buscaCpfProfissional.length > 0) {
+                    errors = util.customError(errors, "header", "Já existe um usuário cadastrado com este CPF!", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
+                }
+                
+                var usuarioResult = {};                
+                
+                if (typeof (dadosUsuario.id) != 'undefined' && dadosUsuario.id != null) {                    
+                    let idUsuario = dadosUsuario.id;
+                    delete dadosUsuario.id;  
 
-            let hash = util.createHashEmail(obj.email);
-            dadosUsuario.hash = hash;
+                    usuarioResult = await usuarioRepository.atualizaSync(dadosUsuario); 
+                    dadosUsuario.id = idUsuario;
+                }
+                else {        
+                    usuarioResult = await usuarioRepository.salvaSync(dadosUsuario);                                         
+                    obj.idUsuario = usuarioResult.insertId;
+                    dadosUsuario.id = obj.idUsuario;
+                }
 
-            let senha = util.hashPassword(obj.senha);
-            dadosUsuario.senha = senha;
-            dadosUsuario.tentativasSenha = 0;
-            dadosUsuario.foto = "";
+                var salvaProfissional = await profissionalRepository.salvaSync(obj);          
 
-            delete obj.senha;
-            delete obj.confirmaSenha;
-            delete obj.estabelecimentos;
-            delete obj.idTipoUsuario;            
+                obj.id = salvaProfissional.insertId;
 
-            buscaPorEmail(dadosUsuario).then(function (responseEmail) {
-                if (responseEmail.length > 0) {
-                    errors = util.customError(errors, "email", "Já existe um usuário cadastrado com este e-mail!", dadosUsuario.email);                    
-                    return Promise.reject(errors);   
+                var deleteResult  = await estabelecimentoUsuarioRepository.deletaEstabelecimentosPorUsuarioSync(dadosUsuario.id);
+
+                for (const item of estabelecimentos) {
+                    arrEstabelecimentos.push("(" + dadosUsuario.id + ", " + item.id + ")");   
                 }
-                else {
-                    return buscaPorCPF(dadosUsuario);
-                }
-            }).then(function (responseCPF) {
-                if (responseCPF.length > 0) {
-                    errors = util.customError(errors, "cpf", "Já existe um usuário cadastrado com este CPF!", dadosUsuario.cpf);                    
-                    return Promise.reject(errors);   
-                }
-                else {
-                    return gravaUsuario(dadosUsuario, res);
-                }
-            }).then(function (cad) {
-                if (cad) {
-                    dadosUsuario.id = cad.insertId;
-                    obj.idUsuario = cad.insertId;
-                    return salva(obj, res);
-                }
-                else {
-                    errors = util.customError(errors, "USUÁRIO", "Erro na criação do usuário!", null);                    
-                    return Promise.reject(errors);  
-                }
-            }).then(function (profissional) {
-                if (profissional)
-                    return deletaEstabelecimentosPorUsuario(dadosUsuario.id, res);
-                else {
-                    errors = util.customError(errors, "PROFISSIONAL", "Erro na criação do profissional!", null);                    
-                    return Promise.reject(errors);  
-                }
-            }).then(function (responseDelete) {
-                for (var i = 0; i < estabelecimentos.length; i++) {
-                    arrEstabelecimentos.push("(" + dadosUsuario.id + ", " + estabelecimentos[i].id + ")");
-                }
-                return atualizaEstabelecimentosPorUsuario(arrEstabelecimentos, res);
-            }).then(function (responseAtualiza) {
+
+                var atualizaResult  = await estabelecimentoUsuarioRepository.atualizaEstabelecimentosPorUsuarioSync(arrEstabelecimentos);
+                
                 delete dadosUsuario.senha;
                 delete dadosUsuario.hash;
 
                 token = util.createWebToken(app, req, dadosUsuario);
                 dadosUsuario.token = token;
 
-                return buscaEstabelecimentoPorProfissionalParaDim(dadosUsuario.id, res);
-            }).then(function (estabelecimentosDIM) {
-                if (estabelecimentosDIM){
-                    for (var i = 0; i < estabelecimentosDIM.length; i++) {
-                        arrEstabelecimentosDim.push("(" + estabelecimentosDIM[i].idUnidadeCorrespondenteDim + ", " + estabelecimentosDIM[i].idProfissionalCorrespondenteDim + ", NOW(), 6)");
-                    }
+                res.status(201).send(obj);
+    
+                await connection.commit();
+            }
+            catch (exception) {
+                console.log("Erro ao salvar o profissional (" + obj.nome + "), exception: " +  exception);
+                res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+                await connection.rollback();
+            }
+            finally {
+                connection.close();
+            }
 
-                    if(arrEstabelecimentosDim.length > 0)
-                        return atualizaEstabelecimentosPorProfissionalDim(dadosUsuario.id, arrEstabelecimentosDim, res)
-                    else{
-                        res.status(201).json(obj);
-                        return;
-                    }
-                }                    
-                else {
-                    res.status(201).json(obj);
-                    return;
-                }
-            }).then(function (responseAtualizaEstabelecimentos) {                    
-                res.status(201).json(obj);
-                return;        
-            }).catch(function(error) {
-                return res.status(400).json(error);
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
     });
 
-    app.put('/profissional', function (req, res) {
+    app.put('/profissional', async function (req, res) {
         let usuario = req.usuario;
         let obj = req.body;
         let util = new app.util.Util();
@@ -238,9 +206,7 @@ module.exports = function (app) {
         let estabelecimentos = obj.estabelecimentos;
 
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-
-            dadosUsuario.cpf = obj.cpf.replace(/[.-]/g, '');
+        dadosUsuario.cpf = obj.cpf.replace(/[.-]/g, '');
             if(obj.foneCelular)
                 dadosUsuario.celular = obj.foneCelular.replace(/[() -]/g, '');
 
@@ -271,98 +237,105 @@ module.exports = function (app) {
             delete obj.estabelecimentos;
             delete obj.idEstabelecimento;
 
-            //DADOS PARA CRIAÇÃO DO USUÁRIO
-            dadosUsuario.situacao = 1;            
-            dadosUsuario.dataNascimento = obj.dataNascimento;  
-            dadosUsuario.email = obj.email;            
-            dadosUsuario.idTipoUsuario = obj.idTipoUsuario;
-            dadosUsuario.nome = obj.nome;
-            dadosUsuario.nomeMae = obj.nomeMae;            
-            dadosUsuario.sexo = obj.sexo;
-            dadosUsuario.tentativasSenha = 0;
-            dadosUsuario.foto = "";
+            const connection = app.dao.connections.EatendConnection();
 
-            delete obj.senha;
-            delete obj.confirmaSenha;            
-            delete obj.idTipoUsuario;  
-            let idUsuario = 0;
+            const usuarioRepository = new app.dao.UsuarioDAO(connection);
+            const profissionalRepository = new app.dao.ProfissionalDAO(connection);
+            const estabelecimentoUsuarioRepository = new app.dao.EstabelecimentoUsuarioDAO(connection);
+            
+            try {
 
-            buscarPorId(id).then(function (responseProfissional) {
-                if (responseProfissional) {
-                    dadosUsuario.id = responseProfissional.idUsuario;
-                    idUsuario = responseProfissional.idUsuario;
-                    return buscaPorEmail(dadosUsuario);                    
+                await connection.beginTransaction();           
+    
+                //DADOS PARA CRIAÇÃO DO USUÁRIO
+                dadosUsuario.situacao = 1;            
+                dadosUsuario.dataNascimento = obj.dataNascimento;  
+                dadosUsuario.email = obj.email;            
+                dadosUsuario.idTipoUsuario = obj.idTipoUsuario;
+                dadosUsuario.nome = obj.nome;
+                dadosUsuario.nomeMae = obj.nomeMae;            
+                dadosUsuario.sexo = obj.sexo;
+                dadosUsuario.tentativasSenha = 0;
+                dadosUsuario.foto = "";
+
+                delete obj.senha;
+                delete obj.confirmaSenha;            
+                delete obj.idTipoUsuario;  
+                let idUsuario = 0;
+
+                var buscaProfissional = await profissionalRepository.buscaPorIdSync(id);               
+
+                if (!buscaProfissional) {
+                    errors = util.customError(errors, "header", "Profissional não encontrado", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
                 }
-                else {
-                    errors = util.customError(errors, "PROFISSIONAL", "Profissional não encontrado!", null);                    
-                    return Promise.reject(errors);   
+
+                dadosUsuario.id = buscaProfissional.idUsuario;
+                idUsuario = buscaProfissional.idUsuario;                
+
+                var buscaEmailProfissional = await usuarioRepository.buscaPorEmailSync(dadosUsuario);               
+
+                if (buscaEmailProfissional.length > 0) {
+                    errors = util.customError(errors, "header", "Já existe um usuário cadastrado com este e-mail!", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
                 }
-            }).then(function (responseEmail) {
-                if (responseEmail.length > 0) {
-                    errors = util.customError(errors, "email", "Já existe um usuário cadastrado com este e-mail!", dadosUsuario.email);                    
-                    return Promise.reject(errors);   
+
+                var buscaCpfProfissional = await usuarioRepository.buscaPorCPFSync(dadosUsuario);               
+
+                if (buscaCpfProfissional.length > 0) {
+                    errors = util.customError(errors, "header", "Já existe um usuário cadastrado com este CPF!", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
                 }
-                else {
-                    return buscaPorCPF(dadosUsuario);
+                
+                var usuarioResult = {};                
+                
+                if (typeof (dadosUsuario.id) != 'undefined' && dadosUsuario.id != null) {                    
+                    let idUsuario = dadosUsuario.id;
+                    delete dadosUsuario.id;  
+
+                    usuarioResult = await usuarioRepository.atualizaSync(dadosUsuario); 
+                    dadosUsuario.id = idUsuario;
                 }
-            }).then(function (responseCPF) {
-                if (responseCPF.length > 0) {
-                    errors = util.customError(errors, "cpf", "Já existe um usuário cadastrado com este CPF!", dadosUsuario.cpf);                    
-                    return Promise.reject(errors);   
+                else {        
+                    usuarioResult = await usuarioRepository.salvaSync(dadosUsuario);                                         
+                    obj.idUsuario = idUsuario;
                 }
-                else {
-                    return gravaUsuario(dadosUsuario, res);                    
-                }
-            }).then(function (responseUsuario) {
-                if (responseUsuario) {
-                    return atualizaPorId(obj, id, res);
-                }
-                else {
-                    errors = util.customError(errors, "USUÁRIO", "Erro na atualização do usuário!", null);                    
-                    return Promise.reject(errors);  
-                }
-            }).then(function (profissional) {
+
+                var atualizaProfissional = await profissionalRepository.atualizaSync(obj, id);          
+
                 obj.id = id;
-                dadosUsuario.id = idUsuario;
-                return deletaEstabelecimentosPorUsuario(dadosUsuario.id, res);
-            }).then(function (responseDelete) {
-                for (var i = 0; i < estabelecimentos.length; i++) {
-                    arrEstabelecimentos.push("(" + dadosUsuario.id + ", " + estabelecimentos[i].id + ")");
+
+                var deleteResult  = await estabelecimentoUsuarioRepository.deletaEstabelecimentosPorUsuarioSync(dadosUsuario.id);
+
+                for (const item of estabelecimentos) {
+                    arrEstabelecimentos.push("(" + dadosUsuario.id + ", " + item.id + ")");   
                 }
-                return atualizaEstabelecimentosPorUsuario(arrEstabelecimentos, res);
-            }).then(function (responseAtualiza) {                
+
+                var atualizaResult  = await estabelecimentoUsuarioRepository.atualizaEstabelecimentosPorUsuarioSync(arrEstabelecimentos);
+                
                 delete dadosUsuario.hash;
 
                 token = util.createWebToken(app, req, dadosUsuario);
                 dadosUsuario.token = token;
-                return buscaEstabelecimentoPorProfissionalParaDim(dadosUsuario.id, res);
-            }).then(function (estabelecimentosDIM) {
-                if (estabelecimentosDIM){
-                    for (var i = 0; i < estabelecimentosDIM.length; i++) {
-                        arrEstabelecimentosDim.push("(" + estabelecimentosDIM[i].idUnidadeCorrespondenteDim + ", " + estabelecimentosDIM[i].idProfissionalCorrespondenteDim + ", NOW(), 6)");
-                    }
 
-                    if(arrEstabelecimentosDim.length > 0)
-                        return atualizaEstabelecimentosPorProfissionalDim(dadosUsuario.id, arrEstabelecimentosDim, res)
-                    else{
-                        res.status(201).json(obj);
-                        return;
-                    }
-                }                    
-                else {
-                    res.status(201).json(obj);
-                    return;
-                }
-            }).then(function (responseAtualizaEstabelecimentos) {                    
-                res.status(201).json(obj);
-                return;        
-            }).catch(function(error) {
-                return res.status(400).json(error);
-            });   
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+                res.status(201).send(obj);
+    
+                await connection.commit();
+            }
+            catch (exception) {
+                console.log("Erro ao salvar o profissional (" + obj.nome + "), exception: " +  exception);
+                res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+                await connection.rollback();
+            }
+            finally {
+                connection.close();
+            }
     });
 
     app.delete('/profissional/:id', function (req, res) {
@@ -373,16 +346,10 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            deletaPorId(id, res).then(function (response) {
-                res.status(200).json(obj);
-                return;
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        deletaPorId(id, res).then(function (response) {
+            res.status(200).json(obj);
+            return;
+        });
     });
 
     function listaPorEstabelecimento(estabelecimento, addFilter, res) {
@@ -426,30 +393,6 @@ module.exports = function (app) {
                 return;
             } else {
                 d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-    function buscarPorId(id, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.ProfissionalDAO(connection, null);
-        var errors = [];
-
-        objDAO.buscaPorId(id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
-                res.status(500).send(errors);
-                return;
-            } else {
-
-                d.resolve(result[0]);
             }
         });
         return d.promise;
@@ -525,82 +468,9 @@ module.exports = function (app) {
             }
         });
         return d.promise;
-
     }
 
-    function atualizaPorId(obj, id, res) {
-
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var connectionDim = app.dao.ConnectionFactoryDim();
-        var objDAO = new app.dao.ProfissionalDAO(connection, connectionDim);
-        var errors = [];
-
-        objDAO.atualiza(obj, id, function (exception, result) {
-
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao editar os dados", "profissional");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result[0]);
-            }
-        });
-        return d.promise;
-    }
-
-    function salva(profissional, res) {
-        delete profissional.id;
-        var connection = app.dao.ConnectionFactory();
-        var connectionDim = app.dao.ConnectionFactoryDim();
-        var objDAO = new app.dao.ProfissionalDAO(connection, connectionDim);
-        var q = require('q');
-        var d = q.defer();
-
-        objDAO.salva(profissional, function (exception, result) {
-            if (exception) {
-                console.log('Erro ao inserir Tipo de servico', exception);
-                res.status(500).send(exception);
-                d.reject(exception);
-                return;
-            }
-            else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-    function atualizaEstabelecimentosPorProfissionalDim(idUsuario, estabelecimentos, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var connectionDim = app.dao.ConnectionFactoryDim();
-        var objDAO = new app.dao.ProfissionalDAO(connection, connectionDim);
-        var errors = [];
-
-        objDAO.atualizaEstabelecimentosPorProfissionalDim(idUsuario, estabelecimentos, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao editar os dados", "apagar permissoes");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-    function buscaEstabelecimentoPorProfissionalParaDim(id, res) {
+    function buscarPorId(id, res) {
         var q = require('q');
         var d = q.defer();
         var util = new app.util.Util();
@@ -609,7 +479,7 @@ module.exports = function (app) {
         var objDAO = new app.dao.ProfissionalDAO(connection, null);
         var errors = [];
 
-        objDAO.buscaEstabelecimentoPorProfissionalParaDim(id, function (exception, result) {
+        objDAO.buscaPorId(id, function (exception, result) {
             if (exception) {
                 d.reject(exception);
                 console.log(exception);
@@ -618,134 +488,9 @@ module.exports = function (app) {
                 return;
             } else {
 
-                d.resolve(result);
+                d.resolve(result[0]);
             }
         });
-        return d.promise;
-    }
-
-    function buscaPorEmail(usuario) {
-        let q = require('q');
-        let d = q.defer();
-        let connection = app.dao.ConnectionFactory();
-        let usuarioDAO = new app.dao.UsuarioDAO(connection);
-
-        usuarioDAO.buscaPorEmail(usuario, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-    function buscaPorCPF(usuario) {
-        let q = require('q');
-        let d = q.defer();
-        let connection = app.dao.ConnectionFactory();
-        let usuarioDAO = new app.dao.UsuarioDAO(connection);
-
-        usuarioDAO.buscaPorCPF(usuario, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-
-    function gravaUsuario(cadastro, res) {
-        let q = require('q');
-        let d = q.defer();
-        let connection = app.dao.ConnectionFactory();
-        let usuarioDAO = new app.dao.UsuarioDAO(connection);
-
-
-        if (typeof (cadastro.id) != 'undefined' && cadastro.id != null) {
-            let id = cadastro.id;
-            delete cadastro.id;
-
-
-            usuarioDAO.atualiza(cadastro, id, function (exception, result) {
-                if (exception) {
-                    console.log('Erro ao inserir no banco de dados', exception);
-                    res.status(500).send(exception);
-                    d.reject(exception);
-                    return;
-                } else {
-                    d.resolve(result);
-
-                }
-            });
-        }
-        else {
-
-            usuarioDAO.salva(cadastro, function (exception, result) {
-                if (exception) {
-                    console.log('Erro ao inserir no banco de dados', exception);
-                    res.status(500).send(exception);
-                    d.reject(exception);
-                    return;
-                } else {
-                    d.resolve(result);
-                }
-            });
-        }
-
-        return d.promise;
-    }
-
-    function deletaEstabelecimentosPorUsuario(id, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.EstabelecimentoUsuarioDAO(connection);
-        var errors = [];
-
-        objDAO.deletaEstabelecimentosPorUsuario(id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao editar os dados", "apagar permissoes");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-    function atualizaEstabelecimentosPorUsuario(estabelecimentos, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.EstabelecimentoUsuarioDAO(connection);
-        var errors = [];
-
-        if(estabelecimentos.length > 0)
-        {             
-            objDAO.atualizaEstabelecimentosPorUsuario(estabelecimentos, function (exception, result) {
-                if (exception) {
-                    d.reject(exception);
-                    console.log(exception);
-                    errors = util.customError(errors, "data", "Erro ao editar os dados", "apagar permissoes");
-                    res.status(500).send(errors);
-                    return;
-                } else {
-                    d.resolve(result);
-                }
-            });
-        }
-        else
-            d.resolve(null);
         return d.promise;
     }
 
@@ -772,4 +517,5 @@ module.exports = function (app) {
         });
         return d.promise;
     }
+
 }

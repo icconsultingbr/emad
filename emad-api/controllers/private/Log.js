@@ -9,16 +9,10 @@ module.exports = function (app) {
         let errors = [];
         var util = new app.util.Util();    
         
-
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            lista(addFilter,usuario, dao, "uf", res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        lista(addFilter,usuario, dao, "uf", res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
 

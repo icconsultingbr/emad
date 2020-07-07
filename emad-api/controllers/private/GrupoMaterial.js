@@ -21,16 +21,10 @@ module.exports = function (app) {
         obj.dataCriacao = new Date;
         obj.idUsuarioCriacao = usuario.id;
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){
-            salvar(obj, res).then(function(response) {
-                obj.id = response.insertId;
-                res.status(201).send(obj);
-            });  
-
-        } else{
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        salvar(obj, res).then(function(response) {
+            obj.id = response.insertId;
+            res.status(201).send(obj);
+        }); 
     });
 
     app.put('/grupo-material', function(req,res){
@@ -52,16 +46,10 @@ module.exports = function (app) {
         obj.dataAlteracao = new Date;
         obj.idUsuarioAlteracao = usuario.id;
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){
-            atualizar(obj, res).then(function(response) {
-                obj.id = response.insertId;
-                res.status(201).send(obj);
-            });  
-
-        } else{
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        atualizar(obj, res).then(function(response) {
+            obj.id = response.insertId;
+            res.status(201).send(obj);
+        }); 
     });
    
     app.get('/grupo-material', function (req, res) {
@@ -69,16 +57,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            lista(res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        lista(res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
     });
 
     app.get('/grupo-material/estabelecimento/:idEstabelecimento', function (req, res) {
@@ -87,16 +69,10 @@ module.exports = function (app) {
         let errors = [];
         let idEstabelecimento = req.params.idEstabelecimento;        
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscaSemVinculoEstabelecimento(idEstabelecimento, res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        buscaSemVinculoEstabelecimento(idEstabelecimento, res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
     });
 
     
@@ -108,16 +84,10 @@ module.exports = function (app) {
         let errors = [];
 
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
-            buscarPorId(id, res).then(function(response) {
-                res.status(200).json(response);
-                return;      
-            });
-        }
-        else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        buscarPorId(id, res).then(function(response) {
+            res.status(200).json(response);
+            return;      
+        });
     }); 
 
     app.delete('/grupo-material/:id', function(req,res){     
@@ -128,16 +98,10 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
         
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){	
-            deletaPorId(id, res).then(function(response) {
-                res.status(200).json(obj);
-                return;      
-            });
-
-        } else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        deletaPorId(id, res).then(function(response) {
+            res.status(200).json(obj);
+            return;      
+        });
     });
 
     function lista(res) {

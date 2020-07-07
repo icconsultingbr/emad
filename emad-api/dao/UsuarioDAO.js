@@ -132,7 +132,6 @@ UsuarioDAO.prototype.buscaPorToken = function (token, callback) {
     WHERE u.situacao = true AND tu.situacao = true AND token = ?", token, callback);
 }
 
-
 UsuarioDAO.prototype.buscaPorCPF = function (usuario, callback) {
 
     let where = " AND u.cpf = ? ";
@@ -145,7 +144,6 @@ UsuarioDAO.prototype.buscaPorCPF = function (usuario, callback) {
     WHERE 1=1 ${where}`, [usuario.cpf, usuario.id], callback);
 }
 
-
 UsuarioDAO.prototype.deletaPorId = function (id, callback) {
     this._connection.query("UPDATE " + this._table + " set situacao = 0 WHERE id = ? ", id, callback);
 }
@@ -153,8 +151,6 @@ UsuarioDAO.prototype.deletaPorId = function (id, callback) {
 UsuarioDAO.prototype.addActivity = function (id, callback) {
     this._connection.query("UPDATE " + this._table + " set dataAtividade = current_timestamp() WHERE id = ? ", id, callback);
 }
-
-
 
 UsuarioDAO.prototype.buscaUsuario = function (usuario, callback) {
 
@@ -186,6 +182,49 @@ UsuarioDAO.prototype.listaPorTipoUsuario = function (idTipoUsuario, callback) {
         id, 
         nome
         FROM ${this._table} WHERE idTipoUsuario = ?`, [idTipoUsuario], callback);
+}
+
+
+UsuarioDAO.prototype.buscaPorCPFSync = async function (usuario) {
+
+    let where = " AND u.cpf = ? ";
+
+    if (typeof (usuario.id) != 'undefined') {
+        where += "AND u.id <> ?";
+    }
+
+    let usuarioResult =  await this._connection.query(`select u.* from ${this._table} as u WHERE 1=1 ${where}`, [usuario.cpf, usuario.id]);
+    return usuarioResult;
+}
+
+UsuarioDAO.prototype.buscaPorEmailSync = async function (usuario) {
+
+    let where = " AND u.email = ? ";
+
+    if (typeof (usuario.id) != 'undefined') {
+        where += "AND u.id <> ?";
+    }
+
+    let usuarioResult =  await this._connection.query(`
+        SELECT u.*, 
+        IF((DATE_ADD(IFNULL(u.dataAtualizacaoSenha,u.dataCriacao),  INTERVAL tu.periodoSenha DAY)) <= CURRENT_TIMESTAMP(), 1,0) as expiredPassword,
+        tu.bloqueioTentativas 
+        
+        FROM ${this._table} as u 
+        INNER JOIN tb_tipo_usuario as tu ON(u.idTipoUsuario = tu.id) 
+        WHERE u.situacao = true AND tu.situacao = true ${where}`, [usuario.email, usuario.id]);
+
+    return usuarioResult;
+}
+
+UsuarioDAO.prototype.salvaSync = async function (usuario) {
+    let usuarioResult =  await this._connection.query("INSERT INTO " + this._table + " SET ?", usuario);
+    return usuarioResult;
+}
+
+UsuarioDAO.prototype.atualizaSync = async function (usuario, id) {
+    let usuarioResult =  await this._connection.query(`UPDATE ${this._table} SET ? where id= ?`, [usuario, id]);
+    return usuarioResult;
 }
 
 module.exports = function () {
