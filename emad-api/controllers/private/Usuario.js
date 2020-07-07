@@ -12,25 +12,20 @@ module.exports = function (app) {
         let errors = [];
 
         if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
-
             lista(addFilter, res).then(function (resposne) {
                 res.status(200).json(resposne);
                 return;
             });
-
         } else if (usuario.idTipoUsuario == util.ADMIN) {
-
             listaPorEmpresa(usuario.id, res).then(function (resposne) {
                 res.status(200).json(resposne);
                 return;
             });
-
         } else {
             errors = util.customError(errors, "header", "Não autorizado!", "acesso");
             res.status(401).send(errors);
         }
     });
-
 
     app.get('/usuario/:id(\\d+)', function (req, res) {
 

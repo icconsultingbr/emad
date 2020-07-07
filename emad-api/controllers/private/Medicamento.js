@@ -18,16 +18,10 @@ module.exports = function (app) {
             return; 
         }
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){
-            salvar(obj, res).then(function(response) {
-                obj.id = response.insertId;
-                res.status(201).send(obj);
-            });  
-
-        } else{
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        salvar(obj, res).then(function(response) {
+            obj.id = response.insertId;
+            res.status(201).send(obj);
+        });  
     });
 
     app.put('/medicamento', function(req,res){
@@ -46,16 +40,10 @@ module.exports = function (app) {
             return; 
         }
 
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){
-            atualizar(obj, res).then(function(response) {
-                obj.id = response.insertId;
-                res.status(201).send(obj);
-            });  
-
-        } else{
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        atualizar(obj, res).then(function(response) {
+            obj.id = response.insertId;
+            res.status(201).send(obj);
+        }); 
     });
    
     app.get('/medicamento/dim', function (req, res) {
@@ -64,16 +52,10 @@ module.exports = function (app) {
         let errors = [];
         let descricao = req.query.descricao;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            listaMedicamentosDim(res, descricao).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        listaMedicamentosDim(res, descricao).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
 
@@ -83,17 +65,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){		
-            buscarPorId(id, res).then(function(response) {
-                res.status(200).json(response);
-                return;      
-            });
-        }
-        else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        buscarPorId(id, res).then(function(response) {
+            res.status(200).json(response);
+            return;      
+        });
     }); 
 
     app.delete('/medicamento/:id', function(req,res){     
@@ -104,16 +79,10 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
         
-        if(usuario.idTipoUsuario <= util.SUPER_ADMIN){	
-            deletaPorId(id, res).then(function(response) {
-                res.status(200).json(obj);
-                return;      
-            });
-
-        } else{
-            errors = util.customError(errors, "header", "Não autorizado!", "obj");
-            res.status(401).send(errors);
-        }
+        deletaPorId(id, res).then(function(response) {
+            res.status(200).json(obj);
+            return;      
+        });
     });
 
     function listaMedicamentosDim(res, descricao) {

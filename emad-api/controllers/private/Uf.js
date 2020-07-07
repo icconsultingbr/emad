@@ -5,23 +5,16 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            lista(res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado1!", "acesso");
-            res.status(401).send(errors);
-        }
+        lista(res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
     });
 
     app.get('/uf/dominios', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
-
 
         listaDominios(res).then(function (resposne) {
             res.status(200).json(resposne);
@@ -35,16 +28,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarPorId(id, res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        buscarPorId(id, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
     app.get('/uf/pais/:id', function (req, res) {
@@ -53,16 +40,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarPorPais(id, res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "UF");
-            res.status(401).send(errors);
-        }
+        buscarPorPais(id, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
 

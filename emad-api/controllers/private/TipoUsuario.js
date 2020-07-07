@@ -26,15 +26,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            listaTipoUsuarioProfissional(res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });        
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        listaTipoUsuarioProfissional(res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });   
     });
 
     app.get('/tipo-usuario/:id', function (req, res) {
@@ -43,16 +38,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarPorId(id, res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        buscarPorId(id, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
     app.post('/tipo-usuario', function (req, res) {
@@ -76,26 +65,19 @@ module.exports = function (app) {
         delete obj.permissoes;
         obj.situacao = 1;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
+        salva(obj, res).then(function (response) {
+            obj.id = response.insertId;
 
-            salva(obj, res).then(function (response) {
-                obj.id = response.insertId;
-
-                for (var i = 0; i < permissoes.length; i++) {
-                    arrPermissoes.push("(" + obj.id + ", " + permissoes[i].id + ")");
-                }
-                deletaPermissoes(obj.id, res).then(function (response3) {
-                    atualizaPermissoes(arrPermissoes,res).then(function (response4) {
-                        res.status(201).json(obj);
-                        return;
-                    });                           
-                });                
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+            for (var i = 0; i < permissoes.length; i++) {
+                arrPermissoes.push("(" + obj.id + ", " + permissoes[i].id + ")");
+            }
+            deletaPermissoes(obj.id, res).then(function (response3) {
+                atualizaPermissoes(arrPermissoes,res).then(function (response4) {
+                    res.status(201).json(obj);
+                    return;
+                });                           
+            });                
+        });
     });
 
     app.put('/tipo-usuario', function (req, res) {
@@ -122,34 +104,27 @@ module.exports = function (app) {
             return;
         }
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            for (var i = 0; i < permissoes.length; i++) {
-                arrPermissoes.push("(" + id + ", " + permissoes[i].id + ")");
-            }
+        for (var i = 0; i < permissoes.length; i++) {
+            arrPermissoes.push("(" + id + ", " + permissoes[i].id + ")");
+        }
 
-            buscarPorId(id, res).then(function (response) {
-                if (typeof response != 'undefined') {
-                    atualizaPorId(obj, id, res).then(function (response2) {
-                        deletaPermissoes(id, res).then(function (response3) {
-                            atualizaPermissoes(arrPermissoes,res).then(function (response4) {
-                                res.status(201).json(obj);
-                                return;
-                            });                           
-                        });
+        buscarPorId(id, res).then(function (response) {
+            if (typeof response != 'undefined') {
+                atualizaPorId(obj, id, res).then(function (response2) {
+                    deletaPermissoes(id, res).then(function (response3) {
+                        atualizaPermissoes(arrPermissoes,res).then(function (response4) {
+                            res.status(201).json(obj);
+                            return;
+                        });                           
                     });
-                }
-                else {
-                    errors = util.customError(errors, "body", "Grupo de usuário não encontrado!", obj.nome);
-                    res.status(404).send(errors);
-                    return;
-                }
-            });
-        }
-        else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
-
+                });
+            }
+            else {
+                errors = util.customError(errors, "body", "Grupo de usuário não encontrado!", obj.nome);
+                res.status(404).send(errors);
+                return;
+            }
+        });
     });
 
 
@@ -161,16 +136,10 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id; 
 
-        if (usuario.idTipoUsuario == util.SUPER_ADMIN) {
-            deletaPorId(id, res).then(function (response) {
-                res.status(200).json(obj);
-                return;
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        deletaPorId(id, res).then(function (response) {
+            res.status(200).json(obj);
+            return;
+        });
     });
 
     function listaPorAdmin(res) {

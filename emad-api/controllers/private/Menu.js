@@ -25,18 +25,10 @@ module.exports = function (app) {
         var util = new app.util.Util();
         var errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-
-            salvaMenu(menu, res).then(function (response) {
-                menu.id = response.insertId;
-                res.status(201).send(menu);
-
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        salvaMenu(menu, res).then(function (response) {
+            menu.id = response.insertId;
+            res.status(201).send(menu);
+        });
     });
 
 
@@ -45,15 +37,10 @@ module.exports = function (app) {
         var util = new app.util.Util();
         var errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            lista(res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        lista(res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
     app.get('/menu/descricao', function (req, res) {
@@ -61,15 +48,10 @@ module.exports = function (app) {
         var util = new app.util.Util();
         var errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            listaDescricao(res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        listaDescricao(res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
     app.get('/menu/ordem-menu-filho/:id', function (req, res) {
@@ -78,15 +60,10 @@ module.exports = function (app) {
         var errors = [];
         let idMenuPai = req.params.id;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            listaOrdemMenuFilhoPorMenuPai(idMenuPai, res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        listaOrdemMenuFilhoPorMenuPai(idMenuPai, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
     
 
@@ -96,11 +73,8 @@ module.exports = function (app) {
         var errors = [];
 
         listaPorTipoUsuario(usuario.idTipoUsuario, res).then(function (response) {
-
             res.status(200).json(response);
             return;
-
-
         });
     });
 
@@ -109,16 +83,11 @@ module.exports = function (app) {
         let id = req.params.id;
         var util = new app.util.Util();
         var errors = [];
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            listaPorTipoUsuarioDescricao(id, res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
 
+        listaPorTipoUsuarioDescricao(id, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
     app.get('/menu/:id', function (req, res) {
@@ -131,7 +100,6 @@ module.exports = function (app) {
             res.status(200).json(response);
             return;
         });
-
     });
 
     app.put('/menu', function (req, res) {
@@ -163,24 +131,19 @@ module.exports = function (app) {
             menu.menuPai = null;
         }
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarPorId(id, res).then(function (response) {
-                if (typeof response != 'undefined') {
-                    atualizaPorId(menu, id, response.ordem, res).then(function (response2) {
-                        res.status(200).json(menu);
-                        return;
-                    });
-                }
-                else {
-                    errors = util.customError(errors, "body", "Menu não encontrado!", menu.nome);
-                    res.status(404).send(errors);
+        buscarPorId(id, res).then(function (response) {
+            if (typeof response != 'undefined') {
+                atualizaPorId(menu, id, response.ordem, res).then(function (response2) {
+                    res.status(200).json(menu);
                     return;
-                }
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+                });
+            }
+            else {
+                errors = util.customError(errors, "body", "Menu não encontrado!", menu.nome);
+                res.status(404).send(errors);
+                return;
+            }
+        });
     });
 
 
@@ -193,19 +156,10 @@ module.exports = function (app) {
         let menu = {};
         menu.id = id;
 
-
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            deletaPorId(id, res).then(function (response) {
-                res.status(200).json(menu);
-                return;
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
-
-
+        deletaPorId(id, res).then(function (response) {
+            res.status(200).json(menu);
+            return;
+        });
     });
 
     function listaPorTipoUsuario(idTipoUsuario, res) {

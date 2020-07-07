@@ -6,15 +6,10 @@ module.exports = function (app) {
         let addFilter = req.query;
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            lista(addFilter, res).then(function (resposne) {
-                res.status(200).json(resposne);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        lista(addFilter, res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
     });
 
     app.get('/paciente/:id', function (req, res) {
@@ -23,15 +18,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarPorId(id, res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "paciente");
-            res.status(401).send(errors);
-        }
+        buscarPorId(id, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
     app.post('/paciente', function (req, res) {
@@ -40,8 +30,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
         var errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            req.assert("cartaoSus").notEmpty().withMessage("Cartão do SUS é um campo obrigatório;");
+        req.assert("cartaoSus").notEmpty().withMessage("Cartão do SUS é um campo obrigatório;");
             req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");
             req.assert("nomeMae").notEmpty().withMessage("Nome da mãe é um campo obrigatório;");
             req.assert("dataNascimento").notEmpty().withMessage("Data de nascimento é um campo obrigatório;");
@@ -77,11 +66,6 @@ module.exports = function (app) {
                 obj.id = response.insertId;
                 res.status(201).send(obj);
             });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "paciente");
-            res.status(401).send(errors);
-        }
     });
 
     app.put('/paciente', function (req, res) {
@@ -92,8 +76,7 @@ module.exports = function (app) {
         let id = obj.id;
         delete obj.id;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            req.assert("cartaoSus").notEmpty().withMessage("Cartão do SUS é um campo obrigatório;");
+        req.assert("cartaoSus").notEmpty().withMessage("Cartão do SUS é um campo obrigatório;");
             req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");
             req.assert("nomeMae").notEmpty().withMessage("Nome da mãe é um campo obrigatório;");
             req.assert("dataNascimento").notEmpty().withMessage("Data de nascimento é um campo obrigatório;");
@@ -136,11 +119,6 @@ module.exports = function (app) {
                     return;
                 }
             });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
     });
 
     app.delete('/paciente/:id', function (req, res) {
@@ -151,16 +129,10 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            deletaPorId(id, res).then(function (response) {
-                res.status(200).json(obj);
-                return;
-            });
-
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "acesso");
-            res.status(401).send(errors);
-        }
+        deletaPorId(id, res).then(function (response) {
+            res.status(200).json(obj);
+            return;
+        });
     });
 
     app.get('/paciente/estabelecimentos/:id/:raio/:idTipoUnidade', function (req, res) {
@@ -171,15 +143,10 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        if (usuario.idTipoUsuario <= util.SUPER_ADMIN) {
-            buscarEstabelecimentos(id, raio, idTipoUnidade, res).then(function (response) {
-                res.status(200).json(response);
-                return;
-            });
-        } else {
-            errors = util.customError(errors, "header", "Não autorizado!", "paciente");
-            res.status(401).send(errors);
-        }
+        buscarEstabelecimentos(id, raio, idTipoUnidade, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
     });
 
     function lista(addFilter, res) {
