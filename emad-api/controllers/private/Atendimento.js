@@ -7,8 +7,9 @@ module.exports = function (app) {
         let queryFilter = req.query;
         let errors = [];
 
-        try {
-            const connection = app.dao.connections.EatendConnection();
+        const connection = app.dao.connections.EatendConnection();
+
+        try {           
 
             const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
 
@@ -19,6 +20,9 @@ module.exports = function (app) {
         catch (exception) {
             errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
             res.status(500).send(errors);
+        }
+        finally {
+            await connection.close();
         }
     });
 
@@ -365,7 +369,7 @@ module.exports = function (app) {
             await connection.rollback();
         }
         finally {
-            connection.close();
+            await connection.close();
         }
     });
 

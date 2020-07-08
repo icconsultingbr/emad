@@ -189,7 +189,7 @@ module.exports = function (app) {
                 await connection.rollback();
             }
             finally {
-                connection.close();
+                await connection.close();
             }
 
     });
@@ -334,7 +334,7 @@ module.exports = function (app) {
                 await connection.rollback();
             }
             finally {
-                connection.close();
+                await connection.close();
             }
     });
 

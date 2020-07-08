@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { GenericsService } from '../../_core/_services/generics.service';
 import { Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class ReceitaService extends GenericsService {
@@ -197,6 +198,10 @@ export class ReceitaService extends GenericsService {
       return this.http
       .post(metodo, JSON.stringify(obj));
     }
+  }
+
+  obterRelatorio(ano: number, idEstabelecimento: number, numero: number): Observable<any>{ 
+    return this.http.get("receita" + "/ano/" + ano + "/idEstabelecimento/" + idEstabelecimento + "/numero/" + numero);
   }
 }
 

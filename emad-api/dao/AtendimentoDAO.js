@@ -80,7 +80,7 @@ AtendimentoDAO.prototype.listarAsync = async function(addFilter) {
                                                 p.idPacienteCorrespondenteDim,
                                                 YEAR(a.dataCriacao) as ano_receita,
                                                 a.numeroReceita as numero_receita,
-                                                e.idUnidadeRegistroReceitaDim as unidade_receita,
+                                                e.id as unidade_receita,
                                                 pro.id as idProfissional,
                                                 ficha.nome tipoFichaNome
                                                 ${join} 
@@ -151,7 +151,7 @@ AtendimentoDAO.prototype.lista = function(addFilter, callback) {
         p.idPacienteCorrespondenteDim,
         YEAR(a.dataCriacao) as ano_receita,
         a.numeroReceita as numero_receita,
-        e.idUnidadeRegistroReceitaDim as unidade_receita,
+        e.id as unidade_receita,
         pro.id as idProfissional,
         ficha.nome tipoFichaNome
     FROM ${this._table} a 
@@ -226,7 +226,7 @@ AtendimentoDAO.prototype.listaPorUsuario = function(id, addFilter, callback) {
         p.idPacienteCorrespondenteDim,
         YEAR(a.dataCriacao) as ano_receita,
         a.numeroReceita as numero_receita,
-        e.idUnidadeRegistroReceitaDim as unidade_receita,
+        e.id as unidade_receita,
         pro.id as idProfissional,
         ficha.nome tipoFichaNome
     FROM ${this._table} a 
@@ -245,7 +245,7 @@ AtendimentoDAO.prototype.buscaPorId = function (id,callback) {
     this._connection.query(`select p.nome,
                                 YEAR(a.dataCriacao) as ano_receita,
                                 a.numeroReceita as numero_receita,
-                                e.idUnidadeRegistroReceitaDim as unidade_receita,
+                                e.id as unidade_receita,
                                 a.* from ${this._table} a 
     INNER JOIN tb_paciente p ON(a.idPaciente = p.id) 
     INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 

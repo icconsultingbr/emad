@@ -14,6 +14,7 @@ import { isObject } from 'util';
 import { AtendimentoMedicamento } from '../../_core/_models/AtendimentoMedicamento';
 import { MedicamentoDim } from '../../_core/_models/MedicamentoDim';
 import { Material } from '../../_core/_models/Material';
+import { ReciboReceitaImpressaoService } from '../../farmacia/receita/recibo/recibo-receita-impressao.service';
 
 @Component({
   selector: 'app-atendimento-form',
@@ -67,6 +68,7 @@ export class AtendimentoFormComponent implements OnInit {
     private service: AtendimentoService,
     private pagerService: PagerService,
     private pacienteService: PlanoTerapeuticoService,
+    private reciboReceitaService: ReciboReceitaImpressaoService,
     private fb: FormBuilder,
     private fbHipotese: FormBuilder,
     private fbMedicamento: FormBuilder,
@@ -656,27 +658,28 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
-  abreReceitaMedica(ano_receita: Number, numero_receita: Number, unidade_receita: Number) {
-    this.errors = [];
-    let url =
-      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_RECEITA_MEDICA_VISUALIZACAO")
-      ?
-      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_RECEITA_MEDICA_VISUALIZACAO")[0].valor
-      .replace('{ano_receita}', ano_receita)
-      .replace('{numero_receita}', numero_receita)
-      .replace('{unidade_receita}', unidade_receita)
-      :"";
-    this.loading = true;
-    this.service.printDocument(url).subscribe(result => {
-      this.loading = false;
-      window.open(
-        url,
-        '_blank'
-      );
-    }, error => {
-      this.loading = false;
-      this.errors = Util.customHTTPResponse(error);
-    });
+  abreReceitaMedica(ano_receita: number, numero_receita: number, unidade_receita: number) {
+    this.reciboReceitaService.imprimir(ano_receita, unidade_receita, numero_receita);
+    // this.errors = [];
+    // let url =
+    //   JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_RECEITA_MEDICA_VISUALIZACAO")
+    //   ?
+    //   JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_RECEITA_MEDICA_VISUALIZACAO")[0].valor
+    //   .replace('{ano_receita}', ano_receita)
+    //   .replace('{numero_receita}', numero_receita)
+    //   .replace('{unidade_receita}', unidade_receita)
+    //   :"";
+    // this.loading = true;
+    // this.service.printDocument(url).subscribe(result => {
+    //   this.loading = false;
+    //   window.open(
+    //     url,
+    //     '_blank'
+    //   );
+    // }, error => {
+    //   this.loading = false;
+    //   this.errors = Util.customHTTPResponse(error);
+    // });
   }
 
   abreAtendimentoFichaDigital(id: Number) {
