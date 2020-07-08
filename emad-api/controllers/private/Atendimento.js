@@ -1,15 +1,13 @@
 module.exports = function (app) {
-
-
     app.get('/atendimento', async function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
         let queryFilter = req.query;
         let errors = [];
 
+        const connection = await app.dao.connections.EatendConnection.connection();
+        
         try {
-            const connection = app.dao.connections.EatendConnection();
-
             const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
 
             const response = await atendimentoRepository.listarAsync(queryFilter);
@@ -19,6 +17,8 @@ module.exports = function (app) {
         catch (exception) {
             errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
             res.status(500).send(errors);
+        }finally{
+            await connection.close();
         }
     });
 
@@ -262,7 +262,7 @@ module.exports = function (app) {
         let responsePorId = [];
         let receita = {};
 
-        const connection = app.dao.connections.EatendConnection();
+        const connection = await app.dao.connections.EatendConnection.connection();
 
         const receitaRepository = new app.dao.ReceitaDAO(connection);
         const itemReceitaRepository = new app.dao.ItemReceitaDAO(connection);
@@ -365,7 +365,7 @@ module.exports = function (app) {
             await connection.rollback();
         }
         finally {
-            connection.close();
+            await connection.close();
         }
     });
 

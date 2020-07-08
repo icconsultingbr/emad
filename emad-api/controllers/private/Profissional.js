@@ -118,7 +118,7 @@ module.exports = function (app) {
         delete obj.estabelecimentos;
         delete obj.idTipoUsuario;      
         
-            const connection = app.dao.connections.EatendConnection();
+        const connection = await app.dao.connections.EatendConnection.connection();
 
             const usuarioRepository = new app.dao.UsuarioDAO(connection);
             const profissionalRepository = new app.dao.ProfissionalDAO(connection);
@@ -189,7 +189,7 @@ module.exports = function (app) {
                 await connection.rollback();
             }
             finally {
-                connection.close();
+                await connection.close();
             }
 
     });
@@ -237,7 +237,7 @@ module.exports = function (app) {
             delete obj.estabelecimentos;
             delete obj.idEstabelecimento;
 
-            const connection = app.dao.connections.EatendConnection();
+            const connection = await app.dao.connections.EatendConnection.connection();
 
             const usuarioRepository = new app.dao.UsuarioDAO(connection);
             const profissionalRepository = new app.dao.ProfissionalDAO(connection);
@@ -334,7 +334,7 @@ module.exports = function (app) {
                 await connection.rollback();
             }
             finally {
-                connection.close();
+                await connection.close();
             }
     });
 

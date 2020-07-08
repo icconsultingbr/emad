@@ -34,7 +34,7 @@ module.exports = function (app) {
             return;
         }
 
-        const connection = app.dao.connections.EatendConnection();
+        const connection = await app.dao.connections.EatendConnection.connection();
 
         const receitaRepository = new app.dao.ReceitaDAO(connection);
 
@@ -60,7 +60,7 @@ module.exports = function (app) {
             await connection.rollback();
         }
         finally {
-            connection.close();
+            await connection.close();
         }
     });
 
@@ -102,7 +102,7 @@ module.exports = function (app) {
             return;
         }
         
-        const connection = app.dao.connections.EatendConnection();
+        const connection = await app.dao.connections.EatendConnection.connection();
 
         const receitaRepository = new app.dao.ReceitaDAO(connection);
         const itemReceitaRepository = new app.dao.ItemReceitaDAO(connection);
@@ -282,7 +282,7 @@ module.exports = function (app) {
             await connection.rollback();
         }
         finally {
-            connection.close();
+            await connection.close();
         }
     });
 
@@ -305,7 +305,7 @@ module.exports = function (app) {
         let errors = [];
         let addFilter = req.query;
 
-        const connection = app.dao.connections.EatendConnection();
+        const connection = await app.dao.connections.EatendConnection.connection();
 
         const itemMovimentoGeralRepository = new app.dao.ItemMovimentoGeralDAO(connection);
 
@@ -319,7 +319,7 @@ module.exports = function (app) {
             res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
         }
         finally {
-            connection.close();
+            await connection.close();
         }
     });
 
@@ -329,8 +329,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-
-        const connection = app.dao.connections.EatendConnection();
+        const connection = await app.dao.connections.EatendConnection.connection();
 
         const receitaRepository = new app.dao.ReceitaDAO(connection);
         const itemReceitaRepository = new app.dao.ItemReceitaDAO(connection);
@@ -349,7 +348,7 @@ module.exports = function (app) {
             res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
         }
         finally {
-            connection.close();
+            await connection.close();
         }
     });
 
