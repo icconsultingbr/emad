@@ -97,6 +97,9 @@ ReceitaDAO.prototype.buscaReciboReceita = async function (ano, idEstabelecimento
                             ,CONCAT(municipio.nome,'/',uf.uf) textoCidade
                             ,movimento.id idMovimentoGeral
                             ,paciente.cartaoSus as cartaoSusPaciente
+                            ,paciente.dataNascimento
+                            ,YEAR(CURRENT_TIMESTAMP) - YEAR(paciente.dataNascimento ) - (RIGHT(CURRENT_TIMESTAMP, 5) < RIGHT(paciente.dataNascimento, 5)) as pacienteIdade
+                            ,paciente.idSap                            
                             FROM ${this._table} a
                             INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
                             INNER JOIN tb_municipio municipio ON (a.idMunicipio = municipio.id)

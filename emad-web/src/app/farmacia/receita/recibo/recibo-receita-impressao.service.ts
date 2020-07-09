@@ -240,18 +240,24 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
         </div>
         <br/>
         <div class="row">
-            <div class="col s6" style="text-align: left;">
+            <div class="col s3">
                 <span> Paciente: ${result.nomePaciente}</span>
             </div>  
-            <div class="col s6" style="text-align: rigth;">
+            <div class="col s3">
                 <span> Cartão SUS: ${result.cartaoSusPaciente}</span>
+            </div>    
+            <div class="col s3">
+                <span> Data de nascimento: ${result.dataNascimento ? _moment(result.dataNascimento).format('DD/MM/YYYY') : ' ' } (${result.pacienteIdade} anos)</span>
+            </div>    
+            <div class="col s3">
+                <span> Id SAP: ${result.idSap}</span>
             </div>    
         </div>
         <div class="row">
-            <div class="col s6" style="text-align: left;">
+            <div class="col s3">
                 <span> Prescritor: ${result.nomeProfissional}</span>
             </div> 
-            <div class="col s6" style="text-align: rigth;">
+            <div class="col s3">
                 <span> Data da prescrição: ${result.dataEmissao ? _moment(result.dataEmissao).format('DD/MM/YYYY') : ' ' }</span>
             </div>    
         </div>
