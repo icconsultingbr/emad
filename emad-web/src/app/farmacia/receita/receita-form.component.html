@@ -233,7 +233,9 @@
         </div>
         <div class="row">
           <div class="col-12">
-            <div class="form-group text-right">
+            <div class="form-group text-right">              
+              <span>{{ object.mensagemPaciente }}</span>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              
               <button class="btn btn-primary" type="button" (click)="confirmaItemReceita()" [disabled]="toggleItemReceita()">
                 <i class="fa fa-save"></i>Adicionar
               </button>  

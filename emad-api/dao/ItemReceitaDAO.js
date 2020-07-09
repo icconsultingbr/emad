@@ -77,7 +77,7 @@ ItemReceitaDAO.prototype.buscarPorReceita = async function(idReceita) {
                                 ,a.qtdPrescrita
                                 ,a.tempoTratamento
                                 ,a.qtdDispAnterior
-                                ,a.qtdDispMes
+                                ,0 as qtdDispMes
                                 ,a.dataUltDisp
                                 ,a.numReceitaControlada
                                 ,a.idMotivoFimReceita
@@ -92,6 +92,23 @@ ItemReceitaDAO.prototype.buscarPorReceita = async function(idReceita) {
                                 LEFT JOIN tb_motivo_fim_receita motivoFimReceita ON (a.idMotivoFimReceita = motivoFimReceita.id)                            
                                 LEFT JOIN tb_usuario usuarioFimReceita ON (a.idUsuarioFimReceita = usuarioFimReceita.id)                            
                                 WHERE a.situacao > 0 and a.idReceita=?`,idReceita);
+
+    return itemReceita;
+}
+
+ItemReceitaDAO.prototype.buscarMaterialDispensadoPorPaciente = async function(idMaterial, idPaciente) {   
+    const itemReceita = await  this._connection.query(`select  
+                                                        receita.id, 
+                                                        receita.ano, 
+                                                        receita.idEstabelecimento, 
+                                                        receita.numero, 
+                                                        receita.situacao, 
+                                                        receita.idPaciente, 
+                                                        receita.idProfissional, 
+                                                        itemreceita.dataUltDisp 
+                                                    from tb_receita receita inner join tb_item_receita itemreceita ON (receita.id = itemreceita.idReceita)
+                                                    where itemreceita.idMaterial=? and receita.idPaciente=? and itemreceita.dataUltDisp is not null
+                                                    order by itemreceita.dataUltDisp desc `, [idMaterial, idPaciente]);
 
     return itemReceita;
 }

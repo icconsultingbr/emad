@@ -123,8 +123,9 @@ module.exports = function (app) {
                 itemReceita.qtdDispMes = itemReceita.qtdDispMes == "" ? 0 : Number(itemReceita.qtdDispMes);
                 itemReceita.idReceita = receita.id;
                 itemReceita.dataCriacao = new Date;
-                itemReceita.dataUltDisp = itemReceita.qtdDispMes > 0 ? itemReceita.dataCriacao : null;
-                itemReceita.qtdDispAnterior = (itemReceita.qtdDispAnterior ? itemReceita.qtdDispAnterior : 0)  + (itemReceita.qtdDispMes > 0 ? itemReceita.qtdDispMes : 0);
+                itemReceita.dataUltDisp = itemReceita.qtdDispMes > 0 ? itemReceita.dataCriacao : itemReceita.dataUltDisp;
+                if(itemReceita.situacao != 2)                
+                    itemReceita.qtdDispAnterior = (itemReceita.qtdDispAnterior ? itemReceita.qtdDispAnterior : 0)  + (itemReceita.qtdDispMes > 0 ? itemReceita.qtdDispMes : 0);
                 itemReceita.idUsuarioCriacao = usuario.id;
                 itemReceita.situacao = 2;//FINALIZADO
                 itemReceita.dataFimReceita = new Date;

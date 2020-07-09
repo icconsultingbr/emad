@@ -195,8 +195,26 @@ export class ReceitaFormComponent implements OnInit {
     this.itemReceita.idMaterial = material.id;
     this.itemReceita.nomeMaterial = material.descricao;
     this.carregaLotePorMaterial(this.itemReceita.idMaterial, null);
+    this.carregaMaterialDispensadoPorPaciente(this.itemReceita.idMaterial, this.object.idPaciente);
   } 
 
+  carregaMaterialDispensadoPorPaciente(idMaterial: number, idPaciente: number){
+
+    this.service.obterMaterialDispensadoPorPaciente(idMaterial, idPaciente).subscribe(material => {
+      
+      if(material.length > 0)
+        this.object.mensagemPaciente = "Última retirada deste medicamento por este paciente: " + Util.dateFormat(material[0].dataUltDisp, "dd/MM/yyyy");
+      else
+        this.object.mensagemPaciente = "";
+
+      this.loading = false;
+    }, erro => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(erro);
+    });
+  }
+
+  
   toggleItemReceita(){
     return Util.isEmpty(this.itemReceita.idMaterial) 
     || Util.isEmpty(this.itemReceita.qtdPrescrita)
@@ -223,7 +241,7 @@ export class ReceitaFormComponent implements OnInit {
     if(!existeItemDispensa)
     {
       let novoItemEstoque: any = {};
-      novoItemEstoque.id = myId();
+      novoItemEstoque.id = myId;
       novoItemEstoque.idMaterial = this.itemReceita.idMaterial
       novoItemEstoque.nomeMaterial = this.itemReceita.nomeMaterial;
       this.listaMaterialLoteDispensado.push(novoItemEstoque);
@@ -234,6 +252,7 @@ export class ReceitaFormComponent implements OnInit {
     this.listaMaterialLote = [];
     this.objectMaterial = new Material();
     this.ref.detectChanges();
+    this.object.mensagemPaciente = "";
   }
 
   confirmaItemReceitaEmAberto(item: any){    
@@ -445,6 +464,7 @@ export class ReceitaFormComponent implements OnInit {
       qtdDispMes: ['', ''],
       qtdDispensarAberto: ['', ''],
       observacoesGerais: ['', ''],
+      mensagemPaciente: ['', ''],
       situacao: [Validators.required],
       qtdDispensarLote: ['','']
     });

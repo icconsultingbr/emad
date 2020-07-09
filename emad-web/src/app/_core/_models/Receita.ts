@@ -22,5 +22,6 @@ export class Receita {
     @Input() itensReceita: ItemReceita[] = [];      
     @Input() itensReceitaFinalizado: ItemReceita[] = [];  
     @Input() acao: string;
+    @Input() mensagemPaciente: string;    
 }
 

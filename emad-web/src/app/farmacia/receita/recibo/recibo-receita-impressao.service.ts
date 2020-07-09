@@ -125,11 +125,8 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
                                       <span style="font-weight:bold"> Qtde. prescrita: </span><span>${itemReceita.qtdPrescrita}</span>
                                    </div>
                                    <div class="col s2" style="text-align: left;">
-                                      <span style="font-weight:bold"> Qtde. disp anterior: </span><span>${itemReceita.qtdDispAnterior}</span>
+                                      <span style="font-weight:bold"> Qtde. dispensada: </span><span>${itemReceita.qtdDispAnterior}</span>
                                    </div>
-                                   <div class="col s2" style="text-align: left;">
-                                      <span style="font-weight:bold"> Qtde. dispensada: </span><span>${itemReceita.qtdDispMes}</span>
-                                   </div> 
                                    
                                    <table class="table table-striped">
                                    <thead>

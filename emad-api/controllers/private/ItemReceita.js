@@ -86,6 +86,31 @@ module.exports = function (app) {
         });
     }); 
 
+    
+
+    app.get('/item-receita/idMaterial/:idMaterial/idPaciente/:idPaciente', async function (req, res) {
+        let usuario = req.usuario;
+        let idMaterial = req.params.idMaterial;
+        let idPaciente = req.params.idPaciente;        
+        let util = new app.util.Util();
+        let errors = [];
+        
+        const connection = await app.dao.connections.EatendConnection.connection();
+   
+        const itemReceitaRepository = new app.dao.ItemReceitaDAO(connection);             
+
+        try {            
+            var responseItemReceita = await itemReceitaRepository.buscarMaterialDispensadoPorPaciente(idMaterial, idPaciente);
+            res.status(200).json(responseItemReceita);
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });
+
     app.delete('/item-receita/:id', function(req,res){     
         let util = new app.util.Util();
         let usuario = req.usuario;

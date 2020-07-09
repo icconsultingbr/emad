@@ -203,5 +203,9 @@ export class ReceitaService extends GenericsService {
   obterRelatorio(ano: number, idEstabelecimento: number, numero: number): Observable<any>{ 
     return this.http.get("receita" + "/ano/" + ano + "/idEstabelecimento/" + idEstabelecimento + "/numero/" + numero);
   }
+
+  obterMaterialDispensadoPorPaciente(idMaterial: number, idPaciente: number): Observable<any>{ 
+    return this.http.get("item-receita" + "/idMaterial/" + idMaterial + "/idPaciente/" + idPaciente);
+  }
 }
 
