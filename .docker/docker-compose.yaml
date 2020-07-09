@@ -1,0 +1,21 @@
+version: "3.7"
+services:
+  db:
+    image: mariadb:10.5.4-focal
+    container_name: "mariadb-10"
+    restart: "always"
+    environment: 
+      MYSQL_ROOT_PASSWORD: zCAV%xf2
+      MYSQL_DATABASE: eatende-dev
+      MYSQL_USER: eatende-dev
+      MYSQL_PASSWORD: Eatende@2020
+    command: "--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
+    volumes: 
+      - /var/lib/mariadb10:/var/lib/mysql
+    networks: 
+      - mariadb
+    ports:
+      - 3307:3306
+networks: 
+  mariadb: 
+    driver: bridge

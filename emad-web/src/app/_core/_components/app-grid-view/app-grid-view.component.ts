@@ -290,9 +290,9 @@ export class AppGridViewComponent implements AfterViewInit {
 
     this.service.list(this.method + params).subscribe(result => {
       this.warning = "";
-      this.paging.total = result['paging'].total;
+      this.paging.total = result.total;
       this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
-      this.allItems = result['objects'];
+      this.allItems = result.items;
 
       setTimeout(() => {
         this.loading = false;

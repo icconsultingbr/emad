@@ -34,7 +34,7 @@ module.exports = function (app) {
             return;
         }
 
-        const connection = app.dao.connections.EatendConnection();
+        const connection = await app.dao.connections.EatendConnection.connection();
 
         const receitaRepository = new app.dao.ReceitaDAO(connection);
 
@@ -60,7 +60,7 @@ module.exports = function (app) {
             await connection.rollback();
         }
         finally {
-            connection.close();
+            await connection.close();
         }
     });
 
@@ -102,7 +102,7 @@ module.exports = function (app) {
             return;
         }
         
-        const connection = app.dao.connections.EatendConnection();
+        const connection = await app.dao.connections.EatendConnection.connection();
 
         const receitaRepository = new app.dao.ReceitaDAO(connection);
         const itemReceitaRepository = new app.dao.ItemReceitaDAO(connection);
@@ -282,7 +282,7 @@ module.exports = function (app) {
             await connection.rollback();
         }
         finally {
-            connection.close();
+            await connection.close();
         }
     });
 
@@ -305,7 +305,7 @@ module.exports = function (app) {
         let errors = [];
         let addFilter = req.query;
 
-        const connection = app.dao.connections.EatendConnection();
+        const connection = await app.dao.connections.EatendConnection.connection();
 
         const itemMovimentoGeralRepository = new app.dao.ItemMovimentoGeralDAO(connection);
 
@@ -319,7 +319,7 @@ module.exports = function (app) {
             res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
         }
         finally {
-            connection.close();
+            await connection.close();
         }
     });
 
@@ -329,8 +329,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-
-        const connection = app.dao.connections.EatendConnection();
+        const connection = await app.dao.connections.EatendConnection.connection();
 
         const receitaRepository = new app.dao.ReceitaDAO(connection);
         const itemReceitaRepository = new app.dao.ItemReceitaDAO(connection);
@@ -349,7 +348,44 @@ module.exports = function (app) {
             res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
         }
         finally {
-            connection.close();
+            await connection.close();
+        }
+    });
+
+    app.get('/receita/ano/:ano/idEstabelecimento/:idEstabelecimento/numero/:numero', async function (req, res) {
+        let usuario = req.usuario;
+        let ano = req.params.ano;
+        let idEstabelecimento = req.params.idEstabelecimento;
+        let numero = req.params.numero;
+        let util = new app.util.Util();
+        let errors = [];
+        
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const receitaRepository = new app.dao.ReceitaDAO(connection);        
+        const itemReceitaRepository = new app.dao.ItemReceitaDAO(connection);        
+        const itemMovimentoGeralRepository = new app.dao.ItemMovimentoGeralDAO(connection);        
+
+        try {
+            
+            var responseReceita = await receitaRepository.buscaReciboReceita(ano, idEstabelecimento, numero);
+            var receita = responseReceita[0];
+
+            var itensReceita = await itemReceitaRepository.buscarPorReceita(receita.id);            
+            receita.itensReceita = itensReceita ? itensReceita : null;
+
+            for (const itemReceita of receita.itensReceita) {               
+
+                var itensEstoque = await itemMovimentoGeralRepository.buscarPorItemReceita(receita.id, itemReceita.id);            
+                itemReceita.itensEstoque = itensEstoque ? itensEstoque : null;
+            }
+            res.status(200).json(receita);
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
         }
     });
 

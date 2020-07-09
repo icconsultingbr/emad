@@ -11,6 +11,7 @@ var server = app.listen(config.get('apiPort'), function(){
         cache.configurar()
         .then(result =>{
             console.log('ok');
+            //connection.end();
         });
     }, 2000);
 });
