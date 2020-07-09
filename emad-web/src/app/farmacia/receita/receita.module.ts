@@ -15,6 +15,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { PesquisaMedicamentoModule } from "../../components/pesquisa-medicamentos/pesquisa-medicamento.module";
+import { ReciboReceitaImpressaoService } from "./recibo/recibo-receita-impressao.service";
 
 @NgModule({
     imports: [
@@ -38,7 +39,8 @@ import { PesquisaMedicamentoModule } from "../../components/pesquisa-medicamento
         ReceitaFormComponent,
     ],
     providers: [
-        ReceitaService
+        ReceitaService,
+        ReciboReceitaImpressaoService
     ]
 })
 export class ReceitaModule {

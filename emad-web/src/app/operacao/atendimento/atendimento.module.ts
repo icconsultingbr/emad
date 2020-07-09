@@ -16,8 +16,8 @@ import { AgGridModule } from 'ag-grid-angular';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { AppModalModule } from "../../_core/_components/app-modal/app-modal.module";
 import 'rxjs/add/operator/map';
-import { ReciboReceitaImpressaoService } from "../../farmacia/receita/recibo/recibo-receita-impressao.service";
 import { ReceitaService } from "../../farmacia/receita/receita.service";
+import { ReciboReceitaImpressaoService } from "../../farmacia/receita/recibo/recibo-receita-impressao.service";
 
 @NgModule({
     imports: [

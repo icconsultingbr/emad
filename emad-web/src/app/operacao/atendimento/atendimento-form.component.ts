@@ -60,9 +60,9 @@ export class AtendimentoFormComponent implements OnInit {
   allItemsEncaminhamento: any[] = [];
   allItemsMedicamento: any[] = [];
   allMedicamentos: any[] = [];
-  removeId: Number;
+  removeId: number;
 
-  id: Number;
+  id: number;
 
   constructor(
     private service: AtendimentoService,
@@ -351,14 +351,14 @@ export class AtendimentoFormComponent implements OnInit {
       .subscribe((res: any) => {
 
         this.object.id = res.id;
-        //if(res.ano_receita)        
-          //this.object.ano_receita = res.ano_receita;
+        if(res.ano_receita)        
+          this.object.ano_receita = res.ano_receita;
 
-        //if(res.numero_receita)
-          //this.object.numero_receita = res.numero_receita;
+        if(res.numeroReceita)
+          this.object.numero_receita = res.numeroReceita;
 
-        //if(res.unidade_receita)
-         // this.object.unidade_receita = res.unidade_receita;
+        if(res.idEstabelecimento)
+          this.object.unidade_receita = res.idEstabelecimento;
 
         if(res.dadosFicha)
           this.object.dadosFicha = res.dadosFicha;
@@ -366,9 +366,9 @@ export class AtendimentoFormComponent implements OnInit {
         if (this.form.value.id) {
           this.message = "Alteração efetuada com sucesso!";
 
-          //if(!Util.isEmpty(this.object.ano_receita) && !Util.isEmpty(this.object.numero_receita) && !Util.isEmpty(this.object.unidade_receita))
-            //this.abreReceitaMedica(this.object.ano_receita, this.object.numero_receita, this.object.unidade_receita);
-       // } else {
+          if(!Util.isEmpty(this.object.ano_receita) && !Util.isEmpty(this.object.numero_receita) && !Util.isEmpty(this.object.unidade_receita))
+            this.abreReceitaMedica(this.object.ano_receita, this.object.numero_receita, this.object.unidade_receita);
+        } else {
           this.abreFichaDigital(this.object.id, false);
         }
 
@@ -659,27 +659,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   abreReceitaMedica(ano_receita: number, numero_receita: number, unidade_receita: number) {
-    this.reciboReceitaService.imprimir(ano_receita, unidade_receita, numero_receita);
-    // this.errors = [];
-    // let url =
-    //   JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_RECEITA_MEDICA_VISUALIZACAO")
-    //   ?
-    //   JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_RECEITA_MEDICA_VISUALIZACAO")[0].valor
-    //   .replace('{ano_receita}', ano_receita)
-    //   .replace('{numero_receita}', numero_receita)
-    //   .replace('{unidade_receita}', unidade_receita)
-    //   :"";
-    // this.loading = true;
-    // this.service.printDocument(url).subscribe(result => {
-    //   this.loading = false;
-    //   window.open(
-    //     url,
-    //     '_blank'
-    //   );
-    // }, error => {
-    //   this.loading = false;
-    //   this.errors = Util.customHTTPResponse(error);
-    // });
+    this.reciboReceitaService.imprimir(ano_receita, unidade_receita, numero_receita, false);
   }
 
   abreAtendimentoFichaDigital(id: Number) {

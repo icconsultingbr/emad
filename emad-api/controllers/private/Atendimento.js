@@ -356,6 +356,8 @@ module.exports = function (app) {
             var atualizaAtendimento = await atendimentoRepository.atualizaPorIdSync(obj, id);
 
             obj.id = id;
+            obj.ano_receita = receita ? receita.ano : null;
+            
             res.status(201).send(obj);
 
             await connection.commit();

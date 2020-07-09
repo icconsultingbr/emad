@@ -17,7 +17,11 @@
   <div class="card mb-4">  
     <div class="card mb-12">
       <div class="card-header text-left">
-        Receita
+        Receita        
+        <button *ngIf="object.id && object.ano && object.numero && object.idEstabelecimento" class="mr-2 btn btn-primary float-right rounded" type="button" 
+        (click)="abreReceitaMedica(object.ano, object.numero, object.idEstabelecimento, false)">
+        <i class="fa fa-file-medical-alt"></i>
+      </button>
       </div>
       <div class="card-body text-left">
         <div class="row">
@@ -137,8 +141,10 @@
       <div class="card-body text-left">
         <div class="row">
           <div class="col-12">
-            <app-pesquisa-medicamento  (medicamentoSelecionadoEvent)="medicamentoSelecionado($event)" [idProfissional]="object.idProfissional" 
-                                       [idMaterial]="itemReceita.idMaterial"></app-pesquisa-medicamento>          
+            <app-pesquisa-medicamento  (medicamentoSelecionadoEvent)="medicamentoSelecionado($event)" 
+                                      [idProfissional]="object.idProfissional" 
+                                       [idMaterial]="itemReceita.idMaterial"
+                                       [object]="objectMaterial"></app-pesquisa-medicamento>          
           </div>          
         </div>
         <div class="row">
@@ -465,7 +471,7 @@
 <ng-template #contentConfirmacaoFinalizar>
   <div class="modal-header">
     <h4 class="modal-title">Mensagem</h4>
-    <button type="button" class="close" (click)="close()">
+    <button type="button" class="close" (click)="close(false)">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -481,7 +487,7 @@
 <ng-template #contentConfirmacaoCompletar>
   <div class="modal-header">
     <h4 class="modal-title">Mensagem</h4>
-    <button type="button" class="close" (click)="close()">
+    <button type="button" class="close" (click)="close(false)">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -490,6 +496,22 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="sendForm($event, 'C')">Sim</button>
-    <button type="button" class="btn btn-danger"  (click)="close()">Não</button>    
+    <button type="button" class="btn btn-danger"  (click)="close(false)">Não</button>    
+  </div>
+</ng-template>
+
+<ng-template #contentRecibo>
+  <div class="modal-header">
+    <h4 class="modal-title">Recibo</h4>
+    <button type="button" class="close" (click)="close(false)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Deseja imprimir o recibo?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="abreReceitaMedica(object.ano, object.numero, object.idEstabelecimento, true)">Sim</button>
+    <button type="button" class="btn btn-danger"  (click)="close(true)">Não</button>    
   </div>
 </ng-template>

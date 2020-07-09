@@ -22,7 +22,7 @@ export class PesquisaMedicamentoComponent implements OnInit, AfterViewInit {
   @Input() medicamentoClearEvent = new EventEmitter<any>();  
   @Input() idProfissional: number;  
   @Input() idMaterial: number;  
-  object: Material = new Material();
+  @Input() object: Material = new Material();
   loading: Boolean = false;
   modalRef: NgbModalRef = null;
   service: PesquisaMedicamentoService;

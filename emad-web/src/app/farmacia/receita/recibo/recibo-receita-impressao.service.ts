@@ -16,20 +16,56 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
             display: block;
         }
 
+        div.page div.print-footer {
+            /*Oculta os rodapes de impressão*/
+            display: none;
+        }
+    
         @media print {
+            html, body {
+                min-height: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
             .hidden-button{
                 display: none;
+            }
+    
+            footer {
+                /*some com o rodapé original*/
+                display: none;
+            }
+    
+            div.page div.print-footer {
+                /*exibe os rodapés de impressão (que no caso são divs)*/
+                display: block;
+                position: relative;
+                top: 98%;
+                margin-top: -2%;
+                height: 2%; /*quando ajustar a altura deves ajustar margin-top e o top*/
+            }
+    
+            div.content {
+                /*Ajuda a trabalhar o conteudo com o .print-footer*/
+                position: relative;
+                background-color: #f00;
+                top: 0;
+                left: 0;
+            }
+    
+            div.page {
+                /*Força sempre quebrar a página no final*/
+                page-break-after: always;
+                max-height: 95%;
+                height: 95%;
+                background-color: #fc0;
             }
         }
 
         .margin-collapse {
             margin: 20 !important;
-        }
-
-        .collapsible-header {
-            background-color: #00929c;
-            font-size: 16px;
-            border-radius: 10px;
         }
 
         .row {
@@ -60,117 +96,26 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
             margin-top: unset !important;
         }
         
-        input[type=text]{
-            height: 2.5rem;
-            color:rgba(0, 0, 0, 1) !important;
-            font-size: 13px !important;
-        }
-        
-        .input-field label{
-            font-size: 0.7rem;
-        }
-
         .cor_topo {            
             color: #000000;
         }
-
-        .collapsible-body p{
-            padding: 0.2rem;
-            font-size: 13px !important;
-        }
-
     </style>`
         
         this.script = `<script>
             $(document).ready(function(){
-            $('.money').maskMoney({
-                prefix:'R$ ', 
-                allowNegative: true, 
-                thousands:'.', 
-                decimal:',', 
-                affixesStay: true
-            });
-
-            $('.percentage').maskMoney({
-                suffix:'%', 
-                allowNegative: true, 
-                thousands:'.', 
-                decimal:',', 
-                affixesStay: true
-            });
             $('.date').mask('00/00/0000');
             $('.cpf').mask('000.000.000-00');
             $('.cnpj').mask('00.000.000/0000-00');
-
-            $('.percentage').each(function(){ // function to apply mask on load!
-                 let val = $(this).val();
-
-                 if(val.indexOf('.')< 0){
-                     val = val + '.00';
-                 }
-
-                 console.log(val);
-
-                 $(this).maskMoney('mask', val);
-                
-                 if(val.indexOf('null') >= 0){
-                    $(this).val('0,00' + '%');
-                    return;
-                 }
-
-                 if(val.indexOf('.00') >= 0){
-                     val =  val.replace('.', ',') + '%';
-                    $(this).val(val);
-                    return;
-                 }
-                 if( val.split('.')[val.split('.').length-1].length <2){
-                     console.log(val.split('.')[val.split('.').length-1]);
-                     val = val.replace('.',',') + '0' + '%';
-                    $(this).val(val);
-                 }
-             });
-
-
-             $('.money').each(function(){ // function to apply mask on load!
-                let val = $(this).val();
-
-                if(val.indexOf('.')< 0){
-                    val = val + '.00';
-                }
-
-                console.log(val);
-
-                $(this).maskMoney('mask', val);
-               
-                if(val.indexOf('null') >= 0){
-                   $(this).val('R$ '+ '0,00');
-                   return;
-                }
-
-                if(val.indexOf('.00') >= 0){
-                    val = 'R$ '+ val.replace('.', ',');
-                   $(this).val(val);
-                   return;
-                }
-                if( val.split('.')[val.split('.').length-1].length <2){
-                    console.log(val.split('.')[val.split('.').length-1]);
-                    val = 'R$ '+ val.replace('.',',') + '0';
-                   $(this).val(val);
-                }
-            });
-
-            $("#form :input").prop("disabled", true);
-
             });
         </script>`
     }
 
-    imprimir(ano: number, idEstabelecimento: number, numero: number){
+    imprimir(ano: number, idEstabelecimento: number, numero: number, farmacia){
         this.receitaService.obterRelatorio(ano, idEstabelecimento, numero)
         .subscribe((result) => { 
         let cabecalhoMedicamento = '';        
         let dadosEstoque = '';
-        
+        let dadosAssinatura = '';        
         
         for (const itemReceita of result.itensReceita) {      
             cabecalhoMedicamento += (`<div class="col s6" style="text-align: left;">
@@ -189,12 +134,12 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
                                    <table class="table table-striped">
                                    <thead>
                                    <tr>
-                                     <th>Lote</th>
-                                     <th>Fabricante</th>
-                                     <th>Validade</th>
-                                     <th>Qtde. dispensada</th>
-                                     <th>Dispensado por</th>   
-                                     <th>Data da dispensação</th>   
+                                     <th style="width:20%">Lote</th>
+                                     <th style="width:35%">Fabricante</th>
+                                     <th style="width:10%">Validade</th>
+                                     <th style="width:10%">Qtde. dispensada</th>
+                                     <th style="width:15%">Dispensado por</th>   
+                                     <th style="width:10%">Data da dispensação</th>   
                                    </tr>
                                  </thead>
                                  `);   
@@ -217,60 +162,137 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
             cabecalhoMedicamento += (itemReceita.itensEstoque.length > 0 ? `</tbody></table>` : `</table>`);
         }
 
-        let tela = `<form class="container" id="form" style="font-size: 12px;">
-        <div class="row hidden-button" style="margin-bottom: 10px !important;">
-            <a class="waves-effect waves-light btn" style="float:right; margin-right:1%" onclick="window.print()">Imprimir</a>
-        </div>
-        <div class="row">
-            <div class="col s4" style="margin-top:20px;">
-                <img style="width:60%; float:left; margin-left:10px;" src="${window.location.origin}${window.location.pathname}/assets/imgs/logo_relatorio.png">
-            </div>                    
-            <div class="col s8" style="margin-top:40px;text-align: right; color: #7d0000; font-weight:bold">
-                Unidade: ${result.nomeEstabelecimento}               
-            </div>           
-            <div class="col s8" style="text-align: right; color: #7d0000; font-weight:bold">                
-                Recibo da receita
-            </div>           
-        </div>
-        <hr size = 7>
-        <div class="row">
-            <div class="col" style="text-align: center;width: 100%;">
-                <span style="font-family: Arial; font-size: 18px; font-weight:bold"> Número da receita: ${result.ano}-${result.idEstabelecimento}-${result.numero}</span>
-            </div>    
-        </div>
-        <br/>
-        <div class="row">
-            <div class="col s3">
-                <span> Paciente: ${result.nomePaciente}</span>
-            </div>  
-            <div class="col s3">
-                <span> Cartão SUS: ${result.cartaoSusPaciente}</span>
-            </div>    
-            <div class="col s3">
-                <span> Data de nascimento: ${result.dataNascimento ? _moment(result.dataNascimento).format('DD/MM/YYYY') : ' ' } (${result.pacienteIdade} anos)</span>
-            </div>    
-            <div class="col s3">
-                <span> Id SAP: ${result.idSap}</span>
-            </div>    
-        </div>
-        <div class="row">
-            <div class="col s3">
-                <span> Prescritor: ${result.nomeProfissional}</span>
-            </div> 
-            <div class="col s3">
-                <span> Data da prescrição: ${result.dataEmissao ? _moment(result.dataEmissao).format('DD/MM/YYYY') : ' ' }</span>
-            </div>    
-        </div>
-        <hr size = 7>
-        <div class="row">
-            ${cabecalhoMedicamento}   
-        </div>    
-        <div class="row">
-            ${dadosEstoque}   
-        </div>
-    </form>`
+        if(farmacia){
+            dadosAssinatura = `<br/>
+                               <br/>
+                               <div class="row">
+                                    <div class="col s6" style="text-align:right;">
+                                        <span>Recebi e conferi os medicamentos listados acima e suas quantidades, em ${_moment(new Date()).format('DD/MM/YYYY')} </span>
+                                    </div>
+                                    <div class="col s6">
+                                        <span>__________________________________________________________</span>
+                                    </div>                                    
+                               </div>`;
+        }
 
-        this.print(tela);
+        let tela = `
+        <div class="page">
+            <div class="content">
+                <form class="container" id="form" style="font-size: 12px;">
+                    <div class="row hidden-button" style="margin-bottom: 10px !important;">
+                        <a class="waves-effect waves-light btn" style="float:right; margin-right:1%" onclick="window.print()">Imprimir</a>
+                    </div>
+                    <div class="row">
+                        <div class="col s4" style="margin-top:20px;">
+                            <img style="width:60%; float:left; margin-left:10px;" src="${window.location.origin}${window.location.pathname}/assets/imgs/logo_relatorio.png">
+                        </div>                    
+                        <div class="col s8" style="margin-top:40px;text-align: right; color: #7d0000; font-weight:bold">
+                            Unidade: ${result.nomeEstabelecimento}               
+                        </div>           
+                        <div class="col s8" style="text-align: right; color: #7d0000; font-weight:bold">                
+                            Recibo da receita
+                        </div>           
+                    </div>
+                    <hr size = 7>
+                    <div class="row">
+                        <div class="col" style="text-align: center;width: 100%;">
+                            <span style="font-family: Arial; font-size: 18px; font-weight:bold"> Número da receita: ${result.ano}-${result.idEstabelecimento}-${result.numero}</span>
+                        </div>    
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col s3">
+                            <span> Paciente: ${result.nomePaciente}</span>
+                        </div>  
+                        <div class="col s3">
+                            <span> Cartão SUS: ${result.cartaoSusPaciente}</span>
+                        </div>    
+                        <div class="col s3">
+                            <span> Data de nascimento: ${result.dataNascimento ? _moment(result.dataNascimento).format('DD/MM/YYYY') : ' ' } (${result.pacienteIdade} anos)</span>
+                        </div>    
+                        <div class="col s3">
+                            <span> Id SAP: ${result.idSap}</span>
+                        </div>    
+                    </div>
+                    <div class="row">
+                        <div class="col s3">
+                            <span> Prescritor: ${result.nomeProfissional}</span>
+                        </div> 
+                        <div class="col s3">
+                            <span> Data da prescrição: ${result.dataEmissao ? _moment(result.dataEmissao).format('DD/MM/YYYY') : ' ' }</span>
+                        </div>    
+                    </div>
+                    <hr size = 7>
+                    <div class="row">
+                        ${cabecalhoMedicamento}   
+                    </div>    
+                    <div class="row">
+                        ${dadosEstoque}   
+                    </div>
+                    ${dadosAssinatura}
+                </form>    
+            </div>
+        </div>`
+
+    if(farmacia){
+        tela += `
+        <div class="page">
+            <div class="content">
+                <form class="container" id="form" style="font-size: 12px;">
+                <div class="row">
+                    <div class="col s4" style="margin-top:20px;">
+                        <img style="width:60%; float:left; margin-left:10px;" src="${window.location.origin}${window.location.pathname}/assets/imgs/logo_relatorio.png">
+                    </div>                    
+                    <div class="col s8" style="margin-top:40px;text-align: right; color: #7d0000; font-weight:bold">
+                        Unidade: ${result.nomeEstabelecimento}               
+                    </div>           
+                    <div class="col s8" style="text-align: right; color: #7d0000; font-weight:bold">                
+                        Recibo da receita
+                    </div>           
+                </div>
+                <hr size = 7>
+                <div class="row">
+                    <div class="col" style="text-align: center;width: 100%;">
+                        <span style="font-family: Arial; font-size: 18px; font-weight:bold"> Número da receita: ${result.ano}-${result.idEstabelecimento}-${result.numero}</span>
+                    </div>    
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col s3">
+                        <span> Paciente: ${result.nomePaciente}</span>
+                    </div>  
+                    <div class="col s3">
+                        <span> Cartão SUS: ${result.cartaoSusPaciente}</span>
+                    </div>    
+                    <div class="col s3">
+                        <span> Data de nascimento: ${result.dataNascimento ? _moment(result.dataNascimento).format('DD/MM/YYYY') : ' ' } (${result.pacienteIdade} anos)</span>
+                    </div>    
+                    <div class="col s3">
+                        <span> Id SAP: ${result.idSap}</span>
+                    </div>    
+                </div>
+                <div class="row">
+                    <div class="col s3">
+                        <span> Prescritor: ${result.nomeProfissional}</span>
+                    </div> 
+                    <div class="col s3">
+                        <span> Data da prescrição: ${result.dataEmissao ? _moment(result.dataEmissao).format('DD/MM/YYYY') : ' ' }</span>
+                    </div>    
+                </div>
+                <hr size = 7>
+                <div class="row">
+                    ${cabecalhoMedicamento}   
+                </div>    
+                <div class="row">
+                    ${dadosEstoque}   
+                </div>
+                ${dadosAssinatura}
+            </form>       
+        </div>        
+    </div>`
+    }
+
+        this.print(tela, ano,idEstabelecimento, numero);
         });
     }
 }

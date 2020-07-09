@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { ReceitaService } from './receita.service';
 import { Receita } from '../../_core/_models/Receita';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
@@ -10,6 +10,7 @@ import { Estoque } from '../../_core/_models/Estoque';
 import { Material } from '../../_core/_models/Material';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import * as uuid from 'uuid';
+import { ReciboReceitaImpressaoService } from './recibo/recibo-receita-impressao.service';
 const myId = uuid.v4();
 
 @Component({
@@ -21,6 +22,7 @@ const myId = uuid.v4();
 
 export class ReceitaFormComponent implements OnInit {
   @ViewChild('contentConfirmacao') contentConfirmacao: ElementRef;
+  @ViewChild('contentRecibo') contentRecibo: ElementRef;
   
   object: Receita = new Receita();
   itemReceita: ItemReceita = new ItemReceita();  
@@ -44,13 +46,16 @@ export class ReceitaFormComponent implements OnInit {
   listaMaterialLoteDispensadoConfirmar: any[] = [];
   listaMaterialAguardandoDispensacao: any[] = [];
   listaMaterialLoteDispensadoFinalizado: any[] = [];  
-  modalRef: NgbModalRef = null;
-  
+  modalRef: NgbModalRef = null;  
+  objectMaterial: Material = new Material();
+
   constructor(
     private fb: FormBuilder,
     private service: ReceitaService,
     private route: ActivatedRoute,
-    private modalService: NgbModal,
+    private modalService: NgbModal,   
+    private reciboReceitaService: ReciboReceitaImpressaoService, 
+    private ref: ChangeDetectorRef,
     private router: Router) {
       this.fields = service.fields;
     }
@@ -117,9 +122,12 @@ export class ReceitaFormComponent implements OnInit {
         });                        
   }      
   
-  close() {
+  close(retornaGrid: boolean) {
     if(this.modalRef)
       this.modalRef.close();
+
+    if(retornaGrid)
+      this.back();
   }
 
   back() {   
@@ -130,21 +138,24 @@ export class ReceitaFormComponent implements OnInit {
   sendForm(event, acao) {
     this.errors = [];    
     event.preventDefault();
-    this.close();
-
+    
     this.object.acao = acao ? acao : 'A';
+    this.close(false);
 
     this.service
       .inserir(this.object, "receita")
       .subscribe((res: any) => {
-        if (this.object.id) 
-          this.back();
-        else
+        if (this.object.id){
+          if(acao != 'A')
+            this.openConfirmacao(this.contentRecibo);        
+        }          
+        else{
           this.message = "Receita " + res.numero + " criada com sucesso!";
-
-        this.object.id = res.id;
-        this.object.numero = res.numero;                
-        this.object.situacao = res.situacao;
+          this.object.id = res.id;
+          this.object.numero = res.numero;                
+          this.object.situacao = res.situacao;
+        }          
+        
         this.warning = "";
       }, erro => {        
         this.errors = Util.customHTTPResponse(erro);
@@ -221,6 +232,8 @@ export class ReceitaFormComponent implements OnInit {
     this.object.itensReceita.push(this.itemReceita);
     this.itemReceita = new ItemReceita();
     this.listaMaterialLote = [];
+    this.objectMaterial = new Material();
+    this.ref.detectChanges();
   }
 
   confirmaItemReceitaEmAberto(item: any){    
@@ -404,6 +417,11 @@ export class ReceitaFormComponent implements OnInit {
     
     if(limpaItem)
       this.object.itensReceita = this.object.itensReceita.filter(itemExistente => itemExistente.idMaterial != item.idMaterial);    
+  }
+
+  abreReceitaMedica(ano_receita: number, numero_receita: number, unidade_receita: number, retornaGrid: boolean) {
+    this.close(retornaGrid);
+    this.reciboReceitaService.imprimir(ano_receita, unidade_receita, numero_receita, true);
   }
 
   createGroup() {
