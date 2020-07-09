@@ -4,7 +4,7 @@ export class RelatorioService {
     protected script = '';
 
     print(content){
-        var popupWin = window.open("", "_blank", "top=0,left=0,height=auto,width=auto");
+        var popupWin = window.open();
 
         popupWin.document.open();
         popupWin.document.write(`<html>
@@ -25,5 +25,6 @@ export class RelatorioService {
         </html>`);
 
         popupWin.document.close();
+        popupWin.print();
     }
 }
