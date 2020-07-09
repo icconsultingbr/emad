@@ -16,6 +16,8 @@ import { AgGridModule } from 'ag-grid-angular';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { AppModalModule } from "../../_core/_components/app-modal/app-modal.module";
 import 'rxjs/add/operator/map';
+import { ReciboReceitaImpressaoService } from "../../farmacia/receita/recibo/recibo-receita-impressao.service";
+import { ReceitaService } from "../../farmacia/receita/receita.service";
 
 @NgModule({
     imports: [
@@ -31,14 +33,16 @@ import 'rxjs/add/operator/map';
         NgbDatepickerModule,
         NgMultiSelectDropDownModule,
         AppModalModule,
-        RouterModule.forChild(atendimentoRoutes)
+        RouterModule.forChild(atendimentoRoutes)      
     ],
     declarations: [
         AtendimentoComponent,
         AtendimentoFormComponent,
     ],
     providers: [
-        AtendimentoService
+        AtendimentoService,
+        ReciboReceitaImpressaoService,
+        ReceitaService
     ]
 })
 export class AtendimentoModule {

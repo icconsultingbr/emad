@@ -46,6 +46,7 @@ ItemReceitaDAO.prototype.lista = function(callback) {
                                 ,a.idReceita
                                 ,a.idMaterial
                                 ,material.descricao nomeMaterial
+                                ,material.codigo codigoMaterial
                                 ,a.qtdPrescrita
                                 ,a.tempoTratamento
                                 ,a.qtdDispAnterior
@@ -72,6 +73,7 @@ ItemReceitaDAO.prototype.buscarPorReceita = async function(idReceita) {
                                 ,a.idReceita
                                 ,a.idMaterial
                                 ,material.descricao nomeMaterial
+                                ,material.codigo codigoMaterial
                                 ,a.qtdPrescrita
                                 ,a.tempoTratamento
                                 ,a.qtdDispAnterior

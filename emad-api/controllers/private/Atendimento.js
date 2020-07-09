@@ -17,7 +17,8 @@ module.exports = function (app) {
         catch (exception) {
             errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
             res.status(500).send(errors);
-        }finally{
+        }
+        finally{
             await connection.close();
         }
     });
