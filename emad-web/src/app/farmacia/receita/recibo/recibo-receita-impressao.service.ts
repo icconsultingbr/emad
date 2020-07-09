@@ -223,7 +223,7 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
         </div>
         <div class="row">
             <div class="col s4" style="margin-top:20px;">
-                <img style="width:60%; float:left; margin-left:10px;" src="${ window.location.origin }/assets/imgs/logo_relatorio.png">
+                <img style="width:60%; float:left; margin-left:10px;" src="${window.location.origin}${window.location.pathname}/assets/imgs/logo_relatorio.png">
             </div>                    
             <div class="col s8" style="margin-top:40px;text-align: right; color: #7d0000; font-weight:bold">
                 Unidade: ${result.nomeEstabelecimento}               
