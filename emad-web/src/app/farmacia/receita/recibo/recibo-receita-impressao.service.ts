@@ -127,7 +127,9 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
                                    <div class="col s2" style="text-align: left;">
                                       <span style="font-weight:bold"> Qtde. dispensada: </span><span>${itemReceita.qtdDispAnterior}</span>
                                    </div>
-                                   
+                                   <div class="col s12" style="text-align: left;">
+                                      <span style="font-weight:bold"> Posologia: </span><span>${itemReceita.observacao}</span>
+                                   </div>
                                    <table class="table table-striped">
                                    <thead>
                                    <tr>
@@ -222,7 +224,7 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
                     <hr size = 7>
                     <div class="row">
                         ${cabecalhoMedicamento}   
-                    </div>    
+                    </div>     
                     <div class="row">
                         ${dadosEstoque}   
                     </div>
