@@ -3,6 +3,8 @@ import { Atendimento } from '../../_core/_models/Atendimento';
 import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.service';
 import { AtendimentoService } from './atendimento.service';
 import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
+import { environment } from "../../../environments/environment";
 
 @Component({
   selector: 'app-atendimento',
@@ -17,6 +19,7 @@ export class AtendimentoComponent implements OnInit {
   fieldsSearch = [];
   object: Atendimento = new Atendimento();
   idPaciente: 0;
+  virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
 
   urls : any[] = [
     { 
@@ -45,11 +48,7 @@ export class AtendimentoComponent implements OnInit {
     { 
       icon : 'fa-file-medical-alt',
       label : '',
-      url :  
-        JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_RECEITA_MEDICA_VISUALIZACAO")
-        ?
-        JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_RECEITA_MEDICA_VISUALIZACAO")[0].valor
-        :"",
+      url :  this.router.url.replace('atendimentos','') + this.virtualDirectory + "#/atendimentos/relatorio-receita/{ano_receita}/{unidade_receita}/{numero_receita}/false",
       log: 'atendimento/receita-medica',
       title: 'Visualizar receita'
     },
@@ -58,7 +57,8 @@ export class AtendimentoComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: AtendimentoService,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private router: Router) {
 
     for (let field of this.service.fields) {
       if (field.grid) {
