@@ -1,6 +1,7 @@
 import { Routes } from "@angular/router";
 import { AtendimentoFormComponent } from "./atendimento-form.component";
 import { AtendimentoComponent } from "./atendimento.component";
+import { RelatorioReceitaComponent } from "./relatorio-receita.component";
 
 export const atendimentoRoutes: Routes = [
     {
@@ -18,6 +19,10 @@ export const atendimentoRoutes: Routes = [
     {
         path: 'cadastro/:id',
         component: AtendimentoFormComponent,        
+    },
+    {
+        path: 'relatorio-receita/:ano/:estabelecimentoId/:numero/:farmacia',
+        component: RelatorioReceitaComponent
     }
 ];
 

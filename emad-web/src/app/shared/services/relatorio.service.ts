@@ -1,10 +1,10 @@
-export class RelatorioService {
+export abstract class RelatorioService {
 
     protected style = '';
     protected script = '';
 
-    print(content, ano, idEstabelecimento, numero){
-        var popupWin = window.open();
+    print(content: string, ano: number, idEstabelecimento: number, numero: string | number, target: string = '_blank'){
+        var popupWin = window.open(null, target);
 
         popupWin.document.open();
         popupWin.document.write(`<html>

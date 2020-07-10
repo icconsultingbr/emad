@@ -10,11 +10,9 @@ import { Util } from '../../_core/_util/Util';
 import { PlanoTerapeuticoService } from '../plano-terapeutico/plano-terapeutico.service';
 import { PacienteHipotese } from '../../_core/_models/PacenteHipotese';
 import { Encaminhamento } from '../../_core/_models/Encaminhamento';
-import { isObject } from 'util';
 import { AtendimentoMedicamento } from '../../_core/_models/AtendimentoMedicamento';
-import { MedicamentoDim } from '../../_core/_models/MedicamentoDim';
 import { Material } from '../../_core/_models/Material';
-import { ReciboReceitaImpressaoService } from '../../farmacia/receita/recibo/recibo-receita-impressao.service';
+import { ReciboReceitaImpressaoService } from '../../shared/services/recibo-receita-impressao.service';
 
 @Component({
   selector: 'app-atendimento-form',

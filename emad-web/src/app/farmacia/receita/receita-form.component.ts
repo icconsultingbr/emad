@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
-import { ReceitaService } from './receita.service';
+import { ReceitaService } from '../../shared/services/receita.service';
 import { Receita } from '../../_core/_models/Receita';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,7 +10,7 @@ import { Estoque } from '../../_core/_models/Estoque';
 import { Material } from '../../_core/_models/Material';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import * as uuid from 'uuid';
-import { ReciboReceitaImpressaoService } from './recibo/recibo-receita-impressao.service';
+import { ReciboReceitaImpressaoService } from '../../shared/services/recibo-receita-impressao.service';
 const myId = uuid.v4();
 
 @Component({

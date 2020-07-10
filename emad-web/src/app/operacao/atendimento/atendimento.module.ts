@@ -12,12 +12,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { NgbModule, NgbCollapseModule, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { AgGridModule } from 'ag-grid-angular';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { AppModalModule } from "../../_core/_components/app-modal/app-modal.module";
 import 'rxjs/add/operator/map';
-import { ReceitaService } from "../../farmacia/receita/receita.service";
-import { ReciboReceitaImpressaoService } from "../../farmacia/receita/recibo/recibo-receita-impressao.service";
+import { SharedServiceModule } from "../../shared/services/shared-service.module";
+import { RelatorioReceitaComponent } from "./relatorio-receita.component";
 
 @NgModule({
     imports: [
@@ -33,16 +31,16 @@ import { ReciboReceitaImpressaoService } from "../../farmacia/receita/recibo/rec
         NgbDatepickerModule,
         NgMultiSelectDropDownModule,
         AppModalModule,
-        RouterModule.forChild(atendimentoRoutes)      
+        RouterModule.forChild(atendimentoRoutes),
+        SharedServiceModule
     ],
     declarations: [
         AtendimentoComponent,
         AtendimentoFormComponent,
+        RelatorioReceitaComponent
     ],
     providers: [
-        AtendimentoService,
-        ReciboReceitaImpressaoService,
-        ReceitaService
+        AtendimentoService
     ]
 })
 export class AtendimentoModule {

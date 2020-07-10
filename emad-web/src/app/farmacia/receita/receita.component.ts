@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.service';
-import { ReceitaService } from './receita.service';
+import { ReceitaService } from '../../shared/services/receita.service';
 import { Receita } from '../../_core/_models/Receita';
 
 @Component({

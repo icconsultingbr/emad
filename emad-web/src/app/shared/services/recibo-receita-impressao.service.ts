@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { RelatorioService } from "./relatorio.service";
 import * as _moment from 'moment';
-import { ReceitaService } from "../receita.service";
+import { ReceitaService } from "./receita.service";
 
 @Injectable()
 export class ReciboReceitaImpressaoService extends RelatorioService{
@@ -110,7 +110,7 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
         </script>`
     }
 
-    imprimir(ano: number, idEstabelecimento: number, numero: number, farmacia){
+    imprimir(ano: number, idEstabelecimento: number, numero: number, farmacia: boolean, target: string = '_blank'){
         this.receitaService.obterRelatorio(ano, idEstabelecimento, numero)
         .subscribe((result) => { 
         let cabecalhoMedicamento = '';        
@@ -289,7 +289,7 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
     </div>`
     }
 
-        this.print(tela, ano,idEstabelecimento, numero);
+        this.print(tela, ano,idEstabelecimento, numero, target);
         });
     }
 }

@@ -6,7 +6,6 @@ import { AppGridViewModule } from "../../_core/_components/app-grid-view/app-gri
 import { AppFormModule } from "../../_core/_components/app-form/app-form.module";
 import { ReceitaComponent } from "./receita.component";
 import { ReceitaFormComponent } from "./receita-form.component";
-import { ReceitaService } from "./receita.service";
 import { receitaRoutes } from "./receita.routing";
 import { PesquisaPacienteModule } from "../../components/pesquisa-pacientes/pesquisa-paciente.module";
 import { NgbDatepickerModule } from "@ng-bootstrap/ng-bootstrap/datepicker/datepicker.module";
@@ -15,7 +14,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { PesquisaMedicamentoModule } from "../../components/pesquisa-medicamentos/pesquisa-medicamento.module";
-import { ReciboReceitaImpressaoService } from "./recibo/recibo-receita-impressao.service";
+import { SharedServiceModule } from "../../shared/services/shared-service.module";
 
 @NgModule({
     imports: [
@@ -32,15 +31,14 @@ import { ReciboReceitaImpressaoService } from "./recibo/recibo-receita-impressao
         NgbCollapseModule,
         NgbDatepickerModule,
         BsDatepickerModule,
-        PesquisaMedicamentoModule
+        PesquisaMedicamentoModule,
+        SharedServiceModule
     ],
     declarations: [
         ReceitaComponent,
         ReceitaFormComponent,
     ],
     providers: [
-        ReceitaService,
-        ReciboReceitaImpressaoService
     ]
 })
 export class ReceitaModule {
