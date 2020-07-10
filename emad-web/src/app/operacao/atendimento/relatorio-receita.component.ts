@@ -16,13 +16,12 @@ export class RelatorioReceitaComponent implements OnInit {
             const ano = params['ano'];
             const estabelecimentoId = params['estabelecimentoId'];
             const numero = params['numero'];
-            const farmacia = params['farmacia'];
 
             if(!ano || numero == "{numero_receita}" || !estabelecimentoId){
                 alert('Receita não encontrada');
             }                
             else
-                this.relatorioReceitaService.imprimir(ano, estabelecimentoId, numero, farmacia, '_self');
+                this.relatorioReceitaService.imprimir(ano, estabelecimentoId, numero, false, '_self');
         });
     }
 }
