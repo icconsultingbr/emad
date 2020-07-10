@@ -18,7 +18,11 @@ export class RelatorioReceitaComponent implements OnInit {
             const numero = params['numero'];
             const farmacia = params['farmacia'];
 
-            this.relatorioReceitaService.imprimir(ano, estabelecimentoId, numero, farmacia, '_self');
+            if(!ano || numero == "{numero_receita}" || !estabelecimentoId){
+                alert('Receita não encontrada');
+            }                
+            else
+                this.relatorioReceitaService.imprimir(ano, estabelecimentoId, numero, farmacia, '_self');
         });
     }
 }
