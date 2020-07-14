@@ -87,7 +87,7 @@ export class EstoqueService extends GenericsService {
       field: "validade",
       type: "text",
       label: "Validade",
-      grid: true,
+      grid: false,
       form: true,
       required: true,
       mask: "99/99/9999",      

@@ -3,6 +3,7 @@ import { ReciboReceitaImpressaoService } from './recibo-receita-impressao.servic
 import { ReceitaService } from './receita.service';
 import { CoreModule } from '../../_core/core.module';
 import { EstoqueUnidadeImpressaoService } from './estoque-unidade-impressao.service';
+import { EstoqueMedicamentoImpressaoService } from './estoque-medicamento-impressao.service';
 
 @NgModule({
     imports: [
@@ -12,7 +13,8 @@ import { EstoqueUnidadeImpressaoService } from './estoque-unidade-impressao.serv
     providers: [
         ReciboReceitaImpressaoService,
         ReceitaService,
-        EstoqueUnidadeImpressaoService,        
+        EstoqueUnidadeImpressaoService,  
+        EstoqueMedicamentoImpressaoService      
     ]
 })
 export class SharedServiceModule { }

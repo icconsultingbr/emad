@@ -36,8 +36,7 @@ export class EstoqueUnidadeComponent implements OnInit {
   //MODELS (OBJECTS)
   object: RelatorioEstoque = new RelatorioEstoque();
   estoquePorUnidade: any[] = [];
-  listaEstoqueUnidadeDetalhe: any[] = [];
-  pacienteSelecionado: any = null;
+  listaEstoqueUnidadeDetalhe: any[] = [];  
   domains: any[] = [];
 
   constructor(
@@ -95,7 +94,7 @@ export class EstoqueUnidadeComponent implements OnInit {
     this.loading = true;
     this.listaEstoqueUnidadeDetalhe = [];
     this.estoquePorUnidade.forEach(itemEstoque => {      
-      itemEstoque.expandir = (itemEstoque.id == item.id && itemEstoque.expandir == true) ? true : false;
+      itemEstoque.expandir = (itemEstoque.idMaterial == item.idMaterial && itemEstoque.expandir == true) ? true : false;
     });
     item.expandir = !item.expandir;    
     this.service.carregaEstoquePorEstabelecimentoDetalhado(this.object.idEstabelecimento, item.idMaterial).subscribe(estoque => {

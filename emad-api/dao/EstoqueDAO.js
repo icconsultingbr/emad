@@ -90,7 +90,7 @@ EstoqueDAO.prototype.lista = function(addFilter, callback) {
                             ,a.idEstabelecimento
                             ,estabelecimento.nomeFantasia nomeEstabelecimento
                             ,a.lote                            
-                            ,DATE_FORMAT(a.validade,'%d/%m/%Y') as validade
+                            ,a.validade
                             ,a.quantidade
                             ,a.bloqueado
                             ,a.motivoBloqueio
@@ -154,6 +154,25 @@ EstoqueDAO.prototype.carregaEstoquePorUnidadeDetalhe = async function(idMaterial
                                                     INNER JOIN tb_fabricante_material fabricanteMaterial ON (est.idFabricanteMaterial = fabricanteMaterial.id)
                                                     where mat.situacao = 1 and mat.dispensavel = true and und.situacao = 1 
                                                     and est.idMaterial = ?  and est.idEstabelecimento= ? `, [idMaterial, idEstabelecimento] );
+    return estoque;
+}
+
+EstoqueDAO.prototype.carregaEstoquePorMedicamento = async function(idMaterial){
+    let estoque =  await this._connection.query(`select und.id as idEstabelecimento, und.nomeFantasia as nomeEstabelecimento,
+                                                        mat.codigo as codigo, 
+                                                        mat.descricao as medicamento,
+                                                        sum(est.quantidade) as estoque, 
+                                                        est.idMaterial as idMaterial,
+                                                        (select COUNT(1) from tb_estoque estBloq where estBloq.idMaterial= est.idMaterial and estBloq.bloqueado=1) lote_com_bloqueio,
+                                                        (select COUNT(1) from tb_estoque estBloq where estBloq.idMaterial= est.idMaterial and estBloq.validade<=now()) lote_com_vencidos,
+                                                        (select max(estBloq.dataAlteracao) from tb_estoque estBloq where estBloq.idMaterial= est.idMaterial) data_movimento
+                                                    from tb_estoque est
+                                                    inner join tb_material mat on est.idMaterial = mat.id
+                                                    inner join tb_estabelecimento und on est.idEstabelecimento = und.id
+                                                    where mat.situacao = 1
+                                                    and mat.dispensavel = true
+                                                    and und.situacao = 1 and mat.id = ?                                                    
+                                                    group by  und.id, und.nomeFantasia, mat.codigo , mat.descricao , est.idMaterial `, [idMaterial]);
     return estoque;
 }
 

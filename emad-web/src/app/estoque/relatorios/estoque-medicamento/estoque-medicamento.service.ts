@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GenericsService } from '../../../_core/_services/generics.service';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class EstoqueMedicamentoService extends GenericsService {
@@ -18,52 +19,14 @@ export class EstoqueMedicamentoService extends GenericsService {
       form: true,
       required: false,
       validator: ['', '']
-    },
-    {
-      field: "cartaoSus",
-      type: "text",
-      label: "Cartão SUS",
-      grid: true,
-      form: false,
-      required: false,
-      validator: ['', '']
-    },
-    {
-      field: "idSap",
-      type: "text",
-      label: "Número SAP",
-      grid: true,
-      form: false,
-      required: false,
-      validator: ['', '']
-    },
-    {
-      field: "nome",
-      type: "text",
-      label: "Nome",
-      grid: true,
-      form: false,
-      required: false,
-      validator: ['', '']
-    },
-    {
-      field: "nomeMae",
-      type: "text",
-      label: "Nome da mãe",
-      grid: true,
-      form: false,
-      required: false,
-      validator: ['', '']
-    },
-    {
-      field: "dataNascimento",
-      type: "text",
-      label: "Data Nascimento",
-      grid: true,
-      isDate: true,
-      form: false,
-      required: false,
-      validator: ['', '']
-    },
+    }
   ];
+
+  carregaEstoquePorMedicamento(tipoPesquisa: string, id: any): Observable<any> {    
+    return this.http.get("estoque/material/" + id + "/tipo-pesquisa/" + tipoPesquisa);
+  }
+  
+  carregaEstoquePorEstabelecimentoDetalhado(idEstabelecimento: number, idMaterial: number): Observable<any> {
+    return this.http.get("estoque/unidade/" + idEstabelecimento + "/material/" + idMaterial);
+  }
 }

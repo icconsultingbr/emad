@@ -20,7 +20,7 @@ export abstract class RelatorioEstoqueService {
                 ${ content }
             </body>
         </html>`);
-        popupWin.document.title = "Estoque-"  + nomeEstabelecimento;
+        popupWin.document.title = "Estoque-"  + (nomeEstabelecimento == "" ? "Medicamento" : nomeEstabelecimento);
         popupWin.document.close();
     }
 }

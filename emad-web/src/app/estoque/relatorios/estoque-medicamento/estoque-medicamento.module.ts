@@ -16,6 +16,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { AppModalModule } from "../../../_core/_components/app-modal/app-modal.module";
 import 'rxjs/add/operator/map';
 import { PesquisaMedicamentoModule } from "../../../components/pesquisa-medicamentos/pesquisa-medicamento.module";
+import { SharedServiceModule } from "../../../shared/services/shared-service.module";
 
 @NgModule({
     imports: [
@@ -35,6 +36,7 @@ import { PesquisaMedicamentoModule } from "../../../components/pesquisa-medicame
         AppModalModule,
         RouterModule.forChild(estoqueMedicamentoRoutes),
         PesquisaMedicamentoModule,
+        SharedServiceModule
     ],
     declarations: [
         EstoqueMedicamentoComponent

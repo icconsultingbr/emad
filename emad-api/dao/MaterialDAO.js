@@ -64,6 +64,10 @@ MaterialDAO.prototype.listaPorDescricao = function(addFilter, callback) {
         if (addFilter.descricao) {
             where+=" AND UPPER(a.descricao) LIKE '%"+addFilter.descricao.toUpperCase()+"%'";
         }
+        
+        if (addFilter.idGrupoMaterial && addFilter.idGrupoMaterial != "undefined") {
+            where+=" AND a.idGrupoMaterial = " + addFilter.idGrupoMaterial + "";
+        } 
     }
 
     this._connection.query(`SELECT

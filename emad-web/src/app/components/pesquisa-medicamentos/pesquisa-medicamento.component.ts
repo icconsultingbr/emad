@@ -140,7 +140,7 @@ export class PesquisaMedicamentoComponent implements OnInit, AfterViewInit {
        return;
     }
 
-    if (Util.isEmpty(this.idProfissional))
+    if (Util.isEmpty(this.idProfissional) && this.idProfissional != 999)
     {
        this.errors = [{message:"Selecione o profissional antes de pesquisar um medicamento"}];
        this.loading = false;
@@ -149,15 +149,28 @@ export class PesquisaMedicamentoComponent implements OnInit, AfterViewInit {
     
     params = "?descricao=" + this.object.descricao + "&idGrupoMaterial=" + this.object.idGrupoMaterial;
 
-    this.service.list('material/especialidade/' + this.idProfissional + params).subscribe(result => {
-      this.listaMedicamentos = result;
-      this.setPage(1);
-      this.loading = false;
-      this.errors = [];
-    }, erro => {
-      this.loading = false;
-      this.errors = Util.customHTTPResponse(erro);
-    });
+    if(this.idProfissional == 999){
+      this.service.list('material' + params).subscribe(result => {
+        this.listaMedicamentos = result;
+        this.setPage(1);
+        this.loading = false;
+        this.errors = [];
+      }, erro => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(erro);
+      });
+    }
+    else{
+      this.service.list('material/especialidade/' + this.idProfissional + params).subscribe(result => {
+        this.listaMedicamentos = result;
+        this.setPage(1);
+        this.loading = false;
+        this.errors = [];
+      }, erro => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(erro);
+      });
+    }   
   }
 }
 

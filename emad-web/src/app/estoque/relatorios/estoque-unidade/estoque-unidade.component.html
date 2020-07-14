@@ -81,7 +81,7 @@
                         <tr class="text-left">
                             <td class="text-secondary">{{item.medicamento}}</td>
                             <td class="text-secondary  text-center">{{item.data_movimento | date :'dd/MM/yyyy'}}</td>
-                            <td class="text-secondary  text-right">{{item.estoque}}</td>
+                            <td class="text-secondary  text-center">{{item.estoque}}</td>
                             <td class="text-secondary text-center">
                                 <i *ngIf="item.lote_com_vencidos > 0" class="fas fa-circle" title="Lotes Vencidos" style="color:red"></i>
                                 <i *ngIf="item.lote_com_vencidos == 0" class="fas fa-circle" title="Lotes Válidos" style="color:green"></i>  
@@ -92,7 +92,7 @@
                             </td> 
                             <td class="text-secondary text-right">
                                 <button type="button" class="btn btn-primary float-left mr-2" (click)="carregaEstoque(item)">
-                                  <i class="fa fa-eye"></i>  Visualizar lote
+                                  <i class="fa fa-eye"></i>  Visualizar lote(s)
                                 </button>
                             </td>                        
                           </tr>
@@ -100,7 +100,7 @@
                             <td colspan="7"  *ngIf="item.expandir">
                               <table class="table table-striped" *ngIf="item.expandir">
                                 <thead>
-                                    <tr>
+                                    <tr class="text-center">
                                       <th>Lote</th>
                                       <th>Validade</th>
                                       <th>Fabricante</th>                                      
@@ -114,7 +114,7 @@
                                     <td class="text-secondary">{{item.lote }}</td>                            
                                     <td class="text-secondary">{{item.validade | date :'dd/MM/yyyy'}}</td>
                                     <td class="text-secondary">{{item.nomeFabricanteMaterial}}</td>                                                          
-                                    <td class="text-secondary">{{item.estoque}}</td>                                     
+                                    <td class="text-secondary text-center">{{item.estoque}}</td>                                     
                                     <td class="text-secondary text-center">
                                         <i *ngIf="item.vencido > 0" class="fas fa-circle" title="Lote Vencido" style="color:red"></i>
                                         <i *ngIf="item.vencido == 0" class="fas fa-circle" title="Lote Válido" style="color:green"></i>  
