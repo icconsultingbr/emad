@@ -92,6 +92,81 @@ module.exports = function (app) {
             return;      
         });
     }); 
+    
+    app.get('/estoque/unidade/:idEstabelecimento/pesquisa', async function (req, res) {
+        let usuario = req.usuario;
+        let idEstabelecimento = req.params.idEstabelecimento;
+        let util = new app.util.Util();
+        let errors = [];
+        let addFilter = req.query;
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const estoqueRespository = new app.dao.EstoqueDAO(connection);
+
+        try {            
+            var responseEstoque = await estoqueRespository.carregaEstoquePorUnidade(idEstabelecimento, addFilter);
+            res.status(200).json(responseEstoque);
+        }
+        catch (exception) {
+            console.log("Erro ao carregar o registro, exception: " +  exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });    
+
+    app.get('/estoque/unidade/:idEstabelecimento/relatorio', async function (req, res) {
+        let usuario = req.usuario;
+        let idEstabelecimento = req.params.idEstabelecimento;
+        let util = new app.util.Util();
+        let errors = [];
+        let addFilter = req.query;
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const estoqueRespository = new app.dao.EstoqueDAO(connection);
+
+        try {            
+            var responseEstoque = await estoqueRespository.carregaEstoquePorUnidade(idEstabelecimento, addFilter);            
+            for (const itemEstoque of responseEstoque) {               
+                var itensEstoque = await estoqueRespository.carregaEstoquePorUnidadeDetalhe(itemEstoque.idMaterial, idEstabelecimento);
+                itemEstoque.itensEstoque = itensEstoque ? itensEstoque : null;
+            }
+            res.status(200).json(responseEstoque);
+        }
+        catch (exception) {
+            console.log("Erro ao carregar o registro, exception: " +  exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });  
+
+    app.get('/estoque/unidade/:idEstabelecimento/material/:idMaterial', async function (req, res) {        
+        let idEstabelecimento = req.params.idEstabelecimento;
+        let idMaterial = req.params.idMaterial;
+        let util = new app.util.Util();
+
+        let errors = [];
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const estoqueRespository = new app.dao.EstoqueDAO(connection);
+
+        try {            
+            var responseEstoque = await estoqueRespository.carregaEstoquePorUnidadeDetalhe(idMaterial,idEstabelecimento);
+            res.status(200).json(responseEstoque);
+        }
+        catch (exception) {
+            console.log("Erro ao carregar o registro, exception: " +  exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    }); 
 
     app.delete('/estoque/:id', function(req,res){     
         let util = new app.util.Util();

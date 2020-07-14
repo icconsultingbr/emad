@@ -1,0 +1,137 @@
+<app-loader [loading]="loading"></app-loader>
+<p *ngIf="message.length" class="alert alert-info">{{message}}</p>
+<div *ngIf="errors.length" class="alert alert-danger">
+    <div *ngFor="let error of errors" class="row">
+        <div class="col-12 text-left">
+            {{error.message}}
+        </div>
+    </div>
+</div>
+<h2 class="text-left">Estoque por unidade</h2><br/>
+
+<div class="form-group row">
+    <label class="col-xl-2 col-form-label text-left">
+        Estabelecimento
+    </label>
+    <div class="col-xl-10">        
+        <input type="text" class="form-control has-error" [(ngModel)]="object.nomeEstabelecimento" readonly> 
+    </div>
+</div>
+
+<div class="form-group row">
+    <label class="col-xl-2 col-form-label text-left">
+        Nome do medicamento
+    </label>
+    <div class="col-xl-10">        
+        <input type="text" class="form-control has-error" [(ngModel)]="object.nomeMaterial"> 
+    </div>
+</div>
+
+<div class="form-group row">
+    <label class="col-xl-2 col-form-label text-left">
+        Nome do estoque
+    </label>
+    <div class="col-xl-10">        
+        <input type="text" class="form-control has-error" [(ngModel)]="object.nomeLote"> 
+    </div>
+</div>
+
+<div class="form-group text-right" >
+    <div  class="col-xl-12">
+        <button class="btn btn-primary " type="button" (click)="carregaEstoquePorEstabelecimento(true)">
+            <i class="fa fa-search"></i> Pesquisar
+        </button>
+        <button class="btn btn-primary " type="button" (click)="clear()">
+            <i class="fa fa-times"></i> Cancelar
+        </button>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header text-left">
+        Estoque
+        <button class="mr-2 btn btn-primary float-right rounded" type="button" title="Imprimir estoque por unidade" 
+        (click)="abreRelatorioEstoqueUnidade(object.idEstabelecimento, object.nomeMaterial, object.nomeLote, false)">
+        <i class="fa fa-print"></i>
+      </button>
+    </div>
+    <div class="card-body text-left">
+        <div class="row">
+            <div class="col-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr class="text-center"> 
+                            <th style="width:43%">Material</th>
+                            <th style="width:12%">Último movimento</th>                      
+                            <th style="width:10%">Estoque</th>
+                            <th style="width:10%">Validade</th>
+                            <th style="width:10%">Status</th>
+                            <th style="width:15%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-left">
+                        <td colspan="99" class="text-secondary"  *ngIf="!estoquePorUnidade.length">
+                            <i>Não há resultados...</i>
+                        </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="estoquePorUnidade.length">
+                    <ng-container *ngFor="let item of estoquePorUnidade">
+                        <tr class="text-left">
+                            <td class="text-secondary">{{item.medicamento}}</td>
+                            <td class="text-secondary  text-center">{{item.data_movimento | date :'dd/MM/yyyy'}}</td>
+                            <td class="text-secondary  text-right">{{item.estoque}}</td>
+                            <td class="text-secondary text-center">
+                                <i *ngIf="item.lote_com_vencidos > 0" class="fas fa-circle" title="Lotes Vencidos" style="color:red"></i>
+                                <i *ngIf="item.lote_com_vencidos == 0" class="fas fa-circle" title="Lotes Válidos" style="color:green"></i>  
+                            </td> 
+                            <td class="text-secondary text-center">
+                                <i *ngIf="item.lote_com_bloqueio > 0" class="fas fa-circle" title="Lotes Bloqueados" style="color:red"></i>
+                                <i *ngIf="item.lote_com_bloqueio == 0" class="fas fa-circle" title="Lotes Liberados" style="color:green"></i>  
+                            </td> 
+                            <td class="text-secondary text-right">
+                                <button type="button" class="btn btn-primary float-left mr-2" (click)="carregaEstoque(item)">
+                                  <i class="fa fa-eye"></i>  Visualizar lote
+                                </button>
+                            </td>                        
+                          </tr>
+                          <tr class="text-left" >                      
+                            <td colspan="7"  *ngIf="item.expandir">
+                              <table class="table table-striped" *ngIf="item.expandir">
+                                <thead>
+                                    <tr>
+                                      <th>Lote</th>
+                                      <th>Validade</th>
+                                      <th>Fabricante</th>                                      
+                                      <th>Estoque</th> 
+                                      <th>Validade</th>
+                                      <th>Status</th>
+                                    </tr>  
+                                </thead>
+                                <tbody>
+                                  <tr class="text-left" *ngFor="let item of listaEstoqueUnidadeDetalhe">
+                                    <td class="text-secondary">{{item.lote }}</td>                            
+                                    <td class="text-secondary">{{item.validade | date :'dd/MM/yyyy'}}</td>
+                                    <td class="text-secondary">{{item.nomeFabricanteMaterial}}</td>                                                          
+                                    <td class="text-secondary">{{item.estoque}}</td>                                     
+                                    <td class="text-secondary text-center">
+                                        <i *ngIf="item.vencido > 0" class="fas fa-circle" title="Lote Vencido" style="color:red"></i>
+                                        <i *ngIf="item.vencido == 0" class="fas fa-circle" title="Lote Válido" style="color:green"></i>  
+                                    </td> 
+                                    <td class="text-secondary text-center">
+                                        <i *ngIf="item.bloqueado > 0" class="fas fa-circle" title="Lote Bloqueado" style="color:red"></i>
+                                        <i *ngIf="item.bloqueado == 0" class="fas fa-circle" title="Lote Liberado" style="color:green"></i>  
+                                    </td>                             
+                                  </tr>        
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                    </ng-container>                      
+                    </tbody>
+                </table>
+              </div>
+        </div>
+    </div>
+</div>

@@ -36,11 +36,11 @@ io.use(function(socket, next){
 
 
 
-io.on('connection', function(socket){
-    console.log('>> Usuário conectou');
-    socket.on('disconnect', function(){
-        console.log('<< Usuário desconectou');
-    });
+//io.on('connection', function(socket){
+    //console.log('>> Usuário conectou');
+    //socket.on('disconnect', function(){
+        //console.log('<< Usuário desconectou');
+    //});
     
     /*setInterval(()=>{
         socket.emit(
@@ -60,7 +60,7 @@ io.on('connection', function(socket){
         );
     },4000);*/
     
-});
+//});
 
 
 /*const CronJob = require('cron').CronJob;

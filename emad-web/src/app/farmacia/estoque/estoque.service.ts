@@ -90,8 +90,7 @@ export class EstoqueService extends GenericsService {
       grid: true,
       form: true,
       required: true,
-      mask: "99/99/9999",
-      isDate: true,
+      mask: "99/99/9999",      
       validator: ['', Validators.required]
     },
     {
