@@ -176,6 +176,31 @@ EstoqueDAO.prototype.carregaEstoquePorMedicamento = async function(idMaterial){
     return estoque;
 }
 
+EstoqueDAO.prototype.carregaEstoquePorConsumo = async function(idMaterial, idEstabelecimento, addFilter){
+    let where = "";    
+    if(addFilter != null){   
+        if (addFilter.estoqueAbaixoMinimo && addFilter.estoqueAbaixoMinimo == "S") {            
+            where+=" AND (SELECT SUM(quantidade) FROM tb_estoque WHERE idMaterial = m.id and idEstabelecimento=" + idEstabelecimento + ") <= m.estoqueMinimo ";
+        }      
+    }
+
+    if (idMaterial && idMaterial != "undefined" && idMaterial > 0) {
+        where += " AND m.id = '" + idMaterial + "'";
+    } 
+
+    let estoque =  await this._connection.query(`SELECT m.codigo as codigoMaterial, m.descricao as nomeMaterial, m.estoqueMinimo ,
+                                                @estoque:=(SELECT SUM(quantidade) FROM tb_estoque WHERE idMaterial = m.id and idEstabelecimento=?) as estoque,
+                                                @comprar:=(0-0) as comprar,
+                                                @dispensar:=(0) as dispensar,
+                                                (IF(@estoque > 0,@estoque,0)+IF(@comprar > 0,@comprar,0)-IF(@dispensar > 0,@dispensar,0))  as saldo
+                                                FROM tb_material m                                                
+                                                WHERE 
+                                                m.situacao = true
+                                                AND (SELECT SUM(quantidade) FROM tb_estoque WHERE idMaterial = m.id and idEstabelecimento=?) > 0                                                
+                                                ${where} `, [idEstabelecimento, idEstabelecimento]);
+    return estoque;
+}
+
 module.exports = function(){
     return EstoqueDAO;
 };

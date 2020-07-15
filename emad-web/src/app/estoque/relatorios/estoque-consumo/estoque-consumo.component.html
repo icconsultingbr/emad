@@ -1,0 +1,47 @@
+<app-loader [loading]="loading"></app-loader>
+<p *ngIf="message.length" class="alert alert-info">{{message}}</p>
+<div *ngIf="errors.length" class="alert alert-danger">
+    <div *ngFor="let error of errors" class="row">
+        <div class="col-12 text-left">
+            {{error.message}}
+        </div>
+    </div>
+</div>
+<h2 class="text-left">Consumo estoque</h2><br/>
+
+<div class="form-group row">
+    <label class="col-xl-2 col-form-label text-left">
+        Estabelecimento
+    </label>
+    <div class="col-xl-10">        
+        <input type="text" class="form-control has-error" [(ngModel)]="object.nomeEstabelecimento" readonly> 
+    </div>
+</div>
+
+<div class="form-group row">
+    <div class="col-sm-12">
+        <app-pesquisa-medicamento  (medicamentoSelecionadoEvent)="medicamentoSelecionado($event)" 
+        [idProfissional]="999" [idMaterial]="object.idMaterial" [object]="objectMaterial"></app-pesquisa-medicamento>          
+    </div>
+</div>
+<div class="form-group row">
+    <label class="col-xl-2 col-form-label text-left">
+        Itens estoque abaixo do mínimo
+    </label>
+    <div class="col-xl-10">                
+        <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.estoqueAbaixoMinimo" >                  
+            <option *ngFor="let item of domains[0]?.estoqueAbaixoMinimo" [value]="item.id">{{item.nome}}</option>
+        </select>
+    </div>
+</div>
+
+<div class="form-group text-right" >
+    <div  class="col-xl-12">
+        <button class="btn btn-primary " type="button" (click)="abreRelatorioEstoqueConsumo(object.idMaterial, object.idEstabelecimento, object.estoqueAbaixoMinimo, object.nomeEstabelecimento, object.nomeMaterial)">
+            <i class="fa fa-print"></i> Gerar relatório
+        </button>
+        <button class="btn btn-primary " type="button" (click)="clear()">
+            <i class="fa fa-times"></i> Cancelar
+        </button>
+    </div>
+</div>

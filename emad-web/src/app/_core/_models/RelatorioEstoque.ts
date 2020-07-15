@@ -16,4 +16,5 @@ export class RelatorioEstoque {
     @Input() dataBloqueio: Date;
     @Input() idUsuarioBloqueio: number;
     @Input() situacao: Boolean;
+    @Input() estoqueAbaixoMinimo: string = "N";
 }
