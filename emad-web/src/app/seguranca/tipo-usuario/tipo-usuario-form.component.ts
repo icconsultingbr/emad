@@ -101,7 +101,7 @@ export class TipoUsuarioFormComponent implements OnInit {
         this.warning = "";
         this.tipoUsuarioForm.reset();
       }, erro => {
-        let json = JSON.parse(erro._body);
+        let json = erro; 
         this.warning = "";
 
         for (var key in json) {

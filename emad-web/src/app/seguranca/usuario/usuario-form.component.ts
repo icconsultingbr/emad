@@ -40,7 +40,7 @@ export class UsuarioFormComponent implements OnInit {
     this.router = router;
     this.service = service;
 
-
+    
     this.service.list("tipo-usuario").subscribe(tiposUsuario => {
       this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
         this.domains.push({
@@ -83,7 +83,7 @@ export class UsuarioFormComponent implements OnInit {
 
 
       }, erro => {
-        let json = JSON.parse(erro._body);
+        let json = erro; 
         this.warning = "";
 
         for (var key in json) {

@@ -7,11 +7,11 @@ import { LoginService } from '../../login/login.service';
 import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.service';
 
 @Component({
-  selector: 'app-usuario-reset',
-  templateUrl: './usuario-reset.component.html',
-  styleUrls: ['./usuario-reset.component.css']
+  selector: 'app-usuario-alterar-senha',
+  templateUrl: './usuario-alterar-senha.component.html',
+  styleUrls: ['./usuario-alterar-senha.component.css']
 })
-export class UsuarioResetComponent implements OnInit {
+export class UsuarioAlterarSenhaComponent implements OnInit {
 
   service: UsuarioService;
   usuarioForm: FormGroup;
@@ -36,20 +36,21 @@ export class UsuarioResetComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       let id = params['id'];
-
+      
       if (id) {
         this.service.buscaPorId(id)
           .subscribe(
             mensagem => {
               //console.log(mensagem);
-              this.usuario = mensagem; 
+              this.usuario = mensagem.usuario; 
             }
           );
       }
     });
  
     this.usuarioForm = fb.group({
-      senhaAtual: ['', Validators.required],
+      nome: [this.usuario.nome],
+      cpf: [this.usuario.cpf],      
       novaSenha: ['', Validators.required],
       confirmarNovaSenha: ['', Validators.required]
     }); 
@@ -63,16 +64,11 @@ export class UsuarioResetComponent implements OnInit {
     event.preventDefault();
 
     this.service
-    .redefinirSenha(this.usuarioForm.value)
-    .subscribe(res=>{
-      if(this.usuarioForm.value.id){
-        this.router.navigate(['/']);
-      }
+    .redefinirSenhaAdmin(this.usuarioForm.value)
+    .subscribe(res=>{      
       this.mensagem = "Senha alterada com sucesso!";
       this.warning = "";
-      this.usuarioForm.reset();
-      this.loginService.logout();
-      this.router.navigate(['/login']);
+      this.router.navigate(['usuarios']);
     }, erro=>{
       let json = erro; 
       this.warning ="";
@@ -82,5 +78,4 @@ export class UsuarioResetComponent implements OnInit {
       }
     });
   }
-
 }

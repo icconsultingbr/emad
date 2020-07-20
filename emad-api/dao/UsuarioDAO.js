@@ -110,7 +110,12 @@ UsuarioDAO.prototype.listaPorEmpresa = function (id, callback) {
 
 UsuarioDAO.prototype.buscaPorEmail = function (usuario, callback) {
 
-    let where = " AND u.email = ? ";
+    let where = "";
+
+    if(usuario.email.length == 11) 
+        where += " AND u.cpf = ? ";
+    else
+        where += " AND u.email = ? ";
 
     if (typeof (usuario.id) != 'undefined') {
         where += "AND u.id <> ?";

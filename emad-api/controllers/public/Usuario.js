@@ -143,7 +143,20 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let q = require('q');
 
-        req.assert("email").notEmpty().withMessage("Email é um campo obrigatório;").isEmail().trim().withMessage("Insira um e-mail válido;");
+        usuario.cpf = req.body.email;
+        usuario.email = req.body.email;
+
+        let tipo = "";
+
+        if (!Number(usuario.email.replace('.','').replace('-',''))) {
+            tipo = "e";
+            req.assert("email").notEmpty().withMessage("Email é um campo obrigatório;").isEmail().trim().withMessage("Insira um e-mail válido;");
+        }
+        else {
+            tipo = "c";
+            req.assert("email").isLength({ min: 11, max: 11 }).withMessage("CPF deve conter apenas 11 números").custom(util.cpfValido).withMessage("CPF inválido").isNumeric().withMessage("CPF deve conter apenas números");
+        }
+
         req.assert("senha").notEmpty().withMessage("A senha é um campo obrigatório;");
 
         let errors = req.validationErrors();

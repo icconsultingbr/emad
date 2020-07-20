@@ -171,6 +171,11 @@ export class UsuarioService extends GenericsService {
       .put('usuario/redefinir-senha', JSON.stringify(senha));
   }
 
+  public redefinirSenhaAdmin(senha: Senha){
+    return this.http
+      .put('usuario/redefinir-senha-admin', JSON.stringify(senha));
+  }
+
   listaServicos(method : string) : Observable<any[]>{
     return this.http.get<any[]>(method);
   }

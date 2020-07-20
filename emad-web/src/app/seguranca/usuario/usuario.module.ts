@@ -11,6 +11,7 @@ import { usuarioRoutes } from "./usuario.routing";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { NgbModule, NgbCollapseModule, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import { UsuarioAlterarSenhaComponent } from "./usuario-alterar-senha.component";
 
 @NgModule({
     imports: [
@@ -29,6 +30,7 @@ import { NgbModule, NgbCollapseModule, NgbDatepickerModule } from '@ng-bootstrap
     declarations: [
         UsuarioComponent,
         UsuarioFormComponent,
+        UsuarioAlterarSenhaComponent
     ],
     providers: [
         UsuarioService

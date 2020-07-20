@@ -10,13 +10,12 @@
   </span>
 
   <label for="inputEmail" class="sr-only">E-mail</label>
-  <input name="email" formControlName="email" type="email" id="inputEmail" class="form-control mb-3" placeholder="E-mail" autocomplete="off" autofocus />
+  <input name="email" formControlName="email" type="email" id="inputEmail" class="form-control mb-3" placeholder="E-mail/CPF" autocomplete="off" autofocus />
 
   <div *ngIf="loginForm.controls.email.invalid" class="mt-2 mb-2">
     <span *ngIf="loginForm.controls.email.errors.email && loginForm.controls.email.length >0" class="form-control alert-danger">Insira
-      um email válido</span>
+      um E-mail/CPF válido</span>
   </div>
-
   <label for="inputPassword" class="sr-only">Senha</label>
 
   <input name="senha" formControlName="senha" type="password" id="senha" class="form-control mb-3" placeholder="Senha"

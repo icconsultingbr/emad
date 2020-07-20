@@ -194,6 +194,13 @@ module.exports = function (app) {
         }
     });
 
+    app.post('/usuario/alterar-senha', function (req, res) {
+        let object = {};
+        object.msg = 'success';
+        res.status(200).json(object);
+        return;
+
+    });
 
     app.put('/usuario', function (req, res) {
         let usuario = req.usuario;
@@ -391,6 +398,40 @@ module.exports = function (app) {
         });
     });
 
+    app.put('/usuario/redefinir-senha-admin', function (req, res) {
+        var util = new app.util.Util();
+        var usuario = req.usuario;
+        var body = req.body;
+        let errors = [];
+
+        req.assert("novaSenha").notEmpty().withMessage("A nova senha é um campo obrigatório;").matches(/^(?=.*[a-z])(?=.*\d)[A-Za-z\d$@$!%*?&]{8,}/).withMessage("A nova senha deve conter pelo menos 8 caracteres, letras e números;");
+        req.assert("confirmarNovaSenha").notEmpty().withMessage("A confirmação da senha é um campo obrigatório;").equals(body.novaSenha).withMessage("A nova senha e confirmação devem ser idênticas;");
+
+        errors = req.validationErrors();
+
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
+
+        buscaPorId(usuario.id, res).then(function (response) {
+            usuario = response;
+            var senha = util.hashPassword(body.novaSenha);
+                usuario.senha = senha;
+                var connection = app.dao.ConnectionFactory();
+                var usuarioDAO = new app.dao.UsuarioDAO(connection);
+
+                usuarioDAO.hashSenha(usuario, function (exception, result) {
+                    if (exception) {
+                        res.status(500).send(exception);
+                        return;
+                    } else {
+                        res.status(200).json(result);
+                        return;
+                    }
+                });
+        });
+    });
 
     app.delete('/usuario/:id', function (req, res) {
         var util = new app.util.Util();
