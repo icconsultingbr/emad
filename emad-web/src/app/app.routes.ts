@@ -60,6 +60,7 @@ const appRoutes : Routes = [
     { path: 'estoques-unidades', canActivate: [AuthGuard], loadChildren: './estoque/relatorios/estoque-unidade/estoque-unidade.module#EstoqueUnidadeModule' },
     { path: 'estoques-medicamentos', canActivate: [AuthGuard], loadChildren: './estoque/relatorios/estoque-medicamento/estoque-medicamento.module#EstoqueMedicamentoModule' },
     { path: 'estoques-consumos', canActivate: [AuthGuard], loadChildren: './estoque/relatorios/estoque-consumo/estoque-consumo.module#EstoqueConsumoModule' },
+    { path: 'entrada-material', canActivate: [AuthGuard], loadChildren: './estoque/components/entrada-material/entrada-material.module#EntradaMaterialModule' },
     
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 

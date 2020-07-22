@@ -1,3 +1,5 @@
+const { v4: uuidv4 } = require('uuid');
+
 module.exports = function (app) {
 
     const _table = "tb_estoque";
@@ -67,6 +69,169 @@ module.exports = function (app) {
         }); 
     });
    
+    app.post('/entrada-material-estoque', async function (req, res) {
+        let movimentoGeral = req.body;
+        delete movimentoGeral.id;
+        const guid =  uuidv4();
+
+        let usuario = req.usuario;
+        const util = new app.util.Util();
+        let errors = [];
+
+        req.assert("idEstabelecimento").notEmpty().withMessage("O campo Estabelecimento é um campo obrigatório");
+        req.assert("numeroDocumento").notEmpty().withMessage("O campo Número do documento é um campo obrigatório");
+        
+        errors = req.validationErrors();
+
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const estoqueRepository = new app.dao.EstoqueDAO(connection);
+        const movimentoGeralRepository = new app.dao.MovimentoGeralDAO(connection);
+        const itemMovimentoGeralRepository = new app.dao.ItemMovimentoGeralDAO(connection);
+        const tipoMovimentoRepository = new app.dao.TipoMovimentoDAO(connection);
+        const movimentoLivroRepository = new app.dao.MovimentoLivroDAO(connection);
+
+        try {
+            await connection.beginTransaction();
+
+            movimentoGeral.idTipoMovimento = 2;
+            movimentoGeral.idUsuario = usuario.id;
+            movimentoGeral.idReceita = null;
+            movimentoGeral.idPaciente = null;            
+            movimentoGeral.numeroControle = guid;                        
+            movimentoGeral.dataMovimento = new Date;
+            movimentoGeral.dataCriacao = new Date;
+            movimentoGeral.idUsuarioCriacao = usuario.id;
+            movimentoGeral.situacao = 1;
+
+            var response = await movimentoGeralRepository.salva(movimentoGeral);
+
+            movimentoGeral.id = response[0].insertId;
+
+                for (const itemMovimento of movimentoGeral.itensMovimento) {                
+                    var saldoAnteriorUnidade = 0;
+                    var saldoAnteriorUnidadeLote = 0;
+                    var saldoAtualUnidade = 0;
+                    var saldoEntregue = 0;
+                    //var estoque = {};
+                    var qtdEstoque = 0;
+                    var nomeMaterial = "";
+                    var idEstoqueAux = 0;
+
+                    itemMovimentoGeral = {};
+                    itemMovimentoGeral.idMovimentoGeral = movimentoGeral.id;
+                    itemMovimentoGeral.idMaterial = itemMovimento.idMaterial;
+                    itemMovimentoGeral.idFabricante = itemMovimento.idFabricante;
+                    itemMovimentoGeral.idFabricanteMaterial = itemMovimento.idFabricante;
+                    itemMovimentoGeral.lote = itemMovimento.lote;
+                    itemMovimentoGeral.validade = itemMovimento.validade;
+                    itemMovimentoGeral.quantidade = itemMovimento.quantidade;
+                    itemMovimentoGeral.idItemReceita = null;
+                    itemMovimentoGeral.idEstabelecimento = movimentoGeral.idEstabelecimento;
+
+                    itemMovimentoGeral.idUsuarioCriacao = usuario.id;
+                    itemMovimentoGeral.dataCriacao = new Date();
+                    itemMovimentoGeral.situacao = 1;
+
+                    var responseItemMovimentoGeral = await itemMovimentoGeralRepository.salva(itemMovimentoGeral);
+                    itemMovimentoGeral.id = responseItemMovimentoGeral[0].insertId;
+
+                    //obtem a quantidade de material de uma unidade no estoque
+                    saldoAnteriorUnidadeLote = await estoqueRepository.carregaQuantidadePorMaterialEstabelecimentoLote(itemMovimentoGeral);
+
+                    //obtem o saldo anterior de um material no estoque
+                    saldoAnteriorUnidade = await estoqueRepository.carregaQuantidadePorMaterialEstabelecimento(itemMovimentoGeral);
+
+                    //verifica se eh uma insercao ou uma atualizacao no estoque
+                    var estoque = await estoqueRepository.carregaEstoquePorMaterial(itemMovimentoGeral);
+
+                    let materialComBloqueio = 0;
+
+                    if(estoque.length > 0){                            
+                        qtdEstoque = estoque[0].quantidade;
+                        nomeMaterial = estoque[0].nomeMaterial;
+                        idEstoqueAux = estoque[0].id;   
+                        
+                        var qtd = (qtdEstoque > 0 ? qtdEstoque : 0) + itemMovimento.quantidade;                           
+                            
+                        if(qtd > 0)
+                            var responseAtualizacaoQtd = await estoqueRepository.atualizaQuantidadeEstoque(qtd, usuario.id, idEstoqueAux);                        
+                    }
+                    else{
+                        //verificando se existe material/lote/fabricante bloqueado para alguma unidade
+                        var estoqueComBloqueio = await estoqueRepository.carregaEstoquePorMaterialBloqueado(itemMovimentoGeral);
+                        materialComBloqueio = (estoqueComBloqueio.length > 0) ? 1 : 0;
+
+                        novoEstoque = {};
+                        novoEstoque.idFabricanteMaterial = itemMovimento.idFabricante;
+                        novoEstoque.idMaterial = itemMovimento.idMaterial;
+                        novoEstoque.idEstabelecimento = movimentoGeral.idEstabelecimento;
+                        novoEstoque.lote = itemMovimento.lote;
+                        novoEstoque.validade = new Date(itemMovimento.validade);
+                        novoEstoque.quantidade = itemMovimento.quantidade;
+                        novoEstoque.bloqueado = materialComBloqueio;                   
+        
+                        novoEstoque.idUsuarioCriacao = usuario.id;
+                        novoEstoque.dataCriacao = new Date();
+                        novoEstoque.situacao = 1;
+
+                        var responseEstoque = await estoqueRepository.salva(novoEstoque);
+                    }
+
+                    saldoEntregue = itemMovimento.quantidade;               
+                    
+                    saldoAtualUnidade = await estoqueRepository.carregaQuantidadePorMaterialEstabelecimento(itemMovimentoGeral);
+
+                    var responseMovimentoLivro = await movimentoLivroRepository.carregaLivroPorMovimento(itemMovimentoGeral);
+                    
+                    if(responseMovimentoLivro.length > 0){
+                        var qtdeEntradaLivro = responseMovimentoLivro[0].quantidadeEntrada + itemMovimentoGeral.quantidade;
+                        var responseAtualizacaoMovimentoLivro = await movimentoLivroRepository.atualizaEntrada(qtdeEntradaLivro, saldoAtualUnidade, itemMovimentoGeral, usuario.id);
+                    }
+                    else{
+
+                        var nomeTipoMovimento = await tipoMovimentoRepository.carregaNomeTipoMovimento(2);
+                        var historico = nomeTipoMovimento + " Nº do documento: " + movimentoGeral.numeroDocumento;
+
+                        let movimentoLivro = {};
+                        movimentoLivro.idMovimentoGeral = movimentoGeral.id;
+                        movimentoLivro.idEstabelecimento = movimentoGeral.idEstabelecimento;
+                        movimentoLivro.idMaterial = itemMovimentoGeral.idMaterial;
+                        movimentoLivro.idTipoMovimento = 2;
+                        movimentoLivro.saldoAnterior = saldoAnteriorUnidade;
+                        movimentoLivro.quantidadeEntrada = itemMovimentoGeral.quantidade;
+                        movimentoLivro.saldoAtual = saldoAtualUnidade;
+                        movimentoLivro.dataMovimentacao = new Date();
+                        movimentoLivro.historico = historico;
+
+                        movimentoLivro.idUsuarioCriacao = usuario.id;
+                        movimentoLivro.dataCriacao = new Date;
+                        movimentoLivro.situacao = 1;
+                        
+                        var responseMovimentoLivro = await movimentoLivroRepository.salva(movimentoLivro);
+                        movimentoLivro.id = responseMovimentoLivro[0].insertId;
+
+                    }
+                }
+
+            res.status(201).send(movimentoGeral);
+
+            await connection.commit();
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+            await connection.rollback();
+        }
+        finally {
+            await connection.close();
+        }
+    });
+
     app.get('/estoque', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
@@ -215,6 +380,28 @@ module.exports = function (app) {
 
         try {            
             var responseEstoque = await estoqueRespository.carregaEstoquePorConsumo(idMaterial, idEstabelecimento, addFilter);            
+            res.status(200).json(responseEstoque);
+        }
+        catch (exception) {
+            console.log("Erro ao carregar o registro, exception: " +  exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });  
+
+    app.get('/estoque/movimento-geral/:idMovimentoGeral/relatorio', async function (req, res) {        
+        let util = new app.util.Util();
+        let idMovimentoGeral = req.params.idMovimentoGeral;
+        let errors = [];        
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const movimentoRepository = new app.dao.MovimentoGeralDAO(connection);
+
+        try {            
+            var responseEstoque = await movimentoRepository.carregaRelatorioEntradaMaterial(idMovimentoGeral);
             res.status(200).json(responseEstoque);
         }
         catch (exception) {

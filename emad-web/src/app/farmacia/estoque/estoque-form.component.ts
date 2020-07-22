@@ -36,9 +36,9 @@ export class EstoqueFormComponent implements OnInit {
   }
 
   loadDomains() {    
-    this.service.listDomains('fabricante-material').subscribe(fabricanteMaterial => {
+    this.service.listDomains('tipo-movimento').subscribe(tipoMovimento => {
       this.domains.push({            
-        idFabricanteMaterial: fabricanteMaterial
+        idTipoMovimento: tipoMovimento
        }); 
     });
   }

@@ -1,0 +1,191 @@
+<h4 class="mb-5 text-left">{{label}}</h4>
+<app-loader [loading]="loading"></app-loader>
+<p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
+<div *ngIf="errors.length" class="alert alert-danger sticky-top"> 
+  <div *ngFor="let error of errors" class="row">
+    <div class="col-12 text-left">
+      {{error.message}}
+    </div>
+  </div>
+</div>
+<form [formGroup]="form" (submit)="sendForm($event,null)">
+  <div class="card mb-4">  
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Dados da entrada
+      </div>
+      <div class="card-body text-left">
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Número documento <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <input type="number" class="form-control has-error" [(ngModel)]="movimento.numeroDocumento" formControlName="numeroDocumento"/>                
+              </div>
+              <label class="col-xl-2 col-form-label text-left">
+                Número empenho
+              </label>
+              <div class="col-xl-4">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="movimento.numeroEmpenho" 
+                  formControlName="numeroEmpenho">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.numeroEmpenho" [value]="item.id">{{item.nome}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>  
+      </div>
+    </div>  
+  </div> 
+
+  <div class="card mb-4">
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Entrada de material
+      </div>
+      <div class="card-body text-left">
+        <div class="row">
+          <div class="col-12">
+            <app-pesquisa-medicamento  (medicamentoSelecionadoEvent)="medicamentoSelecionado($event)" 
+                                       [idProfissional]="999" 
+                                       [idMaterial]="itemMovimento.idMaterial"
+                                       [object]="objectMaterial"></app-pesquisa-medicamento>          
+          </div>          
+        </div>
+        <div class="row">
+          <div class="col-12">                     
+            <div class="form-group row">
+
+              </div>
+          </div>          
+        </div>
+        <div class="row">
+          <div class="col-12">
+                  
+          </div>          
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Fornecedor
+              </label>
+              <div class="col-xl-10">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="itemMovimento.idFabricante" 
+                  formControlName="idFabricante" (change)="fornecedorSelecionado($event)">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.idFabricante" [value]="item.id" [text]="item.nome">{{item.nome}}</option>
+                </select>
+              </div>
+            </div>         
+          </div>          
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">              
+              <label class="col-xl-2 col-form-label text-left">
+                Lote <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-2">
+                <input type="text"  class="form-control has-error" [(ngModel)]="itemMovimento.lote" formControlName="lote"/>
+              </div>
+              <label class="col-xl-2 col-form-label text-left">
+                Validade <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-2">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                      <div class="input-group-text btn">
+                          <i class="fa fa-calendar-alt"></i>
+                      </div>
+                  </div>
+                  <input type="text" [(ngModel)]="itemMovimento.validade" formControlName="validade" placeholder="dd/mm/aaaa" bsDatepicker
+                      [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control" autocomplete="off">
+                </div>
+              </div> 
+              <label class="col-xl-2 col-form-label text-left">
+                Quantidade <span class="text-danger font-weight-bold"> *</span>
+              </label>              
+              <div class="col-xl-2">
+                <input type="number"  class="form-control has-error" [(ngModel)]="itemMovimento.quantidade" formControlName="quantidade"/>
+              </div>
+            </div>         
+          </div>          
+        </div>        
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group text-right">                                 
+              <button class="btn btn-primary" type="button" (click)="confirmaItemEntradaMaterial()" [disabled]="toggleItemEntradaMaterial()">
+                <i class="fa fa-save"></i>Adicionar
+              </button>  
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 table-responsive">
+            <div class="form-group row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Material</th>
+                    <th>Fabricante</th>
+                    <th>Lote</th>                    
+                    <th>Validade</th>                    
+                    <th>Quantidade</th>   
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="text-left">
+                    <td colspan="99" class="text-secondary"  *ngIf="!movimento.itensMovimento.length">
+                      <i>{{'Não há resultados...'}}</i>
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody *ngIf="movimento.itensMovimento">
+                    <tr class="text-left" *ngFor="let item of movimento.itensMovimento">
+                      <td class="text-secondary">{{item.nomeMaterial}}</td>
+                      <td class="text-secondary">{{item.nomeFabricante}}</td>
+                      <td class="text-secondary">{{item.lote}}</td>                      
+                      <td class="text-secondary">{{item.validade | date :'dd/MM/yyyy'}}</td>
+                      <td class="text-secondary">{{item.quantidade}}</td>
+                      <td class="text-secondary text-right">
+                        <a class="btn btn-link" (click)="removeItemMovimento(item)">
+                          <i class="fa fa-trash-alt"></i> Remover
+                        </a>
+                      </td>  
+                    </tr>
+                  </tbody>
+              </table>
+            </div>            
+          </div>
+        </div>
+      </div>
+    </div>    
+  </div>
+
+  <div class="form-group text-right">
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="movimento.itensMovimento.length > 0">
+      <i class="fa fa-save"></i> {{ 'Salvar' }} 
+    </button>
+  </div>
+</form>
+
+<ng-template #contentRecibo>
+  <div class="modal-header">
+    <h4 class="modal-title">Impressão</h4>
+    <button type="button" class="close" (click)="close(false)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Operação realizada com sucesso. Deseja imprimir?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="abreRelatorio()">Sim</button>
+    <button type="button" class="btn btn-danger"  (click)="close()">Não</button>    
+  </div>
+</ng-template>

@@ -8,6 +8,7 @@ import { EstoqueComponent } from "./estoque.component";
 import { EstoqueFormComponent } from "./estoque-form.component";
 import { EstoqueService } from "./estoque.service";
 import { estoqueRoutes } from "./estoque.routing";
+import { PesquisaMedicamentoModule } from "../../components/pesquisa-medicamentos/pesquisa-medicamento.module";
 
 @NgModule({
     imports: [
@@ -15,7 +16,8 @@ import { estoqueRoutes } from "./estoque.routing";
         CoreModule,
         AppGridViewModule,
         AppFormModule,
-        RouterModule.forChild(estoqueRoutes)
+        RouterModule.forChild(estoqueRoutes),
+        PesquisaMedicamentoModule
     ],
     declarations: [
         EstoqueComponent,

@@ -105,7 +105,7 @@ export class LoginComponent implements OnInit {
         this.loginRealizado = false;
         this.isErro = true;
 
-        if (error.status != 0) {
+        if (error.status) {
 
           this.carregando = false;
 

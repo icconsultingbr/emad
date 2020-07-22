@@ -7,6 +7,11 @@ EstoqueDAO.prototype.salva = function(obj, callback) {
     this._connection.query(`INSERT INTO ${this._table} SET ?`, obj, callback);
 }
 
+EstoqueDAO.prototype.salvaSync = async function(obj, callback) {
+    const estoqueCriado =  await this._connection.query(`INSERT INTO ${this._table} SET ?`, [obj]);
+    return [estoqueCriado];
+}
+
 EstoqueDAO.prototype.atualiza = function(obj, id, callback) {
     this._connection.query(`UPDATE ${this._table} SET ? WHERE id= ?`, [obj, id], callback);
 }
@@ -41,6 +46,11 @@ EstoqueDAO.prototype.carregaQuantidadePorMaterialEstabelecimento = async functio
     return quantidade[0].quantidade ? quantidade[0].quantidade : 0;
 }
 
+EstoqueDAO.prototype.carregaQuantidadePorMaterialEstabelecimentoLote = async function(obj){
+    let quantidade =  await this._connection.query(`select sum(quantidade) as quantidade from tb_estoque where idMaterial = ? and idEstabelecimento = ? and idFabricanteMaterial=? and lote=?`, [obj.idMaterial, obj.idEstabelecimento, obj.idFabricante, obj.lote]);
+    return quantidade[0].quantidade ? quantidade[0].quantidade : 0;
+}
+
 EstoqueDAO.prototype.carregaEstoquePorMaterial = async function(obj){
     let estoque =  await this._connection.query(`select e.id,
                                                         e.idFabricanteMaterial ,
@@ -60,6 +70,19 @@ EstoqueDAO.prototype.carregaEstoquePorMaterial = async function(obj){
                                                         and e.idEstabelecimento = ?
                                                         and e.lote = ?
                                                         and e.idFabricanteMaterial = ?`, [obj.idMaterial, obj.idEstabelecimento, obj.lote, obj.idFabricanteMaterial]);
+    return estoque;
+}
+
+EstoqueDAO.prototype.carregaEstoquePorMaterialBloqueado = async function(obj){
+    let estoque =  await this._connection.query(`select e.*
+                                                from
+                                                        tb_estoque e 
+                                                        inner join tb_material m on e.idMaterial = m.id
+                                                where
+                                                        e.idMaterial = ?                                                        
+                                                        and e.lote = ?
+                                                        and e.idFabricanteMaterial = ?
+                                                        and bloqueado = 1`, [obj.idMaterial, obj.lote, obj.idFabricanteMaterial]);
     return estoque;
 }
 
