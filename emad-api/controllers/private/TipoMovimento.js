@@ -58,13 +58,33 @@ module.exports = function (app) {
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
-
+        
         lista(res).then(function (resposne) {
             res.status(200).json(resposne);
             return;
         });
     });
 
+    app.get('/tipo-movimento/administrativo', async function (req, res) {        
+        let util = new app.util.Util();
+        let errors = [];
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const tipoMovimentoRespository = new app.dao.TipoMovimentoDAO(connection);
+
+        try {            
+            var response = await tipoMovimentoRespository.carregaListaMovimentoAdministrativo();
+            res.status(200).json(response);
+        }
+        catch (exception) {
+            console.log("Erro ao carregar o registro, exception: " +  exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });   
 
     app.get('/tipo-movimento/:id', function(req,res){        
         let usuario = req.usuario;

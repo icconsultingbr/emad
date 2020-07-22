@@ -4,12 +4,12 @@ import { Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
-export class EntradaMaterialService extends GenericsService {
+export class AjusteEstoqueService extends GenericsService {
 
   constructor(public http: HttpClient) {
     super(http);
   }
-
+  
   inserirMaterialEstoque(obj: any, metodo: string){ 
     return this.http.post(metodo, JSON.stringify(obj));
   }

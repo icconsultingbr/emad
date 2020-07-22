@@ -202,7 +202,7 @@ module.exports = function (app) {
                         movimentoLivro.idMovimentoGeral = movimentoGeral.id;
                         movimentoLivro.idEstabelecimento = movimentoGeral.idEstabelecimento;
                         movimentoLivro.idMaterial = itemMovimentoGeral.idMaterial;
-                        movimentoLivro.idTipoMovimento = 2;
+                        movimentoLivro.idTipoMovimento = movimentoGeral.idTipoMovimento;
                         movimentoLivro.saldoAnterior = saldoAnteriorUnidade;
                         movimentoLivro.quantidadeEntrada = itemMovimentoGeral.quantidade;
                         movimentoLivro.saldoAtual = saldoAtualUnidade;
@@ -412,6 +412,30 @@ module.exports = function (app) {
             await connection.close();
         }
     });  
+
+    app.get('/estoque/material-lote/:idMaterial/estabelecimento/:idEstabelecimento', async function (req, res) {        
+        let util = new app.util.Util();
+        let idMaterial = req.params.idMaterial;
+        let idEstabelecimento = req.params.idEstabelecimento;                
+        let errors = [];        
+        let addFilter = req.query;
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const estoqueRepository = new app.dao.EstoqueDAO(connection);
+
+        try {            
+            var responseEstoque = await estoqueRepository.carregaEstoqueLotePorMaterial(idMaterial, idEstabelecimento, addFilter);
+            res.status(200).json(responseEstoque);
+        }
+        catch (exception) {
+            console.log("Erro ao carregar o registro, exception: " +  exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });     
 
     app.delete('/estoque/:id', function(req,res){     
         let util = new app.util.Util();

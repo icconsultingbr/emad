@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
-import { EntradaMaterialService } from './entrada-material.service';
+import { AjusteEstoqueService } from './ajuste-estoque.service';
 import { Estoque } from '../../../_core/_models/Estoque';
+import { TipoMovimento } from '../../../_core/_models/TipoMovimento';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ItemReceita } from '../../../_core/_models/ItemReceita';
@@ -14,18 +15,18 @@ import * as _moment from 'moment';
 const myId = uuid.v4();
 
 @Component({
-    selector: 'app-entrada-material-form',
-    templateUrl: './entrada-material-form.component.html',
-    styleUrls: ['./entrada-material-form.component.css'],
-    providers: [EntradaMaterialService]
+    selector: 'app-ajuste-estoque-form',
+    templateUrl: './ajuste-estoque-form.component.html',
+    styleUrls: ['./ajuste-estoque-form.component.css'],
+    providers: [AjusteEstoqueService]
 })
 
-export class EntradaMaterialFormComponent implements OnInit {
+export class AjusteEstoqueFormComponent implements OnInit {
   @ViewChild('contentRecibo') contentRecibo: ElementRef;
   
   method: String = "estoque";
   fields: any[] = [];
-  label: String = "Entrada de material";
+  label: String = "Ajuste de estoque";
   movimento: MovimentoGeral = new MovimentoGeral();
   itemMovimento: ItemMovimentoGeral = new ItemMovimentoGeral();  
   id: Number = null;
@@ -38,10 +39,11 @@ export class EntradaMaterialFormComponent implements OnInit {
   objectMaterial: Material = new Material();
   warning: string = '';
   modalRef: NgbModalRef = null; 
-  
+  tipoMovimento: TipoMovimento = new TipoMovimento();
+
   constructor(    
     private fb: FormBuilder,
-    private service: EntradaMaterialService,
+    private service: AjusteEstoqueService,
     private ref: ChangeDetectorRef,
     private modalService: NgbModal,  
     private estoqueImpressaoService: EstoqueImpressaoService,
@@ -58,26 +60,26 @@ export class EntradaMaterialFormComponent implements OnInit {
     this.createGroup();
   }
 
-  loadDomains() {    
-    this.service.listDomains('fabricante-material').subscribe(fabricanteMaterial => {
-      this.service.listDomains('fabricante-material').subscribe(pedido => {
-        this.domains.push({            
-          idFabricante: fabricanteMaterial,            
-          idPedido: pedido
-        }); 
+  loadDomains() {        
+    this.service.list('tipo-movimento/administrativo').subscribe(tipoMovimento => {
+      this.domains.push({            
+        idTipoMovimento: tipoMovimento,                      
       }); 
-    }); 
+    });     
   }
 
   createGroup() {
     this.form = this.fb.group({
       id: [''],
+      idTipoMovimento: ['', ''],      
+      motivo: ['', ''],      
       idFabricante: ['', ''],      
       idEstabelecimento: ['', ''],
       numeroEmpenho: ['', ''],
       validade: ['', ''],
       numeroDocumento: ['', ''],
       quantidade: ['', ''],
+      idLoteAtual: ['', ''],
       lote: ['', '']
     });
   }
@@ -92,14 +94,37 @@ export class EntradaMaterialFormComponent implements OnInit {
 
   medicamentoSelecionado(material: any){
     this.itemMovimento.idMaterial = material.id;
-    this.itemMovimento.nomeMaterial = material.descricao;    
+    this.itemMovimento.nomeMaterial = material.descricao;        
+    this.buscaLotes();
+  } 
+
+  tipoMovimentoSelecionado(tipoMovimento: any){
+    this.movimento.idTipoMovimento = tipoMovimento.target.value;
+    this.tipoMovimento = this.domains[0].idTipoMovimento[tipoMovimento.target.options.selectedIndex-1];    
   } 
 
   fornecedorSelecionado(fornecedor: any){
     this.itemMovimento.idFabricante = fornecedor.target.value;
     this.itemMovimento.nomeFabricante = fornecedor.target.options[fornecedor.target.options.selectedIndex].text;    
   } 
-  
+
+  buscaLotes() {
+    this.loading = true;
+       this.service.list('estoque/material-lote/' 
+       + this.itemMovimento.idMaterial
+        + '/estabelecimento/' 
+        +  JSON.parse(localStorage.getItem("est"))[0].id 
+        + "?loteBloqueado="
+        + "&loteVencido="
+        + "&operacao=").subscribe(result => {
+        this.domains[0].idLoteAtual = result;
+        this.loading = false;
+      }, error => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(error);
+      });
+  }
+
   confirmaItemEntradaMaterial(){    
     if(this.movimentoContemDivergencias())
     return;
@@ -155,8 +180,6 @@ export class EntradaMaterialFormComponent implements OnInit {
     this.errors = [];    
     event.preventDefault();
 
-    this.movimento.idTipoMovimento = 2;
-    
     this.service
       .inserirMaterialEstoque(this.movimento, "entrada-material-estoque")
       .subscribe((res: any) => {

@@ -224,6 +224,47 @@ EstoqueDAO.prototype.carregaEstoquePorConsumo = async function(idMaterial, idEst
     return estoque;
 }
 
+EstoqueDAO.prototype.carregaEstoqueLotePorMaterial = async function(idMaterial, idEstabelecimento, addFilter){
+    let where = "";    
+
+    if(addFilter != null){      
+        if (addFilter.loteBloqueado && addFilter.loteBloqueado == "1") {            
+            where+=" and est.bloqueado = 2 "; //SIM
+        }
+        else{
+            where+=" and est.bloqueado <> 2 "; 
+        }      
+
+        if (addFilter.loteVencido && addFilter.loteVencido == "1") {            
+            where+=" and est.validade <= NOW() "; //SIM
+        }
+        else{
+            where+=" and est.validade >= NOW() "; 
+        }  
+
+        if (addFilter.operacao && addFilter.operacao != "1") {            
+            where+=" and est.quantidade > 0 "; // diferente de entrada
+        }
+    }
+
+    let estoque =  await this._connection.query(`select 
+                                                    distinct est.lote, 
+                                                    est.validade, 
+                                                    est.quantidade, 
+                                                    fab.id,                                                     
+                                                    concat('Lote: ',est.lote,' --- Validade: ', DATE_FORMAT(est.validade, '%d/%m/%Y'), ' --- Fabricante: ', fab.nome, ' --- Quantidade: ', cast(est.quantidade as  UNSIGNED INTEGER))  nome
+                                                from tb_estoque est
+                                                    inner join tb_material mat on est.idMaterial = mat.id
+                                                    inner join tb_fabricante_material fab on est.idFabricanteMaterial = fab.id
+                                                    where est.idMaterial = ?
+                                                    and est.idEstabelecimento = ?
+                                                    and mat.situacao = 1
+                                                    ${where}
+                                                order by est.validade
+                                                `, [idMaterial, idEstabelecimento]);
+    return estoque;
+}
+
 module.exports = function(){
     return EstoqueDAO;
 };
