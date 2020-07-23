@@ -101,9 +101,17 @@ module.exports = function (app) {
         try {
             await connection.beginTransaction();
 
-
             var nomeTipoMovimento = "";
             var operacaoTipoMovimento = "";
+
+            if(movimentoGeral.idMovimentoEstornado){
+                var responseMovimentoAtual = await movimentoGeralRepository.carregaOperacaoPorMovimentoId(movimentoGeral.idMovimentoEstornado);
+
+                if(responseMovimentoAtual.operacao == 1)//Entrada
+                    movimentoGeral.idTipoMovimento = 11;
+                else
+                    movimentoGeral.idTipoMovimento = 12;                
+            }
 
             var responseTipoMovimento = await tipoMovimentoRepository.carregaPorId(movimentoGeral.idTipoMovimento);
             if(responseTipoMovimento){

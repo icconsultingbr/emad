@@ -173,6 +173,7 @@ module.exports = function (app) {
                 movimentoGeral.idPaciente = receita.idPaciente;
                 movimentoGeral.numeroDocumento = receita.ano + "-" + receita.idEstabelecimento + "-" + receita.numero;
                 movimentoGeral.numeroEmpenho = null;
+                movimentoGeral.idMovimentoEstornado = null;
                 movimentoGeral.dataMovimento = new Date;
                 movimentoGeral.numeroControle = guid;
                 movimentoGeral.idUsuarioCriacao = usuario.id;
