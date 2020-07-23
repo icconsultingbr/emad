@@ -24,13 +24,14 @@ export class ItemMovimentoGeral {
     @Input() idMovimentoGeral: number;
     @Input() idFront: string;
     @Input() idMaterial: number;
+    @Input() idLoteAtual: number;
     @Input() nomeMaterial: string;
     @Input() idFabricante: number;
     @Input() nomeFabricante: string;
     @Input() lote: string;
-    @Input() validade: Date;
-    @Input() validadeFormatada: string;    
+    @Input() validade: Date;    
     @Input() quantidade: number;
+    @Input() quantidadeAtual: number;
     @Input() idItemReceita: number;
     @Input() idUsuarioAutorizador: number;
     @Input() itemSolicitacaoRemanejamento: number;

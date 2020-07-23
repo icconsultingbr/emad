@@ -79,7 +79,9 @@ module.exports = function (app) {
         let errors = [];
 
         req.assert("idEstabelecimento").notEmpty().withMessage("O campo Estabelecimento é um campo obrigatório");
-        req.assert("numeroDocumento").notEmpty().withMessage("O campo Número do documento é um campo obrigatório");
+        
+        if(movimentoGeral.idTipoMovimento == 2)
+            req.assert("numeroDocumento").notEmpty().withMessage("O campo Número do documento é um campo obrigatório");
         
         errors = req.validationErrors();
 
@@ -99,7 +101,16 @@ module.exports = function (app) {
         try {
             await connection.beginTransaction();
 
-            movimentoGeral.idTipoMovimento = 2;
+
+            var nomeTipoMovimento = "";
+            var operacaoTipoMovimento = "";
+
+            var responseTipoMovimento = await tipoMovimentoRepository.carregaPorId(movimentoGeral.idTipoMovimento);
+            if(responseTipoMovimento){
+                nomeTipoMovimento = responseTipoMovimento.nome;
+                operacaoTipoMovimento = responseTipoMovimento.operacao;
+            }
+
             movimentoGeral.idUsuario = usuario.id;
             movimentoGeral.idReceita = null;
             movimentoGeral.idPaciente = null;            
@@ -157,10 +168,15 @@ module.exports = function (app) {
                         nomeMaterial = estoque[0].nomeMaterial;
                         idEstoqueAux = estoque[0].id;   
                         
-                        var qtd = (qtdEstoque > 0 ? qtdEstoque : 0) + itemMovimento.quantidade;                           
-                            
-                        if(qtd > 0)
-                            var responseAtualizacaoQtd = await estoqueRepository.atualizaQuantidadeEstoque(qtd, usuario.id, idEstoqueAux);                        
+                        var qtd = 0;
+
+                        if(operacaoTipoMovimento == '1')
+                            qtd = (qtdEstoque > 0 ? qtdEstoque : 0) + itemMovimento.quantidade;                                                       
+                        else
+                            qtd = (qtdEstoque > 0 ? qtdEstoque : 0) - itemMovimento.quantidade;  
+                                                
+                        if(qtd >= 0)
+                            var responseAtualizacaoQtd = await estoqueRepository.atualizaQuantidadeEstoque(qtd, usuario.id, idEstoqueAux);  
                     }
                     else{
                         //verificando se existe material/lote/fabricante bloqueado para alguma unidade
@@ -190,13 +206,18 @@ module.exports = function (app) {
                     var responseMovimentoLivro = await movimentoLivroRepository.carregaLivroPorMovimento(itemMovimentoGeral);
                     
                     if(responseMovimentoLivro.length > 0){
-                        var qtdeEntradaLivro = responseMovimentoLivro[0].quantidadeEntrada + itemMovimentoGeral.quantidade;
-                        var responseAtualizacaoMovimentoLivro = await movimentoLivroRepository.atualizaEntrada(qtdeEntradaLivro, saldoAtualUnidade, itemMovimentoGeral, usuario.id);
+                        if(operacaoTipoMovimento == '1'){
+                            var qtdeEntradaLivro = responseMovimentoLivro[0].quantidadeEntrada + itemMovimentoGeral.quantidade;
+                            var responseAtualizacaoMovimentoLivro = await movimentoLivroRepository.atualizaEntrada(qtdeEntradaLivro, saldoAtualUnidade, itemMovimentoGeral, usuario.id);
+                        }else{
+                            var qtdeSaidaLivro = responseMovimentoLivro[0].quantidadeSaida + itemMovimentoGeral.quantidade;
+                            var responseAtualizacaoMovimentoLivro = await movimentoLivroRepository.atualizaSaida(qtdeSaidaLivro, saldoAtualUnidade, itemMovimentoGeral, usuario.id);
+                        }
                     }
                     else{
 
-                        var nomeTipoMovimento = await tipoMovimentoRepository.carregaNomeTipoMovimento(2);
-                        var historico = nomeTipoMovimento + " Nº do documento: " + movimentoGeral.numeroDocumento;
+                        
+                        var historico = nomeTipoMovimento + " Nº do documento: " + (movimentoGeral.idTipoMovimento == 2 ? movimentoGeral.numeroDocumento : movimentoGeral.id);
 
                         let movimentoLivro = {};
                         movimentoLivro.idMovimentoGeral = movimentoGeral.id;
@@ -204,7 +225,14 @@ module.exports = function (app) {
                         movimentoLivro.idMaterial = itemMovimentoGeral.idMaterial;
                         movimentoLivro.idTipoMovimento = movimentoGeral.idTipoMovimento;
                         movimentoLivro.saldoAnterior = saldoAnteriorUnidade;
-                        movimentoLivro.quantidadeEntrada = itemMovimentoGeral.quantidade;
+
+                        if(operacaoTipoMovimento == '1')
+                            movimentoLivro.quantidadeEntrada = itemMovimentoGeral.quantidade;
+                        else if(operacaoTipoMovimento == '2')
+                            movimentoLivro.quantidadeSaida = itemMovimentoGeral.quantidade;
+                        else if(operacaoTipoMovimento == '3')
+                            movimentoLivro.quantidadePerda = itemMovimentoGeral.quantidade;
+
                         movimentoLivro.saldoAtual = saldoAtualUnidade;
                         movimentoLivro.dataMovimentacao = new Date();
                         movimentoLivro.historico = historico;

@@ -106,9 +106,6 @@ export class EntradaMaterialFormComponent implements OnInit {
 
     this.itemMovimento.idFront = uuid.v4();
     
-    //var date = _moment.utc(this.itemMovimento.validade, "YYYY-MM-DD");
-    //this.itemMovimento.validade = new Date(date.format("YYYY-MM-DD")); 
-
     if (!this.movimento.itensMovimento)
       this.movimento.itensMovimento = [];
 
@@ -169,12 +166,6 @@ export class EntradaMaterialFormComponent implements OnInit {
       });
   }
 
-  twoDigits(d) {
-    if(0 <= d && d < 10) return "0" + d.toString();
-    if(-10 < d && d < 0) return "-0" + (-1*d).toString();
-    return d.toString();
-  }
-
   openConfirmacao(content: any) {
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
@@ -193,7 +184,11 @@ export class EntradaMaterialFormComponent implements OnInit {
   }
 
   abreRelatorio() {    
-    this.estoqueImpressaoService.imprimir("ENTRADA_MATERIAL", "Entrada de material", this.movimento.nomeEstabelecimento, this.movimento.id, this.movimento.numeroDocumento, this.movimento.dataMovimento);
+    let dadosRelatorio: any = {};
+    dadosRelatorio.idMovimentoGeral = this.movimento.id;
+    dadosRelatorio.numeroDocumento = this.movimento.numeroDocumento;
+    dadosRelatorio.dataMovimentacao = this.movimento.dataMovimento;
+    this.estoqueImpressaoService.imprimir("ENTRADA_MATERIAL", "Entrada de material", this.movimento.nomeEstabelecimento, dadosRelatorio);
     this.close();
   }
 }

@@ -77,9 +77,9 @@
               </label>
               <div class="col-xl-10">
                 <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="itemMovimento.idLoteAtual" 
-                  formControlName="idLoteAtual">
+                  formControlName="idLoteAtual"  (change)="loteSelecionado($event)">
                   <option [value]="null">Selecione...</option>
-                  <option *ngFor="let item of domains[0]?.idLoteAtual" [value]="item.id" [text]="item.nome">{{item.nome}}</option>
+                  <option *ngFor="let item of domains[0]?.idLoteAtual" [value]="item.lote" [text]="item.nome">{{item.nome}}</option>
                 </select>                
               </div> 
             </div>         

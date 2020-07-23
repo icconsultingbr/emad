@@ -258,6 +258,7 @@ module.exports = function (app) {
                                 movimentoLivro.saldoAnterior = saldoAnteriorUnidade;
                                 movimentoLivro.quantidadeSaida = itemEstoque.qtdDispensar;
                                 movimentoLivro.quantidadeEntrada = null;
+                                movimentoLivro.quantidadePerda = null;
                                 movimentoLivro.saldoAtual = saldoAtualUnidade;
                                 movimentoLivro.dataMovimentacao = new Date();
                                 movimentoLivro.historico = historico;

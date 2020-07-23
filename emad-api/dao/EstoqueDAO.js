@@ -251,7 +251,8 @@ EstoqueDAO.prototype.carregaEstoqueLotePorMaterial = async function(idMaterial, 
                                                     distinct est.lote, 
                                                     est.validade, 
                                                     est.quantidade, 
-                                                    fab.id,                                                     
+                                                    fab.id idFabricante,  
+                                                    fab.nome nomeFabricanteMaterial,                                                   
                                                     concat('Lote: ',est.lote,' --- Validade: ', DATE_FORMAT(est.validade, '%d/%m/%Y'), ' --- Fabricante: ', fab.nome, ' --- Quantidade: ', cast(est.quantidade as  UNSIGNED INTEGER))  nome
                                                 from tb_estoque est
                                                     inner join tb_material mat on est.idMaterial = mat.id

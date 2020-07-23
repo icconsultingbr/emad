@@ -102,7 +102,7 @@ export class EstoqueImpressaoService extends RelatorioEstoqueService{
     </style>`
     }
 
-    imprimir(relatorio: string, nomeRelatorio: string, nomeEstabelecimento: string, idMovimentoGeral: number,  numeroDocumento: number, dataMovimentacao: Date, target: string = '_blank'){        
+    imprimir(relatorio: string, nomeRelatorio: string, nomeEstabelecimento: string, dadosRelatorio: any, target: string = '_blank'){        
         
         let tela = `
             <div class="page">
@@ -128,7 +128,7 @@ export class EstoqueImpressaoService extends RelatorioEstoqueService{
 
         if(relatorio=="ENTRADA_MATERIAL"){
 
-            this.relatoriosEstoqueService.obterRelatorioEntradaMaterial(idMovimentoGeral).subscribe((result) => { 
+            this.relatoriosEstoqueService.obterRelatorioEntradaMaterial(dadosRelatorio.idMovimentoGeral).subscribe((result) => { 
             let gridMedicamentos = '';       
             
             gridMedicamentos += (`<table class="table table-striped"><thead><tr style="text-align: center;">
@@ -159,7 +159,63 @@ export class EstoqueImpressaoService extends RelatorioEstoqueService{
 
              tela +=              `<div class="row"> 
                             <div class="col s4">
-                                Número do documento: ${numeroDocumento}      Data: ${dataMovimentacao ? _moment(dataMovimentacao).format('DD/MM/YYYY') : ''}
+                                Número do documento: ${dadosRelatorio.numeroDocumento} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Data: ${dadosRelatorio.dataMovimentacao ? _moment(dadosRelatorio.dataMovimentacao).format('DD/MM/YYYY') : ''}
+                            </div>           
+                        </div>  
+                        <br/>         
+                        <div class="row"> 
+                            ${gridMedicamentos}   
+                        </div>     
+                    </form>    
+                </div>
+            </div>`
+
+            this.print(tela, nomeEstabelecimento, target);
+            });
+        } else if(relatorio=="MOVIMENTAR_ESTOQUE"){
+
+            this.relatoriosEstoqueService.obterRelatorioEntradaMaterial(dadosRelatorio.idMovimentoGeral).subscribe((result) => { 
+            let gridMedicamentos = '';       
+            
+            gridMedicamentos += (`<table class="table table-striped"><thead><tr style="text-align: center;">
+                                        <th style="width:10%">Código</th>
+                                        <th style="width:30%">Material</th>
+                                        <th style="width:30%">Fabricante</th>
+                                        <th style="width:10%">Lote</th>
+                                        <th style="width:10%">Validade</th>   
+                                        <th style="width:10%">Quantidade</th>                                           
+                                        </tr></thead>
+                                    `);  
+                                    
+            gridMedicamentos += (result.length > 0 ? `<tbody>` : ``);
+
+            for (const medicamentos of result) {  
+                gridMedicamentos += (`
+                <tr class="text-left">
+                    <td class="text-secondary">${medicamentos.codigoMaterial}</td>
+                    <td class="text-secondary">${medicamentos.nomeMaterial}</td>
+                    <td class="text-secondary">${medicamentos.nomeFabricanteMaterial}</td>
+                    <td class="text-secondary">${medicamentos.lote}</td>
+                    <td class="text-secondary">${medicamentos.validade}</td>
+                    <td class="text-secondary">${medicamentos.quantidade}</td>                    
+                </tr>`);
+            }       
+
+            gridMedicamentos += (result.length > 0 ? `</tbody></table>` : `</table>`);
+
+             tela +=   `<div class="row"> 
+                            <div class="col s6">
+                                Número do documento: ${dadosRelatorio.idMovimentoGeral} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Data: ${dadosRelatorio.dataMovimentacao ? _moment(dadosRelatorio.dataMovimentacao).format('DD/MM/YYYY') : ''}
+                            </div>           
+                        </div>  
+                        <div class="row"> 
+                            <div class="col s6">
+                                Tipo de movimento: ${dadosRelatorio.nomeTipoMovimento} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Operação(${dadosRelatorio.operacao == 1 ? 'Entrada' : dadosRelatorio.operacao == 2 ? 'Saída' : 'Perda'})
+                            </div>           
+                        </div> 
+                        <div class="row"> 
+                            <div class="col s12">
+                                Motivo: ${dadosRelatorio.motivo}
                             </div>           
                         </div>  
                         <br/>         

@@ -13,6 +13,11 @@ TipoMovimentoDAO.prototype.carregaListaMovimentoAdministrativo = async function(
     return result;
 }
 
+TipoMovimentoDAO.prototype.carregaPorId = async function(id){
+    let result =  await this._connection.query(`SELECT * FROM ${this._table} where id=?`, [id]);
+    return result ? result[0] : null;
+}
+
 module.exports = function(){
     return TipoMovimentoDAO;
 };

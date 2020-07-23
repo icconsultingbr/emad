@@ -5,11 +5,11 @@ function MovimentoLivroDAO(connection) {
 
 MovimentoLivroDAO.prototype.salva = async function(obj) {
     const novoMovimentoLivro = await this._connection.query(`INSERT INTO tb_movimento_livro (idMovimentoGeral, idEstabelecimento, idMaterial, idTipoMovimento, saldoAnterior, 
-                                                            quantidadeSaida, quantidadeEntrada, saldoAtual, dataMovimentacao, historico, situacao, idUsuarioCriacao, dataCriacao)
-                                                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+                                                            quantidadeSaida, quantidadeEntrada, quantidadePerda, saldoAtual, dataMovimentacao, historico, situacao, idUsuarioCriacao, dataCriacao)
+                                                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
                                                           [obj.idMovimentoGeral, obj.idEstabelecimento, obj.idMaterial,
-                                                            obj.idTipoMovimento, obj.saldoAnterior, obj.quantidadeSaida, obj.quantidadeEntrada, obj.saldoAtual, 
-                                                            obj.dataMovimentacao, obj.historico,  obj.situacao, obj.idUsuarioCriacao, obj.dataCriacao]);                                                            
+                                                            obj.idTipoMovimento, obj.saldoAnterior, obj.quantidadeSaida, obj.quantidadeEntrada, obj.quantidadePerda, 
+                                                            obj.saldoAtual, obj.dataMovimentacao, obj.historico,  obj.situacao, obj.idUsuarioCriacao, obj.dataCriacao]);                                                            
     return [novoMovimentoLivro];
 }
 

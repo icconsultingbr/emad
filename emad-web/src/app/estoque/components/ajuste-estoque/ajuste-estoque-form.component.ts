@@ -62,8 +62,11 @@ export class AjusteEstoqueFormComponent implements OnInit {
 
   loadDomains() {        
     this.service.list('tipo-movimento/administrativo').subscribe(tipoMovimento => {
-      this.domains.push({            
-        idTipoMovimento: tipoMovimento,                      
+      this.service.list('fabricante-material').subscribe(fabricante => {
+        this.domains.push({            
+          idTipoMovimento: tipoMovimento,                      
+          idFabricante: fabricante
+        }); 
       }); 
     });     
   }
@@ -103,6 +106,17 @@ export class AjusteEstoqueFormComponent implements OnInit {
     this.tipoMovimento = this.domains[0].idTipoMovimento[tipoMovimento.target.options.selectedIndex-1];    
   } 
 
+  loteSelecionado(lote: any){
+    var loteSelecionado: any = {};
+    loteSelecionado = this.domains[0].idLoteAtual[lote.target.options.selectedIndex-1];
+
+    this.itemMovimento.idFabricante = loteSelecionado.idFabricante;
+    this.itemMovimento.nomeFabricante = loteSelecionado.nomeFabricanteMaterial;
+    this.itemMovimento.validade = new Date(loteSelecionado.validade);
+    this.itemMovimento.lote = loteSelecionado.lote;    
+    this.itemMovimento.quantidadeAtual = loteSelecionado.quantidade;
+  }   
+
   fornecedorSelecionado(fornecedor: any){
     this.itemMovimento.idFabricante = fornecedor.target.value;
     this.itemMovimento.nomeFabricante = fornecedor.target.options[fornecedor.target.options.selectedIndex].text;    
@@ -114,10 +128,11 @@ export class AjusteEstoqueFormComponent implements OnInit {
        + this.itemMovimento.idMaterial
         + '/estabelecimento/' 
         +  JSON.parse(localStorage.getItem("est"))[0].id 
-        + "?loteBloqueado="
-        + "&loteVencido="
-        + "&operacao=").subscribe(result => {
+        + "?loteBloqueado=" + this.tipoMovimento.loteBloqueado
+        + "&loteVencido="  + this.tipoMovimento.loteVencido
+        + "&operacao="  + this.tipoMovimento.operacao).subscribe(result => {
         this.domains[0].idLoteAtual = result;
+        this.itemMovimento.idLoteAtual = null;
         this.loading = false;
       }, error => {
         this.loading = false;
@@ -131,21 +146,16 @@ export class AjusteEstoqueFormComponent implements OnInit {
 
     this.itemMovimento.idFront = uuid.v4();
     
-    //var date = _moment.utc(this.itemMovimento.validade, "YYYY-MM-DD");
-    //this.itemMovimento.validade = new Date(date.format("YYYY-MM-DD")); 
-
     if (!this.movimento.itensMovimento)
       this.movimento.itensMovimento = [];
-
-    let existeItemDispensa = false;
 
     this.movimento.itensMovimento.push(this.itemMovimento);
     this.itemMovimento = new ItemMovimentoGeral();
     this.listaMaterialLote = [];
     this.objectMaterial = new Material();
+    this.domains[0].idLoteAtual = [];
     this.ref.detectChanges();    
   }
-
 
   removeItemMovimento(item) {    
     this.movimento.itensMovimento = this.movimento.itensMovimento.filter(itemExistente => itemExistente.idFront != item.idFront);      
@@ -157,6 +167,13 @@ export class AjusteEstoqueFormComponent implements OnInit {
      var erroQtd = false;     
      let listaMaterialLoteExistente = [];     
      listaMaterialLoteExistente =  Object.assign([], this.movimento.itensMovimento);
+
+     if(this.tipoMovimento.operacao != 1 && this.itemMovimento.quantidadeAtual < this.itemMovimento.quantidade){
+      this.errors.push({
+        message: "Quantidade insuficiente para saída."
+      });
+      erroQtd = true;  
+    }
 
      this.movimento.itensMovimento.forEach(item => {
 
@@ -170,7 +187,6 @@ export class AjusteEstoqueFormComponent implements OnInit {
         });
         erroQtd = true;  
       }
-
      });
 
      return erroQtd;
@@ -179,7 +195,7 @@ export class AjusteEstoqueFormComponent implements OnInit {
   sendForm(event, acao) {
     this.errors = [];    
     event.preventDefault();
-
+    
     this.service
       .inserirMaterialEstoque(this.movimento, "entrada-material-estoque")
       .subscribe((res: any) => {
@@ -190,12 +206,6 @@ export class AjusteEstoqueFormComponent implements OnInit {
       }, erro => {        
         this.errors = Util.customHTTPResponse(erro);
       });
-  }
-
-  twoDigits(d) {
-    if(0 <= d && d < 10) return "0" + d.toString();
-    if(-10 < d && d < 0) return "-0" + (-1*d).toString();
-    return d.toString();
   }
 
   openConfirmacao(content: any) {
@@ -212,11 +222,21 @@ export class AjusteEstoqueFormComponent implements OnInit {
       this.modalRef.close();  
     
     this.movimento = new MovimentoGeral();
-    this.itemMovimento = new ItemMovimentoGeral();    
+    this.itemMovimento = new ItemMovimentoGeral();      
+    this.listaMaterialLote = [];
+    this.objectMaterial = new Material();
+    this.domains[0].idLoteAtual = [];
+    this.ref.detectChanges();    
   }
 
   abreRelatorio() {    
-    this.estoqueImpressaoService.imprimir("ENTRADA_MATERIAL", "Entrada de material", this.movimento.nomeEstabelecimento, this.movimento.id, this.movimento.numeroDocumento, this.movimento.dataMovimento);
+    let dadosRelatorio: any = {};
+    dadosRelatorio.idMovimentoGeral = this.movimento.id;
+    dadosRelatorio.nomeTipoMovimento = this.tipoMovimento.nome;
+    dadosRelatorio.dataMovimentacao = this.movimento.dataMovimento;
+    dadosRelatorio.operacao = this.tipoMovimento.operacao;
+    dadosRelatorio.motivo = this.movimento.motivo;
+    this.estoqueImpressaoService.imprimir("MOVIMENTAR_ESTOQUE", "Movimentar estoque", this.movimento.nomeEstabelecimento, dadosRelatorio);
     this.close();
   }
 }
