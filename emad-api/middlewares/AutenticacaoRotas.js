@@ -43,7 +43,8 @@ module.exports = function (app) {
                                 errors = customError(errors, "header", "Tempo de ociosidade", "");
                                 return res.status(401).json(errors);
                             } else{
-                                addActivity(req);
+                                //addActivity(req);
+                                //console.log('passou no addActivity');
                             }
 
                         }
@@ -70,11 +71,11 @@ module.exports = function (app) {
                                    "id" :  req.usuario.id
                                 }
                             };
-                            addLog(obj);
+                            //addLog(obj);
                             next();
 
                         } else if (req.url != '/usuario/validaToken') {
-                            addLog(req);
+                            //addLog(req);
                             //console.log(`voltou`);
                             next();
 

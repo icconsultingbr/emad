@@ -107,7 +107,7 @@ module.exports = function (app) {
             if(movimentoGeral.idMovimentoEstornado){
                 var responseMovimentoAtual = await movimentoGeralRepository.carregaOperacaoPorMovimentoId(movimentoGeral.idMovimentoEstornado);
 
-                if(responseMovimentoAtual.operacao == 1)//Entrada
+                if(responseMovimentoAtual.operacao != 1)//Entrada
                     movimentoGeral.idTipoMovimento = 11;
                 else
                     movimentoGeral.idTipoMovimento = 12;                
@@ -171,6 +171,8 @@ module.exports = function (app) {
 
                     let materialComBloqueio = 0;
 
+                    var temEstoqueInsuficiente = [];
+
                     if(estoque.length > 0){                            
                         qtdEstoque = estoque[0].quantidade;
                         nomeMaterial = estoque[0].nomeMaterial;
@@ -185,6 +187,9 @@ module.exports = function (app) {
                                                 
                         if(qtd >= 0)
                             var responseAtualizacaoQtd = await estoqueRepository.atualizaQuantidadeEstoque(qtd, usuario.id, idEstoqueAux);  
+                        else{
+                            temEstoqueInsuficiente.push(itemMovimento);
+                        }
                     }
                     else{
                         //verificando se existe material/lote/fabricante bloqueado para alguma unidade
@@ -205,6 +210,15 @@ module.exports = function (app) {
                         novoEstoque.situacao = 1;
 
                         var responseEstoque = await estoqueRepository.salva(novoEstoque);
+                    }
+
+                    if(temEstoqueInsuficiente.length > 0){
+                        for (const itemSemEstoque of temEstoqueInsuficiente) {   
+                            errors.push(util.customError(errors, "header", "Medicamento com estoque insuficiente " + itemSemEstoque.nomeMaterial + ".", ""));
+                        }                        
+                        res.status(400).send(errors);
+                        await connection.rollback();
+                        return;
                     }
 
                     saldoEntregue = itemMovimento.quantidade;               
@@ -260,7 +274,7 @@ module.exports = function (app) {
             await connection.commit();
         }
         catch (exception) {
-            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado" + exception, ""));
             await connection.rollback();
         }
         finally {
@@ -472,6 +486,30 @@ module.exports = function (app) {
             await connection.close();
         }
     });     
+
+
+    app.get('/estoque/item-movimento/:idMovimento', async function (req, res) {        
+        let util = new app.util.Util();
+        let idMovimento = req.params.idMovimento;
+        let errors = [];        
+        let addFilter = req.query;
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const itemMovimentoGeralRepository = new app.dao.ItemMovimentoGeralDAO(connection);
+
+        try {            
+            var responseEstoque = await itemMovimentoGeralRepository.buscarPorMovimento(idMovimento);
+            res.status(200).json(responseEstoque);
+        }
+        catch (exception) {
+            console.log("Erro ao carregar o registro, exception: " +  exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });         
 
     app.delete('/estoque/:id', function(req,res){     
         let util = new app.util.Util();

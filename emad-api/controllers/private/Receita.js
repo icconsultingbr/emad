@@ -222,11 +222,11 @@ module.exports = function (app) {
                                 if(qtdEstoque > 0){
                                 var qtd = qtdEstoque - itemEstoque.qtdDispensar;
                                     
-                                if(qtd > 0)
-                                    var responseAtualizacaoQtd = await estoqueRepository.atualizaQuantidadeEstoque(qtd, usuario.id, idEstoqueAux);
-                                else{
-                                        //lista de estoque insuficiente
-                                }
+                                    if(qtd > 0)
+                                        var responseAtualizacaoQtd = await estoqueRepository.atualizaQuantidadeEstoque(qtd, usuario.id, idEstoqueAux);
+                                    else{
+                                            //lista de estoque insuficiente
+                                    }
                                 }
                                 else{
                                     //lista de estoque insuficiente

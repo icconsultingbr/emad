@@ -131,6 +131,16 @@ PacienteDAO.prototype.salva = function (paciente, callback) {
     }); 
 }
 
+PacienteDAO.prototype.salvaAsync = async function(paciente){
+    const responsePaciente =  await this._connection.query(`INSERT INTO tb_paciente SET geom = POINT(?, ?), ?`, [paciente.longitude, paciente.latitude, paciente]);
+    return [responsePaciente];
+}
+
+PacienteDAO.prototype.atualizaAsync = async function(paciente, id){
+    const responsePaciente =  await this._connection.query(`UPDATE tb_paciente SET geom = POINT(?, ?), ? WHERE id= ?`, [paciente.longitude, paciente.latitude, paciente, id]);
+    return [responsePaciente];
+}
+
 PacienteDAO.prototype.atualiza = function (paciente, id, callback) {
     const conn = this._connection;
     const connDim = this._connectionDim;

@@ -27,6 +27,28 @@ ItemMovimentoGeralDAO.prototype.buscarPorItemReceita = async function(idReceita,
     return itemMovimentoGeralReceita;
 }
 
+ItemMovimentoGeralDAO.prototype.buscarPorMovimento = async function(idMovimentoGeral) {   
+    const itemMovimentoGeral = await  this._connection.query(`select 
+                                                        item_movto.id,
+                                                        material.id as idMaterial,
+                                                        material.codigo,
+                                                        material.descricao nomeMaterial,
+                                                        item_movto.idFabricante, 
+                                                        fabricante.nome nomeFabricante, 
+                                                        item_movto.lote, 		
+                                                        item_movto.validade, 
+                                                        item_movto.quantidade,
+                                                        0 as itemSelecionado
+                                                    from tb_item_movimento_geral item_movto    
+                                                    inner join tb_movimento_geral movto   on movto.id = item_movto.idMovimentoGeral    
+                                                    inner join tb_material material on material.id = item_movto.idMaterial     
+                                                    inner join tb_fabricante_material fabricante on item_movto.idFabricante = fabricante.id    
+                                                    inner join tb_tipo_movimento tipo_movto on tipo_movto.id = movto.idTipoMovimento
+                                                    where item_movto.idMovimentoGeral=? and tipo_movto.movimentoAdministrativo=1`,[idMovimentoGeral]);
+                                                    
+    return itemMovimentoGeral;
+}
+
 module.exports = function(){
     return ItemMovimentoGeralDAO;
 };

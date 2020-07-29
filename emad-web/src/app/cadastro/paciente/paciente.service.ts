@@ -27,8 +27,8 @@ export class PacienteService extends GenericsService {
       label: "Cartão SUS",
       grid: true,
       form: true,
-      required: true,
-      validator: ['', Validators.required],
+      required: false,
+      validator: ['', ''],
       autoFocus: true,
       filter: {
         type: "text"
@@ -148,8 +148,8 @@ export class PacienteService extends GenericsService {
       label: "CPF",
       grid: true,
       form: true,
-      required: true,
-      validator: ['', Validators.required],
+      required: false,
+      validator: ['', ''],
       filter: {
         type: 'text',
         placeHolder: '999.999.999-99',

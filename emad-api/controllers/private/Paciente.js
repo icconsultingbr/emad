@@ -24,20 +24,20 @@ module.exports = function (app) {
         });
     });
 
-    app.post('/paciente', function (req, res) {
+    app.post('/paciente', async function (req, res) {
         var obj = req.body;
         var usuario = req.usuario;
         var util = new app.util.Util();
         var errors = [];
 
-        req.assert("cartaoSus").notEmpty().withMessage("Cartão do SUS é um campo obrigatório;");
+            //req.assert("cartaoSus").notEmpty().withMessage("Cartão do SUS é um campo obrigatório;");
             req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");
             req.assert("nomeMae").notEmpty().withMessage("Nome da mãe é um campo obrigatório;");
             req.assert("dataNascimento").notEmpty().withMessage("Data de nascimento é um campo obrigatório;");
             req.assert("sexo").notEmpty().withMessage("Sexo é um campo obrigatório;");
             req.assert("idNacionalidade").notEmpty().withMessage("Nacionalidade é um campo obrigatório;");
             req.assert("idNaturalidade").notEmpty().withMessage("Naturalidade é um campo obrigatório;");
-            req.assert("cpf").notEmpty().withMessage("CPF é um campo obrigatório;");
+            //req.assert("cpf").notEmpty().withMessage("CPF é um campo obrigatório;");
             req.assert("escolaridade").notEmpty().withMessage("Escolaridade é um campo obrigatório;");
             req.assert("logradouro").notEmpty().withMessage("Logradouro é um campo obrigatório;");
             req.assert("numero").notEmpty().withMessage("Número é um campo obrigatório;");
@@ -62,13 +62,29 @@ module.exports = function (app) {
             }
             obj.dataNascimento = util.dateToISO(obj.dataNascimento);
 
-            salva(obj, res).then(function (response) {
-                obj.id = response.insertId;
+            const connection = await app.dao.connections.EatendConnection.connection();
+
+            const pacienteRepository = new app.dao.PacienteDAO(connection, null);
+
+            try {
+                await connection.beginTransaction();
+                
+                var response = await pacienteRepository.salvaAsync(obj);
+                obj.id = response[0].insertId;
+
                 res.status(201).send(obj);
-            });
+                await connection.commit();
+            }
+            catch (exception) {
+                res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+                await connection.rollback();
+            }
+            finally {
+                await connection.close();
+            }
     });
 
-    app.put('/paciente', function (req, res) {
+    app.put('/paciente', async function (req, res) {
         let usuario = req.usuario;
         let obj = req.body;
         let util = new app.util.Util();
@@ -76,14 +92,14 @@ module.exports = function (app) {
         let id = obj.id;
         delete obj.id;
 
-        req.assert("cartaoSus").notEmpty().withMessage("Cartão do SUS é um campo obrigatório;");
+        //req.assert("cartaoSus").notEmpty().withMessage("Cartão do SUS é um campo obrigatório;");
             req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");
             req.assert("nomeMae").notEmpty().withMessage("Nome da mãe é um campo obrigatório;");
             req.assert("dataNascimento").notEmpty().withMessage("Data de nascimento é um campo obrigatório;");
             req.assert("sexo").notEmpty().withMessage("Sexo é um campo obrigatório;");
             req.assert("idNacionalidade").notEmpty().withMessage("Nacionalidade é um campo obrigatório;");
             req.assert("idNaturalidade").notEmpty().withMessage("Naturalidade é um campo obrigatório;");
-            req.assert("cpf").notEmpty().withMessage("CPF é um campo obrigatório;");
+            //req.assert("cpf").notEmpty().withMessage("CPF é um campo obrigatório;");
             req.assert("escolaridade").notEmpty().withMessage("Escolaridade é um campo obrigatório;");
             req.assert("logradouro").notEmpty().withMessage("Logradouro é um campo obrigatório;");
             req.assert("numero").notEmpty().withMessage("Número é um campo obrigatório;");
@@ -107,18 +123,23 @@ module.exports = function (app) {
             }
             obj.dataNascimento = util.dateToISO(obj.dataNascimento);
 
-            buscarPorId(id, res).then(function (response) {
-                if (typeof response != 'undefined') {
-                    atualizaPorId(obj, id, res).then(function (response2) {
-                        res.status(200).json(obj);
-                        return;
-                    });
-                } else {
-                    errors = util.customError(errors, "body", "Paciente não encontrado!", obj.nome);
-                    res.status(404).send(errors);
-                    return;
-                }
-            });
+            const connection = await app.dao.connections.EatendConnection.connection();
+
+            const pacienteRepository = new app.dao.PacienteDAO(connection);
+
+            try {
+                await connection.beginTransaction();                        
+                var response = await pacienteRepository.atualizaAsync(obj, id);
+                res.status(201).send(obj);
+                await connection.commit();
+            }
+            catch (exception) {
+                res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+                await connection.rollback();
+            }
+            finally {
+                await connection.close();
+            }
     });
 
     app.delete('/paciente/:id', function (req, res) {
@@ -216,52 +237,6 @@ module.exports = function (app) {
             } else {
 
                 d.resolve(result[0]);
-            }
-        });
-        return d.promise;
-    }
-
-    function atualizaPorId(obj, id, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();        
-
-        var connection = app.dao.ConnectionFactory();
-        var connectionDim = app.dao.ConnectionFactoryDim();
-        var objDAO = new app.dao.PacienteDAO(connection, connectionDim);
-        var errors = [];
-
-        objDAO.atualiza(obj, id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao editar os dados", "paciente");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result[0]);
-            }
-        });
-        return d.promise;
-    }
-
-    function salva(paciente, res) {
-        delete paciente.id;
-        var connection = app.dao.ConnectionFactory();
-        var connectionDim = app.dao.ConnectionFactoryDim();
-        var objDAO = new app.dao.PacienteDAO(connection, connectionDim);
-        var q = require('q');
-        var d = q.defer();
-
-        objDAO.salva(paciente, function (exception, result) {
-            if (exception) {
-                console.log('Erro ao inserir Tipo de servico', exception);
-                res.status(500).send(exception);
-                d.reject(exception);
-                return;
-            }
-            else {
-                d.resolve(result);
             }
         });
         return d.promise;

@@ -37,4 +37,5 @@ export class ItemMovimentoGeral {
     @Input() itemSolicitacaoRemanejamento: number;
     @Input() quantidadeDispensadaAnterior: number;
     @Input() situacao: Boolean;  
+    @Input() itemSelecionado: Boolean;  
 }

@@ -1,10 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { AjusteEstoqueService } from './ajuste-estoque.service';
-import { Estoque } from '../../../_core/_models/Estoque';
 import { TipoMovimento } from '../../../_core/_models/TipoMovimento';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { ItemReceita } from '../../../_core/_models/ItemReceita';
 import { Util } from '../../../_core/_util/Util';
 import { Material } from '../../../_core/_models/Material';
 import { MovimentoGeral, ItemMovimentoGeral } from '../../../_core/_models/MovimentoGeral';

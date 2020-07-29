@@ -1,0 +1,111 @@
+<h4 class="mb-5 text-left">{{label}}</h4>
+<app-loader [loading]="loading"></app-loader>
+<p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
+<div *ngIf="errors.length" class="alert alert-danger sticky-top"> 
+  <div *ngFor="let error of errors" class="row">
+    <div class="col-12 text-left">
+      {{error.message}}
+    </div>
+  </div>
+</div>
+<form [formGroup]="form" (submit)="sendForm($event,null)"> 
+  <div class="card mb-4">
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Ajuste de estoque
+      </div>
+      <div class="card-body text-left">
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">              
+              <label class="col-xl-2 col-form-label text-left">
+                Número do documento <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <input type="text"  class="form-control has-error" [(ngModel)]="movimento.id" formControlName="id"/>
+              </div> 
+            </div>          
+          </div>          
+        </div>    
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group text-right">                                 
+              <button class="btn btn-primary" type="button" (click)="pesquisaItemMovimentoGeral()" [disabled]="togglePesquisa()">
+                <i class="fa fa-save"></i>Pesquisar
+              </button>  
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 table-responsive">
+            <div class="form-group row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Material</th>
+                    <th>Fabricante</th>
+                    <th>Lote</th>                    
+                    <th>Validade</th>                    
+                    <th>Quantidade</th>   
+                    <th>
+                      <div class="custom-control custom-checkbox" style="width: 25px">
+                        <input type="checkbox" id="checkPai" [(ngModel)]="movimento.itemSelecionado" formControlName="itemSelecionado" 
+                        class="custom-control-input" (change)="selectAll()">
+                        <label class="custom-control-label" for="checkPai"></label>
+                      </div>  
+                  </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="text-left">
+                    <td colspan="99" class="text-secondary"  *ngIf="!listaMaterialLote.length">
+                      <i>{{'Não há resultados...'}}</i>
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody *ngIf="listaMaterialLote">
+                    <tr class="text-left" *ngFor="let item of listaMaterialLote">
+                      <td class="text-secondary">{{item.nomeMaterial}}</td>
+                      <td class="text-secondary">{{item.nomeFabricante}}</td>
+                      <td class="text-secondary">{{item.lote}}</td>                      
+                      <td class="text-secondary">{{item.validade | date :'dd/MM/yyyy'}}</td>
+                      <td class="text-secondary">{{item.quantidade}}</td>
+                      <td class="text-secondary text-right">
+                        <div class="custom-control custom-checkbox" style="width: 25px">
+                          <input type="checkbox" id="item.itemSelecionado" [(ngModel)]="item.itemSelecionado" formControlName="itemSelecionado" 
+                          class="custom-control-input" value="item.itemSelecionado">
+                          <label class="custom-control-label" for="item.itemSelecionado"></label>
+                        </div>                        
+                      </td>  
+                    </tr>
+                  </tbody>
+              </table>
+            </div>            
+          </div>
+        </div>
+      </div>
+    </div>    
+  </div>
+
+  <div class="form-group text-right">
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="this.listaMaterialLote.length > 0">
+      <i class="fa fa-save"></i> {{ 'Salvar' }} 
+    </button>
+  </div>
+</form>
+
+<ng-template #contentRecibo>
+  <div class="modal-header">
+    <h4 class="modal-title">Impressão</h4>
+    <button type="button" class="close" (click)="close(false)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Operação realizada com sucesso. Deseja imprimir?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="abreRelatorio()">Sim</button>
+    <button type="button" class="btn btn-danger"  (click)="close()">Não</button>    
+  </div>
+</ng-template>
