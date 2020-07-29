@@ -50,7 +50,7 @@ module.exports = function (app) {
                     delete usuario.timezone;
                     delete usuario.expiredPassword;
                     usuario.tentativasSenha = 0;
-
+                    usuario.situacao = 1;
 
                     atualizaUsuario(usuario).then(function (responseAtualiza) {
                         buscaParametroSegurancaPorChave("'CONTA_EMAIL'", res).then(function (responseEMAIL) {                                
@@ -95,6 +95,8 @@ module.exports = function (app) {
                     usuario.senha = util.hashPassword(generatedPassword);
                     usuario.dataAtualizacaoSenha = new Date();
                     usuario.id = responseCPF[0].id;
+                    usuario.situacao = 1;
+                    usuario.tentativasSenha = 0;
                     responseCPF[0].generatedPassword = generatedPassword;
                     delete usuario.cpf;
                     delete usuario.email;

@@ -203,8 +203,8 @@ export class PacienteService extends GenericsService {
       label: "Endereço",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required]
+      required: false,
+      validator: ['', ''],
     },
     {
       field: "latitude",
@@ -232,8 +232,8 @@ export class PacienteService extends GenericsService {
       label: "Número",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required]
+      required: false,
+      validator: ['', ''],
     },
     {
       field: "complemento",
@@ -250,8 +250,8 @@ export class PacienteService extends GenericsService {
       label: "Bairro",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required]
+      required: false,
+      validator: ['', ''],
     },
     {
       field: "idUf",
@@ -259,8 +259,8 @@ export class PacienteService extends GenericsService {
       label: "Estado",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required],
+      required: false,
+      validator: ['', ''],
       filter: {
         type: "select",
         changeMethod: 'municipio/uf',
@@ -273,8 +273,8 @@ export class PacienteService extends GenericsService {
       label: "Município",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required]
+      required: false,
+      validator: ['', ''],
     },
     {
       field: "cep",
@@ -282,8 +282,8 @@ export class PacienteService extends GenericsService {
       label: "CEP",
       grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required],
+      required: false,
+      validator: ['', ''],
       mask: "99999-999",
       placeholder: "00000-000",
       /*
