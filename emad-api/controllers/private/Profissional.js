@@ -299,7 +299,7 @@ module.exports = function (app) {
                     let idUsuario = dadosUsuario.id;
                     delete dadosUsuario.id;  
 
-                    usuarioResult = await usuarioRepository.atualizaSync(dadosUsuario); 
+                    usuarioResult = await usuarioRepository.atualizaSync(dadosUsuario, idUsuario); 
                     dadosUsuario.id = idUsuario;
                 }
                 else {        
