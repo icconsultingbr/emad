@@ -17,6 +17,7 @@ export class MovimentoGeral {
     @Input() codigoDistribuidor: number;
     @Input() situacao: Boolean;
     @Input() itensMovimento: ItemMovimentoGeral[] = [];   
+    @Input() itemSelecionado: Boolean;  
 }
 
 export class ItemMovimentoGeral {
