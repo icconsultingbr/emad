@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { GenericsService } from '../../_core/_services/generics.service';
+import { GenericsService } from '../../../_core/_services/generics.service';
 import { Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Estoque } from '../../../_core/_models/Estoque';
 
 @Injectable()
-export class EstoqueService extends GenericsService {
+export class BloqueioLoteService extends GenericsService {
 
   constructor(public http: HttpClient) {
     super(http);
@@ -15,10 +17,19 @@ export class EstoqueService extends GenericsService {
       field: "id",
       type: "hidden",
       label: "Id",
-      grid: true,
+      grid: false,
       form: true,
       required: false,
       validator: ['', '']
+    },
+    {
+      field: "codigoMaterial",
+      type: "text",
+      label: "Código",
+      grid: true,
+      form: false,
+      required: false,
+      validator: ['','']
     },
     {
       field: "idFabricanteMaterial",
@@ -123,4 +134,12 @@ export class EstoqueService extends GenericsService {
       validator:['', Validators.required]
     }
   ];
+
+  public buscaPorId(id: number) : Observable<any>{
+    return this.http.get("estoque/"+id);
+  }
+
+  bloquearLote(obj: any){ 
+    return this.http.put("estoque/bloquear-lote", JSON.stringify(obj));
+  }  
 }

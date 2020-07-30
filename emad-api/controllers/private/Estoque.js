@@ -282,6 +282,107 @@ module.exports = function (app) {
         }
     });
 
+    app.put('/estoque/bloquear-lote', async function (req, res) {
+        let estoque = req.body;
+        const util = new app.util.Util();
+        delete estoque.nomeMaterial;
+        delete estoque.lote;
+        delete estoque.quantidade; 
+        delete estoque.validade;
+
+        let errors = [];
+        let usuario = req.usuario;
+
+        req.assert("id").notEmpty().withMessage("Lote inválido");
+        req.assert("idEstabelecimento").notEmpty().withMessage("O campo Estabelecimento é um campo obrigatório");        
+        
+        errors = req.validationErrors();
+
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const estoqueRepository = new app.dao.EstoqueDAO(connection);
+        
+        try {
+            await connection.beginTransaction();            
+            
+            if(estoque.bloqueado){
+                estoque.dataBloqueio = new Date;
+                estoque.idUsuarioBloqueio = usuario.id;
+            }
+            else{
+                estoque.dataBloqueio = null;           
+                estoque.idUsuarioBloqueio = null;     
+            }
+
+            estoque.dataAlteracao = new Date;
+            estoque.idUsuarioAlteracao = usuario.id;            
+            estoque.situacao = 1;
+
+            var response = await estoqueRepository.atualizaSync(estoque, estoque.id);
+            res.status(201).send(estoque);
+
+            await connection.commit();
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado" + exception, ""));
+            await connection.rollback();
+        }
+        finally {
+            await connection.close();
+        }
+    }); 
+
+    app.put('/estoque/alterar-validade-lote', async function (req, res) {
+        let estoque = req.body;
+        const util = new app.util.Util();
+        delete estoque.nomeMaterial;
+        delete estoque.lote;
+        delete estoque.quantidade;         
+
+        let errors = [];
+        let usuario = req.usuario;
+
+        req.assert("id").notEmpty().withMessage("Lote inválido");
+        req.assert("validade").notEmpty().withMessage("O campo Validade é um campo obrigatório");        
+        
+        errors = req.validationErrors();
+
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const estoqueRepository = new app.dao.EstoqueDAO(connection);
+        
+        try {
+            await connection.beginTransaction();           
+            
+            estoque.validade = new Date(estoque.validade);
+            estoque.dataAlteracao = new Date;
+            estoque.idUsuarioAlteracao = usuario.id;            
+            estoque.situacao = 1;
+
+            var response = await estoqueRepository.atualizaSync(estoque, estoque.id);
+            res.status(201).send(estoque);
+
+            await connection.commit();
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado" + exception, ""));
+            await connection.rollback();
+        }
+        finally {
+            await connection.close();
+        }
+    }); 
+
     app.get('/estoque', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
@@ -509,7 +610,30 @@ module.exports = function (app) {
         finally {
             await connection.close();
         }
-    });         
+    });       
+    
+    app.get('/estoque-bloqueados', async function (req, res) {
+        let util = new app.util.Util();
+        let idMovimento = req.params.idMovimento;
+        let errors = [];        
+        let addFilter = req.query;
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const estoqueRepository = new app.dao.EstoqueDAO(connection);
+
+        try {            
+            var responseEstoque = await estoqueRepository.listaBloqueados(addFilter);
+            res.status(200).json(responseEstoque);
+        }
+        catch (exception) {
+            console.log("Erro ao carregar o registro, exception: " +  exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });  
 
     app.delete('/estoque/:id', function(req,res){     
         let util = new app.util.Util();

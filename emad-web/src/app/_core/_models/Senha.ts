@@ -7,4 +7,5 @@ export class Senha {
     @Input() senhaAtual : string;
     @Input() novaSenha : string;
     @Input() confirmarNovaSenha : string;
+    @Input() id: number;
 }

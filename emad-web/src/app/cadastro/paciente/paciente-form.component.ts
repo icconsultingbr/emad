@@ -54,7 +54,8 @@ export class PacienteFormComponent implements OnInit {
                   { id: 5, nome: "Pós-graduação" },
                   { id: 6, nome: "Mestrado" },
                   { id: 7, nome: "Doutorado" },
-                  { id: 8, nome: "Escola" }
+                  { id: 8, nome: "Escola" },
+                  { id: 9, nome: "Analfabeto" }
                 ],
                 idModalidade: modalidades,
                 sexo: [

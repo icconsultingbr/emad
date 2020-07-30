@@ -1,9 +1,10 @@
-<h2 class="text-left">Estoque</h2><br/>
+<h2 class="text-left">Lotes bloqueados</h2><br/>
 
 <app-grid-view  
     [method]="method"
     [object]="object"
     [view]="false"
     [fields]="fields"
-    [urlForm]="'estoques/cadastro'">
+    [remove]="false"
+    [urlForm]="'bloqueio-lote/cadastro'">
 </app-grid-view>

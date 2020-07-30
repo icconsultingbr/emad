@@ -400,7 +400,6 @@ module.exports = function (app) {
 
     app.put('/usuario/redefinir-senha-admin', function (req, res) {
         var util = new app.util.Util();
-        var usuario = req.usuario;
         var body = req.body;
         let errors = [];
 
@@ -414,7 +413,7 @@ module.exports = function (app) {
             return;
         }
 
-        buscaPorId(usuario.id, res).then(function (response) {
+        buscaPorId(body.id, res).then(function (response) {
             usuario = response;
             var senha = util.hashPassword(body.novaSenha);
                 usuario.senha = senha;

@@ -16,11 +16,17 @@ EstoqueDAO.prototype.atualiza = function(obj, id, callback) {
     this._connection.query(`UPDATE ${this._table} SET ? WHERE id= ?`, [obj, id], callback);
 }
 
+EstoqueDAO.prototype.atualizaSync = async function(obj, id) {
+    const estoqueAtualizado =  await this._connection.query(`UPDATE ${this._table} SET ? WHERE id= ?`, [obj, id]);
+    return [estoqueAtualizado];
+}
+
 EstoqueDAO.prototype.buscaPorId = function (id, callback) {
     this._connection.query(`SELECT 
                                 a.id
                                 ,a.idFabricanteMaterial                                
                                 ,a.idMaterial                                
+                                ,m.descricao as nomeMaterial
                                 ,a.idEstabelecimento                                
                                 ,a.lote                            
                                 ,DATE_FORMAT(a.validade,'%d/%m/%Y') as validade
@@ -30,7 +36,9 @@ EstoqueDAO.prototype.buscaPorId = function (id, callback) {
                                 ,a.dataBloqueio
                                 ,a.idUsuarioBloqueio                                
                                 ,a.situacao    
-    FROM ${this._table} a WHERE id = ?`,id,callback);
+    FROM ${this._table} a 
+    inner join tb_material m on a.idMaterial = m.id    
+    WHERE a.id = ?`,id,callback);
 }
 
 EstoqueDAO.prototype.buscaDominio = function (callback) {
@@ -128,6 +136,48 @@ EstoqueDAO.prototype.lista = function(addFilter, callback) {
                             INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
                             LEFT JOIN tb_usuario usuario ON (a.idUsuarioBloqueio = usuario.id)
                             WHERE a.situacao = 1  ${where} `, callback);
+}
+
+EstoqueDAO.prototype.listaBloqueados = async function(addFilter) {   
+    let where = "";
+
+    if(addFilter != null){   
+        if (addFilter.idMaterial && addFilter.idMaterial != "undefined") {
+            where+=" AND a.idMaterial = " + addFilter.idMaterial + "";
+        }      
+        
+        if (addFilter.idEstabelecimento && addFilter.idEstabelecimento != "undefined") {
+            where+=" AND a.idEstabelecimento = " + addFilter.idEstabelecimento + "";
+        } 
+    }
+
+    let estoque =  await this._connection.query(`SELECT
+                            a.id
+                            ,a.idFabricanteMaterial
+                            ,fabricanteMaterial.nome nomeFabricanteMaterial
+                            ,a.idMaterial
+                            ,material.codigo codigoMaterial
+                            ,material.descricao nomeMaterial
+                            ,a.idEstabelecimento
+                            ,estabelecimento.nomeFantasia nomeEstabelecimento
+                            ,a.lote                            
+                            ,a.validade
+                            ,a.quantidade
+                            ,a.bloqueado
+                            ,a.motivoBloqueio
+                            ,a.dataBloqueio
+                            ,a.idUsuarioBloqueio
+                            ,usuario.nome nomeUsuario
+                            ,a.situacao
+                            ,case when  a.validade < NOW() then true else false end as vencido
+                            FROM ${this._table} a
+                            INNER JOIN tb_fabricante_material fabricanteMaterial ON (a.idFabricanteMaterial = fabricanteMaterial.id)
+                            INNER JOIN tb_material material ON (a.idMaterial = material.id)
+                            INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
+                            LEFT JOIN tb_usuario usuario ON (a.idUsuarioBloqueio = usuario.id)
+                            WHERE a.situacao = 1 and a.bloqueado=1 and a.quantidade>0  ${where} `);
+
+    return estoque;
 }
 
 EstoqueDAO.prototype.carregaEstoquePorUnidade = async function(idEstabelecimento, addFilter){
@@ -229,16 +279,16 @@ EstoqueDAO.prototype.carregaEstoqueLotePorMaterial = async function(idMaterial, 
 
     if(addFilter != null){      
         if (addFilter.loteBloqueado && addFilter.loteBloqueado == "1") {            
-            where+=" and est.bloqueado = 2 "; //SIM
+            where+=" and est.bloqueado = 1 "; //SIM
         }
         else{
-            where+=" and est.bloqueado <> 2 "; 
+            where+=" and est.bloqueado <> 1 "; 
         }      
 
         if (addFilter.loteVencido && addFilter.loteVencido == "1") {            
             where+=" and est.validade <= NOW() "; //SIM
         }
-        else{
+        else if (addFilter.loteVencido && addFilter.loteVencido != "1") {            
             where+=" and est.validade >= NOW() "; 
         }  
 
@@ -248,7 +298,8 @@ EstoqueDAO.prototype.carregaEstoqueLotePorMaterial = async function(idMaterial, 
     }
 
     let estoque =  await this._connection.query(`select 
-                                                    distinct est.lote, 
+                                                    distinct est.lote,
+                                                    est.id, 
                                                     est.validade, 
                                                     est.quantidade, 
                                                     fab.id idFabricante,  

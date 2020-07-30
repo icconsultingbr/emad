@@ -1,0 +1,120 @@
+<h4 class="mb-5 text-left">{{id!=null?'Editar lote bloqueado':'Bloquear um novo lote'}}</h4>
+<app-loader [loading]="loading"></app-loader>
+<p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
+<div *ngIf="errors.length" class="alert alert-danger sticky-top"> 
+  <div *ngFor="let error of errors" class="row">
+    <div class="col-12 text-left">
+      {{error.message}}
+    </div>
+  </div>
+</div>
+<form [formGroup]="form" (submit)="sendForm($event)">
+
+  <div class="card mb-4">
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Dados do material
+      </div>
+      <div class="card-body text-left">
+        <div class="row">
+          <div class="col-12" *ngIf="!id">
+            <app-pesquisa-medicamento (medicamentoSelecionadoEvent)="medicamentoSelecionado($event)" 
+                                       [idProfissional]="999" 
+                                       [idMaterial]="object.idMaterial"
+                                       [object]="objectMaterial"></app-pesquisa-medicamento>          
+          </div>          
+          <div class="col-12" *ngIf="id">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Material<span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-10">
+                <input type="text"  class="form-control has-error" [(ngModel)]="object.nomeMaterial" formControlName="nomeMaterial" readonly/>
+              </div> 
+            </div>         
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col-12">                     
+            <div class="form-group row">
+
+              </div>
+          </div>          
+        </div>
+        <div class="row" *ngIf="!id">
+          <div class="col-12">
+                  
+          </div>          
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Lote<span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-10" *ngIf="!id">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.lote" 
+                  formControlName="idLoteAtual"  (change)="loteSelecionado($event)">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.idLoteAtual" [value]="item.lote" [text]="item.nome">{{item.nome}}</option>
+                </select>                
+              </div> 
+              <div class="col-xl-10" *ngIf="id">
+                <input type="text"  class="form-control has-error" [(ngModel)]="object.lote" formControlName="lote" readonly/>            
+              </div> 
+            </div>         
+          </div>          
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">              
+              <label class="col-xl-2 col-form-label text-left">
+                Quantidade <span class="text-danger font-weight-bold"> *</span>
+              </label>              
+              <div class="col-xl-10">
+                <input type="number"  class="form-control has-error" [(ngModel)]="object.quantidade" formControlName="quantidade" readonly/>
+              </div>
+            </div>         
+          </div>          
+        </div>   
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">              
+              <label class="col-xl-2 col-form-label text-left">
+                Bloqueado
+              </label>              
+              <div class="col-xl-10">
+                <div class="custom-control custom-checkbox" style="width: 25px">
+                  <input type="checkbox" id="bloqueado"  [(ngModel)]="object.bloqueado" formControlName="bloqueado" 
+                    class="custom-control-input" value="object.bloqueado">
+                  <label class="custom-control-label" for="bloqueado"></label>
+                </div> 
+              </div>
+            </div>         
+          </div>          
+        </div>    
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Motivo bloqueio
+              </label>
+              <div class="col-xl-10">
+                <textarea class="form-control has-error" rows="4" [(ngModel)]="object.motivoBloqueio" formControlName="motivoBloqueio"></textarea>                
+              </div>
+            </div>      
+          </div>          
+        </div> 
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group text-right">                                 
+              <button class="btn btn-primary" type="submit" [disabled]="toggleItemEntradaMaterial()">
+                <i class="fa fa-save"></i> Salvar
+              </button>  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>    
+  </div>
+</form>

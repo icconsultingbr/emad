@@ -21,6 +21,7 @@ export class UsuarioAlterarSenhaComponent implements OnInit {
   warning: string = "";
   usuario: Senha = new Senha();
   @Input() ep : Number = 0;
+  id: number;
 
   constructor(
     public nav: AppNavbarService,
@@ -35,10 +36,10 @@ export class UsuarioAlterarSenhaComponent implements OnInit {
     this.service = service;
 
     this.route.params.subscribe(params => {
-      let id = params['id'];
+      this.id = params['id'];
       
-      if (id) {
-        this.service.buscaPorId(id)
+      if (this.id) {
+        this.service.buscaPorId(this.id)
           .subscribe(
             mensagem => {
               //console.log(mensagem);
@@ -49,6 +50,7 @@ export class UsuarioAlterarSenhaComponent implements OnInit {
     });
  
     this.usuarioForm = fb.group({
+      id: [this.id],
       nome: [this.usuario.nome],
       cpf: [this.usuario.cpf],      
       novaSenha: ['', Validators.required],
