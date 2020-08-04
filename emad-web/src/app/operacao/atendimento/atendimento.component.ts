@@ -134,26 +134,6 @@ export class AtendimentoComponent implements OnInit {
     this.getListPaged(this.paging.offset, this.paging.limit);
   }
 
-  checkDomains() {
-    setTimeout(() => this.loading = true, 100);
-    if (this.domains && this.domains.length) {
-      setTimeout(() => {
-        this.loading = false;
-        this.loadContent();
-      }, 100);
-    }
-    else {
-      if (this.errors.length) {
-        this.loading = false;
-      }
-      else {
-        setTimeout(() => {
-          this.checkDomains();
-        }, 1000);
-      }
-    }
-  }
-
   getListPaged(offset: Number = null, limit: Number = null) {
 
     this.message = "";
@@ -209,14 +189,9 @@ export class AtendimentoComponent implements OnInit {
       this.paging.total = result.total;
       this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
       this.allItems = result.items;
-
-      setTimeout(() => {
-        this.loading = false;
-        this.savePageState();
-
-      }, 300);
+      this.loading = false;
     }, erro => {
-      setTimeout(() => this.loading = false, 300);
+      this.loading = false;
       this.errors = Util.customHTTPResponse(erro);
     });
   }
@@ -241,11 +216,7 @@ export class AtendimentoComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    if (this.domains) {
-      this.checkDomains();
-    } else {
-      this.loadContent();
-    }
+    this.getListPaged();
   }
 
   refresherPagination() {
@@ -255,41 +226,6 @@ export class AtendimentoComponent implements OnInit {
 
   toggleFilter() {
     this.isFilterCollapse = !this.isFilterCollapse;
-  }
-
-  loadDomain(route: string, event, object: any) {
-    this.message = "";
-    let id = event.target.value;
-    this.listDomain(route, id, object);
-  }
-
-  listDomain(route, id, object) {
-    if (id[0] != 0) {
-      if (this.loading != true) {
-        this.loading = true;
-      }
-      this.service.list(route + "/" + id).subscribe(result => {
-        for (let field of this.fieldsSearch) {
-          if (field.field == object) {
-            if (result[field.returnedObject]) {
-              this.domains[0][object] = result[field.returnedObject];
-            }
-            else {
-              this.domains[0][object] = result;
-            }
-          }
-        }
-        if (this.loading == true) {
-          setTimeout(() => this.loading = false, 300);
-        }
-      }, error => {
-        this.mensagem = Translation.t("ERROR_RESULT");
-        setTimeout(() => this.loading = false, 300);
-      });
-    }
-    else {
-      this.domains[0][object] = [];
-    }
   }
 
   searchFilter() {
@@ -359,86 +295,8 @@ export class AtendimentoComponent implements OnInit {
     }
   }
 
-
-  loadContent() {
-    this.getListPaged();
-
-    if (Util.getPageState('route') == this.method) {
-
-      if (Util.getPageState('domains') !== 'undefined') {
-        this.domains = JSON.parse(Util.getPageState('domains'));
-      }
-
-      this.object = JSON.parse(Util.getPageState('object'));
-
-      if (this.loading == true) {
-        this.loading = false;
-      }
-
-      this.setPagePagined(parseInt(Util.getPageState('page')), this.paging.limit);
-
-      //this.emitAlterXlsMethod.emit(this.object);
-    }
-  }
-
-  savePageState() {
-
-    Util.savePageState(
-      this.object,
-      (this.pager.currentPage !== undefined ? this.pager.currentPage : this.paging.offset),
-      this.method,
-      this.domains,
-      this.textoProcurado.nativeElement.value
-    );
-  }
-
-  checkRequiredFields() {
-    this.enableSearchButton = [];
-
-    for (let field of this.fieldsSearch) {
-      if (field.filter) {
-        if (field.filter.required) {
-
-          //console.log(field.field, this.object[field.field]);
-          if (this.object[field.field] !== undefined && this.object[field.field] != null) {
-            if (typeof this.object[field.field] == 'object') {
-              if (field.type == "date" || field.type == "dateTime") {
-                this.enableSearchButton.push(true);
-              } else {
-                if (this.object[field.field].length) {
-                  this.enableSearchButton.push(true);
-                } else {
-                  this.enableSearchButton.push(false);
-                }
-              }
-            } else {
-              this.enableSearchButton.push(true);
-            }
-          }
-          else {
-            this.enableSearchButton.push(false);
-          }
-        }
-      }
-    }
-
-    if (this.enableSearchButton.length && this.enableSearchButton.includes(false)) {
-      return false;
-    }
-
-    return true;
-  }
-
   changeTextoProcurado() {
-    this.savePageState();
   }
-
-  filterMultiSelectMethod(field, value) {
-    if (typeof field !== "undefined" && typeof value !== "undefined" && field !== null && value !== null) {
-      this.emitFilterMultiSelectMethod.emit({ field: field, value: value });
-    }
-  }
-  
 
   abreFichaDownload(item) {
     let uri = JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")

@@ -120,9 +120,7 @@
               Pressão arterial
             </label>
             <div class="col-xl-8">
-              <input type="text"  class="form-control has-error" [(ngModel)]="object.pressaoArterial"
-                formControlName="pressaoArterial" [readonly]="disableFields()"
-                currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
+              <input type="text"  class="form-control has-error" [(ngModel)]="object.pressaoArterial" formControlName="pressaoArterial" [readonly]="disableFields()"/>
             </div>
           </div>
         </div>

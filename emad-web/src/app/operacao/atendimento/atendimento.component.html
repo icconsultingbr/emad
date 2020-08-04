@@ -136,8 +136,7 @@
 
         <span *ngIf="domains" class="row">
             <div class="col-md-12 col-sm-12">
-                <a [routerLink]="" (click)="searchFilter()"
-                    [class]="checkRequiredFields()?'btn btn-primary float-right':'btn btn-primary float-right disabled'">
+                <a [routerLink]="" (click)="searchFilter()" class="btn btn-primary float-right">
                     <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin text-left">
                         <i class="fa fa-spinner"></i>
                     </i>

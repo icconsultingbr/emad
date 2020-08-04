@@ -52,26 +52,16 @@ FichaDigitalService.prototype.enviaFichaSync = async function (obj, url, html) {
         const writeFile = util.promisify(fs.writeFile);
         const unlink = util.promisify(fs.unlink);
         
-
         await writeFile(arquivoCompleto, htmlResult);
 
         var FormData = require('form-data');
-            var form = new FormData();
-            form.append('userName', 'admin');
-            form.append('password', 'admin');
-            form.append('action', 'print');
-            form.append('xmlFile', fs.createReadStream(arquivoCompleto));            
-            
-            //const submit = util.promisify(form.submit);
-            form.submit(url);
-            await unlink(arquivoCompleto);
-
-            // await new Promise((resolve, reject) => {
-            //     submit(url,  function (err, res) {  
-            //        fs.unlink(arquivoCompleto); 
-            //         resolve();                   
-            //     }); 
-            // });
+        var form = new FormData();
+        form.append('userName', 'admin');
+        form.append('password', 'admin');
+        form.append('action', 'print');
+        form.append('xmlFile', fs.createReadStream(arquivoCompleto));      
+        form.submit(url);
+        await unlink(arquivoCompleto);
 }
 
 module.exports = function () {

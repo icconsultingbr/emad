@@ -404,7 +404,7 @@ PacienteDAO.prototype.buscaPorIdFicha = function (id, callback) {
     p.id,
     p.cartaoSus,
     DATE_FORMAT(current_date(),'%d/%m/%y') as dataAtendimento,    
-    DATE_FORMAT(DATE_ADD(current_timestamp(), INTERVAL -3 hour),'%H:%m:%s') as hora_atendimento,
+    DATE_FORMAT(DATE_ADD(current_timestamp(), INTERVAL -3 hour),'%H:%i:%s') as hora_atendimento,
     TIMESTAMPDIFF(YEAR, p.dataNascimento, NOW()) as idade, 
     m.nome as nomeMunicipio, 
     p.nome, 
