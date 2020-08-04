@@ -3,7 +3,7 @@ function Cron() {
 
 Cron.prototype.geraFatura = function (callback) {
 
-   callback("TESTE");
+   //callback("TESTE");
 }
 
 

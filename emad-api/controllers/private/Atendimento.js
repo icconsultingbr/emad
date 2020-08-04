@@ -82,14 +82,14 @@ module.exports = function (app) {
     app.post('/atendimento/print-document', function (req, res) {
         let usuario = req.usuario;
 
-        console.log('teste')
+        console.log('print-document')
         res.status(200).json({ id: 1 });
     });
 
     app.post('/atendimento/consulta-por-paciente', function (req, res) {
         let usuario = req.usuario;
 
-        console.log('teste')
+        console.log('consulta-por-paciente')
         res.status(200).json({ id: 1 });
     });
 

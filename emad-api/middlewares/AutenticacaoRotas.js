@@ -13,7 +13,9 @@ module.exports = function (app) {
         if (token) {
 
             jwt.verify(token, app.settings.superSecret, function (err, decoded) {
-                if (err) {
+                if (err) {                    
+                    var datetime = new Date();    
+                    console.log('Erro token do usuário: ' + req.usuario + ', at: ' + datetime + ', token: ' + token);
                     console.log(err);
                     errors = [];
                     errors = customError(errors, "header", "Não autorizado", "");

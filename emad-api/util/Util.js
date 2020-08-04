@@ -85,11 +85,10 @@ Util.prototype.createWebToken = function(app, req, usuario){
     let token = jwt.sign(payload, app.settings.superSecret, {
         expiresIn: 180 * 60 * 1  // expires in seconds
         //expiresIn: 60  // expires in seconds
-    });
-
+    });    
+    var datetime = new Date();    
+    console.log('Criou token do usuário: ' + usuario.id + ', at: ' + datetime + ', token: ' + token);
     return token;
-
-
 }
 
 Util.prototype.createHashEmail = function(email){
