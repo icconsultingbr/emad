@@ -236,4 +236,8 @@ export class AtendimentoService extends GenericsService {
     removeMedicamento(params: any) {
         return this.http.delete('atendimento-medicamento/' + params);
     }
+
+    enviaFicha(obj: any) {
+        return this.http.put('atendimento/envia-ficha/', JSON.stringify(obj));
+    }
 }

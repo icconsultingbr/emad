@@ -29,6 +29,11 @@ ParametroSegurancaDAO.prototype.buscarValorPorChave = function (nomeChave, callb
     this._connection.query(`SELECT NOME, VALOR FROM ${this._table} WHERE NOME IN (${nomeChave})`, callback);
 }
 
+ParametroSegurancaDAO.prototype.buscarValorPorChaveSync = async function (nomeChave) {
+    const valor =  await this._connection.query(`SELECT NOME, VALOR FROM ${this._table} WHERE NOME IN (${nomeChave})`);
+    return valor;
+}
+
 ParametroSegurancaDAO.prototype.buscaDominio = function (callback) {
     this._connection.query(`SELECT id, nome FROM ${this._table}`, callback);
 }

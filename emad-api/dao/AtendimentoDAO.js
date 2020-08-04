@@ -304,6 +304,11 @@ AtendimentoDAO.prototype.buscaDadosFichaAtendimento = function (command, id ,cal
     this._connection.query(command + id,callback);
 }
 
+AtendimentoDAO.prototype.buscaDadosFichaAtendimentoSync = async function (command, id) {
+    let atendimento = await this._connection.query(command + id);
+    return atendimento;
+}
+
 AtendimentoDAO.prototype.buscaProfissionalAberturaAtendimento = function (idUsuario, idAtendimento, callback) {    
     this._connection.query(`select 1 from tb_atendimento atend 
     inner join tb_profissional proAbertura on proAbertura.idUsuario = atend.idUsuario 

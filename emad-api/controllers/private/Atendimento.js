@@ -23,6 +23,62 @@ module.exports = function (app) {
         }
     });
 
+    app.put('/atendimento/envia-ficha', async function (req, res) {        
+        var obj = req.body;
+        let id = obj.id;
+        let urlFicha;
+        
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
+        const parametroSegurancaRepository = new app.dao.ParametroSegurancaDAO(connection);
+        const tipoFichaRepository = new app.dao.TipoFichaDAO(connection);
+        
+        try {
+            
+            var buscaAtendimento = await atendimentoRepository.buscaPorIdSync(id);
+
+            if (!buscaAtendimento) {
+                errors = util.customError(errors, "header", "Atendimento não encontrado", "");
+                res.status(400).send(errors);                
+                return;
+            }
+
+            var valorChave = await parametroSegurancaRepository.buscarValorPorChaveSync("'URL_FICHA_DIGITAL_SERVICO'");
+            
+            if (valorChave) {
+                urlFicha = valorChave.filter((url) => url.NOME == "URL_FICHA_DIGITAL_SERVICO")[0].VALOR;                
+            }
+            else {
+                errors = util.customError(errors, "header", "URL para envio da ficha digital não foi encontrada", "");
+                res.status(400).send(errors);                
+                return;
+            }
+
+            var template = await tipoFichaRepository.buscaTemplatePorIdSync(buscaAtendimento.tipoFicha);
+
+            if(template.length){
+                
+                if (template[0].queryTemplate != null && template[0].xmlTemplate != null) {
+                    
+                    var dadosFicha = await atendimentoRepository.buscaDadosFichaAtendimentoSync(template[0].queryTemplate, obj.id);    
+                    
+                    if (dadosFicha && dadosFicha.length) {                        
+                        var client = new app.services.FichaDigitalService();
+                        await client.enviaFichaSync(dadosFicha[0], urlFicha, template[0].xmlTemplate);                    
+                    }
+                }
+            }            
+            res.status(201).send(buscaAtendimento);
+        }
+        catch (exception) {
+            console.log("Erro ao enviar ficha do atendimento (" + id + "), exception: " + exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });
+
     app.post('/atendimento/print-document', function (req, res) {
         let usuario = req.usuario;
 
@@ -386,7 +442,6 @@ module.exports = function (app) {
         });
     });
 
-
     app.get('/atendimento/dominios', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
@@ -399,7 +454,6 @@ module.exports = function (app) {
         });
 
     });
-
 
     function lista(addFilter, res) {
         var q = require('q');

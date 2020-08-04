@@ -23,6 +23,11 @@ TipoFichaDAO.prototype.buscaTemplatePorId = function (id, callback) {
     this._connection.query(`SELECT xmlTemplate, queryTemplate  FROM ${this._table} WHERE id = ?`,id,callback);
 }
 
+TipoFichaDAO.prototype.buscaTemplatePorIdSync = async function (id) {
+    const template =  await this._connection.query(`SELECT xmlTemplate, queryTemplate  FROM ${this._table} WHERE id = ?`,id);
+    return template;
+}
+
 TipoFichaDAO.prototype.buscaDominio = function (callback) {
     this._connection.query(`SELECT id, nome FROM ${this._table}`, callback);
 }
