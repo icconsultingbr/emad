@@ -1,0 +1,203 @@
+<h4 class="mb-5 text-left">{{id!=null?'Editar '+label:'Adicionar '+label}}</h4>
+<app-loader [loading]="loading"></app-loader>
+<p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
+<div *ngIf="errors.length" class="alert alert-danger sticky-top"> 
+  <div *ngFor="let error of errors" class="row">
+    <div class="col-12 text-left">
+      {{error.message}}
+    </div>
+  </div>
+</div>
+<form [formGroup]="form" (submit)="sendForm($event)">
+  <div class="card mb-4">  
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Pedido de compra
+      </div>
+      <div class="card-body text-left">
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Número documento <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <input type="text" class="form-control has-error" [(ngModel)]="pedidoCompra.numeroPedido" formControlName="numeroPedido"/>                
+              </div>
+              <label class="col-xl-2 col-form-label text-left">
+                Número empenho
+              </label>
+              <div class="col-xl-4">
+                <input type="text" class="form-control has-error" [(ngModel)]="pedidoCompra.numeroEmpenho" formControlName="numeroEmpenho"/>                
+              </div>
+            </div>
+          </div>
+        </div>  
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Data pedido <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                      <div class="input-group-text btn">
+                          <i class="fa fa-calendar-alt"></i>
+                      </div>
+                  </div>
+                  <input type="text" [(ngModel)]="pedidoCompra.dataPedido" formControlName="dataPedido" placeholder="dd/mm/aaaa" bsDatepicker
+                      [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control" autocomplete="off">
+                </div>
+              </div>
+              <label class="col-xl-2 col-form-label text-left">
+                Data empenho 
+              </label>
+              <div class="col-xl-4">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                      <div class="input-group-text btn">
+                          <i class="fa fa-calendar-alt"></i>
+                      </div>
+                  </div>
+                  <input type="text" [(ngModel)]="pedidoCompra.dataEmpenho" formControlName="dataEmpenho" placeholder="dd/mm/aaaa" bsDatepicker
+                      [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control" autocomplete="off">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> 
+      </div>
+    </div>  
+  </div> 
+  <div class="card mb-4" *ngIf="pedidoCompra.id">
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Material
+      </div>
+      <div class="card-body text-left">
+        <div class="row">
+          <div class="col-12">
+            <app-pesquisa-medicamento  (medicamentoSelecionadoEvent)="medicamentoSelecionado($event)" 
+                                       [idProfissional]="999" 
+                                       [idMaterial]="itemPedidoCompra.idMaterial"
+                                       [object]="objectMaterial"></app-pesquisa-medicamento>          
+          </div>          
+        </div>
+        <div class="row">
+          <div class="col-12">                     
+            <div class="form-group row">
+
+              </div>
+          </div>          
+        </div>
+        <div class="row">
+          <div class="col-12">
+                  
+          </div>          
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">  
+              <label class="col-xl-2 col-form-label text-left">
+                Quantidade pedido <span class="text-danger font-weight-bold"> *</span>
+              </label>              
+              <div class="col-xl-4">
+                <input type="number"  class="form-control has-error" [(ngModel)]="itemPedidoCompra.qtdCompra" formControlName="qtdCompra"/>
+              </div>
+              <label class="col-xl-2 col-form-label text-left">
+                Previsão entrega <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                      <div class="input-group-text btn">
+                          <i class="fa fa-calendar-alt"></i>
+                      </div>
+                  </div>
+                  <input type="text" [(ngModel)]="itemPedidoCompra.dataPrevistaEntrega" formControlName="dataPrevistaEntrega" placeholder="dd/mm/aaaa" bsDatepicker
+                      [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control" autocomplete="off">
+                </div>
+              </div> 
+              
+            </div>         
+          </div>          
+        </div>        
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group text-right">                                 
+              <button class="btn btn-primary" type="button" (click)="confirmaItemEntradaMaterial()" [disabled]="toggleItemEntradaMaterial()">
+                <i class="fa fa-save"></i>Adicionar
+              </button>  
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 table-responsive">
+            <div class="form-group row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Material</th>
+                    <th>Fabricante</th>
+                    <th>Lote</th>                    
+                    <th>Validade</th>                    
+                    <th>Quantidade</th>   
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="text-left">
+                    <td colspan="99" class="text-secondary"  *ngIf="!pedidoCompra.itensPedidoCompra.length">
+                      <i>{{'Não há resultados...'}}</i>
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody *ngIf="pedidoCompra.itensPedidoCompra">
+                    <tr class="text-left" *ngFor="let item of pedidoCompra.itensPedidoCompra">
+                      <td class="text-secondary">{{item.nomeMaterial}}</td>
+                      <td class="text-secondary">{{item.nomeFabricante}}</td>
+                      <td class="text-secondary">{{item.lote}}</td>                      
+                      <td class="text-secondary">{{item.validade | date :'dd/MM/yyyy'}}</td>
+                      <td class="text-secondary">{{item.quantidade}}</td>
+                      <td class="text-secondary text-right">
+                        <a class="btn btn-link" (click)="removeItemMovimento(item)">
+                          <i class="fa fa-trash-alt"></i> Remover
+                        </a>
+                      </td>  
+                    </tr>
+                  </tbody>
+              </table>
+            </div>            
+          </div>
+        </div>
+      </div>
+    </div>    
+  </div>
+
+  <div class="form-group text-right">
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="togglePedido">
+      <i class="fa fa-save"></i> {{ pedidoCompra.id ? 'Salvar' : 'Criar pedido' }} 
+    </button>      
+    <button (click)="back()" class="btn btn-default" type="button">
+      <i class="fa fa-arrow-left"></i> Retornar
+    </button>
+  </div>
+
+</form>
+
+<ng-template #contentRecibo>
+  <div class="modal-header">
+    <h4 class="modal-title">Impressão</h4>
+    <button type="button" class="close" (click)="close(false)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Operação realizada com sucesso. Deseja imprimir?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="abreRelatorio()">Sim</button>
+    <button type="button" class="btn btn-danger"  (click)="close()">Não</button>    
+  </div>
+</ng-template>

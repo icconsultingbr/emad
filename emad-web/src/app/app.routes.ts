@@ -64,6 +64,7 @@ const appRoutes : Routes = [
     { path: 'entrada-material', canActivate: [AuthGuard], loadChildren: './estoque/components/entrada-material/entrada-material.module#EntradaMaterialModule' },
     { path: 'ajuste-estoque', canActivate: [AuthGuard], loadChildren: './estoque/components/ajuste-estoque/ajuste-estoque.module#AjusteEstoqueModule' },
     { path: 'reverter-ajuste-estoque', canActivate: [AuthGuard], loadChildren: './estoque/components/reverter-ajuste-estoque/reverter-ajuste-estoque.module#ReverterAjusteEstoqueModule' },
+    { path: 'pedidos-compras', canActivate: [AuthGuard], loadChildren: './estoque/components/pedido-compra/pedido-compra.module#PedidoCompraModule' },    
     
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 
