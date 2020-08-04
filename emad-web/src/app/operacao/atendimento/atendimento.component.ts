@@ -24,18 +24,12 @@ export class AtendimentoComponent implements OnInit {
   pager: any = {};
   pagedItems: any[];
   
-  token: string = "";
   message: string = "";
   mensagem: string = "";
-  classMensagem: string = "";
   mensagemModal: string = "";
-  closeResult: string;
-  @Input() loading: boolean = false;
   isFilterCollapse: boolean = false;
-  pagerService: PagerService
-  user: Usuario = new Usuario();
-  warning: string = "";
-  motivoExclusao: string = '';
+  pagerService: PagerService  
+  warning: string = "";  
   pageLimit: number = 10;
   totalPages: Number;
   modalRef: NgbModalRef = null;  
@@ -50,13 +44,11 @@ export class AtendimentoComponent implements OnInit {
 
   errors: any[] = [];
   showLabels: Boolean = false;
-  
-  //ACTION BUTTONS
+  loading: boolean = false;
 
+  //ACTION BUTTONS
   @Input() create: Boolean = true;  
-  @Input() view: Boolean = true;
-  @Input() refresh: Boolean = true;
-  @Input() callbackLoadList: any;
+  @Input() view: Boolean = true;  
   @Input() urlForm: string = "atendimentos/cadastro";
 
   @ViewChild('textoProcurado') textoProcurado: ElementRef;
@@ -136,31 +128,21 @@ export class AtendimentoComponent implements OnInit {
     });        
   }
 
-  setPage(page: number) {
-    this.pager = this.pagerService.getPager(this.allItems.length, page, this.pageLimit);
-    this.pagedItems = this.allItems.slice(this.pager.startIndex, this.pager.endIndex + 1);
-  }
-
   setPagePagined(offset: number, limit: Number) {
     this.paging.offset = offset !== undefined ? offset : 0;
     this.paging.limit = limit ? limit : this.paging.limit;
     this.getListPaged(this.paging.offset, this.paging.limit);
   }
 
-
   checkDomains() {
-
     setTimeout(() => this.loading = true, 100);
-
     if (this.domains && this.domains.length) {
-
       setTimeout(() => {
         this.loading = false;
         this.loadContent();
       }, 100);
     }
     else {
-
       if (this.errors.length) {
         this.loading = false;
       }
@@ -247,44 +229,7 @@ export class AtendimentoComponent implements OnInit {
       this.router.navigate(['/' + route[0] + '-form']);
     }
   }
-
-  alter(item) {
-
-    this.message = "";
-    let compoundKey: any[] = [];
-
-    for (let field of this.fields) {
-
-      if (field.compoundKey) {
-        compoundKey = field.compoundKey;
-      }
-    }
-
-    if (compoundKey.length) {
-
-      let uri: string = "";
-
-      for (let ck of compoundKey) {
-        uri += "/" + item[ck.field];
-      }
-
-      if (this.urlForm != undefined) {
-        this.router.navigate(['/' + this.urlForm + uri]);
-      } else {
-        let route = this.method.split("/");
-        this.router.navigate(['/' + route[0] + '-form' + uri]);
-      }
-    } else {
-      if (this.urlForm != undefined) {
-        this.router.navigate(['/' + this.urlForm + '/' + item.id]);
-      } else {
-        let route = this.method.split("/");
-        this.router.navigate(['/' + route[0] + '-form/' + item.id]);
-      }
-
-    }
-  }
-
+ 
   viewer(id) {
     this.message = "";
     if (this.urlForm != undefined) {
@@ -294,7 +239,6 @@ export class AtendimentoComponent implements OnInit {
       this.router.navigate(['/' + route[0] + '-view/' + id]);
     }
   }
-
 
   ngAfterViewInit() {
     if (this.domains) {
@@ -324,13 +268,9 @@ export class AtendimentoComponent implements OnInit {
       if (this.loading != true) {
         this.loading = true;
       }
-
-
       this.service.list(route + "/" + id).subscribe(result => {
-
         for (let field of this.fieldsSearch) {
           if (field.field == object) {
-
             if (result[field.returnedObject]) {
               this.domains[0][object] = result[field.returnedObject];
             }
@@ -358,7 +298,6 @@ export class AtendimentoComponent implements OnInit {
   }
 
   clear() {
-
     if (this.object != null) {
 
       if (Object.keys(this.object).length) {
