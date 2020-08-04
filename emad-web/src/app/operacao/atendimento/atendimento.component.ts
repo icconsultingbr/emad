@@ -139,9 +139,9 @@ export class AtendimentoComponent implements OnInit {
     this.message = "";
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
-
+    
     if (this.loading != true) {
-      setTimeout(() => this.loading = true, 300);
+     setTimeout(() => this.loading = true, 300);
     }
 
     let params = "";
@@ -189,9 +189,11 @@ export class AtendimentoComponent implements OnInit {
       this.paging.total = result.total;
       this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
       this.allItems = result.items;
-      this.loading = false;
+      setTimeout(() => {
+        this.loading = false;
+      }, 300);
     }, erro => {
-      this.loading = false;
+      setTimeout(() => this.loading = false, 300);
       this.errors = Util.customHTTPResponse(erro);
     });
   }
@@ -215,7 +217,7 @@ export class AtendimentoComponent implements OnInit {
     }
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit() {    
     this.getListPaged();
   }
 
@@ -316,6 +318,7 @@ export class AtendimentoComponent implements OnInit {
           );
       });
     });
+    this.loading = false;
   }
 
   abreFichaVisualizacao(item) {
@@ -335,6 +338,7 @@ export class AtendimentoComponent implements OnInit {
         '_blank'
       );
     });
+    this.loading = false;
   }
 
   abreReceitaMedica(item) {      
@@ -364,6 +368,7 @@ export class AtendimentoComponent implements OnInit {
         '_blank'
       );
     });
+    this.loading = false;
   }
 
   close() {
