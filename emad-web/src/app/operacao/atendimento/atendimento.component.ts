@@ -119,8 +119,13 @@ export class AtendimentoComponent implements OnInit {
         s: estabelecimentos,
         situacao: [
           { id: "C", nome: "Em aberto" },
+          { id: "2", nome: "Concluído" },
           { id: "A", nome: "Alta" },          
-          { id: "E", nome: "Evasão" },
+          { id: "E", nome: "Evasão" },          
+          { id: "5", nome: "Transferência hospitalar/ambulatório" },          
+          { id: "6", nome: "Transferência unidade prisional" },          
+          { id: "7", nome: "Desinternação" },
+          { id: "8", nome: "Álvara de soltura" },
           { id: "O", nome: "Óbito" },
           { id: "X", nome: "Cancelado" }
         ]

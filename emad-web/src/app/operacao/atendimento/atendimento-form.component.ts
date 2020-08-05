@@ -376,8 +376,8 @@ export class AtendimentoFormComponent implements OnInit {
           this.openConfirmacao(this.contentConfirmacao);
         }
 
-        if(this.object.situacao == "A"){
-          this.stopProcess('A');
+        if(this.object.situacao && this.object.situacao != "E" && this.object.situacao != "O" && this.object.situacao != "X" && this.object.situacao != "C"){
+          this.stopProcess(this.object.situacao);
           return;
         }
 

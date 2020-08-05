@@ -268,7 +268,7 @@ AtendimentoDAO.prototype.atualiza = function(objeto,id, callback) {
 AtendimentoDAO.prototype.finaliza = function(objeto,id, callback) {
     if(objeto.tipo == 'X'){
         this._connection.query("UPDATE "+this._table+" SET dataCancelamento = CURRENT_TIMESTAMP, idUsuarioAlteracao=?, motivoCancelamento =?,  situacao=? where id= ?", [objeto.idUsuarioAlteracao, objeto.motivoCancelamento, objeto.tipo, id], callback);
-    } else if(objeto.tipo == 'A' || objeto.tipo == 'E' || objeto.tipo == 'O'){
+    } else if(objeto.tipo != 'C'){
         this._connection.query("UPDATE "+this._table+" SET dataFinalizacao = CURRENT_TIMESTAMP, idUsuarioAlteracao=?, motivoCancelamento='', situacao =? where id= ?", [objeto.idUsuarioAlteracao, objeto.tipo, id], callback);
     } 
 }
@@ -368,6 +368,11 @@ AtendimentoDAO.prototype.carregaAtendimentoSituacaoExistentesPorPeriodo = functi
                                 WHEN ta.situacao = 'C' THEN 'Em aberto'  
                                 WHEN ta.situacao = 'E' THEN 'Evasão'  
                                 WHEN ta.situacao = 'O' THEN 'Óbito'  
+                                WHEN ta.situacao = '2' THEN 'Concluído'  
+                                WHEN ta.situacao = '5' THEN 'Transferência hospitalar/ambulatório'  
+                                WHEN ta.situacao = '6' THEN 'Transferência unidade prisional'  
+                                WHEN ta.situacao = '7' THEN 'Desinternação'  
+                                WHEN ta.situacao = '8' THEN 'Álvara de soltura'  
                                 ELSE 'Cancelado'
                                 END as situacao from                             
                             tb_atendimento ta 
@@ -383,6 +388,11 @@ AtendimentoDAO.prototype.carregaAtendimentoSituacaoPorPeriodo = function (period
                                         WHEN ta.situacao = 'C' THEN 'Em aberto'  
                                         WHEN ta.situacao = 'E' THEN 'Evasão'  
                                         WHEN ta.situacao = 'O' THEN 'Óbito'  
+                                        WHEN ta.situacao = '2' THEN 'Concluído'  
+                                        WHEN ta.situacao = '5' THEN 'Transferência hospitalar/ambulatório'  
+                                        WHEN ta.situacao = '6' THEN 'Transferência unidade prisional'  
+                                        WHEN ta.situacao = '7' THEN 'Desinternação'  
+                                        WHEN ta.situacao = '8' THEN 'Álvara de soltura' 
                                         ELSE 'Cancelado'
                                         END as situacao
                                 FROM tb_atendimento ta 
@@ -396,6 +406,11 @@ AtendimentoDAO.prototype.carregaAtendimentoSituacaoPorPeriodo = function (period
                                 WHEN ta.situacao = 'C' THEN 'Em aberto'  
                                 WHEN ta.situacao = 'E' THEN 'Evasão'  
                                 WHEN ta.situacao = 'O' THEN 'Óbito'  
+                                WHEN ta.situacao = '2' THEN 'Concluído'  
+                                WHEN ta.situacao = '5' THEN 'Transferência hospitalar/ambulatório'  
+                                WHEN ta.situacao = '6' THEN 'Transferência unidade prisional'  
+                                WHEN ta.situacao = '7' THEN 'Desinternação'  
+                                WHEN ta.situacao = '8' THEN 'Álvara de soltura' 
                                 ELSE 'Cancelado'
                                 END as situacao  from         
                                 tb_atendimento ta 

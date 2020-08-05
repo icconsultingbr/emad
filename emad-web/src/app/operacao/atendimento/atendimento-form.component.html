@@ -419,8 +419,13 @@
               <select *ngIf="!disableFields()" class="custom-select d-block w-100" [(ngModel)]="object.situacao" formControlName="situacao">
                 <option [value]="null">Selecione...</option>
                 <option value="C">Em aberto</option>
+                <option value="2">Concluído</option>
                 <option value="A">Alta</option>
                 <option value="E">Evasão</option>
+                <option value="5">Transferência hospitalar/ambulatório</option>
+                <option value="6">Transferência unidade prisional</option>
+                <option value="7">Desinternação</option>
+                <option value="8">Álvara de soltura</option>
                 <option value="O">Óbito</option>
                 <option value="X">Cancelado</option>
               </select>
@@ -428,8 +433,13 @@
               <select *ngIf="disableFields()" class="custom-select d-block w-100" [(ngModel)]="object.situacao" formControlName="situacao" disabled>
                 <option [value]="null">Selecione...</option>
                 <option value="C">Em aberto</option>
+                <option value="2">Concluído</option>
                 <option value="A">Alta</option>
                 <option value="E">Evasão</option>
+                <option value="5">Transferência hospitalar/ambulatório</option>
+                <option value="6">Transferência unidade prisional</option>
+                <option value="7">Desinternação</option>
+                <option value="8">Álvara de soltura</option>
                 <option value="O">Óbito</option>
                 <option value="X">Cancelado</option>
               </select>

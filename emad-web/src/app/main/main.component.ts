@@ -351,6 +351,26 @@ export class MainComponent implements OnInit {
       backgroundColor: 'rgb(95, 64, 0, 1)',
       hoverBackgroundColor: 'rgba(150, 127, 79, 0.8)',
     },
+    {
+      backgroundColor: 'rgb(162, 44, 123, 1)',
+      hoverBackgroundColor: 'rgba(148, 58, 118, 0.8)',      
+    },
+    {
+      backgroundColor: 'rgb(40, 152, 41, 1)',
+      hoverBackgroundColor: 'rgba(58, 148, 59, 0.8)',      
+    },
+    {
+      backgroundColor: 'rgb(158, 125, 39)',
+      hoverBackgroundColor: 'rgba(148, 123, 58, 0.8)',      
+    },
+    {
+      backgroundColor: 'rgb(160, 61, 40)',
+      hoverBackgroundColor: 'rgba(144, 68, 52, 0.8)',      
+    },
+    {
+      backgroundColor: 'rgb(49, 212, 208)',
+      hoverBackgroundColor: 'rgba(89, 214, 211, 0.8)',      
+    }
   ];
 
   // events
