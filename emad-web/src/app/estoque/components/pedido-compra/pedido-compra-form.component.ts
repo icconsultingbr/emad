@@ -21,7 +21,7 @@ export class PedidoCompraFormComponent implements OnInit {
   label: String = "pedido de compra";
   pedidoCompra: PedidoCompra = new PedidoCompra();
   itemPedidoCompra: ItemPedidoCompra = new ItemPedidoCompra();  
-  id: Number = null;
+  id: number = null;
   domains: any[] = [];
   form: FormGroup;
   loading: Boolean = false;
@@ -76,9 +76,9 @@ export class PedidoCompraFormComponent implements OnInit {
 
   medicamentoSelecionado(material: any){
     this.itemPedidoCompra.idMaterial = material.id;
-    this.itemPedidoCompra.nomeMaterial = material.descricao;    
+    this.itemPedidoCompra.nomeMaterial = material.descricao;
+    this.itemPedidoCompra.codigoMaterial = material.codigo;    
   } 
-
   
   confirmaItemEntradaMaterial(){    
     if(this.movimentoContemDivergencias())
@@ -93,13 +93,16 @@ export class PedidoCompraFormComponent implements OnInit {
 
     this.pedidoCompra.itensPedidoCompra.push(this.itemPedidoCompra);
     this.itemPedidoCompra = new ItemPedidoCompra();
+    this.itemPedidoCompra.idPedidoCompra = this.id;
     this.listaMaterialLote = [];
     this.objectMaterial = new Material();
     this.ref.detectChanges();    
   }
 
-  removeItemMovimento(item) {    
-    this.pedidoCompra.itensPedidoCompra = this.pedidoCompra.itensPedidoCompra.filter(itemExistente => itemExistente.idFront != item.idFront);      
+  removeItemPedidoCompra(item) {  
+    this.pedidoCompra.itensPedidoCompraExcluidos = [];  
+    this.pedidoCompra.itensPedidoCompraExcluidos.push(item);
+    this.pedidoCompra.itensPedidoCompra = this.pedidoCompra.itensPedidoCompra.filter(itemExistente => itemExistente.idFront != item.idFront);    
   }
 
   movimentoContemDivergencias()
@@ -135,8 +138,11 @@ export class PedidoCompraFormComponent implements OnInit {
         }          
         else{
           this.pedidoCompra.id = res.id;
-          this.itemPedidoCompra = res.id;
+          this.itemPedidoCompra.idPedidoCompra = res.id;
           this.message = "Pedido " + res.id + " criado com sucesso!";
+          this.pedidoCompra.situacao = res.situacao;
+          this.pedidoCompra.status = res.status;
+          this.id = res.id;
           this.warning = "";
         }        
       }, erro => {        
@@ -151,6 +157,7 @@ export class PedidoCompraFormComponent implements OnInit {
     this.loading = true;
     this.service.findById(this.id, "pedido-compra").subscribe(result => {
       this.pedidoCompra = result;          
+      this.itemPedidoCompra.idPedidoCompra = result.id;
       this.pedidoCompra.dataPedido = this.pedidoCompra.dataPedido ? new Date(this.pedidoCompra.dataPedido) : null;
       this.pedidoCompra.dataEmpenho = this.pedidoCompra.dataEmpenho ?  new Date(this.pedidoCompra.dataEmpenho) : null;      
       this.loading = false;

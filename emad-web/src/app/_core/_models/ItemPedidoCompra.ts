@@ -5,6 +5,7 @@ export class ItemPedidoCompra {
     @Input() idPedidoCompra: number;
     @Input() idMaterial: number;
     @Input() nomeMaterial: string;
+    @Input() codigoMaterial: string;    
     @Input() qtdCompra: number;
     @Input() saldoEntregue: number;
     @Input() dataPrevistaEntrega: Date;

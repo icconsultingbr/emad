@@ -10,4 +10,6 @@ export class PedidoCompra {
     @Input() status: string;
     @Input() situacao: Boolean;
     @Input() itensPedidoCompra: ItemPedidoCompra[] = [];      
+    @Input() itensPedidoCompraExcluidos: ItemPedidoCompra[] = [];      
 }
+

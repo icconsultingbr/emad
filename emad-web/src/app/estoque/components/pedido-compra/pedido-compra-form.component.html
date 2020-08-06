@@ -138,11 +138,12 @@
               <table class="table table-striped">
                 <thead>
                   <tr>
+                    <th>Código</th>
                     <th>Material</th>
-                    <th>Fabricante</th>
-                    <th>Lote</th>                    
-                    <th>Validade</th>                    
-                    <th>Quantidade</th>   
+                    <th>Qtd. pedido</th>                    
+                    <th>Saldo entregue</th>                    
+                    <th>Previsão entrega</th>   
+                    <th>Última entrega</th>  
                     <th></th>
                   </tr>
                 </thead>
@@ -155,13 +156,14 @@
                 </tbody>
                 <tbody *ngIf="pedidoCompra.itensPedidoCompra">
                     <tr class="text-left" *ngFor="let item of pedidoCompra.itensPedidoCompra">
+                      <td class="text-secondary">{{item.codigoMaterial}}</td>
                       <td class="text-secondary">{{item.nomeMaterial}}</td>
-                      <td class="text-secondary">{{item.nomeFabricante}}</td>
-                      <td class="text-secondary">{{item.lote}}</td>                      
-                      <td class="text-secondary">{{item.validade | date :'dd/MM/yyyy'}}</td>
-                      <td class="text-secondary">{{item.quantidade}}</td>
+                      <td class="text-secondary">{{item.qtdCompra}}</td>                      
+                      <td class="text-secondary">{{item.saldoEntregue}}</td>                      
+                      <td class="text-secondary">{{item.dataPrevistaEntrega | date :'dd/MM/yyyy'}}</td>
+                      <td class="text-secondary">{{item.dataUltimaEntrega | date :'dd/MM/yyyy'}}</td>
                       <td class="text-secondary text-right">
-                        <a class="btn btn-link" (click)="removeItemMovimento(item)">
+                        <a class="btn btn-link" (click)="removeItemPedidoCompra(item)">
                           <i class="fa fa-trash-alt"></i> Remover
                         </a>
                       </td>  
@@ -183,21 +185,4 @@
       <i class="fa fa-arrow-left"></i> Retornar
     </button>
   </div>
-
 </form>
-
-<ng-template #contentRecibo>
-  <div class="modal-header">
-    <h4 class="modal-title">Impressão</h4>
-    <button type="button" class="close" (click)="close(false)">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <p>Operação realizada com sucesso. Deseja imprimir?</p>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="abreRelatorio()">Sim</button>
-    <button type="button" class="btn btn-danger"  (click)="close()">Não</button>    
-  </div>
-</ng-template>
