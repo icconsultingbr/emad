@@ -12,16 +12,32 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/paciente/:id', function (req, res) {
+    app.get('/paciente/:id', async function (req, res) {
         let usuario = req.usuario;
         let id = req.params.id;
         let util = new app.util.Util();
         let errors = [];
 
-        buscarPorId(id, res).then(function (response) {
-            res.status(200).json(response);
-            return;
-        });
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const pacienteRepository = new app.dao.PacienteDAO(connection, null);
+        const atencaoContinuadaPacienteRepository = new app.dao.AtencaoContinuadaPacienteDAO(connection);
+
+            try {
+                var response = await pacienteRepository.buscaPorIdSync(id);
+                
+                var gruposAtencaoContinuada  = await atencaoContinuadaPacienteRepository.buscaPorPacienteSync(id);
+                response[0].gruposAtencaoContinuada = gruposAtencaoContinuada;
+
+                res.status(201).send(response[0]);
+            }
+            catch (exception) {
+                res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+            }
+            finally {
+                await connection.close();
+            }
+
     });
 
     app.post('/paciente', async function (req, res) {
@@ -29,20 +45,16 @@ module.exports = function (app) {
         var usuario = req.usuario;
         var util = new app.util.Util();
         var errors = [];
+        let gruposAtencaoContinuada = obj.gruposAtencaoContinuada;
+        let arrAtencaoContinuada = [];        
 
-            //req.assert("cartaoSus").notEmpty().withMessage("Cartão do SUS é um campo obrigatório;");
             req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");
             req.assert("nomeMae").notEmpty().withMessage("Nome da mãe é um campo obrigatório;");
             req.assert("dataNascimento").notEmpty().withMessage("Data de nascimento é um campo obrigatório;");
             req.assert("sexo").notEmpty().withMessage("Sexo é um campo obrigatório;");
             req.assert("idNacionalidade").notEmpty().withMessage("Nacionalidade é um campo obrigatório;");
             req.assert("idNaturalidade").notEmpty().withMessage("Naturalidade é um campo obrigatório;");
-            //req.assert("cpf").notEmpty().withMessage("CPF é um campo obrigatório;");
             req.assert("escolaridade").notEmpty().withMessage("Escolaridade é um campo obrigatório;");
-            //req.assert("logradouro").notEmpty().withMessage("Logradouro é um campo obrigatório;");
-            //req.assert("numero").notEmpty().withMessage("Número é um campo obrigatório;");
-            //req.assert("bairro").notEmpty().withMessage("Bairro é um campo obrigatório;");
-            //req.assert("idMunicipio").notEmpty().withMessage("Municipio é um campo obrigatório;");
             req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");            
             req.assert("idSap").isLength({ min: 0, max: 20 }).withMessage("O campo ID SAP deve ter no máximo 20 caracteres");
             req.assert("cartaoSus").isLength({ min: 0, max: 15 }).withMessage("O campo Cartão SUS deve ter no máximo 15 caracteres");
@@ -56,6 +68,8 @@ module.exports = function (app) {
                 return;
             }
 
+            delete obj.gruposAtencaoContinuada;
+
             obj.dataCriacao = new Date;
             if (obj.dataEmissao != null) {
                 obj.dataEmissao = util.dateToISO(obj.dataEmissao);
@@ -65,12 +79,23 @@ module.exports = function (app) {
             const connection = await app.dao.connections.EatendConnection.connection();
 
             const pacienteRepository = new app.dao.PacienteDAO(connection, null);
+            const atencaoContinuadaPacienteRepository = new app.dao.AtencaoContinuadaPacienteDAO(connection);
 
+            
             try {
                 await connection.beginTransaction();
                 
                 var response = await pacienteRepository.salvaAsync(obj);
                 obj.id = response[0].insertId;
+
+                if(gruposAtencaoContinuada){
+                    for (const item of gruposAtencaoContinuada) {
+                        arrAtencaoContinuada.push("(" + obj.id + ", " + item.id + ")");   
+                    }
+                }
+
+                if(arrAtencaoContinuada.length > 0)
+                    var atualizaResult  = await atencaoContinuadaPacienteRepository.atualizaGrupoPorPacienteSync(arrAtencaoContinuada);
 
                 res.status(201).send(obj);
                 await connection.commit();
@@ -91,6 +116,8 @@ module.exports = function (app) {
         let errors = [];
         let id = obj.id;
         delete obj.id;
+        let gruposAtencaoContinuada = obj.gruposAtencaoContinuada;
+        let arrAtencaoContinuada = [];        
 
         //req.assert("cartaoSus").notEmpty().withMessage("Cartão do SUS é um campo obrigatório;");
             req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");
@@ -117,6 +144,8 @@ module.exports = function (app) {
                 res.status(400).send(errors);
                 return;
             }
+
+            delete obj.gruposAtencaoContinuada;
             
             if (obj.dataEmissao != null) {
                 obj.dataEmissao = util.dateToISO(obj.dataEmissao);
@@ -126,10 +155,23 @@ module.exports = function (app) {
             const connection = await app.dao.connections.EatendConnection.connection();
 
             const pacienteRepository = new app.dao.PacienteDAO(connection);
+            const atencaoContinuadaPacienteRepository = new app.dao.AtencaoContinuadaPacienteDAO(connection);
 
             try {
                 await connection.beginTransaction();                        
                 var response = await pacienteRepository.atualizaAsync(obj, id);
+
+                var deleteResult  = await atencaoContinuadaPacienteRepository.deletaGrupoPorPacienteSync(id);
+
+                if(gruposAtencaoContinuada){
+                    for (const item of gruposAtencaoContinuada) {
+                        arrAtencaoContinuada.push("(" + id + ", " + item.id + ")");   
+                    }
+                }
+
+                if(arrAtencaoContinuada.length > 0)
+                    var atualizaResult  = await atencaoContinuadaPacienteRepository.atualizaGrupoPorPacienteSync(arrAtencaoContinuada);
+
                 res.status(201).send(obj);
                 await connection.commit();
             }

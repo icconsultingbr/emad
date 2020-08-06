@@ -399,6 +399,54 @@ PacienteDAO.prototype.buscaPorId = function (id, callback) {
     FROM ${this._table} WHERE id = ?`, id, callback);
 }
 
+PacienteDAO.prototype.buscaPorIdSync = async function (id) {
+    const responsePaciente =  await this._connection.query(`SELECT 
+
+    id,
+    cartaoSus,
+    nome, 
+    nomeSocial, 
+    nomeMae, 
+    nomePai, 
+    DATE_FORMAT(dataNascimento,'%d/%m/%Y') as dataNascimento,
+    sexo, 
+    idNacionalidade, 
+    idNaturalidade, 
+    ocupacao, 
+    cpf, 
+    rg, 
+    DATE_FORMAT(dataEmissao,'%d/%m/%Y') as dataEmissao,
+    orgaoEmissor, 
+    escolaridade, 
+    cep, 
+    logradouro, 
+    numero, 
+    complemento, 
+    bairro, 
+    idMunicipio, 
+    idUf, 
+    foneResidencial, 
+    foneCelular, 
+    foneContato, 
+    contato, 
+    email, 
+    situacao, 
+    idModalidade, 
+    DATE_FORMAT(dataCriacao,'%d/%m/%Y') as dataCriacao,
+    latitude,
+    longitude,
+    idSap,
+    idPacienteCorrespondenteDim,
+    idTipoSanguineo,
+    idRaca,
+    numeroProntuario,
+    numeroProntuarioCnes,
+    falecido,
+    idAtencaoContinuada
+    FROM ${this._table} WHERE id = ?`, id);
+    return responsePaciente;
+}
+
 PacienteDAO.prototype.buscaPorIdFicha = function (id, callback) {
     this._connection.query(`SELECT 
     p.id,

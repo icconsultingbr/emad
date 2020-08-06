@@ -75,7 +75,8 @@ export class PacienteFormComponent implements OnInit {
                   { id: "8", nome: "O_NEGATIVO" },
                 ],
                 idRaca: racas,
-                idAtencaoContinuada: atencaoContinuada
+                idAtencaoContinuada: atencaoContinuada,
+                gruposAtencaoContinuada: atencaoContinuada,
               });
             });
           });

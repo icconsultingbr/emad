@@ -409,6 +409,15 @@ export class PacienteService extends GenericsService {
       type: "select",
       label: "Grupo de atenção continuada",
       grid: false,
+      form: false,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "gruposAtencaoContinuada",
+      type: "multiSelect",
+      label: "Grupo de atenção continuada",
+      grid: false,
       form: true,
       required: false,
       validator: ['', '']
@@ -439,6 +448,6 @@ export class PacienteService extends GenericsService {
       form: true,
       required: false,
       validator: ['', '']
-    },
+    }
   ];
 }
