@@ -97,6 +97,8 @@ module.exports = function (app) {
         const itemMovimentoGeralRepository = new app.dao.ItemMovimentoGeralDAO(connection);
         const tipoMovimentoRepository = new app.dao.TipoMovimentoDAO(connection);
         const movimentoLivroRepository = new app.dao.MovimentoLivroDAO(connection);
+        const pedidoCompraRepository = new app.dao.PedidoCompraDAO(connection);
+        const itemPedidoCompraRepository = new app.dao.ItemPedidoCompraDAO(connection);
 
         try {
             await connection.beginTransaction();
@@ -122,7 +124,7 @@ module.exports = function (app) {
             movimentoGeral.idUsuario = usuario.id;
             movimentoGeral.idReceita = null;
             movimentoGeral.idPaciente = null;            
-            movimentoGeral.numeroControle = guid;                        
+            movimentoGeral.numeroControle = guid;                                    
             movimentoGeral.dataMovimento = new Date;
             movimentoGeral.dataCriacao = new Date;
             movimentoGeral.idUsuarioCriacao = usuario.id;
@@ -133,6 +135,21 @@ module.exports = function (app) {
             movimentoGeral.id = response[0].insertId;
 
                 for (const itemMovimento of movimentoGeral.itensMovimento) {                
+
+                    if(movimentoGeral.numeroEmpenho){
+                        var materialPedidoCompra = await itemPedidoCompraRepository.carregaItemPorEmpenhoMaterial(movimentoGeral.numeroEmpenho, itemMovimento.idMaterial);
+                        var itemEncontrado = materialPedidoCompra.length ? materialPedidoCompra[0] : null;
+                        if(itemEncontrado && itemEncontrado.id){                      
+                            delete itemEncontrado.dataCriacao;
+                            delete itemEncontrado.idUsuarioCriacao;
+                            itemEncontrado.dataAlteracao = new Date;
+                            itemEncontrado.idUsuarioAlteracao = usuario.id;
+                            itemEncontrado.saldoEntregue = itemEncontrado.saldoEntregue ? itemEncontrado.saldoEntregue + itemMovimento.quantidade : itemMovimento.quantidade;
+                            itemEncontrado.dataUltimaEntrega = new Date;
+                            var item = await itemPedidoCompraRepository.atualiza(itemEncontrado);  
+                        }
+                    }
+
                     var saldoAnteriorUnidade = 0;
                     var saldoAnteriorUnidadeLote = 0;
                     var saldoAtualUnidade = 0;

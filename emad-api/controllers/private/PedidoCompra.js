@@ -138,6 +138,26 @@ module.exports = function (app) {
         }
     });
 
+    app.get('/pedido-compra/listaEmpenho', async function (req, res) {
+        let usuario = req.usuario;
+        let util = new app.util.Util();
+        let errors = [];
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const pedidoCompraRepository = new app.dao.PedidoCompraDAO(connection);
+
+        try {
+            var response = await pedidoCompraRepository.listaEmpenho();
+            res.status(201).send(response);
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado" + exception, ""));
+        }
+        finally {
+            await connection.close();
+        }
+    });
 
     app.get('/pedido-compra/:id', async function(req,res){        
         let usuario = req.usuario;

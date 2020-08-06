@@ -13,4 +13,8 @@ export class EntradaMaterialService extends GenericsService {
   inserirMaterialEstoque(obj: any, metodo: string){ 
     return this.http.post(metodo, JSON.stringify(obj));
   }
+
+  listaEmpenhoPedidoCompra(){ 
+    return this.http.get("pedido-compra/listaEmpenho");
+  }  
 }

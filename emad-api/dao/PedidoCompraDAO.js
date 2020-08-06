@@ -44,6 +44,13 @@ PedidoCompraDAO.prototype.lista = async function() {
     return result;    
 }
 
+PedidoCompraDAO.prototype.listaEmpenho = async function() {   
+    const result = await this._connection.query(`SELECT a.id, a.numeroEmpenho nome
+                                                FROM ${this._table} a
+                                                WHERE a.situacao = 1`);    
+    return result;    
+}
+
 module.exports = function(){
     return PedidoCompraDAO;
 };

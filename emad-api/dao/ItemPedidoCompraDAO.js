@@ -43,6 +43,23 @@ ItemPedidoCompraDAO.prototype.buscarPorPedidoCompra = async function(idPedidoCom
     return itemReceita;
 }
 
+
+ItemPedidoCompraDAO.prototype.carregaItemPorEmpenhoMaterial = async function(idPedidoCompra, idMaterial) {   
+    const itemReceita = await  this._connection.query(`SELECT
+                                a.id
+                                ,a.idPedidoCompra
+                                ,a.idMaterial                                   
+                                ,a.dataUltimaEntrega
+                                ,a.situacao 
+                                ,a.saldoEntregue
+                                ,UUID() as idFront                              
+                                FROM ${this._table} a
+                                INNER JOIN tb_pedido_compra pedido ON (a.idPedidoCompra = pedido.id)
+                                INNER JOIN tb_material material ON (a.idMaterial = material.id)
+                                WHERE a.situacao > 0 and pedido.id=? and a.idMaterial=?`,[idPedidoCompra,idMaterial]);
+    return itemReceita;
+}
+
 module.exports = function(){
     return ItemPedidoCompraDAO;
 };

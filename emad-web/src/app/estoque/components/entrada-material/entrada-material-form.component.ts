@@ -61,9 +61,12 @@ export class EntradaMaterialFormComponent implements OnInit {
   loadDomains() {    
     this.service.listDomains('fabricante-material').subscribe(fabricanteMaterial => {
       this.service.listDomains('fabricante-material').subscribe(pedido => {
-        this.domains.push({            
-          idFabricante: fabricanteMaterial,            
-          idPedido: pedido
+        this.service.listaEmpenhoPedidoCompra().subscribe(empenho => {
+          this.domains.push({            
+            idFabricante: fabricanteMaterial,            
+            idPedido: pedido,
+            numeroEmpenho: empenho,
+          }); 
         }); 
       }); 
     }); 
