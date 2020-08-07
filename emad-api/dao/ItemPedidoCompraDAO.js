@@ -20,10 +20,6 @@ ItemPedidoCompraDAO.prototype.atualiza = async function(obj) {
     return [result];
 }
 
-ItemPedidoCompraDAO.prototype.deletaPorId = function (id,callback) {
-    this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
-}
-
 ItemPedidoCompraDAO.prototype.buscarPorPedidoCompra = async function(idPedidoCompra) {   
     const itemReceita = await  this._connection.query(`SELECT
                                 a.id

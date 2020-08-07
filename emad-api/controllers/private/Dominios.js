@@ -388,6 +388,17 @@ module.exports = function (app) {
         });
     });
         
+    app.get('/dominios/solicitacao-remanejamento', function(req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection);
+
+        listaDominios(dao, "Solicitação de remanejamento", res).then(function(response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+        
     function listaDominios(dao, dom, res) {
         var q = require('q');
         var d = q.defer();
