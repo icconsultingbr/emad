@@ -68,7 +68,7 @@ export class SolicitacaoRemanejamentoFormComponent implements OnInit {
     this.form = this.fb.group({
       id: [''], 
       idEstabelecimentoSolicitante: ['', ''],
-      idEstabelecimentoSolicitada: ['', ''],
+      idEstabelecimentoSolicitada: [{ value: '', disabled: this.id ? true : false }, ''],
       nomeEstabelecimentoSolicitante: ['', ''],
       qtdSolicitada: ['', ''],
       qtdAtendida: ['', '']    
@@ -157,6 +157,22 @@ export class SolicitacaoRemanejamentoFormComponent implements OnInit {
       });
   }
 
+  efetivarSolicitacao() {
+    this.errors = [];       
+    
+    this.solicitacaoRemanejamento.situacao = 4;
+    this.solicitacaoRemanejamento.idTipoMovimento = 5;
+
+    this.service
+      .atender(this.solicitacaoRemanejamento)
+      .subscribe((res: any) => {
+        this.back();
+      }, erro => {        
+        this.solicitacaoRemanejamento.situacao = 2;
+        this.errors = Util.customHTTPResponse(erro);
+      });
+  }
+
   carregaSolicitacaoRemanejamento() {
     this.solicitacaoRemanejamento.id = this.id;
     this.errors = [];
@@ -169,7 +185,7 @@ export class SolicitacaoRemanejamentoFormComponent implements OnInit {
     }, error => {
       this.solicitacaoRemanejamento = new SolicitacaoRemanejamento();      
       this.errors.push({
-        message: "Solicitação de compra não encontrado"
+        message: "Solicitação de remanejamento não encontrada"
       });
     });
   }

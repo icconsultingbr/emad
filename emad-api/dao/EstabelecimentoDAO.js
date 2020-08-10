@@ -182,7 +182,10 @@ EstabelecimentoDAO.prototype.buscarPacientes = function (id, raio, idModalidade,
     );
 }
 
-
+EstabelecimentoDAO.prototype.carregaPorId = async function(id){
+    let result =  await this._connection.query(`SELECT * FROM ${this._table} where id=?`, [id]);
+    return result ? result[0] : null;
+}
 
 module.exports = function(){
     return EstabelecimentoDAO;

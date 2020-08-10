@@ -226,7 +226,7 @@ module.exports = function (app) {
                         novoEstoque.dataCriacao = new Date();
                         novoEstoque.situacao = 1;
 
-                        var responseEstoque = await estoqueRepository.salva(novoEstoque);
+                        var responseEstoque = await estoqueRepository.salvaSync(novoEstoque);
                     }
 
                     if(temEstoqueInsuficiente.length > 0){

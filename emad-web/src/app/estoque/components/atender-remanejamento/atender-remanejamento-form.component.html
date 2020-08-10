@@ -1,0 +1,191 @@
+<h4 class="mb-5 text-left">{{id!=null?'Visualizar '+label:'Adicionar '+label}}</h4>
+<app-loader [loading]="loading"></app-loader>
+<p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
+<div *ngIf="errors.length" class="alert alert-danger sticky-top"> 
+  <div *ngFor="let error of errors" class="row">
+    <div class="col-12 text-left">
+      {{error.message}}
+    </div>
+  </div>
+</div>
+<form [formGroup]="form" (submit)="atenderSolicitacao($event)">
+  <div class="card mb-4">  
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Remanejamento
+      </div>
+      <div class="card-body text-left">
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Número da solicitação
+              </label>
+              <div class="col-xl-4">
+                <input type="text" class="form-control has-error" [(ngModel)]="solicitacaoRemanejamento.id" formControlName="id" readonly/>
+              </div>              
+            </div>
+          </div>
+        </div>  
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Unidade solicitante <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <input type="text" class="form-control has-error" [(ngModel)]="solicitacaoRemanejamento.nomeEstabelecimentoSolicitante" 
+                  formControlName="nomeEstabelecimentoSolicitante" readonly/>
+              </div>
+              <label class="col-xl-2 col-form-label text-left">
+                Unidade solicitada <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="solicitacaoRemanejamento.idEstabelecimentoSolicitada" 
+                  formControlName="idEstabelecimentoSolicitada">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.idEstabelecimentoSolicitada" [value]="item.id">{{item.nome}}</option>
+                </select>  
+              </div>
+            </div>
+          </div>
+        </div> 
+      </div>
+    </div>  
+  </div> 
+  <div class="card mb-4" *ngIf="solicitacaoRemanejamento.id">
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Itens solicitados
+      </div>
+      <div class="card-body text-left">        
+        <div class="row">
+          <div class="col-12 table-responsive">
+            <div class="form-group row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Material</th>
+                    <th>Qtd. solicitada</th>                    
+                    <th>Qtd. atendida</th>                      
+                    <th *ngIf="solicitacaoRemanejamento.situacao == 2"></th>
+                  </tr>
+                </thead>
+                  <tbody *ngIf="listaMaterialAguardandoAtendimento.length">
+                    <ng-container *ngFor="let item of listaMaterialAguardandoAtendimento">
+                      <tr class="text-left" >
+                        <td class="text-secondary">{{item.codigoMaterial}}</td>
+                        <td class="text-secondary">{{item.nomeMaterial}}</td>
+                        <td class="text-secondary">{{item.qtdSolicitada}}</td>                                            
+                        <td class="text-secondary" *ngIf="solicitacaoRemanejamento.situacao > 2">{{item.qtdAtendida}}</td>                                            
+                        <td class="text-secondary" *ngIf="solicitacaoRemanejamento.situacao == 2">
+                          <input type="text"  class="form-control has-error" width="10%" [(ngModel)]="item.qtdAtendida" formControlName="qtdAtendida"/>
+                        </td>
+                        <td class="text-secondary text-right" *ngIf="solicitacaoRemanejamento.situacao == 2">
+                          <button type="button" class="btn btn-primary float-left mr-2" (click)="carregaLotePorMaterial(item.idMaterial, item)">
+                            <i class="fa fa-edit"></i> Atender 
+                          </button>
+                        </td>              
+                      </tr>                    
+                      <tr class="text-left" >                      
+                        <td colspan="7"  *ngIf="item.expandir">
+                          <table class="table table-striped">
+                            <thead>
+                              <tr>
+                                <th>Lote</th>
+                                <th>Fabricante</th>
+                                <th>Validade</th>
+                                <th>Estoque</th>
+                                <th>Qtd. a dispensar</th>   
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr class="text-left">
+                                <td colspan="99" class="text-secondary"  *ngIf="!listaMaterialLote.length">
+                                  <i>Nenhum lote encontrado para o material</i>
+                                </td>
+                              </tr>
+                            </tbody>
+                            <tbody *ngIf="listaMaterialLote.length">
+                                <tr class="text-left" *ngFor="let item of listaMaterialLote">
+                                  <td class="text-secondary">{{item.lote}}</td>
+                                  <td class="text-secondary">{{item.nomeFabricanteMaterial}}</td>
+                                  <td class="text-secondary">{{item.validade | date :'dd/MM/yyyy'}}</td>
+                                  <td class="text-secondary">{{item.quantidade}}</td>
+                                  <td class="text-secondary" class="text-center">
+                                    <input *ngIf="!item.vencido && !item.bloqueado" type="text"  class="form-control has-error" width="10%"
+                                      [(ngModel)]="item.qtdDispensar" formControlName="qtdDispensarLote"/>
+                                    <i *ngIf="item.vencido && item.bloqueado" class="fas fa-exclamation-circle" title="Lote Vencido e Bloqueado" style="color:red"></i>
+                                    <i *ngIf="item.vencido && !item.bloqueado" class="fas fa-exclamation-triangle" title="Lote Vencido"  style="color:red"></i>
+                                    <i *ngIf="!item.vencido && item.bloqueado" class="fas fa-exclamation" title="Lote Bloqueado"  style="color:red"></i>                        
+                                  </td>  
+                                </tr>
+                              </tbody>
+                          </table>
+                          <div class="form-group text-right">
+                            <button class="btn btn-primary" type="button" (click)="confirmaItemSolicitacaoRemanejamento(item)">
+                              <i class="fa fa-save"></i>Adicionar
+                            </button>  
+                          </div>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+              </table>
+            </div>            
+          </div>
+        </div>
+      </div>
+    </div>    
+  </div>
+
+  <div class="card mb-4" *ngIf="solicitacaoRemanejamento.id && listaMaterialLoteDispensado.length">
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Medicamentos atendidos
+      </div>
+      <div class="card-body text-left">        
+        <div class="row">
+          <div class="col-12 table-responsive">
+            <div class="form-group row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Material</th>
+                    <th>Lote</th>
+                    <th>Fabricante</th>
+                    <th>Validade</th>                    
+                    <th>Qtd. atendida</th>          
+                  </tr>
+                </thead>
+                <tbody *ngIf="listaMaterialLoteDispensado.length">
+                    <tr class="text-left" *ngFor="let item of listaMaterialLoteDispensado">
+                      <td class="text-secondary">{{item.nomeMaterial ? item.nomeMaterial : '' }}</td>
+                      <td class="text-secondary">{{item.lote}}</td>
+                      <td class="text-secondary">{{item.nomeFabricanteMaterial}}</td>                      
+                      <td class="text-secondary">{{item.validade | date :'dd/MM/yyyy'}}</td>
+                      <td class="text-secondary">{{item.qtdDispensar}}</td> 
+                    </tr>
+                  </tbody>
+              </table>
+            </div>            
+          </div>
+        </div>
+      </div>
+    </div>    
+  </div>  
+
+  <div class="form-group text-right">
+    <button type="button" class="btn btn-danger"  (click)="naoAtenderSolicitacao()"  *ngIf="solicitacaoRemanejamento.situacao == 2">
+      <i class="fa fa-save"></i> Não atender
+    </button>       
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="solicitacaoRemanejamento.situacao == 2">
+      <i class="fa fa-save"></i> Atender solicitação
+    </button>      
+    <button (click)="back()" class="btn btn-default" type="button">
+      <i class="fa fa-arrow-left"></i> Retornar
+    </button>
+  </div>
+
+</form>

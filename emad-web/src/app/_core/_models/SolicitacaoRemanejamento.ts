@@ -9,4 +9,5 @@ export class SolicitacaoRemanejamento {
     @Input() situacao: number;
     @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem("est"))[0].id;
     @Input() itensSolicitacaoRemanejamento: ItemSolicitacaoRemanejamento[] = [];   
+    @Input() idTipoMovimento: number;
 }
