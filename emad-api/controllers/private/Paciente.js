@@ -80,11 +80,46 @@ module.exports = function (app) {
 
             const pacienteRepository = new app.dao.PacienteDAO(connection, null);
             const atencaoContinuadaPacienteRepository = new app.dao.AtencaoContinuadaPacienteDAO(connection);
-
             
             try {
                 await connection.beginTransaction();
                 
+                var responseBuscaCpf = await pacienteRepository.buscaPorCpfSync(obj, null);               
+
+                if (responseBuscaCpf.length > 0) {
+                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este CPF!", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
+                }
+
+                var responseBuscaSAP = await pacienteRepository.buscaPorSapSync(obj, null);               
+
+                if (responseBuscaSAP.length > 0) {
+                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este ID SAP!", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
+                }
+
+                var responseBuscaSUS = await pacienteRepository.buscaPorSusSync(obj, null);               
+
+                if (responseBuscaSUS.length > 0) {
+                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este número do cartão SUS!", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
+                }
+
+                var responseBuscaRG = await pacienteRepository.buscaPorRgSync(obj, null);               
+
+                if (responseBuscaRG.length > 0) {
+                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este RG!", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
+                }
+
                 var response = await pacienteRepository.salvaAsync(obj);
                 obj.id = response[0].insertId;
 
@@ -158,7 +193,44 @@ module.exports = function (app) {
             const atencaoContinuadaPacienteRepository = new app.dao.AtencaoContinuadaPacienteDAO(connection);
 
             try {
-                await connection.beginTransaction();                        
+                await connection.beginTransaction();     
+                
+                var responseBuscaCpf = await pacienteRepository.buscaPorCpfSync(obj, id);               
+
+                if (responseBuscaCpf.length > 0) {
+                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este CPF!", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
+                }
+
+                var responseBuscaSAP = await pacienteRepository.buscaPorSapSync(obj, id);               
+
+                if (responseBuscaSAP.length > 0) {
+                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este ID SAP!", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
+                }
+
+                var responseBuscaSUS = await pacienteRepository.buscaPorSusSync(obj, id);               
+
+                if (responseBuscaSUS.length > 0) {
+                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este número do cartão SUS!", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
+                }
+
+                var responseBuscaRG = await pacienteRepository.buscaPorRgSync(obj, id);               
+
+                if (responseBuscaRG.length > 0) {
+                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este RG!", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
+                }
+
                 var response = await pacienteRepository.atualizaAsync(obj, id);
 
                 var deleteResult  = await atencaoContinuadaPacienteRepository.deletaGrupoPorPacienteSync(id);

@@ -599,6 +599,66 @@ PacienteDAO.prototype.carregaNomePaciente = async function(id){
     return result[0].nome ? result[0].nome : "";
 }
 
+PacienteDAO.prototype.buscaPorCpfSync = async function (paciente, id) {
+    let pacienteResult = [];
+    let where = "";
+
+    if (paciente.cpf && typeof (paciente.cpf) != 'undefined') {
+        where += " AND REPLACE(REPLACE(REPLACE(p.cpf,'.',''),'-',''),'/','') = REPLACE(REPLACE(REPLACE(?,'.',''),'-',''),'/','') ";
+
+        if (id) {
+            where += "AND p.id <> " + id;
+        }    
+        pacienteResult =  await this._connection.query(`select p.* from ${this._table} as p WHERE p.situacao = 1 ${where}`, paciente.cpf);
+    }    
+    return pacienteResult;
+}
+
+PacienteDAO.prototype.buscaPorSapSync = async function (paciente, id) {
+    let pacienteResult = [];
+    let where = "";
+
+    if (paciente.idSap && typeof (paciente.idSap) != 'undefined') {
+        where += " AND REPLACE(REPLACE(REPLACE(p.idSap,'.',''),'-',''),'/','') = REPLACE(REPLACE(REPLACE(?,'.',''),'-',''),'/','') ";
+
+        if (id) {
+            where += "AND p.id <> " + id;
+        }   
+        pacienteResult =  await this._connection.query(`select p.* from ${this._table} as p WHERE p.situacao = 1 ${where}`, paciente.idSap);
+    }    
+    return pacienteResult;
+}
+
+PacienteDAO.prototype.buscaPorRgSync = async function (paciente, id) {
+    let pacienteResult = [];
+    let where = "";
+
+    if (paciente.rg && typeof (paciente.rg) != 'undefined') {
+        where += " AND REPLACE(REPLACE(REPLACE(p.rg,'.',''),'-',''),'/','') = REPLACE(REPLACE(REPLACE(?,'.',''),'-',''),'/','') ";
+
+        if (id) {
+            where += "AND p.id <> " + id;
+        }    
+        pacienteResult =  await this._connection.query(`select p.* from ${this._table} as p WHERE p.situacao = 1 ${where}`, paciente.rg);
+    }    
+    return pacienteResult;
+}
+
+PacienteDAO.prototype.buscaPorSusSync = async function (paciente, id) {
+    let pacienteResult = [];
+    let where = "";
+
+    if (paciente.cartaoSus && typeof (paciente.cartaoSus) != 'undefined') {
+        where += " AND REPLACE(REPLACE(REPLACE(p.cartaoSus,'.',''),'-',''),'/','') = REPLACE(REPLACE(REPLACE(?,'.',''),'-',''),'/','') ";
+
+        if (id) {
+            where += "AND p.id <> " + id;
+        }   
+        pacienteResult =  await this._connection.query(`select p.* from ${this._table} as p WHERE p.situacao = 1 ${where}`, paciente.cartaoSus);
+    }    
+    return pacienteResult;
+} 
+
 module.exports = function () {
     return PacienteDAO;
 };
