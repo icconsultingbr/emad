@@ -61,7 +61,7 @@ module.exports = function (app) {
 
         obj.dataAlteracao = new Date;
         obj.idUsuarioAlteracao = usuario.id;
-
+        
         const connection = await app.dao.connections.EatendConnection.connection();
 
         const solicitacaoRemanejamentoRepository = new app.dao.SolicitacaoRemanejamentoDAO(connection);
@@ -70,9 +70,12 @@ module.exports = function (app) {
         try {
             await connection.beginTransaction();
             
+            obj.situacao = obj.itensSolicitacaoRemanejamento.length > 0 ? 2 : 1;
+
             var response = await solicitacaoRemanejamentoRepository.atualiza(obj, obj.id);
 
             if(obj.itensSolicitacaoRemanejamento && obj.itensSolicitacaoRemanejamento.length > 0){
+                
                 for (const itemSolicitacaoRemanejamento of obj.itensSolicitacaoRemanejamento) {  
                     itemSolicitacaoRemanejamento.dataCriacao = new Date;
                     itemSolicitacaoRemanejamento.idUsuarioCriacao = usuario.id;

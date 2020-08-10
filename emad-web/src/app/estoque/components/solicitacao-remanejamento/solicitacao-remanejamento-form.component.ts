@@ -1,8 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SolicitacaoRemanejamentoService } from './solicitacao-remanejamento.service';
+import { PedidoCompra } from '../../../_core/_models/PedidoCompra';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ItemPedidoCompra } from '../../../_core/_models/ItemPedidoCompra';
+import { Util } from '../../../_core/_util/Util';
+import * as uuid from 'uuid';
+import { Material } from '../../../_core/_models/Material';
 import { SolicitacaoRemanejamento } from '../../../_core/_models/SolicitacaoRemanejamento';
-import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ItemSolicitacaoRemanejamento } from '../../../_core/_models/ItemSolicitacaoRemanejamento';
 
 @Component({
     selector: 'app-solicitacao-remanejamento-form',
@@ -12,26 +18,38 @@ import { ActivatedRoute } from '@angular/router';
 })
 
 export class SolicitacaoRemanejamentoFormComponent implements OnInit {
-
-  object: SolicitacaoRemanejamento = new SolicitacaoRemanejamento();
-  method: String = "solicitacao-remanejamento";
+    
   fields: any[] = [];
-  label: String = "Solicitação de remanejamento";
-  id: Number = null;
+  label: String = "solicitação de remanejamento";
+  solicitacaoRemanejamento: SolicitacaoRemanejamento = new SolicitacaoRemanejamento();
+  itemSolicitacaoRemanejamento: ItemSolicitacaoRemanejamento = new ItemSolicitacaoRemanejamento();  
+  id: number = null;
   domains: any[] = [];
+  form: FormGroup;
+  loading: Boolean = false;
+  message: string = '';
+  errors: any[] = [];    
+  listaMaterialLote: any[] = [];  
+  warning: string = '';
+  objectMaterial: Material = new Material();
 
-  constructor(
-    fb: FormBuilder,
+  constructor(    
+    private fb: FormBuilder,
     private service: SolicitacaoRemanejamentoService,
-    private route: ActivatedRoute) {
-      this.fields = service.fields;
+    private ref: ChangeDetectorRef,    
+    private route: ActivatedRoute,
+    private router: Router) {
+      
     }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.id = params['id'];
+      if(!Util.isEmpty(this.id))
+        this.carregaSolicitacaoRemanejamento();
     });
 
+    this.createGroup();
     this.loadDomains();
   }
 
@@ -44,5 +62,120 @@ export class SolicitacaoRemanejamentoFormComponent implements OnInit {
         });                      
       });
     });
+  }
+
+  createGroup() {
+    this.form = this.fb.group({
+      id: [''], 
+      idEstabelecimentoSolicitante: ['', ''],
+      idEstabelecimentoSolicitada: ['', ''],
+      nomeEstabelecimentoSolicitante: ['', ''],
+      qtdSolicitada: ['', ''],
+      qtdAtendida: ['', '']    
+    });
+  }
+
+  toggleSolicitacao(){
+    return Util.isEmpty(this.solicitacaoRemanejamento.idEstabelecimentoSolicitada)  
+    || Util.isEmpty(this.solicitacaoRemanejamento.idEstabelecimentoSolicitada);
+  }
+
+  toggleItemSolicitacaoRemanejamento(){
+    return Util.isEmpty(this.itemSolicitacaoRemanejamento.idMaterial)     
+    || Util.isEmpty(this.itemSolicitacaoRemanejamento.idSolicitacaoRemanejamento)    
+    || Util.isEmpty(this.itemSolicitacaoRemanejamento.qtdSolicitada);
+  }
+
+  medicamentoSelecionado(material: any){
+    this.itemSolicitacaoRemanejamento.idMaterial = material.id;
+    this.itemSolicitacaoRemanejamento.nomeMaterial = material.descricao;
+    this.itemSolicitacaoRemanejamento.codigoMaterial = material.codigo;    
+  } 
+  
+  confirmaItemSolicitacaoRemanejamento(){    
+    if(this.movimentoContemDivergencias())
+    return;
+
+    this.itemSolicitacaoRemanejamento.idFront = uuid.v4();
+    
+    if (!this.solicitacaoRemanejamento.itensSolicitacaoRemanejamento)
+      this.solicitacaoRemanejamento.itensSolicitacaoRemanejamento = [];
+
+    this.solicitacaoRemanejamento.itensSolicitacaoRemanejamento.push(this.itemSolicitacaoRemanejamento);
+    this.itemSolicitacaoRemanejamento = new ItemSolicitacaoRemanejamento();
+    this.itemSolicitacaoRemanejamento.idSolicitacaoRemanejamento = this.id;
+    this.listaMaterialLote = [];
+    this.objectMaterial = new Material();
+    this.ref.detectChanges();    
+  }
+
+  removeItemSolicitacaoRemanejamento(item) {  
+    this.solicitacaoRemanejamento.itensSolicitacaoRemanejamento = this.solicitacaoRemanejamento.itensSolicitacaoRemanejamento.filter(itemExistente => itemExistente.idFront != item.idFront);    
+  }
+
+  movimentoContemDivergencias()
+  {
+     this.errors = [];   
+     var erroQtd = false;     
+     let listaMaterialLoteExistente = [];     
+     listaMaterialLoteExistente =  Object.assign([], this.solicitacaoRemanejamento.itensSolicitacaoRemanejamento);
+
+     this.solicitacaoRemanejamento.itensSolicitacaoRemanejamento.forEach(item => {
+
+     let materialExistente = listaMaterialLoteExistente.filter(itemAdicionado => itemAdicionado.idMaterial == this.itemSolicitacaoRemanejamento.idMaterial);
+     
+     if(materialExistente.length > 0){
+        this.errors.push({
+          message: "Material já adicionado."
+        });
+        erroQtd = true;  
+       }
+      });
+     return erroQtd;
+  }
+
+  sendForm(event) {
+    this.errors = [];    
+    event.preventDefault();
+    
+    this.service
+      .inserir(this.solicitacaoRemanejamento)
+      .subscribe((res: any) => {
+        if (this.solicitacaoRemanejamento.id){
+          this.back();
+        }          
+        else{
+          this.solicitacaoRemanejamento.id = res.id;
+          this.itemSolicitacaoRemanejamento.idSolicitacaoRemanejamento = res.id;
+          this.message = "Solicitação " + res.id + " criada com sucesso!";
+          this.solicitacaoRemanejamento.situacao = res.situacao;          
+          this.id = res.id;
+          this.warning = "";
+        }        
+      }, erro => {        
+        this.errors = Util.customHTTPResponse(erro);
+      });
+  }
+
+  carregaSolicitacaoRemanejamento() {
+    this.solicitacaoRemanejamento.id = this.id;
+    this.errors = [];
+    this.message = "";
+    this.loading = true;
+    this.service.findById(this.id, "solicitacao-remanejamento").subscribe(result => {
+      this.solicitacaoRemanejamento = result;           
+      this.itemSolicitacaoRemanejamento.idSolicitacaoRemanejamento = result.id;
+      this.loading = false;
+    }, error => {
+      this.solicitacaoRemanejamento = new SolicitacaoRemanejamento();      
+      this.errors.push({
+        message: "Solicitação de compra não encontrado"
+      });
+    });
+  }
+
+  back() {   
+    const route = "solicitacoes-remanejamentos";
+    this.router.navigate([route]);
   }
 }

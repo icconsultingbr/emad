@@ -78,9 +78,20 @@ export class SolicitacaoRemanejamentoService extends GenericsService {
       label: "Situação",
       grid: true,
       form: false,
-      translate: {1: "SOLICITADA", 2: "ATENDIDA", 0: "INATIVA"},
+      translate: {0: "INATIVA", 1: "PENDENTE MATERIAL", 2: "SOLICITADA",  3: "ATENDIDA", 4: "RESERVADA", 5 : "NÃO ATENDIDA"},
       required: true,
       validator:['', Validators.required]
     }
   ];
+
+  inserir(obj: any) {
+    if (obj.id) {
+        return this.http
+            .put('solicitacao-remanejamento', JSON.stringify(obj));
+    }
+    else {
+        return this.http
+            .post('solicitacao-remanejamento', JSON.stringify(obj));
+    }
+  }
 }

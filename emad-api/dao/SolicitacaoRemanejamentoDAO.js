@@ -19,7 +19,13 @@ SolicitacaoRemanejamentoDAO.prototype.atualiza = async function(obj, id) {
 }
 
 SolicitacaoRemanejamentoDAO.prototype.buscaPorId = async function (id) {
-    const result = await this._connection.query(`SELECT * FROM ${this._table} WHERE id = ?`,id);    
+    const result = await this._connection.query(`SELECT a.*
+                                                ,estabelecimento_solicitada.nomeFantasia nomeEstabelecimentoSolicitada
+                                                ,estabelecimento_solicitante.nomeFantasia nomeEstabelecimentoSolicitante
+                                                FROM ${this._table} a
+                                                INNER JOIN tb_estabelecimento estabelecimento_solicitada ON (a.idEstabelecimentoSolicitada = estabelecimento_solicitada.id)
+                                                INNER JOIN tb_estabelecimento estabelecimento_solicitante ON (a.idEstabelecimentoSolicitante = estabelecimento_solicitante.id)
+                                                WHERE a.id = ?`,id);    
     return result;
 }
 
@@ -51,7 +57,7 @@ SolicitacaoRemanejamentoDAO.prototype.lista = async function(addFilter, pendente
                                                 FROM ${this._table} a
                                                 INNER JOIN tb_estabelecimento estabelecimento_solicitada ON (a.idEstabelecimentoSolicitada = estabelecimento_solicitada.id)
                                                 INNER JOIN tb_estabelecimento estabelecimento_solicitante ON (a.idEstabelecimentoSolicitante = estabelecimento_solicitante.id)
-                                                WHERE a.situacao = 1 ${where}`);    
+                                                WHERE a.situacao > 0 ${where}`);    
     return result;    
 }
 

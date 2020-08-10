@@ -8,6 +8,9 @@ import { SolicitacaoRemanejamentoComponent } from "./solicitacao-remanejamento.c
 import { SolicitacaoRemanejamentoFormComponent } from "./solicitacao-remanejamento-form.component";
 import { SolicitacaoRemanejamentoService } from "./solicitacao-remanejamento.service";
 import { solicitacaoRemanejamentoRoutes } from "./solicitacao-remanejamento.routing";
+import { PesquisaMedicamentoModule } from "../../../components/pesquisa-medicamentos/pesquisa-medicamento.module";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
+import { NgbModule, NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap";
 
 @NgModule({
     imports: [
@@ -15,7 +18,13 @@ import { solicitacaoRemanejamentoRoutes } from "./solicitacao-remanejamento.rout
         CoreModule,
         AppGridViewModule,
         AppFormModule,
-        RouterModule.forChild(solicitacaoRemanejamentoRoutes)
+        RouterModule.forChild(solicitacaoRemanejamentoRoutes),
+        PesquisaMedicamentoModule,     
+        ReactiveFormsModule,
+        FormsModule,
+        ReactiveFormsModule,        
+        NgbModule,
+        NgbCollapseModule
     ],
     declarations: [
         SolicitacaoRemanejamentoComponent,

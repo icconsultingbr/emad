@@ -1,9 +1,150 @@
-<h4 class="mb-5 text-left">{{id!=null?'Editar '+label:'Adicionar '+label}}</h4>
+<h4 class="mb-5 text-left">{{id!=null?'Visualizar '+label:'Adicionar '+label}}</h4>
+<app-loader [loading]="loading"></app-loader>
+<p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
+<div *ngIf="errors.length" class="alert alert-danger sticky-top"> 
+  <div *ngFor="let error of errors" class="row">
+    <div class="col-12 text-left">
+      {{error.message}}
+    </div>
+  </div>
+</div>
+<form [formGroup]="form" (submit)="sendForm($event)">
+  <div class="card mb-4">  
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Remanejamento
+      </div>
+      <div class="card-body text-left">
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Número da solicitação
+              </label>
+              <div class="col-xl-4">
+                <input type="text" class="form-control has-error" [(ngModel)]="solicitacaoRemanejamento.id" formControlName="id" readonly/>
+              </div>              
+            </div>
+          </div>
+        </div>  
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Unidade solicitante <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <input type="text" class="form-control has-error" [(ngModel)]="solicitacaoRemanejamento.nomeEstabelecimentoSolicitante" 
+                  formControlName="nomeEstabelecimentoSolicitante" readonly/>
+              </div>
+              <label class="col-xl-2 col-form-label text-left">
+                Unidade solicitada <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="solicitacaoRemanejamento.idEstabelecimentoSolicitada" 
+                  formControlName="idEstabelecimentoSolicitada">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.idEstabelecimentoSolicitada" [value]="item.id">{{item.nome}}</option>
+                </select>  
+              </div>
+            </div>
+          </div>
+        </div> 
+      </div>
+    </div>  
+  </div> 
+  <div class="card mb-4" *ngIf="solicitacaoRemanejamento.id">
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Material
+      </div>
+      <div class="card-body text-left">
+        <div class="row" *ngIf="solicitacaoRemanejamento.situacao == 1">
+          <div class="col-12">
+            <app-pesquisa-medicamento  (medicamentoSelecionadoEvent)="medicamentoSelecionado($event)" 
+                                       [idProfissional]="999" 
+                                       [idMaterial]="itemSolicitacaoRemanejamento.idMaterial"
+                                       [object]="objectMaterial"></app-pesquisa-medicamento>          
+          </div>          
+        </div>
+        <div class="row" *ngIf="solicitacaoRemanejamento.situacao == 1">
+          <div class="col-12">                     
+            <div class="form-group row">
+              </div>
+          </div>          
+        </div>
+        <div class="row" *ngIf="solicitacaoRemanejamento.situacao == 1">
+          <div class="col-12">                  
+          </div>          
+        </div>
+        <div class="row" *ngIf="solicitacaoRemanejamento.situacao == 1">
+          <div class="col-12">
+            <div class="form-group row">  
+              <label class="col-xl-2 col-form-label text-left">
+                Quantidade solicitada <span class="text-danger font-weight-bold"> *</span>
+              </label>              
+              <div class="col-xl-4">
+                <input type="number"  class="form-control has-error" [(ngModel)]="itemSolicitacaoRemanejamento.qtdSolicitada" formControlName="qtdSolicitada"/>
+              </div>              
+            </div>         
+          </div>          
+        </div>        
+        <div class="row" *ngIf="solicitacaoRemanejamento.situacao == 1">
+          <div class="col-12">
+            <div class="form-group text-right">                                 
+              <button class="btn btn-primary" type="button" (click)="confirmaItemSolicitacaoRemanejamento()" [disabled]="toggleItemSolicitacaoRemanejamento()">
+                <i class="fa fa-save"></i>Adicionar
+              </button>  
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 table-responsive">
+            <div class="form-group row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Material</th>
+                    <th>Qtd. solicitada</th>                    
+                    <th>Qtd. atendida</th>  
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="text-left">
+                    <td colspan="99" class="text-secondary"  *ngIf="!solicitacaoRemanejamento.itensSolicitacaoRemanejamento.length">
+                      <i>{{'Não há resultados...'}}</i>
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody *ngIf="solicitacaoRemanejamento.itensSolicitacaoRemanejamento">
+                    <tr class="text-left" *ngFor="let item of solicitacaoRemanejamento.itensSolicitacaoRemanejamento">
+                      <td class="text-secondary">{{item.codigoMaterial}}</td>
+                      <td class="text-secondary">{{item.nomeMaterial}}</td>
+                      <td class="text-secondary">{{item.qtdSolicitada}}</td>                      
+                      <td class="text-secondary">{{item.qtdAtendida}}</td>                      
+                      <td class="text-secondary text-right">
+                        <a class="btn btn-link" (click)="removeItemSolicitacaoRemanejamento(item)" *ngIf="solicitacaoRemanejamento.situacao == 1">
+                          <i class="fa fa-trash-alt"></i> Remover
+                        </a>
+                      </td>  
+                    </tr>
+                  </tbody>
+              </table>
+            </div>            
+          </div>
+        </div>
+      </div>
+    </div>    
+  </div>
 
-<app-form
-  [fields]="fields"
-  [object]="object"
-  [method]="method"
-  [domains]="domains"
-  [redirectAfterInsert]="'/solicitacoes-remanejamentos'">
-</app-form>
+  <div class="form-group text-right">
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="toggleSolicitacao && solicitacaoRemanejamento.situacao != 2">
+      <i class="fa fa-save"></i> {{ solicitacaoRemanejamento.id ? 'Salvar' : 'Criar solicitação' }} 
+    </button>      
+    <button (click)="back()" class="btn btn-default" type="button">
+      <i class="fa fa-arrow-left"></i> Retornar
+    </button>
+  </div>
+</form>
