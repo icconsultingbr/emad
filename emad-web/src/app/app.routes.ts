@@ -67,6 +67,7 @@ const appRoutes : Routes = [
     { path: 'pedidos-compras', canActivate: [AuthGuard], loadChildren: './estoque/components/pedido-compra/pedido-compra.module#PedidoCompraModule' },    
     { path: 'solicitacoes-remanejamentos', canActivate: [AuthGuard], loadChildren: './estoque/components/solicitacao-remanejamento/solicitacao-remanejamento.module#SolicitacaoRemanejamentoModule' },
     { path: 'atendimentos-remanejamentos', canActivate: [AuthGuard], loadChildren: './estoque/components/atender-remanejamento/atender-remanejamento.module#AtenderRemanejamentoModule' },
+    { path: 'recibo-receita', canActivate: [AuthGuard], loadChildren: './farmacia/relatorios/recibo-receita/recibo-receita.module#ReciboReceitaModule' },
     
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 

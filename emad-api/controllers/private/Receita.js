@@ -376,13 +376,15 @@ module.exports = function (app) {
             var responseReceita = await receitaRepository.buscaReciboReceita(ano, idEstabelecimento, numero);
             var receita = responseReceita[0];
 
-            var itensReceita = await itemReceitaRepository.buscarPorReceita(receita.id);            
-            receita.itensReceita = itensReceita ? itensReceita : null;
+            if(receita){
+                var itensReceita = await itemReceitaRepository.buscarPorReceita(receita.id);            
+                receita.itensReceita = itensReceita ? itensReceita : null;
 
-            for (const itemReceita of receita.itensReceita) {               
+                for (const itemReceita of receita.itensReceita) {               
 
-                var itensEstoque = await itemMovimentoGeralRepository.buscarPorItemReceita(receita.id, itemReceita.id);            
-                itemReceita.itensEstoque = itensEstoque ? itensEstoque : null;
+                    var itensEstoque = await itemMovimentoGeralRepository.buscarPorItemReceita(receita.id, itemReceita.id);            
+                    itemReceita.itensEstoque = itensEstoque ? itensEstoque : null;
+                }
             }
             res.status(200).json(receita);
         }
