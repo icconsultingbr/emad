@@ -230,7 +230,7 @@ MaterialDAO.prototype.carregaMedicamentoPorProfissional = async function(idProfi
         }   
         
         if (addFilter.dataInicial && addFilter.dataFinal) {           
-            where+=" AND dataUltimaDispensacao >= '" + addFilter.dataInicial + " 00:00:00' AND dataUltimaDispensacao <= '" + addFilter.dataFinal + " 23:59:59'";
+            where+=" AND (dataUltimaDispensacao IS NULL OR (dataUltimaDispensacao >= '" + addFilter.dataInicial + " 00:00:00' AND dataUltimaDispensacao <= '" + addFilter.dataFinal + " 23:59:59'))";
         }
 
         if(addFilter.ordenadoPor){
@@ -243,7 +243,7 @@ MaterialDAO.prototype.carregaMedicamentoPorProfissional = async function(idProfi
         medicamento =  await this._connection.query(`select distinct unid.id idUnidade, 
                                                         unid.nomeFantasia as unidadeNome,
                                                         sum(item.qtdPrescrita) as totalQtdPrescrita,
-                                                        sum(item.qtdDispAnterior+ item.qtdDispMes) as totalQtdDispensada
+                                                        sum(item.qtdDispAnterior) as totalQtdDispensada
                                                     from tb_receita as rec              
                                                         inner join tb_item_receita as item on rec.id=item.idReceita
                                                         inner join tb_estabelecimento as unid on rec.idEstabelecimento =unid.id
@@ -261,7 +261,7 @@ MaterialDAO.prototype.carregaMedicamentoPorProfissional = async function(idProfi
         medicamento =  await this._connection.query(`select mat.codigo codigoMaterial,
                                                             mat.descricao nomeMaterial,
                                                             sum(item.qtdPrescrita) as qtdPrescrita,
-                                                            sum(item.qtdDispAnterior+ item.qtdDispMes) as qtdDispensada,
+                                                            sum(item.qtdDispAnterior) as qtdDispensada,
                                                             max(rec.dataUltimaDispensacao) as dataUltimaDispensacao,
                                                             unid.nomeFantasia 
                                                     from tb_receita as rec              

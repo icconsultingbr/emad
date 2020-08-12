@@ -338,6 +338,44 @@ module.exports = function (app) {
             }
     });
 
+    app.get('/profissional/material/filtros', async function (req, res) {
+        let usuario = req.usuario;
+        let util = new app.util.Util();
+        let errors = [];
+        let addFilter = req.query;
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const profissionalRepository = new app.dao.ProfissionalDAO(connection);
+
+        try {            
+            var response = {};
+            
+            response.listaMateriais = await profissionalRepository.carregaProfissionalPorMedicamento(addFilter, true);
+            response.totalQtdPrescrita  = 0;
+            response.totalQtdDispensada = 0;
+
+            if(response.listaMateriais.length > 0){
+                for (const itemMaterial of response.listaMateriais) {       
+                    addFilter.idMaterial = itemMaterial.idMaterial;
+                    response.totalQtdPrescrita += itemMaterial.totalQtdPrescrita;
+                    response.totalQtdDispensada += itemMaterial.totalQtdDispensada;
+
+                    var profissionaisMaterial = await profissionalRepository.carregaProfissionalPorMedicamento(addFilter, false);
+                    itemMaterial.profissionaisMaterial = profissionaisMaterial ? profissionaisMaterial : null;
+                }            
+            }   
+            res.status(200).json(response);
+        }
+        catch (exception) {
+            console.log("Erro ao carregar o registro, exception: " +  exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    }); 
+
     app.delete('/profissional/:id', function (req, res) {
         var util = new app.util.Util();
         let usuario = req.usuario;

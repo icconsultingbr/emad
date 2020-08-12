@@ -8,7 +8,6 @@ import { PacienteMedicamentoImpressaoService } from '../../../shared/services/pa
 import { PacienteMedicamentoService } from './paciente-medicamento.service';
 import { RelatorioMedicamento } from '../../../_core/_models/RelatorioMedicamento';
 import { Material } from '../../../_core/_models/Material';
-import { ExportToCsv } from 'export-to-csv';
 
 const myId = uuid.v4();
 
