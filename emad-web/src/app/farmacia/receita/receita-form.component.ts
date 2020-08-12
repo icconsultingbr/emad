@@ -187,8 +187,8 @@ export class ReceitaFormComponent implements OnInit {
     });
   }
 
-  pacienteSelecionado(idPaciente: number){
-    this.object.idPaciente = idPaciente;
+  pacienteSelecionado(object: any){
+    this.object.idPaciente = object.id;
   }
 
   medicamentoSelecionado(material: any){

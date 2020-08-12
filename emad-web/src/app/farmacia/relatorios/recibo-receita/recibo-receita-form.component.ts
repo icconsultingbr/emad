@@ -16,10 +16,7 @@ const myId = uuid.v4();
     providers: [ReceitaService]
 })
 
-export class ReciboReceitaFormComponent implements OnInit {
-  @ViewChild('contentConfirmacao') contentConfirmacao: ElementRef;
-  @ViewChild('contentRecibo') contentRecibo: ElementRef;
-  
+export class ReciboReceitaFormComponent implements OnInit {  
   object: Receita = new Receita();
   itemReceita: ItemReceita = new ItemReceita();  
   itemEstoque: Estoque = new Estoque();  

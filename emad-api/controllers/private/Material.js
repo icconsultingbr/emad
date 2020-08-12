@@ -139,6 +139,47 @@ module.exports = function (app) {
         });
     }); 
 
+    app.get('/material/paciente/:idPaciente/filtros', async function (req, res) {
+        let usuario = req.usuario;
+        let idPaciente = req.params.idPaciente;
+        let tipoPesquisa = req.params.tipoPesquisa;
+        let util = new app.util.Util();
+        let errors = [];
+        let addFilter = req.query;
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const medicamentoRepository = new app.dao.MaterialDAO(connection);
+
+        try {            
+            var response = {};
+            
+            response.listaUnidades = await medicamentoRepository.carregaMedicamentoPorPaciente(idPaciente, addFilter, true);
+            response.totalGeralReceitas  = 0;
+            response.totalGeralRetiradas = 0;
+
+            if(response.listaUnidades.length > 0){
+                for (const itemUnidade of response.listaUnidades) {       
+                    addFilter.idEstabelecimento = itemUnidade.idUnidade;
+                    response.totalGeralReceitas += itemUnidade.medicamentosPorUnidade;
+                    response.totalGeralRetiradas += itemUnidade.qtdRetirada;
+
+                    var itensUnidade = await medicamentoRepository.carregaMedicamentoPorPaciente(idPaciente, addFilter, false);
+                    itemUnidade.itensUnidade = itensUnidade ? itensUnidade : null;
+                }            
+            }   
+            res.status(200).json(response);
+        }
+        catch (exception) {
+            console.log("Erro ao carregar o registro, exception: " +  exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });  
+
+
     app.delete('/material/:id', function(req,res){     
         let util = new app.util.Util();
         let usuario = req.usuario;

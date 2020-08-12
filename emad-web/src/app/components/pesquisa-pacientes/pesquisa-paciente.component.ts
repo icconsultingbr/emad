@@ -18,7 +18,7 @@ import { PagerService } from '../../_core/_services/pager.service';
 })
 
 export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
-  @Output() pacienteSelecionadoEvent = new EventEmitter<number>();
+  @Output() pacienteSelecionadoEvent = new EventEmitter<any>();
   @Input() idPaciente: number;  
   @Input() pacienteNome: string;  
   object: Paciente = new Paciente();
@@ -125,7 +125,7 @@ export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
   confirmaPaciente() {
     this.object.id = this.pacienteSelecionado.id;
     this.object.nome = this.pacienteSelecionado.nome;
-    this.pacienteSelecionadoEvent.emit(this.object.id);
+    this.pacienteSelecionadoEvent.emit(this.object);
     this.close();
   }
 

@@ -7,6 +7,7 @@ import { EstoqueMedicamentoImpressaoService } from './estoque-medicamento-impres
 import { EstoqueConsumoImpressaoService } from './estoque-consumo-impressao.service';
 import { EstoqueImpressaoService } from './estoque-impressao.service';
 import { RelatoriosEstoqueService } from './relatorios-estoque.service';
+import { MedicamentoPacienteImpressaoService } from './medicamento-paciente.service';
 
 @NgModule({
     imports: [
@@ -20,7 +21,8 @@ import { RelatoriosEstoqueService } from './relatorios-estoque.service';
         EstoqueMedicamentoImpressaoService ,  
         EstoqueConsumoImpressaoService,
         EstoqueImpressaoService,
-        RelatoriosEstoqueService
+        RelatoriosEstoqueService, 
+        MedicamentoPacienteImpressaoService
     ]
 })
 export class SharedServiceModule { }
