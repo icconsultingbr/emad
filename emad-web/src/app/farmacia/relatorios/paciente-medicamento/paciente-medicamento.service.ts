@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class MedicamentoPacienteService extends GenericsService {
+export class PacienteMedicamentoService extends GenericsService {
 
   constructor(public http: HttpClient) {
     super(http);
@@ -22,7 +22,7 @@ export class MedicamentoPacienteService extends GenericsService {
     }
   ];
 
-  carregaMedicamentoPorPaciente(idPaciente: string, params: any): Observable<any> {    
-    return this.http.get("material/paciente/" + idPaciente + "/filtros"  + params);
+  carregaPacientePorMedicamento(params: any): Observable<any> {    
+    return this.http.get("paciente/material/filtros" + params);
   }
 }

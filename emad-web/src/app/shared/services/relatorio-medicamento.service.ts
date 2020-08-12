@@ -5,7 +5,7 @@ export abstract class RelatorioMedicamentoService {
     protected style = '';
     protected script = '';
 
-    print(content: string, nomeEstabelecimento: string, target: string = '_blank'){
+    print(content: string, nomeEstabelecimento: string, tituloRelatorio: string, target: string = '_blank'){
         var popupWin = window.open(null, target);
 
         popupWin.document.open();
@@ -22,18 +22,18 @@ export abstract class RelatorioMedicamentoService {
                 ${ content }
             </body>
         </html>`);
-        popupWin.document.title = "Medicamento-"  + (nomeEstabelecimento == "" ? "Medicamento" : nomeEstabelecimento);
+        popupWin.document.title = tituloRelatorio;
         popupWin.document.close();
     }
 
-    exportCsv(data){
+    exportCsv(data, tituloRelatorio){
         const options = { 
             fieldSeparator: ';',
             quoteStrings: '"',
             decimalSeparator: '.',
             showLabels: true, 
             showTitle: false,            
-            filename: 'Relatório-Medicamento-Paciente',
+            filename: tituloRelatorio,
             useTextFile: false,
             useBom: true,
             useKeysAsHeaders: false,

@@ -284,6 +284,44 @@ module.exports = function (app) {
         });
     });
 
+    app.get('/paciente/material/filtros', async function (req, res) {
+        let usuario = req.usuario;
+        let util = new app.util.Util();
+        let errors = [];
+        let addFilter = req.query;
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const pacienteRepository = new app.dao.PacienteDAO(connection);
+
+        try {            
+            var response = {};
+            
+            response.listaMateriais = await pacienteRepository.carregaPacientePorMedicamento(addFilter, true);
+            response.totalGeralReceitas  = 0;
+            response.totalGeralRetiradas = 0;
+
+            if(response.listaMateriais.length > 0){
+                for (const itemMaterial of response.listaMateriais) {       
+                    addFilter.idMaterial = itemMaterial.idMaterial;
+                    response.totalGeralReceitas += itemMaterial.medicamentosPorUnidade;
+                    response.totalGeralRetiradas += itemMaterial.qtdRetirada;
+
+                    var pacientesMaterial = await pacienteRepository.carregaPacientePorMedicamento(addFilter, false);
+                    itemMaterial.pacientesMaterial = pacientesMaterial ? pacientesMaterial : null;
+                }            
+            }   
+            res.status(200).json(response);
+        }
+        catch (exception) {
+            console.log("Erro ao carregar o registro, exception: " +  exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    }); 
+
     function lista(addFilter, res) {
         var q = require('q');
         var d = q.defer();

@@ -659,6 +659,91 @@ PacienteDAO.prototype.buscaPorSusSync = async function (paciente, id) {
     return pacienteResult;
 } 
 
+PacienteDAO.prototype.carregaPacientePorMedicamento = async function(addFilter, material){
+    let where = "";
+    let orderBy = "  ";
+
+    if(addFilter != null){   
+        if (addFilter.idEstabelecimento && addFilter.idEstabelecimento != "undefined" && addFilter.idEstabelecimento != "null") {
+            where+=" AND mvg.idEstabelecimento = " + addFilter.idEstabelecimento + "";
+        }
+
+        if (addFilter.idMaterial && addFilter.idMaterial != "undefined") {
+            where+=" AND img.idMaterial = " + addFilter.idMaterial + "";
+        }   
+        
+        if (addFilter.lote && addFilter.lote != "undefined") {
+            where+=" AND img.lote = '" + addFilter.lote + "'";
+        }  
+
+        if (addFilter.idFabricante && addFilter.idFabricante != "undefined"  && addFilter.idFabricante != "null") {
+            where+=" AND img.idFabricante = " + addFilter.idFabricante + "";
+        }  
+
+        if (addFilter.dataInicial && addFilter.dataFinal) {           
+            where+=" AND mvg.dataMovimento >= '" + addFilter.dataInicial + " 00:00:00' AND mvg.dataMovimento <= '" + addFilter.dataFinal + " 23:59:59'";
+        }
+
+        if(addFilter.ordenadoPor){
+            orderBy += " order by " + addFilter.ordenadoPor + " asc";
+        }
+    }
+    let medicamento;
+
+    if(material){
+        medicamento =  await this._connection.query(`select 
+                                                            distinct mat.id idMaterial,
+                                                            mat.codigo as codigoMaterial,
+                                                            mat.descricao as nomeMaterial, 
+                                                            count(*) medicamentosPorUnidade , 
+                                                            sum(img.quantidade) qtdRetirada
+                                                        from tb_material mat
+                                                            inner join tb_item_movimento_geral img on mat.id = img.idMaterial 
+                                                            inner join tb_fabricante_material fab on img.idFabricante = fab.id
+                                                            inner join tb_movimento_geral mvg on img.idMovimentoGeral = mvg.id
+                                                            inner join tb_estabelecimento und on mvg.idEstabelecimento = und.id
+                                                            inner join tb_paciente pac on mvg.idPaciente = pac.id
+                                                            inner join tb_item_receita irc on img.idItemReceita = irc.id
+                                                            inner join tb_receita rec on irc.idReceita = rec.id
+                                                        where mat.situacao = 1
+                                                            and mat.dispensavel = 1
+                                                            and fab.situacao = 1
+                                                            and und.situacao = 1
+                                                            and pac.situacao = 1
+                                                            ${where} 
+                                                            group by mat.id
+                                                            order by mat.descricao asc`);
+    }else{
+        medicamento =  await this._connection.query(`select 
+                                                    mat.codigo as codigoMaterial, 
+                                                    mat.descricao as nomeMaterial,
+                                                    img.lote as lote, 
+                                                    fab.nome as nomeFabricanteMaterial, 
+                                                    img.validade as validade,
+                                                    img.quantidade as quantidade,
+                                                    mvg.dataMovimento as dataMovimento,
+                                                    CONCAT(rec.ano,'-',rec.idEstabelecimento ,'-',rec.numero) as numeroReceita,
+                                                    UPPER(pac.nome) nomePaciente,
+                                                    IFNULL(pac.foneContato,'') telefonePaciente,
+                                                    CONCAT(UPPER(IFNULL(pac.logradouro,'')), ', ', UPPER(IFNULL(pac.numero,'')), ' ', UPPER(IFNULL(pac.complemento,'')), UPPER(IFNULL(pac.bairro,'')) ) enderecoPaciente,
+                                                    und.nomeFantasia nomeEstabelecimento
+                                                from tb_material mat
+                                                inner join tb_item_movimento_geral img on mat.id = img.idMaterial 
+                                                inner join tb_fabricante_material fab on img.idFabricante = fab.id
+                                                inner join tb_movimento_geral mvg on img.idMovimentoGeral = mvg.id
+                                                inner join tb_estabelecimento und on mvg.idEstabelecimento = und.id
+                                                inner join tb_paciente pac on mvg.idPaciente = pac.id
+                                                inner join tb_item_receita irc on img.idItemReceita = irc.id
+                                                inner join tb_receita rec on irc.idReceita = rec.id
+                                                where mat.situacao = 1 and mat.dispensavel = 1 and fab.situacao = 1 and und.situacao = 1 and pac.situacao = 1 
+                                                ${where} 
+                                                ${orderBy} `);
+    }
+    
+    
+    return medicamento;
+}
+
 module.exports = function () {
     return PacienteDAO;
 };

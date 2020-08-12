@@ -1,4 +1,5 @@
-<h4 class="mb-5 text-left">Medicamentos por paciente</h4>
+<h4 class="mb-5 text-left">Pacientes por medicamento</h4>
+<app-loader [loading]="loading"></app-loader>
 <p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
 <div *ngIf="errors.length" class="alert alert-danger sticky-top"> 
   <div *ngFor="let error of errors" class="row">
@@ -6,10 +7,6 @@
       {{error.message}}
     </div>
   </div>
-</div>
-
-<div class="card mb-4">
-  <app-pesquisa-paciente (pacienteSelecionadoEvent)="pacienteSelecionado($event)" [idPaciente]="object.idPaciente" [pacienteNome]="object.nomePaciente"></app-pesquisa-paciente>
 </div>
 
 <form [formGroup]="form" (submit)="visualizarPdf()">
@@ -81,6 +78,28 @@
           <div class="col-12">
             <div class="form-group row">
               
+            </div>         
+          </div>          
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Lote
+              </label>
+              <div class="col-xl-4">
+                <input type="text"  class="form-control has-error" [(ngModel)]="object.lote" formControlName="lote"/>
+              </div>  
+              <label class="col-xl-2 col-form-label text-left">
+                Fabricante
+              </label>              
+              <div class="col-xl-4">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idFabricanteMaterial" 
+                  formControlName="idFabricanteMaterial" (change)="fabricanteSelecionado($event)">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.idFabricanteMaterial" [value]="item.id">{{item.nome}}</option>
+                </select> 
+              </div>
             </div>         
           </div>          
         </div>

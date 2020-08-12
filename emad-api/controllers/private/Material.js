@@ -142,7 +142,6 @@ module.exports = function (app) {
     app.get('/material/paciente/:idPaciente/filtros', async function (req, res) {
         let usuario = req.usuario;
         let idPaciente = req.params.idPaciente;
-        let tipoPesquisa = req.params.tipoPesquisa;
         let util = new app.util.Util();
         let errors = [];
         let addFilter = req.query;
@@ -177,8 +176,7 @@ module.exports = function (app) {
         finally {
             await connection.close();
         }
-    });  
-
+    }); 
 
     app.delete('/material/:id', function(req,res){     
         let util = new app.util.Util();

@@ -147,7 +147,7 @@ export class MedicamentoPacienteImpressaoService extends RelatorioMedicamentoSer
             }
             gridMedicamentos += (`
                 <tr">
-                    <td colspan="2"> Medicamentos receitados por unidade: ${unidade.medicamentosPorUnidade}</td>
+                    <td colspan="2"> Medicamentos dispensados por lote por unidade: ${unidade.medicamentosPorUnidade}</td>
                     <td colspan="5" style="text-align: right;">Total qtd. retirada: ${unidade.qtdRetirada}</td>
                 </tr>`);         
 
@@ -201,7 +201,7 @@ export class MedicamentoPacienteImpressaoService extends RelatorioMedicamentoSer
             </div>
         </div>`
             
-        this.print(tela, "", target);
+        this.print(tela, "", "Relatório-Medicamento-Paciente", target);
         });
     }
 
@@ -270,7 +270,7 @@ export class MedicamentoPacienteImpressaoService extends RelatorioMedicamentoSer
             coluna6: '', 
             coluna7: 'Total geral de retiradas: ' + unidades.totalGeralRetiradas});
 
-            this.exportCsv(data);
+            this.exportCsv(data,"Relatório-Medicamento-Paciente" );
         });
     }
 }

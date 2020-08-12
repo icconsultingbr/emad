@@ -4,8 +4,8 @@ import { Util } from '../../../_core/_util/Util';
 import { ItemReceita } from '../../../_core/_models/ItemReceita';
 import { Estoque } from '../../../_core/_models/Estoque';
 import * as uuid from 'uuid';
-import { MedicamentoPacienteImpressaoService } from '../../../shared/services/medicamento-paciente.service';
-import { MedicamentoPacienteService } from './medicamento-paciente.service';
+import { PacienteMedicamentoImpressaoService } from '../../../shared/services/paciente-medicamento.service';
+import { PacienteMedicamentoService } from './paciente-medicamento.service';
 import { RelatorioMedicamento } from '../../../_core/_models/RelatorioMedicamento';
 import { Material } from '../../../_core/_models/Material';
 import { ExportToCsv } from 'export-to-csv';
@@ -13,13 +13,13 @@ import { ExportToCsv } from 'export-to-csv';
 const myId = uuid.v4();
 
 @Component({
-    selector: 'app-medicamento-paciente-form',
-    templateUrl: './medicamento-paciente.component.html',
-    styleUrls: ['./medicamento-paciente.component.css'],
-    providers: [MedicamentoPacienteService]
+    selector: 'app-paciente-medicamento-form',
+    templateUrl: './paciente-medicamento.component.html',
+    styleUrls: ['./paciente-medicamento.component.css'],
+    providers: [PacienteMedicamentoService]
 })
 
-export class MedicamentoPacienteComponent implements OnInit {  
+export class PacienteMedicamentoComponent implements OnInit {  
   object: RelatorioMedicamento = new RelatorioMedicamento();
   itemReceita: ItemReceita = new ItemReceita();  
   itemEstoque: Estoque = new Estoque();  
@@ -39,9 +39,9 @@ export class MedicamentoPacienteComponent implements OnInit {
   
   constructor(
     private fb: FormBuilder,
-    private service: MedicamentoPacienteService, 
+    private service: PacienteMedicamentoService, 
     private ref: ChangeDetectorRef, 
-    private medicamentoPacienteService: MedicamentoPacienteImpressaoService) {
+    private medicamentoPacienteService: PacienteMedicamentoImpressaoService) {
       this.fields = service.fields;
     }
 
@@ -52,15 +52,17 @@ export class MedicamentoPacienteComponent implements OnInit {
 
   loadDomains() {       
     this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
-      this.domains.push({            
-        idEstabelecimento: estabelecimentos,
-        ordenadoPor: [
-          { id: "mvg.dataMovimento", nome: "Data retirada" },
-          { id: "img.idFabricante", nome: "Fabricante" },
-          { id: "img.lote", nome: "Lote" },
-          { id: "img.idMaterial", nome: "Medicamento" },
-          { id: "irc.idReceita", nome: "Número da receita" },
-        ],
+      this.service.listDomains('fabricante-material').subscribe(fabricante => {
+        this.domains.push({            
+          idEstabelecimento: estabelecimentos,
+          idFabricanteMaterial: fabricante,
+          ordenadoPor: [
+            { id: "mvg.dataMovimento", nome: "Data retirada" },
+            { id: "img.idFabricante", nome: "Fabricante" },
+            { id: "img.lote", nome: "Lote" },
+            { id: "pac.nome", nome: "Paciente" }
+          ],
+        });                           
       });                           
     });                           
   }      
@@ -68,19 +70,14 @@ export class MedicamentoPacienteComponent implements OnInit {
   visualizarPdf() {        
     this.errors = [];
 
-    if(!this.object.idPaciente){
-      this.errors.push({
-        message: "Escolha o paciente"
-      });
-      return;
-    }
-
     this.object.criteriosPesquisa = {};
     this.object.criteriosPesquisa.dataInicial = this.object.dataInicial;
     this.object.criteriosPesquisa.dataFinal = this.object.dataFinal;
     this.object.criteriosPesquisa.nomePaciente = this.object.nomePaciente;
     this.object.criteriosPesquisa.nomeMaterial = this.object.nomeMaterial;
     this.object.criteriosPesquisa.nomeEstabelecimento = this.object.nomeEstabelecimento;
+    this.object.criteriosPesquisa.nomeFabricanteMaterial = this.object.nomeFabricanteMaterial;
+    this.object.criteriosPesquisa.lote = this.object.lote;
     
     var dataInicialFiltro =  this.object.dataInicial.getFullYear() + "-" + this.twoDigits(1 + this.object.dataInicial.getMonth()) + "-" + this.twoDigits(this.object.dataInicial.getDate());
     var dataFinalFiltro =  this.object.dataFinal.getFullYear() + "-" + this.twoDigits(1 + this.object.dataFinal.getMonth()) + "-" + this.twoDigits(this.object.dataFinal.getDate());
@@ -89,21 +86,15 @@ export class MedicamentoPacienteComponent implements OnInit {
                        + "&dataFinal=" + dataFinalFiltro
                        + "&idMaterial=" + (this.object.idMaterial ? this.object.idMaterial : '')
                        + "&idEstabelecimento=" + (this.object.idEstabelecimento  ? this.object.idEstabelecimento : '')
+                       + "&idFabricante=" + (this.object.idFabricante  ? this.object.idFabricante : '')
+                       + "&lote=" + (this.object.lote  ? this.object.lote : '')
                        + "&ordenadoPor=" + (this.object.ordenadoPor  ? this.object.ordenadoPor : '');
 
     this.medicamentoPacienteService.imprimir(this.object, JSON.parse(localStorage.getItem("est"))[0].nomeFantasia, this.object.criteriosPesquisa);    
   }
 
   exportarCsv(){
-
     this.errors = [];
-
-    if(!this.object.idPaciente){
-      this.errors.push({
-        message: "Escolha o paciente"
-      });
-      return;
-    }
 
     this.object.criteriosPesquisa = {};
     this.object.criteriosPesquisa.dataInicial = this.object.dataInicial;
@@ -111,7 +102,9 @@ export class MedicamentoPacienteComponent implements OnInit {
     this.object.criteriosPesquisa.nomePaciente = this.object.nomePaciente;
     this.object.criteriosPesquisa.nomeMaterial = this.object.nomeMaterial;
     this.object.criteriosPesquisa.nomeEstabelecimento = this.object.nomeEstabelecimento;
-
+    this.object.criteriosPesquisa.nomeFabricanteMaterial = this.object.nomeFabricanteMaterial;
+    this.object.criteriosPesquisa.lote = this.object.lote;
+    
     var dataInicialFiltro =  this.object.dataInicial.getFullYear() + "-" + this.twoDigits(1 + this.object.dataInicial.getMonth()) + "-" + this.twoDigits(this.object.dataInicial.getDate());
     var dataFinalFiltro =  this.object.dataFinal.getFullYear() + "-" + this.twoDigits(1 + this.object.dataFinal.getMonth()) + "-" + this.twoDigits(this.object.dataFinal.getDate());
 
@@ -119,6 +112,8 @@ export class MedicamentoPacienteComponent implements OnInit {
                        + "&dataFinal=" + dataFinalFiltro
                        + "&idMaterial=" + (this.object.idMaterial ? this.object.idMaterial : '')
                        + "&idEstabelecimento=" + (this.object.idEstabelecimento  ? this.object.idEstabelecimento : '')
+                       + "&idFabricante=" + (this.object.idFabricante  ? this.object.idFabricante : '')
+                       + "&lote=" + (this.object.lote  ? this.object.lote : '')
                        + "&ordenadoPor=" + (this.object.ordenadoPor  ? this.object.ordenadoPor : '');
 
 
@@ -141,9 +136,13 @@ export class MedicamentoPacienteComponent implements OnInit {
     this.object.nomePaciente = object.nome;
   }
 
-  estabelecimentoSelecionado(idEstabelecimento: any){            
-    this.object.nomeEstabelecimento = this.domains[0].idEstabelecimento[idEstabelecimento.target.options.selectedIndex-1].nome;
+  estabelecimentoSelecionado(estabelecimento: any){            
+    this.object.nomeEstabelecimento = this.domains[0].idEstabelecimento[estabelecimento.target.options.selectedIndex-1].nome;
   }
+
+  fabricanteSelecionado(fabricante: any){            
+    this.object.nomeFabricanteMaterial = this.domains[0].idFabricanteMaterial[fabricante.target.options.selectedIndex-1].nome;
+  } 
 
   twoDigits(d) {
     if(0 <= d && d < 10) return "0" + d.toString();
@@ -157,6 +156,8 @@ export class MedicamentoPacienteComponent implements OnInit {
       ordenadoPor: ['', Validators.required],
       dataInicial: ['', Validators.required],
       dataFinal: ['', Validators.required],
+      lote: ['',''],
+      idFabricanteMaterial: ['',''],
     });
   }
 }
