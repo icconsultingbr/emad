@@ -216,6 +216,74 @@ MaterialDAO.prototype.carregaMedicamentoPorPaciente = async function(idPaciente,
     return medicamento;
 }
 
+MaterialDAO.prototype.carregaMedicamentoPorProfissional = async function(idProfissional, addFilter, unidade){
+    let where = "";
+    let orderBy = " order by mat.descricao ";
+
+    if(addFilter != null){   
+        if (addFilter.idEstabelecimento && addFilter.idEstabelecimento != "undefined" && addFilter.idEstabelecimento != "null") {
+            where+=" AND unid.id = " + addFilter.idEstabelecimento + "";
+        }
+
+        if (addFilter.idMaterial && addFilter.idMaterial != "undefined") {
+            where+=" AND item.idMaterial = " + addFilter.idMaterial + "";
+        }   
+        
+        if (addFilter.dataInicial && addFilter.dataFinal) {           
+            where+=" AND dataUltimaDispensacao >= '" + addFilter.dataInicial + " 00:00:00' AND dataUltimaDispensacao <= '" + addFilter.dataFinal + " 23:59:59'";
+        }
+
+        if(addFilter.ordenadoPor){
+            orderBy += ", " + addFilter.ordenadoPor + " asc";
+        }
+    }
+    let medicamento;
+
+    if(unidade){
+        medicamento =  await this._connection.query(`select distinct unid.id idUnidade, 
+                                                        unid.nomeFantasia as unidadeNome,
+                                                        sum(item.qtdPrescrita) as totalQtdPrescrita,
+                                                        sum(item.qtdDispAnterior+ item.qtdDispMes) as totalQtdDispensada
+                                                    from tb_receita as rec              
+                                                        inner join tb_item_receita as item on rec.id=item.idReceita
+                                                        inner join tb_estabelecimento as unid on rec.idEstabelecimento =unid.id
+                                                        inner join tb_profissional as prof on rec.idProfissional=prof.id
+                                                        inner join tb_material as mat on mat.id = item.idMaterial 
+                                                    where 
+                                                        prof.situacao=1 and
+                                                        unid.situacao=1 and
+                                                        mat.situacao=1 and 
+                                                        prof.id = ?
+                                                        ${where}                                                                                                                 
+                                                        group by unid.id
+                                                        order by unid.nomeFantasia desc`, [idProfissional]);
+    }else{
+        medicamento =  await this._connection.query(`select mat.codigo codigoMaterial,
+                                                            mat.descricao nomeMaterial,
+                                                            sum(item.qtdPrescrita) as qtdPrescrita,
+                                                            sum(item.qtdDispAnterior+ item.qtdDispMes) as qtdDispensada,
+                                                            max(rec.dataUltimaDispensacao) as dataUltimaDispensacao,
+                                                            unid.nomeFantasia 
+                                                    from tb_receita as rec              
+                                                        inner join tb_item_receita as item on rec.id=item.idReceita
+                                                        inner join tb_estabelecimento as unid on rec.idEstabelecimento =unid.id
+                                                        inner join tb_profissional as prof on rec.idProfissional=prof.id
+                                                        inner join tb_material as mat on mat.id = item.idMaterial 
+                                                    where 
+                                                        prof.situacao=1 and
+                                                        unid.situacao=1 and
+                                                        mat.situacao=1 and 
+                                                        prof.id = ?
+                                                        ${where} 
+                                                    group by mat.codigo, mat.descricao, unid.nomeFantasia 
+                                                    
+                                                ${orderBy} `, [idProfissional]);
+    }
+    
+    
+    return medicamento;
+}
+
 module.exports = function(){
     return MaterialDAO;
 };

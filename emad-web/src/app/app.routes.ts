@@ -70,6 +70,7 @@ const appRoutes : Routes = [
     { path: 'recibo-receita', canActivate: [AuthGuard], loadChildren: './farmacia/relatorios/recibo-receita/recibo-receita.module#ReciboReceitaModule' },
     { path: 'medicamento-paciente', canActivate: [AuthGuard], loadChildren: './farmacia/relatorios/medicamento-paciente/medicamento-paciente.module#MedicamentoPacienteModule' },
     { path: 'paciente-medicamento', canActivate: [AuthGuard], loadChildren: './farmacia/relatorios/paciente-medicamento/paciente-medicamento.module#PacienteMedicamentoModule' },
+    { path: 'medicamento-profissional', canActivate: [AuthGuard], loadChildren: './farmacia/relatorios/medicamento-profissional/medicamento-profissional.module#MedicamentoProfissionalModule' },
     
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 

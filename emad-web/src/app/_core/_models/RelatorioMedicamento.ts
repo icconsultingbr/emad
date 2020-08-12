@@ -17,4 +17,6 @@ export class RelatorioMedicamento {
     @Input() lote: string;
     @Input() idFabricante: number;
     @Input() nomeFabricanteMaterial: string;
+    @Input() idProfissional: number;
+    @Input() nomeProfissional: string;    
 }
