@@ -4,25 +4,24 @@ import { Util } from '../../../_core/_util/Util';
 import { ItemReceita } from '../../../_core/_models/ItemReceita';
 import { Estoque } from '../../../_core/_models/Estoque';
 import * as uuid from 'uuid';
-import { PacienteMedicamentoImpressaoService } from '../../../shared/services/paciente-medicamento.service';
-import { PacienteMedicamentoService } from './paciente-medicamento.service';
+import { MedicamentoVencidoVencerImpressaoService } from '../../../shared/services/medicamento-vencido-vencer.service';
+import { MedicamentoVencidoVencerService } from './medicamento-vencido-vencer.service';
 import { RelatorioMedicamento } from '../../../_core/_models/RelatorioMedicamento';
 import { Material } from '../../../_core/_models/Material';
 
 const myId = uuid.v4();
 
 @Component({
-    selector: 'app-paciente-medicamento-form',
-    templateUrl: './paciente-medicamento.component.html',
-    styleUrls: ['./paciente-medicamento.component.css'],
-    providers: [PacienteMedicamentoService]
+    selector: 'app-medicamento-vencido-vencer-form',
+    templateUrl: './medicamento-vencido-vencer.component.html',
+    styleUrls: ['./medicamento-vencido-vencer.component.css'],
+    providers: [MedicamentoVencidoVencerService]
 })
 
-export class PacienteMedicamentoComponent implements OnInit {  
+export class MedicamentoVencidoVencerComponent implements OnInit {  
   object: RelatorioMedicamento = new RelatorioMedicamento();
   itemReceita: ItemReceita = new ItemReceita();  
-  itemEstoque: Estoque = new Estoque();  
-  method: string = "receitas";
+  itemEstoque: Estoque = new Estoque();    
   fields: any[] = [];
   label: string = "";
   id: number = null;
@@ -38,28 +37,32 @@ export class PacienteMedicamentoComponent implements OnInit {
   
   constructor(
     private fb: FormBuilder,
-    private service: PacienteMedicamentoService, 
+    private service: MedicamentoVencidoVencerService, 
     private ref: ChangeDetectorRef, 
-    private medicamentoPacienteService: PacienteMedicamentoImpressaoService) {
+    private medicamentoVencidoVencerService: MedicamentoVencidoVencerImpressaoService) {
       this.fields = service.fields;
     }
 
   ngOnInit() {
     this.createGroup();
-    this.loadDomains();   
+    this.loadDomains();  
+    this.object.ordenadoPor = "mat.codigo";
+    this.object.idEstabelecimento = JSON.parse(localStorage.getItem("est"))[0].id;
+    this.object.nomeEstabelecimento = JSON.parse(localStorage.getItem("est"))[0].nomeFantasia;
   }
 
   loadDomains() {       
     this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
-      this.service.listDomains('fabricante-material').subscribe(fabricante => {
+      this.service.listDomains('fabricante-material').subscribe(fabricantes => {
         this.domains.push({            
           idEstabelecimento: estabelecimentos,
-          idFabricanteMaterial: fabricante,
+          idFabricanteMaterial: fabricantes,
           ordenadoPor: [
-            { id: "mvg.dataMovimento", nome: "Data retirada" },
-            { id: "img.idFabricante", nome: "Fabricante" },
-            { id: "img.lote", nome: "Lote" },
-            { id: "pac.nome", nome: "Paciente" }
+            { id: "mat.codigo", nome: "Código" },
+            { id: "est.validade", nome: "Data de validade" },
+            { id: "fab.nome", nome: "Fabricante" },
+            { id: "est.lote", nome: "Lote" },          
+            { id: "mat.descricao", nome: "Medicamento" },                               
           ],
         });                           
       });                           
@@ -72,24 +75,22 @@ export class PacienteMedicamentoComponent implements OnInit {
     this.object.criteriosPesquisa = {};
     this.object.criteriosPesquisa.dataInicial = this.object.dataInicial;
     this.object.criteriosPesquisa.dataFinal = this.object.dataFinal;
-    this.object.criteriosPesquisa.nomePaciente = this.object.nomePaciente;
+    this.object.criteriosPesquisa.nomeProfissional = this.object.nomeProfissional;
     this.object.criteriosPesquisa.nomeMaterial = this.object.nomeMaterial;
     this.object.criteriosPesquisa.nomeEstabelecimento = this.object.nomeEstabelecimento;
     this.object.criteriosPesquisa.nomeFabricanteMaterial = this.object.nomeFabricanteMaterial;
-    this.object.criteriosPesquisa.lote = this.object.lote;
-    
+
     var dataInicialFiltro =  this.object.dataInicial.getFullYear() + "-" + this.twoDigits(1 + this.object.dataInicial.getMonth()) + "-" + this.twoDigits(this.object.dataInicial.getDate());
     var dataFinalFiltro =  this.object.dataFinal.getFullYear() + "-" + this.twoDigits(1 + this.object.dataFinal.getMonth()) + "-" + this.twoDigits(this.object.dataFinal.getDate());
 
     this.object.params = "?dataInicial=" + dataInicialFiltro
                        + "&dataFinal=" + dataFinalFiltro
                        + "&idMaterial=" + (this.object.idMaterial ? this.object.idMaterial : '')
-                       + "&idEstabelecimento=" + (this.object.idEstabelecimento  ? this.object.idEstabelecimento : '')
                        + "&idFabricante=" + (this.object.idFabricanteMaterial  ? this.object.idFabricanteMaterial : '')
-                       + "&lote=" + (this.object.lote  ? this.object.lote : '')
+                       + "&idEstabelecimento=" + (this.object.idEstabelecimento  ? this.object.idEstabelecimento : '')
                        + "&ordenadoPor=" + (this.object.ordenadoPor  ? this.object.ordenadoPor : '');
 
-    this.medicamentoPacienteService.imprimir(this.object, JSON.parse(localStorage.getItem("est"))[0].nomeFantasia, this.object.criteriosPesquisa);    
+    this.medicamentoVencidoVencerService.imprimir(this.object, JSON.parse(localStorage.getItem("est"))[0].nomeFantasia, this.object.criteriosPesquisa);    
   }
 
   exportarCsv(){
@@ -98,31 +99,32 @@ export class PacienteMedicamentoComponent implements OnInit {
     this.object.criteriosPesquisa = {};
     this.object.criteriosPesquisa.dataInicial = this.object.dataInicial;
     this.object.criteriosPesquisa.dataFinal = this.object.dataFinal;
-    this.object.criteriosPesquisa.nomePaciente = this.object.nomePaciente;
+    this.object.criteriosPesquisa.nomeProfissional = this.object.nomeProfissional;
     this.object.criteriosPesquisa.nomeMaterial = this.object.nomeMaterial;
     this.object.criteriosPesquisa.nomeEstabelecimento = this.object.nomeEstabelecimento;
     this.object.criteriosPesquisa.nomeFabricanteMaterial = this.object.nomeFabricanteMaterial;
-    this.object.criteriosPesquisa.lote = this.object.lote;
-    
+
     var dataInicialFiltro =  this.object.dataInicial.getFullYear() + "-" + this.twoDigits(1 + this.object.dataInicial.getMonth()) + "-" + this.twoDigits(this.object.dataInicial.getDate());
     var dataFinalFiltro =  this.object.dataFinal.getFullYear() + "-" + this.twoDigits(1 + this.object.dataFinal.getMonth()) + "-" + this.twoDigits(this.object.dataFinal.getDate());
 
     this.object.params = "?dataInicial=" + dataInicialFiltro
                        + "&dataFinal=" + dataFinalFiltro
                        + "&idMaterial=" + (this.object.idMaterial ? this.object.idMaterial : '')
-                       + "&idEstabelecimento=" + (this.object.idEstabelecimento  ? this.object.idEstabelecimento : '')
                        + "&idFabricante=" + (this.object.idFabricanteMaterial  ? this.object.idFabricanteMaterial : '')
-                       + "&lote=" + (this.object.lote  ? this.object.lote : '')
+                       + "&idEstabelecimento=" + (this.object.idEstabelecimento  ? this.object.idEstabelecimento : '')
                        + "&ordenadoPor=" + (this.object.ordenadoPor  ? this.object.ordenadoPor : '');
 
 
-    this.medicamentoPacienteService.exportar(this.object, JSON.parse(localStorage.getItem("est"))[0].nomeFantasia, this.object.criteriosPesquisa); 
+    this.medicamentoVencidoVencerService.exportar(this.object, JSON.parse(localStorage.getItem("est"))[0].nomeFantasia, this.object.criteriosPesquisa); 
   }
 
   clear(){
     this.object = new RelatorioMedicamento();
     this.objectMaterial = new Material();
     this.ref.detectChanges();
+    this.object.ordenadoPor = "mat.codigo";
+    this.object.idEstabelecimento = JSON.parse(localStorage.getItem("est"))[0].id;
+    this.object.nomeEstabelecimento = JSON.parse(localStorage.getItem("est"))[0].nomeFantasia;
   }
 
   medicamentoSelecionado(material: any){
@@ -130,15 +132,10 @@ export class PacienteMedicamentoComponent implements OnInit {
     this.object.nomeMaterial = material.descricao;
   }
 
-  pacienteSelecionado(object: any){
-    this.object.idPaciente = object.id;
-    this.object.nomePaciente = object.nome;
+  estabelecimentoSelecionado(idEstabelecimento: any){            
+    this.object.nomeEstabelecimento = this.domains[0].idEstabelecimento[idEstabelecimento.target.options.selectedIndex-1].nome;
   }
-
-  estabelecimentoSelecionado(estabelecimento: any){            
-    this.object.nomeEstabelecimento = this.domains[0].idEstabelecimento[estabelecimento.target.options.selectedIndex-1].nome;
-  }
-
+  
   fabricanteSelecionado(fabricante: any){            
     this.object.nomeFabricanteMaterial = this.domains[0].idFabricanteMaterial[fabricante.target.options.selectedIndex-1].nome;
   } 
@@ -151,12 +148,11 @@ export class PacienteMedicamentoComponent implements OnInit {
   
   createGroup() {
     this.form = this.fb.group({      
-      idEstabelecimento: ['', ''],      
+      idEstabelecimento: new FormControl({value: '', disabled: true}, Validators.required),      
+      idFabricanteMaterial: ['', ''],      
       ordenadoPor: ['', Validators.required],
       dataInicial: ['', Validators.required],
       dataFinal: ['', Validators.required],
-      lote: ['',''],
-      idFabricanteMaterial: ['',''],
     });
   }
 }

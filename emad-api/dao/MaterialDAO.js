@@ -284,6 +284,52 @@ MaterialDAO.prototype.carregaMedicamentoPorProfissional = async function(idProfi
     return medicamento;
 }
 
+MaterialDAO.prototype.carregaMedicamentoVencido = async function(addFilter){
+    let where = "";
+    let orderBy = " order by mat.descricao ";
+
+    if(addFilter != null){   
+        if (addFilter.idEstabelecimento && addFilter.idEstabelecimento != "undefined" && addFilter.idEstabelecimento != "null") {
+            where+=" AND und.id = " + addFilter.idEstabelecimento + "";
+        }
+
+        if (addFilter.idMaterial && addFilter.idMaterial != "undefined") {
+            where+=" AND mat.id = " + addFilter.idMaterial + "";
+        }  
+
+        if (addFilter.idFabricante && addFilter.idFabricante != "undefined") {
+            where+=" AND est.idFabricanteMaterial = " + addFilter.idFabricante + "";
+        }  
+        
+        if (addFilter.dataInicial && addFilter.dataFinal) {           
+            where+=" AND validade >= '" + addFilter.dataInicial + " 00:00:00' AND validade <= '" + addFilter.validade + " 23:59:59'";
+        }
+
+        if(addFilter.ordenadoPor){
+            orderBy += ", " + addFilter.ordenadoPor + " asc";
+        }
+    }
+    let medicamento;
+
+    medicamento =  await this._connection.query(`select mat.codigo as codigoMaterial, 
+                                                    mat.descricao as nomeMaterial,
+                                                    est.validade,
+                                                    est.lote, fab.nome as nomeFabricanteMaterial, est.quantidade as estoque, und.nomeFantasia as unidade
+                                                from tb_material mat
+                                                inner join tb_estoque est on mat.id = est.idMaterial
+                                                inner join tb_fabricante_material fab on est.idFabricanteMaterial = fab.id
+                                                inner join tb_estabelecimento und on est.idEstabelecimento = und.id
+                                                where mat.situacao = 1
+                                                and mat.dispensavel = 1
+                                                and fab.situacao = 1
+                                                and und.situacao = 1
+                                                and est.quantidade > 0
+                                                ${where} 
+                                                ${orderBy}`);   
+    
+    return medicamento;
+}
+
 module.exports = function(){
     return MaterialDAO;
 };

@@ -11,6 +11,7 @@ import { MedicamentoPacienteImpressaoService } from './medicamento-paciente.serv
 import { PacienteMedicamentoImpressaoService } from './paciente-medicamento.service';
 import { MedicamentoProfissionalImpressaoService } from './medicamento-profissional.service';
 import { ProfissionalMedicamentoImpressaoService } from './profissional-medicamento.service';
+import { MedicamentoVencidoVencerImpressaoService } from './medicamento-vencido-vencer.service';
 
 @NgModule({
     imports: [
@@ -28,7 +29,8 @@ import { ProfissionalMedicamentoImpressaoService } from './profissional-medicame
         MedicamentoPacienteImpressaoService,
         PacienteMedicamentoImpressaoService,
         MedicamentoProfissionalImpressaoService,
-        ProfissionalMedicamentoImpressaoService
+        ProfissionalMedicamentoImpressaoService,
+        MedicamentoVencidoVencerImpressaoService
     ]
 })
 export class SharedServiceModule { }

@@ -72,6 +72,7 @@ const appRoutes : Routes = [
     { path: 'paciente-medicamento', canActivate: [AuthGuard], loadChildren: './farmacia/relatorios/paciente-medicamento/paciente-medicamento.module#PacienteMedicamentoModule' },
     { path: 'medicamento-profissional', canActivate: [AuthGuard], loadChildren: './farmacia/relatorios/medicamento-profissional/medicamento-profissional.module#MedicamentoProfissionalModule' },
     { path: 'profissional-medicamento', canActivate: [AuthGuard], loadChildren: './farmacia/relatorios/profissional-medicamento/profissional-medicamento.module#ProfissionalMedicamentoModule' },
+    { path: 'medicamento-vencido', canActivate: [AuthGuard], loadChildren: './farmacia/relatorios/medicamento-vencido-vencer/medicamento-vencido-vencer.module#MedicamentoVencidoVencerModule' },
 
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 

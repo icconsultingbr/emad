@@ -88,7 +88,7 @@ export class ProfissionalMedicamentoComponent implements OnInit {
                        + "&dataFinal=" + dataFinalFiltro
                        + "&idMaterial=" + (this.object.idMaterial ? this.object.idMaterial : '')
                        + "&idEstabelecimento=" + (this.object.idEstabelecimento  ? this.object.idEstabelecimento : '')
-                       + "&idFabricante=" + (this.object.idFabricante  ? this.object.idFabricante : '')
+                       + "&idFabricante=" + (this.object.idFabricanteMaterial  ? this.object.idFabricanteMaterial : '')
                        + "&lote=" + (this.object.lote  ? this.object.lote : '')
                        + "&ordenadoPor=" + (this.object.ordenadoPor  ? this.object.ordenadoPor : '');
 
@@ -114,7 +114,7 @@ export class ProfissionalMedicamentoComponent implements OnInit {
                        + "&dataFinal=" + dataFinalFiltro
                        + "&idMaterial=" + (this.object.idMaterial ? this.object.idMaterial : '')
                        + "&idEstabelecimento=" + (this.object.idEstabelecimento  ? this.object.idEstabelecimento : '')
-                       + "&idFabricante=" + (this.object.idFabricante  ? this.object.idFabricante : '')
+                       + "&idFabricante=" + (this.object.idFabricanteMaterial  ? this.object.idFabricanteMaterial : '')
                        + "&lote=" + (this.object.lote  ? this.object.lote : '')
                        + "&ordenadoPor=" + (this.object.ordenadoPor  ? this.object.ordenadoPor : '');
 
