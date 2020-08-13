@@ -238,7 +238,46 @@ module.exports = function (app) {
         finally {
             await connection.close();
         }
-    });    
+    }); 
+    
+    app.get('/material/movimentacao/:idTipoMovimento/filtros', async function (req, res) {
+        let usuario = req.usuario;
+        let util = new app.util.Util();
+        let idTipoMovimento = req.params.idTipoMovimento;
+        let errors = [];
+        let addFilter = req.query;
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const medicamentoRepository = new app.dao.MaterialDAO(connection);
+
+        try {     
+            var response = {};
+            
+            response.lista = await medicamentoRepository.carregaMedicamentoMovimentacao(idTipoMovimento, addFilter, true);
+            response.totalDocumentos  = 0;
+            response.totalQuantidade = 0;
+
+            if(response.lista.length > 0){
+                for (const itemUnidade of response.lista) {       
+                    addFilter.idEstabelecimento = itemUnidade.idUnidade;
+                    response.totalDocumentos += itemUnidade.totalDocumentos;
+                    response.totalQuantidade += itemUnidade.totalQuantidade;
+
+                    var itensUnidade = await medicamentoRepository.carregaMedicamentoMovimentacao(idTipoMovimento, addFilter, false);
+                    itemUnidade.itensUnidade = itensUnidade ? itensUnidade : null;
+                }            
+            }   
+            res.status(200).json(response);
+        }
+        catch (exception) {
+            console.log("Erro ao carregar o registro, exception: " +  exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });
 
     app.delete('/material/:id', function(req,res){     
         let util = new app.util.Util();

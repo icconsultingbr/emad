@@ -286,7 +286,7 @@ MaterialDAO.prototype.carregaMedicamentoPorProfissional = async function(idProfi
 
 MaterialDAO.prototype.carregaMedicamentoVencido = async function(addFilter){
     let where = "";
-    let orderBy = " order by mat.descricao ";
+    let orderBy = " ";
 
     if(addFilter != null){   
         if (addFilter.idEstabelecimento && addFilter.idEstabelecimento != "undefined" && addFilter.idEstabelecimento != "null") {
@@ -306,7 +306,7 @@ MaterialDAO.prototype.carregaMedicamentoVencido = async function(addFilter){
         }
 
         if(addFilter.ordenadoPor){
-            orderBy += ", " + addFilter.ordenadoPor + " asc";
+            orderBy += " order by " + addFilter.ordenadoPor + " asc";
         }
     }
     let medicamento;
@@ -330,6 +330,79 @@ MaterialDAO.prototype.carregaMedicamentoVencido = async function(addFilter){
     return medicamento;
 }
 
+MaterialDAO.prototype.carregaMedicamentoMovimentacao = async function(idTipoMovimento, addFilter, unidade){
+    let where = "";
+    let orderBy = "";
+
+    if(addFilter != null){   
+        if (addFilter.idEstabelecimento && addFilter.idEstabelecimento != "undefined" && addFilter.idEstabelecimento != "null") {
+            where+=" AND und.id = " + addFilter.idEstabelecimento + "";
+        }
+
+        if (addFilter.idMaterial && addFilter.idMaterial != "undefined") {
+            where+=" AND mat.id = " + addFilter.idMaterial + "";
+        }  
+        
+        if (addFilter.dataInicial && addFilter.dataFinal) {           
+            where+=" AND mvg.dataMovimento >= '" + addFilter.dataInicial + " 00:00:00' AND mvg.dataMovimento <= '" + addFilter.dataFinal + " 23:59:59'";
+        }
+
+        if(addFilter.ordenadoPor){
+            orderBy += " order by " + addFilter.ordenadoPor + " asc";
+        }
+    }
+    let medicamento;
+
+    if(unidade){
+        medicamento =  await this._connection.query(`select 
+                                                            und.id idUnidade,
+                                                            count(distinct mvg.id) as totalDocumentos, 
+                                                            sum(img.quantidade) as totalQuantidade
+                                                        from tb_material mat
+                                                        inner join tb_item_movimento_geral img on mat.id = img.idMaterial 
+                                                        inner join tb_fabricante_material fab on img.idFabricante = fab.id
+                                                        inner join tb_movimento_geral mvg on img.idMovimentoGeral = mvg.id
+                                                        inner join tb_estabelecimento und on mvg.idEstabelecimento = und.id
+                                                        inner join tb_tipo_movimento tmv on mvg.idTipoMovimento = tmv.id
+                                                        where mat.situacao = 1
+                                                        and mat.dispensavel = 1
+                                                        and fab.situacao = 1
+                                                        and und.situacao = 1 
+                                                        and tmv.id = ?
+                                                        ${where}                                                                                                                 
+                                                        group by und.id`, [idTipoMovimento]);
+    }else{
+        medicamento =  await this._connection.query(`select 
+                                                        distinct tmv.nome as nomeTipoMovimento, 
+                                                        und.nomeFantasia as unidade,
+                                                        mvg.id as documento, 
+                                                        mat.codigo as codigoMaterial, 
+                                                        mat.descricao as nomeMaterial, 
+                                                        img.lote,
+                                                        fab.nome as nomeFabricanteMaterial, 
+                                                        img.validade,
+                                                        img.quantidade as quantidade, 
+                                                        mvg.dataMovimento as dataMovimento,
+                                                        mvg.motivo 
+                                                    from tb_material mat
+                                                    inner join tb_item_movimento_geral img on mat.id = img.idMaterial 
+                                                    inner join tb_fabricante_material fab on img.idFabricante = fab.id
+                                                    inner join tb_movimento_geral mvg on img.idMovimentoGeral = mvg.id
+                                                    inner join tb_estabelecimento und on mvg.idEstabelecimento = und.id
+                                                    inner join tb_tipo_movimento tmv on mvg.idTipoMovimento = tmv.id
+                                                    where mat.situacao = 1
+                                                    and mat.dispensavel = 1
+                                                    and fab.situacao = 1
+                                                    and und.situacao = 1 
+                                                    and tmv.id = ?
+                                                    ${where} 
+                                                    ${orderBy}`, idTipoMovimento);
+    }
+
+    return medicamento;
+}
+
 module.exports = function(){
     return MaterialDAO;
 };
+

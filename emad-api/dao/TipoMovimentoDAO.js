@@ -18,6 +18,11 @@ TipoMovimentoDAO.prototype.carregaPorId = async function(id){
     return result ? result[0] : null;
 }
 
+TipoMovimentoDAO.prototype.carregaListaPorOperacao = async function(idOperacao){
+    let result =  await this._connection.query(`SELECT * FROM ${this._table} where operacao=? order by nome asc`, idOperacao);
+    return result;
+}
+
 module.exports = function(){
     return TipoMovimentoDAO;
 };

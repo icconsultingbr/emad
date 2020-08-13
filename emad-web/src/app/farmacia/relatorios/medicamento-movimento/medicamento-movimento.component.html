@@ -1,0 +1,140 @@
+<h4 class="mb-5 text-left">Movimentação de materiais</h4>
+<app-loader [loading]="loading"></app-loader>
+<p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
+<div *ngIf="errors.length" class="alert alert-danger sticky-top"> 
+  <div *ngFor="let error of errors" class="row">
+    <div class="col-12 text-left">
+      {{error.message}}
+    </div>
+  </div>
+</div>
+
+<form [formGroup]="form" (submit)="visualizarPdf()">
+  <div class="card mb-4">  
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Critérios de pesquisa
+      </div>
+      <div class="card-body text-left">
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Data início <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                      <div class="input-group-text btn">
+                          <i class="fa fa-calendar-alt"></i>
+                      </div>
+                  </div>
+                  <input type="text" [(ngModel)]="object.dataInicial" formControlName="dataInicial" placeholder="dd/mm/aaaa" bsDatepicker
+                      [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control" autocomplete="off">
+                </div>
+              </div>
+              <label class="col-xl-2 col-form-label text-left">
+                Data fim <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                      <div class="input-group-text btn">
+                          <i class="fa fa-calendar-alt"></i>
+                      </div>
+                  </div>
+                  <input type="text" [(ngModel)]="object.dataFinal" formControlName="dataFinal" placeholder="dd/mm/aaaa" bsDatepicker
+                      [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control" autocomplete="off">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>      
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Estabelecimento
+              </label>
+              <div class="col-xl-10">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idEstabelecimento" 
+                  formControlName="idEstabelecimento" (change)="estabelecimentoSelecionado($event)">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.idEstabelecimento" [value]="item.id">{{item.nome}}</option>
+                </select>  
+              </div>
+            </div>
+          </div>
+        </div>  
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Tipo de movimento  <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idOperacao" 
+                  formControlName="idOperacao" (change)="operacaoSelecionada($event)">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.idOperacao" [value]="item.id">{{item.nome}}</option>
+                </select>  
+              </div>
+              <label class="col-xl-2 col-form-label text-left">
+                Descrição  <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idTipoMovimento" 
+                  formControlName="idTipoMovimento" (change)="tipoMovimentoSelecionado($event)">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.idTipoMovimento" [value]="item.id">{{item.nome}}</option>
+                </select>  
+              </div>
+            </div>
+          </div>
+        </div>  
+        <div class="row">
+          <div class="col-12">
+            <app-pesquisa-medicamento  (medicamentoSelecionadoEvent)="medicamentoSelecionado($event)" 
+                                       [idProfissional]="999" 
+                                       [idMaterial]="object.idMaterial"
+                                       [object]="objectMaterial"></app-pesquisa-medicamento>          
+          </div>          
+        </div>      
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              
+            </div>         
+          </div>          
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Ordenado por <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.ordenadoPor" 
+                  formControlName="ordenadoPor">                  
+                  <option *ngFor="let item of domains[0]?.ordenadoPor" [value]="item.id">{{item.nome}}</option>
+                </select>  
+              </div>              
+            </div>
+          </div>
+        </div>      
+      </div>
+    </div>  
+  </div> 
+
+  <div class="form-group text-right">
+    <button class="btn btn-primary" type="button" (click)="exportarCsv()" [disabled]="form.invalid">
+      <i class="fa fa-print"></i> Exportar CSV
+    </button>  
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
+      <i class="fa fa-print"></i> Visualizar PDF
+    </button>  
+    <button class="btn btn-default" type="button" (click)="clear()">
+      <i class="fa fa-eraser"></i> Limpar filtros
+    </button>  
+  </div>
+</form>

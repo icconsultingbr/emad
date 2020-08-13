@@ -19,4 +19,8 @@ export class RelatorioMedicamento {
     @Input() nomeFabricanteMaterial: string;
     @Input() idProfissional: number;
     @Input() nomeProfissional: string;    
+    @Input() idTipoMovimento: number;
+    @Input() nomeTipoMovimento: string;    
+    @Input() idOperacao: number;
+    @Input() nomeOperacao: string;    
 }

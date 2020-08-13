@@ -86,6 +86,28 @@ module.exports = function (app) {
         }
     });   
 
+    app.get('/tipo-movimento/operacao/:idOperacao', async function (req, res) {        
+        let util = new app.util.Util();
+        let errors = [];
+        let idOperacao = req.params.idOperacao;
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const tipoMovimentoRespository = new app.dao.TipoMovimentoDAO(connection);
+
+        try {            
+            var response = await tipoMovimentoRespository.carregaListaPorOperacao(idOperacao);
+            res.status(200).json(response);
+        }
+        catch (exception) {
+            console.log("Erro ao carregar o registro, exception: " +  exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });     
+
     app.get('/tipo-movimento/:id', function(req,res){        
         let usuario = req.usuario;
         let id = req.params.id;
