@@ -186,49 +186,40 @@ export class MedicamentoVencidoVencerImpressaoService extends RelatorioMedicamen
         var data = [];
 
         this.medicamentoVencidoVencerService.carregaMedicamentoVencidoVencer(object.idProfissional, object.params)
-        .subscribe((unidades) => { 
+        .subscribe((medicamentos) => { 
             
-            data.push({ coluna1: 'Unidade: ' + nomeEstabelecimento, coluna2: '', coluna3: '', coluna4: ''});
-            data.push({ coluna1: 'Medicamentos vencidos ou à vencer', coluna2: '', coluna3: '', coluna4: ''});
+            data.push({ coluna1: 'Unidade: ' + nomeEstabelecimento, coluna2: '', coluna3: '', coluna4: '', coluna5: '', coluna6: '', coluna7: ''});
+            data.push({ coluna1: 'Medicamentos vencidos ou à vencer', coluna2: '', coluna3: '', coluna4: '', coluna5: '', coluna6: '', coluna7: ''});
             
-            data.push({ coluna1 : '', coluna2: '', coluna3: '', coluna4: ''});
+            data.push({ coluna1 : '', coluna2: '', coluna3: '', coluna4: '', coluna5: '', coluna6: '', coluna7: ''});
             
-            data.push({ coluna1: 'CRITÉRIOS DE PESQUISA', coluna2: '', coluna3: '', coluna4: ''});
-            data.push({ coluna1: 'Período: ' + (criteriosPesquisa.dataInicial ? _moment(criteriosPesquisa.dataInicial).format('DD/MM/YYYY') : '') + " à " + (criteriosPesquisa.dataFinal ? _moment(criteriosPesquisa.dataFinal).format('DD/MM/YYYY') : '') , coluna2: '', coluna3: '', coluna4: ''});
-            data.push({ coluna1: 'Unidade: ' + (criteriosPesquisa.nomeEstabelecimento ? criteriosPesquisa.nomeEstabelecimento : "Todas as unidades") , coluna2: '', coluna3: '', coluna4: ''});
-            data.push({ coluna1: 'Fabricante: ' + (criteriosPesquisa.nomeFabricanteMaterial ? criteriosPesquisa.nomeFabricanteMaterial : "Todos os fabricantes") , coluna2: '', coluna3: '', coluna4: ''});
-            data.push({ coluna1: 'Medicamento: ' + (criteriosPesquisa.nomeMaterial ? criteriosPesquisa.nomeMaterial : "Todos os medicamentos") , coluna2: '', coluna3: '', coluna4: ''});
+            data.push({ coluna1: 'CRITÉRIOS DE PESQUISA', coluna2: '', coluna3: '', coluna4: '', coluna5: '', coluna6: '', coluna7: ''});
+            data.push({ coluna1: 'Período: ' + (criteriosPesquisa.dataInicial ? _moment(criteriosPesquisa.dataInicial).format('DD/MM/YYYY') : '') + " à " + (criteriosPesquisa.dataFinal ? _moment(criteriosPesquisa.dataFinal).format('DD/MM/YYYY') : '') , coluna2: '', coluna3: '', coluna4: '', coluna5: '', coluna6: '', coluna7: ''});
+            data.push({ coluna1: 'Unidade: ' + (criteriosPesquisa.nomeEstabelecimento ? criteriosPesquisa.nomeEstabelecimento : "Todas as unidades") , coluna2: '', coluna3: '', coluna4: '', coluna5: '', coluna6: '', coluna7: ''});
+            data.push({ coluna1: 'Fabricante: ' + (criteriosPesquisa.nomeFabricanteMaterial ? criteriosPesquisa.nomeFabricanteMaterial : "Todos os fabricantes") , coluna2: '', coluna3: '', coluna4: '', coluna5: '', coluna6: '', coluna7: ''});
+            data.push({ coluna1: 'Medicamento: ' + (criteriosPesquisa.nomeMaterial ? criteriosPesquisa.nomeMaterial : "Todos os medicamentos") , coluna2: '', coluna3: '', coluna4: '', coluna5: '', coluna6: '', coluna7: ''});
             
-            data.push({ coluna1 : '', coluna2: '', coluna3: '', coluna4: ''});
+            data.push({ coluna1 : '', coluna2: '', coluna3: '', coluna4: '', coluna5: '', coluna6: '', coluna7: ''});
 
-            for (const unidade of unidades.listaUnidades) {  
-                
-                data.push({ coluna1: 'Unidade: ' + unidade.unidadeNome, coluna2: '', coluna3: '', coluna4: ''});
+            data.push({ coluna1: 'Código', 
+                            coluna2: 'Medicamento',
+                            coluna3: 'Validade',
+                            coluna4: 'Lote', 
+                            coluna5: 'Fabricante',
+                            coluna6: 'Estoque',
+                            coluna7: 'Unidade' });
 
-                data.push({ coluna1: 'Medicamento', 
-                            coluna2: 'Qtd. prescrita',
-                            coluna3: 'Qtd. dispensada',
-                            coluna4: 'Data última dispensação' });
+            data.push({ coluna1 : '', coluna2: '', coluna3: '', coluna4: '', coluna5: '', coluna6: '', coluna7: ''});
 
-                data.push({ coluna1 : '', coluna2: '', coluna3: '', coluna4: ''});
-
-                for (const itemMedicamento of unidade.itensUnidade) { 
-                    
-                    data.push({ coluna1: itemMedicamento.codigoMaterial + ' - ' + itemMedicamento.nomeMaterial, 
-                            coluna2: itemMedicamento.qtdPrescrita,
-                            coluna3: itemMedicamento.qtdDispensada,
-                            coluna4: (itemMedicamento.dataUltimaDispensacao ? _moment(itemMedicamento.dataUltimaDispensacao).format('DD/MM/YYYY') : '')});                
-                }
-
-                data.push({ coluna1 : '', coluna2: '', coluna3: '', coluna4: ''});
-
-                data.push({ coluna1: '', 
-                            coluna2: 'Total prescrito por unidade: ' + unidade.totalQtdPrescrita,
-                            coluna3: 'Total dispensado por unidade: ' + unidade.totalQtdDispensada,
-                            coluna4: ''});
-
-                data.push({ coluna1 : '', coluna2: '', coluna3: '', coluna4: ''});
-            }              
+            for (const medicamento of medicamentos) {  
+                data.push({ coluna1: medicamento.codigoMaterial , 
+                    coluna2: medicamento.nomeMaterial,
+                    coluna3: (medicamento.validade ? _moment(medicamento.validade).format('DD/MM/YYYY') : ''),
+                    coluna4: medicamento.lote,                                        
+                    coluna5: medicamento.nomeFabricanteMaterial,
+                    coluna6: medicamento.estoque,
+                    coluna7: medicamento.unidade});
+                }                    
 
             this.exportCsv(data,"Relatório-Medicamento-Vencido-Vencer" );
         });

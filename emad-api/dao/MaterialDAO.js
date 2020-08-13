@@ -302,7 +302,7 @@ MaterialDAO.prototype.carregaMedicamentoVencido = async function(addFilter){
         }  
         
         if (addFilter.dataInicial && addFilter.dataFinal) {           
-            where+=" AND validade >= '" + addFilter.dataInicial + " 00:00:00' AND validade <= '" + addFilter.validade + " 23:59:59'";
+            where+=" AND validade >= '" + addFilter.dataInicial + " 00:00:00' AND validade <= '" + addFilter.dataFinal + " 23:59:59'";
         }
 
         if(addFilter.ordenadoPor){
