@@ -10,12 +10,11 @@ import { NgbDatepickerModule } from "@ng-bootstrap/ng-bootstrap/datepicker/datep
 import { NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap/collapse/collapse.module";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
-import { SharedServiceModule } from "../../../shared/services/shared-service.module";
 import { PesquisaPacienteModule } from "../../../components/pesquisa-pacientes/pesquisa-paciente.module";
 import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { PesquisaMedicamentoModule } from "../../../components/pesquisa-medicamentos/pesquisa-medicamento.module";
-import { PacienteMedicamentoImpressaoService } from "../../../shared/services/paciente-medicamento.service";
 import { PacienteMedicamentoService } from "./paciente-medicamento.service";
+import { RelatorioMedicamentoModule } from "../../../shared/services/relatorio-medicamento.module";
 
 @NgModule({
     imports: [
@@ -30,11 +29,10 @@ import { PacienteMedicamentoService } from "./paciente-medicamento.service";
         NgbModule,
         NgbCollapseModule,
         NgbDatepickerModule,
-        SharedServiceModule,
         PesquisaPacienteModule,        
         BsDatepickerModule,
-        PesquisaMedicamentoModule,
-        SharedServiceModule,          
+        PesquisaMedicamentoModule,         
+        RelatorioMedicamentoModule
     ],
     declarations: [
         PacienteMedicamentoComponent,

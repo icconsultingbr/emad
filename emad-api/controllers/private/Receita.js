@@ -125,7 +125,7 @@ module.exports = function (app) {
                 itemReceita.dataCriacao = new Date;
                 itemReceita.dataUltDisp = itemReceita.qtdDispMes > 0 ? itemReceita.dataCriacao : itemReceita.dataUltDisp;
                 if(itemReceita.situacao != 2)                
-                    itemReceita.qtdDispAnterior = (itemReceita.qtdDispAnterior ? itemReceita.qtdDispAnterior : 0)  + (itemReceita.qtdDispMes > 0 ? itemReceita.qtdDispMes : 0);
+                    itemReceita.qtdDispAnterior = (itemReceita.qtdDispAnterior ? parseInt(itemReceita.qtdDispAnterior) : 0)  + (itemReceita.qtdDispMes > 0 ? parseInt(itemReceita.qtdDispMes) : 0);
                 itemReceita.idUsuarioCriacao = usuario.id;
                 itemReceita.situacao = 2;//FINALIZADO
                 itemReceita.dataFimReceita = new Date;
@@ -199,7 +199,7 @@ module.exports = function (app) {
                             itemMovimentoGeral.idFabricante = itemEstoque.idFabricanteMaterial;
                             itemMovimentoGeral.lote = itemEstoque.lote;
                             itemMovimentoGeral.validade = itemEstoque.validade;
-                            itemMovimentoGeral.quantidade = itemEstoque.qtdDispensar;
+                            itemMovimentoGeral.quantidade = parseInt(itemEstoque.qtdDispensar);
                             itemMovimentoGeral.idItemReceita = itemReceita.id;
                             itemMovimentoGeral.idEstabelecimento = receita.idEstabelecimento;
 
@@ -220,7 +220,7 @@ module.exports = function (app) {
                                 idEstoqueAux = estoque[0].id;   
                                 
                                 if(qtdEstoque > 0){
-                                var qtd = qtdEstoque - itemEstoque.qtdDispensar;
+                                var qtd = parseInt(qtdEstoque) - itemMovimentoGeral.quantidade;
                                     
                                     if(qtd > 0)
                                         var responseAtualizacaoQtd = await estoqueRepository.atualizaQuantidadeEstoque(qtd, usuario.id, idEstoqueAux);
@@ -235,11 +235,11 @@ module.exports = function (app) {
 
                             saldoAtualUnidade = await estoqueRepository.carregaQuantidadePorMaterialEstabelecimento(itemEstoque);
 
-                            var responseMovimentoLivro = await movimentoLivroRepository.carregaQtdSaida(itemMovimentoGeral);
+                            var responseMovimentoLivro = await movimentoLivroRepository.carregaLivroPorMovimento(itemMovimentoGeral);
                             
                             if(responseMovimentoLivro.length > 0){
 
-                                var qtdeSaidaLivro = responseMovimentoLivro[0].quantidadeSaida + itemEstoque.qtdDispensar;
+                                var qtdeSaidaLivro = parseInt(responseMovimentoLivro[0].quantidadeSaida) + itemMovimentoGeral.quantidade;
                                 var responseAtualizacaoMovimentoLivro = await movimentoLivroRepository.atualizaSaida(qtdeSaidaLivro, saldoAtualUnidade, itemMovimentoGeral, usuario.id);
                             }
                             else{
@@ -257,7 +257,7 @@ module.exports = function (app) {
                                 movimentoLivro.idMaterial = itemEstoque.idMaterial;
                                 movimentoLivro.idTipoMovimento = 3;
                                 movimentoLivro.saldoAnterior = saldoAnteriorUnidade;
-                                movimentoLivro.quantidadeSaida = itemEstoque.qtdDispensar;
+                                movimentoLivro.quantidadeSaida = itemMovimentoGeral.quantidade;
                                 movimentoLivro.quantidadeEntrada = null;
                                 movimentoLivro.quantidadePerda = null;
                                 movimentoLivro.saldoAtual = saldoAtualUnidade;

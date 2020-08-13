@@ -279,6 +279,30 @@ module.exports = function (app) {
         }
     });
 
+    app.get('/material/extrato-material/:idMaterial/filtros', async function (req, res) {
+        let usuario = req.usuario;
+        let util = new app.util.Util();
+        let idMaterial = req.params.idMaterial;
+        let errors = [];
+        let addFilter = req.query;
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const medicamentoRepository = new app.dao.MaterialDAO(connection);
+
+        try {            
+            var response = await medicamentoRepository.carregaMedicamentoExtratoMovimento(idMaterial, addFilter);
+            res.status(200).json(response);
+        }
+        catch (exception) {
+            console.log("Erro ao carregar o registro, exception: " +  exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });   
+
     app.delete('/material/:id', function(req,res){     
         let util = new app.util.Util();
         let usuario = req.usuario;

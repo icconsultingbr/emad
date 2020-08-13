@@ -144,7 +144,7 @@ module.exports = function (app) {
                             delete itemEncontrado.idUsuarioCriacao;
                             itemEncontrado.dataAlteracao = new Date;
                             itemEncontrado.idUsuarioAlteracao = usuario.id;
-                            itemEncontrado.saldoEntregue = itemEncontrado.saldoEntregue ? itemEncontrado.saldoEntregue + itemMovimento.quantidade : itemMovimento.quantidade;
+                            itemEncontrado.saldoEntregue = itemEncontrado.saldoEntregue ? parseInt(itemEncontrado.saldoEntregue) + parseInt(itemMovimento.quantidade) : parseInt(itemMovimento.quantidade);
                             itemEncontrado.dataUltimaEntrega = new Date;
                             var item = await itemPedidoCompraRepository.atualiza(itemEncontrado);  
                         }
@@ -166,7 +166,7 @@ module.exports = function (app) {
                     itemMovimentoGeral.idFabricanteMaterial = itemMovimento.idFabricante;
                     itemMovimentoGeral.lote = itemMovimento.lote;
                     itemMovimentoGeral.validade = itemMovimento.validade;
-                    itemMovimentoGeral.quantidade = itemMovimento.quantidade;
+                    itemMovimentoGeral.quantidade = parseInt(itemMovimento.quantidade);
                     itemMovimentoGeral.idItemReceita = null;
                     itemMovimentoGeral.idEstabelecimento = movimentoGeral.idEstabelecimento;
 
@@ -198,9 +198,9 @@ module.exports = function (app) {
                         var qtd = 0;
 
                         if(operacaoTipoMovimento == '1')
-                            qtd = (qtdEstoque > 0 ? qtdEstoque : 0) + itemMovimento.quantidade;                                                       
+                            qtd = (qtdEstoque > 0 ? qtdEstoque : 0) + itemMovimentoGeral.quantidade;                                                       
                         else
-                            qtd = (qtdEstoque > 0 ? qtdEstoque : 0) - itemMovimento.quantidade;  
+                            qtd = (qtdEstoque > 0 ? qtdEstoque : 0) - itemMovimentoGeral.quantidade;  
                                                 
                         if(qtd >= 0)
                             var responseAtualizacaoQtd = await estoqueRepository.atualizaQuantidadeEstoque(qtd, usuario.id, idEstoqueAux);  
@@ -219,7 +219,7 @@ module.exports = function (app) {
                         novoEstoque.idEstabelecimento = movimentoGeral.idEstabelecimento;
                         novoEstoque.lote = itemMovimento.lote;
                         novoEstoque.validade = new Date(itemMovimento.validade);
-                        novoEstoque.quantidade = itemMovimento.quantidade;
+                        novoEstoque.quantidade = itemMovimentoGeral.quantidade;
                         novoEstoque.bloqueado = materialComBloqueio;                   
         
                         novoEstoque.idUsuarioCriacao = usuario.id;
@@ -238,7 +238,7 @@ module.exports = function (app) {
                         return;
                     }
 
-                    saldoEntregue = itemMovimento.quantidade;               
+                    saldoEntregue = itemMovimentoGeral.quantidade;               
                     
                     saldoAtualUnidade = await estoqueRepository.carregaQuantidadePorMaterialEstabelecimento(itemMovimentoGeral);
 

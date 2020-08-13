@@ -7,12 +7,6 @@ import { EstoqueMedicamentoImpressaoService } from './estoque-medicamento-impres
 import { EstoqueConsumoImpressaoService } from './estoque-consumo-impressao.service';
 import { EstoqueImpressaoService } from './estoque-impressao.service';
 import { RelatoriosEstoqueService } from './relatorios-estoque.service';
-import { MedicamentoPacienteImpressaoService } from './medicamento-paciente.service';
-import { PacienteMedicamentoImpressaoService } from './paciente-medicamento.service';
-import { MedicamentoProfissionalImpressaoService } from './medicamento-profissional.service';
-import { ProfissionalMedicamentoImpressaoService } from './profissional-medicamento.service';
-import { MedicamentoVencidoVencerImpressaoService } from './medicamento-vencido-vencer.service';
-import { MedicamentoMovimentoImpressaoService } from './medicamento-movimento.service';
 
 @NgModule({
     imports: [
@@ -26,13 +20,7 @@ import { MedicamentoMovimentoImpressaoService } from './medicamento-movimento.se
         EstoqueMedicamentoImpressaoService ,  
         EstoqueConsumoImpressaoService,
         EstoqueImpressaoService,
-        RelatoriosEstoqueService, 
-        MedicamentoPacienteImpressaoService,
-        PacienteMedicamentoImpressaoService,
-        MedicamentoProfissionalImpressaoService,
-        ProfissionalMedicamentoImpressaoService,
-        MedicamentoVencidoVencerImpressaoService,
-        MedicamentoMovimentoImpressaoService
+        RelatoriosEstoqueService
     ]
 })
 export class SharedServiceModule { }

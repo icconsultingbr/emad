@@ -402,6 +402,43 @@ MaterialDAO.prototype.carregaMedicamentoMovimentacao = async function(idTipoMovi
     return medicamento;
 }
 
+MaterialDAO.prototype.carregaMedicamentoExtratoMovimento = async function(idMaterial, addFilter){
+    let where = "";
+    let orderBy = " order by movl.idMovimentoGeral asc, lote desc ";
+
+    if(addFilter != null){   
+        if (addFilter.idEstabelecimento && addFilter.idEstabelecimento != "undefined" && addFilter.idEstabelecimento != "null") {
+            where+=" AND movt.idEstabelecimento  = " + addFilter.idEstabelecimento + "";
+        }
+        
+        if (addFilter.dataInicial && addFilter.dataFinal) {           
+            where+=" AND  movl.dataMovimentacao >= '" + addFilter.dataInicial + " 00:00:00' AND  movl.dataMovimentacao <= '" + addFilter.dataFinal + " 23:59:59'";
+        }
+    }
+    let medicamento;
+
+    medicamento =  await this._connection.query(`select movl.idMovimentoGeral,
+                                                    imov.lote,
+                                                    imov.quantidade ,
+                                                    IFNULL(movl.saldoAnterior,0) saldoAnterior,
+                                                    IFNULL(movl.quantidadeEntrada,0) quantidadeEntrada,
+                                                    IFNULL(movl.quantidadeSaida,0) quantidadeSaida,
+                                                    IFNULL(movl.quantidadePerda,0) quantidadePerda,
+                                                    IFNULL(movl.saldoAtual,0) saldoAtual,
+                                                    movl.dataMovimentacao,
+                                                    movl.historico,
+                                                    usr.nome nomeUsuario
+                                                from tb_movimento_livro as movl
+                                                    inner join tb_movimento_geral as movt on movt.id = movl.idMovimentoGeral
+                                                    inner join tb_item_movimento_geral as imov on imov.idMovimentoGeral = movt.id
+                                                    inner join tb_usuario as usr on movt.idUsuario = usr.id
+                                                    inner join tb_material mat on mat.id = movl.idMaterial and imov.idMaterial = mat.id
+                                                where movl.idMaterial = ?
+                                                ${where} `, idMaterial);   
+    
+    return medicamento;
+}
+
 module.exports = function(){
     return MaterialDAO;
 };

@@ -4,8 +4,8 @@ import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { AppGridViewModule } from "../../../_core/_components/app-grid-view/app-grid-view.module";
 import { AppFormModule } from "../../../_core/_components/app-form/app-form.module";
-import { MedicamentoVencidoVencerComponent } from "./medicamento-vencido-vencer.component";
-import { medicamentoVencidoVencerRoutes } from "./medicamento-vencido-vencer.routing";
+import { MedicamentoExtratoMovimentoComponent } from "./medicamento-extrato-movimento.component";
+import { medicamentoExtratoMovimentoRoutes } from "./medicamento-extrato-movimento.routing";
 import { NgbDatepickerModule } from "@ng-bootstrap/ng-bootstrap/datepicker/datepicker.module";
 import { NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap/collapse/collapse.module";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -13,7 +13,7 @@ import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { PesquisaPacienteModule } from "../../../components/pesquisa-pacientes/pesquisa-paciente.module";
 import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { PesquisaMedicamentoModule } from "../../../components/pesquisa-medicamentos/pesquisa-medicamento.module";
-import { MedicamentoVencidoVencerService } from "./medicamento-vencido-vencer.service";
+import { MedicamentoExtratoMovimentoService } from "./medicamento-extrato-movimento.service";
 import { RelatorioMedicamentoModule } from "../../../shared/services/relatorio-medicamento.module";
 
 @NgModule({
@@ -22,7 +22,7 @@ import { RelatorioMedicamentoModule } from "../../../shared/services/relatorio-m
         CoreModule,
         AppGridViewModule,
         AppFormModule,
-        RouterModule.forChild(medicamentoVencidoVencerRoutes),
+        RouterModule.forChild(medicamentoExtratoMovimentoRoutes),
         ReactiveFormsModule,
         FormsModule,
         ReactiveFormsModule,        
@@ -35,11 +35,11 @@ import { RelatorioMedicamentoModule } from "../../../shared/services/relatorio-m
         RelatorioMedicamentoModule          
     ],
     declarations: [
-        MedicamentoVencidoVencerComponent,
+        MedicamentoExtratoMovimentoComponent,
     ],
     providers: [
-        MedicamentoVencidoVencerService   
+        MedicamentoExtratoMovimentoService   
     ]
 })
-export class MedicamentoVencidoVencerModule {
+export class MedicamentoExtratoMovimentoModule {
 }
