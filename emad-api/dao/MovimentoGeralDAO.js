@@ -5,11 +5,11 @@ function MovimentoGeralDAO(connection) {
 
 MovimentoGeralDAO.prototype.salva = async function(obj) {
     const novoMovimentoGeral = await this._connection.query(`INSERT INTO tb_movimento_geral (idTipoMovimento, idUsuario, idEstabelecimento, idReceita, idPaciente, 
-                                                            numeroDocumento, numeroEmpenho, idMovimentoEstornado, dataMovimento, numeroControle, situacao, idUsuarioCriacao, dataCriacao)
-                                                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+                                                            numeroDocumento, numeroEmpenho, idMovimentoEstornado, dataMovimento, numeroControle, motivo, situacao, idUsuarioCriacao, dataCriacao)
+                                                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
                                                           [obj.idTipoMovimento, obj.idUsuario, obj.idEstabelecimento,
                                                             obj.idReceita, obj.idPaciente, obj.numeroDocumento, obj.numeroEmpenho, obj.idMovimentoEstornado,
-                                                            obj.dataMovimento, obj.numeroControle, obj.situacao, obj.idUsuarioCriacao, obj.dataCriacao]);                                                            
+                                                            obj.dataMovimento, obj.numeroControle, obj.motivo, obj.situacao, obj.idUsuarioCriacao, obj.dataCriacao]);                                                            
     return [novoMovimentoGeral];
 }
 

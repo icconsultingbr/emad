@@ -439,6 +439,72 @@ MaterialDAO.prototype.carregaMedicamentoExtratoMovimento = async function(idMate
     return medicamento;
 }
 
+MaterialDAO.prototype.carregaMedicamentoAjusteEstoque = async function(idTipoMovimento, addFilter, unidade){
+    let where = "";
+    let orderBy = " ";
+
+    if(addFilter != null){   
+        if (addFilter.idEstabelecimento && addFilter.idEstabelecimento != "undefined" && addFilter.idEstabelecimento != "null") {
+            where+=" AND und.id  = " + addFilter.idEstabelecimento + "";
+        }
+        
+        if (addFilter.dataInicial && addFilter.dataFinal) {           
+            where+=" AND  ml.dataMovimentacao >= '" + addFilter.dataInicial + " 00:00:00' AND  ml.dataMovimentacao <= '" + addFilter.dataFinal + " 23:59:59'";
+        }
+
+        if (addFilter.idMaterial && addFilter.idMaterial != "undefined") {
+            where+=" AND mat.id = " + addFilter.idMaterial + "";
+        }  
+
+        if(addFilter.ordenadoPor){
+            orderBy += " order by " + addFilter.ordenadoPor + " asc";
+        }
+    }
+    let medicamento;
+
+    if(unidade){
+        medicamento =  await this._connection.query(`select und.id as idUnidade,
+                                                            und.nomeFantasia as unidadeNome                                                            
+                                                        from tb_movimento_livro ml
+                                                        inner join tb_movimento_geral mg on mg.id = ml.idMovimentoGeral 
+                                                        inner join tb_usuario us on mg.idUsuario = us.id
+                                                        inner join tb_material mat on ml.idMaterial = mat.id
+                                                        inner join tb_tipo_movimento tmv on ml.idTipoMovimento = tmv.id
+                                                        inner join tb_estabelecimento und on ml.idEstabelecimento = und.id
+                                                        where mat.situacao = 1
+                                                        and mat.dispensavel = 1               
+                                                        and und.situacao = 1
+                                                        and ml.idTipoMovimento = ?
+                                                        ${where}                                                                                                                 
+                                                        group by und.id`, [idTipoMovimento]);
+    }else{
+        medicamento =  await this._connection.query(`select distinct
+                                                    und.nomeFantasia as unidade,
+                                                    mat.codigo as codigoMaterial,
+                                                    mat.descricao as nomeMaterial,
+                                                    case when tmv.operacao = 1 then  ml.quantidadeEntrada
+		                                                 when tmv.operacao = 2 then  ml.quantidadeSaida
+		                                                 when tmv.operacao = 3 then  ml.quantidadePerda end as quantidade,
+                                                    ml.dataMovimentacao as dataMovimentacao,
+                                                    mg.id as documento,
+                                                    us.nome as nomeUsuario,
+                                                    IFNULL(mg.motivo,'') as motivo
+                                                from tb_movimento_livro ml
+                                                inner join tb_movimento_geral mg on mg.id = ml.idMovimentoGeral 
+                                                inner join tb_usuario us on mg.idUsuario = us.id
+                                                inner join tb_material mat on ml.idMaterial = mat.id
+                                                inner join tb_tipo_movimento tmv on ml.idTipoMovimento = tmv.id
+                                                inner join tb_estabelecimento und on ml.idEstabelecimento = und.id
+                                                where mat.situacao = 1
+                                                and mat.dispensavel = 1               
+                                                and und.situacao = 1
+                                                and ml.idTipoMovimento = ?
+                                                ${where} 
+                                                ${orderBy} `, idTipoMovimento);  
+    }
+    return medicamento;
+}
+
 module.exports = function(){
     return MaterialDAO;
 };
