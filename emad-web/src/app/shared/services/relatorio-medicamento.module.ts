@@ -8,6 +8,7 @@ import { MedicamentoVencidoVencerImpressaoService } from './medicamento-vencido-
 import { MedicamentoMovimentoImpressaoService } from './medicamento-movimento.service';
 import { MedicamentoExtratoMovimentoImpressaoService } from './medicamento-extrato-movimento.service';
 import { MedicamentoAjusteEstoqueImpressaoService } from './medicamento-ajuste-estoque.service';
+import { MedicamentoLivroControladoImpressaoService } from './medicamento-livro-controlado.service';
 
 @NgModule({
     imports: [
@@ -22,7 +23,8 @@ import { MedicamentoAjusteEstoqueImpressaoService } from './medicamento-ajuste-e
         MedicamentoVencidoVencerImpressaoService,
         MedicamentoMovimentoImpressaoService,
         MedicamentoExtratoMovimentoImpressaoService,
-        MedicamentoAjusteEstoqueImpressaoService
+        MedicamentoAjusteEstoqueImpressaoService,
+        MedicamentoLivroControladoImpressaoService
     ]
 })
 export class RelatorioMedicamentoModule { }

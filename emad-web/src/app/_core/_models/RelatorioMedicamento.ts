@@ -23,4 +23,6 @@ export class RelatorioMedicamento {
     @Input() nomeTipoMovimento: string;    
     @Input() idOperacao: number;
     @Input() nomeOperacao: string;    
+    @Input() idLivro: number;
+    @Input() nomeLivro: string;  
 }

@@ -16,7 +16,7 @@ export class PacienteService extends GenericsService {
       field: "id",
       type: "hidden",
       label: "Id",
-      grid: true,
+      grid: false,
       form: true,
       required: false,
       validator: ['', '']
@@ -442,12 +442,26 @@ export class PacienteService extends GenericsService {
     },
     {
       field: "idEstabelecimentoCadastro",
-      type: "hidden",
+      type: "select",
       label: "Id do estabelecimento",
       grid: false,
       form: true,
       required: false,
       validator: ['', '']
-    }
+    },
+    {
+      field: "nome",
+      type: "text",
+      label: "Observação",
+      grid: true,
+      form: false,
+      required: false,
+      validator: ['', '']
+    },
+
   ];
+
+  transfereEstabelecimento(obj: any) {
+    return this.http.put('paciente/transferencia-unidade', JSON.stringify(obj));
+  }
 }

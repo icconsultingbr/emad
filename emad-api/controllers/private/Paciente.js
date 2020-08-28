@@ -1,15 +1,26 @@
 module.exports = function (app) {
-
-    app.get('/paciente', function (req, res) {
+   app.get('/paciente', async function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
-        let addFilter = req.query;
+        let queryFilter = req.query;
         let errors = [];
 
-        lista(addFilter, res).then(function (resposne) {
-            res.status(200).json(resposne);
-            return;
-        });
+        const connection = await app.dao.connections.EatendConnection.connection();
+        
+        try {
+            const pacienteRepository = new app.dao.PacienteDAO(connection);
+
+            const response = await pacienteRepository.listarAsync(queryFilter);
+
+            res.status(200).json(response);
+        }
+        catch (exception) {
+            errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
+            res.status(500).send(errors);
+        }
+        finally{
+            await connection.close();
+        }
     });
 
     app.get('/paciente/:id', async function (req, res) {
@@ -123,6 +134,8 @@ module.exports = function (app) {
                 var response = await pacienteRepository.salvaAsync(obj);
                 obj.id = response[0].insertId;
 
+                var responseEstabelecimento = await pacienteRepository.gravaEstabelecimento(obj, new Date, usuario.id);
+
                 if(gruposAtencaoContinuada){
                     for (const item of gruposAtencaoContinuada) {
                         arrAtencaoContinuada.push("(" + obj.id + ", " + item.id + ")");   
@@ -143,6 +156,48 @@ module.exports = function (app) {
                 await connection.close();
             }
     });
+
+    app.put('/paciente/transferencia-unidade', async function (req, res) {
+        let paciente = req.body;
+        let usuario = req.usuario;
+        const util = new app.util.Util();
+        let errors = [];
+
+        req.assert("idEstabelecimentoCadastro").notEmpty().withMessage("O campo Estabelecimento é um campo obrigatório");
+        req.assert("id").notEmpty().withMessage("Paciente não encontrado");
+        
+        errors = req.validationErrors();
+
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const pacienteRepository = new app.dao.PacienteDAO(connection);
+
+        try {
+            await connection.beginTransaction();
+
+            paciente.dataAlteracao = new Date;
+            paciente.idUsuarioAlteracao = usuario.id;    
+            
+            var responseEstabelecimento = await pacienteRepository.gravaEstabelecimento(paciente, new Date, usuario.id);
+
+            var response = await pacienteRepository.transferirUnidade(paciente);
+            res.status(201).send(paciente);
+
+            await connection.commit();
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado" + exception, ""));
+            await connection.rollback();
+        }
+        finally {
+            await connection.close();
+        }
+    });
+
 
     app.put('/paciente', async function (req, res) {
         let usuario = req.usuario;
@@ -255,6 +310,8 @@ module.exports = function (app) {
                 await connection.close();
             }
     });
+
+    
 
     app.delete('/paciente/:id', function (req, res) {
         var util = new app.util.Util();

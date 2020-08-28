@@ -1,10 +1,694 @@
 <h4 class="mb-5 text-left">{{id!=null?'Editar '+label:'Adicionar '+label}}</h4>
 
-<app-form
-  [fields]="fields" 
-  [object]="object"
-  [domains]="domains" 
-  [method]="method"
-  (emitGeocodeAddress)="getGeocodeAddress($event)"
-  [redirectAfterInsert]="'/pacientes'">
-</app-form>
+<form [formGroup]="form" (submit)="sendForm($event)">
+  <div>
+    <tabset>
+      <tab>
+        <ng-template tabHeading>
+          <i class="fa fa-edit" title="Principal"></i>   Principal
+        </ng-template>
+        <div class="card mb-4">
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Cartão SUS
+                  </label>
+                  <div class="col-xl-10">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.cartaoSus" formControlName="cartaoSus"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    ID SAP
+                  </label>
+                  <div class="col-xl-10">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.idSap" formControlName="idSap"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Nome<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nome" formControlName="nome"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Nome social
+                  </label>
+                  <div class="col-xl-10">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nomeSocial" formControlName="nomeSocial"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Apelido
+                  </label>
+                  <div class="col-xl-10">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nomeSocial" formControlName="nomeSocial"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Nome da mãe<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nomeMae" formControlName="nomeMae"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Nome do pai
+                  </label>
+                  <div class="col-xl-10">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nomePai" formControlName="nomePai"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Data de nascimento
+                  </label>
+                  <div class="col-xl-10">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nomePai" formControlName="nomePai"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Sexo
+                  </label>
+                  <div class="col-xl-10">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nomePai" formControlName="nomePai"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Nacionalidade
+                  </label>
+                  <div class="col-xl-10">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nomePai" formControlName="nomePai"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Naturalidade
+                  </label>
+                  <div class="col-xl-10">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nomePai" formControlName="nomePai"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Ocupação
+                  </label>
+                  <div class="col-xl-10">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nomePai" formControlName="nomePai"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    CPF
+                  </label>
+                  <div class="col-xl-10">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nomePai" formControlName="nomePai"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Escolaridade
+                  </label>
+                  <div class="col-xl-10">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nomePai" formControlName="nomePai"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Estabelecimento<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>            
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Falecido
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="falecido" [(ngModel)]="object.falecido" formControlName="falecido" class="custom-control-input">
+                      <label class="custom-control-label" for="falecido"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Situação<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tab>
+      <tab>
+        <ng-template tabHeading>
+          <i class="fa fa-user" title="Principal"></i>   Dados pessoais
+        </ng-template>
+        <div class="card mb-4">
+          <div class="card-body text-left">            
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    RG<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div> 
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Data de emissão<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div> 
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Orgão emissor<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>  
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Endereço<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>     
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Latitude<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>  
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Longitude<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Número<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div> 
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Complemento<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div> 
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Bairro<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div> 
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Estado<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div> 
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Municipio<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    CEP<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div> 
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Telefone residencial<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Telefone celular<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Telefone de contato<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>  
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Contato<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div> 
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    E-mail
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>                                      
+          </div>
+        </div>
+      </tab>
+      <tab>
+        <ng-template tabHeading>
+          <i class="fa fa-address-book-o" title="Principal"></i>   Características
+        </ng-template>
+        <div class="card mb-4">
+          <div class="card-body text-left">            
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Modalidade<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Tipo sanguíneo<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Raça/Cor<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Número prontuário<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Número prontuário Cnes<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Grupo de atenção continuada
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tab>
+      <tab>
+        <ng-template tabHeading>
+          <i class="fa fa-medkit" title="Principal"></i>   Comorbidades
+        </ng-template>
+        <div class="card mb-4">
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Tipo de atendimento<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                      
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Classificação de risco<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                      
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Motivo da queixa<span class="text-danger font-weight-bold"></span>
+                  </label>
+                  <div class="col-xl-10">
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tab>
+      <tab>
+        <ng-template tabHeading>
+          <i class="fa fa-calendar" title="Principal"></i>   Agenda
+        </ng-template>
+        <div class="card mb-4">
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Tipo de atendimento<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                      
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Classificação de risco<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                      
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Motivo da queixa<span class="text-danger font-weight-bold"></span>
+                  </label>
+                  <div class="col-xl-10">
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tab>
+    </tabset>
+  </div>
+  <div class="form-group text-right">
+    <button (click)="back()" class="btn btn-default" type="button">
+      <i class="fa fa-arrow-left"></i> Retornar
+    </button>
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
+      <i class="fa fa-save"></i> {{ !object.id ? 'Salvar' : 'Atualizar'}}
+    </button>
+  </div>
+</form>
+
+
+

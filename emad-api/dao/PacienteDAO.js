@@ -141,6 +141,16 @@ PacienteDAO.prototype.atualizaAsync = async function(paciente, id){
     return [responsePaciente];
 }
 
+PacienteDAO.prototype.transferirUnidade = async function(paciente){
+    const responsePaciente =  await this._connection.query(`UPDATE tb_paciente SET idEstabelecimentoCadastro=? WHERE id= ?`, [paciente.idEstabelecimentoCadastro, paciente.id]);
+    return [responsePaciente];
+}
+
+PacienteDAO.prototype.gravaEstabelecimento = async function(paciente, dataCriacao, usuario){
+    const responsePaciente =  await this._connection.query(`INSERT INTO tb_paciente_estabelecimento_historico (idPaciente, idEstabelecimento, dataCriacao, idUsuarioCriacao) VALUES (?, ?, ?, ?)`, [paciente.id, paciente.idEstabelecimentoCadastro, dataCriacao, usuario]);
+    return [responsePaciente];
+}
+
 PacienteDAO.prototype.atualiza = function (paciente, id, callback) {
     const conn = this._connection;
     const connDim = this._connectionDim;
@@ -267,7 +277,7 @@ PacienteDAO.prototype.atualiza = function (paciente, id, callback) {
     }); 
 }
 
-PacienteDAO.prototype.lista = function (addFilter, callback) {
+PacienteDAO.prototype.listarAsync = async function (addFilter) {
     let where = "";
 
     if (addFilter != null) {
@@ -302,54 +312,69 @@ PacienteDAO.prototype.lista = function (addFilter, callback) {
         if(addFilter.idSap){
             where+=" AND pac.idSap LIKE '%"+addFilter.idSap+"%'";
         }
+
+        if(addFilter.limit && addFilter.offset){
+            offset = `LIMIT ${addFilter.limit} OFFSET ${addFilter.limit * addFilter.offset}`;
+        }
+
+        if(addFilter.idEstabelecimento){
+            where+=" AND pac.idEstabelecimentoCadastro = " + addFilter.idEstabelecimento + "";
+        }        
     }
 
-    this._connection.query(`
-        SELECT
-            pac.id,
-            pac.cartaoSus,
-            pac.nome,
-            pac.nomeSocial,
-            pac.nomeMae,
-            pac.nomePai,
-            DATE_FORMAT(dataNascimento,'%d/%m/%Y') as dataNascimento,
-            TIMESTAMPDIFF(YEAR, pac.dataNascimento, CURDATE()) as idade,
-            pac.sexo,
-            nac.nome AS idNacionalidade,
-            nat.nome AS idNaturalidade,
-            pac.ocupacao,
-            pac.cpf,
-            pac.rg,
-            pac.dataEmissao,
-            pac.orgaoEmissor,
-            pac.escolaridade,
-            pac.cep,
-            pac.logradouro,
-            pac.numero,
-            pac.complemento,
-            pac.bairro,
-            mun.nome AS idMunicipio,
-            uf.nome AS idUf,
-            pac.foneResidencial,
-            pac.foneCelular,
-            pac.foneContato,
-            pac.contato,
-            pac.email,
-            pac.situacao,
-            md.nome AS idModalidade,
-            latitude,
-            longitude,
-            pac.idSap,
-            pac.idPacienteCorrespondenteDim
-        FROM tb_paciente pac
-        INNER JOIN tb_nacionalidade nac ON (pac.idNacionalidade = nac.id)
-        INNER JOIN tb_uf nat ON (pac.idNaturalidade = nat.id)
-        LEFT JOIN tb_municipio mun ON (pac.idMunicipio = mun.id)
-        LEFT JOIN tb_uf uf ON (pac.idUf = uf.id)
-        LEFT JOIN tb_modalidade md ON (pac.idModalidade = md.id) 
-        WHERE pac.situacao = 1
-        ${where}`,
-        callback);
+    
+    const join = ` FROM tb_paciente pac
+    INNER JOIN tb_nacionalidade nac ON (pac.idNacionalidade = nac.id)
+    INNER JOIN tb_uf nat ON (pac.idNaturalidade = nat.id)
+    LEFT JOIN tb_municipio mun ON (pac.idMunicipio = mun.id)
+    LEFT JOIN tb_uf uf ON (pac.idUf = uf.id)
+    LEFT JOIN tb_modalidade md ON (pac.idModalidade = md.id) 
+    WHERE pac.situacao = 1 ${where} `;
+
+    const count = await this._connection.query(`SELECT COUNT(1) as total ${join}`);
+
+    const result = await this._connection.query(`SELECT
+                                                    pac.id,
+                                                    pac.cartaoSus,
+                                                    pac.nome,
+                                                    pac.nomeSocial,
+                                                    pac.nomeMae,
+                                                    pac.nomePai,
+                                                    DATE_FORMAT(dataNascimento,'%d/%m/%Y') as dataNascimento,
+                                                    TIMESTAMPDIFF(YEAR, pac.dataNascimento, CURDATE()) as idade,
+                                                    pac.sexo,
+                                                    nac.nome AS idNacionalidade,
+                                                    nat.nome AS idNaturalidade,
+                                                    pac.ocupacao,
+                                                    pac.cpf,
+                                                    pac.rg,
+                                                    pac.dataEmissao,
+                                                    pac.orgaoEmissor,
+                                                    pac.escolaridade,
+                                                    pac.cep,
+                                                    pac.logradouro,
+                                                    pac.numero,
+                                                    pac.complemento,
+                                                    pac.bairro,
+                                                    mun.nome AS idMunicipio,
+                                                    uf.nome AS idUf,
+                                                    pac.foneResidencial,
+                                                    pac.foneCelular,
+                                                    pac.foneContato,
+                                                    pac.contato,
+                                                    pac.email,
+                                                    pac.situacao,
+                                                    md.nome AS idModalidade,
+                                                    latitude,
+                                                    longitude,
+                                                    pac.idSap,
+                                                    pac.idPacienteCorrespondenteDim
+                                                ${join}  
+                                            ORDER BY pac.id DESC ${offset}`);
+    return {
+        total: count[0].total,
+        items: result
+    }
 }
 
 PacienteDAO.prototype.buscaPorId = function (id, callback) {
@@ -395,7 +420,8 @@ PacienteDAO.prototype.buscaPorId = function (id, callback) {
     numeroProntuario,
     numeroProntuarioCnes,
     falecido,
-    idAtencaoContinuada
+    idAtencaoContinuada,
+    idEstabelecimentoCadastro
     FROM ${this._table} WHERE id = ?`, id, callback);
 }
 
@@ -442,7 +468,8 @@ PacienteDAO.prototype.buscaPorIdSync = async function (id) {
     numeroProntuario,
     numeroProntuarioCnes,
     falecido,
-    idAtencaoContinuada
+    idAtencaoContinuada,
+    idEstabelecimentoCadastro
     FROM ${this._table} WHERE id = ?`, id);
     return responsePaciente;
 }
@@ -493,7 +520,8 @@ PacienteDAO.prototype.buscaPorIdFicha = function (id, callback) {
     p.numeroProntuario,
     p.numeroProntuarioCnes,
     p.falecido,
-    p.idAtencaoContinuada
+    p.idAtencaoContinuada,
+    p.idEstabelecimentoCadastro
     FROM ${this._table} p 
     INNER JOIn tb_municipio m ON(p.idMunicipio = m.id) WHERE p.id = ?`, id, callback);
 }
