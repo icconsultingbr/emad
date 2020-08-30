@@ -44,7 +44,8 @@ export class Paciente {
     @Input() idAtencaoContinuada: string = null ;
     @Input() idEstabelecimentoCadastro : number = +JSON.parse(localStorage.getItem("est"))[0].id;
     @Input() idEstabelecimento : number = +JSON.parse(localStorage.getItem("est"))[0].id;
-    @Input() gruposAtencaoContinuada : any[];
+    @Input() gruposAtencaoContinuada : any[];    
+    @Input() apelido: string = null ;
     @Input() observacao: string = null ;
     @Input() historiaProgressaFamiliar: string = null ;
 }
