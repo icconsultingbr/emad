@@ -3,6 +3,7 @@ import { Validators } from '@angular/forms';
 import { GenericsService } from '../../_core/_services/generics.service';
 import { Http } from '@angular/http';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class PacienteService extends GenericsService {
@@ -20,71 +21,43 @@ export class PacienteService extends GenericsService {
       form: true,
       required: false,
       validator: ['', '']
-    },
-    {
-      field: "cartaoSus",
-      type: "text",
-      label: "Cartão SUS",
-      grid: true,
-      form: true,
-      required: false,
-      validator: ['', ''],
-      autoFocus: true,
-      filter: {
-        type: "text"
-      }
-    },
-    {
-      field: "idSap",
-      type: "text",
-      label: "ID SAP",
-      grid: true,
-      form: true,
-      required: false,
-      autoFocus: true,
-      filter: {
-        type: "text"
-      }
-    },
-    {
-      field: "nome",
-      type: "text",
-      label: "Nome",
-      grid: true,
-      form: true,
-      required: true,
-      validator: ['', Validators.required],
-      filter: {
-        type: 'text'
-      }
-    },
-
-    {
-      field: "nomeSocial",
-      type: "text",
-      label: "Nome social",
-      grid: false,
-      form: true,
-      required: false,
-      validator: ['', ''],
-    },
-    {
-      field: "nomeMae",
-      type: "text",
-      label: "Nome da mãe",
-      grid: false,
-      form: true,
-      required: true,
-      validator: ['', Validators.required],
-    },
-    {
-      field: "nomePai",
-      type: "text",
-      label: "Nome do pai",
-      grid: false,
-      form: true,
-      required: false,
-      validator: ['', ''],
+      },
+      {
+        field: "cartaoSus",
+        type: "text",
+        label: "Cartão SUS",
+        grid: true,
+        form: true,
+        required: false,
+        validator: ['', ''],
+        autoFocus: true,
+        filter: {
+          type: "text"
+        }
+      },
+      {
+        field: "idSap",
+        type: "text",
+        label: "ID SAP",
+        grid: true,
+        form: true,
+        required: false,
+        autoFocus: true,
+        filter: {
+          type: "text"
+        }
+      },
+      {
+        field: "nome",
+        type: "text",
+        label: "Nome",
+        grid: true,
+        form: true,
+        required: true,
+        validator: ['', Validators.required],
+        filter: {
+          type: 'text'
+        }
     },
     {
       field: "dataNascimento",
@@ -109,40 +82,6 @@ export class PacienteService extends GenericsService {
       validator: ['', Validators.required]
     },
     {
-      field: "idNacionalidade",
-      type: "select",
-      label: "Nacionalidade",
-      grid: false,
-      form: true,
-      required: true,
-      validator: ['', Validators.required],
-      filter: {
-        type: "select",
-        changeMethod: 'uf/pais',
-        changeTarget: 'idNaturalidade'
-      },
-    },
-    {
-      field: "idNaturalidade",
-      type: "select",
-      label: "Naturalidade",
-      grid: false,
-      form: true,
-      required: true,
-      validator: ['', Validators.required],
-
-    },
-    {
-      field: "ocupacao",
-      type: "text",
-      label: "Ocupação",
-      grid: false,
-      form: true,
-      required: false,
-      validator: ['', ''],
-
-    },
-    {
       field: "cpf",
       type: "text",
       label: "CPF",
@@ -155,47 +94,6 @@ export class PacienteService extends GenericsService {
         placeHolder: '999.999.999-99',
         mask: '999.999.999-99'
       }
-    },
-    {
-      field: "rg",
-      type: "text",
-      label: "RG",
-      grid: false,
-      form: true,
-      required: false,
-      validator: ['', '']
-    },
-    {
-      field: "dataEmissao",
-      type: "text",
-      label: "Data de emissão",
-      mask: "99/99/9999",
-      placeholder: "99/99/9999",
-      grid: false,
-      form: true,
-      required: false,
-      validator: ['',],
-
-    },
-    {
-      field: "orgaoEmissor",
-      type: "text",
-      label: "Órgão emissor",
-      grid: false,
-      form: true,
-      required: false,
-      validator: ['', ''],
-
-    },
-    {
-      field: "escolaridade",
-      type: "select",
-      label: "Escolaridade",
-      grid: false,
-      form: true,
-      required: true,
-      validator: ['', Validators.required],
-
     },
     {
       field: "logradouro",
@@ -450,7 +348,7 @@ export class PacienteService extends GenericsService {
       validator: ['', '']
     },
     {
-      field: "nome",
+      field: "observacao",
       type: "text",
       label: "Observação",
       grid: true,
@@ -464,4 +362,12 @@ export class PacienteService extends GenericsService {
   transfereEstabelecimento(obj: any) {
     return this.http.put('paciente/transferencia-unidade', JSON.stringify(obj));
   }
+
+  carregaNaturalidadePorNacionalidade(id: any): Observable<any> {
+    return this.http.get("uf/pais/" + id);
+  }
+
+  findHipoteseByPaciente(id: any): Observable<any> {
+    return this.http.get("atendimento-hipotese/paciente/" + id);
+}
 }

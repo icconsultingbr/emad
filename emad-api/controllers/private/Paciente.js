@@ -80,12 +80,23 @@ module.exports = function (app) {
             }
 
             delete obj.gruposAtencaoContinuada;
+            delete obj.idade;
+            delete obj.idEstabelecimento;
 
             obj.dataCriacao = new Date;
-            if (obj.dataEmissao != null) {
-                obj.dataEmissao = util.dateToISO(obj.dataEmissao);
+            obj.idUsuarioCriacao = usuario.id;
+
+            if (obj.dataEmissao != null) {    
+                if(obj.dataEmissao.length == 10)
+                    obj.dataEmissao = util.dateToISO(obj.dataEmissao);
+                else
+                    obj.dataEmissao = new Date(obj.dataEmissao);
             }
-            obj.dataNascimento = util.dateToISO(obj.dataNascimento);
+    
+            if(obj.dataNascimento.length == 10)
+                obj.dataNascimento = util.dateToISO(obj.dataNascimento);
+            else
+                obj.dataNascimento = new Date(obj.dataNascimento);
 
             const connection = await app.dao.connections.EatendConnection.connection();
 
@@ -95,37 +106,37 @@ module.exports = function (app) {
             try {
                 await connection.beginTransaction();
                 
-                var responseBuscaCpf = await pacienteRepository.buscaPorCpfSync(obj, null);               
+                var responseBuscaCpf = await pacienteRepository.validaPorChaveSync("CPF", obj, null);               
 
                 if (responseBuscaCpf.length > 0) {
-                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este CPF!", "");
+                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este CPF! (Estabelecimento: " + responseBuscaCpf[0].nomeEstabelecimento + ")", "");
                     res.status(400).send(errors);
                     await connection.rollback();
                     return;
                 }
 
-                var responseBuscaSAP = await pacienteRepository.buscaPorSapSync(obj, null);               
+                var responseBuscaSAP = await pacienteRepository.validaPorChaveSync("SAP", obj, null);               
 
                 if (responseBuscaSAP.length > 0) {
-                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este ID SAP!", "");
+                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este ID SAP! (Estabelecimento: " + responseBuscaSAP[0].nomeEstabelecimento + ")", "");
                     res.status(400).send(errors);
                     await connection.rollback();
                     return;
                 }
 
-                var responseBuscaSUS = await pacienteRepository.buscaPorSusSync(obj, null);               
+                var responseBuscaSUS = await pacienteRepository.validaPorChaveSync("SUS", obj, null);               
 
                 if (responseBuscaSUS.length > 0) {
-                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este número do cartão SUS!", "");
+                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este número do cartão SUS! (Estabelecimento: " + responseBuscaSUS[0].nomeEstabelecimento + ")", "");
                     res.status(400).send(errors);
                     await connection.rollback();
                     return;
                 }
 
-                var responseBuscaRG = await pacienteRepository.buscaPorRgSync(obj, null);               
+                var responseBuscaRG = await pacienteRepository.validaPorChaveSync("RG", obj, null);               
 
                 if (responseBuscaRG.length > 0) {
-                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este RG!", "");
+                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este RG! (Estabelecimento: " + responseBuscaRG[0].nomeEstabelecimento + ")", "");
                     res.status(400).send(errors);
                     await connection.rollback();
                     return;
@@ -198,7 +209,6 @@ module.exports = function (app) {
         }
     });
 
-
     app.put('/paciente', async function (req, res) {
         let usuario = req.usuario;
         let obj = req.body;
@@ -208,39 +218,45 @@ module.exports = function (app) {
         delete obj.id;
         let gruposAtencaoContinuada = obj.gruposAtencaoContinuada;
         let arrAtencaoContinuada = [];        
+        
+        req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");
+        req.assert("nomeMae").notEmpty().withMessage("Nome da mãe é um campo obrigatório;");
+        req.assert("dataNascimento").notEmpty().withMessage("Data de nascimento é um campo obrigatório;");
+        req.assert("sexo").notEmpty().withMessage("Sexo é um campo obrigatório;");
+        req.assert("idNacionalidade").notEmpty().withMessage("Nacionalidade é um campo obrigatório;");
+        req.assert("idNaturalidade").notEmpty().withMessage("Naturalidade é um campo obrigatório;");
+        req.assert("escolaridade").notEmpty().withMessage("Escolaridade é um campo obrigatório;");
+        req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");            
+        req.assert("idSap").isLength({ min: 0, max: 20 }).withMessage("O campo ID SAP deve ter no máximo 20 caracteres");
+        req.assert("cartaoSus").isLength({ min: 0, max: 15 }).withMessage("O campo Cartão SUS deve ter no máximo 15 caracteres");
+        req.assert("numeroProntuario").isLength({ min: 0, max: 20 }).withMessage("O campo Número prontuário deve ter no máximo 20 caracteres");
+        req.assert("numeroProntuarioCnes").isLength({ min: 0, max: 20 }).withMessage("O campo Número prontuário Cnes deve ter no máximo 20 caracteres");
 
-        //req.assert("cartaoSus").notEmpty().withMessage("Cartão do SUS é um campo obrigatório;");
-            req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");
-            req.assert("nomeMae").notEmpty().withMessage("Nome da mãe é um campo obrigatório;");
-            req.assert("dataNascimento").notEmpty().withMessage("Data de nascimento é um campo obrigatório;");
-            req.assert("sexo").notEmpty().withMessage("Sexo é um campo obrigatório;");
-            req.assert("idNacionalidade").notEmpty().withMessage("Nacionalidade é um campo obrigatório;");
-            req.assert("idNaturalidade").notEmpty().withMessage("Naturalidade é um campo obrigatório;");
-            //req.assert("cpf").notEmpty().withMessage("CPF é um campo obrigatório;");
-            req.assert("escolaridade").notEmpty().withMessage("Escolaridade é um campo obrigatório;");
-            //req.assert("logradouro").notEmpty().withMessage("Logradouro é um campo obrigatório;");
-            //req.assert("numero").notEmpty().withMessage("Número é um campo obrigatório;");
-            //req.assert("bairro").notEmpty().withMessage("Bairro é um campo obrigatório;");
-            //req.assert("idMunicipio").notEmpty().withMessage("Municipio é um campo obrigatório;");
-            req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");            
-            req.assert("idSap").isLength({ min: 0, max: 20 }).withMessage("O campo ID SAP deve ter no máximo 20 caracteres");
-            req.assert("cartaoSus").isLength({ min: 0, max: 15 }).withMessage("O campo Cartão SUS deve ter no máximo 15 caracteres");
-            req.assert("numeroProntuario").isLength({ min: 0, max: 20 }).withMessage("O campo Número prontuário deve ter no máximo 20 caracteres");
-            req.assert("numeroProntuarioCnes").isLength({ min: 0, max: 20 }).withMessage("O campo Número prontuário Cnes deve ter no máximo 20 caracteres");
-
-            errors = req.validationErrors();
+        errors = req.validationErrors();
             
-            if (errors) {
-                res.status(400).send(errors);
-                return;
-            }
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
 
-            delete obj.gruposAtencaoContinuada;
-            
-            if (obj.dataEmissao != null) {
+        delete obj.gruposAtencaoContinuada;
+        delete obj.dataCriacao;
+        delete obj.idUsuarioCriacao;
+
+        obj.dataAlteracao = new Date;
+        obj.idUsuarioAlteracao = usuario.id;
+        
+        if (obj.dataEmissao != null) {
+            if(obj.dataEmissao.length == 10)
                 obj.dataEmissao = util.dateToISO(obj.dataEmissao);
-            }
+            else
+                obj.dataEmissao = new Date(obj.dataEmissao);
+        }
+
+        if(obj.dataNascimento.length == 10)
             obj.dataNascimento = util.dateToISO(obj.dataNascimento);
+        else
+            obj.dataNascimento = new Date(obj.dataNascimento);
 
             const connection = await app.dao.connections.EatendConnection.connection();
 
@@ -250,37 +266,37 @@ module.exports = function (app) {
             try {
                 await connection.beginTransaction();     
                 
-                var responseBuscaCpf = await pacienteRepository.buscaPorCpfSync(obj, id);               
+                var responseBuscaCpf = await pacienteRepository.validaPorChaveSync("CPF", obj, id);               
 
                 if (responseBuscaCpf.length > 0) {
-                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este CPF!", "");
+                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este CPF! (Estabelecimento: " + responseBuscaCpf[0].nomeEstabelecimento + ")", "");
                     res.status(400).send(errors);
                     await connection.rollback();
                     return;
                 }
 
-                var responseBuscaSAP = await pacienteRepository.buscaPorSapSync(obj, id);               
+                var responseBuscaSAP = await pacienteRepository.validaPorChaveSync("SAP", obj, id);               
 
                 if (responseBuscaSAP.length > 0) {
-                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este ID SAP!", "");
+                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este ID SAP! (Estabelecimento: " + responseBuscaSAP[0].nomeEstabelecimento + ")", "");
                     res.status(400).send(errors);
                     await connection.rollback();
                     return;
                 }
 
-                var responseBuscaSUS = await pacienteRepository.buscaPorSusSync(obj, id);               
+                var responseBuscaSUS = await pacienteRepository.validaPorChaveSync("SUS", obj, id);               
 
                 if (responseBuscaSUS.length > 0) {
-                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este número do cartão SUS!", "");
+                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este número do cartão SUS! (Estabelecimento: " + responseBuscaSUS[0].nomeEstabelecimento + ")", "");
                     res.status(400).send(errors);
                     await connection.rollback();
                     return;
                 }
 
-                var responseBuscaRG = await pacienteRepository.buscaPorRgSync(obj, id);               
+                var responseBuscaRG = await pacienteRepository.validaPorChaveSync("RG", obj, id);               
 
                 if (responseBuscaRG.length > 0) {
-                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este RG!", "");
+                    errors = util.customError(errors, "header", "Já existe um paciente cadastrado com este RG! (Estabelecimento: " + responseBuscaRG[0].nomeEstabelecimento + ")", "");
                     res.status(400).send(errors);
                     await connection.rollback();
                     return;
@@ -303,7 +319,7 @@ module.exports = function (app) {
                 await connection.commit();
             }
             catch (exception) {
-                res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+                res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado: " + exception, ""));
                 await connection.rollback();
             }
             finally {

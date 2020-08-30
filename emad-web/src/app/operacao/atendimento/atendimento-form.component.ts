@@ -60,6 +60,14 @@ export class AtendimentoFormComponent implements OnInit {
   allMedicamentos: any[] = [];
   removeId: number;
 
+  paging: any = {
+    offset: 0,
+    limit: 10,
+    total: 0
+  };  
+  warning: string = "";    
+  totalPages: Number;
+
   id: number;
 
   constructor(
@@ -132,9 +140,13 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
-  buscaPaciente() {
+  buscaPaciente(offset: Number = null, limit: Number = null) {
     this.loading = true;
     let params = "";
+    
+    this.paging.offset = offset ? offset : 0;
+    this.paging.limit = limit ? limit : 10;
+
     if (!Util.isEmpty(this.paciente)) {
       if (Object.keys(this.paciente).length) {
         for (let key of Object.keys(this.paciente)) {
@@ -149,14 +161,19 @@ export class AtendimentoFormComponent implements OnInit {
       }
     }
 
-    this.service.list('paciente' + params).subscribe(result => {
+    if (this.paging.offset != null && this.paging.limit != null) {
+      params += (params == "" ? "?" : "") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+    }
 
-      this.allItems = result;
-      this.setPage(1);
-      this.loading = false;
-
+    this.service.list('paciente' + params).subscribe(result => {      
+      this.paging.total = result.total;
+      this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
+      this.allItems = result.items;
+      setTimeout(() => {
+        this.loading = false;
+      }, 300);
     }, erro => {
-      this.loading = false;
+      setTimeout(() => this.loading = false, 300);
       this.errors = Util.customHTTPResponse(erro);
     });
   }
@@ -678,5 +695,18 @@ export class AtendimentoFormComponent implements OnInit {
       this.loading = false;
       this.errors = Util.customHTTPResponse(error);
     });
+  }
+
+  loadQuantityPerPagePagination(event) {
+    let id = parseInt(event.target.value);
+    this.paging.limit = id;
+
+    this.setPagePagined(this.pager.offset, this.paging.limit);
+  }
+
+  setPagePagined(offset: number, limit: Number) {
+    this.paging.offset = offset !== undefined ? offset : 0;
+    this.paging.limit = limit ? limit : this.paging.limit;    
+    this.buscaPaciente(this.paging.offset, this.paging.limit);
   }
 }

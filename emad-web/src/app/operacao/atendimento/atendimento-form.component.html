@@ -583,50 +583,50 @@
         </table>
       </div>
     </div>
-    <div class="row mb-2">
-      <div *ngIf="pager.pages && pager.pages.length" class="text text-secondary col-md-12 pr-0 mx-auto">
-        <i>
-          Exibindo
-          {{pager.currentPage === pager.totalPages?allItems.length:pager.currentPage*pagedItems.length}}
-          de
-          {{allItems.length}}
-          resultado(s).
-        </i>
+    <div class="row mb-4">      
+      <div *ngIf="allItems && allItems.length"
+          class="text text-secondary col-md-12 pr-0 mx-auto">
+          <i>
+              Exibindo {{paging.offset === (totalPages-1)?paging.total:(paging.offset+1)*paging.limit}} de
+              {{paging.total}}
+              resultado(s).
+          </i>
       </div>
-    </div>
-
-    <div class="row">
-      <ul *ngIf="pager.pages && pager.pages.length" class="pagination mx-auto">
-        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === 1}">
-          <a class="page-link" (click)="setPage(1)">
-            <i class="fas fa-angle-double-left"></i>
-          </a>
-        </li>
-        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === 1}">
-          <a class="page-link" (click)="setPage(pager.currentPage - 1)">
-            <i class="fas fa-angle-left"></i>
-          </a>
-        </li>
-        <li>
-          <select (change)="loadQuantityPerPage($event)" class="custom-select d-block w-100"
-            style="border: 1px solid #dee2e6">
-            <option [ngValue]="10">10</option>
-            <option [ngValue]="25">25</option>
-            <option [ngValue]="50">50</option>
-          </select>
-        </li>
-        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === pager.totalPages}">
-          <a class="page-link" (click)="setPage(pager.currentPage + 1)">
-            <i class="fas fa-angle-right"></i>
-          </a>
-        </li>
-        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === pager.totalPages}">
-          <a class="page-link" (click)="setPage(pager.totalPages)">
-            <i class="fas fa-angle-double-right"></i>
-          </a>
-        </li>
+  </div>
+  
+  <div class="row mb-2 mt-4">
+      <ul *ngIf="allItems && allItems.length" class="pagination mx-auto">
+          <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
+              <a class="page-link" (click)="setPagePagined(0)">
+                  <i class="fas fa-angle-double-left"></i>
+              </a>
+          </li>
+          <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
+              <a class="page-link" (click)="setPagePagined(paging.offset - 1)">
+                  <i class="fas fa-angle-left"></i>
+              </a>
+          </li>
+          <li>
+              <select (change)="loadQuantityPerPagePagination($event)" class="custom-select d-block w-100"
+                  style="border: 1px solid #dee2e6">
+  
+                  <option [ngValue]="10">10</option>
+                  <option [ngValue]="25">25</option>
+                  <option [ngValue]="50">50</option>
+              </select>
+          </li>
+          <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
+              <a class="page-link" (click)="setPagePagined(paging.offset + 1)">
+                  <i class="fas fa-angle-right"></i>
+              </a>
+          </li>
+          <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
+              <a class="page-link" (click)="setPagePagined(totalPages-1)">
+                  <i class="fas fa-angle-double-right"></i>
+              </a>
+          </li>
       </ul>
-    </div>
+  </div>
 
     <div class="form-group row text-right">
       <div class="col-12">

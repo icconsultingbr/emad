@@ -279,7 +279,8 @@ PacienteDAO.prototype.atualiza = function (paciente, id, callback) {
 
 PacienteDAO.prototype.listarAsync = async function (addFilter) {
     let where = "";
-
+    let offset = " LIMIT 10 OFFSET 0 ";
+    
     if (addFilter != null) {
         if (addFilter.cartaoSus) {
             where += ` AND pac.cartaoSus LIKE '%${addFilter.cartaoSus}%'`;
@@ -368,9 +369,12 @@ PacienteDAO.prototype.listarAsync = async function (addFilter) {
                                                     latitude,
                                                     longitude,
                                                     pac.idSap,
-                                                    pac.idPacienteCorrespondenteDim
+                                                    pac.idPacienteCorrespondenteDim,
+                                                    pac.apelido,
+                                                    pac.observacao, 
+                                                    pac.historiaProgressaFamiliar
                                                 ${join}  
-                                            ORDER BY pac.id DESC ${offset}`);
+                                            ORDER BY pac.nome ASC ${offset}`);
     return {
         total: count[0].total,
         items: result
@@ -421,7 +425,10 @@ PacienteDAO.prototype.buscaPorId = function (id, callback) {
     numeroProntuarioCnes,
     falecido,
     idAtencaoContinuada,
-    idEstabelecimentoCadastro
+    idEstabelecimentoCadastro,
+    apelido,
+    observacao, 
+    historiaProgressaFamiliar
     FROM ${this._table} WHERE id = ?`, id, callback);
 }
 
@@ -469,7 +476,10 @@ PacienteDAO.prototype.buscaPorIdSync = async function (id) {
     numeroProntuarioCnes,
     falecido,
     idAtencaoContinuada,
-    idEstabelecimentoCadastro
+    idEstabelecimentoCadastro,
+    apelido,
+    observacao, 
+    historiaProgressaFamiliar
     FROM ${this._table} WHERE id = ?`, id);
     return responsePaciente;
 }
@@ -627,65 +637,38 @@ PacienteDAO.prototype.carregaNomePaciente = async function(id){
     return result[0].nome ? result[0].nome : "";
 }
 
-PacienteDAO.prototype.buscaPorCpfSync = async function (paciente, id) {
+PacienteDAO.prototype.validaPorChaveSync = async function (tipoValidacao, paciente, id) {
     let pacienteResult = [];
     let where = "";
 
-    if (paciente.cpf && typeof (paciente.cpf) != 'undefined') {
-        where += " AND REPLACE(REPLACE(REPLACE(p.cpf,'.',''),'-',''),'/','') = REPLACE(REPLACE(REPLACE(?,'.',''),'-',''),'/','') ";
+    switch (tipoValidacao) {
+        case 'CPF':
+            if (paciente.cpf && typeof (paciente.cpf) != 'undefined' && paciente.cpf != '') 
+                where += " AND REPLACE(REPLACE(REPLACE(p.cpf,'.',''),'-',''),'/','') = REPLACE(REPLACE(REPLACE('" + paciente.cpf + "','.',''),'-',''),'/','') ";        
+          break;
+        case 'SAP':
+            if (paciente.idSap && typeof (paciente.idSap) != 'undefined' && paciente.idSap != '')
+                where += " AND REPLACE(REPLACE(REPLACE(p.idSap,'.',''),'-',''),'/','') = REPLACE(REPLACE(REPLACE('" + paciente.idSap + "','.',''),'-',''),'/','') ";
+          break;
+        case 'RG':
+            if (paciente.rg && typeof (paciente.rg) != 'undefined' && paciente.rg != '')
+                where += " AND REPLACE(REPLACE(REPLACE(p.rg,'.',''),'-',''),'/','') = REPLACE(REPLACE(REPLACE('" + paciente.rg + "','.',''),'-',''),'/','') ";        
+          break;
+        case 'SUS':
+            if (paciente.cartaoSus && typeof (paciente.cartaoSus) != 'undefined' && paciente.cartaoSus != '')
+            where += " AND REPLACE(REPLACE(REPLACE(p.cartaoSus,'.',''),'-',''),'/','') = REPLACE(REPLACE(REPLACE('" + paciente.cartaoSus + "','.',''),'-',''),'/','') ";
+          break;
+    }
 
-        if (id) {
-            where += "AND p.id <> " + id;
-        }    
-        pacienteResult =  await this._connection.query(`select p.* from ${this._table} as p WHERE p.situacao = 1 ${where}`, paciente.cpf);
-    }    
-    return pacienteResult;
+    if(where.length == 0)
+        return pacienteResult;
+
+    if (id) 
+        where += " AND p.id <> " + id;
+
+    pacienteResult =  await this._connection.query(`select p.nome, est.nomeFantasia nomeEstabelecimento from ${this._table} as p inner join tb_estabelecimento est on est.id = p.idEstabelecimentoCadastro WHERE p.situacao = 1 ${where}`);
+    return pacienteResult; 
 }
-
-PacienteDAO.prototype.buscaPorSapSync = async function (paciente, id) {
-    let pacienteResult = [];
-    let where = "";
-
-    if (paciente.idSap && typeof (paciente.idSap) != 'undefined') {
-        where += " AND REPLACE(REPLACE(REPLACE(p.idSap,'.',''),'-',''),'/','') = REPLACE(REPLACE(REPLACE(?,'.',''),'-',''),'/','') ";
-
-        if (id) {
-            where += "AND p.id <> " + id;
-        }   
-        pacienteResult =  await this._connection.query(`select p.* from ${this._table} as p WHERE p.situacao = 1 ${where}`, paciente.idSap);
-    }    
-    return pacienteResult;
-}
-
-PacienteDAO.prototype.buscaPorRgSync = async function (paciente, id) {
-    let pacienteResult = [];
-    let where = "";
-
-    if (paciente.rg && typeof (paciente.rg) != 'undefined') {
-        where += " AND REPLACE(REPLACE(REPLACE(p.rg,'.',''),'-',''),'/','') = REPLACE(REPLACE(REPLACE(?,'.',''),'-',''),'/','') ";
-
-        if (id) {
-            where += "AND p.id <> " + id;
-        }    
-        pacienteResult =  await this._connection.query(`select p.* from ${this._table} as p WHERE p.situacao = 1 ${where}`, paciente.rg);
-    }    
-    return pacienteResult;
-}
-
-PacienteDAO.prototype.buscaPorSusSync = async function (paciente, id) {
-    let pacienteResult = [];
-    let where = "";
-
-    if (paciente.cartaoSus && typeof (paciente.cartaoSus) != 'undefined') {
-        where += " AND REPLACE(REPLACE(REPLACE(p.cartaoSus,'.',''),'-',''),'/','') = REPLACE(REPLACE(REPLACE(?,'.',''),'-',''),'/','') ";
-
-        if (id) {
-            where += "AND p.id <> " + id;
-        }   
-        pacienteResult =  await this._connection.query(`select p.* from ${this._table} as p WHERE p.situacao = 1 ${where}`, paciente.cartaoSus);
-    }    
-    return pacienteResult;
-} 
 
 PacienteDAO.prototype.carregaPacientePorMedicamento = async function(addFilter, material){
     let where = "";

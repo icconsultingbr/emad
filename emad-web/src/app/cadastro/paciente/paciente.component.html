@@ -178,7 +178,7 @@
         <tbody
             *ngFor="let item of allItems | filtroAppGridView: allItems: textoProcurado.value : fields; let index=index; let odd='odd'; let even='even';">
             <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
-                <td *ngFor="let field of fields;">
+                <td *ngFor="let field of fields;" class="cut-text ">
                     <span *ngIf="field.type=='icone'">
                         <i class="fa {{ field.icon }}" title="{{ item[field.colunaDescricao] }}"
                             [style.color]="item[field.field]"></i>

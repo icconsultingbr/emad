@@ -9,10 +9,4 @@ export class PesquisaPacienteService extends GenericsService {
   constructor(public http: HttpClient) {
     super(http);
   }
-
-  
-
-  list(method : string) : Observable<any[]>{
-    return this.http.get<any[]>(method);
-  }
 }
