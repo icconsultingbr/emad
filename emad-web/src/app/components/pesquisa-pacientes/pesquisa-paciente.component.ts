@@ -140,7 +140,7 @@ export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
   buscaPaciente(offset: Number = null, limit: Number = null) {    
     this.errors = [];
     this.loading = true;
-    let params = "";
+    let params = "pesquisa=1&";
     
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;

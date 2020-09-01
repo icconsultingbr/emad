@@ -143,10 +143,13 @@
           <tbody *ngFor="let item of listaPacientes let index=index; let odd='odd'; let even='even';">
             <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
               <td class="text-secondary">
-                <div class="custom-control custom-radio float-left">
+                <div class="custom-control custom-radio float-left" *ngIf="item.idEstabelecimento && item.idEstabelecimento > 0">
                   <input type="radio" (change)="selecionaPaciente(item)" class="custom-control-input" id="{{ item.id }}"
                     name="radio-item">
                   <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
+                </div>
+                <div class="float-left" *ngIf="!item.idEstabelecimento || item.idEstabelecimento <= 0">                  
+                  <i class="fa fa-ban text-left" title="Paciente vinculado a outro estabelecimento ({{item.nomeEstabelecimento}})" style="color:red"></i>
                 </div>
               </td>
               <td class="text-secondary">{{item.cartaoSus}}</td>

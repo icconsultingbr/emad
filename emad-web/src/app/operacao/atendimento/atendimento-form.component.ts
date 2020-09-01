@@ -142,7 +142,7 @@ export class AtendimentoFormComponent implements OnInit {
 
   buscaPaciente(offset: Number = null, limit: Number = null) {
     this.loading = true;
-    let params = "";
+    let params = "pesquisa=1&";
     
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
@@ -159,7 +159,7 @@ export class AtendimentoFormComponent implements OnInit {
           params = "?" + params;
         }
       }
-    }
+    }   
 
     if (this.paging.offset != null && this.paging.limit != null) {
       params += (params == "" ? "?" : "") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;

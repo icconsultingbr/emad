@@ -318,7 +318,7 @@ PacienteDAO.prototype.listarAsync = async function (addFilter) {
             offset = `LIMIT ${addFilter.limit} OFFSET ${addFilter.limit * addFilter.offset}`;
         }
 
-        if(addFilter.idEstabelecimento){
+        if(addFilter.idEstabelecimento && !addFilter.pesquisa){
             where+=" AND pac.idEstabelecimentoCadastro = " + addFilter.idEstabelecimento + "";
         }        
     }
@@ -330,6 +330,8 @@ PacienteDAO.prototype.listarAsync = async function (addFilter) {
     LEFT JOIN tb_municipio mun ON (pac.idMunicipio = mun.id)
     LEFT JOIN tb_uf uf ON (pac.idUf = uf.id)
     LEFT JOIN tb_modalidade md ON (pac.idModalidade = md.id) 
+    LEFT JOIN tb_estabelecimento est ON (pac.idEstabelecimentoCadastro = est.id and est.situacao = 1 and est.id = ${addFilter.idEstabelecimento})                    
+    LEFT JOIN tb_estabelecimento estCadastro ON (pac.idEstabelecimentoCadastro = estCadastro.id)                                    
     WHERE pac.situacao = 1 ${where} `;
 
     const count = await this._connection.query(`SELECT COUNT(1) as total ${join}`);
@@ -366,13 +368,15 @@ PacienteDAO.prototype.listarAsync = async function (addFilter) {
                                                     pac.email,
                                                     pac.situacao,
                                                     md.nome AS idModalidade,
-                                                    latitude,
-                                                    longitude,
+                                                    pac.latitude,
+                                                    pac.longitude,
                                                     pac.idSap,
                                                     pac.idPacienteCorrespondenteDim,
                                                     pac.apelido,
                                                     pac.observacao, 
-                                                    pac.historiaProgressaFamiliar
+                                                    pac.historiaProgressaFamiliar,
+                                                    est.id idEstabelecimento,
+                                                    estCadastro.nomeFantasia nomeEstabelecimento
                                                 ${join}  
                                             ORDER BY pac.nome ASC ${offset}`);
     return {
