@@ -77,6 +77,7 @@ const appRoutes : Routes = [
     { path: 'extrato-movimento', canActivate: [AuthGuard], loadChildren: './farmacia/relatorios/medicamento-extrato-movimento/medicamento-extrato-movimento.module#MedicamentoExtratoMovimentoModule' },
     { path: 'motivo-ajuste-estoque-relatorio', canActivate: [AuthGuard], loadChildren: './farmacia/relatorios/medicamento-ajuste-estoque/medicamento-ajuste-estoque.module#MedicamentoAjusteEstoqueModule' },
     { path: 'livro-medicamento-controlado', canActivate: [AuthGuard], loadChildren: './farmacia/relatorios/medicamento-livro-controlado/medicamento-livro-controlado.module#MedicamentoLivroControladoModule' },
+    { path: 'visualizacao-bi', canActivate: [AuthGuard], loadChildren: './bi/power-bi/visualizacao-power-bi.module#VisualizacaoPowerBIModule' },
 
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 
