@@ -105,6 +105,7 @@ export class AtendimentoFormComponent implements OnInit {
       id: [''],
       idPaciente: [Validators.required],
       pacienteNome: [Validators.required],
+      pacienteHistoriaProgressa: ['',''],
       pressaoArterial: ['', ''],
       pulso: ['', ''],
       saturacao: ['', ''],
@@ -112,7 +113,6 @@ export class AtendimentoFormComponent implements OnInit {
       altura: ['', ''],
       peso: ['', ''],
       historicoClinico: ['', ''],
-      historiaProgressa: ['', ''],
       exameFisico: ['', ''],
       observacoesGerais: ['', ''],
       situacao: [Validators.required],
@@ -120,7 +120,8 @@ export class AtendimentoFormComponent implements OnInit {
       idEstabelecimento: [Validators.required],
       tipoFicha: [Validators.required],
       idClassificacaoRisco: [Validators.required],
-      motivoQueixa: ['','']
+      motivoQueixa: ['',''],
+      tipoHistoricaClinica: [Validators.required],
     });
 
 
@@ -309,6 +310,7 @@ export class AtendimentoFormComponent implements OnInit {
   confirmaPaciente() {
     this.object.idPaciente = this.pacienteSelecionado.id;
     this.object.pacienteNome = this.pacienteSelecionado.nome;
+    this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
     this.close();
 
     this.findPacienteData(this.object.idPaciente);
@@ -323,6 +325,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.service.findById(this.id, this.method).subscribe(result => {
       this.object = result;
       this.object.pacienteNome = result.nome;
+      this.object.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
       this.loading = false;
 
       this.findHipotesePorAtendimento();
@@ -333,6 +336,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.object = new Atendimento();
       this.object.idPaciente = this.pacienteSelecionado.id;
       this.object.pacienteNome = this.pacienteSelecionado.nome;
+      this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
       this.loading = false;
 
       this.allItemsEncaminhamento = [];
@@ -414,6 +418,7 @@ export class AtendimentoFormComponent implements OnInit {
       if(result){
         this.object = result;
         this.object.pacienteNome = this.pacienteSelecionado.nome;
+        this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
         this.loading = false;
   
         this.findHipotesePorAtendimento();
@@ -431,6 +436,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.object = new Atendimento();
     this.object.idPaciente = this.pacienteSelecionado.id;
     this.object.pacienteNome = this.pacienteSelecionado.nome;
+    this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
     this.loading = false;
 
     this.allItemsEncaminhamento = [];
@@ -497,7 +503,11 @@ export class AtendimentoFormComponent implements OnInit {
                   especialidades: especialidades,
                   tipoFichas: tipoFichas,
                   classificacaoRiscos:classificacaoRiscos,
-                  idGrupoMaterial: gruposMateriais
+                  idGrupoMaterial: gruposMateriais,
+                  tipoHistoricaClinica: [
+                    { id: 1, nome: "Anamnese" },
+                    { id: 2, nome: "Evolução" },
+                  ],
               });
             if (!Util.isEmpty(this.id)) {
               this.encontraAtendimento();

@@ -5,6 +5,7 @@ export class Atendimento {
     @Input() cpf: string = null;
     @Input() idPaciente: number = null;
     @Input() pacienteNome : string;
+    @Input() pacienteHistoriaProgressa : string;    
     @Input() pressaoArterial: string = null;
     @Input() pulso: string = null;
     @Input() saturacao: string = null;

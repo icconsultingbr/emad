@@ -11,7 +11,7 @@ module.exports = function (app) {
         req.assert("nome").notEmpty().withMessage("O campo Nome é um campo obrigatório");
         req.assert("nome").isLength({ min: 0, max: 60 }).withMessage("O campo Nome deve ter no máximo 60 caractere(s)");
         req.assert("cor").notEmpty().withMessage("O campo Cor é um campo obrigatório");
-        req.assert("cor").isLength({ min: 0, max: 10 }).withMessage("O campo Cor deve ter no máximo 10 caractere(s)");
+        req.assert("cor").isLength({ min: 0, max: 50 }).withMessage("O campo Cor deve ter no máximo 50 caractere(s)");
 
         errors = req.validationErrors();
         
@@ -38,7 +38,7 @@ module.exports = function (app) {
         req.assert("nome").notEmpty().withMessage("O campo Nome é um campo obrigatório");
         req.assert("nome").isLength({ min: 0, max: 60 }).withMessage("O campo Nome deve ter no máximo 60 caractere(s)");
         req.assert("cor").notEmpty().withMessage("O campo Cor é um campo obrigatório");
-        req.assert("cor").isLength({ min: 0, max: 10 }).withMessage("O campo Cor deve ter no máximo 10 caractere(s)");
+        req.assert("cor").isLength({ min: 0, max: 50 }).withMessage("O campo Cor deve ter no máximo 50 caractere(s)");
         
         errors = req.validationErrors();
         

@@ -16,6 +16,7 @@ import { AppModalModule } from "../../_core/_components/app-modal/app-modal.modu
 import 'rxjs/add/operator/map';
 import { SharedServiceModule } from "../../shared/services/shared-service.module";
 import { RelatorioReceitaComponent } from "./relatorio-receita.component";
+import { TabsModule } from "ngx-bootstrap/tabs";
 
 @NgModule({
     imports: [
@@ -32,7 +33,8 @@ import { RelatorioReceitaComponent } from "./relatorio-receita.component";
         NgMultiSelectDropDownModule,
         AppModalModule,
         RouterModule.forChild(atendimentoRoutes),
-        SharedServiceModule
+        SharedServiceModule,
+        TabsModule.forRoot(),
     ],
     declarations: [
         AtendimentoComponent,

@@ -160,44 +160,44 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody
-            *ngFor="let item of allItems | filtroAppGridView: allItems: textoProcurado.value : fields; let index=index; let odd='odd'; let even='even';">
-            <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
-                <td *ngFor="let field of fields;">
-                    <span *ngIf="field.type=='icone'">
-                        <i class="fa {{ field.icon }}" title="{{ item[field.colunaDescricao] }}"
-                            [style.color]="item[field.field]"></i>
-                    </span>
-                    <span *ngIf="field.type=='image'">
-                        <img class="bioPerson"
-                            src="{{field.path+'/'+(item[field.field]?item[field.field]:field.imgDefault)}}">
-                    </span>
-                    <span *ngIf="field.type!='image' && field.type!='icone'" class="{{field.class?field.class:''}}">
-                        {{
-                            field.isDate?(item[field.field] | date :'dd/MM/yyyy') :
-                                field.isDateTime?(item[field.field] | date :'dd/MM/yyyy HH:mm') :
-                                    field.translate?(translate(item[field.field], field.translate)):
-                                    field.decimalMask?(toCurrency(item[field.field] | currency:'R$ ':true:'1.2-2',field.decimalMask)):
-                                        item[field.field]
-                        }}
-                    </span>
-                </td>
-
-                <td class="text-right" style="white-space:nowrap;">
-                    <a class="btn btn-link" [routerLink]="" (click)="viewer(item.id)">
-                        <i class="fa fa-eye" title="Visualizar atendimento"></i> {{showLabels ? 'Ver' : ''}}
-                    </a>
-                    <a class="btn btn-link" [routerLink]="" (click)="abreFichaDownload(item)">
-                        <i class="fa fa-print" title="Imprimir ficha"></i>
-                    </a>
-                    <a class="btn btn-link" [routerLink]="" (click)="abreFichaVisualizacao(item)">
-                        <i class="fa fa-file-alt" title="Visualizar ficha"></i>
-                    </a>
-                    <a class="btn btn-link" [routerLink]="" (click)="abreReceitaMedica(item)">
-                        <i class="fa fa-file-medical-alt" title="Visualizar receita"></i>
-                    </a>
-                </td>
-            </tr>
+        <tbody>
+            <ng-container *ngFor="let item of allItems | filtroAppGridView: allItems: textoProcurado.value : fields; let index=index; let odd='odd'; let even='even';">
+            <tr class="text-left" [ngClass]="{ odd: odd, even: even }" [style.background]="item['corIconeGrid']">
+                    <td *ngFor="let field of fields;">
+                        <span *ngIf="field.type=='icone'">
+                            <i class="fa {{ field.icon }}" title="{{ item[field.colunaDescricao] }}" style="color:black"></i>
+                        </span>
+                        <span *ngIf="field.type=='image'">
+                            <img class="bioPerson"
+                                src="{{field.path+'/'+(item[field.field]?item[field.field]:field.imgDefault)}}">
+                        </span>
+                        <span *ngIf="field.type!='image' && field.type!='icone'" class="{{field.class?field.class:''}}">
+                            {{
+                                field.isDate?(item[field.field] | date :'dd/MM/yyyy') :
+                                    field.isDateTime?(item[field.field] | date :'dd/MM/yyyy HH:mm') :
+                                        field.translate?(translate(item[field.field], field.translate)):
+                                        field.decimalMask?(toCurrency(item[field.field] | currency:'R$ ':true:'1.2-2',field.decimalMask)):
+                                            item[field.field]
+                            }}
+                        </span>                   
+                    </td>    
+                    <td class="text-right" style="white-space:nowrap">
+                        <a class="btn btn-link" [routerLink]="" (click)="viewer(item.id)">
+                            <i class="fa fa-eye" title="Visualizar atendimento"></i> {{showLabels ? 'Ver' : ''}}
+                        </a>
+                        <a class="btn btn-link" [routerLink]="" (click)="abreFichaDownload(item)">
+                            <i class="fa fa-print" title="Imprimir ficha"></i>
+                        </a>
+                        <a class="btn btn-link" [routerLink]="" (click)="abreFichaVisualizacao(item)">
+                            <i class="fa fa-file-alt" title="Visualizar ficha"></i>
+                        </a>
+                        <a class="btn btn-link" [routerLink]="" (click)="abreReceitaMedica(item)">
+                            <i class="fa fa-file-medical-alt" title="Visualizar receita"></i>
+                        </a>
+                    </td>
+                </tr>
+            </ng-container>
+            
         </tbody>
 
         <tbody *ngIf="allItems && allItems.length==0">

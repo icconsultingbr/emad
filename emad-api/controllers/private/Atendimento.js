@@ -137,6 +137,7 @@ module.exports = function (app) {
         var usuario = req.usuario;
         var util = new app.util.Util();
         delete obj.pacienteNome;
+        delete obj.pacienteHistoriaProgressa;
         obj.idUsuario = usuario.id;
         obj.idUsuarioAlteracao = null;
         let idEstabelecimento = req.headers.est;
@@ -300,6 +301,7 @@ module.exports = function (app) {
         let id = obj.id;
         delete obj.id;
         delete obj.pacienteNome;
+        delete obj.pacienteHistoriaProgressa;
         obj.idUsuarioAlteracao = usuario.id;
         delete obj.idUsuario;
 

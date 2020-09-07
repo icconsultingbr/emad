@@ -13,464 +13,563 @@
 
   <input type="hidden" [(ngModel)]="object.idEstabelecimento" formControlName="idEstabelecimento" /> 
 
-  <div class="card mb-4">
-    <div class="card-header text-left">
-      Paciente
+  <tabset>
+    <tab>
+      <ng-template tabHeading>
+        <i class="fa fa-edit" title="Principal"></i>   Principal
+      </ng-template>
+        <div class="card mb-4">
+          <div class="card-header text-left">
+            Paciente
 
-      <button *ngIf="object.id" class="btn btn-primary float-right rounded" type="button" (click)="abreFichaDigital(object.id, true)">
-        <i class="fa fa-print"></i>
-      </button>
+            <button *ngIf="object.id" class="btn btn-primary float-right rounded" type="button" (click)="abreFichaDigital(object.id, true)">
+              <i class="fa fa-print"></i>
+            </button>
 
-      <button *ngIf="object.id" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreAtendimentoFichaDigital(object.id)">
-        <i class="fa fa-file-alt"></i>
-      </button>
+            <button *ngIf="object.id" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreAtendimentoFichaDigital(object.id)">
+              <i class="fa fa-file-alt"></i>
+            </button>
 
-      <button *ngIf="object.id && object.ano_receita && object.numero_receita && object.unidade_receita" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreReceitaMedica(object.ano_receita, object.numero_receita, object.unidade_receita)">
-        <i class="fa fa-file-medical-alt"></i>
-      </button>
-    </div>
-    <div class="card-body text-left">
-      <div class="row">
-        <div class="col-12">
-          <div class="row">
+            <button *ngIf="object.id && object.ano_receita && object.numero_receita && object.unidade_receita" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreReceitaMedica(object.ano_receita, object.numero_receita, object.unidade_receita)">
+              <i class="fa fa-file-medical-alt"></i>
+            </button>
+          </div>
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-12">
+                <div class="row">
+                  <label class="col-xl-2 col-form-label text-left">Pesquisar paciente
+                    <span class="text-danger font-weight-bold">*</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <input type="hidden" [(ngModel)]="object.id" formControlName="id">
+                    <input type="hidden" [(ngModel)]="object.idPaciente" formControlName="idPaciente">
+                    <div class="input-group">
 
-            <label class="col-xl-2 col-form-label text-left">Pesquisar paciente
-              <span class="text-danger font-weight-bold">*</span>
-            </label>
-            <div class="col-xl-10">
-              <input type="hidden" [(ngModel)]="object.id" formControlName="id">
-              <input type="hidden" [(ngModel)]="object.idPaciente" formControlName="idPaciente">
-              <div class="input-group">
+                      <input type="text" class="form-control has-error rounded" [(ngModel)]="object.pacienteNome"
+                        formControlName="pacienteNome" readonly>
 
-                <input type="text" class="form-control has-error rounded" [(ngModel)]="object.pacienteNome"
-                  formControlName="pacienteNome" readonly>
-
-                <div class="input-group-append">
-                  <button class="btn btn-primary ml-3 rounded" type="button" (click)="open(contentClient)" [disabled]="disableFields()">
-                    <i class="fa fa-search"></i>
-                  </button>
+                      <div class="input-group-append">
+                        <button class="btn btn-primary ml-3 rounded" type="button" (click)="open(contentClient)" [disabled]="disableFields()">
+                          <i class="fa fa-search"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              &nbsp;
+            </div>
+            <div class="row" *ngIf="object.idPaciente">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    História progressa/familiar
+                  </label>
+                  <div class="col-xl-10">
+                    <textarea rows="3" class="form-control has-error" [(ngModel)]="object.pacienteHistoriaProgressa"
+                      formControlName="pacienteHistoriaProgressa" [readonly]="true"></textarea>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="card mb-4" *ngIf="object.idPaciente">
-    <div class="card-header text-left">
-      Dados da abertura do atendimento
-    </div>
-    <div class="card-body text-left">
-      <div class="row">
-        <div class="col-xl-12">
-          <div class="form-group row">
-            <label class="col-xl-2 col-form-label text-left">
-              Tipo de atendimento<span class="text-danger font-weight-bold"> *</span>
-            </label>
-            <div class="col-xl-10">
-                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.tipoFicha" formControlName="tipoFicha">
-                    <option [value]="null">Selecione...</option>
-                    <option *ngFor="let item of domains[0]?.tipoFichas" [value]="item.id">{{item.nome}}</option>
-                </select>
+        <div class="card mb-4" *ngIf="object.idPaciente">
+          <div class="card-header text-left">
+            Dados da abertura do atendimento
+          </div>
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Tipo de atendimento<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-4">
+                      <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.tipoFicha" formControlName="tipoFicha">
+                          <option [value]="null">Selecione...</option>
+                          <option *ngFor="let item of domains[0]?.tipoFichas" [value]="item.id">{{item.nome}}</option>
+                      </select>
+                  </div>
+                  <label class="col-xl-2 col-form-label text-left">
+                    Classificação de risco<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-4">
+                      <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idClassificacaoRisco" formControlName="idClassificacaoRisco">
+                          <option [value]="null">Selecione...</option>
+                          <option *ngFor="let item of domains[0]?.classificacaoRiscos" [value]="item.id">{{item.nome}}</option>
+                      </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Motivo da queixa<span class="text-danger font-weight-bold"></span>
+                  </label>
+                  <div class="col-xl-10">
+                    <textarea rows="4" class="form-control has-error" [(ngModel)]="object.motivoQueixa"
+                      formControlName="motivoQueixa" [readonly]="disableFields()"></textarea>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-xl-12">
-          <div class="form-group row">
-            <label class="col-xl-2 col-form-label text-left">
-              Classificação de risco<span class="text-danger font-weight-bold"> *</span>
-            </label>
-            <div class="col-xl-10">
-                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idClassificacaoRisco" formControlName="idClassificacaoRisco">
-                    <option [value]="null">Selecione...</option>
-                    <option *ngFor="let item of domains[0]?.classificacaoRiscos" [value]="item.id">{{item.nome}}</option>
-                </select>
-            </div>
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+          <div class="card-header text-left">
+            Sinais vitais
           </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xl-12">
-          <div class="form-group row">
-            <label class="col-xl-2 col-form-label text-left">
-              Motivo da queixa<span class="text-danger font-weight-bold"></span>
-            </label>
-            <div class="col-xl-10">
-              <textarea rows="4" class="form-control has-error" [(ngModel)]="object.motivoQueixa"
-                formControlName="motivoQueixa" [readonly]="disableFields()"></textarea>
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-xl-6">
+                <div class="form-group row">
+                  <label class="col-xl-4 col-form-label text-left">
+                    Pressão arterial
+                  </label>
+                  <div class="col-xl-8">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.pressaoArterial" formControlName="pressaoArterial" [readonly]="disableFields()"/>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-6">
+                <div class="form-group row">
+                  <label class="col-xl-4 col-form-label text-left">
+                    Pulso
+                  </label>
+                  <div class="col-xl-8">
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.pulso" formControlName="pulso" [readonly]="disableFields()"
+                    currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="card mb-4" *ngIf="object.idPaciente && object.id">
-    <div class="card-header text-left">
-      Sinais vitais
-    </div>
-    <div class="card-body text-left">
-      <div class="row">
-        <div class="col-xl-6">
-          <div class="form-group row">
-            <label class="col-xl-4 col-form-label text-left">
-              Pressão arterial
-            </label>
-            <div class="col-xl-8">
-              <input type="text"  class="form-control has-error" [(ngModel)]="object.pressaoArterial" formControlName="pressaoArterial" [readonly]="disableFields()"/>
+            <div class="row">
+              <div class="col-xl-6">
+                <div class="form-group row">
+                  <label class="col-xl-4 col-form-label text-left">
+                    Saturação 02
+                  </label>
+                  <div class="col-xl-8">
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.saturacao"
+                      formControlName="saturacao" [readonly]="disableFields()" 
+                      currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-6">
+                <div class="form-group row">
+                  <label class="col-xl-4 col-form-label text-left">
+                    Temperatura
+                  </label>
+                  <div class="col-xl-8">
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.temperatura"
+                      formControlName="temperatura" [readonly]="disableFields()"
+                      currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }" />
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="col-xl-6">
-          <div class="form-group row">
-            <label class="col-xl-4 col-form-label text-left">
-              Pulso
-            </label>
-            <div class="col-xl-8">
-              <input type="text" class="form-control has-error" [(ngModel)]="object.pulso" formControlName="pulso" [readonly]="disableFields()"
-              currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xl-6">
-          <div class="form-group row">
-            <label class="col-xl-4 col-form-label text-left">
-              Saturação 02
-            </label>
-            <div class="col-xl-8">
-              <input type="text" class="form-control has-error" [(ngModel)]="object.saturacao"
-                formControlName="saturacao" [readonly]="disableFields()" 
-                currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-6">
-          <div class="form-group row">
-            <label class="col-xl-4 col-form-label text-left">
-              Temperatura
-            </label>
-            <div class="col-xl-8">
-              <input type="text" class="form-control has-error" [(ngModel)]="object.temperatura"
-                formControlName="temperatura" [readonly]="disableFields()"
-                currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xl-6">
-          <div class="form-group row">
-            <label class="col-xl-4 col-form-label text-left">
-              Altura
-            </label>
-            <div class="col-xl-8">
-              <input type="text" class="form-control has-error" [(ngModel)]="object.altura" formControlName="altura" [readonly]="disableFields()"
-              currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }" />
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-6">
-          <div class="form-group row">
-            <label class="col-xl-4 col-form-label text-left">
-              Peso
-            </label>
-            <div class="col-xl-8">
-              <input type="text" class="form-control has-error" [(ngModel)]="object.peso" formControlName="peso" [readonly]="disableFields()" 
-              currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mb-4" *ngIf="object.idPaciente && object.id">
-    <div class="card-header text-left">
-      Dados do atendimento
-    </div>
-    <div class="card-body text-left">
-      <div class="row">
-        <div class="col-xl-6">
-          <div class="form-group row">
-            <label class="col-xl-4 col-form-label text-left">
-              História clínico / Evoução
-            </label>
-            <div class="col-xl-8">
-              <textarea rows="4" class="form-control has-error" [(ngModel)]="object.historicoClinico"
-                formControlName="historicoClinico" [readonly]="disableFields()"></textarea>
+            <div class="row">
+              <div class="col-xl-6">
+                <div class="form-group row">
+                  <label class="col-xl-4 col-form-label text-left">
+                    Altura
+                  </label>
+                  <div class="col-xl-8">
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.altura" formControlName="altura" [readonly]="disableFields()"
+                    currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }" />
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-6">
+                <div class="form-group row">
+                  <label class="col-xl-4 col-form-label text-left">
+                    Peso
+                  </label>
+                  <div class="col-xl-8">
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.peso" formControlName="peso" [readonly]="disableFields()" 
+                    currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="col-xl-6">
-          <div class="form-group row">
-            <label class="col-xl-4 col-form-label text-left">
-              História progressa / famíliar
-            </label>
-            <div class="col-xl-8">
-              <textarea rows="4" class="form-control has-error" [(ngModel)]="object.historiaProgressa"
-                formControlName="historiaProgressa" [readonly]="disableFields()"></textarea>
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+          <div class="card-header text-left">
+            Anamnese/Evolução
+          </div>
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Tipo<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                      <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.tipoHistoricaClinica" formControlName="tipoHistoricaClinica">
+                          <option [value]="0">Selecione...</option>
+                          <option *ngFor="let item of domains[0]?.tipoHistoricaClinica" [value]="item.id">{{item.nome}}</option>
+                      </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                  Descrição<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <textarea rows="4" class="form-control has-error" [(ngModel)]="object.historicoClinico"
+                      formControlName="historicoClinico" [readonly]="disableFields()"></textarea>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+        </div> 
+
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+          <div class="card-header text-left">
+            Dados do atendimento
+          </div>
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-xl-6">
+                <div class="form-group row">
+                  <label class="col-xl-4 col-form-label text-left">
+                    Exame físico
+                  </label>
+                  <div class="col-xl-8">
+                    <textarea rows="4" class="form-control has-error" [(ngModel)]="object.exameFisico"
+                      formControlName="exameFisico" [readonly]="disableFields()"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-6">
+                <div class="form-group row">
+                  <label class="col-xl-4 col-form-label text-left">
+                    Observações gerais
+                  </label>
+                  <div class="col-xl-8">
+                    <textarea rows="4" class="form-control has-error" [(ngModel)]="object.observacoesGerais"
+                      formControlName="observacoesGerais" [readonly]="disableFields()"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+          <div class="card-header text-left">
+            Hipótese diagnostica
+          </div>
+          <div class="card-body text-left">
+
+            <div class="row">
+
+              <div class="col-12 mb-3">
+                <button *ngIf="!disableFields()" type="button" class="btn btn-primary float-left mr-2" (click)="openHipotese(contentHipotese)" [disabled]="!object.id">
+                  <i class="fa fa-plus-circle"></i>
+                </button>
+
+                <button type="button" class="btn btn-default float-left" (click)="findHipotesePorAtendimento()">
+                  <i class="fa fa-sync-alt"></i>
+                </button>
+              </div>
+              <div class="col-12 table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Código</th>
+                      <th>Diagnóstico</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="!allItemsHipotese.length">
+                    <tr class="text-left">
+                      <td colspan="99" class="text-secondary">
+                        <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para inserir uma hipótese diagnóstica!'}}</i>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="allItemsHipotese.length">
+                    <tr class="text-left" *ngFor="let item of allItemsHipotese">
+                      <td class="text-secondary">{{item.codigo}}</td>
+                      <td class="text-secondary">{{item.nome}}</td>
+                      <td class="text-secondary text-right">
+                        <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]="" (click)="removeHipotese(item)">
+                          <i class="fa fa-trash-alt"></i> Remover
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+          <div class="card-header text-left">
+            Prescrição Medicamentos
+          </div>
+          <div class="card-body text-left">
+
+            <div class="row">
+              <div class="col-12 mb-3">
+                <button *ngIf="!disableFields()"  type="button" class="btn btn-primary float-left mr-2" [disabled]="!object.id"
+                  (click)="openMedicamento(contentMedicamento)">
+                  <i class="fa fa-plus-circle"></i>
+                </button>
+
+                <button type="button" class="btn btn-default float-left" (click)="findMedicamentoPorAtendimento()">
+                  <i class="fa fa-sync-alt"></i>
+                </button>
+              </div>
+              <div class="col-12 table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Medicamento</th>
+                      <th>Uso</th>
+                      <th>Tipo via</th>
+                      <th>Quantidade</th>
+                      <th>Apresentação</th>
+                      <th>Posologia</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="text-left">
+                      <td colspan="99" class="text-secondary"  *ngIf="!allItemsMedicamento.length">
+                        <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para prescrever um medicamento!'}}</i>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="allItemsMedicamento.length">
+                      <tr class="text-left" *ngFor="let item of allItemsMedicamento">
+                        <td class="text-secondary">{{item.descricaoMaterial}}</td>
+                        <td class="text-secondary">{{item.uso}}</td>
+                        <td class="text-secondary">{{item.tipoVia}}</td>
+                        <td class="text-secondary">{{item.quantidade}}</td>
+                        <td class="text-secondary">{{item.apresentacao}}</td>
+                        <td class="text-secondary">{{item.posologia}}</td>
+                        <td class="text-secondary text-right">
+                          <a *ngIf="!disableFields()"  class="btn btn-link" [routerLink]="" (click)="removeMedicamento(item)">
+                            <i class="fa fa-trash-alt"></i> Remover
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+          <div class="card-header text-left">
+            Encaminhamento
+          </div>
+          <div class="card-body text-left">
+
+            <div class="row">
+
+              <div class="col-12 mb-3">
+                <button *ngIf="!disableFields()" type="button" class="btn btn-primary float-left mr-2"
+                  (click)="openEncaminhamento(contentEncaminhamento)" [disabled]="!object.id">
+                  <i class="fa fa-plus-circle"></i>
+                </button>
+
+                <button type="button" class="btn btn-default float-left" (click)="findEncaminhamentoPorAtendimento()">
+                  <i class="fa fa-sync-alt"></i>
+                </button>
+              </div>
+              <div class="col-12 table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Especialidade</th>
+                      <th>Motivo</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="!allItemsEncaminhamento.length">
+                    <tr class="text-left">
+                      <td colspan="99" class="text-secondary">
+                        <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para fazer um encaminhamento!'}}</i>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="allItemsEncaminhamento.length">
+                    <tr class="text-left" *ngFor="let item of allItemsEncaminhamento">
+                      <td class="text-secondary">{{item.nome}}</td>
+                      <td class="text-secondary">{{item.motivo}}</td>
+                      <td class="text-secondary text-right">
+                        <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]="" (click)="removeEncaminhamento(item)">
+                          <i class="fa fa-trash-alt"></i> Remover
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-xl-5">
+                <div class="form-group row">
+                  <label class="col-xl-4 col-form-label text-left">
+                    Situação<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-8">
+                    <select *ngIf="!disableFields()" class="custom-select d-block w-100" [(ngModel)]="object.situacao" formControlName="situacao">
+                      <option [value]="null">Selecione...</option>
+                      <option value="C">Em aberto</option>
+                      <option value="2">Concluído</option>
+                      <option value="A">Alta</option>
+                      <option value="E">Evasão</option>
+                      <option value="5">Transferência hospitalar/ambulatório</option>
+                      <option value="6">Transferência unidade prisional</option>
+                      <option value="7">Desinternação</option>
+                      <option value="8">Álvara de soltura</option>
+                      <option value="O">Óbito</option>
+                      <option value="X">Cancelado</option>
+                    </select>
+
+                    <select *ngIf="disableFields()" class="custom-select d-block w-100" [(ngModel)]="object.situacao" formControlName="situacao" disabled>
+                      <option [value]="null">Selecione...</option>
+                      <option value="C">Em aberto</option>
+                      <option value="2">Concluído</option>
+                      <option value="A">Alta</option>
+                      <option value="E">Evasão</option>
+                      <option value="5">Transferência hospitalar/ambulatório</option>
+                      <option value="6">Transferência unidade prisional</option>
+                      <option value="7">Desinternação</option>
+                      <option value="8">Álvara de soltura</option>
+                      <option value="O">Óbito</option>
+                      <option value="X">Cancelado</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-6" *ngIf="object.situacao == 'X'">
+                <div class="form-group row">
+                  <label class="col-xl-4 col-form-label text-left">
+                    Motivo cancelamento
+                  </label>
+                  <div class="col-xl-8">
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.motivoCancelamento" formControlName="motivoCancelamento" [readonly]="disableFields()"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </tab>
+    <tab>
+      <ng-template tabHeading>
+        <i class="fa fa-history" title="Histórico"></i>   Histórico
+      </ng-template>
+      <div class="card mb-4">
+        <div class="row">
+          <div class="card-body text-left">            
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-badge">
+                  <img class="float-left" src="https://prdmetalcredfiles.blob.core.windows.net/8d638c9943a7a101626e962ff70be055/7af9d3b0-6d06-4d2d-a6c3-6a3e7e557959.jpg?sv=2018-03-28&sr=b&sig=%2FxYeVF3ht1MdW%2FFHFsl6HXP1rpX1SEJHNk%2BJrXZt4q8%3D&se=4020-05-20T14%3A29%3A34Z&sp=r">
+                </div>
+                <div class="timeline-body">
+                    <div class="timeline-body-top">
+                      Finalização do atendimento
+                    </div>
+                    <div class="timeline-body-content">
+                        <p><span class="text-muted">01/09/2020 14:40 - </span>Profissional: <b>Eduardo Ribeiro</b> executou <b>Finalização do atendimento</b>.</p>                        
+                    </div>
+                </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-badge">
+                <img class="float-left" src="http://egret-angular.ui-lib.com/assets/images/faces/4.jpg">
+              </div>
+              <div class="timeline-body">
+                  <div class="timeline-body-top">
+                    Alteração do atendimento
+                  </div>
+                  <div class="timeline-body-content">
+                      <p><span class="text-muted">01/09/2020 13:50 - </span>Profissional: <b>Mariana Rosa</b> executou <b>Alteração do atendimento</b>.</p>
+                      <p><button class="btn btn-primary" type="button">
+                        <i class="fa fa-search"></i>  Visualizar
+                      </button></p>
+                  </div>
+              </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-badge">
+              <img class="float-left" src="http://egret-angular.ui-lib.com/assets/images/faces/4.jpg">
+            </div>
+            <div class="timeline-body">
+                <div class="timeline-body-top">
+                  Alteração do atendimento
+                </div>
+                <div class="timeline-body-content">
+                    <p><span class="text-muted">01/09/2020 13:30 - </span>Profissional: <b>Mariana Rosa</b> executou <b>Alteração do atendimento</b>.</p>
+                    <p><button class="btn btn-primary" type="button">
+                      <i class="fa fa-search"></i>  Visualizar
+                    </button></p>
+                </div>
+            </div>
+        </div>
+              <div class="timeline-item">
+                  <div class="timeline-badge">
+                    <img class="float-left" src="https://prdmetalcredfiles.blob.core.windows.net/8d638c9943a7a101626e962ff70be055/7af9d3b0-6d06-4d2d-a6c3-6a3e7e557959.jpg?sv=2018-03-28&sr=b&sig=%2FxYeVF3ht1MdW%2FFHFsl6HXP1rpX1SEJHNk%2BJrXZt4q8%3D&se=4020-05-20T14%3A29%3A34Z&sp=r">
+                  </div>
+                  <div class="timeline-body">
+                      <div class="timeline-body-top">
+                          Abertura do atendimento
+                      </div>
+                      <div class="timeline-body-content">
+                          <p><span class="text-muted">01/09/2020 12:50 - </span>Profissional: <b>Eduardo Ribeiro</b> executou <b>Abertura do atendimento</b>.</p>
+                          <p><button class="btn btn-primary" type="button">
+                            <i class="fa fa-search"></i>  Visualizar
+                          </button></p>
+                      </div>
+                  </div>
+              </div>
+            </div>
+          </div>         
         </div>
       </div>
+    </tab>
+  </tabset>
 
-      <div class="row">
-        <div class="col-xl-6">
-          <div class="form-group row">
-            <label class="col-xl-4 col-form-label text-left">
-              Exame físico
-            </label>
-            <div class="col-xl-8">
-              <textarea rows="4" class="form-control has-error" [(ngModel)]="object.exameFisico"
-                formControlName="exameFisico" [readonly]="disableFields()"></textarea>
-            </div>
-          </div>
-        </div>
+        <div class="form-group text-right">
 
-        <div class="col-xl-6">
-          <div class="form-group row">
-            <label class="col-xl-4 col-form-label text-left">
-              Observações gerais
-            </label>
-            <div class="col-xl-8">
-              <textarea rows="4" class="form-control has-error" [(ngModel)]="object.observacoesGerais"
-                formControlName="observacoesGerais" [readonly]="disableFields()"></textarea>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mb-4" *ngIf="object.idPaciente && object.id">
-    <div class="card-header text-left">
-      Hipótese diagnostica
-    </div>
-    <div class="card-body text-left">
-
-      <div class="row">
-
-        <div class="col-12 mb-3">
-          <button *ngIf="!disableFields()" type="button" class="btn btn-primary float-left mr-2" (click)="openHipotese(contentHipotese)" [disabled]="!object.id">
-            <i class="fa fa-plus-circle"></i>
+          <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="object.idPaciente && !disableFields()"
+            [disabled]="form.invalid">
+            <i class="fa fa-save"></i> {{ !object.id ? 'Criar atendimento' : 'Salvar'}}
           </button>
 
-          <button type="button" class="btn btn-default float-left" (click)="findHipotesePorAtendimento()">
-            <i class="fa fa-sync-alt"></i>
+          <button (click)="back()" class="btn btn-default" type="button">
+            <i class="fa fa-arrow-left"></i> Retornar
           </button>
         </div>
-        <div class="col-12 table-responsive">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Código</th>
-                <th>Diagnóstico</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody *ngIf="!allItemsHipotese.length">
-              <tr class="text-left">
-                <td colspan="99" class="text-secondary">
-                  <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para inserir uma hipótese diagnóstica!'}}</i>
-                </td>
-              </tr>
-            </tbody>
-            <tbody *ngIf="allItemsHipotese.length">
-              <tr class="text-left" *ngFor="let item of allItemsHipotese">
-                <td class="text-secondary">{{item.codigo}}</td>
-                <td class="text-secondary">{{item.nome}}</td>
-                <td class="text-secondary text-right">
-                  <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]="" (click)="removeHipotese(item)">
-                    <i class="fa fa-trash-alt"></i> Remover
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mb-4" *ngIf="object.idPaciente && object.id">
-    <div class="card-header text-left">
-      Prescrição Medicamentos
-    </div>
-    <div class="card-body text-left">
-
-      <div class="row">
-        <div class="col-12 mb-3">
-          <button *ngIf="!disableFields()"  type="button" class="btn btn-primary float-left mr-2" [disabled]="!object.id"
-            (click)="openMedicamento(contentMedicamento)">
-            <i class="fa fa-plus-circle"></i>
-          </button>
-
-          <button type="button" class="btn btn-default float-left" (click)="findMedicamentoPorAtendimento()">
-            <i class="fa fa-sync-alt"></i>
-          </button>
-        </div>
-        <div class="col-12 table-responsive">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Medicamento</th>
-                <th>Uso</th>
-                <th>Tipo via</th>
-                <th>Quantidade</th>
-                <th>Apresentação</th>
-                <th>Posologia</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="text-left">
-                <td colspan="99" class="text-secondary"  *ngIf="!allItemsMedicamento.length">
-                  <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para prescrever um medicamento!'}}</i>
-                </td>
-              </tr>
-            </tbody>
-            <tbody *ngIf="allItemsMedicamento.length">
-                <tr class="text-left" *ngFor="let item of allItemsMedicamento">
-                  <td class="text-secondary">{{item.descricaoMaterial}}</td>
-                  <td class="text-secondary">{{item.uso}}</td>
-                  <td class="text-secondary">{{item.tipoVia}}</td>
-                  <td class="text-secondary">{{item.quantidade}}</td>
-                  <td class="text-secondary">{{item.apresentacao}}</td>
-                  <td class="text-secondary">{{item.posologia}}</td>
-                  <td class="text-secondary text-right">
-                    <a *ngIf="!disableFields()"  class="btn btn-link" [routerLink]="" (click)="removeMedicamento(item)">
-                      <i class="fa fa-trash-alt"></i> Remover
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mb-4" *ngIf="object.idPaciente && object.id">
-    <div class="card-header text-left">
-      Encaminhamento
-    </div>
-    <div class="card-body text-left">
-
-      <div class="row">
-
-        <div class="col-12 mb-3">
-          <button *ngIf="!disableFields()" type="button" class="btn btn-primary float-left mr-2"
-            (click)="openEncaminhamento(contentEncaminhamento)" [disabled]="!object.id">
-            <i class="fa fa-plus-circle"></i>
-          </button>
-
-          <button type="button" class="btn btn-default float-left" (click)="findEncaminhamentoPorAtendimento()">
-            <i class="fa fa-sync-alt"></i>
-          </button>
-        </div>
-        <div class="col-12 table-responsive">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Especialidade</th>
-                <th>Motivo</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody *ngIf="!allItemsEncaminhamento.length">
-              <tr class="text-left">
-                <td colspan="99" class="text-secondary">
-                  <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para fazer um encaminhamento!'}}</i>
-                </td>
-              </tr>
-            </tbody>
-            <tbody *ngIf="allItemsEncaminhamento.length">
-              <tr class="text-left" *ngFor="let item of allItemsEncaminhamento">
-                <td class="text-secondary">{{item.nome}}</td>
-                <td class="text-secondary">{{item.motivo}}</td>
-                <td class="text-secondary text-right">
-                  <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]="" (click)="removeEncaminhamento(item)">
-                    <i class="fa fa-trash-alt"></i> Remover
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mb-4" *ngIf="object.idPaciente && object.id">
-    <div class="card-body text-left">
-      <div class="row">
-        <div class="col-xl-5">
-          <div class="form-group row">
-            <label class="col-xl-4 col-form-label text-left">
-              Situação<span class="text-danger font-weight-bold"> *</span>
-            </label>
-            <div class="col-xl-8">
-              <select *ngIf="!disableFields()" class="custom-select d-block w-100" [(ngModel)]="object.situacao" formControlName="situacao">
-                <option [value]="null">Selecione...</option>
-                <option value="C">Em aberto</option>
-                <option value="2">Concluído</option>
-                <option value="A">Alta</option>
-                <option value="E">Evasão</option>
-                <option value="5">Transferência hospitalar/ambulatório</option>
-                <option value="6">Transferência unidade prisional</option>
-                <option value="7">Desinternação</option>
-                <option value="8">Álvara de soltura</option>
-                <option value="O">Óbito</option>
-                <option value="X">Cancelado</option>
-              </select>
-
-              <select *ngIf="disableFields()" class="custom-select d-block w-100" [(ngModel)]="object.situacao" formControlName="situacao" disabled>
-                <option [value]="null">Selecione...</option>
-                <option value="C">Em aberto</option>
-                <option value="2">Concluído</option>
-                <option value="A">Alta</option>
-                <option value="E">Evasão</option>
-                <option value="5">Transferência hospitalar/ambulatório</option>
-                <option value="6">Transferência unidade prisional</option>
-                <option value="7">Desinternação</option>
-                <option value="8">Álvara de soltura</option>
-                <option value="O">Óbito</option>
-                <option value="X">Cancelado</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-6" *ngIf="object.situacao == 'X'">
-          <div class="form-group row">
-            <label class="col-xl-4 col-form-label text-left">
-              Motivo cancelamento
-            </label>
-            <div class="col-xl-8">
-              <input type="text" class="form-control has-error" [(ngModel)]="object.motivoCancelamento" formControlName="motivoCancelamento" [readonly]="disableFields()"/>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="form-group text-right">
-
-    <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="object.idPaciente && !disableFields()"
-      [disabled]="form.invalid">
-      <i class="fa fa-save"></i> {{ !object.id ? 'Criar atendimento' : 'Salvar'}}
-    </button>
-
-    <button (click)="back()" class="btn btn-default" type="button">
-      <i class="fa fa-arrow-left"></i> Retornar
-    </button>
-  </div>
 
 </form>
 

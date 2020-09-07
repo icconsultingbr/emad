@@ -243,6 +243,7 @@ AtendimentoDAO.prototype.listaPorUsuario = function(id, addFilter, callback) {
 
 AtendimentoDAO.prototype.buscaPorId = function (id,callback) {
     this._connection.query(`select p.nome,
+                                p.historiaProgressaFamiliar pacienteHistoriaProgressa,
                                 YEAR(a.dataCriacao) as ano_receita,
                                 a.numeroReceita as numero_receita,
                                 e.id as unidade_receita,
@@ -427,7 +428,7 @@ AtendimentoDAO.prototype.buscaProfissionalPorUsuarioSync = async function (idUsu
 }
 
 AtendimentoDAO.prototype.buscaPorIdSync = async function (id) {
-    let atendimento =  await this._connection.query(`select p.nome, e.idMunicipio as idMunicipioEstabelecimento, e.idUf as idUfEstabelecimento , a.* 
+    let atendimento =  await this._connection.query(`select p.nome, p.historiaProgressaFamiliar, e.idMunicipio as idMunicipioEstabelecimento, e.idUf as idUfEstabelecimento , a.* 
     from ${this._table} a 
     INNER JOIN tb_paciente p ON(a.idPaciente = p.id) 
     INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
