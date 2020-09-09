@@ -690,8 +690,9 @@ export class AtendimentoFormComponent implements OnInit {
   abreHistorico(id: Number) {
     if(!id)
       return;
-      
-    let url = this.virtualDirectory + "#/atendimentos/historico/" + id;    
+
+    let url = this.router.url + "#/atendimentos/historico/" + id;    
+
     this.loading = true;
     this.service.printDocument(url).subscribe(result => {
       this.loading = false;
