@@ -23,6 +23,30 @@ module.exports = function (app) {
         }
     });
 
+    app.get('/atendimento-historico/:id', async function (req, res) {
+        let usuario = req.usuario;
+        let util = new app.util.Util();
+        let id = req.params.id;
+        let errors = [];
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+        
+        try {
+            const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
+
+            const response = await atendimentoRepository.buscaHistoricoPorAtendimento(id);
+
+            res.status(200).json(response);
+        }
+        catch (exception) {
+            errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
+            res.status(500).send(errors);
+        }
+        finally{
+            await connection.close();
+        }
+    });   
+
     app.put('/atendimento/envia-ficha', async function (req, res) {        
         var obj = req.body;
         let id = obj.id;
@@ -119,6 +143,29 @@ module.exports = function (app) {
         });
     });
 
+    app.get('/atendimento/historico/:idHistorico', async function (req, res) {
+        let usuario = req.usuario;
+        let id = req.params.idHistorico;
+        let util = new app.util.Util();
+        let errors = [];
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
+
+        try {            
+            var response = await atendimentoRepository.buscaPorHistoricoId(id);
+            res.status(200).json(response[0]);
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado " + exception, ""));            
+        }
+        finally {
+            await connection.close();
+        }
+
+    });
+
     app.get('/atendimento/paciente/:id/:idEstabelecimento', function (req, res) {
         let usuario = req.usuario;
         let id = req.params.id;
@@ -142,6 +189,7 @@ module.exports = function (app) {
         obj.idUsuarioAlteracao = null;
         delete obj.idTipoAtendimentoHistorico;
         delete obj.textoHistorico;
+        delete obj.tipoHistoriaClinica;
         var objHistorico = Object.assign({},obj);
         let idEstabelecimento = req.headers.est;
         let mail = new app.util.Mail();
@@ -261,9 +309,9 @@ module.exports = function (app) {
         let id = obj.id;
         delete obj.id;
         delete obj.pacienteNome;
-        delete obj.pacienteHistoriaProgressa;
         obj.idUsuarioAlteracao = usuario.id;
         delete obj.idUsuario;
+        obj.historiaProgressa = obj.pacienteHistoriaProgressa;
         var objHistorico = Object.assign({},obj);
         objHistorico.idUsuario = usuario.id;
         delete obj.idTipoAtendimentoHistorico;
@@ -293,12 +341,18 @@ module.exports = function (app) {
         const receitaRepository = new app.dao.ReceitaDAO(connection);
         const itemReceitaRepository = new app.dao.ItemReceitaDAO(connection);
         const profissionalRepository = new app.dao.ProfissionalDAO(connection);
+        const pacienteRepository = new app.dao.PacienteDAO(connection);
         const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
         const atendimentoMedicamentoRepository = new app.dao.AtendimentoMedicamentoDAO(connection);
 
         try {
 
             await connection.beginTransaction();
+            
+            var atualizaPaciente = await pacienteRepository.atualizaHistoriaProgressaFamiliar(obj.pacienteHistoriaProgressa, obj.idPaciente, usuario.id, new Date());
+            
+            delete obj.pacienteHistoriaProgressa;
+            delete objHistorico.pacienteHistoriaProgressa;
 
             var buscaProfissional = await profissionalRepository.buscaProfissionalPorUsuarioSync(usuario.id);
 

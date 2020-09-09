@@ -1,4 +1,6 @@
-<h4 class="mb-5 text-left">Atendimento</h4>
+<h4 *ngIf="!idHistorico" class="mb-5 text-left">Atendimento </h4>
+<h4 *ngIf="idHistorico" class="mb-5 text-left">Histórico do atendimento</h4>
+<p  *ngIf="idHistorico"><span class="text-muted">{{dataHistorico}} - </span>Profissional: <b>{{nomeProfissional}}</b> executou <b>{{nomeTipoHistorico}}</b>.</p>                        
 <app-loader [loading]="loading"></app-loader>
 <p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
 <div *ngIf="errors.length" class="alert alert-danger sticky-top"> 
@@ -55,22 +57,6 @@
                         </button>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              &nbsp;
-            </div>
-            <div class="row" *ngIf="object.idPaciente">
-              <div class="col-xl-12">
-                <div class="form-group row">
-                  <label class="col-xl-2 col-form-label text-left">
-                    História progressa/familiar
-                  </label>
-                  <div class="col-xl-10">
-                    <textarea rows="3" class="form-control has-error" [(ngModel)]="object.pacienteHistoriaProgressa"
-                      formControlName="pacienteHistoriaProgressa" [readonly]="true"></textarea>
                   </div>
                 </div>
               </div>
@@ -245,11 +231,11 @@
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                    História progressa/familiar<span class="text-danger font-weight-bold"> *</span>
+                    História progressa/familiar
                   </label>
                   <div class="col-xl-10">
                     <textarea rows="3" class="form-control has-error" [(ngModel)]="object.pacienteHistoriaProgressa"
-                    formControlName="pacienteHistoriaProgressa" [readonly]="true"></textarea>
+                    formControlName="pacienteHistoriaProgressa" [readonly]="disableFields()"></textarea>
                   </div>
                 </div>
               </div>
@@ -505,74 +491,29 @@
           </div>
         </div>
     </tab>
-    <tab>
+    <tab *ngIf="object.id && !idHistorico">
       <ng-template tabHeading>
         <i class="fa fa-history" title="Histórico"></i>   Histórico
       </ng-template>
       <div class="card mb-4">
         <div class="row">
           <div class="card-body text-left">            
-            <div class="timeline">
-              <div class="timeline-item">
+            <div *ngIf="atendimentoHistorico.length" class="timeline">
+              <div *ngFor="let itemHistorico of atendimentoHistorico" class="timeline-item">
                 <div class="timeline-badge">
-                  <img class="float-left" src="https://prdmetalcredfiles.blob.core.windows.net/8d638c9943a7a101626e962ff70be055/7af9d3b0-6d06-4d2d-a6c3-6a3e7e557959.jpg?sv=2018-03-28&sr=b&sig=%2FxYeVF3ht1MdW%2FFHFsl6HXP1rpX1SEJHNk%2BJrXZt4q8%3D&se=4020-05-20T14%3A29%3A34Z&sp=r">
+                  <img class="float-left" src="assets/imgs/user2-160x160.jpg">
                 </div>
                 <div class="timeline-body">
                     <div class="timeline-body-top">
-                      Finalização do atendimento
+                      {{itemHistorico.nomeTipoHistorico}}
                     </div>
                     <div class="timeline-body-content">
-                        <p><span class="text-muted">01/09/2020 14:40 - </span>Profissional: <b>Eduardo Ribeiro</b> executou <b>Finalização do atendimento</b>.</p>                        
+                        <p><span class="text-muted">{{itemHistorico.dataHistorico}} - </span>Profissional: <b>{{itemHistorico.nomeProfissional}}</b> executou <b>{{itemHistorico.nomeTipoHistorico}}</b>.</p>                        
+                        <p><button class="btn btn-primary" type="button" (click)="abreHistorico(itemHistorico.idHistorico)">
+                          <i class="fa fa-search"></i>  Visualizar
+                        </button></p>
                     </div>
                 </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-badge">
-                <img class="float-left" src="http://egret-angular.ui-lib.com/assets/images/faces/4.jpg">
-              </div>
-              <div class="timeline-body">
-                  <div class="timeline-body-top">
-                    Alteração do atendimento
-                  </div>
-                  <div class="timeline-body-content">
-                      <p><span class="text-muted">01/09/2020 13:50 - </span>Profissional: <b>Mariana Rosa</b> executou <b>Alteração do atendimento</b>.</p>
-                      <p><button class="btn btn-primary" type="button">
-                        <i class="fa fa-search"></i>  Visualizar
-                      </button></p>
-                  </div>
-              </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-badge">
-              <img class="float-left" src="http://egret-angular.ui-lib.com/assets/images/faces/4.jpg">
-            </div>
-            <div class="timeline-body">
-                <div class="timeline-body-top">
-                  Alteração do atendimento
-                </div>
-                <div class="timeline-body-content">
-                    <p><span class="text-muted">01/09/2020 13:30 - </span>Profissional: <b>Mariana Rosa</b> executou <b>Alteração do atendimento</b>.</p>
-                    <p><button class="btn btn-primary" type="button">
-                      <i class="fa fa-search"></i>  Visualizar
-                    </button></p>
-                </div>
-            </div>
-        </div>
-              <div class="timeline-item">
-                  <div class="timeline-badge">
-                    <img class="float-left" src="https://prdmetalcredfiles.blob.core.windows.net/8d638c9943a7a101626e962ff70be055/7af9d3b0-6d06-4d2d-a6c3-6a3e7e557959.jpg?sv=2018-03-28&sr=b&sig=%2FxYeVF3ht1MdW%2FFHFsl6HXP1rpX1SEJHNk%2BJrXZt4q8%3D&se=4020-05-20T14%3A29%3A34Z&sp=r">
-                  </div>
-                  <div class="timeline-body">
-                      <div class="timeline-body-top">
-                          Abertura do atendimento
-                      </div>
-                      <div class="timeline-body-content">
-                          <p><span class="text-muted">01/09/2020 12:50 - </span>Profissional: <b>Eduardo Ribeiro</b> executou <b>Abertura do atendimento</b>.</p>
-                          <p><button class="btn btn-primary" type="button">
-                            <i class="fa fa-search"></i>  Visualizar
-                          </button></p>
-                      </div>
-                  </div>
               </div>
             </div>
           </div>         

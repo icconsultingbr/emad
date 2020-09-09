@@ -253,6 +253,24 @@ AtendimentoDAO.prototype.buscaPorId = function (id,callback) {
     WHERE a.id = ?` ,id,callback); 
 }
 
+AtendimentoDAO.prototype.buscaPorHistoricoId = async function (idHistorico) {
+    const response =  await this._connection.query(`select p.nome,
+                                p.historiaProgressaFamiliar pacienteHistoriaProgressa,
+                                YEAR(a.dataCriacao) as ano_receita,
+                                a.numeroReceita as numero_receita,
+                                e.id as unidade_receita,                              
+                                tipo_historico.nome nomeTipoHistorico, 
+                                usu.nome nomeProfissional, 
+                                DATE_FORMAT(DATE_ADD(a.dataCriacao, INTERVAL -3 hour),'%d/%m/%Y %H:%i:%s') dataHistorico,
+                                a.* from tb_atendimento_historico a 
+    INNER JOIN tb_paciente p ON(a.idPaciente = p.id) 
+    INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
+    inner join tb_tipo_atendimento_historico tipo_historico on tipo_historico.id = a.idTipoAtendimentoHistorico
+    inner join tb_usuario usu on usu.id = a.idUsuario
+    WHERE a.id = ?` ,idHistorico); 
+    return response;
+}
+
 AtendimentoDAO.prototype.buscaPorPacienteId = function (idPaciente, usuario, idEstabelecimento, callback) {
     //console.log("select * from "+this._table + " WHERE idPaciente = "+idPaciente+" AND dataFinalizacao IS NULL AND dataCancelamento IS NULL AND idEstabelecimento = "+idEstabelecimento+" AND idUsuario =" + usuario.id);
     this._connection.query("select * from "+this._table + " WHERE idPaciente = ? AND dataFinalizacao IS NULL AND dataCancelamento IS NULL AND idEstabelecimento = ? AND idUsuario = ?" ,[idPaciente,idEstabelecimento,usuario.id],callback); 
@@ -271,24 +289,6 @@ AtendimentoDAO.prototype.salvaHistoricoSync = async function(objeto) {
     const response = await this._connection.query("INSERT INTO tb_atendimento_historico SET ?", objeto);
     return [response];
 }
-
-// AtendimentoDAO.prototype.finaliza = function(objeto,id, callback) {
-//     if(objeto.tipo == 'X'){
-//         this._connection.query("UPDATE "+this._table+" SET dataCancelamento = CURRENT_TIMESTAMP, idUsuarioAlteracao=?, motivoCancelamento =?,  situacao=? where id= ?", [objeto.idUsuarioAlteracao, objeto.motivoCancelamento, objeto.tipo, id], callback);
-//     } else if(objeto.tipo != 'C'){
-//         this._connection.query("UPDATE "+this._table+" SET dataFinalizacao = CURRENT_TIMESTAMP, idUsuarioAlteracao=?, motivoCancelamento='', situacao =? where id= ?", [objeto.idUsuarioAlteracao, objeto.tipo, id], callback);
-//     } 
-// }
-
-// AtendimentoDAO.prototype.finalizaSync = function(objeto) {
-//     const response;
-//     if(objeto.tipo == 'X'){
-//         response = await this._connection.query("UPDATE "+this._table+" SET dataCancelamento = CURRENT_TIMESTAMP where id= ?", [id]);
-//     } else{
-//         response = await this._connection.query("UPDATE "+this._table+" SET dataFinalizacao = CURRENT_TIMESTAMP where id= ?", [id]);
-//     } 
-//     return [response];
-// }
 
 AtendimentoDAO.prototype.deletaPorId = function (id,callback) {
     this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
@@ -450,6 +450,18 @@ AtendimentoDAO.prototype.buscaPorIdSync = async function (id) {
     INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
     WHERE a.id = ?`,[id]); 
     return atendimento[0];
+}
+
+AtendimentoDAO.prototype.buscaHistoricoPorAtendimento = async function (id) {
+    let atendimento =  await this._connection.query(`select historico.id idHistorico, historico.idAtendimento, historico.idTipoAtendimentoHistorico, 
+    tipo_historico.nome nomeTipoHistorico, usu.nome nomeProfissional, 
+    historico.textoHistorico, DATE_FORMAT(DATE_ADD(historico.dataCriacao, INTERVAL -3 hour),'%d/%m/%Y %H:%i:%s') dataHistorico
+    from tb_atendimento_historico historico 
+    inner join tb_tipo_atendimento_historico tipo_historico on tipo_historico.id = historico.idTipoAtendimentoHistorico
+    inner join tb_usuario usu on usu.id = historico.idUsuario
+    where historico.idAtendimento=?
+    order by historico.dataCriacao desc`,[id]); 
+    return atendimento;
 }
 
 AtendimentoDAO.prototype.atualizaPorIdSync = async function(objeto, id) {

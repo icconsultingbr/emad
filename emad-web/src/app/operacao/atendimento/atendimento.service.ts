@@ -196,6 +196,14 @@ export class AtendimentoService extends GenericsService {
         return this.http.get("atendimento-medicamento/atendimento/" + id);
     }
 
+    findHistoricoByAtendimento(id: any): Observable<any> {
+        return this.http.get("atendimento-historico/" + id);
+    }
+
+    findByHistoricoId(id: any): Observable<any> {
+        return this.http.get("atendimento/historico/" + id);
+    }    
+
     saveHipotese(obj: any) {
         if (obj.id) {
             return this.http

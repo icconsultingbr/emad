@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AtendimentoService } from './atendimento.service';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { PagerService } from '../../_core/_services';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Atendimento } from '../../_core/_models/Atendimento';
+import { Atendimento, AtendimentoHistorico } from '../../_core/_models/Atendimento';
 import { Paciente } from '../../_core/_models/Paciente';
 import { Util } from '../../_core/_util/Util';
 import { PlanoTerapeuticoService } from '../plano-terapeutico/plano-terapeutico.service';
@@ -13,6 +13,7 @@ import { Encaminhamento } from '../../_core/_models/Encaminhamento';
 import { AtendimentoMedicamento } from '../../_core/_models/AtendimentoMedicamento';
 import { Material } from '../../_core/_models/Material';
 import { ReciboReceitaImpressaoService } from '../../shared/services/recibo-receita-impressao.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-atendimento-form',
@@ -42,7 +43,9 @@ export class AtendimentoFormComponent implements OnInit {
   encaminhamento: Encaminhamento = new Encaminhamento();
   atendimentoMedicamento: AtendimentoMedicamento = new AtendimentoMedicamento();
   medicamento: Material = new Material();
-
+  atendimentoHistorico: AtendimentoHistorico = new AtendimentoHistorico(); 
+  virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
+  
   pacienteSelecionado: any = null;
   medicamentoSelecionado: any = null;
   domains: any[] = [];
@@ -69,6 +72,10 @@ export class AtendimentoFormComponent implements OnInit {
   totalPages: Number;
 
   id: number;
+  idHistorico: number;
+  dataHistorico: string;
+  nomeProfissional: string;
+  nomeTipoHistorico: string;
 
   constructor(
     private service: AtendimentoService,
@@ -94,6 +101,7 @@ export class AtendimentoFormComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       this.id = params['id'];
+      this.idHistorico = params['idHistorico'];      
 
       this.createGroup();
       this.loadDomains();
@@ -118,10 +126,10 @@ export class AtendimentoFormComponent implements OnInit {
       situacao: [Validators.required],
       motivoCancelamento: ['',''],
       idEstabelecimento: [Validators.required],
-      tipoFicha: [Validators.required],
-      idClassificacaoRisco: [Validators.required],
+      tipoFicha: new FormControl({value: '', disabled: (this.idHistorico > 0) ? true : false}, Validators.required),
+      idClassificacaoRisco: new FormControl({value: '', disabled: (this.idHistorico > 0) ? true : false}, Validators.required),
       motivoQueixa: ['',''],
-      tipoHistoriaClinica: [Validators.required],
+      tipoHistoriaClinica: new FormControl({value: '', disabled: (this.idHistorico > 0) ? true : false}),
     });
 
 
@@ -316,37 +324,66 @@ export class AtendimentoFormComponent implements OnInit {
     this.findPacienteData(this.object.idPaciente);
   }
 
-  encontraAtendimento() {
+  encontraAtendimento(idHistorico: number) {
     this.object.id = this.id;
     this.errors = [];
     this.message = "";
     this.loading = true;
 
-    this.service.findById(this.id, this.method).subscribe(result => {
-      this.object = result;
-      this.object.pacienteNome = result.nome;
-      this.object.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
-      this.loading = false;
-
-      this.findHipotesePorAtendimento();
-      this.findEncaminhamentoPorAtendimento();
-      this.findMedicamentoPorAtendimento();
-
-    }, error => {
-      this.object = new Atendimento();
-      this.object.idPaciente = this.pacienteSelecionado.id;
-      this.object.pacienteNome = this.pacienteSelecionado.nome;
-      this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
-      this.loading = false;
-
-      this.allItemsEncaminhamento = [];
-      this.allItemsHipotese = [];
-      this.allItemsMedicamento = [];
-
-      this.errors.push({
-        message: "Atendimento não encontrado"
+    if(idHistorico){
+      this.service.findByHistoricoId(idHistorico).subscribe(result => {
+        this.object = result;
+        this.dataHistorico = result.dataHistorico;
+        this.nomeProfissional = result.nomeProfissional;
+        this.nomeTipoHistorico = result.nomeTipoHistorico;
+        this.object.pacienteNome = result.nome;
+        this.object.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
+        this.loading = false;
+  
+        this.findHipotesePorAtendimento();
+        this.findEncaminhamentoPorAtendimento();
+        this.findMedicamentoPorAtendimento();
+        this.findHistoricoPorAtendimento();
+  
+      }, error => {
+        this.object = new Atendimento();  
+        this.allItemsEncaminhamento = [];
+        this.allItemsHipotese = [];
+        this.allItemsMedicamento = [];
+  
+        this.errors.push({
+          message: "Atendimento histórico não encontrado"
+        });
       });
-    });
+    }
+    else{
+      this.service.findById(this.id, this.method).subscribe(result => {
+        this.object = result;
+        this.object.pacienteNome = result.nome;
+        this.object.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
+        this.loading = false;
+  
+        this.findHipotesePorAtendimento();
+        this.findEncaminhamentoPorAtendimento();
+        this.findMedicamentoPorAtendimento();
+        this.findHistoricoPorAtendimento();
+  
+      }, error => {
+        this.object = new Atendimento();
+        this.object.idPaciente = this.pacienteSelecionado.id;
+        this.object.pacienteNome = this.pacienteSelecionado.nome;
+        this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
+        this.loading = false;
+  
+        this.allItemsEncaminhamento = [];
+        this.allItemsHipotese = [];
+        this.allItemsMedicamento = [];
+  
+        this.errors.push({
+          message: "Atendimento não encontrado"
+        });
+      });
+    }        
   }
 
   sendForm(event) {
@@ -359,6 +396,7 @@ export class AtendimentoFormComponent implements OnInit {
       .save(this.form.value, this.method)
       .subscribe((res: any) => {
         this.object.id = res.id;
+        this.findHistoricoPorAtendimento();
         if(res.ano_receita)        
           this.object.ano_receita = res.ano_receita;
 
@@ -399,7 +437,7 @@ export class AtendimentoFormComponent implements OnInit {
           }  
         }
 
-          this.loading = false;        
+        this.loading = false;        
       }, erro => {
         setTimeout(() => this.loading = false, 300);
         this.errors = Util.customHTTPResponse(erro);
@@ -421,6 +459,7 @@ export class AtendimentoFormComponent implements OnInit {
         this.findHipotesePorAtendimento();
         this.findEncaminhamentoPorAtendimento();
         this.findMedicamentoPorAtendimento();
+        this.findHistoricoPorAtendimento();
       }
       else
         this.limpaAtendimento();
@@ -484,6 +523,19 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
+  findHistoricoPorAtendimento() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.service.findHistoricoByAtendimento(this.object.id).subscribe(result => {
+      this.atendimentoHistorico = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+
   close() {
     this.modalRef.close();
   }
@@ -507,9 +559,11 @@ export class AtendimentoFormComponent implements OnInit {
                   ],
               });
             if (!Util.isEmpty(this.id)) {
-              this.encontraAtendimento();
+              this.encontraAtendimento(null);
             }
-            else            
+            else if(!Util.isEmpty(this.idHistorico))
+              this.encontraAtendimento(this.idHistorico);
+            else
               this.loading = false;
             });
           });
@@ -614,30 +668,11 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
-  // stopProcess(val: string) {
-  //   this.message = "";
-  //   this.errors = [];
-  //   let obj: any = {};
-  //   obj.id = this.object.id;
-  //   obj.tipo = val;
-  //   obj.motivoCancelamento = this.object.motivoCancelamento;
-
-  //   this.loading = true;
-  //   this.service.stopProcess(obj).subscribe(result => {
-  //     this.loading = false;
-  //     this.message = (val == 'X') ? "Atendimento cancelado com sucesso" : "Atendimento finalizado com sucesso!";
-  //     this.object = new Atendimento();
-  //   }, error => {
-  //     this.loading = false;
-  //     this.errors = Util.customHTTPResponse(error);
-  //   });
-  // }
-
   disableFields(): boolean {
     if (!this.object) {
       return true;
     } else {
-      if (Util.isEmpty(this.object.dataFinalizacao) && Util.isEmpty(this.object.dataCancelamento)) {
+      if (Util.isEmpty(this.object.dataFinalizacao) && Util.isEmpty(this.object.dataCancelamento) && Util.isEmpty(this.idHistorico)) {
         return false;
       } else {
         return true;
@@ -652,6 +687,23 @@ export class AtendimentoFormComponent implements OnInit {
     this.router.navigate([this.url]);    
   }
 
+  abreHistorico(id: Number) {
+    if(!id)
+      return;
+      
+    let url = this.virtualDirectory + "#/atendimentos/historico/" + id;    
+    this.loading = true;
+    this.service.printDocument(url).subscribe(result => {
+      this.loading = false;
+      window.open(
+        url,
+        '_blank'
+      );
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
 
   abreFichaDigital(id: Number, grid: boolean) {
     if((!this.object.dadosFicha || this.object.dadosFicha.length == 0) && !grid)

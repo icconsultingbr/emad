@@ -146,6 +146,11 @@ PacienteDAO.prototype.transferirUnidade = async function(paciente){
     return [responsePaciente];
 }
 
+PacienteDAO.prototype.atualizaHistoriaProgressaFamiliar = async function(historiaProgressaFamiliar, id, idUsuarioAlteracao, dataAlteracao){
+    const responsePaciente =  await this._connection.query(`UPDATE tb_paciente SET historiaProgressaFamiliar=?, idUsuarioAlteracao=?, dataAlteracao=? WHERE id= ?`, [historiaProgressaFamiliar, idUsuarioAlteracao, dataAlteracao, id]);
+    return [responsePaciente];
+}
+
 PacienteDAO.prototype.gravaEstabelecimento = async function(paciente, dataCriacao, usuario){
     const responsePaciente =  await this._connection.query(`INSERT INTO tb_paciente_estabelecimento_historico (idPaciente, idEstabelecimento, dataCriacao, idUsuarioCriacao) VALUES (?, ?, ?, ?)`, [paciente.id, paciente.idEstabelecimentoCadastro, dataCriacao, usuario]);
     return [responsePaciente];

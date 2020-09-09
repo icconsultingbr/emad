@@ -19,16 +19,13 @@ export const atendimentoRoutes: Routes = [
     {
         path: 'cadastro/:id',
         component: AtendimentoFormComponent,        
+    },    
+    {
+        path: 'historico/:idHistorico',
+        component: AtendimentoFormComponent,        
     },
     {
         path: 'relatorio-receita/:ano/:estabelecimentoId/:numero/:farmacia',
         component: RelatorioReceitaComponent
     }
 ];
-
-
-// { path : 'atendimento', component : AtendimentoComponent, canActivate: [AuthGuard]  },
-// { path : 'atendimento/idPaciente/:idPaciente', component : AtendimentoComponent, canActivate: [AuthGuard]  },
-
-// { path : 'atendimento-form', component : AtendimentoFormComponent, canActivate: [AuthGuard]  },
-// { path : 'atendimento-view/:id', component : AtendimentoFormComponent, canActivate: [AuthGuard]  },
