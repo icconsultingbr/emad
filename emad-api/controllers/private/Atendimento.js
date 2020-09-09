@@ -132,14 +132,17 @@ module.exports = function (app) {
         });
     });
 
-    app.post('/atendimento', function (req, res) {
+    app.post('/atendimento', async function (req, res) {
         var obj = req.body;
         var usuario = req.usuario;
         var util = new app.util.Util();
         delete obj.pacienteNome;
-        delete obj.pacienteHistoriaProgressa;
+        delete obj.pacienteHistoriaProgressa;                
         obj.idUsuario = usuario.id;
         obj.idUsuarioAlteracao = null;
+        delete obj.idTipoAtendimentoHistorico;
+        delete obj.textoHistorico;
+        var objHistorico = Object.assign({},obj);
         let idEstabelecimento = req.headers.est;
         let mail = new app.util.Mail();
 
@@ -166,131 +169,88 @@ module.exports = function (app) {
         let emailProfissional = "";
         let emailPaciente = "";
 
-        buscaProfissionalPorUsuario(usuario.id).then(function (responseProfissional) {
-            if (responseProfissional.length > 0) {
-                emailProfissional = responseProfissional[0].email;
-                return salva(obj, res);
-            }
-            else {
-                errors = util.customError(errors, "usuário", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos", "404");
-                return Promise.reject(errors);
-            }
-        })
-            .then(function (response) {
-                if (response) {
-                    obj.id = response.insertId;
-                    obj.emailProfissional = emailProfissional;
-                    let buscaChaves = "'URL_FICHA_DIGITAL_SERVICO','CONTA_EMAIL', 'SENHA_EMAIL'";
-                    return buscaParametroSegurancaPorChave(buscaChaves, res);
-                }
-                else {
-                    errors = util.customError(errors, "atendimento", "Erro ao salvar o atendimento");
-                    return Promise.reject(errors);
-                }
-            })
-            .then(function (responseURL) {
-                if (responseURL) {
-                    urlFicha = responseURL.filter((url) => url.NOME == "URL_FICHA_DIGITAL_SERVICO")[0].VALOR;
-                    emailRemetente = responseURL.filter((url) => url.NOME == "CONTA_EMAIL")[0].VALOR;
-                    senhaRemetente = responseURL.filter((url) => url.NOME == "SENHA_EMAIL")[0].VALOR;
-                    return buscaEmailPaciente(obj.idPaciente, res);
-                }
-                else {
-                    errors = util.customError(errors, "FICHA DIGITAL", "URL para envio da ficha digital não foi encontrada", null);
-                    return Promise.reject(errors);
-                }
-            }).then(function (responseEmailPaciente) {
-                if (responseEmailPaciente) {
-                    console.log(responseEmailPaciente.email);
+        const connection = await app.dao.connections.EatendConnection.connection();
 
-                    if (responseEmailPaciente.email != null) {
-                        obj.email = responseEmailPaciente.email;
-                        mail.enviaEmailFicha(obj, emailRemetente, senhaRemetente, "Abertura de atendimento", "createTreatment.html");
-                        return buscaTemplatePorTipoFicha(obj.tipoFicha, res);
-                    }
-                    else {
-                        return buscaTemplatePorTipoFicha(obj.tipoFicha, res);
-                    }
-                }
-                else {
-                    errors = util.customError(errors, "FICHA DIGITAL", "Erro ao buscar o e-mail do paciente", status);
-                    return Promise.reject(errors);
-                }
-            }).then(function (template) {
-                if (template.queryTemplate != null && template.xmlTemplate != null) {
-                    templateFicha = template;
-                    obj.templateFicha = templateFicha;
-                    return buscaDadosEnvioFicha(templateFicha.queryTemplate, obj.id);
-                }
-                else {
-                    res.status(201).json(obj);
-                    return Promise.resolve(obj);
-                }
-            }).then(function (dadosFicha) {
-                if (dadosFicha != null && obj.templateFicha.queryTemplate != null && obj.templateFicha.xmlTemplate != null) {
-                    obj.dadosFicha = dadosFicha;
-                    var client = new app.services.FichaDigitalService();
-                    return client.enviaFicha(dadosFicha, urlFicha, templateFicha.xmlTemplate);
-                }
-                else {
-                    res.status(201).json(obj);
-                    return Promise.resolve(obj);
-                }
-            }).then(function (status) {
-                res.status(201).json(obj);
-                return Promise.resolve(obj);
-            }).catch(function (error) {
-                return res.status(400).json(error);
-            });
-    });
+        const atendimentoRepository = new app.dao.AtendimentoDAO(connection);        
+        const profissionalRepository = new app.dao.ProfissionalDAO(connection);        
+        const pacienteRepository = new app.dao.PacienteDAO(connection);
+        const parametroSegurancaRepository = new app.dao.ParametroSegurancaDAO(connection);
+        const tipoFichaRepository = new app.dao.TipoFichaDAO(connection);
 
-    app.put('/atendimento/parar-atendimento', function (req, res) {
+        try {
+            await connection.beginTransaction();
 
-        let obj = req.body;
-        let util = new app.util.Util();
-        var usuario = req.usuario;
-        let errors = [];
-        let id = obj.id;
-        delete obj.id;
-        obj.idUsuarioAlteracao = usuario.id;
-        delete obj.idUsuario;
+            var buscaProfissional = await profissionalRepository.buscaProfissionalPorUsuarioSync(usuario.id);
 
-        req.assert("tipo").notEmpty().withMessage("Tipo um campo obrigatório;");
-
-        if (obj.tipo == "X")
-            req.assert("motivoCancelamento").notEmpty().withMessage("Motivo do cancelamento é obrigatório;");
-
-
-        errors = req.validationErrors();
-
-        if (errors) {
-            res.status(400).send(errors);
-            return;
-        }
-
-        buscaProfissionalPorUsuario(usuario.id).then(function (response) {
-            if (response.length > 0) {
-                buscarPorId(id, res).then(function (response) {
-                    if (typeof response != 'undefined') {
-                        finalizaAtendmento(obj, id, res).then(function (response2) {
-                            obj.id = id;
-                            res.status(200).json(obj);
-                            return;
-                        });
-                    }
-                    else {
-                        errors = util.customError(errors, "body", "Atendimento não encontrado!", obj.nome);
-                        res.status(400).send(errors);
-                        return;
-                    }
-                });
-            }
-            else {
-                errors = util.customError(errors, "usuário", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos");
-                res.status(400).json(errors);
+            if (!buscaProfissional) {
+                errors = util.customError(errors, "header", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos", "");
+                 res.status(400).send(errors);
+                await connection.rollback();
                 return;
             }
-        })
+
+            var responseAtendimento = await atendimentoRepository.salvaSync(obj);
+
+            obj.id = responseAtendimento[0].insertId;
+        
+            objHistorico.idTipoAtendimentoHistorico = 1;
+            objHistorico.textoHistorico = "";
+            objHistorico.idAtendimento = obj.id;
+            delete objHistorico.id;
+
+            var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
+
+            obj.emailProfissional = buscaProfissional.email;
+
+            let buscaChaves = "'URL_FICHA_DIGITAL_SERVICO','CONTA_EMAIL', 'SENHA_EMAIL'";
+        
+            var valorChave = await parametroSegurancaRepository.buscarValorPorChaveSync(buscaChaves);
+            
+            if (valorChave) {
+                urlFicha = valorChave.filter((url) => url.NOME == "URL_FICHA_DIGITAL_SERVICO")[0].VALOR;                
+                emailRemetente = valorChave.filter((url) => url.NOME == "CONTA_EMAIL")[0].VALOR;                
+                senhaRemetente = valorChave.filter((url) => url.NOME == "SENHA_EMAIL")[0].VALOR;                
+            }
+
+            var responseEmailPaciente = await pacienteRepository.buscaEmailPacienteSync(obj.idPaciente);
+
+            if (responseEmailPaciente) {
+                console.log(responseEmailPaciente.email);
+
+                if (responseEmailPaciente[0].email != null) {
+                    obj.email = responseEmailPaciente[0].email;
+                    
+                    var teste = await mail.enviaEmailFicha(obj, emailRemetente, senhaRemetente, "Abertura de atendimento", "createTreatment.html");
+                }
+            }
+
+            var template = await tipoFichaRepository.buscaTemplatePorIdSync(obj.tipoFicha);
+
+            if(template.length){        
+
+                 if (template[0].queryTemplate != null && template[0].xmlTemplate != null) {
+                    
+                     var dadosFicha = await atendimentoRepository.buscaDadosFichaAtendimentoSync(template[0].queryTemplate, obj.id);    
+                    
+                    if (dadosFicha && dadosFicha.length) {  
+                        obj.dadosFicha = dadosFicha[0];            
+                        var client = new app.services.FichaDigitalService();
+                        var envioFicha = await client.enviaFichaSync(dadosFicha[0], urlFicha, template[0].xmlTemplate);                              
+                     }
+                }
+            } 
+
+            res.status(201).send(obj);
+
+            await connection.commit();
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado " + exception, ""));
+            await connection.rollback();
+        }
+        finally {
+            await connection.close();
+        }
     });
 
     app.put('/atendimento', async function (req, res) {
@@ -304,12 +264,19 @@ module.exports = function (app) {
         delete obj.pacienteHistoriaProgressa;
         obj.idUsuarioAlteracao = usuario.id;
         delete obj.idUsuario;
+        var objHistorico = Object.assign({},obj);
+        objHistorico.idUsuario = usuario.id;
+        delete obj.idTipoAtendimentoHistorico;
+        delete obj.textoHistorico;
 
         req.assert("idPaciente").notEmpty().withMessage("Paciente um campo obrigatório;");
         req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
         req.assert("tipoFicha").notEmpty().withMessage("Tipo de ficha é um campo obrigatório;");
         req.assert("idClassificacaoRisco").notEmpty().withMessage("Classificação de risco é um campo obrigatório;");
 
+        if (obj.situacao == "X")
+            req.assert("motivoCancelamento").notEmpty().withMessage("Motivo do cancelamento é obrigatório;");
+        
         errors = req.validationErrors();
 
         if (errors) {
@@ -411,11 +378,23 @@ module.exports = function (app) {
                 }
             }
 
+            if(obj.situacao == "X")
+                obj.dataCancelamento = new Date();
+            else if(obj.situacao != "C")
+                obj.dataFinalizacao = new Date();
+
             var atualizaAtendimento = await atendimentoRepository.atualizaPorIdSync(obj, id);
 
             obj.id = id;
             obj.ano_receita = receita ? receita.ano : null;
             
+            objHistorico.idTipoAtendimentoHistorico = obj.situacao == "C" ? 2 : "3";
+            objHistorico.textoHistorico = "";
+            objHistorico.idAtendimento = obj.id;
+            delete objHistorico.id;
+
+            var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
+
             res.status(201).send(obj);
 
             await connection.commit();
@@ -504,79 +483,6 @@ module.exports = function (app) {
         return d.promise;
     }
 
-    function buscaCabecalhoReceitaDim(id, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.AtendimentoDAO(connection);
-        var errors = [];
-
-        objDAO.buscaCabecalhoReceitaDim(id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao carregar o cabeçalho dos medicamentos", "obj");
-                res.status(500).send(errors);
-                return;
-            } else {
-
-                d.resolve(result[0]);
-            }
-        });
-        return d.promise;
-    }
-
-    function buscaMedicamentoParaReceitaDim(id, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.AtendimentoMedicamentoDAO(connection);
-        var errors = [];
-
-        objDAO.buscaMedicamentoParaReceitaDim(id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao carregar medicamentos para envio da receita", "obj");
-                res.status(500).send(errors);
-                return;
-            } else {
-
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-    function buscaPorUfNomeDim(nomecidade, uf, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var connectionDim = app.dao.ConnectionFactoryDim();
-        var objDAO = new app.dao.MunicipioDAO(connection, connectionDim);
-        var errors = [];
-
-        objDAO.buscaPorUfNomeDim(nomecidade, uf, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao carregar a cidade do DIM", "obj");
-                res.status(500).send(errors);
-                return;
-            } else {
-
-                d.resolve(result[0]);
-            }
-        });
-        return d.promise;
-    }
-
     function buscaPorPacienteId(id, usuario, idEstabelecimento, res) {
         var q = require('q');
         var d = q.defer();
@@ -601,7 +507,6 @@ module.exports = function (app) {
         return d.promise;
     }
 
-
     function deletaPorId(id, res) {
         var q = require('q');
         var d = q.defer();
@@ -620,120 +525,6 @@ module.exports = function (app) {
             } else {
 
                 d.resolve(result[0]);
-            }
-        });
-        return d.promise;
-
-    }
-
-    function atualizaPorId(obj, id, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.AtendimentoDAO(connection);
-        var errors = [];
-
-        objDAO.atualiza(obj, id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao editar os dados", "atendimento");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result[0]);
-            }
-        });
-        return d.promise;
-    }
-
-    function confirmaMedicamentoParaReceitaDim(id, idReceita, numeroReceita, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.AtendimentoMedicamentoDAO(connection);
-        var errors = [];
-
-        objDAO.confirmaMedicamentoParaReceitaDim(id, idReceita, numeroReceita, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao atualizar os dados dos medicamentos", "atendimento");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result[0]);
-            }
-        });
-        return d.promise;
-    }
-
-    function finalizaAtendmento(obj, id, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.AtendimentoDAO(connection);
-        var errors = [];
-
-        objDAO.finaliza(obj, id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao editar os dados", "atendimento");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result[0]);
-            }
-        });
-        return d.promise;
-    }
-
-    function salva(atendimento, res) {
-        delete atendimento.id;
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.AtendimentoDAO(connection);
-        var q = require('q');
-        var d = q.defer();
-
-        objDAO.salva(atendimento, function (exception, result) {
-            if (exception) {
-                console.log('Erro ao inserir atendimento', exception);
-                res.status(500).send(exception);
-                d.reject(exception);
-                return;
-            }
-            else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-    function buscarPacientes(id, raio, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.AtendimentoDAO(connection);
-        var errors = [];
-
-        objDAO.buscarPacientes(id, raio, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result);
             }
         });
         return d.promise;
@@ -763,74 +554,6 @@ module.exports = function (app) {
         return d.promise;
     }
 
-    function listaPorUsuario(usuario, addFilter, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.AtendimentoDAO(connection);
-
-        var errors = [];
-
-        objDAO.listaPorUsuario(usuario.id, addFilter, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-    function buscaDadosEnvioFicha(query, id, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.AtendimentoDAO(connection);
-
-        var errors = [];
-
-        objDAO.buscaDadosFichaAtendimento(query, id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result[0]);
-            }
-        });
-        return d.promise;
-    }
-
-    function buscarPacientePorId(id) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.PacienteDAO(connection);
-        var errors = [];
-
-        objDAO.buscaPorIdFicha(id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
     function buscaProfissionalPorUsuario(id) {
         let q = require('q');
         let d = q.defer();
@@ -842,94 +565,6 @@ module.exports = function (app) {
                 d.reject(exception);
             } else {
                 d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-    function buscaProfissionalAberturaAtendimento(idUsuario, id) {
-        let q = require('q');
-        let d = q.defer();
-        let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.AtendimentoDAO(connection);
-
-        objDAO.buscaProfissionalAberturaAtendimento(idUsuario, id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-    function buscaParametroSegurancaPorChave(chave, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.ParametroSegurancaDAO(connection);
-        var errors = [];
-        result = [];
-
-        objDAO.buscarValorPorChave(chave, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao editar os dados", "atendimento");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
-
-    function buscaTemplatePorTipoFicha(tipoFicha, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.TipoFichaDAO(connection);
-        var errors = [];
-        result = [];
-
-        objDAO.buscaTemplatePorId(tipoFicha, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao editar os dados", "atendimento");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result[0]);
-            }
-        });
-        return d.promise;
-    }
-
-    function buscaEmailPaciente(idPaciente, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.PacienteDAO(connection);
-        var errors = [];
-        result = [];
-
-        objDAO.buscaEmailPaciente(idPaciente, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao editar os dados", "atendimento");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result[0]);
             }
         });
         return d.promise;

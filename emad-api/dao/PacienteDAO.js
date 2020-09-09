@@ -544,6 +544,11 @@ PacienteDAO.prototype.buscaEmailPaciente = function (id, callback) {
     this._connection.query(`SELECT p.email FROM ${this._table} p WHERE p.id = ?`, id, callback);
 }
 
+PacienteDAO.prototype.buscaEmailPacienteSync = async function (id) {
+    const responsePaciente =  await this._connection.query(`SELECT p.email FROM ${this._table} p WHERE p.id = ?`, id);
+    return responsePaciente;
+}
+
 PacienteDAO.prototype.buscaDominio = function (callback) {
     this._connection.query(`SELECT id, nome FROM ${this._table}`, callback);
 }

@@ -122,6 +122,7 @@
             </div>
           </div>
         </div>
+
         <div class="card mb-4" *ngIf="object.idPaciente && object.id">
           <div class="card-header text-left">
             Sinais vitais
@@ -205,43 +206,7 @@
 
         <div class="card mb-4" *ngIf="object.idPaciente && object.id">
           <div class="card-header text-left">
-            Anamnese/Evolução
-          </div>
-          <div class="card-body text-left">
-            <div class="row">
-              <div class="col-xl-12">
-                <div class="form-group row">
-                  <label class="col-xl-2 col-form-label text-left">
-                    Tipo<span class="text-danger font-weight-bold"> *</span>
-                  </label>
-                  <div class="col-xl-10">
-                      <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.tipoHistoricaClinica" formControlName="tipoHistoricaClinica">
-                          <option [value]="0">Selecione...</option>
-                          <option *ngFor="let item of domains[0]?.tipoHistoricaClinica" [value]="item.id">{{item.nome}}</option>
-                      </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xl-12">
-                <div class="form-group row">
-                  <label class="col-xl-2 col-form-label text-left">
-                  Descrição<span class="text-danger font-weight-bold"> *</span>
-                  </label>
-                  <div class="col-xl-10">
-                    <textarea rows="4" class="form-control has-error" [(ngModel)]="object.historicoClinico"
-                      formControlName="historicoClinico" [readonly]="disableFields()"></textarea>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> 
-
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
-          <div class="card-header text-left">
-            Dados do atendimento
+            Análise física
           </div>
           <div class="card-body text-left">
             <div class="row">
@@ -270,6 +235,63 @@
             </div>
           </div>
         </div>
+        
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+          <div class="card-header text-left">
+            Histórico
+          </div>
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    História progressa/familiar<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <textarea rows="3" class="form-control has-error" [(ngModel)]="object.pacienteHistoriaProgressa"
+                    formControlName="pacienteHistoriaProgressa" [readonly]="true"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> 
+
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+          <div class="card-header text-left">
+            Anamnese/Evolução
+          </div>
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Tipo<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                      <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.tipoHistoriaClinica" formControlName="tipoHistoriaClinica">
+                          <option [value]="0">Selecione...</option>
+                          <option *ngFor="let item of domains[0]?.tipoHistoriaClinica" [value]="item.id">{{item.nome}}</option>
+                      </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                  Descrição<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <textarea rows="4" class="form-control has-error" [(ngModel)]="object.historicoClinico"
+                      formControlName="historicoClinico" [readonly]="disableFields()"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> 
 
         <div class="card mb-4" *ngIf="object.idPaciente && object.id">
           <div class="card-header text-left">

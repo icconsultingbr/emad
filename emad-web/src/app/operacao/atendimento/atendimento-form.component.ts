@@ -121,7 +121,7 @@ export class AtendimentoFormComponent implements OnInit {
       tipoFicha: [Validators.required],
       idClassificacaoRisco: [Validators.required],
       motivoQueixa: ['',''],
-      tipoHistoricaClinica: [Validators.required],
+      tipoHistoriaClinica: [Validators.required],
     });
 
 
@@ -355,20 +355,9 @@ export class AtendimentoFormComponent implements OnInit {
     this.loading = true;
     event.preventDefault();
 
-    if(this.object.situacao == "E" || this.object.situacao == "O"){
-      this.stopProcess(this.object.situacao);
-      return;
-    }      
-
-    if(this.object.situacao == "X"){
-      this.stopProcess('X');
-      return;
-    }
-
     this.service
       .save(this.form.value, this.method)
       .subscribe((res: any) => {
-
         this.object.id = res.id;
         if(res.ano_receita)        
           this.object.ano_receita = res.ano_receita;
@@ -383,7 +372,7 @@ export class AtendimentoFormComponent implements OnInit {
           this.object.dadosFicha = res.dadosFicha;
 
         if (this.form.value.id) {
-          this.message = "Alteração efetuada com sucesso!";
+          this.message = "Atendimento alterado com sucesso";
 
           if(!Util.isEmpty(this.object.ano_receita) && !Util.isEmpty(this.object.numero_receita) && !Util.isEmpty(this.object.unidade_receita))
             this.abreReceitaMedica(this.object.ano_receita, this.object.numero_receita, this.object.unidade_receita);
@@ -397,12 +386,20 @@ export class AtendimentoFormComponent implements OnInit {
           this.openConfirmacao(this.contentConfirmacao);
         }
 
-        if(this.object.situacao && this.object.situacao != "E" && this.object.situacao != "O" && this.object.situacao != "X" && this.object.situacao != "C"){
-          this.stopProcess(this.object.situacao);
-          return;
+        if(this.object.situacao){
+          if(this.object.situacao == 'X'){
+            this.message = "Atendimento cancelado com sucesso";
+            this.object = new Atendimento();
+          }
+          else if(this.object.situacao == 'C')
+            this.message = "Atendimento alterado com sucesso"          
+          else{
+            this.message = "Atendimento finalizado com sucesso"
+            this.object = new Atendimento();
+          }  
         }
 
-        this.loading = false;        
+          this.loading = false;        
       }, erro => {
         setTimeout(() => this.loading = false, 300);
         this.errors = Util.customHTTPResponse(erro);
@@ -504,7 +501,7 @@ export class AtendimentoFormComponent implements OnInit {
                   tipoFichas: tipoFichas,
                   classificacaoRiscos:classificacaoRiscos,
                   idGrupoMaterial: gruposMateriais,
-                  tipoHistoricaClinica: [
+                  tipoHistoriaClinica: [
                     { id: 1, nome: "Anamnese" },
                     { id: 2, nome: "Evolução" },
                   ],
@@ -617,28 +614,24 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
-  canStop() {
-    return (this.object.id && Util.isEmpty(this.object.dataCancelamento) && Util.isEmpty(this.object.dataFinalizacao))
-  }
+  // stopProcess(val: string) {
+  //   this.message = "";
+  //   this.errors = [];
+  //   let obj: any = {};
+  //   obj.id = this.object.id;
+  //   obj.tipo = val;
+  //   obj.motivoCancelamento = this.object.motivoCancelamento;
 
-  stopProcess(val: string) {
-    this.message = "";
-    this.errors = [];
-    let obj: any = {};
-    obj.id = this.object.id;
-    obj.tipo = val;
-    obj.motivoCancelamento = this.object.motivoCancelamento;
-
-    this.loading = true;
-    this.service.stopProcess(obj).subscribe(result => {
-      this.loading = false;
-      this.message = (val == 'X') ? "Atendimento cancelado com sucesso" : "Atendimento finalizado com sucesso!";
-      this.object = new Atendimento();
-    }, error => {
-      this.loading = false;
-      this.errors = Util.customHTTPResponse(error);
-    });
-  }
+  //   this.loading = true;
+  //   this.service.stopProcess(obj).subscribe(result => {
+  //     this.loading = false;
+  //     this.message = (val == 'X') ? "Atendimento cancelado com sucesso" : "Atendimento finalizado com sucesso!";
+  //     this.object = new Atendimento();
+  //   }, error => {
+  //     this.loading = false;
+  //     this.errors = Util.customHTTPResponse(error);
+  //   });
+  // }
 
   disableFields(): boolean {
     if (!this.object) {

@@ -262,17 +262,33 @@ AtendimentoDAO.prototype.salva = function(objeto,callback) {
     this._connection.query("INSERT INTO "+this._table+" SET ?", objeto, callback);
 }
 
-AtendimentoDAO.prototype.atualiza = function(objeto,id, callback) {
-    this._connection.query("UPDATE "+this._table+" SET ?  where id= ?", [objeto, id], callback);
+AtendimentoDAO.prototype.salvaSync = async function(objeto) {
+    const response = await this._connection.query("INSERT INTO "+this._table+" SET ?", objeto);
+    return [response];
 }
 
-AtendimentoDAO.prototype.finaliza = function(objeto,id, callback) {
-    if(objeto.tipo == 'X'){
-        this._connection.query("UPDATE "+this._table+" SET dataCancelamento = CURRENT_TIMESTAMP, idUsuarioAlteracao=?, motivoCancelamento =?,  situacao=? where id= ?", [objeto.idUsuarioAlteracao, objeto.motivoCancelamento, objeto.tipo, id], callback);
-    } else if(objeto.tipo != 'C'){
-        this._connection.query("UPDATE "+this._table+" SET dataFinalizacao = CURRENT_TIMESTAMP, idUsuarioAlteracao=?, motivoCancelamento='', situacao =? where id= ?", [objeto.idUsuarioAlteracao, objeto.tipo, id], callback);
-    } 
+AtendimentoDAO.prototype.salvaHistoricoSync = async function(objeto) {
+    const response = await this._connection.query("INSERT INTO tb_atendimento_historico SET ?", objeto);
+    return [response];
 }
+
+// AtendimentoDAO.prototype.finaliza = function(objeto,id, callback) {
+//     if(objeto.tipo == 'X'){
+//         this._connection.query("UPDATE "+this._table+" SET dataCancelamento = CURRENT_TIMESTAMP, idUsuarioAlteracao=?, motivoCancelamento =?,  situacao=? where id= ?", [objeto.idUsuarioAlteracao, objeto.motivoCancelamento, objeto.tipo, id], callback);
+//     } else if(objeto.tipo != 'C'){
+//         this._connection.query("UPDATE "+this._table+" SET dataFinalizacao = CURRENT_TIMESTAMP, idUsuarioAlteracao=?, motivoCancelamento='', situacao =? where id= ?", [objeto.idUsuarioAlteracao, objeto.tipo, id], callback);
+//     } 
+// }
+
+// AtendimentoDAO.prototype.finalizaSync = function(objeto) {
+//     const response;
+//     if(objeto.tipo == 'X'){
+//         response = await this._connection.query("UPDATE "+this._table+" SET dataCancelamento = CURRENT_TIMESTAMP where id= ?", [id]);
+//     } else{
+//         response = await this._connection.query("UPDATE "+this._table+" SET dataFinalizacao = CURRENT_TIMESTAMP where id= ?", [id]);
+//     } 
+//     return [response];
+// }
 
 AtendimentoDAO.prototype.deletaPorId = function (id,callback) {
     this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
