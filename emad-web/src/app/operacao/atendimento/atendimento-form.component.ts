@@ -691,7 +691,7 @@ export class AtendimentoFormComponent implements OnInit {
     if(!id)
       return;
 
-    let url = this.router.url.replace('atendimentos/cadastro/'+this.id,'') +  "#/atendimentos/historico/" + id;  
+    let url = this.router.url.replace('atendimentos/cadastro/'+this.id,'') +  this.virtualDirectory + "#/atendimentos/historico/" + id;  
 
     this.loading = true;
     this.service.printDocument(url).subscribe(result => {
