@@ -59,6 +59,29 @@ module.exports = function (app) {
         }
     });
    
+    app.get('/especialidade-entidade-campo/especialidade/:idEspecialidade', async function (req, res) {
+        let usuario = req.usuario;
+        let util = new app.util.Util();
+        let idEspecialidade = req.params.idEspecialidade;
+        let errors = [];
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const especialidadeEntidadeCampoRepository = new app.dao.EspecialidadeEntidadeCampoDAO(connection);
+
+        try {
+            const response = await especialidadeEntidadeCampoRepository.listaPorEspecialidade(idEspecialidade);
+            res.status(200).json(response);
+        }
+        catch (exception) {
+            errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
+            res.status(500).send(errors);
+        }
+        finally{
+            await connection.close();
+        }
+    });
+
     app.get('/especialidade-entidade-campo/especialidade', async function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
