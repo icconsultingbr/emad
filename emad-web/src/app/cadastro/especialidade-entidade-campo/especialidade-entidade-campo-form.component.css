@@ -1,0 +1,13 @@
+.table td {
+    padding: 3px 3px 3px 10px;
+    vertical-align: middle;
+    border-top: 1px solid #dee2e6;
+}
+
+.odd{
+    background: #fff;
+}
+
+.even{
+    background: #f8f9fa;
+}

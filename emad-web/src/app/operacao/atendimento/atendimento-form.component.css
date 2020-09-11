@@ -12,6 +12,11 @@
     background: #f8f9fa;
 }
 
+::ng-deep .modal-gg .modal-dialog{
+    max-width: 1200px;
+    min-width: 1200px;
+}
+
 ul.timeline {
     list-style-type: none;
     position: relative;
