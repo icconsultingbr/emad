@@ -381,6 +381,7 @@ module.exports = function (app) {
             receita.itensReceita = buscaMedicamentoAtendimento;
 
             if (!buscaAtendimento.idReceita && receita.itensReceita.length > 0) {
+                receita.idAtendimento = id;
                 receita.ano = new Date().getFullYear();
                 receita.idPaciente = buscaAtendimento.idPaciente;
                 receita.idProfissional = buscaProfissional.id;

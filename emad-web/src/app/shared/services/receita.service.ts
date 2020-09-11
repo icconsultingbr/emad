@@ -174,6 +174,15 @@ export class ReceitaService extends GenericsService {
       }
     },
     {
+      field: "idAtendimento",
+      type: "number",
+      label: "Atendimento",
+      grid: true,
+      form: false,
+      required: false,
+      validator: ['', '']
+    },
+    {
       field: "situacao",
       type: "text",
       label: "Situação",

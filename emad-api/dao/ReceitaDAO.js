@@ -5,11 +5,11 @@ function ReceitaDAO(connection) {
 
 ReceitaDAO.prototype.salva = async function(receita) {
     const novaReceita = await this._connection.query(`INSERT INTO tb_receita (idEstabelecimento, idUf, idMunicipio, idProfissional, idPaciente, 
-                                                          idSubgrupoOrigem, ano, numero, dataEmissao, situacao, idUsuarioCriacao, dataCriacao)
-                                                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+                                                          idSubgrupoOrigem, ano, numero, dataEmissao, situacao, idUsuarioCriacao, dataCriacao, idAtendimento)
+                                                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
                                                           [receita.idEstabelecimento, receita.idUf, receita.idMunicipio, receita.idProfissional,
                                                            receita.idPaciente, receita.idSubgrupoOrigem, receita.ano, receita.numero, 
-                                                           new Date(receita.dataEmissao), receita.situacao, receita.idUsuarioCriacao, receita.dataCriacao]);
+                                                           new Date(receita.dataEmissao), receita.situacao, receita.idUsuarioCriacao, receita.dataCriacao, receita.idAtendimento]);
 
     return [novaReceita];
 }
@@ -153,6 +153,7 @@ ReceitaDAO.prototype.lista = function(addFilter, callback) {
                             ,a.situacao
                             ,a.idUf
                             ,CONCAT(municipio.nome,'/',uf.uf) textoCidade
+                            ,a.idAtendimento
                             FROM ${this._table} a
                             INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
                             INNER JOIN tb_municipio municipio ON (a.idMunicipio = municipio.id)

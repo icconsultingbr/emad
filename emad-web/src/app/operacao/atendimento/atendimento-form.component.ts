@@ -32,23 +32,26 @@ export class AtendimentoFormComponent implements OnInit {
 
   //FORMS
   form: FormGroup;
+  formHistorico: FormGroup;
   formHipotese: FormGroup;
   formMedicamento: FormGroup;
 
   method: string = "atendimento";
   url: string = "atendimentos";
   object: Atendimento = new Atendimento();
+  objectHistorico: AtendimentoHistorico = new AtendimentoHistorico(); 
   paciente: Paciente = new Paciente();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
   encaminhamento: Encaminhamento = new Encaminhamento();
   atendimentoMedicamento: AtendimentoMedicamento = new AtendimentoMedicamento();
   medicamento: Material = new Material();
-  atendimentoHistorico: AtendimentoHistorico = new AtendimentoHistorico(); 
   virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
-  
+  atendimentoHistorico: AtendimentoHistorico = new AtendimentoHistorico(); 
+  mostraFormulario: boolean = false;
   pacienteSelecionado: any = null;
   medicamentoSelecionado: any = null;
   domains: any[] = [];
+  allItemsEntidadeCampo: any[] = null;
 
   //PAGINATION
   allItems: any[] = [];
@@ -94,17 +97,13 @@ export class AtendimentoFormComponent implements OnInit {
         this.fieldsPacientes.push(field);
       }
     }
-
   }
 
   ngOnInit() {
-
     this.route.params.subscribe(params => {
       this.id = params['id'];
-      this.idHistorico = params['idHistorico'];      
-
-      this.createGroup();
-      this.loadDomains();
+      this.idHistorico = params['idHistorico'];  
+      this.carregaEntidadeCampoPorEspecialidade();
     });
   }
 
@@ -113,31 +112,64 @@ export class AtendimentoFormComponent implements OnInit {
       id: [''],
       idPaciente: [Validators.required],
       pacienteNome: [Validators.required],
-      pacienteHistoriaProgressa: ['',''],
-      pressaoArterial: ['', ''],
-      pulso: ['', ''],
-      saturacao: ['', ''],
-      temperatura: ['', ''],
-      altura: ['', ''],
-      peso: ['', ''],
-      historicoClinico: ['', ''],
-      exameFisico: ['', ''],
-      observacoesGerais: ['', ''],
-      situacao: [Validators.required],
+      pacienteHistoriaProgressa: new FormControl({value: '', disabled: ((this.allItemsEntidadeCampo.filter((entidadeCampo) => entidadeCampo.nomeCampo == "historiaProgressa").length > 0)) ? false : true }),
+      pressaoArterial: new FormControl({value: '', disabled: ((this.allItemsEntidadeCampo.filter((entidadeCampo) => entidadeCampo.nomeCampo == "pressaoArterial").length > 0)) ? false : true }),
+      pulso: new FormControl({value: '', disabled: ((this.allItemsEntidadeCampo.filter((entidadeCampo) => entidadeCampo.nomeCampo == "pulso").length > 0)) ? false : true }),
+      saturacao: new FormControl({value: '', disabled: ((this.allItemsEntidadeCampo.filter((entidadeCampo) => entidadeCampo.nomeCampo == "saturacao").length > 0)) ? false : true }),
+      temperatura: new FormControl({value: '', disabled: ((this.allItemsEntidadeCampo.filter((entidadeCampo) => entidadeCampo.nomeCampo == "temperatura").length > 0)) ? false : true }),
+      altura: new FormControl({value: '', disabled: ((this.allItemsEntidadeCampo.filter((entidadeCampo) => entidadeCampo.nomeCampo == "altura").length > 0)) ? false : true }),      
+      peso: new FormControl({value: '', disabled: ((this.allItemsEntidadeCampo.filter((entidadeCampo) => entidadeCampo.nomeCampo == "peso").length > 0)) ? false : true }),
+      historicoClinico: new FormControl({value: '', disabled: ((this.allItemsEntidadeCampo.filter((entidadeCampo) => entidadeCampo.nomeCampo == "historicoClinico").length > 0)) ? false : true }),
+      exameFisico: new FormControl({value: '', disabled: ((this.allItemsEntidadeCampo.filter((entidadeCampo) => entidadeCampo.nomeCampo == "exameFisico").length > 0)) ? false : true }),
+      observacoesGerais: new FormControl({value: '', disabled: ((this.allItemsEntidadeCampo.filter((entidadeCampo) => entidadeCampo.nomeCampo == "observacoesGerais").length > 0)) ? false : true }),
+      situacao: new FormControl({value: '', disabled: ((this.allItemsEntidadeCampo.filter((entidadeCampo) => entidadeCampo.nomeCampo == "situacao").length > 0)) ? false : true }, Validators.required),
       motivoCancelamento: ['',''],
       idEstabelecimento: [Validators.required],
-      tipoFicha: new FormControl({value: '', disabled: (this.idHistorico > 0) ? true : false}, Validators.required),
-      idClassificacaoRisco: new FormControl({value: '', disabled: (this.idHistorico > 0) ? true : false}, Validators.required),
-      motivoQueixa: ['',''],
-      tipoHistoriaClinica: new FormControl({value: '', disabled: (this.idHistorico > 0) ? true : false}),
+      tipoFicha: new FormControl({value: '', disabled: (this.idHistorico > 0) ? true : ((this.allItemsEntidadeCampo.filter((entidadeCampo) => entidadeCampo.nomeCampo == "tipoFicha").length > 0)) ? false : true}, Validators.required),
+      idClassificacaoRisco: new FormControl({value: '', disabled: (this.idHistorico > 0) ? true : ((this.allItemsEntidadeCampo.filter((entidadeCampo) => entidadeCampo.nomeCampo == "idClassificacaoRisco").length > 0)) ? false : true}, Validators.required),
+      motivoQueixa: new FormControl({value: '', disabled: ((this.allItemsEntidadeCampo.filter((entidadeCampo) => entidadeCampo.nomeCampo == "motivoQueixa").length > 0)) ? false : true }, Validators.required),
+      tipoHistoriaClinica: new FormControl({value: '', disabled: (this.idHistorico > 0) ? true : ((this.allItemsEntidadeCampo.filter((entidadeCampo) => entidadeCampo.nomeCampo == "tipoHistoriaClinica").length > 0)) ? false : true}),
     });
-
 
     this.formHipotese = this.fbHipotese.group({
       idPaciente: [Validators.required],
       idHipoteseDiagnostica: [Validators.required]
     });
 
+    this.formMedicamento = this.fbMedicamento.group({
+      idPaciente: [Validators.required],
+      uso: [Validators.required],
+      tipoVia: [Validators.required],
+      quantidade: [Validators.required],
+      apresentacao: [Validators.required],
+      posologia: [Validators.required],
+    });
+  }
+
+  createGroupHistorico() {
+    this.formHistorico = this.fb.group({
+      pacienteHistoriaProgressa: new FormControl({value: '', disabled: true}),
+      pressaoArterial: new FormControl({value: '', disabled: true}),
+      pulso: new FormControl({value: '', disabled: true}),
+      saturacao: new FormControl({value: '', disabled: true}),
+      temperatura: new FormControl({value: '', disabled: true}),
+      altura: new FormControl({value: '', disabled: true}),
+      peso: new FormControl({value: '', disabled: true}),
+      historicoClinico: new FormControl({value: '', disabled: true}),
+      exameFisico: new FormControl({value: '', disabled: true}),
+      observacoesGerais: new FormControl({value: '', disabled: true}),
+      situacao: new FormControl({value: '', disabled: true}),
+      motivoCancelamento:  new FormControl({value: '', disabled: true}),      
+      tipoFicha: new FormControl({value: '', disabled: true}),
+      idClassificacaoRisco: new FormControl({value: '', disabled: true}),
+      motivoQueixa: new FormControl({value: '', disabled: true}),
+      tipoHistoriaClinica: new FormControl({value: '', disabled: true}),
+    });
+
+    this.formHipotese = this.fbHipotese.group({
+      idPaciente: [Validators.required],
+      idHipoteseDiagnostica: [Validators.required]
+    });
 
     this.formMedicamento = this.fbMedicamento.group({
       idPaciente: [Validators.required],
@@ -224,7 +256,7 @@ export class AtendimentoFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      windowClass: 'modal-gg'
     });
   }
 
@@ -272,7 +304,7 @@ export class AtendimentoFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      windowClass: 'modal-gg'
     });
   }
 
@@ -281,7 +313,18 @@ export class AtendimentoFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      windowClass: 'modal-gg'
+    });
+  }
+
+  openHistorico(content: any, idHistorico: number) {
+    this.createGroupHistorico();
+    this.encontraAtendimentoHistorico(idHistorico);
+    this.modalRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      windowClass: 'modal-gg'
     });
   }
 
@@ -324,20 +367,53 @@ export class AtendimentoFormComponent implements OnInit {
     this.findPacienteData(this.object.idPaciente);
   }
 
-  encontraAtendimento(idHistorico: number) {
+  encontraAtendimento() {
     this.object.id = this.id;
     this.errors = [];
     this.message = "";
     this.loading = true;
 
-    if(idHistorico){
+    this.service.findById(this.id, this.method).subscribe(result => {
+      this.object = result;
+      this.object.pacienteNome = result.nome;
+      this.object.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
+      this.loading = false;
+
+      this.findHipotesePorAtendimento();
+      this.findEncaminhamentoPorAtendimento();
+      this.findMedicamentoPorAtendimento();
+      this.findHistoricoPorAtendimento();
+
+    }, error => {
+      this.object = new Atendimento();
+      this.object.idPaciente = this.pacienteSelecionado.id;
+      this.object.pacienteNome = this.pacienteSelecionado.nome;
+      this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
+      this.loading = false;
+
+      this.allItemsEncaminhamento = [];
+      this.allItemsHipotese = [];
+      this.allItemsMedicamento = [];
+
+      this.errors.push({
+        message: "Atendimento não encontrado"
+      });
+    });    
+  }
+
+  encontraAtendimentoHistorico(idHistorico: number) {
+    this.object.id = this.id;
+    this.errors = [];
+    this.message = "";
+    
+    if(idHistorico){      
+    this.loading = true;
       this.service.findByHistoricoId(idHistorico).subscribe(result => {
-        this.object = result;
+        this.objectHistorico = result;
         this.dataHistorico = result.dataHistorico;
         this.nomeProfissional = result.nomeProfissional;
         this.nomeTipoHistorico = result.nomeTipoHistorico;
-        this.object.pacienteNome = result.nome;
-        this.object.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
+        this.objectHistorico.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
         this.loading = false;
   
         this.findHipotesePorAtendimento();
@@ -345,45 +421,14 @@ export class AtendimentoFormComponent implements OnInit {
         this.findMedicamentoPorAtendimento();
         this.findHistoricoPorAtendimento();
   
-      }, error => {
-        this.object = new Atendimento();  
-        this.allItemsEncaminhamento = [];
-        this.allItemsHipotese = [];
-        this.allItemsMedicamento = [];
-  
+      }, error => {  
+        this.loading = false;
+        this.close();
         this.errors.push({
           message: "Atendimento histórico não encontrado"
         });
       });
-    }
-    else{
-      this.service.findById(this.id, this.method).subscribe(result => {
-        this.object = result;
-        this.object.pacienteNome = result.nome;
-        this.object.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
-        this.loading = false;
-  
-        this.findHipotesePorAtendimento();
-        this.findEncaminhamentoPorAtendimento();
-        this.findMedicamentoPorAtendimento();
-        this.findHistoricoPorAtendimento();
-  
-      }, error => {
-        this.object = new Atendimento();
-        this.object.idPaciente = this.pacienteSelecionado.id;
-        this.object.pacienteNome = this.pacienteSelecionado.nome;
-        this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
-        this.loading = false;
-  
-        this.allItemsEncaminhamento = [];
-        this.allItemsHipotese = [];
-        this.allItemsMedicamento = [];
-  
-        this.errors.push({
-          message: "Atendimento não encontrado"
-        });
-      });
-    }        
+    }       
   }
 
   sendForm(event) {
@@ -393,7 +438,7 @@ export class AtendimentoFormComponent implements OnInit {
     event.preventDefault();
 
     this.service
-      .save(this.form.value, this.method)
+      .save(this.form.getRawValue(), this.method)
       .subscribe((res: any) => {
         this.object.id = res.id;
         this.findHistoricoPorAtendimento();
@@ -559,10 +604,8 @@ export class AtendimentoFormComponent implements OnInit {
                   ],
               });
             if (!Util.isEmpty(this.id)) {
-              this.encontraAtendimento(null);
+              this.encontraAtendimento();
             }
-            else if(!Util.isEmpty(this.idHistorico))
-              this.encontraAtendimento(this.idHistorico);
             else
               this.loading = false;
             });
@@ -672,7 +715,7 @@ export class AtendimentoFormComponent implements OnInit {
     if (!this.object) {
       return true;
     } else {
-      if (Util.isEmpty(this.object.dataFinalizacao) && Util.isEmpty(this.object.dataCancelamento) && Util.isEmpty(this.idHistorico)) {
+      if (Util.isEmpty(this.object.dataFinalizacao) && Util.isEmpty(this.object.dataCancelamento)) {
         return false;
       } else {
         return true;
@@ -764,5 +807,22 @@ export class AtendimentoFormComponent implements OnInit {
     this.paging.offset = offset !== undefined ? offset : 0;
     this.paging.limit = limit ? limit : this.paging.limit;    
     this.buscaPaciente(this.paging.offset, this.paging.limit);
+  }
+
+  carregaEntidadeCampoPorEspecialidade() {    
+    this.loading = true;
+    this.allItemsEntidadeCampo = [];
+    this.service.carregaEntidadeCampoPorEspecialidade().subscribe(result => {
+      this.mostraFormulario = true;
+      this.allItemsEntidadeCampo = result;         
+      this.createGroup();
+      this.loadDomains();
+      this.loading = false;
+    }, error => {
+      this.createGroup();
+      this.loadDomains();
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
   }
 }
