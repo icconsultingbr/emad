@@ -85,7 +85,7 @@ module.exports = function (app) {
     app.get('/especialidade-entidade-campo/especialidade', async function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
-        let idEspecialidade = req.params.idEspecialidade;
+        let idEspecialidade = 0;
         let errors = [];
 
         const connection = await app.dao.connections.EatendConnection.connection();
@@ -95,15 +95,11 @@ module.exports = function (app) {
                 
         var buscaProfissional = await profissionalRepository.buscaProfissionalPorUsuarioSync(usuario.id);
 
-        if (!buscaProfissional) {
-            errors = util.customError(errors, "header", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos", "");
-            res.status(400).send(errors);
-            await connection.rollback();
-            return;
-        }
+        if(buscaProfissional)
+            idEspecialidade = buscaProfissional.idEspecialidade;
 
-        try {
-            const response = await especialidadeEntidadeCampoRepository.listaPorEspecialidade(buscaProfissional.idEspecialidade);
+        try {            
+            const response = await especialidadeEntidadeCampoRepository.listaPorEspecialidade(idEspecialidade);
             res.status(200).json(response);
         }
         catch (exception) {
