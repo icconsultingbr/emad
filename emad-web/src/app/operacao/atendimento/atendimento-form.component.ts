@@ -533,7 +533,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.message = "";
     this.errors = [];
     this.loading = true;
-    this.service.findHipoteseByAtendimento(this.object.id).subscribe(result => {
+    this.service.findHipoteseByPaciente(this.object.idPaciente).subscribe(result => {
       this.allItemsHipotese = result;
       this.loading = false;
     }, error => {
@@ -582,7 +582,8 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   close() {
-    this.modalRef.close();
+    if(this.modalRef)
+      this.modalRef.close();
   }
 
   loadDomains() {
@@ -687,7 +688,7 @@ export class AtendimentoFormComponent implements OnInit {
   removeHipotese(item) {
     this.service.removeHipotese(item.id).subscribe(result => {
       this.message = "Hipótese diagnóstica removida com sucesso!"
-      this.modalRef.close();
+      this.close();
       this.loading = false;
       this.findHipotesePorAtendimento();
     });
@@ -696,7 +697,7 @@ export class AtendimentoFormComponent implements OnInit {
   removeEncaminhamento(item) {
     this.service.removeEncaminhamento(item.id).subscribe(result => {
       this.message = "Encaminhamento removido com sucesso!"
-      this.modalRef.close();
+      this.close();
       this.loading = false;
       this.findEncaminhamentoPorAtendimento();
     });
@@ -705,7 +706,7 @@ export class AtendimentoFormComponent implements OnInit {
   removeMedicamento(item) {
     this.service.removeMedicamento(item.id).subscribe(result => {
       this.message = "Medicamento removido com sucesso!"
-      this.modalRef.close();
+      this.close();
       this.loading = false;
       this.findMedicamentoPorAtendimento();
     });

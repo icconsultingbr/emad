@@ -8,6 +8,8 @@ import PlaceResult = google.maps.places.PlaceResult;
 import PlaceGeometry = google.maps.places.PlaceGeometry;
 import GeocoderAddressComponent = google.maps.GeocoderAddressComponent;
 import { environment } from '../../../environments/environment';
+import { PacienteHipotese } from '../../_core/_models/PacenteHipotese';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-paciente-form',
@@ -17,6 +19,7 @@ import { environment } from '../../../environments/environment';
 })
 export class PacienteFormComponent implements OnInit {
   object: Paciente = new Paciente();
+  pacienteHipotese: PacienteHipotese = new PacienteHipotese();
   method: string = 'paciente';
   fields = [];
   label: string = "Paciente";
@@ -31,6 +34,7 @@ export class PacienteFormComponent implements OnInit {
   dropdownSettings = {};
   allItemsHipotese: any[] = [];
   virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
+  modalRef: NgbModalRef = null;
   
   @ViewChild('addresstext') addresstext: ElementRef;
   
@@ -39,6 +43,7 @@ export class PacienteFormComponent implements OnInit {
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private ref: ChangeDetectorRef,
+    private modalService: NgbModal,
     private router: Router) {
     this.fields = service.fields;
   }
@@ -74,52 +79,55 @@ export class PacienteFormComponent implements OnInit {
         this.service.listDomains('modalidade').subscribe(modalidades => {
           this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
             this.service.listDomains('raca').subscribe(racas => {
-              this.service.listDomains('atencao-continuada').subscribe(atencaoContinuada => {
-                this.domains.push({
-                  idUf: ufs,
-                  idNacionalidade: paises,
-                  idNaturalidade: [],
-                  idMunicipio: [],
-                  idEstabelecimentoCadastro: estabelecimentos,
-                  escolaridade: [
-                    { id: 1, nome: "Educação infantil" },
-                    { id: 2, nome: "Fundamental" },
-                    { id: 3, nome: "Médio" },
-                    { id: 4, nome: "Superior (Graduação)" },
-                    { id: 5, nome: "Pós-graduação" },
-                    { id: 6, nome: "Mestrado" },
-                    { id: 7, nome: "Doutorado" },
-                    { id: 8, nome: "Escola" },
-                    { id: 9, nome: "Analfabeto" },
-                    { id: 10, nome: "Não informado" }
-                  ],
-                  idModalidade: modalidades,
-                  sexo: [
-                    { id: "1", nome: "Masculino" },
-                    { id: "2", nome: "Feminino" },
-                    { id: "3", nome: "Ambos" },
-                    { id: "4", nome: "Não informado" }
-                  ],
-                  idTipoSanguineo: [
-                    { id: "1", nome: "A_POSITIVO" },
-                    { id: "2", nome: "A_NEGATIVO" },
-                    { id: "3", nome: "B_POSITIVO" },
-                    { id: "4", nome: "B_NEGATIVO" },
-                    { id: "5", nome: "AB_POSITIVO" },
-                    { id: "6", nome: "AB_NEGATIVO" },
-                    { id: "7", nome: "O_POSITIVO" },
-                    { id: "8", nome: "O_NEGATIVO" },
-                  ],
-                  idRaca: racas,
-                  idAtencaoContinuada: atencaoContinuada,
-                  gruposAtencaoContinuada: atencaoContinuada,
+              this.service.listDomains('hipotese-diagnostica').subscribe(hipoteseDiagnostica => {
+                this.service.listDomains('atencao-continuada').subscribe(atencaoContinuada => {
+                  this.domains.push({
+                    idUf: ufs,
+                    idNacionalidade: paises,
+                    idNaturalidade: [],
+                    idMunicipio: [],
+                    hipoteses: hipoteseDiagnostica,
+                    idEstabelecimentoCadastro: estabelecimentos,
+                    escolaridade: [
+                      { id: 1, nome: "Educação infantil" },
+                      { id: 2, nome: "Fundamental" },
+                      { id: 3, nome: "Médio" },
+                      { id: 4, nome: "Superior (Graduação)" },
+                      { id: 5, nome: "Pós-graduação" },
+                      { id: 6, nome: "Mestrado" },
+                      { id: 7, nome: "Doutorado" },
+                      { id: 8, nome: "Escola" },
+                      { id: 9, nome: "Analfabeto" },
+                      { id: 10, nome: "Não informado" }
+                    ],
+                    idModalidade: modalidades,
+                    sexo: [
+                      { id: "1", nome: "Masculino" },
+                      { id: "2", nome: "Feminino" },
+                      { id: "3", nome: "Ambos" },
+                      { id: "4", nome: "Não informado" }
+                    ],
+                    idTipoSanguineo: [
+                      { id: "1", nome: "A_POSITIVO" },
+                      { id: "2", nome: "A_NEGATIVO" },
+                      { id: "3", nome: "B_POSITIVO" },
+                      { id: "4", nome: "B_NEGATIVO" },
+                      { id: "5", nome: "AB_POSITIVO" },
+                      { id: "6", nome: "AB_NEGATIVO" },
+                      { id: "7", nome: "O_POSITIVO" },
+                      { id: "8", nome: "O_NEGATIVO" },
+                    ],
+                    idRaca: racas,
+                    idAtencaoContinuada: atencaoContinuada,
+                    gruposAtencaoContinuada: atencaoContinuada,
+                  });
+                  if (!Util.isEmpty(this.id)) {
+                    this.encontraPaciente();
+                  }
+                  else{
+                    this.loading = false;
+                  }
                 });
-                if (!Util.isEmpty(this.id)) {
-                  this.encontraPaciente();
-                }
-                else{
-                  this.loading = false;
-                }
               });
             });
           });
@@ -149,10 +157,6 @@ export class PacienteFormComponent implements OnInit {
         message: "Paciente não encontrado"
       });
     });
-  }
-
-  removeHipotese(item: any) {
-
   }
 
   carregaNaturalidade() {    
@@ -349,21 +353,6 @@ export class PacienteFormComponent implements OnInit {
     });
   }
 
-  openHipotese(content: any) {
-    // this.errors = [];
-    // this.message = "";
-    // this.pacienteHipotese = new PacienteHipotese();
-    // this.pacienteHipotese.idPaciente = this.object.idPaciente;
-    // this.pacienteHipotese.idAtendimento = this.object.id;
-
-    // this.modalRef = this.modalService.open(content, {
-    //   backdrop: 'static',
-    //   keyboard: false,
-    //   centered: true,
-    //   size: "lg"
-    // });
-  }
-
   findHipotesePorPaciente() {
     this.message = "";
     this.errors = [];
@@ -388,4 +377,48 @@ export class PacienteFormComponent implements OnInit {
     });
   }
 
+  openHipotese(content: any) {
+    this.errors = [];
+    this.message = "";
+    this.pacienteHipotese = new PacienteHipotese();
+    this.pacienteHipotese.idPaciente = this.object.id;
+    this.pacienteHipotese.idAtendimento = null;
+
+    this.modalRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      size: "lg"
+    });
+  }
+
+  close() {
+    if(this.modalRef)
+      this.modalRef.close();
+  }
+
+  saveHipotese() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+
+    this.service.saveHipotese(this.pacienteHipotese).subscribe(result => {
+      this.message = "Hipótese diagnóstica inserida com sucesso!"
+      this.close();
+      this.loading = false;
+      this.findHipotesePorPaciente();
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+
+  removeHipotese(item) {
+    this.service.removeHipotese(item.id).subscribe(result => {
+      this.message = "Hipótese diagnóstica removida com sucesso!"
+      this.close();
+      this.loading = false;
+      this.findHipotesePorPaciente();
+    });
+  }
 }

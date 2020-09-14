@@ -2,13 +2,12 @@ module.exports = function (app) {
 
     const _table = "tb_atendimento_hipotese_diagnostica";
 
-    app.post('/atendimento-hipotese', function(req,res){
+    app.post('/atendimento-hipotese', async function(req,res){
         let obj = req.body;
         let usuario = req.usuario; 
         let util = new app.util.Util();
-        let errors = [];
+        let errors = [];             
 
-        req.assert("idAtendimento").notEmpty().withMessage("Atendimento é campo Obrigatório");
         req.assert("idPaciente").notEmpty().withMessage("Paciente é campo Obrigatório");
         req.assert("idHipoteseDiagnostica").notEmpty().withMessage("Hipótese diagnóstica é um campo Obrigatório");
 
@@ -19,70 +18,62 @@ module.exports = function (app) {
             return; 
         }
 
-        salvar(obj, res).then(function(response) {
-            obj.id = response.insertId;
-            res.status(201).send(obj);
-        }); 
-    });
+        const connection = await app.dao.connections.EatendConnection.connection();
 
-    app.put('/atendimento-hipotese', function(req,res){
-        let obj = req.body;
-        let usuario = req.usuario; 
-        let util = new app.util.Util();
-        let errors = [];
+        const atendimentoHipoteseRepository = new app.dao.AtendimentoHipoteseDiagnosticaDAO(connection);
 
-        req.assert("idAtendimento").notEmpty().withMessage("Atendimento é campo Obrigatório");
-        req.assert("idPaciente").notEmpty().withMessage("Paciente é campo Obrigatório");
-        req.assert("idHipoteseDiagnostica").notEmpty().withMessage("Hipótese diagnóstica é um campo Obrigatório");
+        try {
+            await connection.beginTransaction();
 
-        errors = req.validationErrors();
+            var responseBuscaHipotese = await atendimentoHipoteseRepository.validaHipotesePorPaciente(obj);
+
+            if (responseBuscaHipotese.length > 0) {
+                errors = util.customError(errors, "header", "Hipótese já está vinculada ao paciente!", "");
+                res.status(400).send(errors);
+                await connection.rollback();
+                return;
+            }
+
+            obj.dataCriacao = new Date;
+            obj.idUsuarioCriacao = usuario.id;
+            obj.situacao = 1;            
         
-        if(errors){
-            res.status(400).send(errors);
-            return; 
-        }
+            var response = await atendimentoHipoteseRepository.salva(obj);           
+            obj.id = response[0].insertId;
 
-        atualizar(obj, res).then(function(response) {
-            obj.id = response.insertId;
             res.status(201).send(obj);
-        });  
-    });
-   
-    app.get('/atendimento-hipotese', function (req, res) {
-        let usuario = req.usuario;
-        let util = new app.util.Util();
-        let errors = [];
 
-        lista(res).then(function (resposne) {
-            res.status(200).json(resposne);
-            return;
-        });
+            await connection.commit();
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado " + exception, ""));
+            await connection.rollback();
+        }
+        finally {
+            await connection.close();
+        }
     });
 
-
-    app.get('/atendimento-hipotese/:id', function(req,res){        
+    app.get('/atendimento-hipotese/atendimento/:id', async function(req,res){ 
         let usuario = req.usuario;
         let id = req.params.id;
         let util = new app.util.Util();
         let errors = [];
 
-        buscarPorId(id, res).then(function(response) {
+        const connection = await app.dao.connections.EatendConnection.connection();
+        
+        try {
+            const atendimentoHipoteseRepository = new app.dao.AtendimentoHipoteseDiagnosticaDAO(connection);
+            const response = await atendimentoHipoteseRepository.buscarPorAtendimentoId(id);
             res.status(200).json(response);
-            return;      
-        });
-    }); 
-
-
-    app.get('/atendimento-hipotese/atendimento/:id', function(req,res){        
-        let usuario = req.usuario;
-        let id = req.params.id;
-        let util = new app.util.Util();
-        let errors = [];
-
-        buscarPorAtendimentoId(id, res).then(function(response) {
-            res.status(200).json(response);
-            return;      
-        });
+        }
+        catch (exception) {
+            errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
+            res.status(500).send(errors);
+        }
+        finally{
+            await connection.close();
+        }
     }); 
 
     app.get('/atendimento-hipotese/paciente/:id', async function(req,res){        
@@ -105,159 +96,40 @@ module.exports = function (app) {
         finally{
             await connection.close();
         }
-
     }); 
 
-    app.delete('/atendimento-hipotese/:id', function(req,res){     
+    app.delete('/atendimento-hipotese/:id', async function (req, res) {
         let util = new app.util.Util();
         let usuario = req.usuario;
         let errors = [];
         let id = req.params.id;
         let obj = {};
         obj.id = id;
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const atendimentoHipoteseRepository = new app.dao.AtendimentoHipoteseDiagnosticaDAO(connection);
+
+        try {
+            await connection.beginTransaction();
+
+            obj.dataAlteracao = new Date;
+            obj.idUsuarioAlteracao = usuario.id;
+            obj.situacao = 0;            
         
-        deletaPorId(id, res).then(function(response) {
-            res.status(200).json(obj);
-            return;      
-        });
+            var response = await atendimentoHipoteseRepository.deletaPorId(obj);           
+
+            res.status(201).send(response);
+
+            await connection.commit();
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado " + exception, ""));
+            await connection.rollback();
+        }
+        finally {
+            await connection.close();
+        }
     });
-
-    function lista(res) {
-        let q = require('q');
-        let d = q.defer();
-        let util = new app.util.Util();
-        let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GenericDAO(connection, _table);
-
-        let errors = [];
-
-        objDAO.lista(function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
- 
-    function buscarPorId(id,  res) {
-        let q = require('q');
-        let d = q.defer();
-        let util = new app.util.Util();
-       
-        let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GenericDAO(connection, _table);
-        let errors =[];
-     
-        objDAO.buscaPorId(id, function(exception, result){
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
-                res.status(500).send(errors);
-                return;
-            } else {
-                
-                d.resolve(result[0]);
-            }
-        });
-        return d.promise;  
-    }
-
-    function buscarPorAtendimentoId(id,  res) {
-        let q = require('q');
-        let d = q.defer();
-        let util = new app.util.Util();
-       
-        let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.AtendimentoHipoteseDiagnosticaDAO(connection, _table);
-        let errors =[];
-     
-        objDAO.buscarPorAtendimentoId(id, function(exception, result){
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
-                res.status(500).send(errors);
-                return;
-            } else {
-                
-                d.resolve(result);
-            }
-        });
-        return d.promise;  
-    }
-
-
-    function salvar(obj, res){
-        delete obj.id;
-        let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GenericDAO(connection, _table);
-        let q = require('q');
-        let d = q.defer();
-
-        objDAO.salva(obj, function(exception, result){
-            if(exception){
-                console.log('Erro ao inserir', exception);
-                res.status(500).send(exception);   
-                d.reject(exception);
-                return;
-            }
-            else{   
-                d.resolve(result);
-            }
-        });
-        return d.promise; 
-    }
-
-    function atualizar(obj, res){
-        let id = obj.id;
-        delete obj.id;
-        let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GenericDAO(connection, _table);
-        let q = require('q');
-        let d = q.defer();
-
-        objDAO.atualiza(obj, id, function(exception, result){
-            if(exception){
-                console.log('Erro ao alterar o registro', exception);
-                res.status(500).send(exception);   
-                d.reject(exception);
-                return;
-            }
-            else{   
-                d.resolve(result);
-            }
-        });
-        return d.promise; 
-    }
-
-    function deletaPorId(id, res) {
-        let q = require('q');
-        let d = q.defer();
-        let util = new app.util.Util();
-        let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.GenericDAO(connection, _table);
-        let errors = [];
-
-        objDAO.deletaPorId(id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                errors = util.customError(errors, "data", "Erro ao remover os dados", "obj");
-                res.status(500).send(errors);
-                return;
-            } else {
-
-                d.resolve(result[0]);
-            }
-        });
-        return d.promise;
-
-    }
 }
 

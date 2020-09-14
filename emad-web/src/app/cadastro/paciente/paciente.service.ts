@@ -369,5 +369,20 @@ export class PacienteService extends GenericsService {
 
   findHipoteseByPaciente(id: any): Observable<any> {
     return this.http.get("atendimento-hipotese/paciente/" + id);
-}
+  }
+
+  saveHipotese(obj: any) {
+    if (obj.id) {
+        return this.http
+            .put('atendimento-hipotese', JSON.stringify(obj));
+    }
+    else {
+        return this.http
+            .post('atendimento-hipotese', JSON.stringify(obj));
+    }
+  }
+
+  removeHipotese(params: any) {
+    return this.http.delete('atendimento-hipotese/' + params);
+  }
 }

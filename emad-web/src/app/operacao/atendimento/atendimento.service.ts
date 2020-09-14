@@ -261,4 +261,8 @@ export class AtendimentoService extends GenericsService {
     carregaEntidadeCampoPorEspecialidade(): Observable<any> {
         return this.http.get("especialidade-entidade-campo/especialidade");
     }
+
+    findHipoteseByPaciente(id: any): Observable<any> {
+        return this.http.get("atendimento-hipotese/paciente/" + id);
+      }
 }

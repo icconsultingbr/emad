@@ -279,10 +279,8 @@
             <div class="card-header text-left">
               Hipótese diagnostica
             </div>
-            <div class="card-body text-left">
-  
-              <div class="row">
-  
+            <div class="card-body text-left">  
+              <div class="row">  
                 <div class="col-12 mb-3">
                   <button *ngIf="!disableFields()" type="button" class="btn btn-primary float-left mr-2" (click)="openHipotese(contentHipotese)" [disabled]="!object.id">
                     <i class="fa fa-plus-circle"></i>
@@ -298,6 +296,7 @@
                       <tr>
                         <th>Código</th>
                         <th>Diagnóstico</th>
+                        <th>Atendimento</th>
                         <th></th>
                       </tr>
                     </thead>
@@ -312,6 +311,7 @@
                       <tr class="text-left" *ngFor="let item of allItemsHipotese">
                         <td class="text-secondary">{{item.codigo}}</td>
                         <td class="text-secondary">{{item.nome}}</td>
+                        <td class="text-secondary">{{item.idAtendimento}}</td>
                         <td class="text-secondary text-right">
                           <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]="" (click)="removeHipotese(item)">
                             <i class="fa fa-trash-alt"></i> Remover

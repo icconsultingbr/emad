@@ -3,18 +3,35 @@ function AtendimentoHipoteseDiagnosticaDAO(connection) {
     this._table = "tb_atendimento_hipotese_diagnostica";
 }
 
-AtendimentoHipoteseDiagnosticaDAO.prototype.buscarPorAtendimentoId = function (idAtendimento,callback) {
-    this._connection.query(`select phd.id, hd.codigo, hd.nome  from ${this._table} phd 
-    INNER JOIN tb_hipotese_diagnostica hd ON(phd.idHipoteseDiagnostica = hd.id) 
-    
-    WHERE phd.situacao = 1 AND phd.idAtendimento = ?` ,idAtendimento,callback); 
+AtendimentoHipoteseDiagnosticaDAO.prototype.buscarPorAtendimentoId = async function (idAtendimento) {
+    let atendimento =  await this._connection.query(`select phd.id, hd.codigo, hd.nome  from ${this._table} phd 
+    INNER JOIN tb_hipotese_diagnostica hd ON(phd.idHipoteseDiagnostica = hd.id)     
+    WHERE phd.situacao = 1 AND phd.idAtendimento = ?` ,idAtendimento); 
+    return atendimento;
 }
 
 AtendimentoHipoteseDiagnosticaDAO.prototype.listarPorPaciente = async function (id) {
     let atendimento =  await this._connection.query(`select phd.id, hd.codigo, hd.nome, phd.idAtendimento  from ${this._table} phd 
             INNER JOIN tb_hipotese_diagnostica hd ON(phd.idHipoteseDiagnostica = hd.id)     
-            WHERE phd.situacao = 1 AND phd.idPaciente = ?`,[id]); 
+            WHERE phd.situacao = 1 AND phd.idPaciente = ?`,id); 
     return atendimento;
+}
+
+AtendimentoHipoteseDiagnosticaDAO.prototype.deletaPorId = async function (obj) {
+    let atendimento =  await this._connection.query(`UPDATE ${this._table} set situacao=?, idUsuarioAlteracao=?, dataAlteracao=? where id=?`
+    , [obj.situacao, obj.idUsuarioAlteracao, obj.dataAlteracao, obj.id]); 
+    return atendimento;
+}
+
+AtendimentoHipoteseDiagnosticaDAO.prototype.salva = async function(objeto) {
+    const response = await this._connection.query("INSERT INTO " + this._table + " SET ?", objeto);
+    return [response];
+}
+
+AtendimentoHipoteseDiagnosticaDAO.prototype.validaHipotesePorPaciente = async function (obj) {
+    let pacienteResult =  await this._connection.query(`select * from ${this._table} WHERE situacao = 1 and idPaciente=? and idHipoteseDiagnostica=?`,
+    [obj.idPaciente, obj.idHipoteseDiagnostica]);
+    return pacienteResult; 
 }
 
 module.exports = function(){
