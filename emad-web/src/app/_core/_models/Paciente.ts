@@ -48,4 +48,5 @@ export class Paciente {
     @Input() apelido: string = null ;
     @Input() observacao: string = null ;
     @Input() historiaProgressaFamiliar: string = null ;
+    @Input() pesquisaCentral: string = null ;    
 }

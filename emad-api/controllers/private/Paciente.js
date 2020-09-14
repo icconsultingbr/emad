@@ -82,6 +82,7 @@ module.exports = function (app) {
             delete obj.gruposAtencaoContinuada;
             delete obj.idade;
             delete obj.idEstabelecimento;
+            delete obj.pesquisaCentral;
 
             obj.dataCriacao = new Date;
             obj.idUsuarioCriacao = usuario.id;
@@ -184,6 +185,8 @@ module.exports = function (app) {
             return;
         }
 
+        delete obj.pesquisaCentral;
+        
         const connection = await app.dao.connections.EatendConnection.connection();
         const pacienteRepository = new app.dao.PacienteDAO(connection);
 

@@ -28,6 +28,7 @@ export class Atendimento {
     @Input() motivoQueixa : string = null;
     @Input() dadosFicha: any[] = [];
     @Input() tipoHistoriaClinica : number = null;    
+    @Input() pesquisaCentral: string = null ;    
 }
 
 export class AtendimentoHistorico {

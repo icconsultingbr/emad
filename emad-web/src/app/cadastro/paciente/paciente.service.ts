@@ -333,8 +333,12 @@ export class PacienteService extends GenericsService {
       field: "situacao",
       type: "checkbox",
       label: "Situação",
-      grid: false,
+      grid: true,
       form: true,
+      translate: {
+        "1": "ATIVO",
+        "0": "INATIVO",
+      },
       required: true,
       validator: ['', Validators.required]
     },

@@ -29,9 +29,12 @@
             <i *ngIf="!loading" class="fas fa-sync-alt"></i>
         </a>
     </span>
-
-    <input #textoProcurado (keyup)="0" class="form-control rounder" placeholder="Procurar..." (blur)="changeTextoProcurado()" />
-
+    <input #textoProcurado (keyup)="0" class="form-control rounder" placeholder="Procurar..." />
+    <span class="input-group-btn ml-2">
+        <a [routerLink]=""  class="btn btn-primary" (click)="pesquisaCentral()">
+            <i class="fa fa-search"></i> Pesquisar
+        </a>
+    </span>
     <span *ngIf="object && domains" class="input-group-btn ml-2">
         <a [routerLink]="" (click)="toggleFilter()" class="btn btn-default text-secondary float-right"
             style="border: 1px solid #d1d1d1 ">
@@ -161,7 +164,7 @@
             </tr>
         </thead>
         <tbody>
-            <ng-container *ngFor="let item of allItems | filtroAppGridView: allItems: textoProcurado.value : fields; let index=index; let odd='odd'; let even='even';">
+            <ng-container *ngFor="let item of allItems; let index=index; let odd='odd'; let even='even';">
             <tr class="text-left" [ngClass]="{ odd: odd, even: even }" [style.background]="item['corIconeGrid']">
                     <td *ngFor="let field of fields;">
                         <span *ngIf="field.type=='icone'">
@@ -213,7 +216,7 @@
 <hr *ngIf="(allItems && allItems.length)">
 
 <div class="row mb-4">
-    <div *ngIf="pager.pages && pager.pages.length && textoProcurado.value.length==0"
+    <div *ngIf="pager.pages && pager.pages.length"
         class="text text-secondary col-md-12 pr-0 mx-auto">
         <i>
             Exibindo {{pager.currentPage === pager.totalPages?allItems.length:pager.currentPage*pagedItems.length}} de
@@ -221,7 +224,7 @@
             resultado(s).
         </i>
     </div>
-    <div *ngIf="!pager.pages && allItems && allItems.length && textoProcurado.value.length==0"
+    <div *ngIf="!pager.pages && allItems && allItems.length"
         class="text text-secondary col-md-12 pr-0 mx-auto">
         <i>
             Exibindo {{paging.offset === (totalPages-1)?paging.total:(paging.offset+1)*paging.limit}} de
@@ -232,7 +235,7 @@
 </div>
 
 <div class="row mb-2 mt-4">
-    <ul *ngIf="allItems && allItems.length && textoProcurado.value.length==0" class="pagination mx-auto">
+    <ul *ngIf="allItems && allItems.length" class="pagination mx-auto">
         <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
             <a class="page-link" (click)="setPagePagined(0)">
                 <i class="fas fa-angle-double-left"></i>

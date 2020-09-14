@@ -107,10 +107,6 @@ export class AtendimentoComponent implements OnInit {
     if (this.idPaciente>0) {
       this.object.idPaciente = this.idPaciente;      
     }
-
-    if (typeof Util.getPageState('textoProcurado') != 'undefined') {
-      this.textoProcurado.nativeElement.value = Util.getPageState('textoProcurado');
-    }
   }
 
   loadDomains() {      
@@ -201,6 +197,11 @@ export class AtendimentoComponent implements OnInit {
       setTimeout(() => this.loading = false, 300);
       this.errors = Util.customHTTPResponse(erro);
     });
+  }  
+
+  pesquisaCentral(){    
+    this.object.pesquisaCentral = this.textoProcurado.nativeElement.value;
+    this.getListPaged();
   }
 
   new() {
@@ -300,9 +301,6 @@ export class AtendimentoComponent implements OnInit {
     } else {
       return number.replace("R$ ", "").replace(".", ",");
     }
-  }
-
-  changeTextoProcurado() {
   }
 
   abreFichaDownload(item) {

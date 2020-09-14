@@ -325,10 +325,20 @@ PacienteDAO.prototype.listarAsync = async function (addFilter) {
 
         if(addFilter.idEstabelecimento && !addFilter.pesquisa){
             where+=" AND pac.idEstabelecimentoCadastro = " + addFilter.idEstabelecimento + "";
-        }        
-    }
+        } 
+        
+        if(addFilter.pesquisa){
+            where+=" AND pac.situacao = 1 ";
+        }
 
-    
+        if (addFilter.pesquisaCentral) {
+            where += ` AND (pac.cartaoSus LIKE '%${addFilter.pesquisaCentral}%' OR
+                            pac.idSap LIKE '%${addFilter.pesquisaCentral}%' OR
+                            UPPER(pac.nome) LIKE UPPER('%${addFilter.pesquisaCentral}%') OR                            
+                            replace(replace(pac.cpf,'.',''),'-','') LIKE replace(replace('%${addFilter.pesquisaCentral}%','.',''),'-','') OR
+                            UPPER(pac.observacao) LIKE UPPER('%${addFilter.pesquisaCentral}%'))`;
+        }
+    }    
     const join = ` FROM tb_paciente pac
     INNER JOIN tb_nacionalidade nac ON (pac.idNacionalidade = nac.id)
     INNER JOIN tb_uf nat ON (pac.idNaturalidade = nat.id)
@@ -337,7 +347,7 @@ PacienteDAO.prototype.listarAsync = async function (addFilter) {
     LEFT JOIN tb_modalidade md ON (pac.idModalidade = md.id) 
     LEFT JOIN tb_estabelecimento est ON (pac.idEstabelecimentoCadastro = est.id and est.situacao = 1 and est.id = ${addFilter.idEstabelecimento})                    
     LEFT JOIN tb_estabelecimento estCadastro ON (pac.idEstabelecimentoCadastro = estCadastro.id)                                    
-    WHERE pac.situacao = 1 ${where} `;
+    WHERE 1 = 1 ${where} `;
 
     const count = await this._connection.query(`SELECT COUNT(1) as total ${join}`);
 

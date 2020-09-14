@@ -45,6 +45,16 @@ AtendimentoDAO.prototype.listarAsync = async function(addFilter) {
         if(addFilter.limit && addFilter.offset){
             offset = `LIMIT ${addFilter.limit} OFFSET ${addFilter.limit * addFilter.offset}`;
         }
+
+        if (addFilter.pesquisaCentral) {
+            where += ` AND (p.cartaoSus LIKE '%${addFilter.pesquisaCentral}%' OR
+                            p.idSap LIKE '%${addFilter.pesquisaCentral}%' OR
+                            UPPER(p.nome) LIKE UPPER('%${addFilter.pesquisaCentral}%') OR                            
+                            UPPER(pro.nome) LIKE UPPER('%${addFilter.pesquisaCentral}%') OR   
+                            UPPER(ficha.nome) LIKE UPPER('%${addFilter.pesquisaCentral}%') OR   
+                            replace(replace(p.cpf,'.',''),'-','') LIKE replace(replace('%${addFilter.pesquisaCentral}%','.',''),'-','') OR
+                            a.id LIKE '%${addFilter.pesquisaCentral}%')`;
+        }
     }
 
     const join = ` FROM ${this._table} a 
