@@ -533,7 +533,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.message = "";
     this.errors = [];
     this.loading = true;
-    this.service.findHipoteseByPaciente(this.object.idPaciente).subscribe(result => {
+    this.service.findHipoteseByAtendimento(this.object.id).subscribe(result => {
       this.allItemsHipotese = result;
       this.loading = false;
     }, error => {

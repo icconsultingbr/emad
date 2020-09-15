@@ -401,7 +401,7 @@ export class PacienteFormComponent implements OnInit {
     this.message = "";
     this.errors = [];
     this.loading = true;
-
+    this.pacienteHipotese.funcionalidade = 'PACIENTE';
     this.service.saveHipotese(this.pacienteHipotese).subscribe(result => {
       this.message = "Hipótese diagnóstica inserida com sucesso!"
       this.close();

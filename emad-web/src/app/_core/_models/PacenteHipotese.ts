@@ -5,4 +5,5 @@ export class PacienteHipotese {
     @Input() idAtendimento : Number = null;
     @Input() idPaciente: Number = null;
     @Input() idHipoteseDiagnostica : Number = null;
+    @Input() funcionalidade : string = 'ATENDIMENTO';
 }

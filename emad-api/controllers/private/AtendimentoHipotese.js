@@ -25,15 +25,19 @@ module.exports = function (app) {
         try {
             await connection.beginTransaction();
 
-            var responseBuscaHipotese = await atendimentoHipoteseRepository.validaHipotesePorPaciente(obj);
+            if(obj.funcionalidade == 'PACIENTE')
+            {
+                var responseBuscaHipotese = await atendimentoHipoteseRepository.validaHipotesePorPaciente(obj);
 
-            if (responseBuscaHipotese.length > 0) {
-                errors = util.customError(errors, "header", "Hipótese já está vinculada ao paciente!", "");
-                res.status(400).send(errors);
-                await connection.rollback();
-                return;
+                if (responseBuscaHipotese.length > 0) {
+                    errors = util.customError(errors, "header", "Hipótese já está vinculada ao paciente!", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
+                }
             }
 
+            delete obj.funcionalidade;
             obj.dataCriacao = new Date;
             obj.idUsuarioCriacao = usuario.id;
             obj.situacao = 1;            
