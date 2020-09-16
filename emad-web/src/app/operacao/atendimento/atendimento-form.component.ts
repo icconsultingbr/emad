@@ -127,7 +127,7 @@ export class AtendimentoFormComponent implements OnInit {
       idEstabelecimento: [Validators.required],
       tipoFicha: ['', Validators.required],
       idClassificacaoRisco: ['', Validators.required],
-      motivoQueixa: ['', Validators.required],
+      motivoQueixa: ['', ''],
       tipoHistoriaClinica: ['', ''],
     });
 

@@ -9,7 +9,7 @@ HipoteseDiagnosticaDAO.prototype.lista = function(callback) {
 }
 
 HipoteseDiagnosticaDAO.prototype.dominio = function(callback) {
-    this._connection.query("select id, CONCAT(codigo, ' - ', nome) as nome FROM "+this._table+" WHERE situacao = 1 ORDER BY codigo ASC",callback);
+    this._connection.query("select id, CONCAT(nome, ' (',codigo,')') as nome FROM "+this._table+" WHERE situacao = 1 ORDER BY codigo ASC",callback);
 }
 
 HipoteseDiagnosticaDAO.prototype.buscaPorId = function (id,callback) {
