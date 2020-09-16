@@ -242,7 +242,7 @@ module.exports = function (app) {
 
             obj.id = responseAtendimento[0].insertId;
         
-            objHistorico.idTipoAtendimentoHistorico = 1;
+            objHistorico.idTipoAtendimentoHistorico = obj.situacao == "0" ? 4 : 1;
             objHistorico.textoHistorico = "";
             objHistorico.idAtendimento = obj.id;
             delete objHistorico.id;

@@ -443,6 +443,7 @@
                     <div class="col-xl-8">
                       <select *ngIf="!disableFields()" class="custom-select d-block w-100" [(ngModel)]="object.situacao" formControlName="situacao">
                         <option [value]="null">Selecione...</option>
+                        <option value="0">Sala de espera</option>
                         <option value="C">Em aberto</option>
                         <option value="2">Concluído</option>
                         <option value="A">Alta</option>
@@ -457,6 +458,7 @@
   
                       <select *ngIf="disableFields()" class="custom-select d-block w-100" [(ngModel)]="object.situacao" formControlName="situacao" disabled>
                         <option [value]="null">Selecione...</option>
+                        <option value="0">Sala de espera</option>
                         <option value="C">Em aberto</option>
                         <option value="2">Concluído</option>
                         <option value="A">Alta</option>
@@ -876,6 +878,7 @@
                 <div class="col-xl-8">
                   <select class="custom-select d-block w-100" [(ngModel)]="objectHistorico.situacao" formControlName="situacao" disabled>
                     <option [value]="null">Selecione...</option>
+                    <option value="0">Sala de espera</option>
                     <option value="C">Em aberto</option>
                     <option value="2">Concluído</option>
                     <option value="A">Alta</option>

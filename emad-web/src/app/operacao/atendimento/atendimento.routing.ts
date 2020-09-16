@@ -2,11 +2,17 @@ import { Routes } from "@angular/router";
 import { AtendimentoFormComponent } from "./atendimento-form.component";
 import { AtendimentoComponent } from "./atendimento.component";
 import { RelatorioReceitaComponent } from "./relatorio-receita.component";
+import { AtendimentoSalaEsperaFormComponent } from "./sala-espera/atendimento-sala-espera-form.component";
+import { AtendimentoSalaEsperaComponent } from "./sala-espera/atendimento-sala-espera.component";
 
 export const atendimentoRoutes: Routes = [
     {
         path: '',
         component: AtendimentoComponent,        
+    },
+    {
+        path: 'sala-espera',
+        component: AtendimentoSalaEsperaComponent,        
     },
     {
         path: 'idPaciente/:idPaciente',
@@ -19,7 +25,15 @@ export const atendimentoRoutes: Routes = [
     {
         path: 'cadastro/:id',
         component: AtendimentoFormComponent,        
+    },       
+    {
+        path: 'sala-espera-criar',
+        component: AtendimentoSalaEsperaFormComponent,        
     },    
+    {
+        path: 'sala-espera-criar/:id',
+        component: AtendimentoSalaEsperaFormComponent,        
+    },   
     {
         path: 'historico/:idHistorico',
         component: AtendimentoFormComponent,        

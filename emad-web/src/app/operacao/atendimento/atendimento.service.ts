@@ -148,7 +148,9 @@ export class AtendimentoService extends GenericsService {
             label: "Situação",
             grid: true,
             form: false,
-            translate: { "C": "Em aberto", 
+            translate: { 
+                         "0": "Sala de espera",         
+                         "C": "Em aberto", 
                          "2": "Concluído",
                          "A": "Alta",                          
                          "E": "Evasão", 

@@ -1,24 +1,24 @@
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter, ElementRef } from '@angular/core';
-import { Atendimento } from '../../_core/_models/Atendimento';
-import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.service';
-import { AtendimentoService } from './atendimento.service';
+import { Atendimento } from '../../../_core/_models/Atendimento';
+import { AppNavbarService } from '../../../_core/_components/app-navbar/app-navbar.service';
+import { AtendimentoService } from '.././atendimento.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
-import { environment } from "../../../environments/environment";
-import { PagerService } from '../../_core/_services';
-import { Usuario } from '../../_core/_models/Usuario';
-import { Util } from '../../_core/_util/Util';
-import { Translation } from '../../_core/_locale/Translation';
+import { environment } from "../../../../environments/environment";
+import { PagerService } from '../../../_core/_services';
+import { Usuario } from '../../../_core/_models/Usuario';
+import { Util } from '../../../_core/_util/Util';
+import { Translation } from '../../../_core/_locale/Translation';
 import { isDate } from 'util';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'app-atendimento',
-  templateUrl: './atendimento.component.html',
-  styleUrls: ['./atendimento.component.css'],
+  selector: 'app-atendimento-sala-espera',
+  templateUrl: './atendimento-sala-espera.component.html',
+  styleUrls: ['./atendimento-sala-espera.component.css'],
   providers: [AtendimentoService]
 })
-export class AtendimentoComponent implements OnInit {
+export class AtendimentoSalaEsperaComponent implements OnInit {
 
   allItems: any[];
   pager: any = {};
@@ -49,7 +49,7 @@ export class AtendimentoComponent implements OnInit {
   //ACTION BUTTONS
   @Input() create: Boolean = true;  
   @Input() view: Boolean = true;  
-  @Input() urlForm: string = "atendimentos/cadastro";
+  @Input() urlForm: string = "atendimentos/sala-espera-criar";
 
   @ViewChild('textoProcurado') textoProcurado: ElementRef;
   @Output() emitFilterMultiSelectMethod = new EventEmitter();
@@ -112,20 +112,7 @@ export class AtendimentoComponent implements OnInit {
   loadDomains() {      
     this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
       this.domains.push({
-        s: estabelecimentos,
-        situacao: [
-          { id: "0", nome: "Sala de espera" },
-          { id: "C", nome: "Em aberto" },
-          { id: "2", nome: "Concluído" },
-          { id: "A", nome: "Alta" },          
-          { id: "E", nome: "Evasão" },          
-          { id: "5", nome: "Transferência hospitalar/ambulatório" },          
-          { id: "6", nome: "Transferência unidade prisional" },          
-          { id: "7", nome: "Desinternação" },
-          { id: "8", nome: "Álvara de soltura" },
-          { id: "O", nome: "Óbito" },
-          { id: "X", nome: "Cancelado" }
-        ]
+        s: estabelecimentos
       });
     });        
   }
@@ -185,6 +172,8 @@ export class AtendimentoComponent implements OnInit {
     if (this.paging.offset != null && this.paging.limit != null) {
       params += (params == "" ? "?" : "") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
     }
+
+    params += (params == "" ? "?" : "&") + "situacao=0";
 
     this.service.list(this.method + params).subscribe(result => {
       this.warning = "";

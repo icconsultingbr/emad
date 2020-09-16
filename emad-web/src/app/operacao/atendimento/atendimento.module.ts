@@ -17,6 +17,8 @@ import 'rxjs/add/operator/map';
 import { SharedServiceModule } from "../../shared/services/shared-service.module";
 import { RelatorioReceitaComponent } from "./relatorio-receita.component";
 import { TabsModule } from "ngx-bootstrap/tabs";
+import { AtendimentoSalaEsperaFormComponent } from "./sala-espera/atendimento-sala-espera-form.component";
+import { AtendimentoSalaEsperaComponent } from "./sala-espera/atendimento-sala-espera.component";
 
 @NgModule({
     imports: [
@@ -38,7 +40,9 @@ import { TabsModule } from "ngx-bootstrap/tabs";
     ],
     declarations: [
         AtendimentoComponent,
+        AtendimentoSalaEsperaComponent,
         AtendimentoFormComponent,
+        AtendimentoSalaEsperaFormComponent,        
         RelatorioReceitaComponent
     ],
     providers: [
