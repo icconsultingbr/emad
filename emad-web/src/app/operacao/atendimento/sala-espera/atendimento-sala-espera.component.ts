@@ -112,7 +112,10 @@ export class AtendimentoSalaEsperaComponent implements OnInit {
   loadDomains() {      
     this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
       this.domains.push({
-        s: estabelecimentos
+        s: estabelecimentos,
+        situacao: [
+          { id: "0", nome: "Sala de espera" }
+        ]
       });
     });        
   }

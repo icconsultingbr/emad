@@ -290,6 +290,7 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
       this.object.pacienteNome = result.nome;
       this.object.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
       this.loading = false;
+      this.findHistoricoPorAtendimento();
 
     }, error => {
       this.object = new Atendimento();
@@ -307,6 +308,19 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
         message: "Atendimento não encontrado"
       });
     });    
+  }
+
+  findHistoricoPorAtendimento() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.service.findHistoricoByAtendimento(this.object.id).subscribe(result => {
+      this.atendimentoHistorico = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
   }
 
   encontraAtendimentoHistorico(idHistorico: number) {
@@ -357,6 +371,26 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
         this.errors = Util.customHTTPResponse(erro);
       });
   }
+
+  atribuir() {
+    this.errors = [];
+    this.message = "";
+    this.loading = true;
+
+    this.service
+      .atribuirAtendimento(this.form.getRawValue())
+      .subscribe((res: any) => {
+        this.object.id = res.id;
+        if(res.dadosFicha)
+          this.object.dadosFicha = res.dadosFicha;
+        this.abreFichaDigital(this.object.id, false);        
+        this.back();
+        this.loading = false;        
+      }, erro => {
+        setTimeout(() => this.loading = false, 300);
+        this.errors = Util.customHTTPResponse(erro);
+      });
+  }  
 
   findPacienteData(idPaciente) {
     this.errors = [];

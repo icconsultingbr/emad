@@ -156,9 +156,11 @@
       </tab>
     </tabset>  
           <div class="form-group text-right">  
-            <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="object.idPaciente && !disableFields()"
-              [disabled]="form.invalid">
+            <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="object.idPaciente && !disableFields() && !object.id">
               <i class="fa fa-save"></i> {{ !object.id ? 'Criar atendimento' : 'Salvar'}}
+            </button>  
+            <button class="btn btn-primary" type="button" (click)="atribuir()" *ngIf="object.idPaciente && object.id">
+              <i class="fa fa-save"></i> Atribuir
             </button>  
             <button (click)="back()" class="btn btn-default" type="button">
               <i class="fa fa-arrow-left"></i> Retornar

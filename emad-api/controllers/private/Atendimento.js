@@ -318,7 +318,7 @@ module.exports = function (app) {
         objHistorico.idUsuario = usuario.id;
         delete obj.idTipoAtendimentoHistorico;
         delete obj.textoHistorico;
-
+        
         req.assert("idPaciente").notEmpty().withMessage("Paciente um campo obrigatório;");
         req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
         req.assert("tipoFicha").notEmpty().withMessage("Tipo de ficha é um campo obrigatório;");
@@ -437,7 +437,7 @@ module.exports = function (app) {
 
             if(obj.situacao == "X")
                 obj.dataCancelamento = new Date();
-            else if(obj.situacao != "C")
+            else if(obj.situacao != "C" && obj.situacao != "0")
                 obj.dataFinalizacao = new Date();
 
             var atualizaAtendimento = await atendimentoRepository.atualizaPorIdSync(obj, id);
@@ -445,9 +445,100 @@ module.exports = function (app) {
             obj.id = id;
             obj.ano_receita = receita ? receita.ano : null;
             
-            objHistorico.idTipoAtendimentoHistorico = obj.situacao == "C" ? 2 : "3";
+            objHistorico.idTipoAtendimentoHistorico = obj.situacao == "0" ? "6" : obj.situacao == "C" ? 2 : "3";
             objHistorico.textoHistorico = "";
             objHistorico.idAtendimento = obj.id;
+            delete objHistorico.id;
+
+            var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
+
+            res.status(201).send(obj);
+
+            await connection.commit();
+        }
+        catch (exception) {
+            console.log("Erro ao salvar o atendimento (" + id + "), exception: " + exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+            await connection.rollback();
+        }
+        finally {
+            await connection.close();
+        }
+    });
+
+    app.put('/atendimento/atribuir-atendimento', async function (req, res) {        
+        let usuario = req.usuario;
+        let obj = req.body;
+        let util = new app.util.Util();
+        let errors = [];
+        let id = obj.id;
+        delete obj.id;
+        delete obj.pacienteNome;
+        delete obj.nome;
+        delete obj.pesquisaCentral;
+        obj.idUsuario = usuario.id;
+        obj.idUsuarioAlteracao = usuario.id;
+        obj.historiaProgressa = obj.pacienteHistoriaProgressa;
+        var objHistorico = Object.assign({},obj);
+        objHistorico.idUsuario = usuario.id;
+        delete obj.idTipoAtendimentoHistorico;
+        delete obj.textoHistorico;
+        
+        delete obj.pacienteHistoriaProgressa;
+        delete objHistorico.pacienteHistoriaProgressa;
+
+        if(obj.tipoHistoriaClinica == ''){
+            delete obj.tipoHistoriaClinica;
+            delete objHistorico.tipoHistoriaClinica;
+        }
+
+        req.assert("idPaciente").notEmpty().withMessage("Paciente um campo obrigatório;");
+        req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
+        req.assert("tipoFicha").notEmpty().withMessage("Tipo de ficha é um campo obrigatório;");
+        req.assert("idClassificacaoRisco").notEmpty().withMessage("Classificação de risco é um campo obrigatório;");
+
+        if (obj.situacao == "X")
+            req.assert("motivoCancelamento").notEmpty().withMessage("Motivo do cancelamento é obrigatório;");
+        
+        errors = req.validationErrors();
+
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const profissionalRepository = new app.dao.ProfissionalDAO(connection);
+        const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
+
+        try {
+
+            await connection.beginTransaction();
+
+            var buscaProfissional = await profissionalRepository.buscaProfissionalPorUsuarioSync(usuario.id);
+
+            if (!buscaProfissional) {
+                errors = util.customError(errors, "header", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos", "");
+                res.status(400).send(errors);
+                await connection.rollback();
+                return;
+            }
+
+            var buscaAtendimento = await atendimentoRepository.buscaPorIdSync(id);
+
+            if (!buscaAtendimento) {
+                errors = util.customError(errors, "header", "Atendimento não encontrado", "");
+                res.status(400).send(errors);
+                await connection.rollback();
+                return;
+            }
+
+            obj.situacao = 'C'; //Em aberto
+            var atualizaAtendimento = await atendimentoRepository.atualizaPorIdSync(obj, id);
+            
+            objHistorico.idTipoAtendimentoHistorico = 5;
+            objHistorico.textoHistorico = "";
+            objHistorico.idAtendimento = id;
             delete objHistorico.id;
 
             var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);

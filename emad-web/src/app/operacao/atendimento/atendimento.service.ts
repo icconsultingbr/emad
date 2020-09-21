@@ -260,6 +260,10 @@ export class AtendimentoService extends GenericsService {
         return this.http.put('atendimento/envia-ficha/', JSON.stringify(obj));
     }
 
+    atribuirAtendimento(obj: any) {
+        return this.http.put('atendimento/atribuir-atendimento/', JSON.stringify(obj));
+    }
+    
     carregaEntidadeCampoPorEspecialidade(): Observable<any> {
         return this.http.get("especialidade-entidade-campo/especialidade");
     }

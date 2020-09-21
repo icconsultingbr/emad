@@ -28,7 +28,8 @@ export class Atendimento {
     @Input() motivoQueixa : string = null;
     @Input() dadosFicha: any[] = [];
     @Input() tipoHistoriaClinica : number = null;    
-    @Input() pesquisaCentral: string = null ;    
+    @Input() pesquisaCentral: string = null ;  
+    @Input() idTipoAtendimentoHistorico: number = null;  
 }
 
 export class AtendimentoHistorico {

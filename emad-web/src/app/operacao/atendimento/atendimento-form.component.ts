@@ -474,7 +474,7 @@ export class AtendimentoFormComponent implements OnInit {
             this.message = "Atendimento cancelado com sucesso";
             this.object = new Atendimento();
           }
-          else if(this.object.situacao == 'C')
+          else if(this.object.situacao == 'C' || this.object.situacao == '0')
             this.message = "Atendimento alterado com sucesso"          
           else{
             this.message = "Atendimento finalizado com sucesso"
