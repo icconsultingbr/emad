@@ -1,0 +1,15 @@
+.nav .nav-tabs .nav-link{
+    padding: 20px 20px 10px 20px !important;
+}
+
+.checkBox{
+    width: 25px;
+    height: 25px;
+    border: none;
+}
+
+
+
+
+
+/* .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link */

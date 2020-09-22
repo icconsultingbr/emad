@@ -1,0 +1,521 @@
+<h4 class="mb-5 text-left">Prontuário eletrônico</h4>
+<app-loader [loading]="loading"></app-loader>
+<p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
+<div *ngIf="errors.length" class="alert alert-danger sticky-top"> 
+  <div *ngFor="let error of errors" class="row">
+    <div class="col-12 text-left">
+      {{error.message}}
+    </div>
+  </div>
+</div>
+
+<form [formGroup]="form" (submit)="sendForm($event)">
+  <div>
+    <tabset>
+      <tab>
+        <ng-template tabHeading>
+          <i class="fa fa-edit" title="Principal"></i>   Dados do paciente
+        </ng-template>
+        <div class="card mb-4">
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Cartão SUS
+                  </label>
+                  <div class="col-xl-4">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.cartaoSus" formControlName="cartaoSus" readonly/>
+                    <input type="hidden" [(ngModel)]="object.id" formControlName="id">
+                  </div>
+                  <label class="col-xl-2 col-form-label text-left">
+                    ID SAP
+                  </label>
+                  <div class="col-xl-4">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.idSap" formControlName="idSap" readonly/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Nome
+                  </label>
+                  <div class="col-xl-10">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nome" formControlName="nome" readonly/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">                  
+                  <label class="col-xl-2 col-form-label text-left">
+                    Nome social
+                  </label>
+                  <div class="col-xl-4">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nomeSocial" formControlName="nomeSocial" readonly/>
+                  </div>
+                  <label class="col-xl-2 col-form-label text-left">
+                    Apelido
+                  </label>
+                  <div class="col-xl-4">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.apelido" formControlName="apelido" readonly/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Nome da mãe
+                  </label>
+                  <div class="col-xl-4">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nomeMae" formControlName="nomeMae" readonly/>
+                  </div>
+                  <label class="col-xl-2 col-form-label text-left">
+                    Nome do pai
+                  </label>
+                  <div class="col-xl-4">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nomePai" formControlName="nomePai" readonly/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Data de nascimento
+                  </label>
+                  <div class="col-xl-4">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                          <div class="input-group-text btn">
+                              <i class="fa fa-calendar-alt"></i>
+                          </div>
+                      </div>
+                      <input type="text" [(ngModel)]="object.dataNascimento" formControlName="dataNascimento" placeholder="dd/mm/aaaa" bsDatepicker
+                          [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control" autocomplete="off"
+                          readonly>
+                    </div>
+                  </div>
+                  <label class="col-xl-2 col-form-label text-left">
+                    Sexo<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-4">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.sexo" formControlName="sexo">
+                      <option [value]="">Selecione...</option>
+                      <option *ngFor="let item of domains[0]?.sexo" [value]="item.id">{{item.nome}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Nacionalidade<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-4">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idNacionalidade" formControlName="idNacionalidade"
+                      (change)="carregaNaturalidade()">
+                      <option [value]="">Selecione...</option>
+                      <option *ngFor="let item of domains[0]?.idNacionalidade" [value]="item.id">{{item.nome}}</option>
+                    </select>
+                  </div>
+                  <label class="col-xl-2 col-form-label text-left">
+                    Naturalidade<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-4">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idNaturalidade" formControlName="idNaturalidade">
+                      <option [value]="">Selecione...</option>
+                      <option *ngFor="let item of domains[0]?.idNaturalidade" [value]="item.id">{{item.nome}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    CPF
+                  </label>
+                  <div class="col-xl-4">
+                    <input type="text" mask="999.999.999-99"  class="form-control has-error" [(ngModel)]="object.cpf" formControlName="cpf" readonly/>
+                  </div>
+                  <label class="col-xl-2 col-form-label text-left">
+                    Ocupação
+                  </label>
+                  <div class="col-xl-4">
+                    <input type="text"  class="form-control has-error" [(ngModel)]="object.ocupacao" formControlName="ocupacao" readonly/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Escolaridade<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-4">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.escolaridade" formControlName="escolaridade">
+                      <option [value]="">Selecione...</option>
+                      <option *ngFor="let item of domains[0]?.escolaridade" [value]="item.id">{{item.nome}}</option>
+                    </select>
+                  </div>
+                  <label class="col-xl-2 col-form-label text-left">
+                    Estabelecimento
+                  </label>
+                  <div class="col-xl-4">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idEstabelecimentoCadastro" formControlName="idEstabelecimentoCadastro">
+                      <option [value]="">Selecione...</option>
+                      <option *ngFor="let item of domains[0]?.idEstabelecimentoCadastro" [value]="item.id">{{item.nome}}</option>
+                    </select>  
+                  </div>
+                </div>
+              </div>
+            </div>   
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Observações
+                  </label>
+                  <div class="col-xl-10">                   
+                    <textarea rows="4" class="form-control has-error" [(ngModel)]="object.observacao" formControlName="observacao" readonly></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>        
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Falecido
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="falecido" [(ngModel)]="object.falecido" formControlName="falecido" class="custom-control-input">
+                      <label class="custom-control-label" for="falecido"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Situação<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <label class="custom-control-label" for="situacao"></label>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tab>
+      <tab>
+        <ng-template tabHeading>
+          <i class="fa fa-id-card" title="Principal"></i>   História progressa/familiar
+        </ng-template>
+        <div class="card mb-4">
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    História progressa/familiar
+                  </label>
+                  <div class="col-xl-10">                   
+                    <textarea rows="7" class="form-control has-error" [(ngModel)]="object.historiaProgressaFamiliar" formControlName="historiaProgressaFamiliar" readonly></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tab>
+      <tab>
+        <ng-template tabHeading>
+          <i class="fa fa-heart" title="Principal"></i>   Sinais vitais
+        </ng-template>
+        <div class="card mb-4">
+          <div class="card-header text-left">
+            Sinais vitais por atendimento
+          </div>
+          <div class="card-body text-left">      
+            <div class="row">    
+              <div class="col-12 table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Atendimento</th>
+                      <th>Pressão arterial</th>
+                      <th>Pulso</th>
+                      <th>Saturação</th>
+                      <th>Temperatura</th>
+                      <th>Altura</th>
+                      <th>Peso</th>
+                      <th>Data</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="allItemsAtendimentos.length">
+                    <tr class="text-left" *ngFor="let item of allItemsAtendimentos">
+                      <td class="text-secondary">{{item.id}}</td>
+                      <td class="text-secondary">{{item.pressaoArterial}}</td>
+                      <td class="text-secondary">{{item.pulso}}</td>
+                      <td class="text-secondary">{{item.saturacao}}</td>
+                      <td class="text-secondary">{{item.temperatura}}</td>
+                      <td class="text-secondary">{{item.altura}}</td>
+                      <td class="text-secondary">{{item.peso}}</td>
+                      <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tab>
+      <tab>
+        <ng-template tabHeading>
+          <i class="fa fa-archive" title="Principal"></i>   Atendimentos
+        </ng-template>
+        <div class="card mb-4">
+          <div class="card-header text-left">
+            Atendimentos realizados
+          </div>
+          <div class="card-body text-left">      
+            <div class="row">    
+              <div class="col-12 table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Atendimento</th>
+                      <th>Tipo de atendimento</th>
+                      <th>Classificação de risco</th>
+                      <th>Queixa</th>
+                      <th>Situação</th>
+                      <th>Data</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="allItemsAtendimentos.length">
+                    <tr class="text-left" *ngFor="let item of allItemsAtendimentos">
+                      <td class="text-secondary">{{item.id}}</td>                      
+                      <td class="text-secondary">{{item.fichaNome}}</td>
+                      <td class="text-secondary">{{item.classificacaoNome}}</td>
+                      <td class="text-secondary">{{item.motivoQueixa}}</td>                      
+                      <td class="text-secondary">{{item.situacaoNome}}</td>                      
+                      <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                      <td class="text-secondary">
+                        <a class="btn btn-link" (click)="visualizaAtendimentos(item.id)">
+                          <i class="fa fa-file-medical-alt"></i> Visualizar atendimento
+                        </a>
+                      </td>  
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tab>
+      <tab>
+        <ng-template tabHeading>
+          <i class="fa fa-file-medical-alt" title="Principal"></i>   Receitas
+        </ng-template>
+        <div class="card mb-4">
+          <div class="card-header text-left">
+            Receitas
+          </div>         
+          <div class="card-body text-left">        
+            <div class="row">
+              <div class="col-12 table-responsive">
+                <div class="form-group row">
+                  <table class="table table-striped">
+                    <thead>
+                        <tr>
+                          <th>Estabelecimento</th>
+                          <th>Profissional</th>
+                          <th>Ano</th>
+                          <th>Número</th>
+                          <th>Situação</th>
+                          <th>Data emissão</th>
+                          <th>Imprimir</th>
+                          <th></th>                          
+                        </tr>  
+                    </thead>
+                    <tbody *ngIf="allItemsReceita.length">
+                      <ng-container *ngFor="let item of allItemsReceita">
+                        <tr class="text-left" >                          
+                          <td class="text-secondary">{{item.nomeEstabelecimento}}</td>                      
+                          <td class="text-secondary">{{item.nomeProfissional}}</td>
+                          <td class="text-secondary">{{item.ano}}</td>
+                          <td class="text-secondary">{{item.numero}}</td>                      
+                          <td class="text-secondary">{{item.situacaoNome}}</td>                      
+                          <td class="text-secondary">{{item.dataEmissao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                          <td class="text-secondary text-right">
+                            <button type="button" class="btn btn-primary float-left" 
+                              (click)="abreReceitaMedica(item.ano, item.numero, item.idEstabelecimento)">
+                            <i class="fa fa-file-medical-alt"></i>
+                        </button>
+                          </td>  
+                          <td class="text-secondary text-right">
+                            <button type="button" class="btn btn-primary float-left" (click)="carregaEstoque(item)">
+                              <i class="fa fa-eye"></i>  Visualizar medicamentos
+                            </button>
+                          </td>                          
+                        </tr>                    
+                        <tr class="text-left" >                      
+                          <td colspan="8"  *ngIf="item.expandir">
+                            <table class="table table-striped" *ngIf="item.expandir">
+                              <thead>
+                                  <tr>
+                                    <th>Código material</th>
+                                    <th>Descrição material</th>
+                                    <th>Qtd. prescrita</th>
+                                    <th>Tempo tratamento</th> 
+                                    <th>Qtd. dispensada</th>
+                                    <th>Data últ. dispensação</th>
+                                    <th>Observação</th>
+                                  </tr>  
+                              </thead>
+                              <tbody>
+                                <tr class="text-left" *ngFor="let item of listaMaterialLoteDispensadoGravado">
+                                  <td class="text-secondary">{{item.codigoMaterial }}</td>                            
+                                  <td class="text-secondary">{{item.nomeMaterial}}</td>                      
+                                  <td class="text-secondary">{{item.qtdPrescrita}}</td> 
+                                  <td class="text-secondary">{{item.tempoTratamento}}</td> 
+                                  <td class="text-secondary">{{item.qtdDispAnterior}}</td> 
+                                  <td class="text-secondary">{{item.dataUltDisp | date :'dd/MM/yyyy HH:mm' }}</td> 
+                                  <td class="text-secondary">{{item.observacao}}</td> 
+                                </tr>        
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </ng-container>
+                      </tbody>
+                  </table>
+                </div>            
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </tab>
+      <tab>
+        <ng-template tabHeading>
+          <i class="fa fa-folder" title="Principal"></i>   Fichas de atendimento
+        </ng-template>
+        <div class="card mb-4">
+          <div class="card-header text-left">
+            Fichas de atendimento
+          </div>
+          <div class="card-body text-left">      
+            <div class="row">    
+              <div class="col-12 table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Atendimento</th>
+                      <th>Tipo de atendimento</th>
+                      <th>Classificação de risco</th>
+                      <th>Queixa</th>
+                      <th>Situação</th>
+                      <th>Data</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="allItemsAtendimentos.length">
+                    <tr class="text-left" *ngFor="let item of allItemsAtendimentos">
+                      <td class="text-secondary">{{item.id}}</td>                      
+                      <td class="text-secondary">{{item.fichaNome}}</td>
+                      <td class="text-secondary">{{item.classificacaoNome}}</td>
+                      <td class="text-secondary">{{item.motivoQueixa}}</td>                      
+                      <td class="text-secondary">{{item.situacaoNome}}</td>                      
+                      <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                      <td class="text-secondary">
+                        <a class="btn btn-link" [routerLink]="" (click)="visualizaAtendimentos(item.id)">
+                          <i class="fa fa-file-medical-alt"></i> Visualizar atendimento
+                        </a>
+                      </td>  
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tab>
+      <tab>
+        <ng-template tabHeading>
+          <i class="fa fa-check-square" title="Principal"></i>   Exames
+        </ng-template>
+        <div class="card mb-4">
+          <div class="card-body text-left">
+            <div class="row">
+            </div>
+          </div>
+        </div>
+      </tab>
+      <tab>
+        <ng-template tabHeading>
+          <i class="fa fa-medkit" title="Principal"></i>   Hipótese diagnosticada
+        </ng-template>
+        <div class="card mb-4">
+          <div class="card-header text-left">
+            Hipótese diagnosticada
+          </div>
+          <div class="card-body text-left">      
+            <div class="row">   
+              <div class="col-12 table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Código</th>
+                      <th>Diagnóstico</th>
+                      <th>Atendimento</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="!allItemsHipotese.length">
+                    <tr class="text-left">
+                      <td colspan="99" class="text-secondary">
+                        <i>Não há resultados...</i>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="allItemsHipotese.length">
+                    <tr class="text-left" *ngFor="let item of allItemsHipotese">
+                      <td class="text-secondary">{{item.codigo}}</td>
+                      <td class="text-secondary">{{item.nome}}</td>
+                      <td class="text-secondary">
+                        <a class="btn btn-link" *ngIf="item.idAtendimento" [routerLink]="" (click)="visualizaAtendimentos(item.idAtendimento)">
+                          <i class="fa fa-file-medical-alt"></i> Visualizar atendimento
+                        </a>
+                      </td>                    
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tab>
+    </tabset>
+  </div>
+</form>

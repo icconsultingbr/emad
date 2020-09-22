@@ -113,6 +113,29 @@ ReceitaDAO.prototype.buscaReciboReceita = async function (ano, idEstabelecimento
     return receita;
 }
 
+ReceitaDAO.prototype.buscaPorPacienteIdProntuario = async function (idPaciente) {    
+    const response =  await this._connection.query(`select 
+                                a.id
+                                ,a.idEstabelecimento
+                                ,estabelecimento.nomeFantasia nomeEstabelecimento
+                                ,a.idProfissional
+                                ,profissional.nome nomeProfissional
+                                ,a.ano
+                                ,a.numero
+                                ,a.dataEmissao
+                                ,a.idAtendimento                                
+                                ,CASE  
+                                WHEN a.situacao = '1'  THEN 'Pendente medicamentos'  
+                                WHEN a.situacao = '2'  THEN 'Aberta'                                                                  
+                                ELSE 'Finalizada'
+                                END as situacaoNome
+    from ${this._table} a     
+    INNER JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
+    INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
+    WHERE a.idPaciente = ? order by a.id desc`, idPaciente); 
+    return response;
+}
+
 ReceitaDAO.prototype.buscaDominio = function (callback) {
     this._connection.query(`SELECT id, nome FROM ${this._table} WHERE situacao = 1`, callback);
 }

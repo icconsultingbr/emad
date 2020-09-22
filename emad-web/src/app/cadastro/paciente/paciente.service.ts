@@ -386,6 +386,14 @@ export class PacienteService extends GenericsService {
     }
   }
 
+  findAtendimentoByPaciente(id: any): Observable<any> {
+    return this.http.get("atendimento/prontuario-paciente/paciente/" + id);
+  }
+
+  findReceitaByPaciente(id: any): Observable<any> {
+    return this.http.get("receita/prontuario-paciente/paciente/" + id);
+  }
+
   removeHipotese(params: any) {
     return this.http.delete('atendimento-hipotese/' + params);
   }

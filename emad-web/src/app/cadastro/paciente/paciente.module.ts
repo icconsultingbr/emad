@@ -16,6 +16,7 @@ import { AppModalModule } from "../../_core/_components/app-modal/app-modal.modu
 import 'rxjs/add/operator/map';
 import { SharedServiceModule } from "../../shared/services/shared-service.module";
 import { TabsModule } from 'ngx-bootstrap/tabs';
+import { ProntuarioPacienteFormComponent } from "./prontuario-paciente/prontuario-paciente-form.component";
 
 @NgModule({
     imports: [
@@ -40,6 +41,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
     declarations: [
         PacienteComponent,
         PacienteFormComponent,
+        ProntuarioPacienteFormComponent
     ],
     providers: [
         PacienteService

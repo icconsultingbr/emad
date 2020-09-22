@@ -289,6 +289,30 @@ AtendimentoDAO.prototype.buscaPorPacienteId = function (idPaciente, usuario, idE
     this._connection.query("select * from "+this._table + " WHERE idPaciente = ? AND dataFinalizacao IS NULL AND dataCancelamento IS NULL AND idEstabelecimento = ? AND idUsuario = ?" ,[idPaciente,idEstabelecimento,usuario.id],callback); 
 }
 
+AtendimentoDAO.prototype.buscaPorPacienteIdProntuario = async function (idPaciente) {    
+    const response =  await this._connection.query(`select a.*, 
+                                CASE  
+                                WHEN a.situacao = '0'  THEN 'Sala de espera'  
+                                WHEN a.situacao = 'A'  THEN 'Alta'  
+                                WHEN a.situacao = 'C' THEN 'Em aberto'  
+                                WHEN a.situacao = 'E' THEN 'Evasão'  
+                                WHEN a.situacao = 'O' THEN 'Óbito'  
+                                WHEN a.situacao = '2' THEN 'Concluído'  
+                                WHEN a.situacao = '5' THEN 'Transferência hospitalar/ambulatório'  
+                                WHEN a.situacao = '6' THEN 'Transferência unidade prisional'  
+                                WHEN a.situacao = '7' THEN 'Desinternação'  
+                                WHEN a.situacao = '8' THEN 'Álvara de soltura'  
+                                ELSE 'Cancelado'
+                                END as situacaoNome,
+                                ficha.nome fichaNome,
+                                clas.nome classificacaoNome  
+    from tb_atendimento a 
+    inner join tb_tipo_ficha ficha on ficha.id = a.tipoFicha
+    inner join tb_classificacao_risco clas on clas.id = a.idClassificacaoRisco
+    WHERE a.idPaciente = ? order by a.id desc`, idPaciente); 
+    return response;
+}
+
 AtendimentoDAO.prototype.salva = function(objeto,callback) {
     this._connection.query("INSERT INTO "+this._table+" SET ?", objeto, callback);
 }

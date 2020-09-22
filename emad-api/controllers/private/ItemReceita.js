@@ -111,6 +111,27 @@ module.exports = function (app) {
         }
     });
 
+    app.get('/item-receita/receita/:idReceita', async function (req, res) {
+        let usuario = req.usuario;
+        let id = req.params.idReceita;
+        let util = new app.util.Util();
+        let errors = [];
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const itemReceitaRepository = new app.dao.ItemReceitaDAO(connection);
+        try {
+            
+            var itensReceita = await itemReceitaRepository.buscarPorReceita(id);            
+            res.status(200).json(itensReceita);
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });
+
     app.delete('/item-receita/:id', function(req,res){     
         let util = new app.util.Util();
         let usuario = req.usuario;

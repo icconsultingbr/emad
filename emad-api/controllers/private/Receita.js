@@ -396,6 +396,28 @@ module.exports = function (app) {
         }
     });
 
+    app.get('/receita/prontuario-paciente/paciente/:idPaciente', async function (req, res) {
+        let usuario = req.usuario;
+        let id = req.params.idPaciente;
+        let util = new app.util.Util();
+        let errors = [];
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const receitaRepository = new app.dao.ReceitaDAO(connection);
+
+        try {            
+            var response = await receitaRepository.buscaPorPacienteIdProntuario(id);
+            res.status(200).json(response);
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado " + exception, ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });
+
     function lista(addFilter, res) {
         let q = require('q');
         let d = q.defer();

@@ -31,6 +31,12 @@
               <button *ngIf="object.id && object.ano_receita && object.numero_receita && object.unidade_receita" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreReceitaMedica(object.ano_receita, object.numero_receita, object.unidade_receita)">
                 <i class="fa fa-file-medical-alt"></i>
               </button>
+
+              <button *ngIf="object.idPaciente" class="mr-2 btn btn-primary float-right rounded" type="button" 
+                (click)="visualizaProntuarioPaciente(object.idPaciente)" title="Prontuário eletrônico">
+                <i class="fa fa-user"></i>
+              </button>
+
             </div>
             <div class="card-body text-left">
               <div class="row">

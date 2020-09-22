@@ -8,7 +8,7 @@ import { Atendimento, AtendimentoHistorico } from '../../_core/_models/Atendimen
 import { Paciente } from '../../_core/_models/Paciente';
 import { Util } from '../../_core/_util/Util';
 import { PlanoTerapeuticoService } from '../plano-terapeutico/plano-terapeutico.service';
-import { PacienteHipotese } from '../../_core/_models/PacenteHipotese';
+import { PacienteHipotese } from '../../_core/_models/PacienteHipotese';
 import { Encaminhamento } from '../../_core/_models/Encaminhamento';
 import { AtendimentoMedicamento } from '../../_core/_models/AtendimentoMedicamento';
 import { Material } from '../../_core/_models/Material';
@@ -824,6 +824,17 @@ export class AtendimentoFormComponent implements OnInit {
       this.loadDomains();
       this.loading = false;
       this.errors = Util.customHTTPResponse(error);
+    });
+  }
+
+  visualizaProntuarioPaciente(idPaciente : any) : void {
+    let url = this.router.url.replace('atendimentos/cadastro/' + this.id, '') + this.virtualDirectory + "#/pacientes/prontuario/" + idPaciente;
+    this.service.file('atendimento/consulta-por-paciente', url).subscribe(result=>{
+      this.loading = false;
+      window.open(
+        url,
+        '_blank'
+      );
     });
   }
 }
