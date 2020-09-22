@@ -48,6 +48,16 @@ export class ClassificacaoRiscoService extends GenericsService {
       validator: ['', '']
     },
     {
+      field: "peso",
+      type: "text",
+      label: "Peso",
+      mask: "9",
+      grid: true,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
+    },
+    {
       field: "situacao",
       type: "checkbox",
       label: "Situação",

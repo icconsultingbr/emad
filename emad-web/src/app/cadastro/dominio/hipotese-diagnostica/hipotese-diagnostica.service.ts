@@ -31,6 +31,24 @@ export class HipoteseDiagnosticaService extends GenericsService {
       validator: ['', Validators.required]
     },
     {
+      field: "codigo",
+      type: "text",
+      label: "Código",
+      grid: true,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "cid_10",
+      type: "text",
+      label: "CID 10",
+      grid: true,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
       field: "situacao",
       type: "checkbox",
       label: "Situação",

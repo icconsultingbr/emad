@@ -30,6 +30,7 @@ ClassificacaoRiscoDAO.prototype.lista = function(callback) {
                             ,corClassificacaoRisco.nome nomeCorClassificacaoRisco
                             ,a.nome
                             ,a.situacao
+                            ,a.peso
                             FROM ${this._table} a
                             INNER JOIN tb_cor_classificacao_risco corClassificacaoRisco ON (a.idCorClassificacaoRisco = corClassificacaoRisco.id)
                             WHERE a.situacao = 1`, callback);

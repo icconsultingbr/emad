@@ -6,6 +6,7 @@ function AtendimentoDAO(connection) {
 AtendimentoDAO.prototype.listarAsync = async function(addFilter) { 
     let where = "";
     let offset = "";
+    let orderBy = " a.id DESC ";
 
     if(addFilter != null){       
 
@@ -32,6 +33,9 @@ AtendimentoDAO.prototype.listarAsync = async function(addFilter) {
 
         if (addFilter.situacao) {
             where+=" AND a.situacao  = '"+addFilter.situacao+"'";
+            
+            if(addFilter.situacao == "0")
+                orderBy = " cla.peso desc, a.dataCriacao asc ";
         }
 
         if(addFilter.idSap){
@@ -94,7 +98,7 @@ AtendimentoDAO.prototype.listarAsync = async function(addFilter) {
                                                 pro.id as idProfissional,
                                                 ficha.nome tipoFichaNome
                                                 ${join} 
-                                            ORDER BY a.id DESC ${offset}`);
+                                            ORDER BY ${orderBy} ${offset}`);
     return {
         total: count[0].total,
         items: result
@@ -281,8 +285,7 @@ AtendimentoDAO.prototype.buscaPorHistoricoId = async function (idHistorico) {
     return response;
 }
 
-AtendimentoDAO.prototype.buscaPorPacienteId = function (idPaciente, usuario, idEstabelecimento, callback) {
-    //console.log("select * from "+this._table + " WHERE idPaciente = "+idPaciente+" AND dataFinalizacao IS NULL AND dataCancelamento IS NULL AND idEstabelecimento = "+idEstabelecimento+" AND idUsuario =" + usuario.id);
+AtendimentoDAO.prototype.buscaPorPacienteId = function (idPaciente, usuario, idEstabelecimento, callback) {    
     this._connection.query("select * from "+this._table + " WHERE idPaciente = ? AND dataFinalizacao IS NULL AND dataCancelamento IS NULL AND idEstabelecimento = ? AND idUsuario = ?" ,[idPaciente,idEstabelecimento,usuario.id],callback); 
 }
 
