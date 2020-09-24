@@ -1,9 +1,9 @@
 import { AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { SelectBaseModel } from "./model/select-base.model";
+import { SelectBaseModalModel } from "./model/select-base-modal.model";
 
 @Component({
-    selector: 'app-select',
+    selector: 'app-select-modal',
     templateUrl: './app-select-modal.component.html',
     styleUrls: ['./app-select-modal.component.css']
 })
@@ -11,7 +11,7 @@ export class SelectModalComponent implements AfterViewChecked {
     @Input() formGroup: FormGroup;
     @Input() name: string;
 
-    @Input() lista: SelectBaseModel[];
+    @Input() lista: SelectBaseModalModel[];
 
     id: number;
 

@@ -20,6 +20,7 @@ import { TabsModule } from "ngx-bootstrap/tabs";
 import { AtendimentoSalaEsperaFormComponent } from "./sala-espera/atendimento-sala-espera-form.component";
 import { AtendimentoSalaEsperaComponent } from "./sala-espera/atendimento-sala-espera.component";
 import { AppSelectModule } from "../../_core/_components/app-select/app-select.module";
+import { AppSelectModalModule } from "../../_core/_components/app-select-modal/app-select-modal.module";
 
 @NgModule({
     imports: [
@@ -38,7 +39,8 @@ import { AppSelectModule } from "../../_core/_components/app-select/app-select.m
         RouterModule.forChild(atendimentoRoutes),
         SharedServiceModule,
         TabsModule.forRoot(),
-        AppSelectModule
+        AppSelectModule,
+        AppSelectModalModule
     ],
     declarations: [
         AtendimentoComponent,
