@@ -651,18 +651,12 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-xl-4 col-form-label text-left">
+      <label class="col-xl-3 col-form-label text-left">
         Hipótese diagnóstica <span class="text-danger font-weight-bold"> *</span>
       </label>
-      <div class="col-xl-8">
+      <div class="col-xl-12">
         <input type="hidden" [(ngModel)]="pacienteHipotese.idPaciente" />
-
-        <app-select [lista]="domains[0].hipoteses" [(value)]="pacienteHipotese.idHipoteseDiagnostica"></app-select>
-        <!-- <select *ngIf="domains" class="custom-select d-block w-100"
-          [(ngModel)]="pacienteHipotese.idHipoteseDiagnostica">
-          <option [value]="null">Selecione...</option>
-          <option *ngFor="let item of domains[0].hipoteses" [value]="item.id">{{item.nome}}</option>
-        </select> -->
+        <app-select [lista]="domains[0].hipoteses" [(value)]="pacienteHipotese.idHipoteseDiagnostica"></app-select>        
       </div>
     </div>
     <div class="form-group row text-right">

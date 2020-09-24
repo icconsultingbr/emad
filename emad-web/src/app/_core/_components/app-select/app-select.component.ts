@@ -23,6 +23,8 @@ export class SelectComponent {
     }
 
     onChange(value: any) {
-        this.valueChange.emit(value.id);
+        if(value)
+            if(value.id)
+                this.valueChange.emit(value.id);
     }
 }

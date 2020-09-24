@@ -184,8 +184,6 @@ module.exports = function (app) {
             res.status(400).send(errors);
             return;
         }
-
-        delete obj.pesquisaCentral;
         
         const connection = await app.dao.connections.EatendConnection.connection();
         const pacienteRepository = new app.dao.PacienteDAO(connection);
