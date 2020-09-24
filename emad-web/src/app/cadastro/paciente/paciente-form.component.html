@@ -1,7 +1,7 @@
 <h4 class="mb-5 text-left">{{id!=null?'Editar '+label:'Adicionar '+label}}</h4>
 <app-loader [loading]="loading"></app-loader>
 <p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
-<div *ngIf="errors.length" class="alert alert-danger sticky-top"> 
+<div *ngIf="errors.length" class="alert alert-danger sticky-top">
   <div *ngFor="let error of errors" class="row">
     <div class="col-12 text-left">
       {{error.message}}
@@ -14,7 +14,7 @@
     <tabset>
       <tab>
         <ng-template tabHeading>
-          <i class="fa fa-edit" title="Principal"></i>   Principal
+          <i class="fa fa-edit" title="Principal"></i> Principal
         </ng-template>
         <div class="card mb-4">
           <div class="card-body text-left">
@@ -25,14 +25,16 @@
                     Cartão SUS
                   </label>
                   <div class="col-xl-4">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.cartaoSus" formControlName="cartaoSus"/>
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.cartaoSus"
+                      formControlName="cartaoSus" />
                     <input type="hidden" [(ngModel)]="object.id" formControlName="id">
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     ID SAP
                   </label>
                   <div class="col-xl-4">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.idSap" formControlName="idSap"/>
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.idSap"
+                      formControlName="idSap" />
                   </div>
                 </div>
               </div>
@@ -44,25 +46,28 @@
                     Nome<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-10">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nome" formControlName="nome"/>
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.nome"
+                      formControlName="nome" />
                   </div>
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-xl-12">
-                <div class="form-group row">                  
+                <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
                     Nome social
                   </label>
                   <div class="col-xl-4">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nomeSocial" formControlName="nomeSocial"/>
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.nomeSocial"
+                      formControlName="nomeSocial" />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Apelido
                   </label>
                   <div class="col-xl-4">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.apelido" formControlName="apelido"/>
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.apelido"
+                      formControlName="apelido" />
                   </div>
                 </div>
               </div>
@@ -74,13 +79,15 @@
                     Nome da mãe<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nomeMae" formControlName="nomeMae"/>
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.nomeMae"
+                      formControlName="nomeMae" />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Nome do pai
                   </label>
                   <div class="col-xl-4">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.nomePai" formControlName="nomePai"/>
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.nomePai"
+                      formControlName="nomePai" />
                   </div>
                 </div>
               </div>
@@ -94,19 +101,22 @@
                   <div class="col-xl-4">
                     <div class="input-group">
                       <div class="input-group-prepend">
-                          <div class="input-group-text btn">
-                              <i class="fa fa-calendar-alt"></i>
-                          </div>
+                        <div class="input-group-text btn">
+                          <i class="fa fa-calendar-alt"></i>
+                        </div>
                       </div>
-                      <input type="text" [(ngModel)]="object.dataNascimento" formControlName="dataNascimento" placeholder="dd/mm/aaaa" bsDatepicker
-                          [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control" autocomplete="off">
+                      <input type="text" [(ngModel)]="object.dataNascimento" formControlName="dataNascimento"
+                        placeholder="dd/mm/aaaa" bsDatepicker
+                        [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}"
+                        class="form-control" autocomplete="off">
                     </div>
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Sexo<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.sexo" formControlName="sexo">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.sexo"
+                      formControlName="sexo">
                       <option [value]="">Selecione...</option>
                       <option *ngFor="let item of domains[0]?.sexo" [value]="item.id">{{item.nome}}</option>
                     </select>
@@ -121,8 +131,8 @@
                     Nacionalidade<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idNacionalidade" formControlName="idNacionalidade"
-                      (change)="carregaNaturalidade()">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idNacionalidade"
+                      formControlName="idNacionalidade" (change)="carregaNaturalidade()">
                       <option [value]="">Selecione...</option>
                       <option *ngFor="let item of domains[0]?.idNacionalidade" [value]="item.id">{{item.nome}}</option>
                     </select>
@@ -131,7 +141,8 @@
                     Naturalidade<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idNaturalidade" formControlName="idNaturalidade">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idNaturalidade"
+                      formControlName="idNaturalidade">
                       <option [value]="">Selecione...</option>
                       <option *ngFor="let item of domains[0]?.idNaturalidade" [value]="item.id">{{item.nome}}</option>
                     </select>
@@ -146,13 +157,15 @@
                     CPF
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" mask="999.999.999-99"  class="form-control has-error" [(ngModel)]="object.cpf" formControlName="cpf"/>
+                    <input type="text" mask="999.999.999-99" class="form-control has-error" [(ngModel)]="object.cpf"
+                      formControlName="cpf" />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Ocupação
                   </label>
                   <div class="col-xl-4">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.ocupacao" formControlName="ocupacao"/>
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.ocupacao"
+                      formControlName="ocupacao" />
                   </div>
                 </div>
               </div>
@@ -164,7 +177,8 @@
                     Escolaridade<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.escolaridade" formControlName="escolaridade">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.escolaridade"
+                      formControlName="escolaridade">
                       <option [value]="">Selecione...</option>
                       <option *ngFor="let item of domains[0]?.escolaridade" [value]="item.id">{{item.nome}}</option>
                     </select>
@@ -173,26 +187,29 @@
                     Estabelecimento<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idEstabelecimentoCadastro" formControlName="idEstabelecimentoCadastro">
+                    <select *ngIf="domains" class="custom-select d-block w-100"
+                      [(ngModel)]="object.idEstabelecimentoCadastro" formControlName="idEstabelecimentoCadastro">
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idEstabelecimentoCadastro" [value]="item.id">{{item.nome}}</option>
-                    </select>  
+                      <option *ngFor="let item of domains[0]?.idEstabelecimentoCadastro" [value]="item.id">{{item.nome}}
+                      </option>
+                    </select>
                   </div>
                 </div>
               </div>
-            </div>   
+            </div>
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
                     Observações
                   </label>
-                  <div class="col-xl-10">                   
-                    <textarea rows="4" class="form-control has-error" [(ngModel)]="object.observacao" formControlName="observacao"></textarea>
+                  <div class="col-xl-10">
+                    <textarea rows="4" class="form-control has-error" [(ngModel)]="object.observacao"
+                      formControlName="observacao"></textarea>
                   </div>
                 </div>
               </div>
-            </div>        
+            </div>
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
@@ -201,9 +218,10 @@
                   </label>
                   <div class="col-xl-10">
                     <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="falecido" [(ngModel)]="object.falecido" formControlName="falecido" class="custom-control-input">
+                      <input type="checkbox" id="falecido" [(ngModel)]="object.falecido" formControlName="falecido"
+                        class="custom-control-input">
                       <label class="custom-control-label" for="falecido"></label>
-                    </div>  
+                    </div>
                   </div>
                 </div>
               </div>
@@ -216,9 +234,10 @@
                   </label>
                   <div class="col-xl-10">
                     <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao" class="custom-control-input">
+                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao"
+                        class="custom-control-input">
                       <label class="custom-control-label" for="situacao"></label>
-                    </div>  
+                    </div>
                   </div>
                 </div>
               </div>
@@ -228,10 +247,10 @@
       </tab>
       <tab>
         <ng-template tabHeading>
-          <i class="fa fa-user" title="Principal"></i>   Dados pessoais
+          <i class="fa fa-user" title="Principal"></i> Dados pessoais
         </ng-template>
         <div class="card mb-4">
-          <div class="card-body text-left">            
+          <div class="card-body text-left">
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
@@ -239,11 +258,11 @@
                     RG
                   </label>
                   <div class="col-xl-10">
-                      <input type="text"  class="form-control has-error" [(ngModel)]="object.rg" formControlName="rg"/> 
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.rg" formControlName="rg" />
                   </div>
                 </div>
               </div>
-            </div> 
+            </div>
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
@@ -253,23 +272,26 @@
                   <div class="col-xl-4">
                     <div class="input-group">
                       <div class="input-group-prepend">
-                          <div class="input-group-text btn">
-                              <i class="fa fa-calendar-alt"></i>
-                          </div>
+                        <div class="input-group-text btn">
+                          <i class="fa fa-calendar-alt"></i>
+                        </div>
                       </div>
-                      <input type="text" [(ngModel)]="object.dataEmissao" formControlName="dataEmissao" placeholder="dd/mm/aaaa" bsDatepicker
-                          [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control" autocomplete="off">
+                      <input type="text" [(ngModel)]="object.dataEmissao" formControlName="dataEmissao"
+                        placeholder="dd/mm/aaaa" bsDatepicker
+                        [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}"
+                        class="form-control" autocomplete="off">
                     </div>
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Orgão emissor
                   </label>
                   <div class="col-xl-4">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.orgaoEmissor" formControlName="orgaoEmissor"/> 
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.orgaoEmissor"
+                      formControlName="orgaoEmissor" />
                   </div>
                 </div>
               </div>
-            </div>  
+            </div>
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
@@ -277,27 +299,21 @@
                     Endereço
                   </label>
                   <div class="col-xl-6">
-                    <input                    
-                    type="text"
-                    id="logradouro" 
-                    name="logradouro" 
-                    clearIfNotMatch="true"                     
-                    formControlName="logradouro"
-                    [(ngModel)]="object.logradouro"
-                    class="form-control has-error"                     
-                    autocomplete="off"
-                    #addresstext>
+                    <input type="text" id="logradouro" name="logradouro" clearIfNotMatch="true"
+                      formControlName="logradouro" [(ngModel)]="object.logradouro" class="form-control has-error"
+                      autocomplete="off" #addresstext>
 
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Número
                   </label>
                   <div class="col-xl-2">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.numero" formControlName="numero"/>   
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.numero"
+                      formControlName="numero" />
                   </div>
                 </div>
               </div>
-            </div>     
+            </div>
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
@@ -305,13 +321,15 @@
                     Latitude
                   </label>
                   <div class="col-xl-4">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.latitude" formControlName="latitude" readonly/>    
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.latitude"
+                      formControlName="latitude" readonly />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Longitude
                   </label>
                   <div class="col-xl-4">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.longitude" formControlName="longitude" readonly/>     
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.longitude"
+                      formControlName="longitude" readonly />
                   </div>
                 </div>
               </div>
@@ -323,42 +341,45 @@
                     Complemento
                   </label>
                   <div class="col-xl-4">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.complemento" formControlName="complemento"/>     
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.complemento"
+                      formControlName="complemento" />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Bairro
                   </label>
                   <div class="col-xl-4">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.bairro" formControlName="bairro"/>     
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.bairro"
+                      formControlName="bairro" />
                   </div>
                 </div>
               </div>
-            </div> 
+            </div>
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                      Estado
+                    Estado
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idUf" formControlName="idUf"
-                      (change)="carregaMunicipios()">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idUf"
+                      formControlName="idUf" (change)="carregaMunicipios()">
                       <option [value]="">Selecione...</option>
                       <option *ngFor="let item of domains[0]?.idUf" [value]="item.id">{{item.nome}}</option>
                     </select>
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
-                      Município
+                    Município
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idMunicipio" formControlName="idMunicipio">
-                    <option [value]="">Selecione...</option>
-                    <option *ngFor="let item of domains[0]?.idMunicipio" [value]="item.id">{{item.nome}}</option>
-                  </select> 
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idMunicipio"
+                      formControlName="idMunicipio">
+                      <option [value]="">Selecione...</option>
+                      <option *ngFor="let item of domains[0]?.idMunicipio" [value]="item.id">{{item.nome}}</option>
+                    </select>
                   </div>
                 </div>
               </div>
-            </div> 
+            </div>
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
@@ -366,11 +387,12 @@
                     CEP
                   </label>
                   <div class="col-xl-10">
-                    <input type="text" mask="99999-999"  class="form-control has-error" [(ngModel)]="object.cep" formControlName="cep"/>      
+                    <input type="text" mask="99999-999" class="form-control has-error" [(ngModel)]="object.cep"
+                      formControlName="cep" />
                   </div>
                 </div>
               </div>
-            </div> 
+            </div>
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
@@ -378,13 +400,15 @@
                     Telefone residencial
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" mask="(99) 9999-9999" class="form-control has-error" [(ngModel)]="object.foneResidencial" formControlName="foneResidencial"/>       
+                    <input type="text" mask="(99) 9999-9999" class="form-control has-error"
+                      [(ngModel)]="object.foneResidencial" formControlName="foneResidencial" />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Telefone celular
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" mask="(99) 99999-9999" class="form-control has-error" [(ngModel)]="object.foneCelular" formControlName="foneCelular"/>        
+                    <input type="text" mask="(99) 99999-9999" class="form-control has-error"
+                      [(ngModel)]="object.foneCelular" formControlName="foneCelular" />
                   </div>
                 </div>
               </div>
@@ -396,17 +420,19 @@
                     Telefone de contato
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" mask="(99) 99999-9999" class="form-control has-error" [(ngModel)]="object.foneContato" formControlName="foneContato"/>        
+                    <input type="text" mask="(99) 99999-9999" class="form-control has-error"
+                      [(ngModel)]="object.foneContato" formControlName="foneContato" />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Contato
                   </label>
                   <div class="col-xl-4">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.contato" formControlName="contato"/>         
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.contato"
+                      formControlName="contato" />
                   </div>
                 </div>
               </div>
-            </div>  
+            </div>
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
@@ -414,20 +440,21 @@
                     E-mail
                   </label>
                   <div class="col-xl-10">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.email" formControlName="email"/>          
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.email"
+                      formControlName="email" />
                   </div>
                 </div>
               </div>
-            </div>                                      
+            </div>
           </div>
         </div>
       </tab>
       <tab>
         <ng-template tabHeading>
-          <i class="fa fa-user-cog" title="Principal"></i>   Características
+          <i class="fa fa-user-cog" title="Principal"></i> Características
         </ng-template>
         <div class="card mb-4">
-          <div class="card-body text-left">            
+          <div class="card-body text-left">
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
@@ -435,10 +462,11 @@
                     Modalidade
                   </label>
                   <div class="col-xl-10">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idModalidade" formControlName="idModalidade">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idModalidade"
+                      formControlName="idModalidade">
                       <option [value]="">Selecione...</option>
                       <option *ngFor="let item of domains[0]?.idModalidade" [value]="item.id">{{item.nome}}</option>
-                    </select> 
+                    </select>
                   </div>
                 </div>
               </div>
@@ -450,19 +478,21 @@
                     Tipo sanguíneo
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idTipoSanguineo" formControlName="idTipoSanguineo">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idTipoSanguineo"
+                      formControlName="idTipoSanguineo">
                       <option [value]="">Selecione...</option>
                       <option *ngFor="let item of domains[0]?.idTipoSanguineo" [value]="item.id">{{item.nome}}</option>
-                    </select>  
+                    </select>
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Raça/Cor
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idRaca" formControlName="idRaca">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idRaca"
+                      formControlName="idRaca">
                       <option [value]="">Selecione...</option>
                       <option *ngFor="let item of domains[0]?.idRaca" [value]="item.id">{{item.nome}}</option>
-                    </select>  
+                    </select>
                   </div>
                 </div>
               </div>
@@ -474,13 +504,15 @@
                     Número prontuário
                   </label>
                   <div class="col-xl-4">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.numeroProntuario" formControlName="numeroProntuario"/>          
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.numeroProntuario"
+                      formControlName="numeroProntuario" />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Número prontuário Cnes
                   </label>
                   <div class="col-xl-4">
-                    <input type="text"  class="form-control has-error" [(ngModel)]="object.numeroProntuarioCnes" formControlName="numeroProntuarioCnes"/>            
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.numeroProntuarioCnes"
+                      formControlName="numeroProntuarioCnes" />
                   </div>
                 </div>
               </div>
@@ -492,9 +524,9 @@
                     Grupo de atenção continuada
                   </label>
                   <div class="col-xl-10">
-                    <ng-multiselect-dropdown *ngIf="domains && domains.length"
-                      formControlName="gruposAtencaoContinuada" style="border-color: #ced4da; background: #FFF; width: 100%;"
-                      [placeholder]="'Selecionar itens'" [data]="domains[0].gruposAtencaoContinuada" [(ngModel)]="object.gruposAtencaoContinuada"
+                    <ng-multiselect-dropdown *ngIf="domains && domains.length" formControlName="gruposAtencaoContinuada"
+                      style="border-color: #ced4da; background: #FFF; width: 100%;" [placeholder]="'Selecionar itens'"
+                      [data]="domains[0].gruposAtencaoContinuada" [(ngModel)]="object.gruposAtencaoContinuada"
                       [settings]="dropdownSettings">
                     </ng-multiselect-dropdown>
                   </div>
@@ -506,7 +538,7 @@
       </tab>
       <tab>
         <ng-template tabHeading>
-          <i class="fa fa-medkit" title="Principal"></i>   Comorbidades
+          <i class="fa fa-medkit" title="Principal"></i> Comorbidades
         </ng-template>
         <div class="card mb-4">
           <div class="card-body text-left">
@@ -516,8 +548,9 @@
                   <label class="col-xl-2 col-form-label text-left">
                     História progressa/familiar
                   </label>
-                  <div class="col-xl-10">                   
-                    <textarea rows="7" class="form-control has-error" [(ngModel)]="object.historiaProgressaFamiliar" formControlName="historiaProgressaFamiliar"></textarea>
+                  <div class="col-xl-10">
+                    <textarea rows="7" class="form-control has-error" [(ngModel)]="object.historiaProgressaFamiliar"
+                      formControlName="historiaProgressaFamiliar"></textarea>
                   </div>
                 </div>
               </div>
@@ -529,8 +562,8 @@
           <div class="card-header text-left">
             Hipótese diagnosticada
           </div>
-          <div class="card-body text-left">      
-            <div class="row">    
+          <div class="card-body text-left">
+            <div class="row">
               <div class="col-12 mb-3">
                 <button type="button" class="btn btn-primary float-left mr-2" (click)="openHipotese(contentHipotese)">
                   <i class="fa fa-plus-circle"></i>
@@ -538,7 +571,7 @@
                 <button type="button" class="btn btn-default float-left" (click)="findHipotesePorPaciente()">
                   <i class="fa fa-sync-alt"></i>
                 </button>
-              </div>  
+              </div>
               <div class="col-12 table-responsive">
                 <table class="table table-striped">
                   <thead>
@@ -561,15 +594,16 @@
                       <td class="text-secondary">{{item.codigo}}</td>
                       <td class="text-secondary">{{item.nome}}</td>
                       <td class="text-secondary">
-                        <a class="btn btn-link" *ngIf="item.idAtendimento" [routerLink]="" (click)="visualizaAtendimentos(item.idAtendimento)">
+                        <a class="btn btn-link" *ngIf="item.idAtendimento" [routerLink]=""
+                          (click)="visualizaAtendimentos(item.idAtendimento)">
                           <i class="fa fa-file-medical-alt"></i> Visualizar atendimento
                         </a>
-                      </td>   
+                      </td>
                       <td class="text-secondary text-right">
                         <a class="btn btn-link" [routerLink]="" (click)="removeHipotese(item)">
                           <i class="fa fa-trash-alt"></i> Remover
                         </a>
-                      </td>                   
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -580,7 +614,7 @@
       </tab>
       <tab>
         <ng-template tabHeading>
-          <i class="fa fa-calendar" title="Principal"></i>   Agenda
+          <i class="fa fa-calendar" title="Principal"></i> Agenda
         </ng-template>
         <div class="card mb-4">
           <div class="card-body text-left">
@@ -622,17 +656,18 @@
       </label>
       <div class="col-xl-8">
         <input type="hidden" [(ngModel)]="pacienteHipotese.idPaciente" />
-        <select *ngIf="domains" class="custom-select d-block w-100"
+
+        <app-select [lista]="domains[0].hipoteses" [(value)]="pacienteHipotese.idHipoteseDiagnostica"></app-select>
+        <!-- <select *ngIf="domains" class="custom-select d-block w-100"
           [(ngModel)]="pacienteHipotese.idHipoteseDiagnostica">
           <option [value]="null">Selecione...</option>
           <option *ngFor="let item of domains[0].hipoteses" [value]="item.id">{{item.nome}}</option>
-        </select>
+        </select> -->
       </div>
     </div>
     <div class="form-group row text-right">
       <div class="col-12">
-        <button class="btn btn-primary  mr-2" type="button"
-          (click)="saveHipotese()">
+        <button class="btn btn-primary  mr-2" type="button" (click)="saveHipotese()">
           <i class="fa fa-plus-circle"></i> Adicionar
         </button>
         <button class="btn btn-default" (click)="close()" type="button">

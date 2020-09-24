@@ -3,6 +3,8 @@
 @import "~bootstrap/dist/css/bootstrap.css";
 @import "~ag-grid-community/dist/styles/ag-grid.css";
 @import "~ag-grid-community/dist/styles/ag-theme-balham.css";
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
 .btn-primary {
   color: #fff;
   background-color: #00929c;

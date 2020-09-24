@@ -17,6 +17,7 @@ import 'rxjs/add/operator/map';
 import { SharedServiceModule } from "../../shared/services/shared-service.module";
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ProntuarioPacienteFormComponent } from "./prontuario-paciente/prontuario-paciente-form.component";
+import { AppSelectModule } from "../../_core/_components/app-select/app-select.module";
 
 @NgModule({
     imports: [
@@ -32,11 +33,12 @@ import { ProntuarioPacienteFormComponent } from "./prontuario-paciente/prontuari
         NgbDatepickerModule,
         NgMultiSelectDropDownModule,
         AppModalModule,
-        RouterModule.forChild(pacienteRoutes),                
+        RouterModule.forChild(pacienteRoutes),
         SharedServiceModule,
-        RouterModule,                
+        RouterModule,
         NgMultiSelectDropDownModule.forRoot(),
         TabsModule.forRoot(),
+        AppSelectModule
     ],
     declarations: [
         PacienteComponent,

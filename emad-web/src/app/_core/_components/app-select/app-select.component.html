@@ -1,0 +1,10 @@
+<ng-select [items]="lista" bindLabel="nome" bindValue="id" [searchFn]="customSearchFn" clearAllText="Clear"
+    [ngModel]="id" (change)="onChange($event)">
+    <ng-template ng-label-tmp let-item="item">
+        <span>{{ item.nome }}</span>
+    </ng-template>
+    <ng-template ng-option-tmp let-item="item" let-search="searchTerm" let-index="index">
+        <span>{{ item.nome }}</span>
+    </ng-template>
+
+</ng-select>
