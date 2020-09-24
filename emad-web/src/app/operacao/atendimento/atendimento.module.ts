@@ -19,6 +19,7 @@ import { RelatorioReceitaComponent } from "./relatorio-receita.component";
 import { TabsModule } from "ngx-bootstrap/tabs";
 import { AtendimentoSalaEsperaFormComponent } from "./sala-espera/atendimento-sala-espera-form.component";
 import { AtendimentoSalaEsperaComponent } from "./sala-espera/atendimento-sala-espera.component";
+import { AppSelectModule } from "../../_core/_components/app-select/app-select.module";
 
 @NgModule({
     imports: [
@@ -37,12 +38,13 @@ import { AtendimentoSalaEsperaComponent } from "./sala-espera/atendimento-sala-e
         RouterModule.forChild(atendimentoRoutes),
         SharedServiceModule,
         TabsModule.forRoot(),
+        AppSelectModule
     ],
     declarations: [
         AtendimentoComponent,
         AtendimentoSalaEsperaComponent,
         AtendimentoFormComponent,
-        AtendimentoSalaEsperaFormComponent,        
+        AtendimentoSalaEsperaFormComponent,
         RelatorioReceitaComponent
     ],
     providers: [
