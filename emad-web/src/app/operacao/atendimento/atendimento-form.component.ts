@@ -111,7 +111,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.form = this.fb.group({
       id: [''],
       idPaciente: [Validators.required],
-      pacienteNome: [Validators.required],
+      pacienteNome: [''],
       pacienteHistoriaProgressa: ['', ''],
       pressaoArterial: ['', ''],
       pulso: ['', ''],

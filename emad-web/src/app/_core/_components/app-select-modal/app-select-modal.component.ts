@@ -4,10 +4,10 @@ import { SelectBaseModel } from "./model/select-base.model";
 
 @Component({
     selector: 'app-select',
-    templateUrl: './app-select.component.html',
-    styleUrls: ['./app-select.component.css']
+    templateUrl: './app-select-modal.component.html',
+    styleUrls: ['./app-select-modal.component.css']
 })
-export class SelectComponent implements AfterViewChecked {
+export class SelectModalComponent implements AfterViewChecked {
     @Input() formGroup: FormGroup;
     @Input() name: string;
 

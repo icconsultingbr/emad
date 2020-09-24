@@ -18,6 +18,7 @@ import { SharedServiceModule } from "../../shared/services/shared-service.module
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ProntuarioPacienteFormComponent } from "./prontuario-paciente/prontuario-paciente-form.component";
 import { AppSelectModule } from "../../_core/_components/app-select/app-select.module";
+import { AppSelectModalModule } from "../../_core/_components/app-select-modal/app-select-modal.module";
 
 @NgModule({
     imports: [
@@ -38,7 +39,8 @@ import { AppSelectModule } from "../../_core/_components/app-select/app-select.m
         RouterModule,
         NgMultiSelectDropDownModule.forRoot(),
         TabsModule.forRoot(),
-        AppSelectModule
+        AppSelectModule,
+        AppSelectModalModule
     ],
     declarations: [
         PacienteComponent,

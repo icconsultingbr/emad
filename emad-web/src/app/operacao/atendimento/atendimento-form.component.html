@@ -78,8 +78,12 @@
                   Tipo de atendimento<span class="text-danger font-weight-bold"> *</span>
                 </label>
                 <div class="col-xl-4">
-                  <app-select [formGroup]="form" [name]="'tipoFicha'" [lista]="domains[0]?.tipoFichas"
-                    [(value)]="object.tipoFicha"></app-select>
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.tipoFicha"
+                    formControlName="idClassificacaoRisco">
+                    <option [value]="null">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.tipoFichas" [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
                 </div>
                 <label class="col-xl-2 col-form-label text-left">
                   Classificação de risco<span class="text-danger font-weight-bold"> *</span>
@@ -539,7 +543,7 @@
   </tabset>
   <div class="form-group text-right">
     <button class="btn btn-primary" type="submit" [disabled]="form.invalid"
-      *ngIf="object.idPaciente && !disableFields()" [disabled]="form.invalid">
+      *ngIf="object.idPaciente && !disableFields()">
       <i class="fa fa-save"></i> {{ !object.id ? 'Criar atendimento' : 'Salvar'}}
     </button>
     <button (click)="back()" class="btn btn-default" type="button">

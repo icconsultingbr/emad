@@ -656,7 +656,7 @@
       </label>
       <div class="col-xl-12">
         <input type="hidden" [(ngModel)]="pacienteHipotese.idPaciente" />
-        <app-select [lista]="domains[0].hipoteses" [(value)]="pacienteHipotese.idHipoteseDiagnostica"></app-select>        
+        <app-select-modal [lista]="domains[0].hipoteses" [(value)]="pacienteHipotese.idHipoteseDiagnostica"></app-select-modal>
       </div>
     </div>
     <div class="form-group row text-right">
