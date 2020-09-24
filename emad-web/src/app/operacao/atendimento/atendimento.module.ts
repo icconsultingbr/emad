@@ -44,7 +44,7 @@ import { AppSelectModule } from "../../_core/_components/app-select/app-select.m
         AtendimentoComponent,
         AtendimentoSalaEsperaComponent,
         AtendimentoFormComponent,
-        AtendimentoSalaEsperaFormComponent,        
+        AtendimentoSalaEsperaFormComponent,
         RelatorioReceitaComponent
     ],
     providers: [

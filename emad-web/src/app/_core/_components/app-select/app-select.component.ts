@@ -1,12 +1,16 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { FormGroup } from "@angular/forms";
 import { SelectBaseModel } from "./model/select-base.model";
 
 @Component({
     selector: 'app-select',
     templateUrl: './app-select.component.html',
-    styleUrls: ['./app-select.component.css'],
+    styleUrls: ['./app-select.component.css']
 })
-export class SelectComponent {
+export class SelectComponent implements AfterViewChecked {
+    @Input() formGroup: FormGroup;
+    @Input() name: string;
+
     @Input() lista: SelectBaseModel[];
 
     id: number;
@@ -17,14 +21,24 @@ export class SelectComponent {
         this.id = value;
     }
 
+    constructor(private cdr: ChangeDetectorRef) {
+
+    }
+
+    ngAfterViewChecked() {
+        this.cdr.detectChanges();
+    }
+
     customSearchFn(term: string, item: any) {
         term = term.toLocaleLowerCase();
         return item.nome.toLocaleLowerCase().indexOf(term) > -1;
     }
 
     onChange(value: any) {
-        if(value)
-            if(value.id)
-                this.valueChange.emit(value.id);
+        if (this.formGroup) {
+            this.formGroup.get(this.name).patchValue(value.id, { emitEvent: false });
+        }
+
+        this.valueChange.emit(value.id);
     }
 }
