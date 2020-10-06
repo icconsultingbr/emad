@@ -20,7 +20,11 @@
             <div class="card-header text-left">
               Paciente
   
-              <button *ngIf="object.id" class="btn btn-primary float-right rounded" type="button" (click)="abreFichaDigital(object.id, true)">
+              <button class="btn btn-primary float-right rounded" type="button" (click)="visualizaProntuarioPaciente(object.idPaciente)" title="Prontuário eletrônico">
+                <i class="fa fa-user"></i>
+              </button>
+
+              <button *ngIf="object.id" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreFichaDigital(object.id, true)">
                 <i class="fa fa-print"></i>
               </button>
   
