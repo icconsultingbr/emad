@@ -20,7 +20,7 @@
             <div class="card-header text-left">
               Paciente
   
-              <button class="btn btn-primary float-right rounded" type="button" (click)="visualizaProntuarioPaciente(object.idPaciente)" title="Prontuário eletrônico">
+              <button  *ngIf="object.idPaciente" class="btn btn-primary float-right rounded" type="button" (click)="visualizaProntuarioPaciente(object.idPaciente)" title="Prontuário eletrônico">
                 <i class="fa fa-user"></i>
               </button>
 
