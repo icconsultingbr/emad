@@ -16,12 +16,13 @@ var server = app.listen(config.get('apiPort'), function(){
     }, 2000);
 });
 
+var io = require('socket.io')({ pingInterval: 25000 , pingTimeout: 60000 }).listen(server);
 
-
-var io = require('socket.io').listen(server);
 app.set('io', io);
 
+
 io.use(function(socket, next){
+
   if (socket.handshake.query && socket.handshake.query.token){
     jwt.verify(socket.handshake.query.token, app.settings.superSecret, function(err, decoded) {
         if(err) return next(new Error('Authentication error'));
