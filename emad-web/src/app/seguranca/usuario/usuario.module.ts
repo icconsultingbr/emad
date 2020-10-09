@@ -12,6 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { NgbModule, NgbCollapseModule, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { UsuarioAlterarSenhaComponent } from "./usuario-alterar-senha.component";
+import { AppFileUploadModule } from "../../_core/_components/app-file-upload/app-file-upload.module";
 
 @NgModule({
     imports: [
@@ -25,7 +26,8 @@ import { UsuarioAlterarSenhaComponent } from "./usuario-alterar-senha.component"
         NgbModule,
         NgbCollapseModule,
         NgbDatepickerModule,
-        RouterModule.forChild(usuarioRoutes)
+        RouterModule.forChild(usuarioRoutes),
+        AppFileUploadModule
     ],
     declarations: [
         UsuarioComponent,
