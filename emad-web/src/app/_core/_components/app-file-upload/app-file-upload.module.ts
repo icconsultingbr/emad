@@ -6,19 +6,19 @@ import { AppFileUploadComponent } from "./app-file-upload.component";
 import { NgxUploaderModule } from "ngx-uploader";
 
 @NgModule({
-    imports: [
-        CommonModule,
-        NgSelectModule,
-        FormsModule,
-        ReactiveFormsModule,
-        NgxUploaderModule
-    ],
-    declarations: [
-        AppFileUploadComponent
-    ],
-    exports: [
-        AppFileUploadComponent
-    ]
+  imports: [
+    CommonModule,
+    NgSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgxUploaderModule,
+  ],
+  declarations: [
+    AppFileUploadComponent
+  ],
+  exports: [
+    AppFileUploadComponent
+  ]
 })
 
 export class AppFileUploadModule { }

@@ -13,30 +13,31 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { NgbModule, NgbCollapseModule, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { UsuarioAlterarSenhaComponent } from "./usuario-alterar-senha.component";
 import { AppFileUploadModule } from "../../_core/_components/app-file-upload/app-file-upload.module";
+import { AppImageCropperUploadModule } from "../../_core/_components/app-image-cropper-upload/app-image-cropper-upload.module";
 
 @NgModule({
-    imports: [
-        CommonModule,
-        CoreModule,
-        AppGridViewModule,
-        AppFormModule,
-        FormsModule,
-        ReactiveFormsModule,
-        NgMultiSelectDropDownModule,
-        NgbModule,
-        NgbCollapseModule,
-        NgbDatepickerModule,
-        RouterModule.forChild(usuarioRoutes),
-        AppFileUploadModule
-    ],
-    declarations: [
-        UsuarioComponent,
-        UsuarioFormComponent,
-        UsuarioAlterarSenhaComponent
-    ],
-    providers: [
-        UsuarioService
-    ]
+  imports: [
+    CommonModule,
+    CoreModule,
+    AppGridViewModule,
+    AppFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgMultiSelectDropDownModule,
+    NgbModule,
+    NgbCollapseModule,
+    NgbDatepickerModule,
+    RouterModule.forChild(usuarioRoutes),
+    AppImageCropperUploadModule
+  ],
+  declarations: [
+    UsuarioComponent,
+    UsuarioFormComponent,
+    UsuarioAlterarSenhaComponent
+  ],
+  providers: [
+    UsuarioService
+  ]
 })
 export class UsuarioModule {
 }

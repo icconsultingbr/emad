@@ -1,0 +1,15 @@
+.tamanho-imagem {
+  height: 70%;
+}
+::ng-deep div.avatar-container {
+  height: unset !important;
+  width: unset !important;
+}
+/* .cropper-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 100%;
+  height: 200px;
+} */

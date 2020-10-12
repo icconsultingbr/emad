@@ -1,0 +1,59 @@
+<div *ngIf="!currentFile">
+  <img height="70%" src="assets/imgs/user2-160x160.jpg" />
+</div>
+
+<div *ngIf="currentFile">
+  <ngx-avatar [size]="200" [src]="currentFile.base64"></ngx-avatar>
+</div>
+
+<div class="container">
+  <ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title center" id="modal-basic-title">Editar foto</h4>
+      <button type="button" class="close" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <label for="upload" class="btn btn-primary btn-sm afu-select-btn"
+        >Selecione uma foto</label
+      >
+      <input
+        type="file"
+        id="upload"
+        style="display: none"
+        accept="image/*"
+        (change)="fileChangeEvent($event)"
+        title="Selecione um arquivo"
+        name="files[]"
+      />
+      <image-cropper
+        [imageChangedEvent]="imageChangedEvent"
+        [maintainAspectRatio]="true"
+        [roundCropper]="true"
+        [aspectRatio]="1 / 1"
+        format="jpeg"
+        (imageCropped)="imageCropped($event)"
+      >
+      </image-cropper>
+    </div>
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-outline-dark"
+        (click)="saveCropper()"
+      >
+        Salvar
+      </button>
+    </div>
+  </ng-template>
+</div>
+<br />
+
+<button
+  type="button"
+  class="btn btn-lg btn-outline-primary"
+  (click)="open(content)"
+>
+  Alterar foto
+</button>
