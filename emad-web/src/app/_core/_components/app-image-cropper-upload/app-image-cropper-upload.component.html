@@ -1,9 +1,9 @@
-<div *ngIf="!currentFile">
+<div *ngIf="!id">
   <img height="70%" src="assets/imgs/user2-160x160.jpg" />
 </div>
 
-<div *ngIf="currentFile">
-  <ngx-avatar [size]="200" [src]="currentFile.base64"></ngx-avatar>
+<div *ngIf="id">
+  <ngx-avatar [size]="200" [src]=""></ngx-avatar>
 </div>
 
 <div class="container">
@@ -15,27 +15,20 @@
       </button>
     </div>
     <div class="modal-body">
-      <label for="upload" class="btn btn-primary btn-sm afu-select-btn"
-        >Selecione uma foto</label
-      >
-      <input
-        type="file"
-        id="upload"
-        style="display: none"
-        accept="image/*"
-        (change)="fileChangeEvent($event)"
-        title="Selecione um arquivo"
-        name="files[]"
-      />
-      <image-cropper
-        [imageChangedEvent]="imageChangedEvent"
-        [maintainAspectRatio]="true"
-        [roundCropper]="true"
-        [aspectRatio]="1 / 1"
-        format="jpeg"
-        (imageCropped)="imageCropped($event)"
-      >
-      </image-cropper>
+      <app-file-upload
+        (changeFiles)="fileChangeEvent($event)"
+      ></app-file-upload>
+      <div *ngFor="let item of images">
+        <image-cropper
+          [imageChangedEvent]="item.event"
+          [maintainAspectRatio]="true"
+          [roundCropper]="true"
+          [aspectRatio]="1 / 1"
+          format="jpeg"
+          (imageCropped)="imageCropped(item, $event)"
+        >
+        </image-cropper>
+      </div>
     </div>
     <div class="modal-footer">
       <button

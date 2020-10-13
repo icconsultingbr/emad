@@ -10,8 +10,8 @@ module.exports = function () {
     var app = express(); 
 
     app.set('superSecret', 'ed281fe0f84dceef9a11e89f9159046c'); // usado para gerar o token no JWT
-    app.use(bodyParser.json({ extended: true }));
-    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json({ limit: "50mb", extended: true }));
+    app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit:50000 }));
     app.use(expressValidator());
     app.use(cookieParser());
     app.use(expressSession({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));

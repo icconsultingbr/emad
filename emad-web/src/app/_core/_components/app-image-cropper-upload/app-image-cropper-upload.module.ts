@@ -6,6 +6,8 @@ import { ImageCropperModule } from 'ngx-image-cropper';
 import { AppFileUploadModule } from "../app-file-upload/app-file-upload.module";
 import { AppImageCropperUploadComponent } from "./app-image-cropper-upload.component";
 import { AvatarModule } from 'ngx-avatar';
+import { FileUploadService } from "../app-file-upload/services/file-upload.service";
+import { UsuarioService } from "../../../seguranca/usuario/usuario.service";
 
 @NgModule({
   imports: [
@@ -22,6 +24,10 @@ import { AvatarModule } from 'ngx-avatar';
   ],
   exports: [
     AppImageCropperUploadComponent
+  ],
+  providers: [
+    FileUploadService,
+    UsuarioService
   ]
 })
 

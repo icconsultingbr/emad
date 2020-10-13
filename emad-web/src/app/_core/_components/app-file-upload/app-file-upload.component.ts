@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnInit } from "@angular/core";
-import { FileUpload } from "./model/file.model";
+import { FileUpload } from "./model/file-upload.model";
 import { Guid } from "guid-typescript";
 
 @Component({
@@ -69,8 +69,6 @@ export class AppFileUploadComponent implements OnInit {
     }
 
     this.changeFiles.emit(this.allowedFiles);
-
-    event.target.value = null;
   }
 
   removeFile(i: any, sf_na: any) {

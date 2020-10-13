@@ -29,8 +29,8 @@ export class UsuarioService extends GenericsService {
       label: "Foto",
       grid: true,
       required: false,
-      validator: ['', ''],  
-      path:`${environment.apiUrl}/profile/`,
+      validator: ['', ''],
+      path: `${environment.apiUrl}/profile/`,
       imgDefault: "user_default.jpg"
     },
     {
@@ -39,7 +39,7 @@ export class UsuarioService extends GenericsService {
       label: "Grupo de Usuário",
       grid: true,
       required: true,
-      validator: ['', Validators.required] 
+      validator: ['', Validators.required]
     },
     {
       field: "nome",
@@ -47,8 +47,8 @@ export class UsuarioService extends GenericsService {
       label: "Nome",
       grid: true,
       required: true,
-      validator: ['', Validators.required] 
-    }, 
+      validator: ['', Validators.required]
+    },
     {
       field: "cpf",
       type: "text",
@@ -102,7 +102,7 @@ export class UsuarioService extends GenericsService {
       grid: false,
       required: true,
       validator: ['', Validators.required],
-      onlyCreate : true
+      onlyCreate: true
     },
     {
       field: "confirmaSenha",
@@ -111,10 +111,10 @@ export class UsuarioService extends GenericsService {
       grid: false,
       required: true,
       validator: ['', Validators.required],
-      onlyCreate : true
+      onlyCreate: true
     },
     {
-      field: "celular", 
+      field: "celular",
       type: "text",
       label: "celular",
       grid: false,
@@ -131,9 +131,9 @@ export class UsuarioService extends GenericsService {
       required: true,
       validator: ['', Validators.required],
       filter: {
-        type:"select" 
+        type: "select"
       },
-      isAdmin : true
+      isAdmin: true
     },
     {
       field: "estabelecimentos",
@@ -143,41 +143,40 @@ export class UsuarioService extends GenericsService {
       form: true,
       required: true,
       validator: ['', '']
-    }    
+    }
   ];
 
   list(method: string): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(method);
   }
 
-  
-  public buscaPorId(id: number) : Observable<any>{
-    return this.http.get("usuario/"+id);
+
+  public buscaPorId(id: number): Observable<any> {
+    return this.http.get("usuario/" + id);
   }
 
-  public cadastra(plano: Usuario){ 
-    if(plano.id){
+  public cadastra(plano: Usuario) {
+    if (plano.id) {
       return this.http
-      .put('usuario', JSON.stringify(plano));
-    } 
-    else{
+        .put('usuario', JSON.stringify(plano));
+    }
+    else {
       return this.http
-      .post('usuario', JSON.stringify(plano));
+        .post('usuario', JSON.stringify(plano));
     }
   }
 
-  public redefinirSenha(senha: Senha){
+  public redefinirSenha(senha: Senha) {
     return this.http
       .put('usuario/redefinir-senha', JSON.stringify(senha));
   }
 
-  public redefinirSenhaAdmin(senha: Senha){
+  public redefinirSenhaAdmin(senha: Senha) {
     return this.http
       .put('usuario/redefinir-senha-admin', JSON.stringify(senha));
   }
 
-  listaServicos(method : string) : Observable<any[]>{
+  listaServicos(method: string): Observable<any[]> {
     return this.http.get<any[]>(method);
   }
 }
- 

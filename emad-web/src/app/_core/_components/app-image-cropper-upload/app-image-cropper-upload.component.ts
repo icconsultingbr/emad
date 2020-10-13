@@ -1,7 +1,10 @@
-import { Component, ChangeDetectorRef, Output, EventEmitter, Input, ChangeDetectionStrategy } from "@angular/core";
+import { Component, Output, EventEmitter, Input, ChangeDetectorRef } from "@angular/core";
 import { ImageCroppedEvent } from "ngx-image-cropper";
-import { FileUpload } from "../app-file-upload/model/file.model";
-import { NgbModal, ModalDismissReasons, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { FileUpload } from "../app-file-upload/model/file-upload.model";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { Guid } from "guid-typescript";
+import { HttpClient } from "@angular/common/http";
+import { FileUploadService } from "../app-file-upload/services/file-upload.service";
 
 @Component({
   selector: 'app-image-cropper-upload',
@@ -9,35 +12,31 @@ import { NgbModal, ModalDismissReasons, NgbModalRef } from "@ng-bootstrap/ng-boo
   styleUrls: ['./app-image-cropper-upload.component.css']
 })
 export class AppImageCropperUploadComponent {
-  @Output() cropped = new EventEmitter<FileUpload>();
-  @Input() currentFile: FileUpload;
 
-  public imageChangedEvent = '';
+  @Input() public id: string;
 
   private modalRef: NgbModalRef = null;
-  private base64: string;
+  public images: any[] = [];
 
-  constructor(private cd: ChangeDetectorRef,
-    private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal,
+    private fileUploadService: FileUploadService,
+    private cd: ChangeDetectorRef) { }
 
   fileChangeEvent(event: any): void {
-    this.imageChangedEvent = event;
+    this.images = event;
+    this.cd.detectChanges();
   }
 
-  imageCropped(event: ImageCroppedEvent) {
-    this.base64 = event.base64;
+  imageCropped(file: FileUpload, event: ImageCroppedEvent) {
+    file.base64 = event.base64;
   }
 
   saveCropper() {
-    if (!this.currentFile)
-      this.currentFile = {} as FileUpload;
-
-    this.currentFile.base64 = this.base64;
-    this.imageChangedEvent = '';
-
-    this.cropped.emit(this.currentFile);
-
-    this.close();
+    this.fileUploadService.upload(this.images[0])
+      .subscribe((result) => {
+        this.id = result;
+        this.close();
+      });
   }
 
   open(content) {
