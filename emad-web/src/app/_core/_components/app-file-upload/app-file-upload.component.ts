@@ -51,6 +51,8 @@ export class AppFileUploadComponent implements OnInit {
       file.id = Guid.create();
       file.event = event;
 
+      file.extension = file.name.split(".").pop()
+
       const currentFileExt = fileExtRegExp.exec(file.name)[1].toLowerCase();
 
       const isFormatValid = this.formatsAllowed.includes(currentFileExt);

@@ -35,55 +35,57 @@ import { EstabelecimentoService } from './seguranca/estabelecimento/estabelecime
 import { LogService } from './seguranca/log/log.service';
 import { CoreModule } from './_core/core.module';
 import { UsuarioResetComponent } from './seguranca/usuario/usuario-reset.component';
+import { FileUploadService } from './_core/_components/app-file-upload/services/file-upload.service';
 
 if (environment.production) {
-    enableProdMode();
+  enableProdMode();
 }
 defineLocale('pt-br', deLocale);
 
 @NgModule({
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        CoreModule,
-        routing,
-        FormsModule,
-        ReactiveFormsModule,
-        NgbModule.forRoot(),
-        AppGridViewModule,
-        AppFormModule,
-        AppModalModule,
-        NgbCollapseModule.forRoot(),
-        NgbDatepickerModule.forRoot(),
-        NgMultiSelectDropDownModule.forRoot(),
-        ReactiveFormsModule,
-        RecaptchaModule,
-        RecaptchaFormsModule,
-        AgGridModule.withComponents([]),
-        BsDatepickerModule.forRoot(),
-        BsDropdownModule.forRoot(),
-        ChartsModule,
-    ], declarations: [
-        AppComponent,
-        AppNavbarComponent,
-        LoginComponent,
-        MainComponent,
-        NotFoundComponent,
-        UsuarioResetComponent
-    ],
-    bootstrap: [AppComponent],
-    providers: [
-        LoginService,
-        PagerService,
-        AppService,
-        AppFormService,
-        AppGridViewService,
-        MenuService,
-        UsuarioService,
-        PreviousRouteService,
-        EstabelecimentoService,
-        LogService
-    ]
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    CoreModule,
+    routing,
+    FormsModule,
+    ReactiveFormsModule,
+    NgbModule.forRoot(),
+    AppGridViewModule,
+    AppFormModule,
+    AppModalModule,
+    NgbCollapseModule.forRoot(),
+    NgbDatepickerModule.forRoot(),
+    NgMultiSelectDropDownModule.forRoot(),
+    ReactiveFormsModule,
+    RecaptchaModule,
+    RecaptchaFormsModule,
+    AgGridModule.withComponents([]),
+    BsDatepickerModule.forRoot(),
+    BsDropdownModule.forRoot(),
+    ChartsModule,
+  ], declarations: [
+    AppComponent,
+    AppNavbarComponent,
+    LoginComponent,
+    MainComponent,
+    NotFoundComponent,
+    UsuarioResetComponent
+  ],
+  bootstrap: [AppComponent],
+  providers: [
+    LoginService,
+    PagerService,
+    AppService,
+    AppFormService,
+    AppGridViewService,
+    MenuService,
+    UsuarioService,
+    PreviousRouteService,
+    EstabelecimentoService,
+    LogService,
+    FileUploadService
+  ]
 
 })
 export class AppModule { }

@@ -22,9 +22,9 @@ import { environment } from '../../../environments/environment';
   providers: [AtendimentoService, PlanoTerapeuticoService]
 })
 export class AtendimentoFormComponent implements OnInit {
-  
+
   @ViewChild('contentConfirmacao') contentConfirmacao: any;
-  
+
   loading: Boolean = false;
   message: string = "";
   errors: any[] = [];
@@ -39,14 +39,14 @@ export class AtendimentoFormComponent implements OnInit {
   method: string = "atendimento";
   url: string = "atendimentos";
   object: Atendimento = new Atendimento();
-  objectHistorico: AtendimentoHistorico = new AtendimentoHistorico(); 
+  objectHistorico: AtendimentoHistorico = new AtendimentoHistorico();
   paciente: Paciente = new Paciente();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
   encaminhamento: Encaminhamento = new Encaminhamento();
   atendimentoMedicamento: AtendimentoMedicamento = new AtendimentoMedicamento();
   medicamento: Material = new Material();
   virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
-  atendimentoHistorico: AtendimentoHistorico = new AtendimentoHistorico(); 
+  atendimentoHistorico: AtendimentoHistorico = new AtendimentoHistorico();
   mostraFormulario: boolean = false;
   pacienteSelecionado: any = null;
   medicamentoSelecionado: any = null;
@@ -66,12 +66,14 @@ export class AtendimentoFormComponent implements OnInit {
   allMedicamentos: any[] = [];
   removeId: number;
 
+  pathFiles = `${environment.apiUrl}/`;
+
   paging: any = {
     offset: 0,
     limit: 10,
     total: 0
-  };  
-  warning: string = "";    
+  };
+  warning: string = "";
   totalPages: Number;
 
   id: number;
@@ -102,7 +104,7 @@ export class AtendimentoFormComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.id = params['id'];
-      this.idHistorico = params['idHistorico'];  
+      this.idHistorico = params['idHistorico'];
       this.carregaEntidadeCampoPorEspecialidade();
     });
   }
@@ -159,7 +161,7 @@ export class AtendimentoFormComponent implements OnInit {
       exameFisico: new FormControl({value: '', disabled: true}),
       observacoesGerais: new FormControl({value: '', disabled: true}),
       situacao: new FormControl({value: '', disabled: true}),
-      motivoCancelamento:  new FormControl({value: '', disabled: true}),      
+      motivoCancelamento:  new FormControl({value: '', disabled: true}),
       tipoFicha: new FormControl({value: '', disabled: true}),
       idClassificacaoRisco: new FormControl({value: '', disabled: true}),
       motivoQueixa: new FormControl({value: '', disabled: true}),
@@ -184,7 +186,7 @@ export class AtendimentoFormComponent implements OnInit {
   buscaPaciente(offset: Number = null, limit: Number = null) {
     this.loading = true;
     let params = "pesquisa=1&";
-    
+
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
 
@@ -200,13 +202,13 @@ export class AtendimentoFormComponent implements OnInit {
           params = "?" + params;
         }
       }
-    }   
+    }
 
     if (this.paging.offset != null && this.paging.limit != null) {
       params += (params == "" ? "?" : "") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
     }
 
-    this.service.list('paciente' + params).subscribe(result => {      
+    this.service.list('paciente' + params).subscribe(result => {
       this.paging.total = result.total;
       this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
       this.allItems = result.items;
@@ -230,7 +232,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.loading = false;
       return;
     }
-    
+
     params = "?descricao=" + this.medicamento.descricao + "&idGrupoMaterial=" + this.medicamento.idGrupoMaterial;
 
     this.service.list('material/especialidade-usuario' + params).subscribe(result => {
@@ -297,7 +299,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.atendimentoMedicamento.idPaciente = this.object.idPaciente;
     this.atendimentoMedicamento.idAtendimento = this.object.id;
     this.medicamento.descricao = "";
-    this.medicamentoSelecionado = null;    
+    this.medicamentoSelecionado = null;
     this.allMedicamentos = [];
 
     this.modalRef = this.modalService.open(content, {
@@ -398,15 +400,15 @@ export class AtendimentoFormComponent implements OnInit {
       this.errors.push({
         message: "Atendimento não encontrado"
       });
-    });    
+    });
   }
 
   encontraAtendimentoHistorico(idHistorico: number) {
     this.object.id = this.id;
     this.errors = [];
     this.message = "";
-    
-    if(idHistorico){      
+
+    if(idHistorico){
     this.loading = true;
       this.service.findByHistoricoId(idHistorico).subscribe(result => {
         this.objectHistorico = result;
@@ -415,20 +417,20 @@ export class AtendimentoFormComponent implements OnInit {
         this.nomeTipoHistorico = result.nomeTipoHistorico;
         this.objectHistorico.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
         this.loading = false;
-  
+
         this.findHipotesePorAtendimento();
         this.findEncaminhamentoPorAtendimento();
         this.findMedicamentoPorAtendimento();
         this.findHistoricoPorAtendimento();
-  
-      }, error => {  
+
+      }, error => {
         this.loading = false;
         this.close();
         this.errors.push({
           message: "Atendimento histórico não encontrado"
         });
       });
-    }       
+    }
   }
 
   sendForm(event) {
@@ -442,7 +444,7 @@ export class AtendimentoFormComponent implements OnInit {
       .subscribe((res: any) => {
         this.object.id = res.id;
         this.findHistoricoPorAtendimento();
-        if(res.ano_receita)        
+        if(res.ano_receita)
           this.object.ano_receita = res.ano_receita;
 
         if(res.numeroReceita)
@@ -475,14 +477,14 @@ export class AtendimentoFormComponent implements OnInit {
             this.object = new Atendimento();
           }
           else if(this.object.situacao == 'C' || this.object.situacao == '0')
-            this.message = "Atendimento alterado com sucesso"          
+            this.message = "Atendimento alterado com sucesso"
           else{
             this.message = "Atendimento finalizado com sucesso"
             this.object = new Atendimento();
-          }  
+          }
         }
 
-        this.loading = false;        
+        this.loading = false;
       }, erro => {
         setTimeout(() => this.loading = false, 300);
         this.errors = Util.customHTTPResponse(erro);
@@ -500,7 +502,7 @@ export class AtendimentoFormComponent implements OnInit {
         this.object.pacienteNome = this.pacienteSelecionado.nome;
         this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
         this.loading = false;
-  
+
         this.findHipotesePorAtendimento();
         this.findEncaminhamentoPorAtendimento();
         this.findMedicamentoPorAtendimento();
@@ -589,10 +591,10 @@ export class AtendimentoFormComponent implements OnInit {
   loadDomains() {
     this.loading = true;
     this.service.listDomains('hipotese-diagnostica').subscribe(hipoteses => {
-      this.service.listDomains('especialidade').subscribe(especialidades => {            
-        this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {            
-          this.service.listDomains('grupo-material').subscribe(gruposMateriais => {  
-            this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {            
+      this.service.listDomains('especialidade').subscribe(especialidades => {
+        this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {
+          this.service.listDomains('grupo-material').subscribe(gruposMateriais => {
+            this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {
                 this.domains.push({
                   hipoteses: hipoteses,
                   especialidades: especialidades,
@@ -615,7 +617,7 @@ export class AtendimentoFormComponent implements OnInit {
       });
     });
   }
-  
+
   disableHipoteseButton() {
     return Util.isEmpty(this.pacienteHipotese.idHipoteseDiagnostica) || Util.isEmpty(this.pacienteHipotese.idPaciente);
   }
@@ -672,7 +674,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.errors = [];
     this.loading = true;
 
-    this.atendimentoMedicamento.idMaterial = this.medicamentoSelecionado.id;    
+    this.atendimentoMedicamento.idMaterial = this.medicamentoSelecionado.id;
 
     this.service.saveMedicamento(this.atendimentoMedicamento).subscribe(result => {
       this.message = "Medicamento inserido com sucesso!"
@@ -728,14 +730,14 @@ export class AtendimentoFormComponent implements OnInit {
     if(this.modalRef)
       this.modalRef.close();
 
-    this.router.navigate([this.url]);    
+    this.router.navigate([this.url]);
   }
 
   abreHistorico(id: Number) {
     if(!id)
       return;
 
-    let url = this.router.url.replace('atendimentos/cadastro/'+this.id,'') +  this.virtualDirectory + "#/atendimentos/historico/" + id;  
+    let url = this.router.url.replace('atendimentos/cadastro/'+this.id,'') +  this.virtualDirectory + "#/atendimentos/historico/" + id;
 
     this.loading = true;
     this.service.printDocument(url).subscribe(result => {
@@ -753,9 +755,9 @@ export class AtendimentoFormComponent implements OnInit {
   abreFichaDigital(id: Number, grid: boolean) {
     if((!this.object.dadosFicha || this.object.dadosFicha.length == 0) && !grid)
       return;
-      
+
     this.errors = [];
-    let url = 
+    let url =
       JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")
       ?
       JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")[0].valor.replace('{id}', id)
@@ -779,7 +781,7 @@ export class AtendimentoFormComponent implements OnInit {
 
   abreAtendimentoFichaDigital(id: Number) {
     this.errors = [];
-    let url = 
+    let url =
       JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")
       ?
       JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")[0].valor.replace('{id}', id)
@@ -806,16 +808,16 @@ export class AtendimentoFormComponent implements OnInit {
 
   setPagePagined(offset: number, limit: Number) {
     this.paging.offset = offset !== undefined ? offset : 0;
-    this.paging.limit = limit ? limit : this.paging.limit;    
+    this.paging.limit = limit ? limit : this.paging.limit;
     this.buscaPaciente(this.paging.offset, this.paging.limit);
   }
 
-  carregaEntidadeCampoPorEspecialidade() {    
+  carregaEntidadeCampoPorEspecialidade() {
     this.loading = true;
     this.allItemsEntidadeCampo = [];
     this.service.carregaEntidadeCampoPorEspecialidade().subscribe(result => {
       this.mostraFormulario = true;
-      this.allItemsEntidadeCampo = result;         
+      this.allItemsEntidadeCampo = result;
       this.createGroup();
       this.loadDomains();
       this.loading = false;

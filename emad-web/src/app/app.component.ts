@@ -12,6 +12,11 @@ import { SocketService } from './_core/_services/socket.service';
 import { AuthService } from './_core/auth/auth.service';
 import * as $ from 'jquery';
 import { NotificacaoSistemaService } from './_core/_services/notificacao-sistema.service';
+import { Observable, Subscription } from 'rxjs';
+import { FileUploadService } from './_core/_components/app-file-upload/services/file-upload.service';
+import { FileUpload } from './_core/_components/app-file-upload/model/file-upload.model';
+import { UserInfoService } from './_core/_services/user-info.service';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -29,8 +34,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   menus: Menu[];
   parametrosSeguranca: ParametroSeguranca[];
 
+  image$: Observable<string>;
+
   teste2: string = "";
 
+  pathFiles = `${environment.apiUrl}/`;
 
   clicked: string = null;
   showMenu = true;
@@ -69,6 +77,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.menus = menu;
 
       this.usuario = this.auth.getUser();
+
       localStorage.setItem('menu', JSON.stringify(menu));
 
     }, erro => {
@@ -85,6 +94,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.parametrosSeguranca = url;
 
       this.usuario = this.auth.getUser();
+
       localStorage.setItem('parametro_seguranca', JSON.stringify(url));
 
     }, erro => {
@@ -103,15 +113,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit() {
 
     const token = this.authService.getToken();
-    if(!token){
+    if (!token) {
       return;
     }
 
     this.socketService.connect()
-    .subscribe(result => {
-      console.log(`notificação sistema ${result}`);
-    }, (error) => {
-    });
+      .subscribe(result => {
+        console.log(`notificação sistema ${result}`);
+      }, (error) => {
+      });
 
     /*if (localStorage.getItem('currentUser')) {
       this.appService.extrato.subscribe(msgSocket => {
@@ -119,7 +129,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         let user = localStorage.getItem('currentUser');
         let idEmpresa = JSON.parse(user).idEmpresa;
 
-        if (msgSocket.idEmpresa == idEmpresa) {            
+        if (msgSocket.idEmpresa == idEmpresa) {
         }
       })
 

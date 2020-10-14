@@ -447,7 +447,8 @@ PacienteDAO.prototype.buscaPorId = function (id, callback) {
     idEstabelecimentoCadastro,
     apelido,
     observacao, 
-    historiaProgressaFamiliar
+    historiaProgressaFamiliar,
+    foto
     FROM ${this._table} WHERE id = ?`, id, callback);
 }
 
@@ -498,7 +499,8 @@ PacienteDAO.prototype.buscaPorIdSync = async function (id) {
     idEstabelecimentoCadastro,
     apelido,
     observacao, 
-    historiaProgressaFamiliar
+    historiaProgressaFamiliar,
+    foto
     FROM ${this._table} WHERE id = ?`, id);
     return responsePaciente;
 }

@@ -35,6 +35,7 @@ export class PacienteFormComponent implements OnInit {
   allItemsHipotese: any[] = [];
   virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
   modalRef: NgbModalRef = null;
+  loadPhoto: boolean = false;
 
   @ViewChild('addresstext') addresstext: ElementRef;
 
@@ -126,6 +127,7 @@ export class PacienteFormComponent implements OnInit {
                   }
                   else {
                     this.loading = false;
+                    this.loadPhoto = true;
                   }
                 });
               });
@@ -145,11 +147,13 @@ export class PacienteFormComponent implements OnInit {
     this.service.findById(this.id, this.method).subscribe(result => {
       this.object = result;
       this.loading = false;
+      this.loadPhoto = true;
       this.carregaNaturalidade();
       this.findHipotesePorPaciente();
     }, error => {
       this.object = new Paciente();
       this.loading = false;
+      this.loadPhoto = true;
       //this.allItemsEncaminhamento = [];
       this.allItemsHipotese = [];
       //this.allItemsMedicamento = [];
@@ -220,6 +224,7 @@ export class PacienteFormComponent implements OnInit {
       gruposAtencaoContinuada: ['', ''],
       falecido: ['', ''],
       situacao: ['', Validators.required],
+      foto: ['']
     });
   }
 
@@ -244,7 +249,7 @@ export class PacienteFormComponent implements OnInit {
 
 
 
-        // if(res.ano_receita)        
+        // if(res.ano_receita)
         //   this.object.ano_receita = res.ano_receita;
 
         // if(res.numeroReceita)
@@ -420,5 +425,10 @@ export class PacienteFormComponent implements OnInit {
       this.loading = false;
       this.findHipotesePorPaciente();
     });
+  }
+
+  photoSaved(id: string){
+    this.form.patchValue({ foto: id }, { emitEvent: false });
+    this.object.foto = id;
   }
 }

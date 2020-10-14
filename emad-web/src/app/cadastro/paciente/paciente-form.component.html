@@ -19,75 +19,83 @@
         <div class="card mb-4">
           <div class="card-body text-left">
             <div class="row">
-              <div class="col-xl-12">
-                <div class="form-group row">
-                  <label class="col-xl-2 col-form-label text-left">
-                    Cartão SUS
-                  </label>
-                  <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.cartaoSus"
-                      formControlName="cartaoSus" />
-                    <input type="hidden" [(ngModel)]="object.id" formControlName="id">
-                  </div>
-                  <label class="col-xl-2 col-form-label text-left">
-                    ID SAP
-                  </label>
-                  <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.idSap"
-                      formControlName="idSap" />
+              <div class="col-sm-3 text-center">
+                <app-image-cropper-upload *ngIf="loadPhoto" [size]="150" [id]="object.foto" (saved)="photoSaved($event)">
+                </app-image-cropper-upload>
+              </div>
+              <div class="col-sm-9">
+                <div class="row">
+                  <div class="col-xl-12">
+                    <div class="form-group row">
+                      <label class="col-xl-2 col-form-label text-left">
+                        Cartão SUS
+                      </label>
+                      <div class="col-xl-4">
+                        <input type="text" class="form-control has-error" [(ngModel)]="object.cartaoSus"
+                          formControlName="cartaoSus" />
+                        <input type="hidden" [(ngModel)]="object.id" formControlName="id">
+                      </div>
+                      <label class="col-xl-2 col-form-label text-left">
+                        ID SAP
+                      </label>
+                      <div class="col-xl-4">
+                        <input type="text" class="form-control has-error" [(ngModel)]="object.idSap"
+                          formControlName="idSap" />
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xl-12">
-                <div class="form-group row">
-                  <label class="col-xl-2 col-form-label text-left">
-                    Nome<span class="text-danger font-weight-bold"> *</span>
-                  </label>
-                  <div class="col-xl-10">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.nome"
-                      formControlName="nome" />
+                <div class="row">
+                  <div class="col-xl-12">
+                    <div class="form-group row">
+                      <label class="col-xl-2 col-form-label text-left">
+                        Nome<span class="text-danger font-weight-bold"> *</span>
+                      </label>
+                      <div class="col-xl-10">
+                        <input type="text" class="form-control has-error" [(ngModel)]="object.nome"
+                          formControlName="nome" />
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xl-12">
-                <div class="form-group row">
-                  <label class="col-xl-2 col-form-label text-left">
-                    Nome social
-                  </label>
-                  <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.nomeSocial"
-                      formControlName="nomeSocial" />
-                  </div>
-                  <label class="col-xl-2 col-form-label text-left">
-                    Apelido
-                  </label>
-                  <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.apelido"
-                      formControlName="apelido" />
+                <div class="row">
+                  <div class="col-xl-12">
+                    <div class="form-group row">
+                      <label class="col-xl-2 col-form-label text-left">
+                        Nome social
+                      </label>
+                      <div class="col-xl-4">
+                        <input type="text" class="form-control has-error" [(ngModel)]="object.nomeSocial"
+                          formControlName="nomeSocial" />
+                      </div>
+                      <label class="col-xl-2 col-form-label text-left">
+                        Apelido
+                      </label>
+                      <div class="col-xl-4">
+                        <input type="text" class="form-control has-error" [(ngModel)]="object.apelido"
+                          formControlName="apelido" />
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xl-12">
-                <div class="form-group row">
-                  <label class="col-xl-2 col-form-label text-left">
-                    Nome da mãe<span class="text-danger font-weight-bold"> *</span>
-                  </label>
-                  <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.nomeMae"
-                      formControlName="nomeMae" />
-                  </div>
-                  <label class="col-xl-2 col-form-label text-left">
-                    Nome do pai
-                  </label>
-                  <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.nomePai"
-                      formControlName="nomePai" />
+                <div class="row">
+                  <div class="col-xl-12">
+                    <div class="form-group row">
+                      <label class="col-xl-2 col-form-label text-left">
+                        Nome da mãe<span class="text-danger font-weight-bold"> *</span>
+                      </label>
+                      <div class="col-xl-4">
+                        <input type="text" class="form-control has-error" [(ngModel)]="object.nomeMae"
+                          formControlName="nomeMae" />
+                      </div>
+                      <label class="col-xl-2 col-form-label text-left">
+                        Nome do pai
+                      </label>
+                      <div class="col-xl-4">
+                        <input type="text" class="form-control has-error" [(ngModel)]="object.nomePai"
+                          formControlName="nomePai" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -12,6 +12,7 @@ import { LoaderComponent } from "./loaders/components/loader/loader.component";
 import { NgxLoadingModule, ngxLoadingAnimationTypes } from "ngx-loading";
 import { AuthService } from "./auth/auth.service";
 import { RouterModule } from "@angular/router";
+import { UserInfoService } from "./_services/user-info.service";
 
 @NgModule({
     imports: [
@@ -37,6 +38,7 @@ import { RouterModule } from "@angular/router";
         SocketService,
         NotificacaoSistemaService,
         AppNavbarService,
+        UserInfoService,
         LoaderService,
         {
             provide: HTTP_INTERCEPTORS,

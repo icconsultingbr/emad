@@ -3,7 +3,7 @@
 </div>
 
 <div *ngIf="id">
-  <ngx-avatar [size]="200" [src]=""></ngx-avatar>
+  <ngx-avatar [size]="size" [src]="pathFiles + id"></ngx-avatar>
 </div>
 
 <div class="container">
@@ -16,6 +16,7 @@
     </div>
     <div class="modal-body">
       <app-file-upload
+        [formatsAllowed]="'.jpg,.png,.jpeg'"
         (changeFiles)="fileChangeEvent($event)"
       ></app-file-upload>
       <div *ngFor="let item of images">
@@ -43,7 +44,7 @@
 </div>
 <br />
 
-<button
+<button *ngIf="!readOnly"
   type="button"
   class="btn btn-lg btn-outline-primary"
   (click)="open(content)"

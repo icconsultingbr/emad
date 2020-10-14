@@ -6,17 +6,12 @@
 <p *ngIf="warning.length" class="alert alert-danger">{{ warning }}</p>
 
 <form [formGroup]="usuarioForm" (submit)="cadastrar($event)">
-  <input
-    type="hidden"
-    name="id"
-    formControlName="id"
-    [(ngModel)]="usuario.id"
-    class="form-control has-error"
-  />
+  <input type="hidden" name="id" formControlName="id" [(ngModel)]="usuario.id" class="form-control has-error" />
 
   <div class="form-group row">
     <div class="col-sm-3">
-      <app-image-cropper-upload></app-image-cropper-upload>
+      <app-image-cropper-upload *ngIf="loadPhoto" [size]="200" [id]="usuario.foto" (saved)="photoSaved($event)">
+      </app-image-cropper-upload>
     </div>
     <div class="col-sm-9">
       <div *ngIf="domains.length > 0" class="form-group row">
@@ -24,17 +19,10 @@
           Grupo de usuário<span class="text-danger font-weight-bold"> *</span>
         </label>
         <div class="col-sm-9">
-          <select
-            name="idTipoUsuario"
-            formControlName="idTipoUsuario"
-            [(ngModel)]="usuario.idTipoUsuario"
-            class="custom-select d-block w-100"
-          >
+          <select name="idTipoUsuario" formControlName="idTipoUsuario" [(ngModel)]="usuario.idTipoUsuario"
+            class="custom-select d-block w-100">
             <option value="0">Selecione...</option>
-            <option
-              *ngFor="let tipo of domains[0]['idTipoUsuario']"
-              value="{{ tipo.id }}"
-            >
+            <option *ngFor="let tipo of domains[0]['idTipoUsuario']" value="{{ tipo.id }}">
               {{ tipo.nome }}
             </option>
           </select>
@@ -47,13 +35,8 @@
         </label>
 
         <div class="col-sm-9">
-          <input
-            type="text"
-            name="nome"
-            formControlName="nome"
-            [(ngModel)]="usuario.nome"
-            class="form-control has-error"
-          />
+          <input type="text" name="nome" formControlName="nome" [(ngModel)]="usuario.nome"
+            class="form-control has-error" />
         </div>
       </div>
 
@@ -63,15 +46,8 @@
         </label>
 
         <div class="col-sm-9">
-          <input
-            type="text"
-            name="cpf"
-            formControlName="cpf"
-            [(ngModel)]="usuario.cpf"
-            class="form-control has-error"
-            mask="000.000.000-00"
-            placeholder="999.999.999-99"
-          />
+          <input type="text" name="cpf" formControlName="cpf" [(ngModel)]="usuario.cpf" class="form-control has-error"
+            mask="000.000.000-00" placeholder="999.999.999-99" />
         </div>
       </div>
 
@@ -81,13 +57,8 @@
         </label>
 
         <div class="col-sm-9">
-          <input
-            type="text"
-            name="nomeMae"
-            formControlName="nomeMae"
-            [(ngModel)]="usuario.nomeMae"
-            class="form-control has-error"
-          />
+          <input type="text" name="nomeMae" formControlName="nomeMae" [(ngModel)]="usuario.nomeMae"
+            class="form-control has-error" />
         </div>
       </div>
       <div class="form-group row">
@@ -96,15 +67,8 @@
         </label>
 
         <div class="col-sm-9">
-          <input
-            type="text"
-            name="dataNascimento"
-            formControlName="dataNascimento"
-            [(ngModel)]="usuario.dataNascimento"
-            class="form-control has-error"
-            placeholder="DD/MM/AAAA"
-            mask="99/99/9999"
-          />
+          <input type="text" name="dataNascimento" formControlName="dataNascimento" [(ngModel)]="usuario.dataNascimento"
+            class="form-control has-error" placeholder="DD/MM/AAAA" mask="99/99/9999" />
         </div>
       </div>
     </div>
@@ -116,12 +80,7 @@
     </label>
 
     <div class="col-sm-10">
-      <select
-        name="sexo"
-        formControlName="sexo"
-        [(ngModel)]="usuario.sexo"
-        class="custom-select d-block w-100"
-      >
+      <select name="sexo" formControlName="sexo" [(ngModel)]="usuario.sexo" class="custom-select d-block w-100">
         <option value="0">Selecione...</option>
         <option *ngFor="let s of domains[0]['sexo']" value="{{ s.id }}">
           {{ s.nome }}
@@ -136,13 +95,8 @@
     </label>
 
     <div class="col-sm-10">
-      <input
-        type="text"
-        name="email"
-        formControlName="email"
-        [(ngModel)]="usuario.email"
-        class="form-control has-error"
-      />
+      <input type="text" name="email" formControlName="email" [(ngModel)]="usuario.email"
+        class="form-control has-error" />
     </div>
   </div>
 
@@ -153,13 +107,8 @@
       </label>
 
       <div class="col-sm-10">
-        <input
-          type="password"
-          name="senha"
-          formControlName="senha"
-          [(ngModel)]="usuario.senha"
-          class="form-control has-error"
-        />
+        <input type="password" name="senha" formControlName="senha" [(ngModel)]="usuario.senha"
+          class="form-control has-error" />
       </div>
     </div>
 
@@ -169,13 +118,8 @@
       </label>
 
       <div class="col-sm-10">
-        <input
-          type="password"
-          name="confirmaSenha"
-          formControlName="confirmaSenha"
-          [(ngModel)]="usuario.confirmaSenha"
-          class="form-control has-error"
-        />
+        <input type="password" name="confirmaSenha" formControlName="confirmaSenha" [(ngModel)]="usuario.confirmaSenha"
+          class="form-control has-error" />
       </div>
     </div>
   </div>
@@ -186,15 +130,8 @@
     </label>
 
     <div class="col-sm-10">
-      <input
-        type="text"
-        name="celular"
-        formControlName="celular"
-        [(ngModel)]="usuario.celular"
-        class="form-control has-error"
-        placeholder="(99) 99999-9999"
-        mask="(00) 00000-0000"
-      />
+      <input type="text" name="celular" formControlName="celular" [(ngModel)]="usuario.celular"
+        class="form-control has-error" placeholder="(99) 99999-9999" mask="(00) 00000-0000" />
     </div>
   </div>
   <div class="form-group row" *ngIf="usuario.idTipoUsuario < 3">
@@ -202,15 +139,9 @@
       Estabelecimentos
     </label>
     <div class="col-sm-10">
-      <ng-multiselect-dropdown
-        *ngIf="domains.length"
-        formControlName="estabelecimentos"
-        style="border-color: #ced4da; background: #fff; width: 100%"
-        [placeholder]="'Selecionar itens'"
-        [data]="domains[0]['estabelecimentos']"
-        [(ngModel)]="usuario.estabelecimentos"
-        [settings]="dropdownSettings"
-      >
+      <ng-multiselect-dropdown *ngIf="domains.length" formControlName="estabelecimentos"
+        style="border-color: #ced4da; background: #fff; width: 100%" [placeholder]="'Selecionar itens'"
+        [data]="domains[0]['estabelecimentos']" [(ngModel)]="usuario.estabelecimentos" [settings]="dropdownSettings">
       </ng-multiselect-dropdown>
     </div>
   </div>
@@ -221,18 +152,9 @@
     </label>
 
     <div class="col-sm-10">
-      <div
-        class="custom-control custom-checkbox"
-        style="width: 25px; margin-top: -10px"
-      >
-        <input
-          type="checkbox"
-          id="situacao"
-          name="situacao"
-          [(ngModel)]="usuario.situacao"
-          formControlName="situacao"
-          class="custom-control-input"
-        />
+      <div class="custom-control custom-checkbox" style="width: 25px; margin-top: -10px">
+        <input type="checkbox" id="situacao" name="situacao" [(ngModel)]="usuario.situacao" formControlName="situacao"
+          class="custom-control-input" />
         <label class="custom-control-label" for="situacao"></label>
       </div>
     </div>
@@ -243,11 +165,7 @@
       <i class="fa fa-arrow-left"></i>
       Retornar
     </button>
-    <button
-      class="btn btn-primary"
-      type="submit"
-      [disabled]="usuarioForm.invalid"
-    >
+    <button class="btn btn-primary" type="submit" [disabled]="usuarioForm.invalid">
       <i class="fa fa-plus-circle"></i>
       Adicionar
     </button>

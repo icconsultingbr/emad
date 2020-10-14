@@ -19,6 +19,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ProntuarioPacienteFormComponent } from "./prontuario-paciente/prontuario-paciente-form.component";
 import { AppSelectModule } from "../../_core/_components/app-select/app-select.module";
 import { AppSelectModalModule } from "../../_core/_components/app-select-modal/app-select-modal.module";
+import { AppImageCropperUploadModule } from "../../_core/_components/app-image-cropper-upload/app-image-cropper-upload.module";
 
 @NgModule({
     imports: [
@@ -40,7 +41,8 @@ import { AppSelectModalModule } from "../../_core/_components/app-select-modal/a
         NgMultiSelectDropDownModule.forRoot(),
         TabsModule.forRoot(),
         AppSelectModule,
-        AppSelectModalModule
+        AppSelectModalModule,
+        AppImageCropperUploadModule
     ],
     declarations: [
         PacienteComponent,

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Usuario } from '../../_core/_models/Usuario';
 import { Senha } from '../../_core/_models/Senha';
 import { GenericsService } from '../../_core/_services/generics.service';
@@ -30,7 +30,7 @@ export class UsuarioService extends GenericsService {
       grid: true,
       required: false,
       validator: ['', ''],
-      path: `${environment.apiUrl}/profile/`,
+      path: `${environment.apiUrl}/`,
       imgDefault: "user_default.jpg"
     },
     {

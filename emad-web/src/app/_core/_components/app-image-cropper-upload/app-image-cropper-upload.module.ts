@@ -8,6 +8,7 @@ import { AppImageCropperUploadComponent } from "./app-image-cropper-upload.compo
 import { AvatarModule } from 'ngx-avatar';
 import { FileUploadService } from "../app-file-upload/services/file-upload.service";
 import { UsuarioService } from "../../../seguranca/usuario/usuario.service";
+import { PipeModule } from "../../_pipes/pipe.module";
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { UsuarioService } from "../../../seguranca/usuario/usuario.service";
     ReactiveFormsModule,
     ImageCropperModule,
     AppFileUploadModule,
-    AvatarModule
+    AvatarModule,
+    PipeModule
   ],
   declarations: [
     AppImageCropperUploadComponent

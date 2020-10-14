@@ -37,21 +37,22 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   listaMaterialLoteDispensadoFinalizado: any[] = [];
   virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
   modalRef: NgbModalRef = null;
-  
+  loadPhoto: boolean = false;
+
   @ViewChild('addresstext') addresstext: ElementRef;
-  
+
   constructor(
     private service: PacienteService,
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private ref: ChangeDetectorRef,
     private modalService: NgbModal,
-    private reciboReceitaService: ReciboReceitaImpressaoService, 
+    private reciboReceitaService: ReciboReceitaImpressaoService,
     private router: Router) {
     this.fields = service.fields;
   }
 
-  ngOnInit() {    
+  ngOnInit() {
     this.route.params.subscribe(params => {
       this.id = params['id'];
     });
@@ -113,6 +114,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                   }
                   else{
                     this.loading = false;
+                    this.loadPhoto = true;
                   }
                 });
               });
@@ -130,7 +132,8 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.loading = true;
 
     this.service.findById(this.id, this.method).subscribe(result => {
-      this.object = result;      
+      this.object = result;
+      this.loadPhoto = true;
       this.loading = false;
       this.carregaNaturalidade();
       this.findHipotesePorPaciente();
@@ -138,26 +141,27 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       this.findReceitaPorPaciente();
     }, error => {
       this.object = new Paciente();
+      this.loadPhoto = true;
       this.loading = false;      ;
-      this.allItemsHipotese = [];      
+      this.allItemsHipotese = [];
       this.errors.push({
         message: "Paciente não encontrado"
       });
     });
   }
 
-  carregaNaturalidade() {    
+  carregaNaturalidade() {
     this.loading = true;
     this.service.carregaNaturalidadePorNacionalidade(this.object.idNacionalidade).subscribe(result => {
-      this.domains[0].idNaturalidade = result;      
+      this.domains[0].idNaturalidade = result;
       this.loading = false;
     }, error => {
       this.loading = false;
     });
   }
 
-  back() {   
-    const route = "pacientes";                 
+  back() {
+    const route = "pacientes";
     this.router.navigate([route]);
   }
 
@@ -169,42 +173,42 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       nomeSocial: ['', ''],
       apelido: ['', ''],
       nomeMae: ['', Validators.required],
-      nomePai: ['', ''],         
-      dataNascimento: ['', Validators.required],   
+      nomePai: ['', ''],
+      dataNascimento: ['', Validators.required],
       sexo: new FormControl({value: '', disabled: true}),
       idNacionalidade: new FormControl({value: '', disabled: true}),
       idNaturalidade: new FormControl({value: '', disabled: true}),
-      ocupacao: ['', ''],   
-      cpf: ['', ''],   
-      rg: ['', ''],   
-      dataEmissao: ['', ''],   
-      orgaoEmissor: ['', ''],   
-      escolaridade: new FormControl({value: '', disabled: true}),  
-      cep: ['', ''],   
-      logradouro: ['', ''],   
-      numero: ['', ''],   
-      complemento: ['', ''],   
-      bairro: ['', ''],   
-      idMunicipio: ['', ''],   
-      idUf: ['', ''],   
-      foneResidencial: ['', ''],   
-      foneCelular: ['', ''],   
-      foneContato: ['', ''],   
-      contato: ['', ''],   
-      email: ['', ''],   
-      idModalidade: ['', ''],   
-      latitude: ['', ''],   
-      longitude: ['', ''],   
-      idSap: ['', ''],   
-      idTipoSanguineo: ['', ''],   
-      idRaca: ['', ''],   
-      numeroProntuario: ['', ''],   
-      numeroProntuarioCnes: ['', ''],   
-      idAtencaoContinuada: ['', ''],   
-      historiaProgressaFamiliar: ['', ''],   
-      observacao: ['', ''],         
-      idEstabelecimentoCadastro: new FormControl({value: '', disabled: (this.id > 0 || this.object.id > 0) ? true : false}, Validators.required),       
-      gruposAtencaoContinuada: ['', ''],   
+      ocupacao: ['', ''],
+      cpf: ['', ''],
+      rg: ['', ''],
+      dataEmissao: ['', ''],
+      orgaoEmissor: ['', ''],
+      escolaridade: new FormControl({value: '', disabled: true}),
+      cep: ['', ''],
+      logradouro: ['', ''],
+      numero: ['', ''],
+      complemento: ['', ''],
+      bairro: ['', ''],
+      idMunicipio: ['', ''],
+      idUf: ['', ''],
+      foneResidencial: ['', ''],
+      foneCelular: ['', ''],
+      foneContato: ['', ''],
+      contato: ['', ''],
+      email: ['', ''],
+      idModalidade: ['', ''],
+      latitude: ['', ''],
+      longitude: ['', ''],
+      idSap: ['', ''],
+      idTipoSanguineo: ['', ''],
+      idRaca: ['', ''],
+      numeroProntuario: ['', ''],
+      numeroProntuarioCnes: ['', ''],
+      idAtencaoContinuada: ['', ''],
+      historiaProgressaFamiliar: ['', ''],
+      observacao: ['', ''],
+      idEstabelecimentoCadastro: new FormControl({value: '', disabled: (this.id > 0 || this.object.id > 0) ? true : false}, Validators.required),
+      gruposAtencaoContinuada: ['', ''],
       falecido: new FormControl({value: '', disabled: true}),
       situacao: new FormControl({value: '', disabled: true}),
     });
@@ -263,13 +267,13 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   carregaEstoque(item: any){
     this.loading = true;
     this.listaMaterialLoteDispensadoGravado = [];
-    this.listaMaterialLoteDispensadoFinalizado.forEach(itemEstoque => {      
+    this.listaMaterialLoteDispensadoFinalizado.forEach(itemEstoque => {
       itemEstoque.expandir = (itemEstoque.id == item.id && itemEstoque.expandir == true) ? true : false;
     });
 
-    item.expandir = !item.expandir;    
+    item.expandir = !item.expandir;
     this.service.list(`item-receita/receita/` + item.id).subscribe(estoque => {
-      this.listaMaterialLoteDispensadoGravado = estoque;                  
+      this.listaMaterialLoteDispensadoGravado = estoque;
       this.loading = false;
     }, erro => {
       this.loading = false;

@@ -1,10 +1,13 @@
-import { Component, Output, EventEmitter, Input, ChangeDetectorRef } from "@angular/core";
+import { Component, Output, EventEmitter, Input, ChangeDetectorRef, OnInit } from "@angular/core";
 import { ImageCroppedEvent } from "ngx-image-cropper";
 import { FileUpload } from "../app-file-upload/model/file-upload.model";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { Guid } from "guid-typescript";
 import { HttpClient } from "@angular/common/http";
 import { FileUploadService } from "../app-file-upload/services/file-upload.service";
+import { environment } from "../../../../environments/environment";
+import { switchMap } from "rxjs/operators";
+import { Observable } from "rxjs/Observable";
 
 @Component({
   selector: 'app-image-cropper-upload',
@@ -14,9 +17,16 @@ import { FileUploadService } from "../app-file-upload/services/file-upload.servi
 export class AppImageCropperUploadComponent {
 
   @Input() public id: string;
+  @Input() public size: number;
+  @Input() public readOnly: boolean;
+
+  @Output() private saved = new EventEmitter<string>();
 
   private modalRef: NgbModalRef = null;
+
   public images: any[] = [];
+
+  pathFiles = `${environment.apiUrl}/`;
 
   constructor(private modalService: NgbModal,
     private fileUploadService: FileUploadService,
@@ -32,11 +42,13 @@ export class AppImageCropperUploadComponent {
   }
 
   saveCropper() {
-    this.fileUploadService.upload(this.images[0])
-      .subscribe((result) => {
-        this.id = result;
-        this.close();
-      });
+    this.fileUploadService.uploadImage(this.images[0])
+    .subscribe((result) => {
+      this.id = result;
+
+      this.saved.emit(this.id);
+      this.close();
+    });
   }
 
   open(content) {
@@ -49,7 +61,9 @@ export class AppImageCropperUploadComponent {
   }
 
   close() {
-    if (this.modalRef)
+    if (this.modalRef) {
       this.modalRef.close();
+      this.images = [];
+    }
   }
 }

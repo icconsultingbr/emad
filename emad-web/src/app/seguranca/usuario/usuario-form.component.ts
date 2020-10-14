@@ -4,6 +4,8 @@ import { UsuarioService } from './usuario.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.service';
+import { AuthService } from '../../_core/auth/auth.service';
+import { UserInfoService } from '../../_core/_services/user-info.service';
 
 @Component({
   selector: 'app-usuario-form',
@@ -18,6 +20,7 @@ export class UsuarioFormComponent implements OnInit {
   domains = [];
   id: Number = null;
 
+  loadPhoto: boolean = false;
 
   service: UsuarioService;
   usuarioForm: FormGroup;
@@ -27,25 +30,27 @@ export class UsuarioFormComponent implements OnInit {
   mensagem: string = "";
   warning: string = "";
   usuario: Usuario = new Usuario();
-  dropdownSettings : any;
+  dropdownSettings: any;
 
   constructor(
     public nav: AppNavbarService,
     private fb: FormBuilder,
     route: ActivatedRoute,
     router: Router,
-    service: UsuarioService) {
+    service: UsuarioService,
+    private authService: AuthService,
+    private userInfoService: UserInfoService) {
 
     this.route = route;
     this.router = router;
     this.service = service;
 
-    
+
     this.service.list("tipo-usuario").subscribe(tiposUsuario => {
       this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
         this.domains.push({
 
-          estabelecimentos : estabelecimentos,
+          estabelecimentos: estabelecimentos,
           idTipoUsuario: tiposUsuario,
           sexo: [{ id: "M", nome: "Masculino" }, { id: "F", nome: "Feminino" }]
         });
@@ -60,8 +65,13 @@ export class UsuarioFormComponent implements OnInit {
         this.service.buscaPorId(id).subscribe(
           res => {
             this.usuario = res.usuario;
+            this.photoSaved(this.usuario.foto);
+            this.loadPhoto = true;
           }
         );
+      }
+      else {
+        this.loadPhoto = true;
       }
     });
 
@@ -74,6 +84,11 @@ export class UsuarioFormComponent implements OnInit {
       .cadastra(this.usuarioForm.value)
       .subscribe(res => {
         if (this.usuarioForm.value.id) {
+
+          if (this.usuarioForm.value.id == this.userInfoService.getUserId()){
+            this.userInfoService.changePhotoUser(this.usuarioForm.value.foto);
+          }
+
           this.router.navigate(['usuarios']);
         }
 
@@ -83,7 +98,7 @@ export class UsuarioFormComponent implements OnInit {
 
 
       }, erro => {
-        let json = erro; 
+        let json = erro;
         this.warning = "";
 
         for (var key in json) {
@@ -129,5 +144,9 @@ export class UsuarioFormComponent implements OnInit {
       this.usuarioForm = this.fb.group(this.groupForm);
 
     });
+  }
+
+  photoSaved(id: string) {
+    this.usuarioForm.patchValue({ foto: id }, { emitEvent: false });
   }
 }

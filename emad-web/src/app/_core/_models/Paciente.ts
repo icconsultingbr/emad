@@ -35,7 +35,7 @@ export class Paciente {
     @Input() longitude: number;
     @Input() distancia: number;
     @Input() idade: number = null;
-    @Input() idSap: number = null ;    
+    @Input() idSap: number = null ;
     @Input() idTipoSanguineo: string = null ;
     @Input() idRaca: number = null ;
     @Input() numeroProntuario: string = null ;
@@ -44,9 +44,10 @@ export class Paciente {
     @Input() idAtencaoContinuada: string = null ;
     @Input() idEstabelecimentoCadastro : number = +JSON.parse(localStorage.getItem("est"))[0].id;
     @Input() idEstabelecimento : number = +JSON.parse(localStorage.getItem("est"))[0].id;
-    @Input() gruposAtencaoContinuada : any[];    
+    @Input() gruposAtencaoContinuada : any[];
     @Input() apelido: string = null ;
     @Input() observacao: string = null ;
     @Input() historiaProgressaFamiliar: string = null ;
-    @Input() pesquisaCentral: string = null ;    
+    @Input() pesquisaCentral: string = null ;
+    @Input() foto: string;
 }

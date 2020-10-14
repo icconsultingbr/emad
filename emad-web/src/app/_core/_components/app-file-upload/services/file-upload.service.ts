@@ -12,14 +12,10 @@ export class FileUploadService extends GenericsService {
     super(http);
   }
 
-  upload(file: FileUpload): Observable<string> {
-    return this.http.post<string>('documento', JSON.stringify(file))
+  uploadImage(file: FileUpload): Observable<string> {
+    return this.http.post<string>('documento/image', JSON.stringify(file))
       .pipe(map((res: any) => {
         return res.id;
       }));
-  }
-
-  get(id: string): Observable<FileUpload> {
-    return this.http.get<FileUpload>('documento/' + id);
   }
 }

@@ -1,7 +1,7 @@
 <h4 *ngIf="!idHistorico" class="mb-5 text-left">Atendimento </h4>
 <app-loader [loading]="loading"></app-loader>
 <p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
-<div *ngIf="errors.length" class="alert alert-danger sticky-top"> 
+<div *ngIf="errors.length" class="alert alert-danger sticky-top">
   <div *ngFor="let error of errors" class="row">
     <div class="col-12 text-left">
       {{error.message}}
@@ -10,7 +10,7 @@
 </div>
 
 <form [formGroup]="form" (submit)="sendForm($event)" *ngIf="mostraFormulario">
-    <input type="hidden" [(ngModel)]="object.idEstabelecimento" formControlName="idEstabelecimento" /> 
+    <input type="hidden" [(ngModel)]="object.idEstabelecimento" formControlName="idEstabelecimento" />
     <tabset>
       <tab>
         <ng-template tabHeading>
@@ -19,7 +19,7 @@
           <div class="card mb-4">
             <div class="card-header text-left">
               Paciente
-  
+
               <button  *ngIf="object.idPaciente" class="btn btn-primary float-right rounded" type="button" (click)="visualizaProntuarioPaciente(object.idPaciente)" title="Prontuário eletrônico">
                 <i class="fa fa-user"></i>
               </button>
@@ -27,14 +27,14 @@
               <button *ngIf="object.id" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreFichaDigital(object.id, true)">
                 <i class="fa fa-print"></i>
               </button>
-  
+
               <button *ngIf="object.id" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreAtendimentoFichaDigital(object.id)">
                 <i class="fa fa-file-alt"></i>
               </button>
-  
+
               <button *ngIf="object.id && object.ano_receita && object.numero_receita && object.unidade_receita" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreReceitaMedica(object.ano_receita, object.numero_receita, object.unidade_receita)">
                 <i class="fa fa-file-medical-alt"></i>
-              </button>             
+              </button>
 
             </div>
             <div class="card-body text-left">
@@ -48,10 +48,10 @@
                       <input type="hidden" [(ngModel)]="object.id" formControlName="id">
                       <input type="hidden" [(ngModel)]="object.idPaciente" formControlName="idPaciente">
                       <div class="input-group">
-  
+
                         <input type="text" class="form-control has-error rounded" [(ngModel)]="object.pacienteNome"
                           formControlName="pacienteNome" readonly>
-  
+
                         <div class="input-group-append">
                           <button class="btn btn-primary ml-3 rounded" type="button" (click)="open(contentClient)" [disabled]="disableFields()">
                             <i class="fa fa-search"></i>
@@ -64,7 +64,7 @@
               </div>
             </div>
           </div>
-  
+
           <div class="card mb-4" *ngIf="object.idPaciente">
             <div class="card-header text-left">
               Dados da abertura do atendimento
@@ -85,7 +85,7 @@
                     <label class="col-xl-2 col-form-label text-left">
                       Classificação de risco<span class="text-danger font-weight-bold"> *</span>
                     </label>
-                    <div class="col-xl-4">                      
+                    <div class="col-xl-4">
                         <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idClassificacaoRisco" formControlName="idClassificacaoRisco">
                             <option [value]="null">Selecione...</option>
                             <option *ngFor="let item of domains[0]?.classificacaoRiscos" [value]="item.id">{{item.nome}}</option>
@@ -109,7 +109,7 @@
               </div>
             </div>
           </div>
-  
+
           <div class="card mb-4" *ngIf="object.idPaciente && object.id">
             <div class="card-header text-left">
               Sinais vitais
@@ -146,7 +146,7 @@
                     </label>
                     <div class="col-xl-8">
                       <input type="text" class="form-control has-error" [(ngModel)]="object.saturacao"
-                        formControlName="saturacao" [readonly]="disableFields()" 
+                        formControlName="saturacao" [readonly]="disableFields()"
                         currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
                     </div>
                   </div>
@@ -182,7 +182,7 @@
                       Peso
                     </label>
                     <div class="col-xl-8">
-                      <input type="text" class="form-control has-error" [(ngModel)]="object.peso" formControlName="peso" [readonly]="disableFields()" 
+                      <input type="text" class="form-control has-error" [(ngModel)]="object.peso" formControlName="peso" [readonly]="disableFields()"
                       currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
                     </div>
                   </div>
@@ -190,7 +190,7 @@
               </div>
             </div>
           </div>
-  
+
           <div class="card mb-4" *ngIf="object.idPaciente && object.id">
             <div class="card-header text-left">
               Análise física
@@ -222,7 +222,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="card mb-4" *ngIf="object.idPaciente && object.id">
             <div class="card-header text-left">
               Histórico
@@ -242,8 +242,8 @@
                 </div>
               </div>
             </div>
-          </div> 
-  
+          </div>
+
           <div class="card mb-4" *ngIf="object.idPaciente && object.id">
             <div class="card-header text-left">
               Anamnese/Evolução
@@ -278,19 +278,19 @@
                 </div>
               </div>
             </div>
-          </div> 
-  
+          </div>
+
           <div class="card mb-4" *ngIf="object.idPaciente && object.id">
             <div class="card-header text-left">
               Hipótese diagnostica
             </div>
-            <div class="card-body text-left">  
-              <div class="row">  
+            <div class="card-body text-left">
+              <div class="row">
                 <div class="col-12 mb-3">
                   <button *ngIf="!disableFields()" type="button" class="btn btn-primary float-left mr-2" (click)="openHipotese(contentHipotese)" [disabled]="!object.id">
                     <i class="fa fa-plus-circle"></i>
                   </button>
-  
+
                   <button type="button" class="btn btn-default float-left" (click)="findHipotesePorAtendimento()">
                     <i class="fa fa-sync-alt"></i>
                   </button>
@@ -327,20 +327,20 @@
               </div>
             </div>
           </div>
-  
+
           <div class="card mb-4" *ngIf="object.idPaciente && object.id">
             <div class="card-header text-left">
               Prescrição Medicamentos
             </div>
             <div class="card-body text-left">
-  
+
               <div class="row">
                 <div class="col-12 mb-3">
                   <button *ngIf="!disableFields()"  type="button" class="btn btn-primary float-left mr-2" [disabled]="!object.id"
                     (click)="openMedicamento(contentMedicamento)">
                     <i class="fa fa-plus-circle"></i>
                   </button>
-  
+
                   <button type="button" class="btn btn-default float-left" (click)="findMedicamentoPorAtendimento()">
                     <i class="fa fa-sync-alt"></i>
                   </button>
@@ -385,21 +385,21 @@
               </div>
             </div>
           </div>
-  
+
           <div class="card mb-4" *ngIf="object.idPaciente && object.id">
             <div class="card-header text-left">
               Encaminhamento
             </div>
             <div class="card-body text-left">
-  
+
               <div class="row">
-  
+
                 <div class="col-12 mb-3">
                   <button *ngIf="!disableFields()" type="button" class="btn btn-primary float-left mr-2"
                     (click)="openEncaminhamento(contentEncaminhamento)" [disabled]="!object.id">
                     <i class="fa fa-plus-circle"></i>
                   </button>
-  
+
                   <button type="button" class="btn btn-default float-left" (click)="findEncaminhamentoPorAtendimento()">
                     <i class="fa fa-sync-alt"></i>
                   </button>
@@ -436,7 +436,7 @@
               </div>
             </div>
           </div>
-  
+
           <div class="card mb-4" *ngIf="object.idPaciente && object.id">
             <div class="card-body text-left">
               <div class="row">
@@ -460,7 +460,7 @@
                         <option value="O">Óbito</option>
                         <option value="X">Cancelado</option>
                       </select>
-  
+
                       <select *ngIf="disableFields()" class="custom-select d-block w-100" [(ngModel)]="object.situacao" formControlName="situacao" disabled>
                         <option [value]="null">Selecione...</option>
                         <option value="0">Sala de espera</option>
@@ -498,18 +498,19 @@
         </ng-template>
         <div class="card mb-4">
           <div class="row">
-            <div class="card-body text-left">            
+            <div class="card-body text-left">
               <div *ngIf="atendimentoHistorico.length" class="timeline">
                 <div *ngFor="let itemHistorico of atendimentoHistorico" class="timeline-item">
                   <div class="timeline-badge">
-                    <img class="float-left" src="assets/imgs/user2-160x160.jpg">
+                    <img class="float-left" *ngIf="itemHistorico.fotoProfissional" [src]="pathFiles + itemHistorico.fotoProfissional">
+                    <img class="float-left" *ngIf="!itemHistorico.fotoProfissional" src="assets/imgs/user2-160x160.jpg">
                   </div>
                   <div class="timeline-body">
                       <div class="timeline-body-top">
                         {{itemHistorico.nomeTipoHistorico}}
                       </div>
                       <div class="timeline-body-content">
-                          <p><span class="text-muted">{{itemHistorico.dataHistorico}} - </span>Profissional: <b>{{itemHistorico.nomeProfissional}}</b> executou <b>{{itemHistorico.nomeTipoHistorico}}</b>.</p>                        
+                          <p><span class="text-muted">{{itemHistorico.dataHistorico}} - </span>Profissional: <b>{{itemHistorico.nomeProfissional}}</b> executou <b>{{itemHistorico.nomeTipoHistorico}}</b>.</p>
                           <p><button class="btn btn-primary" type="button" (click)="openHistorico(contentAtendimentoHistorico, itemHistorico.idHistorico)">
                             <i class="fa fa-search"></i>  Visualizar
                           </button></p>
@@ -517,21 +518,21 @@
                   </div>
                 </div>
               </div>
-            </div>         
+            </div>
           </div>
         </div>
       </tab>
-    </tabset>  
-          <div class="form-group text-right">  
+    </tabset>
+          <div class="form-group text-right">
             <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="object.idPaciente && !disableFields()"
               [disabled]="form.invalid">
               <i class="fa fa-save"></i> {{ !object.id ? 'Criar atendimento' : 'Salvar'}}
-            </button>  
+            </button>
             <button (click)="back()" class="btn btn-default" type="button">
               <i class="fa fa-arrow-left"></i> Retornar
             </button>
           </div>
-  
+
 </form>
 
 <ng-template #contentAtendimentoHistorico>
@@ -543,7 +544,7 @@
       <div class="col-xl-12 text-left">
         <span class="text-muted">{{dataHistorico}} - </span>Profissional: <b>{{nomeProfissional}}</b> executou <b>{{nomeTipoHistorico}}</b>.
       </div>
-    </div>      
+    </div>
     <button type="button" class="close" (click)="close()">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -631,7 +632,7 @@
                 </label>
                 <div class="col-xl-8">
                   <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.saturacao"
-                    formControlName="saturacao" [readonly]="disableFields()" 
+                    formControlName="saturacao" [readonly]="disableFields()"
                     currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
                 </div>
               </div>
@@ -667,7 +668,7 @@
                   Peso
                 </label>
                 <div class="col-xl-8">
-                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.peso" formControlName="peso" [readonly]="disableFields()" 
+                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.peso" formControlName="peso" [readonly]="disableFields()"
                   currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
                 </div>
               </div>
@@ -707,7 +708,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="card mb-4">
         <div class="card-header text-left">
           Histórico
@@ -727,7 +728,7 @@
             </div>
           </div>
         </div>
-      </div> 
+      </div>
 
       <div class="card mb-4">
         <div class="card-header text-left">
@@ -763,7 +764,7 @@
             </div>
           </div>
         </div>
-      </div> 
+      </div>
 
       <div class="card mb-4">
         <div class="card-header text-left">
@@ -830,7 +831,7 @@
                       <td class="text-secondary">{{item.tipoVia}}</td>
                       <td class="text-secondary">{{item.quantidade}}</td>
                       <td class="text-secondary">{{item.apresentacao}}</td>
-                      <td class="text-secondary">{{item.posologia}}</td>                      
+                      <td class="text-secondary">{{item.posologia}}</td>
                     </tr>
                   </tbody>
               </table>
@@ -995,15 +996,15 @@
                     name="radio-item">
                   <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
                 </div>
-                <div class="float-left" *ngIf="!item.idEstabelecimento || item.idEstabelecimento <= 0">           
+                <div class="float-left" *ngIf="!item.idEstabelecimento || item.idEstabelecimento <= 0">
                   <i class="fa fa-ban text-left" title="Paciente vinculado a outro estabelecimento ({{item.nomeEstabelecimento}})" style="color:red"></i>
                 </div>
               </td>
               <td *ngFor="let field of fieldsPacientes;">
                 <label for="{{ item.id }}">
                   {{
-                      field.isDate?(item[field.field] ) : 
-                      field.isDateTime?(item[field.field] | date :'dd/MM/yyyy HH:mm'): 
+                      field.isDate?(item[field.field] ) :
+                      field.isDateTime?(item[field.field] | date :'dd/MM/yyyy HH:mm'):
                       field.translate?(translate(item[field.field], field.translate)):
                       field.decimalMask?(toCurrency(item[field.field] | currency:'R$ ':true:'1.2-2',field.decimalMask)):
                       field.docMask?(maskDocument(item[field.field])):
@@ -1024,7 +1025,7 @@
         </table>
       </div>
     </div>
-    <div class="row mb-4">      
+    <div class="row mb-4">
       <div *ngIf="allItems && allItems.length"
           class="text text-secondary col-md-12 pr-0 mx-auto">
           <i>
@@ -1034,7 +1035,7 @@
           </i>
       </div>
   </div>
-  
+
   <div class="row mb-2 mt-4">
       <ul *ngIf="allItems && allItems.length" class="pagination mx-auto">
           <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
@@ -1050,7 +1051,7 @@
           <li>
               <select (change)="loadQuantityPerPagePagination($event)" class="custom-select d-block w-100"
                   style="border: 1px solid #dee2e6">
-  
+
                   <option [ngValue]="10">10</option>
                   <option [ngValue]="25">25</option>
                   <option [ngValue]="50">50</option>
@@ -1114,7 +1115,7 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="close()">Sim</button>
-    <button type="button" class="btn btn-danger"  (click)="back()">Não</button>    
+    <button type="button" class="btn btn-danger"  (click)="back()">Não</button>
   </div>
 </ng-template>
 
@@ -1267,7 +1268,7 @@
     </div>
 
     <div class="form-group row">
-      
+
     </div>
 
     <div class="form-group row">
@@ -1275,7 +1276,7 @@
         <table class="table table-striped">
           <thead>
             <tr class="text-left">
-              <th></th>                      
+              <th></th>
               <th>Código</th>
               <th>Descrição do medicamento</th>
               <th>Unidade</th>
@@ -1289,16 +1290,16 @@
                     name="radio-item">
                   <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
                 </div>
-                <div class="float-left" *ngIf="!item.autorizado">                  
+                <div class="float-left" *ngIf="!item.autorizado">
                     <i class="fa fa-ban text-left" title="Material não autorizado para o profissional" style="color:red"></i>
                 </div>
-                <div class="float-left" *ngIf="!item.dispensavel">                  
+                <div class="float-left" *ngIf="!item.dispensavel">
                   <i class="fa fa-ban text-left" title="Material não dispensável" style="color:red"></i>
               </div>
-              </td>           
-              <td class="text-secondary">{{item.codigo}}</td>              
-              <td class="text-secondary" title="{{item.descricaoCompleta}}">{{item.descricao}}</td>              
-              <td class="text-secondary">{{item.nomeUnidadeMaterial}}</td>   
+              </td>
+              <td class="text-secondary">{{item.codigo}}</td>
+              <td class="text-secondary" title="{{item.descricaoCompleta}}">{{item.descricao}}</td>
+              <td class="text-secondary">{{item.nomeUnidadeMaterial}}</td>
             </tr>
           </tbody>
 

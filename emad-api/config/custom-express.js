@@ -16,6 +16,7 @@ module.exports = function () {
     app.use(cookieParser());
     app.use(expressSession({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
     app.use(express.static(__dirname + '/../img/'));
+    app.use(express.static(__dirname + '/../uploads/'));
     app.options('*', cors());
 
     consign().include('middlewares/Cors.js')

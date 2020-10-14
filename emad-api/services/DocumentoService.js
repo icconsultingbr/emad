@@ -5,27 +5,28 @@ const directory = `uploads`;
 
 function DocumentoService() { }
 
-DocumentoService.prototype.upload = async function (file) {
+DocumentoService.prototype.uploadImage = async function (file) {
     return new Promise((resolve, reject) => {
-        if (!fs.existsSync(directory)) {
-            fs.mkdirSync(directory);
+        try{
+            if (!fs.existsSync(directory)) {
+                fs.mkdirSync(directory);
+            }
+            var id = file.id.value;
+            if (!id)
+                id = uuidv4();
+    
+            let base64Image = file.base64.split(";base64,").pop();
+    
+            fs.writeFile(`${directory}/${id}.${file.extension}`, base64Image, { encoding: "base64" }, function () {
+            resolve(id + `.${file.extension}`);
+            }, function (error) {
+                reject('Erro ao criar arquivo:: ' + error)
+            });
+        } catch(e){
+            reject(e);
         }
-        var id = uuidv4();
-
-        let base64Image = file.base64.split(";base64,").pop();
-        fs.writeFile(`${directory}/${id}.png`, base64Image, { encoding: "base64" }, function () {
-            resolve(id);
-        }, function (error) {
-            reject('Erro ao criar arquivo:: ' + error)
-        });
     });
 };
-
-DocumentoService.prototype.get = async function (id) {
-    return new Promise((resolve, reject) => {
-
-    });
-}
 
 module.exports = function () {
     return DocumentoService;
