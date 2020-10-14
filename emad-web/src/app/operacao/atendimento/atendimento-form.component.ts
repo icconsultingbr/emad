@@ -66,7 +66,7 @@ export class AtendimentoFormComponent implements OnInit {
   allMedicamentos: any[] = [];
   removeId: number;
 
-  pathFiles = `${environment.apiUrl}/`;
+  pathFiles = `${environment.apiUrl}/fotos`;
 
   paging: any = {
     offset: 0,

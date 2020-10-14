@@ -38,7 +38,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   teste2: string = "";
 
-  pathFiles = `${environment.apiUrl}/`;
+  pathFiles = `${environment.apiUrl}/fotos`;
 
   clicked: string = null;
   showMenu = true;

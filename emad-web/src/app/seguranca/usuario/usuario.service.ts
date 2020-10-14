@@ -30,7 +30,7 @@ export class UsuarioService extends GenericsService {
       grid: true,
       required: false,
       validator: ['', ''],
-      path: `${environment.apiUrl}/`,
+      path: `${environment.apiUrl}/fotos/`,
       imgDefault: "user_default.jpg"
     },
     {

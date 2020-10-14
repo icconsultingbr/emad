@@ -26,7 +26,7 @@ export class AppImageCropperUploadComponent {
 
   public images: any[] = [];
 
-  pathFiles = `${environment.apiUrl}/`;
+  pathFiles = `${environment.apiUrl}/fotos/`;
 
   constructor(private modalService: NgbModal,
     private fileUploadService: FileUploadService,
