@@ -66,7 +66,7 @@ export class AtendimentoFormComponent implements OnInit {
   allMedicamentos: any[] = [];
   removeId: number;
 
-  pathFiles = `${environment.apiUrl}/fotos`;
+  pathFiles = `${environment.apiUrl}/fotos/`;
 
   paging: any = {
     offset: 0,
@@ -125,7 +125,7 @@ export class AtendimentoFormComponent implements OnInit {
       exameFisico: ['', ''],
       observacoesGerais: ['', ''],
       situacao: [Validators.required],
-      motivoCancelamento: ['',''],
+      motivoCancelamento: ['', ''],
       idEstabelecimento: [Validators.required],
       tipoFicha: ['', Validators.required],
       idClassificacaoRisco: ['', Validators.required],
@@ -150,22 +150,22 @@ export class AtendimentoFormComponent implements OnInit {
 
   createGroupHistorico() {
     this.formHistorico = this.fb.group({
-      pacienteHistoriaProgressa: new FormControl({value: '', disabled: true}),
-      pressaoArterial: new FormControl({value: '', disabled: true}),
-      pulso: new FormControl({value: '', disabled: true}),
-      saturacao: new FormControl({value: '', disabled: true}),
-      temperatura: new FormControl({value: '', disabled: true}),
-      altura: new FormControl({value: '', disabled: true}),
-      peso: new FormControl({value: '', disabled: true}),
-      historicoClinico: new FormControl({value: '', disabled: true}),
-      exameFisico: new FormControl({value: '', disabled: true}),
-      observacoesGerais: new FormControl({value: '', disabled: true}),
-      situacao: new FormControl({value: '', disabled: true}),
-      motivoCancelamento:  new FormControl({value: '', disabled: true}),
-      tipoFicha: new FormControl({value: '', disabled: true}),
-      idClassificacaoRisco: new FormControl({value: '', disabled: true}),
-      motivoQueixa: new FormControl({value: '', disabled: true}),
-      tipoHistoriaClinica: new FormControl({value: '', disabled: true}),
+      pacienteHistoriaProgressa: new FormControl({ value: '', disabled: true }),
+      pressaoArterial: new FormControl({ value: '', disabled: true }),
+      pulso: new FormControl({ value: '', disabled: true }),
+      saturacao: new FormControl({ value: '', disabled: true }),
+      temperatura: new FormControl({ value: '', disabled: true }),
+      altura: new FormControl({ value: '', disabled: true }),
+      peso: new FormControl({ value: '', disabled: true }),
+      historicoClinico: new FormControl({ value: '', disabled: true }),
+      exameFisico: new FormControl({ value: '', disabled: true }),
+      observacoesGerais: new FormControl({ value: '', disabled: true }),
+      situacao: new FormControl({ value: '', disabled: true }),
+      motivoCancelamento: new FormControl({ value: '', disabled: true }),
+      tipoFicha: new FormControl({ value: '', disabled: true }),
+      idClassificacaoRisco: new FormControl({ value: '', disabled: true }),
+      motivoQueixa: new FormControl({ value: '', disabled: true }),
+      tipoHistoriaClinica: new FormControl({ value: '', disabled: true }),
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -226,9 +226,8 @@ export class AtendimentoFormComponent implements OnInit {
     let params = "";
     this.allMedicamentos = [];
 
-    if (Util.isEmpty(this.medicamento.descricao) || this.medicamento.descricao.length<3)
-    {
-      this.errors = [{message:"Informe a descrição do medicamento, ao menos 3 caracteres"}];
+    if (Util.isEmpty(this.medicamento.descricao) || this.medicamento.descricao.length < 3) {
+      this.errors = [{ message: "Informe a descrição do medicamento, ao menos 3 caracteres" }];
       this.loading = false;
       return;
     }
@@ -408,8 +407,8 @@ export class AtendimentoFormComponent implements OnInit {
     this.errors = [];
     this.message = "";
 
-    if(idHistorico){
-    this.loading = true;
+    if (idHistorico) {
+      this.loading = true;
       this.service.findByHistoricoId(idHistorico).subscribe(result => {
         this.objectHistorico = result;
         this.dataHistorico = result.dataHistorico;
@@ -444,41 +443,40 @@ export class AtendimentoFormComponent implements OnInit {
       .subscribe((res: any) => {
         this.object.id = res.id;
         this.findHistoricoPorAtendimento();
-        if(res.ano_receita)
+        if (res.ano_receita)
           this.object.ano_receita = res.ano_receita;
 
-        if(res.numeroReceita)
+        if (res.numeroReceita)
           this.object.numero_receita = res.numeroReceita;
 
-        if(res.idEstabelecimento)
+        if (res.idEstabelecimento)
           this.object.unidade_receita = res.idEstabelecimento;
 
-        if(res.dadosFicha)
+        if (res.dadosFicha)
           this.object.dadosFicha = res.dadosFicha;
 
         if (this.form.value.id) {
           this.message = "Atendimento alterado com sucesso";
 
-          if(!Util.isEmpty(this.object.ano_receita) && !Util.isEmpty(this.object.numero_receita) && !Util.isEmpty(this.object.unidade_receita))
+          if (!Util.isEmpty(this.object.ano_receita) && !Util.isEmpty(this.object.numero_receita) && !Util.isEmpty(this.object.unidade_receita))
             this.abreReceitaMedica(this.object.ano_receita, this.object.numero_receita, this.object.unidade_receita);
         } else {
           this.abreFichaDigital(this.object.id, false);
         }
 
-        if(!this.message)
-        {
+        if (!this.message) {
           this.message = "Cadastro efetuado com sucesso!";
           this.openConfirmacao(this.contentConfirmacao);
         }
 
-        if(this.object.situacao){
-          if(this.object.situacao == 'X'){
+        if (this.object.situacao) {
+          if (this.object.situacao == 'X') {
             this.message = "Atendimento cancelado com sucesso";
             this.object = new Atendimento();
           }
-          else if(this.object.situacao == 'C' || this.object.situacao == '0')
+          else if (this.object.situacao == 'C' || this.object.situacao == '0')
             this.message = "Atendimento alterado com sucesso"
-          else{
+          else {
             this.message = "Atendimento finalizado com sucesso"
             this.object = new Atendimento();
           }
@@ -497,7 +495,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.loading = true;
     this.service.findByIdPaciente(idPaciente, this.object.idEstabelecimento, this.method).subscribe(result => {
 
-      if(result){
+      if (result) {
         this.object = result;
         this.object.pacienteNome = this.pacienteSelecionado.nome;
         this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
@@ -515,7 +513,7 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
-  limpaAtendimento(){
+  limpaAtendimento() {
     this.object = new Atendimento();
     this.object.idPaciente = this.pacienteSelecionado.id;
     this.object.pacienteNome = this.pacienteSelecionado.nome;
@@ -584,7 +582,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   close() {
-    if(this.modalRef)
+    if (this.modalRef)
       this.modalRef.close();
   }
 
@@ -595,22 +593,22 @@ export class AtendimentoFormComponent implements OnInit {
         this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {
           this.service.listDomains('grupo-material').subscribe(gruposMateriais => {
             this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {
-                this.domains.push({
-                  hipoteses: hipoteses,
-                  especialidades: especialidades,
-                  tipoFichas: tipoFichas,
-                  classificacaoRiscos:classificacaoRiscos,
-                  idGrupoMaterial: gruposMateriais,
-                  tipoHistoriaClinica: [
-                    { id: 1, nome: "Anamnese" },
-                    { id: 2, nome: "Evolução" },
-                  ],
+              this.domains.push({
+                hipoteses: hipoteses,
+                especialidades: especialidades,
+                tipoFichas: tipoFichas,
+                classificacaoRiscos: classificacaoRiscos,
+                idGrupoMaterial: gruposMateriais,
+                tipoHistoriaClinica: [
+                  { id: 1, nome: "Anamnese" },
+                  { id: 2, nome: "Evolução" },
+                ],
               });
-            if (!Util.isEmpty(this.id)) {
-              this.encontraAtendimento();
-            }
-            else
-              this.loading = false;
+              if (!Util.isEmpty(this.id)) {
+                this.encontraAtendimento();
+              }
+              else
+                this.loading = false;
             });
           });
         });
@@ -727,17 +725,17 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   back() {
-    if(this.modalRef)
+    if (this.modalRef)
       this.modalRef.close();
 
     this.router.navigate([this.url]);
   }
 
   abreHistorico(id: Number) {
-    if(!id)
+    if (!id)
       return;
 
-    let url = this.router.url.replace('atendimentos/cadastro/'+this.id,'') +  this.virtualDirectory + "#/atendimentos/historico/" + id;
+    let url = this.router.url.replace('atendimentos/cadastro/' + this.id, '') + this.virtualDirectory + "#/atendimentos/historico/" + id;
 
     this.loading = true;
     this.service.printDocument(url).subscribe(result => {
@@ -753,15 +751,15 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   abreFichaDigital(id: Number, grid: boolean) {
-    if((!this.object.dadosFicha || this.object.dadosFicha.length == 0) && !grid)
+    if ((!this.object.dadosFicha || this.object.dadosFicha.length == 0) && !grid)
       return;
 
     this.errors = [];
     let url =
       JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")
-      ?
-      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")[0].valor.replace('{id}', id)
-      :"";
+        ?
+        JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")[0].valor.replace('{id}', id)
+        : "";
     this.loading = true;
     this.service.printDocument(url).subscribe(result => {
       this.loading = false;
@@ -783,9 +781,9 @@ export class AtendimentoFormComponent implements OnInit {
     this.errors = [];
     let url =
       JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")
-      ?
-      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")[0].valor.replace('{id}', id)
-      :"";
+        ?
+        JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")[0].valor.replace('{id}', id)
+        : "";
     this.loading = true;
     this.service.openDocument(url).subscribe(result => {
       this.loading = false;
@@ -829,9 +827,9 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
-  visualizaProntuarioPaciente(idPaciente : any) : void {
+  visualizaProntuarioPaciente(idPaciente: any): void {
     let url = this.router.url.replace('atendimentos/cadastro/' + this.id, '') + this.virtualDirectory + "#/pacientes/prontuario/" + idPaciente;
-    this.service.file('atendimento/consulta-por-paciente', url).subscribe(result=>{
+    this.service.file('atendimento/consulta-por-paciente', url).subscribe(result => {
       this.loading = false;
       window.open(
         url,
