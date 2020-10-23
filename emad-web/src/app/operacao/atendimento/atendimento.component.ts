@@ -46,6 +46,9 @@ export class AtendimentoComponent implements OnInit {
   showLabels: Boolean = false;
   loading: boolean = false;
 
+  sortColumn: string = 'id';
+  sortOrder: string = 'desc';
+
   //ACTION BUTTONS
   @Input() create: Boolean = true;  
   @Input() view: Boolean = true;  
@@ -186,6 +189,10 @@ export class AtendimentoComponent implements OnInit {
       params += (params == "" ? "?" : "") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
     }
 
+    if(this.sortColumn) {
+      params += (params == "" ? "?" : "&") +  `sortColumn=${this.sortColumn}&sortOrder=${this.sortOrder}`;
+    }
+
     this.service.list(this.method + params).subscribe(result => {
       this.warning = "";
       this.paging.total = result.total;
@@ -203,6 +210,10 @@ export class AtendimentoComponent implements OnInit {
   pesquisaCentral(){    
     this.object.pesquisaCentral = this.textoProcurado.nativeElement.value;
     this.getListPaged();
+  }
+
+  toggleSort(): void {
+    this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
   }
 
   new() {
@@ -387,5 +398,15 @@ export class AtendimentoComponent implements OnInit {
       centered: true,
       size: "sm"
     });
+  }
+
+  sort(field: string): void {
+    if(this.sortColumn === field){
+      this.toggleSort();
+    }
+
+    this.sortColumn = field;
+  
+    this.getListPaged(this.paging.offset, this.paging.limit);
   }
 }

@@ -18,7 +18,8 @@ export class AtendimentoService extends GenericsService {
             colunaDescricao: "tooltipIconeGrid",
             form: false,
             required: false,
-            validator: ['', '']
+            validator: ['', ''],
+            sortable: false
         },         
         {
             field: "id",
@@ -27,7 +28,8 @@ export class AtendimentoService extends GenericsService {
             grid: true,
             form: false,
             required: false,
-            validator: ['', '']
+            validator: ['', ''],
+            sortable: true
         },      
         {
             field: "cartaoSus",
@@ -41,7 +43,8 @@ export class AtendimentoService extends GenericsService {
             filter: {
                 type: "text",
                 grid: true
-            }
+            },
+            sortable: true
         },
         {
             field: "idSap",
@@ -55,7 +58,8 @@ export class AtendimentoService extends GenericsService {
             filter: {
                 type: "text",
                 grid: true
-            }
+            },
+            sortable: true
         },
         {
             field: "cpf",
@@ -85,7 +89,8 @@ export class AtendimentoService extends GenericsService {
             filter: {
                 type: 'text',
                 grid: true
-            }
+            },
+            sortable: true
         },
         {
             field: "dataCriacao",
@@ -100,7 +105,8 @@ export class AtendimentoService extends GenericsService {
                 type: 'date',
                 placeHolder: '99/99/9999',
                 grid: true
-            }
+            },
+            sortable: true
         },
         {
             field: "idEstabelecimento",
@@ -122,7 +128,8 @@ export class AtendimentoService extends GenericsService {
             form: false,
             required: true,
             validator: ['', ''],
-            autoFocus: true
+            autoFocus: true,
+            sortable: true
         },
         {
             field: "idUsuario",
@@ -140,7 +147,8 @@ export class AtendimentoService extends GenericsService {
             grid: true,
             form: false,
             required: true,
-            validator: ['', '']
+            validator: ['', ''],
+            sortable: true
         },
         {
             field: "situacao",
@@ -165,7 +173,8 @@ export class AtendimentoService extends GenericsService {
             filter: {
                 type: "select",
                 grid: true
-            }
+            },
+            sortable: true
         }
     ];
 

@@ -121,13 +121,14 @@ module.exports = function (app) {
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
+        const query = req.query;
 
         const connection = await app.dao.connections.EatendConnection.connection();
 
         const pedidoCompraRepository = new app.dao.PedidoCompraDAO(connection);
 
         try {
-            var response = await pedidoCompraRepository.lista();
+            var response = await pedidoCompraRepository.lista(query.sortColumn, query.sortOrder);
             res.status(201).send(response);
         }
         catch (exception) {

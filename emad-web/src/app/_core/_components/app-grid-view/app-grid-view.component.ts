@@ -45,6 +45,9 @@ export class AppGridViewComponent implements AfterViewInit {
   enableSearchButton: any[] = [];
   dropdownList: any[] = [];
 
+  sortColumn: string = '';
+  sortOrder: string = '';
+
 
   @Input() errors: any[] = [];
   @Input() fields = [];
@@ -194,6 +197,10 @@ export class AppGridViewComponent implements AfterViewInit {
       }
     }
 
+    if(this.sortColumn) {
+      params += (params == "" ? "?" : "&") +  `sortColumn=${this.sortColumn}&sortOrder=${this.sortOrder}`;
+    }
+
     this.service.list(this.method + params).subscribe(result => {
       this.warning = "";
       this.allItems = result;
@@ -286,6 +293,10 @@ export class AppGridViewComponent implements AfterViewInit {
 
     if (this.paging.offset != null && this.paging.limit != null) {
       params += (params == "" ? "?" : "") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+    }
+
+    if(this.sortColumn) {
+      params += (params == "" ? "?" : "&") +  `sortColumn=${this.sortColumn}&sortOrder=${this.sortOrder}`;
     }
 
     this.service.list(this.method + params).subscribe(result => {
@@ -646,5 +657,23 @@ export class AppGridViewComponent implements AfterViewInit {
         url.self ? '_self' : '_blank'
       );
     });
+  }
+
+  sort(field: string): void {
+    if(this.sortColumn === field){
+      this.toggleSort();
+    }
+
+    this.sortColumn = field;
+  
+    if (this.pagination) {
+      this.getListPaged();
+    } else {
+      this.getList();
+    }
+  }
+
+  toggleSort(): void {
+    this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
   }
 }

@@ -1,3 +1,5 @@
+const QueryBuilder = require('../infrastructure/QueryBuilder');
+
 function AtendimentoDAO(connection) {
     this._connection = connection;
     this._table = "tb_atendimento";
@@ -6,7 +8,7 @@ function AtendimentoDAO(connection) {
 AtendimentoDAO.prototype.listarAsync = async function(addFilter) { 
     let where = "";
     let offset = "";
-    let orderBy = " a.id DESC ";
+    let orderBy = addFilter.sortColumn ? `${addFilter.sortColumn}` : "id";
 
     if(addFilter != null){       
 
@@ -73,32 +75,34 @@ AtendimentoDAO.prototype.listarAsync = async function(addFilter) {
 
     const count = await this._connection.query(`SELECT COUNT(1) as total ${join}`);
 
-    const result = await this._connection.query(`SELECT 
-                                                a.id, 
-                                                a.idPaciente, 
-                                                p.cartaoSus,
-                                                p.cpf, 
-                                                p.nome as nomePaciente, 
-                                                a.dataCriacao,
-                                                a.dataFinalizacao, 
-                                                a.idEstabelecimento, 
-                                                e.nomeFantasia, 
-                                                a.idUsuario, 
-                                                pro.nome, 
-                                                a.situacao,
-                                                p.idSap,
-                                                a.tipoFicha,
-                                                a.idClassificacaoRisco,
-                                                cor.cor corIconeGrid,
-                                                cla.nome tooltipIconeGrid,
-                                                p.idPacienteCorrespondenteDim,
-                                                YEAR(a.dataCriacao) as ano_receita,
-                                                a.numeroReceita as numero_receita,
-                                                e.id as unidade_receita,
-                                                pro.id as idProfissional,
-                                                ficha.nome tipoFichaNome
-                                                ${join} 
-                                            ORDER BY ${orderBy} ${offset}`);
+    const query = QueryBuilder.datatable(`SELECT 
+                                            a.id, 
+                                            a.idPaciente, 
+                                            p.cartaoSus,
+                                            p.cpf, 
+                                            p.nome as nomePaciente, 
+                                            a.dataCriacao,
+                                            a.dataFinalizacao, 
+                                            a.idEstabelecimento, 
+                                            e.nomeFantasia, 
+                                            a.idUsuario, 
+                                            pro.nome, 
+                                            a.situacao,
+                                            p.idSap,
+                                            a.tipoFicha,
+                                            a.idClassificacaoRisco,
+                                            cor.cor corIconeGrid,
+                                            cla.nome tooltipIconeGrid,
+                                            p.idPacienteCorrespondenteDim,
+                                            YEAR(a.dataCriacao) as ano_receita,
+                                            a.numeroReceita as numero_receita,
+                                            e.id as unidade_receita,
+                                            pro.id as idProfissional,
+                                            ficha.nome tipoFichaNome
+                                            ${join}`, orderBy, addFilter.sortOrder, addFilter.limit, addFilter.offset);
+
+    const result = await this._connection.query(query);
+
     return {
         total: count[0].total,
         items: result

@@ -1,3 +1,5 @@
+const QueryBuilder = require('../infrastructure/QueryBuilder');
+
 function PedidoCompraDAO(connection) {
     this._connection = connection;
     this._table = `tb_pedido_compra`;
@@ -30,17 +32,18 @@ PedidoCompraDAO.prototype.deletaPorId =  async function (id) {
     return [result];
 }
 
-PedidoCompraDAO.prototype.lista = async function() {   
-    const result = await this._connection.query(`SELECT
-                                                    a.id
-                                                ,a.numeroPedido
-                                                ,a.numeroEmpenho
-                                                ,a.dataPedido
-                                                ,a.dataEmpenho
-                                                ,a.status
-                                                ,a.situacao
-                                                FROM ${this._table} a
-                                                WHERE a.situacao = 1`);    
+PedidoCompraDAO.prototype.lista = async function(sortColumn, sortOrder) {  
+    const query = QueryBuilder.sort(`SELECT
+                                    a.id
+                                    ,a.numeroPedido
+                                    ,a.numeroEmpenho
+                                    ,a.dataPedido
+                                    ,a.dataEmpenho
+                                    ,a.status
+                                    ,a.situacao
+                                    FROM ${this._table} a
+                                    WHERE a.situacao = 1`, sortColumn, sortOrder);
+    const result = await this._connection.query(query);
     return result;    
 }
 

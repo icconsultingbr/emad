@@ -158,10 +158,13 @@
 <div class="panel-body" style="overflow: auto">    
     <table class="table table-hover">
         <thead>
-            <tr class="text-left">
-                <th *ngFor="let field of fields;">{{field.label}}</th>
-                <th></th>
-            </tr>
+            <th *ngFor="let field of fields;" class="text-left">
+                <a (click)="sort(field.field);event.stopPropagation();" class="btn btn-link" *ngIf="field.sortable"> {{field.label}}
+                    <i class="fa fa-sort-up" *ngIf="sortOrder==='asc' && sortColumn===field.field"></i>
+                    <i class="fa fa-sort-down" *ngIf="sortOrder==='desc' && sortColumn===field.field"></i>
+                </a>
+            </th>
+            <th></th>
         </thead>
         <tbody>
             <ng-container *ngFor="let item of allItems; let index=index; let odd='odd'; let even='even';">
@@ -182,7 +185,7 @@
                                         field.decimalMask?(toCurrency(item[field.field] | currency:'R$ ':true:'1.2-2',field.decimalMask)):
                                             item[field.field]
                             }}
-                        </span>                   
+                        </span>
                     </td>    
                     <td class="text-right" style="white-space:nowrap">
                         <a class="btn btn-link" [routerLink]="" (click)="viewer(item.id)">
