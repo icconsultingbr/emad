@@ -10,6 +10,7 @@ module.exports = function (app) {
 
         req.assert("nome").notEmpty().withMessage("Nome é um campo Obrigatório");
         req.assert("situacao").notEmpty().withMessage("Situação é um campo Obrigatório");
+        req.assert("visualizaProntuario").notEmpty().withMessage("Visualiza prontuário do paciente é um campo Obrigatório");
 
         errors = req.validationErrors();
         
@@ -32,6 +33,7 @@ module.exports = function (app) {
 
         req.assert("nome").notEmpty().withMessage("Nome é um campo Obrigatório");
         req.assert("situacao").notEmpty().withMessage("Situação é um campo Obrigatório");
+        req.assert("visualizaProntuario").notEmpty().withMessage("Visualiza prontuário do paciente é um campo Obrigatório");
 
         errors = req.validationErrors();
         
