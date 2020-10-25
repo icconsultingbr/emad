@@ -41,6 +41,7 @@ export class PacienteComponent implements OnInit {
   totalPages: Number;
   idPacienteExclusao: number;
   idPacienteTransferencia: number;
+  estabelecimentoPacienteSelecionado: number;
   modalRef: NgbModalRef = null;  
   paging: any = {
     offset: 0,
@@ -90,7 +91,7 @@ export class PacienteComponent implements OnInit {
       if (field.grid) {
         this.fields.push(field);
       }
-      if (field.filter && field.grid) {
+      if (field.filter) {
         this.fieldsSearch.push(field);
       }
     }
@@ -120,7 +121,11 @@ export class PacienteComponent implements OnInit {
         this.domains.push({
           estabelecimentos : estabelecimentos,
           idEstabelecimentoCadastro: estabelecimentos,
-          idEspecialidade : especialidades
+          idEspecialidade : especialidades,
+          pacienteOutroEstabelecimento: [
+            { id: "1", nome: "Sim" },
+            { id: "2", nome: "Não" }
+          ]
         })
       });
     });
@@ -316,8 +321,9 @@ export class PacienteComponent implements OnInit {
     });
   }
   
-  openTransferencia(content: any, id: number) {
+  openTransferencia(content: any, id: number, idEstabelecimentoCadastroSelecionado: number) {
     this.idPacienteTransferencia = id;
+    this.estabelecimentoPacienteSelecionado = idEstabelecimentoCadastroSelecionado;
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
       keyboard: false,

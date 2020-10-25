@@ -282,7 +282,7 @@ PacienteDAO.prototype.atualiza = function (paciente, id, callback) {
     }); 
 }
 
-PacienteDAO.prototype.listarAsync = async function (addFilter) {
+PacienteDAO.prototype.listarAsync = async function (addFilter, idUsuario) {
     let where = "";
     let offset = " LIMIT 10 OFFSET 0 ";
     
@@ -322,8 +322,11 @@ PacienteDAO.prototype.listarAsync = async function (addFilter) {
         if(addFilter.limit && addFilter.offset){
             offset = `LIMIT ${addFilter.limit} OFFSET ${addFilter.limit * addFilter.offset}`;
         }
+        
+        if(addFilter.pesquisa)
+            addFilter.pacienteOutroEstabelecimento == 1;
 
-        if(addFilter.idEstabelecimento && !addFilter.pesquisa){
+        if(addFilter.idEstabelecimento && addFilter.pacienteOutroEstabelecimento == 2 && !addFilter.pesquisa){
             where+=" AND pac.idEstabelecimentoCadastro = " + addFilter.idEstabelecimento + "";
         } 
         
@@ -391,7 +394,11 @@ PacienteDAO.prototype.listarAsync = async function (addFilter) {
                                                     pac.observacao, 
                                                     pac.historiaProgressaFamiliar,
                                                     est.id idEstabelecimento,
-                                                    estCadastro.nomeFantasia nomeEstabelecimento
+                                                    estCadastro.nomeFantasia nomeEstabelecimento,
+                                                    pac.idEstabelecimentoCadastro,
+                                                    (select count(*) from tb_usuario usuario 
+                                                    inner join tb_estabelecimento_usuario estabelecimentoUsuario on estabelecimentoUsuario.idUsuario = usuario.id
+                                                    where usuario.id = ${idUsuario} and estabelecimentoUsuario.idEstabelecimento = estCadastro.id) vinculadoEstabelecimentoUsuario
                                                 ${join}  
                                             ORDER BY pac.nome ASC ${offset}`);
     return {
