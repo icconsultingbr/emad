@@ -13,7 +13,7 @@
   "author": "THREEO IT COMPANY",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "3.0.8",
+    "bcrypt": "^4.0.1",
     "body-parser": "^1.18.2",
     "config": "^1.30.0",
     "connect-ensure-login": "^0.1.1",

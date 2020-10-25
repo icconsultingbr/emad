@@ -592,6 +592,26 @@ module.exports = function (app) {
         });
     });
 
+    app.put('/atendimento/:id/finalizar', async function(req, res){
+        const atendimentoId = req.params.id;
+        const usuarioId = req.usuario;
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+        
+        try {
+            await Promise.resolve();
+
+            res.status(200).json('ok');
+        }
+        catch (exception) {
+            const errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
+            res.status(500).send(errors);
+        }
+        finally{
+            await connection.close();
+        }
+    });
+
     app.get('/atendimento/dominios', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();

@@ -183,7 +183,7 @@ module.exports = function (app) {
                     let expiredPassword = responseEmail[0].expiredPassword;                 
                     usuario = responseEmail[0];
 
-                    if(usuario.bloqueioTentativas <= usuario.tentativasSenha){
+                    if(usuario.bloqueioTentativas <= usuario.tentativasSenha) {
                         errors = util.customError(errors, "email", `Usuário bloqueado por exceder a quantidade tentativas de senha permitida(tentativa ${usuario.tentativasSenha} de ${usuario.bloqueioTentativas})!`, usuario.email);
                         res.status(404).json(errors);
                         return;

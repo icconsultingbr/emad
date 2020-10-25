@@ -1,17 +1,18 @@
+const config = require('config');
+const jwt = require('jsonwebtoken');
+
 module.exports = function (app) {
 
     app.use(function (req, res, next) {
-
-        var jwt = require('jsonwebtoken');
 
         var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
         var userAgent = req.headers['user-agent'];
         var host = req.headers['host'];
         var token = req.headers.authorization;
+        let errors = [];
 
         if (token) {
-
             jwt.verify(token, app.settings.superSecret, function (err, decoded) {
                 if (err) {                    
                     var datetime = new Date();    
@@ -34,7 +35,6 @@ module.exports = function (app) {
                                 errors = customError(errors, "header", "Não autorizado, origem diferente.", "");
                                 return res.status(401).json(errors);
                             }
-
                             if (response[0].token != req.headers.authorization) {
                                 errors = [];
                                 errors = customError(errors, "header", "Não autorizado", "");
@@ -44,18 +44,16 @@ module.exports = function (app) {
                                 errors = [];
                                 errors = customError(errors, "header", "Tempo de ociosidade", "");
                                 return res.status(401).json(errors);
-                            } else{
-                                //addActivity(req);
-                                //console.log('passou no addActivity');
                             }
-
+                            if(req.usuario.id === config.idUsuarioIntegracao && ["atendimento", "finalizar"].some(el => !req.url.includes(el))){
+                                errors = customError(errors, "header", "Acesso negado", "");
+                                return res.status(403).json(errors);
+                            }
                         }
                         else {
                             errors = customError(errors, "header", "Não autorizado", "");
                             return res.status(401).json(errors);
                         }
-
-
                         if (req.url == '/usuario/redefinir-senha') {
 
                             let obj = {
@@ -75,21 +73,10 @@ module.exports = function (app) {
                             };
                             //addLog(obj);
                             next();
-
-                        } else if (req.url != '/usuario/validaToken') {
-                            //addLog(req);
-                            //console.log(`voltou`);
-                            next();
-
-                        } else {
-                            next();
                         }
 
+                        next();
                     });
-
-                    //if (host != decoded.host || userAgent != decoded.userAgent) {
-                    //console.log(ip, decoded.ip);
-
                 }
             });
         } else {
