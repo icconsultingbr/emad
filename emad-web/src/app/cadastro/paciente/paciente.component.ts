@@ -361,14 +361,14 @@ export class PacienteComponent implements OnInit {
   
   transferir() {
     this.erroEstabelecimento = false;
-    if(this.object.idEstabelecimentoCadastro == 0){
+    if(this.estabelecimentoPacienteSelecionado == 0){
       this.erroEstabelecimento = true; 
       return;
     }
     this.loading = true;
     let pacienteSelecionado: any = {};
     pacienteSelecionado.id = this.idPacienteTransferencia;
-    pacienteSelecionado.idEstabelecimentoCadastro = this.object.idEstabelecimentoCadastro;
+    pacienteSelecionado.idEstabelecimentoCadastro = this.estabelecimentoPacienteSelecionado;
 
     this.service.transfereEstabelecimento(pacienteSelecionado).subscribe(() => {
       this.mensagem = Translation.t("Paciente transferido com sucesso!");
