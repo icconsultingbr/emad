@@ -24,7 +24,9 @@ export class PacienteComponent implements OnInit {
   fieldsSearch = [];
   object: Paciente = new Paciente();
   virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
-
+  permiteVisualizarProntuario: boolean = JSON.parse(localStorage.getItem("especialidade")) 
+                                         ? JSON.parse(localStorage.getItem("especialidade")).visualizaProntuario 
+                                         : false;
   allItems: any[];
   pager: any = {};
   pagedItems: any[];
@@ -373,5 +375,16 @@ export class PacienteComponent implements OnInit {
         this.errors = Util.customHTTPResponse(erro);
       }
     );
-  }  
+  } 
+
+  visualizaProntuarioPaciente(idPaciente: any): void {
+    let url = this.router.url.replace('paciente', '') + this.virtualDirectory + "#/pacientes/prontuario/" + idPaciente;
+    this.service.file('atendimento/consulta-por-paciente', url).subscribe(result => {
+      this.loading = false;
+      window.open(
+        url,
+        '_blank'
+      );
+    });
+  } 
 }

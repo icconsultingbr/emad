@@ -20,19 +20,20 @@
             <div class="card-header text-left">
               Paciente
 
-              <button  *ngIf="object.idPaciente" class="btn btn-primary float-right rounded" type="button" (click)="visualizaProntuarioPaciente(object.idPaciente)" title="Prontuário eletrônico">
+              <button  *ngIf="object.idPaciente" class="btn btn-primary float-right rounded" type="button" (click)="visualizaProntuarioPaciente(object.idPaciente)" title="Prontuário eletrônico do paciente">
                 <i class="fa fa-user"></i>
               </button>
 
-              <button *ngIf="object.id" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreFichaDigital(object.id, true)">
+              <button *ngIf="object.id" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreFichaDigital(object.id, true)" title="Imprimir ficha médica">
                 <i class="fa fa-print"></i>
               </button>
 
-              <button *ngIf="object.id" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreAtendimentoFichaDigital(object.id)">
+              <button *ngIf="object.id" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreAtendimentoFichaDigital(object.id)"  title="Visualizar ficha médica">
                 <i class="fa fa-file-alt"></i>
               </button>
 
-              <button *ngIf="object.id && object.ano_receita && object.numero_receita && object.unidade_receita" class="mr-2 btn btn-primary float-right rounded" type="button" (click)="abreReceitaMedica(object.ano_receita, object.numero_receita, object.unidade_receita)">
+              <button *ngIf="object.id && object.ano_receita && object.numero_receita && object.unidade_receita" class="mr-2 btn btn-primary float-right rounded" type="button"  title="Visualizar receita"
+               (click)="abreReceitaMedica(object.ano_receita, object.numero_receita, object.unidade_receita)">
                 <i class="fa fa-file-medical-alt"></i>
               </button>
 

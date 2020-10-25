@@ -215,6 +215,10 @@
                     <a class="btn btn-link" [routerLink]="" (click)="openTransferencia(contentTransferencia, item.id)">
                         <i class="fa fa-exchange-alt" title="Transferência de unidade"></i>
                     </a>
+
+                    <a class="btn btn-link" [routerLink]=""  *ngIf="permiteVisualizarProntuario" (click)="visualizaProntuarioPaciente(item.id)">
+                        <i class="fa fa-user" title="Prontuário eletrônico do paciente"></i>
+                    </a>
                 </td>
             </tr>
         </tbody>

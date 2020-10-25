@@ -17,6 +17,7 @@ import { FileUploadService } from './_core/_components/app-file-upload/services/
 import { FileUpload } from './_core/_components/app-file-upload/model/file-upload.model';
 import { UserInfoService } from './_core/_services/user-info.service';
 import { environment } from '../environments/environment';
+import { Especialidade } from './_core/_models/Especialidade';
 
 @Component({
   selector: 'app-root',
@@ -33,6 +34,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   route: string = "";
   menus: Menu[];
   parametrosSeguranca: ParametroSeguranca[];
+  parametrosEspecialidade: Especialidade;
 
   image$: Observable<string>;
 
@@ -69,6 +71,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (auth.canActivate()) {
       this.getMenuLista();
       this.getUrlsParametroLista();
+      this.getParametroProfissional();
     }
   }
 
@@ -106,6 +109,19 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
   }
 
+  getParametroProfissional() {
+    this.service.listEspecialidade().subscribe(parametros => {      
+      this.parametrosEspecialidade = parametros;
+      localStorage.setItem('especialidade', JSON.stringify(parametros));
+    }, erro => {
+      //console.log(erro);
+      if (erro.status == 401) {
+        this.loginService.logout();
+        this.router.navigate(['/login']);
+      }
+    });
+  }
+  
   abre() {
     this.showMenu = !this.showMenu;
   }
