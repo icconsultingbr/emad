@@ -18,6 +18,7 @@ export class TipoFichaFormComponent implements OnInit {
   fields: any[] = [];
   label: string = "Tipo de ficha";
   id: Number = null;
+  domains: any[] = [];
 
   constructor(
     fb: FormBuilder,
@@ -29,6 +30,16 @@ export class TipoFichaFormComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.id = params['id'];
+    });
+    this.loadDomains();
+  }
+
+  loadDomains() {
+    this.domains.push({                    
+      tipo: [
+        { id: '1', nome: "Atendimento" },
+        { id: '2', nome: "Avaliação" },
+        { id: '3', nome: "Exame" }]
     });
   }
 }
