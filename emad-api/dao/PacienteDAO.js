@@ -396,7 +396,7 @@ PacienteDAO.prototype.listarAsync = async function (addFilter, idUsuario) {
                                                     est.id idEstabelecimento,
                                                     estCadastro.nomeFantasia nomeEstabelecimento,
                                                     pac.idEstabelecimentoCadastro,
-                                                    (select count(*) from tb_usuario usuario 
+                                                    (select case when usuario.idTipoUsuario = 3 then 1 else count(*) end from tb_usuario usuario 
                                                     inner join tb_estabelecimento_usuario estabelecimentoUsuario on estabelecimentoUsuario.idUsuario = usuario.id
                                                     where usuario.id = ${idUsuario} and estabelecimentoUsuario.idEstabelecimento = estCadastro.id) vinculadoEstabelecimentoUsuario
                                                 ${join}  

@@ -1,7 +1,7 @@
 import { Component, Input, AfterViewInit, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { AppNavbarService } from './app-navbar.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { LoginService } from '../../../login/login.service';
 import { AppComponent } from '../../../app.component';
 import { AuthGuard } from '../../_guards';
@@ -72,10 +72,14 @@ export class AppNavbarComponent implements OnInit {
 
     this.getLogo();
 
-    this.hideMenu = this.routeNew.snapshot.queryParams.hideMenu;
-    if(this.hideMenu){
-      this.app.fecha();
-    }
+    this.routeNew.queryParamMap.subscribe((queryParam: ParamMap)=>{        
+      this.hideMenu = <boolean><unknown>queryParam.get('hideMenu');
+        if(this.hideMenu){
+          this.app.fecha();
+        }
+    });
+
+    
   }
 
   sair() {
