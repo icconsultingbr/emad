@@ -73,7 +73,7 @@ export class AppNavbarComponent implements OnInit {
     this.getLogo();
 
     this.routeNew.queryParamMap.subscribe((queryParam: ParamMap)=>{        
-      this.hideMenu = <boolean><unknown>queryParam.get('hideMenu');
+      this.hideMenu = queryParam.get('hideMenu') == 'true';
         if(this.hideMenu){
           this.app.fecha();
         }
