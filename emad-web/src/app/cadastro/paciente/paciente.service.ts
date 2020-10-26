@@ -398,8 +398,8 @@ export class PacienteService extends GenericsService {
     }
   }
 
-  findAtendimentoByPaciente(id: any): Observable<any> {
-    return this.http.get("atendimento/prontuario-paciente/paciente/" + id);
+  findAtendimentoByPaciente(id: any, tipo: any): Observable<any> {
+    return this.http.get("atendimento/prontuario-paciente/paciente/" + id + "/tipo-atendimento/" + tipo);
   }
 
   findReceitaByPaciente(id: any): Observable<any> {

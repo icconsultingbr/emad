@@ -293,7 +293,14 @@ AtendimentoDAO.prototype.buscaPorPacienteId = function (idPaciente, usuario, idE
     this._connection.query("select * from "+this._table + " WHERE idPaciente = ? AND dataFinalizacao IS NULL AND dataCancelamento IS NULL AND idEstabelecimento = ? AND idUsuario = ?" ,[idPaciente,idEstabelecimento,usuario.id],callback); 
 }
 
-AtendimentoDAO.prototype.buscaPorPacienteIdProntuario = async function (idPaciente) {    
+AtendimentoDAO.prototype.buscaPorPacienteIdProntuario = async function (idPaciente, tipo) {    
+    var where = "";
+
+    if(tipo == 2)
+        where = " and ficha.tipo in (1, 2) ";
+    else if(tipo == 3)
+        where = " and ficha.tipo = 3 ";     
+
     const response =  await this._connection.query(`select a.*, 
                                 CASE  
                                 WHEN a.situacao = '0'  THEN 'Sala de espera'  
@@ -309,11 +316,15 @@ AtendimentoDAO.prototype.buscaPorPacienteIdProntuario = async function (idPacien
                                 ELSE 'Cancelado'
                                 END as situacaoNome,
                                 ficha.nome fichaNome,
-                                clas.nome classificacaoNome  
+                                clas.nome classificacaoNome,
+                                estabelecimento.nomeFantasia estabelecimentoNome,
+                                usuario.nome nomeProfissional
     from tb_atendimento a 
     inner join tb_tipo_ficha ficha on ficha.id = a.tipoFicha
     inner join tb_classificacao_risco clas on clas.id = a.idClassificacaoRisco
-    WHERE a.idPaciente = ? order by a.id desc`, idPaciente); 
+    inner join tb_estabelecimento estabelecimento on a.idEstabelecimento = estabelecimento.id
+    inner join tb_usuario usuario on usuario.id = a.idUsuario
+    WHERE a.idPaciente = ? ${where} order by a.id desc`, idPaciente); 
     return response;
 }
 

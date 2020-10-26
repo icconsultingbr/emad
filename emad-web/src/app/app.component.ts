@@ -126,6 +126,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.showMenu = !this.showMenu;
   }
 
+  fecha() {
+    this.showMenu = false;
+  }
+
   ngOnInit() {
 
     const token = this.authService.getToken();

@@ -3,7 +3,7 @@
     <div class="text-left d-none d-md-block">
       <ul class="navbar-nav ">
         <li>
-          <i class="navbar-toggler-icon align-middle mb-2 ml-2 mr-2 mt-2 text-white" (click)="menuToggle($event)"></i>
+          <i *ngIf="!hideMenu" class="navbar-toggler-icon align-middle mb-2 ml-2 mr-2 mt-2 text-white" (click)="menuToggle($event)"></i>
           <a class="navbar-brand mb-1" href="#">
             <img src="{{logo}}" width="110">
           </a>

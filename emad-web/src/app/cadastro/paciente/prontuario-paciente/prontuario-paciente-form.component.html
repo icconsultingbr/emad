@@ -344,7 +344,7 @@
       </tab>
       <tab>
         <ng-template tabHeading>
-          <i class="fa fa-file-medical-alt" title="Principal"></i>   Receitas
+          <i class="fa fa-file-medical-alt" title="Principal"></i>   Medicamentos
         </ng-template>
         <div class="card mb-4">
           <div class="card-header text-left">
@@ -363,8 +363,7 @@
                           <th>Número</th>
                           <th>Situação</th>
                           <th>Data emissão</th>
-                          <th>Imprimir</th>
-                          <th></th>
+                          <th>Visualizar medicamentos</th>                          
                         </tr>
                     </thead>
                     <tbody *ngIf="allItemsReceita.length">
@@ -378,14 +377,14 @@
                           <td class="text-secondary">{{item.dataEmissao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
                           <td class="text-secondary text-right">
                             <button type="button" class="btn btn-primary float-left"
-                              (click)="abreReceitaMedica(item.ano, item.numero, item.idEstabelecimento)">
-                            <i class="fa fa-file-medical-alt"></i>
-                        </button>
-                          </td>
-                          <td class="text-secondary text-right">
-                            <button type="button" class="btn btn-primary float-left" (click)="carregaEstoque(item)">
-                              <i class="fa fa-eye"></i>  Visualizar medicamentos
-                            </button>
+                              (click)="abreReceitaMedica(item.ano, item.numero, item.idEstabelecimento)"
+                              title="Imprimir receita">
+                            <i class="fa fa-file-medical-alt" ></i>
+                          </button>
+                          <button type="button" class="btn btn-primary float-left" (click)="carregaEstoque(item)"
+                            style="margin-left: 5px;"  title="Visualizar itens da receita">
+                            <i class="fa fa-eye"></i>  
+                          </button>
                           </td>
                         </tr>
                         <tr class="text-left" >
@@ -446,21 +445,23 @@
                       <th>Queixa</th>
                       <th>Situação</th>
                       <th>Data</th>
+                      <th>Estabelecimento</th>
                       <th></th>
                     </tr>
                   </thead>
-                  <tbody *ngIf="allItemsAtendimentos.length">
-                    <tr class="text-left" *ngFor="let item of allItemsAtendimentos">
+                  <tbody *ngIf="allItemsFichas.length">
+                    <tr class="text-left" *ngFor="let item of allItemsFichas">
                       <td class="text-secondary">{{item.id}}</td>
                       <td class="text-secondary">{{item.fichaNome}}</td>
                       <td class="text-secondary">{{item.classificacaoNome}}</td>
                       <td class="text-secondary">{{item.motivoQueixa}}</td>
                       <td class="text-secondary">{{item.situacaoNome}}</td>
                       <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                      <td class="text-secondary">{{item.estabelecimentoNome}}</td>
                       <td class="text-secondary">
-                        <a class="btn btn-link" [routerLink]="" (click)="visualizaAtendimentos(item.id)">
-                          <i class="fa fa-file-medical-alt"></i> Visualizar atendimento
-                        </a>
+                        <button type="button" class="btn btn-primary float-left" (click)="visualizaAtendimentos(item.id)" title="Visualizar atendimento">
+                            <i class="fa fa-file-medical-alt"></i>
+                          </button>
                       </td>
                     </tr>
                   </tbody>
@@ -475,8 +476,41 @@
           <i class="fa fa-check-square" title="Principal"></i>   Exames
         </ng-template>
         <div class="card mb-4">
+          <div class="card-header text-left">
+            Exames
+          </div>
           <div class="card-body text-left">
             <div class="row">
+              <div class="col-12 table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Atendimento</th>
+                      <th>Tipo de atendimento</th>                      
+                      <th>Profissional</th>                      
+                      <th>Situação</th>                      
+                      <th>Data</th>   
+                      <th>Estabelecimento</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="allItemsExames.length">
+                    <tr class="text-left" *ngFor="let item of allItemsExames">
+                      <td class="text-secondary">{{item.id}}</td>
+                      <td class="text-secondary">{{item.fichaNome}}</td>
+                      <td class="text-secondary">{{item.nomeProfissional}}</td>                      
+                      <td class="text-secondary">{{item.situacaoNome}}</td>
+                      <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                      <td class="text-secondary">{{item.estabelecimentoNome}}</td>
+                      <td class="text-secondary">
+                        <button type="button" class="btn btn-primary float-left" (click)="visualizaAtendimentos(item.id)" title="Visualizar atendimento">
+                            <i class="fa fa-file-medical-alt"></i>
+                          </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

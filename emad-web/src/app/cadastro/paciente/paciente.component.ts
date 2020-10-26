@@ -384,7 +384,7 @@ export class PacienteComponent implements OnInit {
   } 
 
   visualizaProntuarioPaciente(idPaciente: any): void {
-    let url = this.router.url.replace('paciente', '') + this.virtualDirectory + "#/pacientes/prontuario/" + idPaciente;
+    let url = this.router.url.replace('paciente', '') + this.virtualDirectory + "#/pacientes/prontuario/" + idPaciente + "?hideMenu=true";
     this.service.file('atendimento/consulta-por-paciente', url).subscribe(result => {
       this.loading = false;
       window.open(
