@@ -12,7 +12,7 @@ TipoFichaDAO.prototype.atualiza = function(obj, id, callback) {
 }
 
 TipoFichaDAO.prototype.lista = function(callback) {    
-    this._connection.query(`SELECT id, nome, situacao FROM ${this._table}  WHERE situacao = 1`,callback);    
+    this._connection.query(`SELECT id, nome, situacao, tipo FROM ${this._table}  WHERE situacao = 1`,callback);    
 }
 
 TipoFichaDAO.prototype.buscaPorId = function (id, callback) {

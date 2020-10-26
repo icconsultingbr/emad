@@ -50,4 +50,5 @@ export class Paciente {
     @Input() historiaProgressaFamiliar: string = null ;
     @Input() pesquisaCentral: string = null ;
     @Input() foto: string;
+    @Input() pacienteOutroEstabelecimento: string = "2";
 }

@@ -30,6 +30,16 @@ export class EspecialidadeService extends GenericsService {
       validator:['', Validators.required]
     },
     {
+      field: "visualizaProntuario", 
+      type: "checkbox", 
+      label: "Visualizar prontuário do paciente?", 
+      grid: true,  
+      form: true,
+      translate: {1: "Sim", 0: "Não"},
+      required: true, 
+      validator:['', Validators.required]
+    },    
+    {
       field: "situacao", 
       type: "checkbox", 
       label: "Situação", 

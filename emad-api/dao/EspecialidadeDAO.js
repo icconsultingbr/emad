@@ -28,6 +28,15 @@ EspecialidadeDAO.prototype.deletaPorId = function (){
     this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
 }
 
+EspecialidadeDAO.prototype.carregaPermissoesPorEspecialidadeUsuarioSync = async function (idUsuario) {    
+    let profissional =  await this._connection.query(`        
+        SELECT especialidade.visualizaProntuario FROM tb_profissional profissional 
+        inner join tb_especialidade especialidade on especialidade.id = profissional.idEspecialidade
+        inner join tb_usuario usuario on usuario.id = profissional.idUsuario 
+        where usuario.id=?`, [idUsuario]);
+
+    return profissional[0];
+}
 
 module.exports = function(){
     return EspecialidadeDAO;

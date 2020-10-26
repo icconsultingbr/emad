@@ -200,20 +200,29 @@
                 </td>
 
                 <td class="text-right" style="white-space:nowrap;">
-                    <a class="btn btn-link" [routerLink]="" (click)="viewer(item.id)">
+                    <a class="btn btn-link" *ngIf="item.vinculadoEstabelecimentoUsuario > 0" [routerLink]="" (click)="viewer(item.id)">
                         <i class="fa fa-edit" title="Editar"></i> 
                     </a>
                     
-                    <a class="btn btn-link" [routerLink]="" (click)="openConfirmacao(content, item.id)">
+                    <a class="btn btn-link" *ngIf="item.vinculadoEstabelecimentoUsuario > 0" [routerLink]="" (click)="openConfirmacao(content, item.id)">
                         <i class="fa fa-trash-alt" title="Remover"></i>
                     </a>
+                    
+                    <div class="float-left" *ngIf="item.vinculadoEstabelecimentoUsuario <= 0">                  
+                        <i class="fa fa-ban text-left" title="Paciente pertence a outro estabelecimento ({{item.nomeEstabelecimento}}) que não está vinculado ao seu usuário" 
+                        style="color:red"></i>
+                    </div>
 
                     <a class="btn btn-link" [routerLink]="" (click)="visualizaAtendimentos(item.id)">
                         <i class="fa fa-file-medical-alt" title="Visualizar atendimentos"></i>
                     </a>
 
-                    <a class="btn btn-link" [routerLink]="" (click)="openTransferencia(contentTransferencia, item.id)">
+                    <a class="btn btn-link" [routerLink]="" (click)="openTransferencia(contentTransferencia, item.id, item.idEstabelecimentoCadastro)">
                         <i class="fa fa-exchange-alt" title="Transferência de unidade"></i>
+                    </a>
+
+                    <a class="btn btn-link" [routerLink]=""  *ngIf="permiteVisualizarProntuario" (click)="visualizaProntuarioPaciente(item.id)">
+                        <i class="fa fa-user" title="Prontuário eletrônico do paciente"></i>
                     </a>
                 </td>
             </tr>
@@ -316,7 +325,7 @@
                     Selecione o estabelecimento<span class="text-danger font-weight-bold"> *</span>
                 </label>
                 <div class="col-xl-8">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idEstabelecimentoCadastro">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="estabelecimentoPacienteSelecionado">
                         <option [value]="0">Selecione...</option>
                         <option *ngFor="let item of domains[0]?.estabelecimentos" [value]="item.id">{{item.nome}}</option>
                     </select>

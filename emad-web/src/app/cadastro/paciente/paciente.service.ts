@@ -151,20 +151,20 @@ export class PacienteService extends GenericsService {
       required: false,
       validator: ['', ''],
     },
-    {
-      field: "idUf",
-      type: "select",
-      label: "Estado",
-      grid: false,
-      form: true,
-      required: false,
-      validator: ['', ''],
-      filter: {
-        type: "select",
-        changeMethod: 'municipio/uf',
-        changeTarget: 'idMunicipio'
-      },
-    },
+    // {
+    //   field: "idUf",
+    //   type: "select",
+    //   label: "Estado",
+    //   grid: false,
+    //   form: true,
+    //   required: false,
+    //   validator: ['', ''],
+    //   filter: {
+    //     type: "select",
+    //     changeMethod: 'municipio/uf',
+    //     changeTarget: 'idMunicipio'
+    //   },
+    // },
     {
       field: "idMunicipio",
       type: "select",
@@ -360,7 +360,19 @@ export class PacienteService extends GenericsService {
       required: false,
       validator: ['', '']
     },
-
+    {
+        field: "pacienteOutroEstabelecimento",
+        type: "text",
+        label: "Visualizar pacientes de outros estabelecimentos",
+        grid: false,
+        form: false,
+        translate: { "1": "Sim", "2": "Não"},
+        required: false,
+        validator: ['', ''],
+        filter: {
+            type: "select"
+        }      
+    }
   ];
 
   transfereEstabelecimento(obj: any) {
@@ -386,8 +398,8 @@ export class PacienteService extends GenericsService {
     }
   }
 
-  findAtendimentoByPaciente(id: any): Observable<any> {
-    return this.http.get("atendimento/prontuario-paciente/paciente/" + id);
+  findAtendimentoByPaciente(id: any, tipo: any): Observable<any> {
+    return this.http.get("atendimento/prontuario-paciente/paciente/" + id + "/tipo-atendimento/" + tipo);
   }
 
   findReceitaByPaciente(id: any): Observable<any> {

@@ -24,7 +24,9 @@ export class PacienteComponent implements OnInit {
   fieldsSearch = [];
   object: Paciente = new Paciente();
   virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
-
+  permiteVisualizarProntuario: boolean = JSON.parse(localStorage.getItem("especialidade")) 
+                                         ? JSON.parse(localStorage.getItem("especialidade")).visualizaProntuario 
+                                         : false;
   allItems: any[];
   pager: any = {};
   pagedItems: any[];
@@ -39,6 +41,7 @@ export class PacienteComponent implements OnInit {
   totalPages: Number;
   idPacienteExclusao: number;
   idPacienteTransferencia: number;
+  estabelecimentoPacienteSelecionado: number;
   modalRef: NgbModalRef = null;  
   paging: any = {
     offset: 0,
@@ -88,7 +91,7 @@ export class PacienteComponent implements OnInit {
       if (field.grid) {
         this.fields.push(field);
       }
-      if (field.filter && field.grid) {
+      if (field.filter) {
         this.fieldsSearch.push(field);
       }
     }
@@ -118,7 +121,11 @@ export class PacienteComponent implements OnInit {
         this.domains.push({
           estabelecimentos : estabelecimentos,
           idEstabelecimentoCadastro: estabelecimentos,
-          idEspecialidade : especialidades
+          idEspecialidade : especialidades,
+          pacienteOutroEstabelecimento: [
+            { id: "1", nome: "Sim" },
+            { id: "2", nome: "Não" }
+          ]
         })
       });
     });
@@ -314,8 +321,9 @@ export class PacienteComponent implements OnInit {
     });
   }
   
-  openTransferencia(content: any, id: number) {
+  openTransferencia(content: any, id: number, idEstabelecimentoCadastroSelecionado: number) {
     this.idPacienteTransferencia = id;
+    this.estabelecimentoPacienteSelecionado = idEstabelecimentoCadastroSelecionado;
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
       keyboard: false,
@@ -353,14 +361,14 @@ export class PacienteComponent implements OnInit {
   
   transferir() {
     this.erroEstabelecimento = false;
-    if(this.object.idEstabelecimentoCadastro == 0){
+    if(this.estabelecimentoPacienteSelecionado == 0){
       this.erroEstabelecimento = true; 
       return;
     }
     this.loading = true;
     let pacienteSelecionado: any = {};
     pacienteSelecionado.id = this.idPacienteTransferencia;
-    pacienteSelecionado.idEstabelecimentoCadastro = this.object.idEstabelecimentoCadastro;
+    pacienteSelecionado.idEstabelecimentoCadastro = this.estabelecimentoPacienteSelecionado;
 
     this.service.transfereEstabelecimento(pacienteSelecionado).subscribe(() => {
       this.mensagem = Translation.t("Paciente transferido com sucesso!");
@@ -373,5 +381,16 @@ export class PacienteComponent implements OnInit {
         this.errors = Util.customHTTPResponse(erro);
       }
     );
-  }  
+  } 
+
+  visualizaProntuarioPaciente(idPaciente: any): void {
+    let url = this.router.url.replace('paciente', '') + this.virtualDirectory + "#/pacientes/prontuario/" + idPaciente + "?hideMenu=true";
+    this.service.file('atendimento/consulta-por-paciente', url).subscribe(result => {
+      this.loading = false;
+      window.open(
+        url,
+        '_blank'
+      );
+    });
+  } 
 }

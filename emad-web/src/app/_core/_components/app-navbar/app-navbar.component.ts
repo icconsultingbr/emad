@@ -1,7 +1,7 @@
 import { Component, Input, AfterViewInit, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { AppNavbarService } from './app-navbar.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoginService } from '../../../login/login.service';
 import { AppComponent } from '../../../app.component';
 import { AuthGuard } from '../../_guards';
@@ -31,6 +31,7 @@ export class AppNavbarComponent implements OnInit {
   badge: boolean = false;
   mensagens: any[] = [];
   mensagem: Notificacao = new Notificacao();
+  hideMenu: boolean = false;
 
   @ViewChild('content') content: ElementRef;
   @ViewChild('contentMensagem') contentMensagem: ElementRef;
@@ -46,7 +47,8 @@ export class AppNavbarComponent implements OnInit {
     service: AppNavbarService,
     private auth: AuthGuard,
     private socketService: SocketService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private routeNew: ActivatedRoute
   ) {
 
     this.app = app;
@@ -69,6 +71,11 @@ export class AppNavbarComponent implements OnInit {
     }
 
     this.getLogo();
+
+    this.hideMenu = this.routeNew.snapshot.queryParams.hideMenu;
+    if(this.hideMenu){
+      this.app.fecha();
+    }
   }
 
   sair() {

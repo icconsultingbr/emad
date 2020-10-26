@@ -10,6 +10,7 @@ module.exports = function (app) {
 
         req.assert("nome").notEmpty().withMessage("Nome é um campo Obrigatório");
         req.assert("situacao").notEmpty().withMessage("Situação é um campo Obrigatório");
+        req.assert("visualizaProntuario").notEmpty().withMessage("Visualiza prontuário do paciente é um campo Obrigatório");
 
         errors = req.validationErrors();
         
@@ -32,6 +33,7 @@ module.exports = function (app) {
 
         req.assert("nome").notEmpty().withMessage("Nome é um campo Obrigatório");
         req.assert("situacao").notEmpty().withMessage("Situação é um campo Obrigatório");
+        req.assert("visualizaProntuario").notEmpty().withMessage("Visualiza prontuário do paciente é um campo Obrigatório");
 
         errors = req.validationErrors();
         
@@ -57,6 +59,29 @@ module.exports = function (app) {
         });
     });
 
+    app.get('/especialidade/profissional', async function (req, res) {
+        var usuario = req.usuario;
+        let util = new app.util.Util();
+        let especialidade = {};
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const especialidadeRepository = new app.dao.EspecialidadeDAO(connection);
+
+        try {            
+            var response = await especialidadeRepository.carregaPermissoesPorEspecialidadeUsuarioSync(usuario.id);            
+            especialidade.visualizaProntuario = true;
+            if(response != undefined)
+                especialidade.visualizaProntuario = response.visualizaProntuario == 1 ? true : false;
+                
+            res.status(200).json(especialidade);
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado " + exception, ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });
 
     app.get('/especialidade/:id', function(req,res){        
         let usuario = req.usuario;
@@ -83,6 +108,7 @@ module.exports = function (app) {
             return;      
         });
     });
+
 
     function lista(res) {
         let q = require('q');

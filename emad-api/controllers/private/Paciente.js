@@ -10,7 +10,7 @@ module.exports = function (app) {
         try {
             const pacienteRepository = new app.dao.PacienteDAO(connection);
 
-            const response = await pacienteRepository.listarAsync(queryFilter);
+            const response = await pacienteRepository.listarAsync(queryFilter, usuario.id);
 
             res.status(200).json(response);
         }

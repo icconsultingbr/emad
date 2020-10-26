@@ -32,6 +32,8 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   dropdownSettings = {};
   allItemsHipotese: any[] = [];
   allItemsAtendimentos: any[] = [];
+  allItemsFichas: any[] = [];
+  allItemsExames: any[] = [];  
   allItemsReceita: any[] = [];
   listaMaterialLoteDispensadoGravado: any[] = [];
   listaMaterialLoteDispensadoFinalizado: any[] = [];
@@ -138,6 +140,8 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       this.carregaNaturalidade();
       this.findHipotesePorPaciente();
       this.findAtendimentoPorPaciente();
+      this.findFichasPorPaciente();
+      this.findExamesPorPaciente();
       this.findReceitaPorPaciente();
     }, error => {
       this.object = new Paciente();
@@ -231,8 +235,34 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.message = "";
     this.errors = [];
     this.loading = true;
-    this.service.findAtendimentoByPaciente(this.object.id).subscribe(result => {
+    this.service.findAtendimentoByPaciente(this.object.id, 1).subscribe(result => {
        this.allItemsAtendimentos = result;
+       this.loading = false;
+    }, error => {
+       this.loading = false;
+       this.errors = Util.customHTTPResponse(error);
+    });
+  }
+
+  findFichasPorPaciente() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.service.findAtendimentoByPaciente(this.object.id, 2).subscribe(result => {
+       this.allItemsFichas = result;
+       this.loading = false;
+    }, error => {
+       this.loading = false;
+       this.errors = Util.customHTTPResponse(error);
+    });
+  }
+
+  findExamesPorPaciente() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.service.findAtendimentoByPaciente(this.object.id, 3).subscribe(result => {
+       this.allItemsExames = result;
        this.loading = false;
     }, error => {
        this.loading = false;

@@ -47,6 +47,16 @@ export class TipoFichaService extends GenericsService {
       form: true,
       required: false,
       validator: ['', '']
+    }    ,
+    {
+      field: "tipo",
+      type: "select",
+      label: "Tipo",
+      grid: true,
+      form: true,
+      translate: {1: "Atendimento", 2: "Avaliação", 3: "Exame"},
+      required: true,
+      validator: ['', Validators.required]
     },
     {
       field: "situacao",
@@ -60,3 +70,4 @@ export class TipoFichaService extends GenericsService {
     }
   ];
 }
+

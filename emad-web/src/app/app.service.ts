@@ -5,6 +5,7 @@ import { Observable, Subject } from "rxjs";
 import { Menu } from './_core/_models/Menu';
 import { ParametroSeguranca } from './_core/_models/ParametroSeguranca';
 import { HttpClient } from '@angular/common/http';
+import { Especialidade } from './_core/_models/Especialidade';
 
 @Injectable()
 export class AppService {
@@ -12,6 +13,7 @@ export class AppService {
   headers: Headers;
   url: string = 'menu/tipo-usuario';
   urlParametroSeguranca: string = 'parametro-seguranca/urls';
+  urlEspecialidade: string = 'especialidade/profissional';
   public menus: any[];
 
   extrato: Subject<any>;
@@ -30,5 +32,9 @@ export class AppService {
 
   listUrls(): Observable<ParametroSeguranca[]> {
     return this.http.get<ParametroSeguranca[]>(this.urlParametroSeguranca);
+  }
+
+  listEspecialidade(): Observable<Especialidade> {
+    return this.http.get<Especialidade>(this.urlEspecialidade);
   }
 }
