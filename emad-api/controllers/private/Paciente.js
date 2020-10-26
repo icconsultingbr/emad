@@ -83,6 +83,7 @@ module.exports = function (app) {
             delete obj.idade;
             delete obj.idEstabelecimento;
             delete obj.pesquisaCentral;
+            delete obj.pacienteOutroEstabelecimento;
 
             obj.dataCriacao = new Date;
             obj.idUsuarioCriacao = usuario.id;
@@ -243,7 +244,8 @@ module.exports = function (app) {
         delete obj.gruposAtencaoContinuada;
         delete obj.dataCriacao;
         delete obj.idUsuarioCriacao;
-
+        delete obj.pacienteOutroEstabelecimento;
+        
         obj.dataAlteracao = new Date;
         obj.idUsuarioAlteracao = usuario.id;
         
