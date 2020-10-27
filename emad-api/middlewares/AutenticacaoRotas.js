@@ -71,10 +71,7 @@ module.exports = function (app) {
                                    "id" :  req.usuario.id
                                 }
                             };
-                            //addLog(obj);
-                            next();
                         }
-
                         next();
                     });
                 }
