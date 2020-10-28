@@ -184,6 +184,8 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   tabSelected(e: any){
+    console.log('teste tab');
+    
     this.errors.push({
       message: "Paciente não encontrado"
     });

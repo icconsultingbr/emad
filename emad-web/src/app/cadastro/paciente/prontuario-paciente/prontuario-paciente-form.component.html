@@ -11,8 +11,8 @@
 
 <form [formGroup]="form">
   <div>
-    <tabset select="tabSelected($event)">
-      <tab>
+    <tabset>
+      <tab (select)="tabSelected($event)">
         <ng-template tabHeading>
           <i class="fa fa-edit" title="Principal"></i>   Dados do paciente
         </ng-template>
@@ -235,7 +235,7 @@
           </div>
         </div>
       </tab>
-      <tab>
+      <tab (select)="tabSelected($event)">
         <ng-template tabHeading>
           <i class="fa fa-id-card" title="Principal"></i>   História progressa/familiar
         </ng-template>
@@ -256,7 +256,7 @@
           </div>
         </div>
       </tab>
-      <tab>
+      <tab (select)="tabSelected($event)">
         <ng-template tabHeading>
           <i class="fa fa-heart" title="Principal"></i>   Sinais vitais
         </ng-template>
@@ -554,7 +554,7 @@
           </div>
         </div>
       </tab>
-      <tab>
+      <tab (select)="tabSelected($event)">
         <ng-template tabHeading  select="tabSelected()">
           <i class="fa fa-archive" title="Principal"></i>   Atendimentos
         </ng-template>
@@ -598,7 +598,7 @@
           </div>
         </div>
       </tab>
-      <tab>
+      <tab (select)="tabSelected($event)">
         <ng-template tabHeading  select="tabSelected()">
           <i class="fa fa-file-medical-alt" title="Principal"></i>   Medicamentos
         </ng-template>
@@ -681,7 +681,7 @@
 
         </div>
       </tab>
-      <tab>
+      <tab (select)="tabSelected($event)">
         <ng-template tabHeading  select="tabSelected()">
           <i class="fa fa-folder" title="Principal"></i>   Fichas de atendimento
         </ng-template>
@@ -727,7 +727,7 @@
           </div>
         </div>
       </tab>
-      <tab>
+      <tab (select)="tabSelected($event)">
         <ng-template tabHeading  select="tabSelected()">
           <i class="fa fa-check-square" title="Principal"></i>   Exames
         </ng-template>
@@ -771,7 +771,7 @@
           </div>
         </div>
       </tab>
-      <tab>
+      <tab (select)="tabSelected($event)">
         <ng-template tabHeading  select="tabSelected()">
           <i class="fa fa-medkit" title="Principal"></i>   Hipótese diagnosticada
         </ng-template>
