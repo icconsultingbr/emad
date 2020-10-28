@@ -189,6 +189,29 @@ module.exports = function (app) {
         }
     });
 
+    app.get('/atendimento/prontuario-paciente/paciente/:idPaciente/sinais-vitais/:tipo', async function (req, res) {
+        let usuario = req.usuario;
+        let id = req.params.idPaciente;
+        let tipo = req.params.tipo;
+        let util = new app.util.Util();
+        let errors = [];
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
+
+        try {            
+            var response = await atendimentoRepository.buscaSinaisVitaisPorPacienteId(id, tipo);
+            res.status(200).json(response);
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado " + exception, ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });    
+
     app.get('/atendimento/paciente/:id/:idEstabelecimento', function (req, res) {
         let usuario = req.usuario;
         let id = req.params.id;

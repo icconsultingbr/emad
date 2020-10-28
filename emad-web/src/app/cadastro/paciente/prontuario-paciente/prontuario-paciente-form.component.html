@@ -11,7 +11,7 @@
 
 <form [formGroup]="form">
   <div>
-    <tabset>
+    <tabset select="tabSelected($event)">
       <tab>
         <ng-template tabHeading>
           <i class="fa fa-edit" title="Principal"></i>   Dados do paciente
@@ -267,39 +267,295 @@
           <div class="card-body text-left">
             <div class="row">
               <div class="col-12 table-responsive">
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>Atendimento</th>
-                      <th>Pressão arterial</th>
-                      <th>Pulso</th>
-                      <th>Saturação</th>
-                      <th>Temperatura</th>
-                      <th>Altura</th>
-                      <th>Peso</th>
-                      <th>Data</th>
-                    </tr>
-                  </thead>
-                  <tbody *ngIf="allItemsAtendimentos.length">
-                    <tr class="text-left" *ngFor="let item of allItemsAtendimentos">
-                      <td class="text-secondary">{{item.id}}</td>
-                      <td class="text-secondary">{{item.pressaoArterial}}</td>
-                      <td class="text-secondary">{{item.pulso}}</td>
-                      <td class="text-secondary">{{item.saturacao}}</td>
-                      <td class="text-secondary">{{item.temperatura}}</td>
-                      <td class="text-secondary">{{item.altura}}</td>
-                      <td class="text-secondary">{{item.peso}}</td>
-                      <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                <div class="card mb-4">
+                  <div class="card-header text-left">
+                    Pressão arterial
+                  </div>
+                  <div class="card-body text-left">
+                    <div class="row">
+                      <div class="col-9 table-responsive">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th>Atendimento</th>
+                              <th>Pressão arterial</th>
+                              <th>Data</th>
+                            </tr>
+                          </thead>
+                          <tbody *ngIf="allItemsSinaisVitaisPressaoArterial.length">
+                            <tr class="text-left" *ngFor="let item of allItemsSinaisVitaisPressaoArterial">
+                              <td class="text-secondary">{{item.id}}</td>
+                              <td class="text-secondary">{{item.pressaoArterial}}</td>
+                              <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                            </tr>
+                          </tbody>
+                        </table> 
+                      </div>
+                      <div class="col-3 table-responsive">
+                        <div class="col-sm-12 col-md-12 col-xl-12 mb-4">
+                          <div class="card text-white bg-primary pb-4">
+                            <div class="card-body pb-0"> 
+                              <div class="text-left medium">Coleta(s) realizada(s): <label style="font-weight:bold;">{{totalPressaoArterial}}</label>
+                              </div>
+                              <br/>
+                              <canvas baseChart height="80" [datasets]="lineChartDataMedicamento" [labels]="lineChartLabelsMedicamento"
+                                [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend"
+                                [chartType]="lineChartType" (chartHover)="chartHovered($event)"
+                                (chartClick)="chartClicked($event)"></canvas>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>              
+            </div>
+            <div class="row">
+              <div class="col-12 table-responsive">
+                <div class="card mb-4">
+                  <div class="card-header text-left">
+                    Pulso
+                  </div>
+                  <div class="card-body text-left">
+                    <div class="row">
+                      <div class="col-9 table-responsive">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th>Atendimento</th>
+                              <th>Pulso</th>
+                              <th>Data</th>
+                            </tr>
+                          </thead>
+                          <tbody *ngIf="allItemsSinaisVitaisPulso.length">
+                            <tr class="text-left" *ngFor="let item of allItemsSinaisVitaisPulso">
+                              <td class="text-secondary">{{item.id}}</td>
+                              <td class="text-secondary">{{item.pulso}}</td>
+                              <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="col-3 table-responsive">
+                        <div class="col-sm-12 col-md-12 col-xl-12 mb-4">
+                          <div class="card text-white bg-primary pb-4">
+                            <div class="card-body pb-0">
+                              <div class="btn-group float-right" dropdown>
+                                <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle text-white float-right"
+                                  aria-controls="atendimentos" style="background: none">
+                                  <i class="fa fa-sliders-h"></i>
+                                  <span class="caret"></span>
+                                </button>  
+                                <ul id="atendimentos" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-basic">                
+                                  <li role="menuitem" *ngFor="let item of domains[0]?.periodos" [value]="item.id" 
+                                  (click)="carregaDashboardAtendimento(item)">
+                                    <div class="dropdown-item">{{item.nome}}</div>
+                                  </li>
+                                </ul> 
+                              </div>  
+                              <div class="text-value text-left h4"><label>{{objectAtendimento.qtdTotal}}</label></div>
+                              <div class="text-left medium">Atendimentos realizados nos <label style="font-weight:bold;">{{objectAtendimento.periodoNome}}</label>
+                              </div>
+                              <br/>
+                              <canvas baseChart height="80" [datasets]="lineChartDataAtendimento" [labels]="lineChartLabelsAtendimento"
+                                [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend"
+                                [chartType]="lineChartType" (chartHover)="chartHovered($event)"
+                                (chartClick)="chartClicked($event)"></canvas>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>              
+            </div>
+            <div class="row">
+              <div class="col-12 table-responsive">
+                <div class="card mb-4">
+                  <div class="card-header text-left">
+                    Saturação
+                  </div>
+                  <div class="card-body text-left">
+                    <div class="row">
+                      <div class="col-9 table-responsive">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th>Atendimento</th>
+                              <th>Saturação</th>
+                              <th>Data</th>
+                            </tr>
+                          </thead>
+                          <tbody *ngIf="allItemsSinaisVitaisSaturacao.length">
+                            <tr class="text-left" *ngFor="let item of allItemsSinaisVitaisSaturacao">
+                              <td class="text-secondary">{{item.id}}</td>
+                              <td class="text-secondary">{{item.saturacao}}</td>
+                              <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="col-3 table-responsive">
+                        <div class="col-sm-12 col-md-12 col-xl-12 mb-4">
+                          <div class="card text-white bg-primary pb-4">
+                            <div class="card-body pb-0">
+                              <div class="btn-group float-right" dropdown>
+                                <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle text-white float-right"
+                                  aria-controls="atendimentos" style="background: none">
+                                  <i class="fa fa-sliders-h"></i>
+                                  <span class="caret"></span>
+                                </button>  
+                                <ul id="atendimentos" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-basic">                
+                                  <li role="menuitem" *ngFor="let item of domains[0]?.periodos" [value]="item.id" 
+                                  (click)="carregaDashboardAtendimento(item)">
+                                    <div class="dropdown-item">{{item.nome}}</div>
+                                  </li>
+                                </ul> 
+                              </div>  
+                              <div class="text-value text-left h4"><label>{{objectAtendimento.qtdTotal}}</label></div>
+                              <div class="text-left medium">Atendimentos realizados nos <label style="font-weight:bold;">{{objectAtendimento.periodoNome}}</label>
+                              </div>
+                              <br/>
+                              <canvas baseChart height="80" [datasets]="lineChartDataAtendimento" [labels]="lineChartLabelsAtendimento"
+                                [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend"
+                                [chartType]="lineChartType" (chartHover)="chartHovered($event)"
+                                (chartClick)="chartClicked($event)"></canvas>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>              
+            </div>
+            <div class="row">
+              <div class="col-12 table-responsive">
+                <div class="card mb-4">
+                  <div class="card-header text-left">
+                    Temperatura
+                  </div>
+                  <div class="card-body text-left">
+                    <div class="row">
+                      <div class="col-9 table-responsive">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th>Atendimento</th>
+                              <th>Temperatura</th>
+                              <th>Data</th>
+                            </tr>
+                          </thead>
+                          <tbody *ngIf="allItemsSinaisVitaisTemperatura.length">
+                            <tr class="text-left" *ngFor="let item of allItemsSinaisVitaisTemperatura">
+                              <td class="text-secondary">{{item.id}}</td>
+                              <td class="text-secondary">{{item.temperatura}}</td>
+                              <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="col-3 table-responsive">
+                        <div class="col-sm-12 col-md-12 col-xl-12 mb-4">
+                          <div class="card text-white bg-primary pb-4">
+                            <div class="card-body pb-0">
+                              <div class="btn-group float-right" dropdown>
+                                <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle text-white float-right"
+                                  aria-controls="atendimentos" style="background: none">
+                                  <i class="fa fa-sliders-h"></i>
+                                  <span class="caret"></span>
+                                </button>  
+                                <ul id="atendimentos" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-basic">                
+                                  <li role="menuitem" *ngFor="let item of domains[0]?.periodos" [value]="item.id" 
+                                  (click)="carregaDashboardAtendimento(item)">
+                                    <div class="dropdown-item">{{item.nome}}</div>
+                                  </li>
+                                </ul> 
+                              </div>  
+                              <div class="text-value text-left h4"><label>{{objectAtendimento.qtdTotal}}</label></div>
+                              <div class="text-left medium">Atendimentos realizados nos <label style="font-weight:bold;">{{objectAtendimento.periodoNome}}</label>
+                              </div>
+                              <br/>
+                              <canvas baseChart height="80" [datasets]="lineChartDataAtendimento" [labels]="lineChartLabelsAtendimento"
+                                [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend"
+                                [chartType]="lineChartType" (chartHover)="chartHovered($event)"
+                                (chartClick)="chartClicked($event)"></canvas>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>              
+            </div>
+            <div class="row">
+              <div class="col-12 table-responsive">
+                <div class="card mb-4">
+                  <div class="card-header text-left">
+                    Peso
+                  </div>
+                  <div class="card-body text-left">
+                    <div class="row">
+                      <div class="col-9 table-responsive">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th>Atendimento</th>
+                              <th>Peso</th>
+                              <th>Data</th>
+                            </tr>
+                          </thead>
+                          <tbody *ngIf="allItemsSinaisVitaisPeso.length">
+                            <tr class="text-left" *ngFor="let item of allItemsSinaisVitaisPeso">
+                              <td class="text-secondary">{{item.id}}</td>
+                              <td class="text-secondary">{{item.peso}}</td>
+                              <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="col-3 table-responsive">
+                        <div class="col-sm-12 col-md-12 col-xl-12 mb-4">
+                          <div class="card text-white bg-primary pb-4">
+                            <div class="card-body pb-0">
+                              <div class="btn-group float-right" dropdown>
+                                <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle text-white float-right"
+                                  aria-controls="atendimentos" style="background: none">
+                                  <i class="fa fa-sliders-h"></i>
+                                  <span class="caret"></span>
+                                </button>  
+                                <ul id="atendimentos" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-basic">                
+                                  <li role="menuitem" *ngFor="let item of domains[0]?.periodos" [value]="item.id" 
+                                  (click)="carregaDashboardAtendimento(item)">
+                                    <div class="dropdown-item">{{item.nome}}</div>
+                                  </li>
+                                </ul> 
+                              </div>  
+                              <div class="text-value text-left h4"><label>{{objectAtendimento.qtdTotal}}</label></div>
+                              <div class="text-left medium">Atendimentos realizados nos <label style="font-weight:bold;">{{objectAtendimento.periodoNome}}</label>
+                              </div>
+                              <br/>
+                              <canvas baseChart height="80" [datasets]="lineChartDataAtendimento" [labels]="lineChartLabelsAtendimento"
+                                [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend"
+                                [chartType]="lineChartType" (chartHover)="chartHovered($event)"
+                                (chartClick)="chartClicked($event)"></canvas>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>              
             </div>
           </div>
         </div>
       </tab>
       <tab>
-        <ng-template tabHeading>
+        <ng-template tabHeading  select="tabSelected()">
           <i class="fa fa-archive" title="Principal"></i>   Atendimentos
         </ng-template>
         <div class="card mb-4">
@@ -343,7 +599,7 @@
         </div>
       </tab>
       <tab>
-        <ng-template tabHeading>
+        <ng-template tabHeading  select="tabSelected()">
           <i class="fa fa-file-medical-alt" title="Principal"></i>   Medicamentos
         </ng-template>
         <div class="card mb-4">
@@ -426,7 +682,7 @@
         </div>
       </tab>
       <tab>
-        <ng-template tabHeading>
+        <ng-template tabHeading  select="tabSelected()">
           <i class="fa fa-folder" title="Principal"></i>   Fichas de atendimento
         </ng-template>
         <div class="card mb-4">
@@ -472,7 +728,7 @@
         </div>
       </tab>
       <tab>
-        <ng-template tabHeading>
+        <ng-template tabHeading  select="tabSelected()">
           <i class="fa fa-check-square" title="Principal"></i>   Exames
         </ng-template>
         <div class="card mb-4">
@@ -516,7 +772,7 @@
         </div>
       </tab>
       <tab>
-        <ng-template tabHeading>
+        <ng-template tabHeading  select="tabSelected()">
           <i class="fa fa-medkit" title="Principal"></i>   Hipótese diagnosticada
         </ng-template>
         <div class="card mb-4">

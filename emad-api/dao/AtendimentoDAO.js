@@ -328,6 +328,28 @@ AtendimentoDAO.prototype.buscaPorPacienteIdProntuario = async function (idPacien
     return response;
 }
 
+
+AtendimentoDAO.prototype.buscaSinaisVitaisPorPacienteId = async function (idPaciente, tipo) {    
+    var where = "";
+    
+    if(tipo == 'pressaoArterial')
+        where = " and a.pressaoArterial is not null and a.pressaoArterial <> ''  ";     
+    else if(tipo == 'pulso')
+        where = " and a.pulso is not null and a.pulso <> ''  ";     
+    else if(tipo == 'saturacao')
+        where = " and a.saturacao is not null and a.saturacao <> ''  ";     
+    else if(tipo == 'temperatura')
+        where = " and a.temperatura is not null and a.temperatura <> ''  ";     
+    else if(tipo == 'peso')
+        where = " and a.peso is not null and a.peso <> ''  ";     
+
+    const response =  await this._connection.query(`select a.id, a.pressaoArterial, a.pulso, a.saturacao, a.temperatura, a.peso, a.dataCriacao,
+    DATE_FORMAT(a.dataCriacao,'%d/%m/%Y') as label
+    from tb_atendimento a     
+    WHERE a.idPaciente = ? ${where} order by a.id desc`, idPaciente); 
+    return response;
+}
+
 AtendimentoDAO.prototype.salva = function(objeto,callback) {
     this._connection.query("INSERT INTO "+this._table+" SET ?", objeto, callback);
 }

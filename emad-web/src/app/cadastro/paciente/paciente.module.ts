@@ -20,6 +20,7 @@ import { ProntuarioPacienteFormComponent } from "./prontuario-paciente/prontuari
 import { AppSelectModule } from "../../_core/_components/app-select/app-select.module";
 import { AppSelectModalModule } from "../../_core/_components/app-select-modal/app-select-modal.module";
 import { AppImageCropperUploadModule } from "../../_core/_components/app-image-cropper-upload/app-image-cropper-upload.module";
+import { ChartsModule } from "ng2-charts";
 
 @NgModule({
     imports: [
@@ -42,7 +43,8 @@ import { AppImageCropperUploadModule } from "../../_core/_components/app-image-c
         TabsModule.forRoot(),
         AppSelectModule,
         AppSelectModalModule,
-        AppImageCropperUploadModule
+        AppImageCropperUploadModule,
+        ChartsModule
     ],
     declarations: [
         PacienteComponent,

@@ -8,6 +8,7 @@ import { environment } from '../../../../environments/environment';
 import { PacienteHipotese } from '../../../_core/_models/PacienteHipotese';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ReciboReceitaImpressaoService } from '../../../shared/services/recibo-receita-impressao.service';
+import { MainChartLine } from '../../../_core/_models/MainChart';
 
 @Component({
   selector: 'app-prontuario-paciente-form',
@@ -32,6 +33,11 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   dropdownSettings = {};
   allItemsHipotese: any[] = [];
   allItemsAtendimentos: any[] = [];
+  allItemsSinaisVitaisPressaoArterial: any[] = [];
+  allItemsSinaisVitaisPulso: any[] = [];
+  allItemsSinaisVitaisSaturacao: any[] = [];
+  allItemsSinaisVitaisTemperatura: any[] = [];
+  allItemsSinaisVitaisPeso: any[] = [];  
   allItemsFichas: any[] = [];
   allItemsExames: any[] = [];  
   allItemsReceita: any[] = [];
@@ -40,8 +46,29 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
   modalRef: NgbModalRef = null;
   loadPhoto: boolean = false;
+  totalPressaoArterial: number;
 
   @ViewChild('addresstext') addresstext: ElementRef;
+ 
+  objectMedicamento: MainChartLine = new MainChartLine();   
+
+  public lineChartDataMedicamento: Array<any> = [ { data: [] } ];
+  public lineChartLabelsMedicamento: Array<any> = [];
+  public lineChartLegend: boolean = false;
+  public lineChartType: string = 'line';  
+
+
+
+
+    
+  objectAtendimento: MainChartLine = new MainChartLine();  
+  objectTipoAtendimento: MainChartLine = new MainChartLine();    
+  objectAtendimentoSituacao: MainChartLine = new MainChartLine();   
+
+  public lineChartDataAtendimento: Array<any> = [ { data: [] } ];
+  public lineChartLabelsAtendimento: Array<any> = [];
+  public lineChartDataTipoAtendimento: Array<any> = [ { data: [] } ];
+  public lineChartLabelsTipoAtendimento: Array<any> = [];
 
   constructor(
     private service: PacienteService,
@@ -140,6 +167,8 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       this.carregaNaturalidade();
       this.findHipotesePorPaciente();
       this.findAtendimentoPorPaciente();
+      this.findSinaisVitaisPorPaciente();
+      this.carregaDashboardAtendimento(null);
       this.findFichasPorPaciente();
       this.findExamesPorPaciente();
       this.findReceitaPorPaciente();
@@ -151,6 +180,12 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       this.errors.push({
         message: "Paciente não encontrado"
       });
+    });
+  }
+
+  tabSelected(e: any){
+    this.errors.push({
+      message: "Paciente não encontrado"
     });
   }
 
@@ -244,6 +279,97 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     });
   }
 
+  carregaDashboardAtendimento(item) {    
+    this.loading = true;
+    this.objectAtendimento.periodo = item ? item.id : 7;    
+    this.objectAtendimento.periodoNome = item ? item.nome : 'Últimos 7 dias';    
+    this.lineChartDataAtendimento = [ { data: [] }];    
+
+    this.objectAtendimento.qtdTotal = 3;
+    this.objectTipoAtendimento.qtdTotal = 2;
+
+    this.service.findSinaisVitaisByPaciente(this.object.id, 'pressaoArterial').subscribe(result => {                    
+      var labels = [];
+      for(var item in result){        
+        labels.push(result[item].label);
+      } 
+      this.lineChartLabelsAtendimento = labels;
+
+      var data = [];
+      for(var item in result){        
+        data.push(result[item].pressaoArterial);
+      } 
+      this.lineChartDataAtendimento[0].data = data;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    }); 
+  }
+
+
+  findSinaisVitaisPorPaciente() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.lineChartDataMedicamento = [ { data: [] }];    
+
+    this.service.findSinaisVitaisByPaciente(this.object.id, 'pressaoArterial').subscribe(result => {
+       this.allItemsSinaisVitaisPressaoArterial = result;
+
+       this.totalPressaoArterial = this.allItemsSinaisVitaisPressaoArterial.length;
+
+       var labels = [];
+        for(var item in result){        
+          labels.push(result[item].label);
+        } 
+        this.lineChartLabelsMedicamento = labels;
+  
+        var data = [];
+        for(var item in result){        
+          data.push(result[item].pressaoArterial);
+        } 
+        this.lineChartDataMedicamento[0].data = data;
+
+
+       this.service.findSinaisVitaisByPaciente(this.object.id, 'pulso').subscribe(result => {
+            this.allItemsSinaisVitaisPulso = result;
+
+            this.service.findSinaisVitaisByPaciente(this.object.id, 'saturacao').subscribe(result => {
+              this.allItemsSinaisVitaisSaturacao = result;
+
+              this.service.findSinaisVitaisByPaciente(this.object.id, 'temperatura').subscribe(result => {
+                this.allItemsSinaisVitaisTemperatura = result;
+
+                this.service.findSinaisVitaisByPaciente(this.object.id, 'peso').subscribe(result => {
+                  this.allItemsSinaisVitaisPeso = result;
+    
+              }, error => {
+                  this.loading = false;
+                  this.errors = Util.customHTTPResponse(error);
+              });
+  
+            }, error => {
+                this.loading = false;
+                this.errors = Util.customHTTPResponse(error);
+            });
+
+          }, error => {
+              this.loading = false;
+              this.errors = Util.customHTTPResponse(error);
+          });
+
+        }, error => {
+            this.loading = false;
+            this.errors = Util.customHTTPResponse(error);
+        });
+
+    }, error => {
+       this.loading = false;
+       this.errors = Util.customHTTPResponse(error);
+    });
+  }  
+
   findFichasPorPaciente() {
     this.message = "";
     this.errors = [];
@@ -318,5 +444,62 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
   abreReceitaMedica(ano_receita: number, numero_receita: number, unidade_receita: number) {
     this.reciboReceitaService.imprimir(ano_receita, unidade_receita, numero_receita, true);
+  }
+
+  public lineChartOptions: any = {
+    responsive: true,
+    layout: {
+      padding: {
+        left: 5,
+        right: 5,
+        top: 0,
+        bottom: 3
+      }
+    },
+    legend: {
+      display: false,
+      labels: {
+        display: false
+      }
+    },
+    title: {
+      display: false,
+      text: 'Custom Chart Title'
+    },
+    scales: {
+      xAxes: [{
+        display: false
+      }],
+      yAxes: [{
+        display: false
+      }]
+    }
+  };
+
+  public lineChartColors: Array<any> = this.renderBgChart('rgba(0, 0, 0, 0)', 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', '#fff', '#B4B4B4', 'rgba(255,255,255,0.8)');
+  public lineChartColors2: Array<any> = this.renderBgChart('rgba(0, 0, 0, 0)', 'rgba(219,219,219,1)', 'rgba(219,219,219,1)', '#00929c', 'rgb(77, 111, 160,1)', 'rgba(46,79,143,0.8)');
+  
+  // events
+  public chartClicked(e: any): void {
+    console.log(e);
+  }
+
+  public chartHovered(e: any): void {
+    console.log(e);
+  }
+
+  public renderBgChart(bg, border, pointBg, pointBorder, pointHoverBg, pointHoverBorder) {
+    let lineChartColors: Array<any> = [
+      { // grey
+        backgroundColor: bg ? bg : 'rgba(0, 0, 0, 0)',
+        borderColor: border ? border : 'rgba(255,255,255,0.2)',
+        pointBackgroundColor: pointBg ? pointBg : 'rgba(255,255,255,1)',
+        pointBorderColor: pointBorder ? pointBorder : '#fff',
+        pointHoverBackgroundColor: pointHoverBg ? pointHoverBg : '#fff',
+        pointHoverBorderColor: pointHoverBorder ? pointHoverBorder : 'rgba(255,255,255,0.8)'
+      }
+    ];
+
+    return lineChartColors;
   }
 }

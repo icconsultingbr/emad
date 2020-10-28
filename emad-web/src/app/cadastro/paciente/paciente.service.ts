@@ -409,4 +409,20 @@ export class PacienteService extends GenericsService {
   removeHipotese(params: any) {
     return this.http.delete('atendimento-hipotese/' + params);
   }
+
+  findSinaisVitaisByPaciente(id: any, tipo: any): Observable<any> {
+    return this.http.get("atendimento/prontuario-paciente/paciente/" + id + "/sinais-vitais/" + tipo);
+  }
+    
+  carregaQtdAtendimentosPorPeriodo(periodo: number): Observable<any> {
+    return this.http.get("atendimentos-quantidade?periodo="
+      + periodo + "&idEstabelecimento="
+      + JSON.parse(localStorage.getItem("est"))[0].id);
+  }
+
+  carregaAtendimentosPorPeriodo(periodo: number): Observable<any> {
+    return this.http.get("atendimentos-por-periodo?periodo="
+      + periodo + "&idEstabelecimento="
+      + JSON.parse(localStorage.getItem("est"))[0].id);
+  }
 }
