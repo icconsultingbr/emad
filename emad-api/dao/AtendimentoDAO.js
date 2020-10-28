@@ -346,7 +346,7 @@ AtendimentoDAO.prototype.buscaSinaisVitaisPorPacienteId = async function (idPaci
     const response =  await this._connection.query(`select a.id, a.pressaoArterial, a.pulso, a.saturacao, a.temperatura, a.peso, a.dataCriacao,
     DATE_FORMAT(a.dataCriacao,'%d/%m/%Y') as label
     from tb_atendimento a     
-    WHERE a.idPaciente = ? ${where} order by a.id desc`, idPaciente); 
+    WHERE a.idPaciente = ? ${where} order by a.dataCriacao asc`, idPaciente); 
     return response;
 }
 

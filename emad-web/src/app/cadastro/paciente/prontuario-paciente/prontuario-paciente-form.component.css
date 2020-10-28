@@ -7,6 +7,10 @@
     height: 25px;
     border: none;
 }
+::ng-deep .modal-gg .modal-dialog{
+    max-width: 1200px;
+    min-width: 1200px;
+}
 
 
 

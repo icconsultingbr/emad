@@ -530,9 +530,10 @@
                       <td class="text-secondary">{{item.situacaoNome}}</td>
                       <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
                       <td class="text-secondary">
-                        <a class="btn btn-link" (click)="visualizaAtendimentos(item.id)">
-                          <i class="fa fa-file-medical-alt"></i> Visualizar atendimento
-                        </a>
+                        <button class="btn btn-primary" title="Visualizar atendimento"
+                          type="button" (click)="openHistorico(contentAtendimentoHistorico, item.id)">
+                          <i class="fa fa-search"></i>
+                        </button>
                       </td>
                     </tr>
                   </tbody>
@@ -659,9 +660,10 @@
                       <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
                       <td class="text-secondary">{{item.estabelecimentoNome}}</td>
                       <td class="text-secondary">
-                        <button type="button" class="btn btn-primary float-left" (click)="visualizaAtendimentos(item.id)" title="Visualizar atendimento">
-                            <i class="fa fa-file-medical-alt"></i>
-                          </button>
+                        <button class="btn btn-primary" title="Visualizar atendimento"
+                          type="button" (click)="openHistorico(contentAtendimentoHistorico, item.id)">
+                          <i class="fa fa-search"></i>
+                        </button>
                       </td>
                     </tr>
                   </tbody>
@@ -703,9 +705,10 @@
                       <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
                       <td class="text-secondary">{{item.estabelecimentoNome}}</td>
                       <td class="text-secondary">
-                        <button type="button" class="btn btn-primary float-left" (click)="visualizaAtendimentos(item.id)" title="Visualizar atendimento">
-                            <i class="fa fa-file-medical-alt"></i>
-                          </button>
+                        <button class="btn btn-primary" title="Visualizar atendimento"
+                          type="button" (click)="openHistorico(contentAtendimentoHistorico, item.id)">
+                          <i class="fa fa-search"></i>
+                        </button>
                       </td>
                     </tr>
                   </tbody>
@@ -742,10 +745,11 @@
                       <td class="text-secondary">{{item.nome}}</td>
                       <td class="text-secondary">{{item.cid_10}}</td>                      
                       <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
-                      <td class="text-secondary">
-                        <a class="btn btn-link" *ngIf="item.idAtendimento" [routerLink]="" (click)="visualizaAtendimentos(item.idAtendimento)">
-                          <i class="fa fa-file-medical-alt"></i> Visualizar atendimento
-                        </a>
+                      <td class="text-secondary">                       
+                        <button class="btn btn-primary" *ngIf="item.idAtendimento" title="Visualizar atendimento"
+                          type="button" (click)="openHistorico(contentAtendimentoHistorico, item.idAtendimento)">
+                          <i class="fa fa-search"></i>
+                        </button>
                       </td>
                     </tr>
                   </tbody>
@@ -772,3 +776,360 @@
     </tabset>
   </div>
 </form>
+
+<ng-template #contentAtendimentoHistorico>
+  <div class="modal-header">
+    <div class="row">
+      <div class="col-xl-12">
+        <h4 class="modal-title text-left">Atendimento {{objectHistorico.id}}</h4>
+      </div>
+    </div>
+    <button type="button" class="close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="formHistorico" *ngIf="objectHistorico">
+      <div class="card mb-4">
+        <div class="card-header text-left">
+          Dados da abertura do atendimento
+        </div>
+        <div class="card-body text-left">
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="form-group row">
+                <label class="col-xl-2 col-form-label text-left">
+                  Tipo de atendimento<span class="text-danger font-weight-bold"> *</span>
+                </label>
+                <div class="col-xl-4">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="objectHistorico.tipoFicha" formControlName="tipoFicha">
+                        <option [value]="null">Selecione...</option>
+                        <option *ngFor="let item of domains[0]?.tipoFichas" [value]="item.id">{{item.nome}}</option>
+                    </select>
+                </div>
+                <label class="col-xl-2 col-form-label text-left">
+                  Classificação de risco<span class="text-danger font-weight-bold"> *</span>
+                </label>
+                <div class="col-xl-4">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="objectHistorico.idClassificacaoRisco" formControlName="idClassificacaoRisco">
+                        <option [value]="null">Selecione...</option>
+                        <option *ngFor="let item of domains[0]?.classificacaoRiscos" [value]="item.id">{{item.nome}}</option>
+                    </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="form-group row">
+                <label class="col-xl-2 col-form-label text-left">
+                  Motivo da queixa<span class="text-danger font-weight-bold"></span>
+                </label>
+                <div class="col-xl-10">
+                  <textarea rows="4" class="form-control has-error" [(ngModel)]="objectHistorico.motivoQueixa"
+                    formControlName="motivoQueixa" [readonly]="disableFields()"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header text-left">
+          Sinais vitais
+        </div>
+        <div class="card-body text-left">
+          <div class="row">
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Pressão arterial
+                </label>
+                <div class="col-xl-8">
+                  <input type="text"  class="form-control has-error" [(ngModel)]="objectHistorico.pressaoArterial" formControlName="pressaoArterial" [readonly]="disableFields()"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Pulso
+                </label>
+                <div class="col-xl-8">
+                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.pulso" formControlName="pulso" [readonly]="disableFields()"
+                  currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Saturação 02
+                </label>
+                <div class="col-xl-8">
+                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.saturacao"
+                    formControlName="saturacao" [readonly]="disableFields()"
+                    currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Temperatura
+                </label>
+                <div class="col-xl-8">
+                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.temperatura"
+                    formControlName="temperatura" [readonly]="disableFields()"
+                    currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Altura
+                </label>
+                <div class="col-xl-8">
+                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.altura" formControlName="altura" [readonly]="disableFields()"
+                  currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }" />
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Peso
+                </label>
+                <div class="col-xl-8">
+                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.peso" formControlName="peso" [readonly]="disableFields()"
+                  currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header text-left">
+          Análise física
+        </div>
+        <div class="card-body text-left">
+          <div class="row">
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Exame físico
+                </label>
+                <div class="col-xl-8">
+                  <textarea rows="4" class="form-control has-error" [(ngModel)]="objectHistorico.exameFisico"
+                    formControlName="exameFisico" [readonly]="disableFields()"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Observações gerais
+                </label>
+                <div class="col-xl-8">
+                  <textarea rows="4" class="form-control has-error" [(ngModel)]="objectHistorico.observacoesGerais"
+                    formControlName="observacoesGerais" [readonly]="disableFields()"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header text-left">
+          Histórico
+        </div>
+        <div class="card-body text-left">
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="form-group row">
+                <label class="col-xl-2 col-form-label text-left">
+                  História progressa/familiar
+                </label>
+                <div class="col-xl-10">
+                  <textarea rows="3" class="form-control has-error" [(ngModel)]="objectHistorico.pacienteHistoriaProgressa"
+                  formControlName="pacienteHistoriaProgressa" [readonly]="disableFields()"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header text-left">
+          Anamnese/Evolução
+        </div>
+        <div class="card-body text-left">
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="form-group row">
+                <label class="col-xl-2 col-form-label text-left">
+                  Tipo<span class="text-danger font-weight-bold"> *</span>
+                </label>
+                <div class="col-xl-10">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="objectHistorico.tipoHistoriaClinica" formControlName="tipoHistoriaClinica">
+                        <option [value]="0">Selecione...</option>
+                        <option *ngFor="let item of domains[0]?.tipoHistoriaClinica" [value]="item.id">{{item.nome}}</option>
+                    </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="form-group row">
+                <label class="col-xl-2 col-form-label text-left">
+                Descrição<span class="text-danger font-weight-bold"> *</span>
+                </label>
+                <div class="col-xl-10">
+                  <textarea rows="4" class="form-control has-error" [(ngModel)]="objectHistorico.historicoClinico"
+                    formControlName="historicoClinico" [readonly]="disableFields()"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header text-left">
+          Hipótese diagnostica
+        </div>
+        <div class="card-body text-left">
+          <div class="row">
+            <div class="col-12 table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Diagnóstico</th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="allItemsHipoteseHistorico.length">
+                  <tr class="text-left" *ngFor="let item of allItemsHipoteseHistorico">
+                    <td class="text-secondary">{{item.codigo}}</td>
+                    <td class="text-secondary">{{item.nome}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header text-left">
+          Prescrição Medicamentos
+        </div>
+        <div class="card-body text-left">
+          <div class="row">
+            <div class="col-12 table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Medicamento</th>
+                    <th>Uso</th>
+                    <th>Tipo via</th>
+                    <th>Quantidade</th>
+                    <th>Apresentação</th>
+                    <th>Posologia</th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="allItemsMedicamentoHistorico.length">
+                    <tr class="text-left" *ngFor="let item of allItemsMedicamentoHistorico">
+                      <td class="text-secondary">{{item.descricaoMaterial}}</td>
+                      <td class="text-secondary">{{item.uso}}</td>
+                      <td class="text-secondary">{{item.tipoVia}}</td>
+                      <td class="text-secondary">{{item.quantidade}}</td>
+                      <td class="text-secondary">{{item.apresentacao}}</td>
+                      <td class="text-secondary">{{item.posologia}}</td>
+                    </tr>
+                  </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header text-left">
+          Encaminhamento
+        </div>
+        <div class="card-body text-left">
+          <div class="row">
+            <div class="col-12 table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Especialidade</th>
+                    <th>Motivo</th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="allItemsEncaminhamentoHistorico.length">
+                  <tr class="text-left" *ngFor="let item of allItemsEncaminhamentoHistorico">
+                    <td class="text-secondary">{{item.nome}}</td>
+                    <td class="text-secondary">{{item.motivo}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-body text-left">
+          <div class="row">
+            <div class="col-xl-5">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Situação<span class="text-danger font-weight-bold"> *</span>
+                </label>
+                <div class="col-xl-8">
+                  <select class="custom-select d-block w-100" [(ngModel)]="objectHistorico.situacao" formControlName="situacao" disabled>
+                    <option [value]="null">Selecione...</option>
+                    <option value="0">Sala de espera</option>
+                    <option value="C">Em aberto</option>
+                    <option value="2">Concluído</option>
+                    <option value="A">Alta</option>
+                    <option value="E">Evasão</option>
+                    <option value="5">Transferência hospitalar/ambulatório</option>
+                    <option value="6">Transferência unidade prisional</option>
+                    <option value="7">Desinternação</option>
+                    <option value="8">Álvara de soltura</option>
+                    <option value="O">Óbito</option>
+                    <option value="X">Cancelado</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6" *ngIf="objectHistorico.situacao == 'X'">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Motivo cancelamento
+                </label>
+                <div class="col-xl-8">
+                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.motivoCancelamento" formControlName="motivoCancelamento" [readonly]="true"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </form>
+  </div>
+</ng-template>

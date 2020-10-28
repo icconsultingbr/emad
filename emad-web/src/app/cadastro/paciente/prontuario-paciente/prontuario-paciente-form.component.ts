@@ -9,6 +9,8 @@ import { PacienteHipotese } from '../../../_core/_models/PacienteHipotese';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ReciboReceitaImpressaoService } from '../../../shared/services/recibo-receita-impressao.service';
 import { MainChartLine } from '../../../_core/_models/MainChart';
+import { AtendimentoService } from '../../../operacao/atendimento/atendimento.service';
+import { Atendimento } from '../../../_core/_models/Atendimento';
 
 @Component({
   selector: 'app-prontuario-paciente-form',
@@ -18,10 +20,14 @@ import { MainChartLine } from '../../../_core/_models/MainChart';
 })
 export class ProntuarioPacienteFormComponent implements OnInit {
   object: Paciente = new Paciente();
+  objectHistorico: Atendimento = new Atendimento();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
   method: string = 'paciente';
   fields = [];
   label: string = "Paciente";
+  formHistorico: FormGroup;
+  formHipotese: FormGroup;
+  formMedicamento: FormGroup;
   id: number = null;
   domains: any[] = [];
   form: FormGroup;
@@ -32,6 +38,9 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   selectedItems = [];
   dropdownSettings = {};
   allItemsHipotese: any[] = [];
+  allItemsMedicamentoHistorico: any[] = [];
+  allItemsEncaminhamentoHistorico: any[] = [];
+  allItemsHipoteseHistorico: any[] = [];
   allItemsAtendimentos: any[] = [];
   allItemsSinaisVitaisPressaoArterial: any[] = [];
   allItemsSinaisVitaisPulso: any[] = [];
@@ -88,8 +97,11 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
   constructor(
     private service: PacienteService,
+    private atendimentoService: AtendimentoService,
     private route: ActivatedRoute,
     private fb: FormBuilder,
+    private fbHipotese: FormBuilder,
+    private fbMedicamento: FormBuilder,
     private ref: ChangeDetectorRef,
     private modalService: NgbModal,
     private reciboReceitaService: ReciboReceitaImpressaoService,
@@ -114,53 +126,62 @@ export class ProntuarioPacienteFormComponent implements OnInit {
             this.service.listDomains('raca').subscribe(racas => {
               this.service.listDomains('hipotese-diagnostica').subscribe(hipoteseDiagnostica => {
                 this.service.listDomains('atencao-continuada').subscribe(atencaoContinuada => {
-                  this.domains.push({
-                    idUf: ufs,
-                    idNacionalidade: paises,
-                    idNaturalidade: [],
-                    idMunicipio: [],
-                    hipoteses: hipoteseDiagnostica,
-                    idEstabelecimentoCadastro: estabelecimentos,
-                    escolaridade: [
-                      { id: 1, nome: "Educação infantil" },
-                      { id: 2, nome: "Fundamental" },
-                      { id: 3, nome: "Médio" },
-                      { id: 4, nome: "Superior (Graduação)" },
-                      { id: 5, nome: "Pós-graduação" },
-                      { id: 6, nome: "Mestrado" },
-                      { id: 7, nome: "Doutorado" },
-                      { id: 8, nome: "Escola" },
-                      { id: 9, nome: "Analfabeto" },
-                      { id: 10, nome: "Não informado" }
-                    ],
-                    idModalidade: modalidades,
-                    sexo: [
-                      { id: "1", nome: "Masculino" },
-                      { id: "2", nome: "Feminino" },
-                      { id: "3", nome: "Ambos" },
-                      { id: "4", nome: "Não informado" }
-                    ],
-                    idTipoSanguineo: [
-                      { id: "1", nome: "A_POSITIVO" },
-                      { id: "2", nome: "A_NEGATIVO" },
-                      { id: "3", nome: "B_POSITIVO" },
-                      { id: "4", nome: "B_NEGATIVO" },
-                      { id: "5", nome: "AB_POSITIVO" },
-                      { id: "6", nome: "AB_NEGATIVO" },
-                      { id: "7", nome: "O_POSITIVO" },
-                      { id: "8", nome: "O_NEGATIVO" },
-                    ],
-                    idRaca: racas,
-                    idAtencaoContinuada: atencaoContinuada,
-                    gruposAtencaoContinuada: atencaoContinuada,
+                  this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {
+                    this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {
+                      this.domains.push({
+                        idUf: ufs,
+                        idNacionalidade: paises,
+                        idNaturalidade: [],
+                        idMunicipio: [],
+                        hipoteses: hipoteseDiagnostica,
+                        idEstabelecimentoCadastro: estabelecimentos,
+                        tipoFichas: tipoFichas,
+                        classificacaoRiscos: classificacaoRiscos,
+                        tipoHistoriaClinica: [
+                          { id: 1, nome: "Anamnese" },
+                          { id: 2, nome: "Evolução" }],
+                        escolaridade: [
+                          { id: 1, nome: "Educação infantil" },
+                          { id: 2, nome: "Fundamental" },
+                          { id: 3, nome: "Médio" },
+                          { id: 4, nome: "Superior (Graduação)" },
+                          { id: 5, nome: "Pós-graduação" },
+                          { id: 6, nome: "Mestrado" },
+                          { id: 7, nome: "Doutorado" },
+                          { id: 8, nome: "Escola" },
+                          { id: 9, nome: "Analfabeto" },
+                          { id: 10, nome: "Não informado" }
+                        ],
+                        idModalidade: modalidades,
+                        sexo: [
+                          { id: "1", nome: "Masculino" },
+                          { id: "2", nome: "Feminino" },
+                          { id: "3", nome: "Ambos" },
+                          { id: "4", nome: "Não informado" }
+                        ],
+                        idTipoSanguineo: [
+                          { id: "1", nome: "A_POSITIVO" },
+                          { id: "2", nome: "A_NEGATIVO" },
+                          { id: "3", nome: "B_POSITIVO" },
+                          { id: "4", nome: "B_NEGATIVO" },
+                          { id: "5", nome: "AB_POSITIVO" },
+                          { id: "6", nome: "AB_NEGATIVO" },
+                          { id: "7", nome: "O_POSITIVO" },
+                          { id: "8", nome: "O_NEGATIVO" },
+                        ],
+                        idRaca: racas,
+                        idAtencaoContinuada: atencaoContinuada,
+                        gruposAtencaoContinuada: atencaoContinuada,
+                      });
+                      if (!Util.isEmpty(this.id)) {
+                        this.encontraPaciente();
+                      }
+                      else{
+                        this.loading = false;
+                        this.loadPhoto = true;
+                      }
+                    });
                   });
-                  if (!Util.isEmpty(this.id)) {
-                    this.encontraPaciente();
-                  }
-                  else{
-                    this.loading = false;
-                    this.loadPhoto = true;
-                  }
                 });
               });
             });
@@ -330,18 +351,18 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.lineChartDataPeso = [ { data: [] }];    
 
     this.service.findSinaisVitaisByPaciente(this.object.id, 'pressaoArterial').subscribe(result => {
-       this.allItemsSinaisVitaisPressaoArterial = result;
-       this.totalPressaoArterial = this.allItemsSinaisVitaisPressaoArterial.length;
-       var labels = [];
-        for(var item in result){        
-          labels.push(result[item].label);
-        } 
-        this.lineChartLabelsPressaoArterial = labels;  
-        var data = [];
-        for(var item in result){        
-          data.push(result[item].pressaoArterial);
-        } 
-        this.lineChartDataPressaoArterial[0].data = data;
+        this.allItemsSinaisVitaisPressaoArterial = result;
+      //  this.totalPressaoArterial = this.allItemsSinaisVitaisPressaoArterial.length;
+      //  var labels = [];
+      //   for(var item in result){        
+      //     labels.push(result[item].label);
+      //   } 
+      //   this.lineChartLabelsPressaoArterial = labels;  
+      //   var data = [];
+      //   for(var item in result){        
+      //     data.push(result[item].pressaoArterial);
+      //   } 
+      //   this.lineChartDataPressaoArterial[0].data = data;
 
        this.service.findSinaisVitaisByPaciente(this.object.id, 'pulso').subscribe(result => {
             this.allItemsSinaisVitaisPulso = result;
@@ -499,6 +520,128 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
   abreReceitaMedica(ano_receita: number, numero_receita: number, unidade_receita: number) {
     this.reciboReceitaService.imprimir(ano_receita, unidade_receita, numero_receita, true);
+  }
+
+  openHistorico(content: any, idHistorico: number) {
+    this.createGroupHistorico();
+    this.encontraAtendimentoHistorico(idHistorico);
+    this.modalRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      windowClass: 'modal-gg'
+    });
+  }
+
+  encontraAtendimentoHistorico(idAtendimento: number) {
+    this.object.id = this.id;
+    this.errors = [];
+    this.message = "";
+
+    if (idAtendimento) {
+      this.loading = true; 
+      this.atendimentoService.findById(idAtendimento, "atendimento").subscribe(result => {
+      this.objectHistorico = result;
+      this.objectHistorico.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
+      this.loading = false;
+      this.findHipotesePorAtendimento(idAtendimento);
+      this.findEncaminhamentoPorAtendimento(idAtendimento);
+      this.findMedicamentoPorAtendimento(idAtendimento);                  
+    }, error => {
+      this.loading = false;
+      this.close();
+      this.errors.push({
+        message: "Atendimento histórico não encontrado"
+      });                                         
+    });      
+    }
+  }
+
+  disableFields(): boolean {
+    if (!this.object) {
+      return true;
+    } else {
+      if (Util.isEmpty(this.objectHistorico.dataFinalizacao) && Util.isEmpty(this.objectHistorico.dataCancelamento)) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
+
+  findHipotesePorAtendimento(idAtendimento: number) {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.atendimentoService.findHipoteseByAtendimento(idAtendimento).subscribe(result => {
+      this.allItemsHipoteseHistorico = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+  
+  findEncaminhamentoPorAtendimento(idAtendimento: number) {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.atendimentoService.findEncaminhamentoByAtendimento(idAtendimento).subscribe(result => {
+      this.allItemsEncaminhamentoHistorico = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+
+  findMedicamentoPorAtendimento(idAtendimento: number) {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.atendimentoService.findMedicamentoByAtendimento(idAtendimento).subscribe(result => {
+      this.allItemsMedicamentoHistorico = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+
+
+  createGroupHistorico() {
+    this.formHistorico = this.fb.group({
+      pacienteHistoriaProgressa: new FormControl({ value: '', disabled: true }),
+      pressaoArterial: new FormControl({ value: '', disabled: true }),
+      pulso: new FormControl({ value: '', disabled: true }),
+      saturacao: new FormControl({ value: '', disabled: true }),
+      temperatura: new FormControl({ value: '', disabled: true }),
+      altura: new FormControl({ value: '', disabled: true }),
+      peso: new FormControl({ value: '', disabled: true }),
+      historicoClinico: new FormControl({ value: '', disabled: true }),
+      exameFisico: new FormControl({ value: '', disabled: true }),
+      observacoesGerais: new FormControl({ value: '', disabled: true }),
+      situacao: new FormControl({ value: '', disabled: true }),
+      motivoCancelamento: new FormControl({ value: '', disabled: true }),
+      tipoFicha: new FormControl({ value: '', disabled: true }),
+      idClassificacaoRisco: new FormControl({ value: '', disabled: true }),
+      motivoQueixa: new FormControl({ value: '', disabled: true }),
+      tipoHistoriaClinica: new FormControl({ value: '', disabled: true }),
+    });
+
+    this.formHipotese = this.fbHipotese.group({
+      idPaciente: [Validators.required],
+      idHipoteseDiagnostica: [Validators.required]
+    });
+
+    this.formMedicamento = this.fbMedicamento.group({
+      idPaciente: [Validators.required],
+      uso: [Validators.required],
+      tipoVia: [Validators.required],
+      quantidade: [Validators.required],
+      apresentacao: [Validators.required],
+      posologia: [Validators.required],
+    });
   }
 
   public lineChartOptions: any = {

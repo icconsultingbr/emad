@@ -21,6 +21,7 @@ import { AppSelectModule } from "../../_core/_components/app-select/app-select.m
 import { AppSelectModalModule } from "../../_core/_components/app-select-modal/app-select-modal.module";
 import { AppImageCropperUploadModule } from "../../_core/_components/app-image-cropper-upload/app-image-cropper-upload.module";
 import { ChartsModule } from "ng2-charts";
+import { AtendimentoService } from "../../operacao/atendimento/atendimento.service";
 
 @NgModule({
     imports: [
@@ -52,7 +53,8 @@ import { ChartsModule } from "ng2-charts";
         ProntuarioPacienteFormComponent
     ],
     providers: [
-        PacienteService
+        PacienteService,
+        AtendimentoService
     ]
 })
 export class PacienteModule {
