@@ -47,28 +47,44 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   modalRef: NgbModalRef = null;
   loadPhoto: boolean = false;
   totalPressaoArterial: number;
+  totalPulso: number;
+  totalSaturacao: number;
+  totalTemperatura: number;
+  totalPeso: number;
 
   @ViewChild('addresstext') addresstext: ElementRef;
  
-  objectMedicamento: MainChartLine = new MainChartLine();   
+  public lineChartDataPressaoArterial: Array<any> = [ { data: [] } ];
+  public lineChartLabelsPressaoArterial: Array<any> = [];
 
-  public lineChartDataMedicamento: Array<any> = [ { data: [] } ];
-  public lineChartLabelsMedicamento: Array<any> = [];
+  public lineChartDataPulso: Array<any> = [ { data: [] } ];
+  public lineChartLabelsPulso: Array<any> = [];
+
+  public lineChartDataSaturacao: Array<any> = [ { data: [] } ];
+  public lineChartLabelsSaturacao: Array<any> = [];
+
+  public lineChartDataTemperatura: Array<any> = [ { data: [] } ];
+  public lineChartLabelsTemperatura: Array<any> = [];
+
+  public lineChartDataPeso: Array<any> = [ { data: [] } ];
+  public lineChartLabelsPeso: Array<any> = [];
+  
+  public pieChartLabels = [];
+  public pieChartData = [];
+
   public lineChartLegend: boolean = false;
   public lineChartType: string = 'line';  
 
-
-
-
-    
-  objectAtendimento: MainChartLine = new MainChartLine();  
   objectTipoAtendimento: MainChartLine = new MainChartLine();    
-  objectAtendimentoSituacao: MainChartLine = new MainChartLine();   
+  objectAtendimentoSituacao: MainChartLine = new MainChartLine();    
+  
+  public barChartType: string = 'bar';
+  public barChartLegend: boolean = true;  
+  public barChartDataTipoAtendimento: any[] = [ { data: [], label: '' } ];
+  public barChartLabelsTipoAtendimento: string[] = [];
+  public barChartDataAtendimentoSituacao: any[] = [ { data: [], label: '' } ];
+  public barChartLabelsAtendimentoSituacao: string[] = [];
 
-  public lineChartDataAtendimento: Array<any> = [ { data: [] } ];
-  public lineChartLabelsAtendimento: Array<any> = [];
-  public lineChartDataTipoAtendimento: Array<any> = [ { data: [] } ];
-  public lineChartLabelsTipoAtendimento: Array<any> = [];
 
   constructor(
     private service: PacienteService,
@@ -165,13 +181,6 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       this.loadPhoto = true;
       this.loading = false;
       this.carregaNaturalidade();
-      this.findHipotesePorPaciente();
-      this.findAtendimentoPorPaciente();
-      this.findSinaisVitaisPorPaciente();
-      this.carregaDashboardAtendimento(null);
-      this.findFichasPorPaciente();
-      this.findExamesPorPaciente();
-      this.findReceitaPorPaciente();
     }, error => {
       this.object = new Paciente();
       this.loadPhoto = true;
@@ -183,12 +192,20 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     });
   }
 
-  tabSelected(e: any){
-    console.log('teste tab');
-    
-    this.errors.push({
-      message: "Paciente não encontrado"
-    });
+  tabSelected(tab: number){
+    if(tab == 3){//Sinais vitais
+      this.findSinaisVitaisPorPaciente();
+    }else if(tab == 4){//Atendimentos
+      this.findAtendimentoPorPaciente();
+    }else if(tab == 5){//Medicamentos      
+      this.findReceitaPorPaciente();
+    }else if(tab == 6){//Fichas de atendimentos
+      this.findFichasPorPaciente();
+    }else if(tab == 7){//Exames
+      this.findExamesPorPaciente();
+    }else if(tab == 8){//Hipótes diagnosticada
+      this.findHipotesePorPaciente();
+    }    
   }
 
   carregaNaturalidade() {
@@ -255,13 +272,33 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     });
   }
 
+ 
   findHipotesePorPaciente() {
     this.message = "";
     this.errors = [];
     this.loading = true;
     this.service.findHipoteseByPaciente(this.object.id).subscribe(result => {
        this.allItemsHipotese = result;
-       this.loading = false;
+
+       this.service.findHipoteseByPacienteAgrupado(this.object.id).subscribe(resultChart => {
+        var labels = [];
+        for(var itemLabel in resultChart){        
+          labels.push(resultChart[itemLabel].label);
+        }        
+        this.pieChartLabels =  labels;
+        var data = [];
+        for(var item in resultChart){        
+          data.push(resultChart[item].data);
+        } 
+        this.pieChartData = data;
+
+        this.ref.detectChanges();
+        this.loading = false;
+     }, error => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(error);
+     });
+
     }, error => {
        this.loading = false;
        this.errors = Util.customHTTPResponse(error);
@@ -281,70 +318,86 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     });
   }
 
-  carregaDashboardAtendimento(item) {    
-    this.loading = true;
-    this.objectAtendimento.periodo = item ? item.id : 7;    
-    this.objectAtendimento.periodoNome = item ? item.nome : 'Últimos 7 dias';    
-    this.lineChartDataAtendimento = [ { data: [] }];    
-
-    this.objectAtendimento.qtdTotal = 3;
-    this.objectTipoAtendimento.qtdTotal = 2;
-
-    this.service.findSinaisVitaisByPaciente(this.object.id, 'pressaoArterial').subscribe(result => {                    
-      var labels = [];
-      for(var item in result){        
-        labels.push(result[item].label);
-      } 
-      this.lineChartLabelsAtendimento = labels;
-
-      var data = [];
-      for(var item in result){        
-        data.push(result[item].pressaoArterial);
-      } 
-      this.lineChartDataAtendimento[0].data = data;
-      this.loading = false;
-    }, error => {
-      this.loading = false;
-      this.errors = Util.customHTTPResponse(error);
-    }); 
-  }
-
 
   findSinaisVitaisPorPaciente() {
     this.message = "";
     this.errors = [];
     this.loading = true;
-    this.lineChartDataMedicamento = [ { data: [] }];    
+    this.lineChartDataPressaoArterial = [ { data: [] }];    
+    this.lineChartDataPulso = [ { data: [] }];    
+    this.lineChartDataSaturacao = [ { data: [] }];    
+    this.lineChartDataTemperatura = [ { data: [] }];    
+    this.lineChartDataPeso = [ { data: [] }];    
 
     this.service.findSinaisVitaisByPaciente(this.object.id, 'pressaoArterial').subscribe(result => {
        this.allItemsSinaisVitaisPressaoArterial = result;
-
        this.totalPressaoArterial = this.allItemsSinaisVitaisPressaoArterial.length;
-
        var labels = [];
         for(var item in result){        
           labels.push(result[item].label);
         } 
-        this.lineChartLabelsMedicamento = labels;
-  
+        this.lineChartLabelsPressaoArterial = labels;  
         var data = [];
         for(var item in result){        
           data.push(result[item].pressaoArterial);
         } 
-        this.lineChartDataMedicamento[0].data = data;
-
+        this.lineChartDataPressaoArterial[0].data = data;
 
        this.service.findSinaisVitaisByPaciente(this.object.id, 'pulso').subscribe(result => {
             this.allItemsSinaisVitaisPulso = result;
+            this.totalPulso = this.allItemsSinaisVitaisPulso.length;
+            var labels = [];
+              for(var item in result){        
+                labels.push(result[item].label);
+              } 
+              this.lineChartLabelsPulso = labels;  
+              var data = [];
+              for(var item in result){        
+                data.push(result[item].pulso);
+              } 
+              this.lineChartDataPulso[0].data = data;
 
             this.service.findSinaisVitaisByPaciente(this.object.id, 'saturacao').subscribe(result => {
               this.allItemsSinaisVitaisSaturacao = result;
+              this.totalSaturacao = this.allItemsSinaisVitaisSaturacao.length;
+              var labels = [];
+                for(var item in result){        
+                  labels.push(result[item].label);
+                } 
+                this.lineChartLabelsSaturacao = labels;  
+                var data = [];
+                for(var item in result){        
+                  data.push(result[item].saturacao);
+                } 
+                this.lineChartDataSaturacao[0].data = data;
 
               this.service.findSinaisVitaisByPaciente(this.object.id, 'temperatura').subscribe(result => {
                 this.allItemsSinaisVitaisTemperatura = result;
+                this.totalTemperatura = this.allItemsSinaisVitaisTemperatura.length;
+                var labels = [];
+                  for(var item in result){        
+                    labels.push(result[item].label);
+                  } 
+                  this.lineChartLabelsTemperatura = labels;  
+                  var data = [];
+                  for(var item in result){        
+                    data.push(result[item].temperatura);
+                  } 
+                  this.lineChartDataTemperatura[0].data = data;
 
                 this.service.findSinaisVitaisByPaciente(this.object.id, 'peso').subscribe(result => {
                   this.allItemsSinaisVitaisPeso = result;
+                  this.totalPeso = this.allItemsSinaisVitaisPeso.length;
+                  var labels = [];
+                    for(var item in result){        
+                      labels.push(result[item].label);
+                    } 
+                    this.lineChartLabelsPeso = labels;  
+                    var data = [];
+                    for(var item in result){        
+                      data.push(result[item].peso);
+                    } 
+                    this.lineChartDataPeso[0].data = data;
     
               }, error => {
                   this.loading = false;
@@ -479,8 +532,9 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   };
 
   public lineChartColors: Array<any> = this.renderBgChart('rgba(0, 0, 0, 0)', 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', '#fff', '#B4B4B4', 'rgba(255,255,255,0.8)');
-  public lineChartColors2: Array<any> = this.renderBgChart('rgba(0, 0, 0, 0)', 'rgba(219,219,219,1)', 'rgba(219,219,219,1)', '#00929c', 'rgb(77, 111, 160,1)', 'rgba(46,79,143,0.8)');
-  
+  public lineChartColors2: Array<any> = this.renderBgChart('rgba(0, 0, 0, 0)', 'rgba(219,219,219,1)', 'rgba(219,219,219,1)', '#00929c', 'rgb(77, 111, 160,1)', 'rgba(46,79,143,0.8)');  
+  public pieChartType = 'pie';
+
   // events
   public chartClicked(e: any): void {
     console.log(e);

@@ -11,9 +11,17 @@ AtendimentoHipoteseDiagnosticaDAO.prototype.buscarPorAtendimentoId = async funct
 }
 
 AtendimentoHipoteseDiagnosticaDAO.prototype.listarPorPaciente = async function (id) {
-    let atendimento =  await this._connection.query(`select phd.id, hd.codigo, hd.nome, phd.idAtendimento  from ${this._table} phd 
+    let atendimento =  await this._connection.query(`select phd.id, hd.codigo, hd.nome, phd.idAtendimento, phd.dataCriacao, hd.cid_10 from ${this._table} phd 
             INNER JOIN tb_hipotese_diagnostica hd ON(phd.idHipoteseDiagnostica = hd.id)     
             WHERE phd.situacao = 1 AND phd.idPaciente = ?`,id); 
+    return atendimento;
+}
+
+AtendimentoHipoteseDiagnosticaDAO.prototype.listarPorPacienteAgrupada = async function (id) {
+    let atendimento =  await this._connection.query(`select hd.nome label, count(*) data from ${this._table} phd 
+            INNER JOIN tb_hipotese_diagnostica hd ON(phd.idHipoteseDiagnostica = hd.id)     
+            WHERE phd.situacao = 1 AND phd.idPaciente = ?
+            group by hd.nome`,id); 
     return atendimento;
 }
 

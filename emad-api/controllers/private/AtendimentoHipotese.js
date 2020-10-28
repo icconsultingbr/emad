@@ -102,6 +102,28 @@ module.exports = function (app) {
         }
     }); 
 
+    app.get('/atendimento-hipotese/paciente-agrupado/:id', async function(req,res){        
+        let usuario = req.usuario;
+        let id = req.params.id;
+        let util = new app.util.Util();
+        let errors = [];
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+        
+        try {
+            const atendimentoHipoteseRepository = new app.dao.AtendimentoHipoteseDiagnosticaDAO(connection);
+            const response = await atendimentoHipoteseRepository.listarPorPacienteAgrupada(id);
+            res.status(200).json(response);
+        }
+        catch (exception) {
+            errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
+            res.status(500).send(errors);
+        }
+        finally{
+            await connection.close();
+        }
+    });     
+
     app.delete('/atendimento-hipotese/:id', async function (req, res) {
         let util = new app.util.Util();
         let usuario = req.usuario;

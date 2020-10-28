@@ -387,6 +387,10 @@ export class PacienteService extends GenericsService {
     return this.http.get("atendimento-hipotese/paciente/" + id);
   }
 
+  findHipoteseByPacienteAgrupado(id: any): Observable<any> {
+    return this.http.get("atendimento-hipotese/paciente-agrupado/" + id);
+  }
+
   saveHipotese(obj: any) {
     if (obj.id) {
         return this.http
@@ -413,15 +417,21 @@ export class PacienteService extends GenericsService {
   findSinaisVitaisByPaciente(id: any, tipo: any): Observable<any> {
     return this.http.get("atendimento/prontuario-paciente/paciente/" + id + "/sinais-vitais/" + tipo);
   }
-    
-  carregaQtdAtendimentosPorPeriodo(periodo: number): Observable<any> {
-    return this.http.get("atendimentos-quantidade?periodo="
+
+  carregaAtendimentosPorPeriodo(periodo: number): Observable<any> {
+    return this.http.get("atendimentos-por-periodo?periodo="
+      + periodo + "&idEstabelecimento="
+      + JSON.parse(localStorage.getItem("est"))[0].id);
+  }
+  
+  carregaAtendimentoSituacaoExistentePorPeriodo(periodo: number): Observable<any> {
+    return this.http.get("atendimento-situacao-existente-por-periodo?periodo="
       + periodo + "&idEstabelecimento="
       + JSON.parse(localStorage.getItem("est"))[0].id);
   }
 
-  carregaAtendimentosPorPeriodo(periodo: number): Observable<any> {
-    return this.http.get("atendimentos-por-periodo?periodo="
+  carregaAtendimentoSituacaoPorPeriodo(periodo: number): Observable<any> {
+    return this.http.get("atendimento-situacao-por-periodo?periodo="
       + periodo + "&idEstabelecimento="
       + JSON.parse(localStorage.getItem("est"))[0].id);
   }

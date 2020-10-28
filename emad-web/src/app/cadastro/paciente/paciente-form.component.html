@@ -586,6 +586,8 @@
                     <tr>
                       <th>Código</th>
                       <th>Diagnóstico</th>
+                      <th>CID 10</th>
+                      <th>Data</th>
                       <th>Atendimento</th>
                       <th></th>
                     </tr>
@@ -601,6 +603,8 @@
                     <tr class="text-left" *ngFor="let item of allItemsHipotese">
                       <td class="text-secondary">{{item.codigo}}</td>
                       <td class="text-secondary">{{item.nome}}</td>
+                      <td class="text-secondary">{{item.cid_10}}</td>
+                      <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
                       <td class="text-secondary">
                         <a class="btn btn-link" *ngIf="item.idAtendimento" [routerLink]=""
                           (click)="visualizaAtendimentos(item.idAtendimento)">

@@ -12,7 +12,7 @@
 <form [formGroup]="form">
   <div>
     <tabset>
-      <tab (select)="tabSelected($event)">
+      <tab (select)="tabSelected(1)">
         <ng-template tabHeading>
           <i class="fa fa-edit" title="Principal"></i>   Dados do paciente
         </ng-template>
@@ -235,7 +235,7 @@
           </div>
         </div>
       </tab>
-      <tab (select)="tabSelected($event)">
+      <tab (select)="tabSelected(2)">
         <ng-template tabHeading>
           <i class="fa fa-id-card" title="Principal"></i>   História progressa/familiar
         </ng-template>
@@ -256,7 +256,7 @@
           </div>
         </div>
       </tab>
-      <tab (select)="tabSelected($event)">
+      <tab (select)="tabSelected(3)">
         <ng-template tabHeading>
           <i class="fa fa-heart" title="Principal"></i>   Sinais vitais
         </ng-template>
@@ -298,7 +298,7 @@
                               <div class="text-left medium">Coleta(s) realizada(s): <label style="font-weight:bold;">{{totalPressaoArterial}}</label>
                               </div>
                               <br/>
-                              <canvas baseChart height="80" [datasets]="lineChartDataMedicamento" [labels]="lineChartLabelsMedicamento"
+                              <canvas baseChart height="80" [datasets]="lineChartDataPressaoArterial" [labels]="lineChartLabelsPressaoArterial"
                                 [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend"
                                 [chartType]="lineChartType" (chartHover)="chartHovered($event)"
                                 (chartClick)="chartClicked($event)"></canvas>
@@ -340,25 +340,11 @@
                       <div class="col-3 table-responsive">
                         <div class="col-sm-12 col-md-12 col-xl-12 mb-4">
                           <div class="card text-white bg-primary pb-4">
-                            <div class="card-body pb-0">
-                              <div class="btn-group float-right" dropdown>
-                                <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle text-white float-right"
-                                  aria-controls="atendimentos" style="background: none">
-                                  <i class="fa fa-sliders-h"></i>
-                                  <span class="caret"></span>
-                                </button>  
-                                <ul id="atendimentos" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-basic">                
-                                  <li role="menuitem" *ngFor="let item of domains[0]?.periodos" [value]="item.id" 
-                                  (click)="carregaDashboardAtendimento(item)">
-                                    <div class="dropdown-item">{{item.nome}}</div>
-                                  </li>
-                                </ul> 
-                              </div>  
-                              <div class="text-value text-left h4"><label>{{objectAtendimento.qtdTotal}}</label></div>
-                              <div class="text-left medium">Atendimentos realizados nos <label style="font-weight:bold;">{{objectAtendimento.periodoNome}}</label>
+                            <div class="card-body pb-0"> 
+                              <div class="text-left medium">Coleta(s) realizada(s): <label style="font-weight:bold;">{{totalPulso}}</label>
                               </div>
                               <br/>
-                              <canvas baseChart height="80" [datasets]="lineChartDataAtendimento" [labels]="lineChartLabelsAtendimento"
+                              <canvas baseChart height="80" [datasets]="lineChartDataPulso" [labels]="lineChartLabelsPulso"
                                 [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend"
                                 [chartType]="lineChartType" (chartHover)="chartHovered($event)"
                                 (chartClick)="chartClicked($event)"></canvas>
@@ -400,25 +386,11 @@
                       <div class="col-3 table-responsive">
                         <div class="col-sm-12 col-md-12 col-xl-12 mb-4">
                           <div class="card text-white bg-primary pb-4">
-                            <div class="card-body pb-0">
-                              <div class="btn-group float-right" dropdown>
-                                <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle text-white float-right"
-                                  aria-controls="atendimentos" style="background: none">
-                                  <i class="fa fa-sliders-h"></i>
-                                  <span class="caret"></span>
-                                </button>  
-                                <ul id="atendimentos" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-basic">                
-                                  <li role="menuitem" *ngFor="let item of domains[0]?.periodos" [value]="item.id" 
-                                  (click)="carregaDashboardAtendimento(item)">
-                                    <div class="dropdown-item">{{item.nome}}</div>
-                                  </li>
-                                </ul> 
-                              </div>  
-                              <div class="text-value text-left h4"><label>{{objectAtendimento.qtdTotal}}</label></div>
-                              <div class="text-left medium">Atendimentos realizados nos <label style="font-weight:bold;">{{objectAtendimento.periodoNome}}</label>
+                            <div class="card-body pb-0"> 
+                              <div class="text-left medium">Coleta(s) realizada(s): <label style="font-weight:bold;">{{totalSaturacao}}</label>
                               </div>
                               <br/>
-                              <canvas baseChart height="80" [datasets]="lineChartDataAtendimento" [labels]="lineChartLabelsAtendimento"
+                              <canvas baseChart height="80" [datasets]="lineChartDataSaturacao" [labels]="lineChartLabelsSaturacao"
                                 [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend"
                                 [chartType]="lineChartType" (chartHover)="chartHovered($event)"
                                 (chartClick)="chartClicked($event)"></canvas>
@@ -460,25 +432,11 @@
                       <div class="col-3 table-responsive">
                         <div class="col-sm-12 col-md-12 col-xl-12 mb-4">
                           <div class="card text-white bg-primary pb-4">
-                            <div class="card-body pb-0">
-                              <div class="btn-group float-right" dropdown>
-                                <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle text-white float-right"
-                                  aria-controls="atendimentos" style="background: none">
-                                  <i class="fa fa-sliders-h"></i>
-                                  <span class="caret"></span>
-                                </button>  
-                                <ul id="atendimentos" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-basic">                
-                                  <li role="menuitem" *ngFor="let item of domains[0]?.periodos" [value]="item.id" 
-                                  (click)="carregaDashboardAtendimento(item)">
-                                    <div class="dropdown-item">{{item.nome}}</div>
-                                  </li>
-                                </ul> 
-                              </div>  
-                              <div class="text-value text-left h4"><label>{{objectAtendimento.qtdTotal}}</label></div>
-                              <div class="text-left medium">Atendimentos realizados nos <label style="font-weight:bold;">{{objectAtendimento.periodoNome}}</label>
+                            <div class="card-body pb-0"> 
+                              <div class="text-left medium">Coleta(s) realizada(s): <label style="font-weight:bold;">{{totalTemperatura}}</label>
                               </div>
                               <br/>
-                              <canvas baseChart height="80" [datasets]="lineChartDataAtendimento" [labels]="lineChartLabelsAtendimento"
+                              <canvas baseChart height="80" [datasets]="lineChartDataTemperatura" [labels]="lineChartLabelsTemperatura"
                                 [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend"
                                 [chartType]="lineChartType" (chartHover)="chartHovered($event)"
                                 (chartClick)="chartClicked($event)"></canvas>
@@ -520,25 +478,11 @@
                       <div class="col-3 table-responsive">
                         <div class="col-sm-12 col-md-12 col-xl-12 mb-4">
                           <div class="card text-white bg-primary pb-4">
-                            <div class="card-body pb-0">
-                              <div class="btn-group float-right" dropdown>
-                                <button id="button-basic" dropdownToggle type="button" class="btn dropdown-toggle text-white float-right"
-                                  aria-controls="atendimentos" style="background: none">
-                                  <i class="fa fa-sliders-h"></i>
-                                  <span class="caret"></span>
-                                </button>  
-                                <ul id="atendimentos" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-basic">                
-                                  <li role="menuitem" *ngFor="let item of domains[0]?.periodos" [value]="item.id" 
-                                  (click)="carregaDashboardAtendimento(item)">
-                                    <div class="dropdown-item">{{item.nome}}</div>
-                                  </li>
-                                </ul> 
-                              </div>  
-                              <div class="text-value text-left h4"><label>{{objectAtendimento.qtdTotal}}</label></div>
-                              <div class="text-left medium">Atendimentos realizados nos <label style="font-weight:bold;">{{objectAtendimento.periodoNome}}</label>
+                            <div class="card-body pb-0"> 
+                              <div class="text-left medium">Coleta(s) realizada(s): <label style="font-weight:bold;">{{totalPeso}}</label>
                               </div>
                               <br/>
-                              <canvas baseChart height="80" [datasets]="lineChartDataAtendimento" [labels]="lineChartLabelsAtendimento"
+                              <canvas baseChart height="80" [datasets]="lineChartDataPeso" [labels]="lineChartLabelsPeso"
                                 [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend"
                                 [chartType]="lineChartType" (chartHover)="chartHovered($event)"
                                 (chartClick)="chartClicked($event)"></canvas>
@@ -554,8 +498,8 @@
           </div>
         </div>
       </tab>
-      <tab (select)="tabSelected($event)">
-        <ng-template tabHeading  select="tabSelected()">
+      <tab (select)="tabSelected(4)">
+        <ng-template tabHeading>
           <i class="fa fa-archive" title="Principal"></i>   Atendimentos
         </ng-template>
         <div class="card mb-4">
@@ -598,8 +542,8 @@
           </div>
         </div>
       </tab>
-      <tab (select)="tabSelected($event)">
-        <ng-template tabHeading  select="tabSelected()">
+      <tab (select)="tabSelected(5)">
+        <ng-template tabHeading >
           <i class="fa fa-file-medical-alt" title="Principal"></i>   Medicamentos
         </ng-template>
         <div class="card mb-4">
@@ -681,8 +625,8 @@
 
         </div>
       </tab>
-      <tab (select)="tabSelected($event)">
-        <ng-template tabHeading  select="tabSelected()">
+      <tab (select)="tabSelected(6)">
+        <ng-template tabHeading>
           <i class="fa fa-folder" title="Principal"></i>   Fichas de atendimento
         </ng-template>
         <div class="card mb-4">
@@ -727,8 +671,8 @@
           </div>
         </div>
       </tab>
-      <tab (select)="tabSelected($event)">
-        <ng-template tabHeading  select="tabSelected()">
+      <tab (select)="tabSelected(7)">
+        <ng-template tabHeading>
           <i class="fa fa-check-square" title="Principal"></i>   Exames
         </ng-template>
         <div class="card mb-4">
@@ -771,8 +715,8 @@
           </div>
         </div>
       </tab>
-      <tab (select)="tabSelected($event)">
-        <ng-template tabHeading  select="tabSelected()">
+      <tab (select)="tabSelected(8)">
+        <ng-template tabHeading>
           <i class="fa fa-medkit" title="Principal"></i>   Hipótese diagnosticada
         </ng-template>
         <div class="card mb-4">
@@ -787,20 +731,17 @@
                     <tr>
                       <th>Código</th>
                       <th>Diagnóstico</th>
-                      <th>Atendimento</th>
+                      <th>CID 10</th>             
+                      <th>Data</th>                      
+                      <th>Atendimento</th>         
                     </tr>
                   </thead>
-                  <tbody *ngIf="!allItemsHipotese.length">
-                    <tr class="text-left">
-                      <td colspan="99" class="text-secondary">
-                        <i>Não há resultados...</i>
-                      </td>
-                    </tr>
-                  </tbody>
                   <tbody *ngIf="allItemsHipotese.length">
                     <tr class="text-left" *ngFor="let item of allItemsHipotese">
                       <td class="text-secondary">{{item.codigo}}</td>
                       <td class="text-secondary">{{item.nome}}</td>
+                      <td class="text-secondary">{{item.cid_10}}</td>                      
+                      <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
                       <td class="text-secondary">
                         <a class="btn btn-link" *ngIf="item.idAtendimento" [routerLink]="" (click)="visualizaAtendimentos(item.idAtendimento)">
                           <i class="fa fa-file-medical-alt"></i> Visualizar atendimento
@@ -809,6 +750,20 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
+            </div>
+            <div>
+              <div class="col-12 mb-4">
+                <div class="card text-white bg-light pb-4">
+                  <div class="card-body pb-0">
+                    <div style="display: block">
+                      <canvas *ngIf="pieChartData.length" baseChart
+                              [data]="pieChartData"
+                              [labels]="pieChartLabels"
+                              [chartType]="pieChartType"></canvas>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
