@@ -701,4 +701,24 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
     return lineChartColors;
   }
+  
+  abreAtendimentoFichaDigital(id: Number) {
+    this.errors = [];
+    let url =
+      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")
+        ?
+        JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")[0].valor.replace('{id}', id)
+        : "";
+    this.loading = true;
+    this.atendimentoService.openDocument(url).subscribe(result => {
+      this.loading = false;
+      window.open(
+        url,
+        '_blank'
+      );
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
 }
