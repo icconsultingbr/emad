@@ -46,15 +46,28 @@ module.exports = function (app) {
         });
     });
    
-    app.get('/hipotese-diagnostica', function (req, res) {
+   app.get('/hipotese-diagnostica', async function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
+        let queryFilter = req.query;
         let errors = [];
 
-        lista(res).then(function (response) {
+        const connection = await app.dao.connections.EatendConnection.connection();
+        
+        try {
+            const hipoteseDiagnosticaRepository = new app.dao.HipoteseDiagnosticaDAO(connection);
+
+            const response = await hipoteseDiagnosticaRepository.listarAsync(queryFilter);
+
             res.status(200).json(response);
-            return;
-        });
+        }
+        catch (exception) {
+            errors = util.customError(errors, "data", "Erro ao acessar os dados " + exception, "objs");
+            res.status(500).send(errors);
+        }
+        finally{
+            await connection.close();
+        }
     });
 
 

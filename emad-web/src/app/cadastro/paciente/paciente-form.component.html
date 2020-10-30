@@ -663,17 +663,113 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-xl-3 col-form-label text-left">
-        Hipótese diagnóstica <span class="text-danger font-weight-bold"> *</span>
+      <label class="col-xl-4 col-sm-12 col-form-label text-left">
+        Nome da hipótese:
       </label>
-      <div class="col-xl-12">
-        <input type="hidden" [(ngModel)]="pacienteHipotese.idPaciente" />
-        <app-select-modal [lista]="domains[0].hipoteses" [(value)]="pacienteHipotese.idHipoteseDiagnostica"></app-select-modal>
+      <div class="col-xl-8 col-sm-12">
+        <input type="text" class="form-control has-error" [(ngModel)]="hipoteseDiagnostica.nome">
       </div>
     </div>
+    <div class="form-group row">
+      <label class="col-xl-4 col-sm-12 col-form-label text-left">
+        CID 10:
+      </label>
+      <div class="col-xl-8 col-sm-12">
+        <input type="text" class="form-control has-error" [(ngModel)]="hipoteseDiagnostica.cid_10">
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-12">
+        <button [routerLink]="" class="btn btn-primary float-right" (click)="pesquisaHipoteseDiagnostica()">
+          <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin text-left">
+            <i class="fa fa-spinner"></i>
+          </i>
+          <i *ngIf="!loading" class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-12 table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr class="text-left">
+              <th></th>                      
+              <th>Código</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let item of allItemsPesquisaHipoteseDiagnostica let index=index; let odd='odd'; let even='even';">
+            <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
+              <td class="text-secondary">
+                <div class="custom-control custom-radio float-left">
+                  <input type="radio" (change)="selecionaHipoteseDiagnostica(item)" class="custom-control-input" id="{{ item.id }}"
+                    name="radio-item">
+                  <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
+                </div>
+              </td>           
+              <td class="text-secondary">{{item.cid_10}}</td>              
+              <td class="text-secondary">{{item.nome}}</td>   
+            </tr>
+          </tbody>
+          <tbody *ngIf="!allItemsPesquisaHipoteseDiagnostica || allItemsPesquisaHipoteseDiagnostica.length==0">
+            <tr class="text-left">
+              <td colspan="99" class="text-secondary">
+                <i>Não há resultados...</i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div *ngIf="allItemsPesquisaHipoteseDiagnostica && allItemsPesquisaHipoteseDiagnostica.length"
+          class="text text-secondary col-md-12 pr-0 mx-auto">
+          <i>
+              Exibindo {{paging.offset === (totalPages-1)?paging.total:(paging.offset+1)*paging.limit}} de
+              {{paging.total}}
+              resultado(s).
+          </i>
+      </div>
+    </div>
+    <div class="row mb-2 mt-4">
+      <ul *ngIf="allItemsPesquisaHipoteseDiagnostica && allItemsPesquisaHipoteseDiagnostica.length" class="pagination mx-auto">
+          <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
+              <a class="page-link" (click)="setPagePaginedHipotese(0)">
+                  <i class="fas fa-angle-double-left"></i>
+              </a>
+          </li>
+          <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
+              <a class="page-link" (click)="setPagePaginedHipotese(paging.offset - 1)">
+                  <i class="fas fa-angle-left"></i>
+              </a>
+          </li>
+          <li>
+              <select (change)="loadQuantityPerPagePaginationHipotese($event, 'hipotese')" class="custom-select d-block w-100"
+                  style="border: 1px solid #dee2e6">
+
+                  <option [ngValue]="10">10</option>
+                  <option [ngValue]="25">25</option>
+                  <option [ngValue]="50">50</option>
+              </select>
+          </li>
+          <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
+              <a class="page-link" (click)="setPagePaginedHipotese(paging.offset + 1)">
+                  <i class="fas fa-angle-right"></i>
+              </a>
+          </li>
+          <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
+              <a class="page-link" (click)="setPagePaginedHipotese(totalPages-1)">
+                  <i class="fas fa-angle-double-right"></i>
+              </a>
+          </li>
+      </ul>
+    </div>
+
     <div class="form-group row text-right">
       <div class="col-12">
-        <button class="btn btn-primary  mr-2" type="button" (click)="saveHipotese()">
+        <button class="btn btn-primary  mr-2" type="button" [disabled]="disableHipoteseButton()"
+          (click)="saveHipotese()">
           <i class="fa fa-plus-circle"></i> Adicionar
         </button>
         <button class="btn btn-default" (click)="close()" type="button">

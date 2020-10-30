@@ -10,6 +10,7 @@ import GeocoderAddressComponent = google.maps.GeocoderAddressComponent;
 import { environment } from '../../../environments/environment';
 import { PacienteHipotese } from '../../_core/_models/PacienteHipotese';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HipoteseDiagnostica } from '../../_core/_models/HipoteseDiagnostica';
 
 @Component({
   selector: 'app-paciente-form',
@@ -36,8 +37,22 @@ export class PacienteFormComponent implements OnInit {
   virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
   modalRef: NgbModalRef = null;
   loadPhoto: boolean = false;
-
+  allItemsPesquisaHipoteseDiagnostica: any[] = null;
+  hipoteseDiagnostica: HipoteseDiagnostica = new HipoteseDiagnostica();
+  
   @ViewChild('addresstext') addresstext: ElementRef;
+
+  //PAGINATION
+  pager: any = {};
+  pagedItems: any[];
+  pageLimit: number = 10;
+  paging: any = {
+    offset: 0,
+    limit: 10,
+    total: 0
+  };
+  warning: string = "";
+  totalPages: Number;
 
   constructor(
     private service: PacienteService,
@@ -385,9 +400,9 @@ export class PacienteFormComponent implements OnInit {
   openHipotese(content: any) {
     this.errors = [];
     this.message = "";
+    this.allItemsPesquisaHipoteseDiagnostica = [];
     this.pacienteHipotese = new PacienteHipotese();
-    this.pacienteHipotese.idPaciente = this.object.id;
-    this.pacienteHipotese.idAtendimento = null;
+    this.hipoteseDiagnostica = new HipoteseDiagnostica();
 
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
@@ -397,15 +412,86 @@ export class PacienteFormComponent implements OnInit {
     });
   }
 
+  pesquisaHipoteseDiagnostica() {
+    this.loading = true;
+    let params = "";
+    this.allItemsPesquisaHipoteseDiagnostica = [];
+    this.errors = [];
+
+    if (Util.isEmpty(this.hipoteseDiagnostica.nome) && Util.isEmpty(this.hipoteseDiagnostica.cid_10))
+    {
+       this.errors = [{message:"Informe o nome ou código CID 10"}];
+       this.loading = false;
+       return;
+    }
+
+    if (!Util.isEmpty(this.hipoteseDiagnostica.nome))
+    {
+      if(this.hipoteseDiagnostica.nome.length<3){
+       this.errors = [{message:"Informe o nome, ao menos 3 caracteres"}];
+       this.loading = false;
+       return;
+      }
+    }
+
+    if (!Util.isEmpty(this.hipoteseDiagnostica.cid_10))
+    {
+      if (this.hipoteseDiagnostica.cid_10.length < 2)
+      { 
+        this.errors = [{message:"Informe o código CID 10, ao menos 2 caracteres"}];
+        this.loading = false;
+        return;
+      }
+    }
+
+    this.buscaHipoteseDiagnostica();
+  }
+
+  buscaHipoteseDiagnostica(offset: Number = null, limit: Number = null) {
+    this.loading = true;
+
+    this.paging.offset = offset ? offset : 0;
+    this.paging.limit = limit ? limit : 10;    
+
+    var params = "?nome=" + this.hipoteseDiagnostica.nome + "&cid=" + this.hipoteseDiagnostica.cid_10;
+
+    if (this.paging.offset != null && this.paging.limit != null) {
+      params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+    }    
+
+    this.service.list('hipotese-diagnostica' + params).subscribe(result => {
+      this.warning = "";
+      this.paging.total = result.total;
+      this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
+      this.allItemsPesquisaHipoteseDiagnostica = result.items;
+      setTimeout(() => {
+        this.loading = false;
+      }, 300);
+    }, erro => {
+      setTimeout(() => this.loading = false, 300);
+      this.errors = Util.customHTTPResponse(erro);
+    });
+  }
+
+  selecionaHipoteseDiagnostica(item) {
+    this.hipoteseDiagnostica = item;
+  }
+
   close() {
     if (this.modalRef)
       this.modalRef.close();
+  }
+
+  disableHipoteseButton() {
+    return Util.isEmpty(this.hipoteseDiagnostica.id);
   }
 
   saveHipotese() {
     this.message = "";
     this.errors = [];
     this.loading = true;
+    this.pacienteHipotese.idHipoteseDiagnostica = this.hipoteseDiagnostica.id;
+    this.pacienteHipotese.idPaciente = this.id;
     this.pacienteHipotese.funcionalidade = 'PACIENTE';
     this.service.saveHipotese(this.pacienteHipotese).subscribe(result => {
       this.message = "Hipótese diagnóstica inserida com sucesso!"
@@ -430,5 +516,19 @@ export class PacienteFormComponent implements OnInit {
   photoSaved(id: string){
     this.form.patchValue({ foto: id }, { emitEvent: false });
     this.object.foto = id;
+  }
+
+  loadQuantityPerPagePaginationHipotese(event) {
+    let id = parseInt(event.target.value);
+    this.paging.limit = id;
+
+    this.setPagePaginedHipotese(this.pager.offset, this.paging.limit);
+  }
+
+  setPagePaginedHipotese(offset: number, limit: Number) {
+    this.paging.offset = offset !== undefined ? offset : 0;
+    this.paging.limit = limit ? limit : this.paging.limit;
+    
+    this.buscaHipoteseDiagnostica(this.paging.offset, this.paging.limit);
   }
 }

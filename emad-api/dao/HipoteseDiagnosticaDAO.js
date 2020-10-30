@@ -8,8 +8,42 @@ HipoteseDiagnosticaDAO.prototype.lista = function(callback) {
     this._connection.query("select * FROM "+this._table+" WHERE situacao = 1 ORDER BY nome ASC",callback);
 }
 
+HipoteseDiagnosticaDAO.prototype.listarAsync = async function (addFilter) {
+    let where = "";
+    let offset = " LIMIT 10 OFFSET 0 ";
+    
+
+    if(addFilter){
+
+        if(addFilter.nome && addFilter.nome != 'null' && addFilter.nome != 'undefined'){
+            where += ` AND UPPER(nome) LIKE '%${addFilter.nome.toUpperCase()}%'`;
+        }
+
+        if(addFilter.cid && addFilter.cid != 'null' && addFilter.cid != 'undefined'){
+            where += ` AND UPPER(cid_10) LIKE '%${addFilter.cid.toUpperCase()}%'`;
+        }
+
+        if(addFilter.limit && addFilter.offset){
+            offset = `LIMIT ${addFilter.limit} OFFSET ${addFilter.limit * addFilter.offset}`;
+        }
+    }    
+    
+    const join = ` FROM ${this._table}
+    WHERE situacao = 1 ${where}`;
+
+    const count = await this._connection.query(`SELECT COUNT(1) as total ${join}`);
+
+    const result = await this._connection.query(`SELECT * ${join}  
+                                            ORDER BY nome ASC ${offset}`);
+    return {
+        total: count[0].total,
+        items: result
+    }
+}
+
+
 HipoteseDiagnosticaDAO.prototype.dominio = function(callback) {
-    this._connection.query("select id, CONCAT(nome, ' (',codigo,')') as nome FROM "+this._table+" WHERE situacao = 1 ORDER BY nome ASC",callback);
+    this._connection.query("select id, CONCAT(nome, ' (',cid_10,')') as nome FROM "+this._table+" WHERE situacao = 1 ORDER BY nome ASC",callback);
 }
 
 HipoteseDiagnosticaDAO.prototype.buscaPorId = function (id,callback) {

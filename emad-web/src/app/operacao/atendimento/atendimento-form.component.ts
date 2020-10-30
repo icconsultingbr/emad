@@ -14,6 +14,7 @@ import { AtendimentoMedicamento } from '../../_core/_models/AtendimentoMedicamen
 import { Material } from '../../_core/_models/Material';
 import { ReciboReceitaImpressaoService } from '../../shared/services/recibo-receita-impressao.service';
 import { environment } from '../../../environments/environment';
+import { HipoteseDiagnostica } from '../../_core/_models/HipoteseDiagnostica';
 
 @Component({
   selector: 'app-atendimento-form',
@@ -42,6 +43,7 @@ export class AtendimentoFormComponent implements OnInit {
   objectHistorico: AtendimentoHistorico = new AtendimentoHistorico();
   paciente: Paciente = new Paciente();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
+  hipoteseDiagnostica: HipoteseDiagnostica = new HipoteseDiagnostica();
   encaminhamento: Encaminhamento = new Encaminhamento();
   atendimentoMedicamento: AtendimentoMedicamento = new AtendimentoMedicamento();
   medicamento: Material = new Material();
@@ -50,8 +52,10 @@ export class AtendimentoFormComponent implements OnInit {
   mostraFormulario: boolean = false;
   pacienteSelecionado: any = null;
   medicamentoSelecionado: any = null;
+  hipoteseDiagnosticaSelecionada: any = null;
   domains: any[] = [];
   allItemsEntidadeCampo: any[] = null;
+  allItemsPesquisaHipoteseDiagnostica: any[] = null;
 
   //PAGINATION
   allItems: any[] = [];
@@ -221,6 +225,32 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
+  buscaHipoteseDiagnostica(offset: Number = null, limit: Number = null) {
+    this.loading = true;
+
+    this.paging.offset = offset ? offset : 0;
+    this.paging.limit = limit ? limit : 10;    
+
+    var params = "?nome=" + this.hipoteseDiagnostica.nome + "&cid=" + this.hipoteseDiagnostica.cid_10;
+
+    if (this.paging.offset != null && this.paging.limit != null) {
+      params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+    }    
+
+    this.service.list('hipotese-diagnostica' + params).subscribe(result => {
+      this.warning = "";
+      this.paging.total = result.total;
+      this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
+      this.allItemsPesquisaHipoteseDiagnostica = result.items;
+      setTimeout(() => {
+        this.loading = false;
+      }, 300);
+    }, erro => {
+      setTimeout(() => this.loading = false, 300);
+      this.errors = Util.customHTTPResponse(erro);
+    });
+  }
+
   buscaMedicamento() {
     this.loading = true;
     let params = "";
@@ -264,9 +294,9 @@ export class AtendimentoFormComponent implements OnInit {
   openHipotese(content: any) {
     this.errors = [];
     this.message = "";
+    this.allItemsPesquisaHipoteseDiagnostica = [];
     this.pacienteHipotese = new PacienteHipotese();
-    this.pacienteHipotese.idPaciente = this.object.idPaciente;
-    this.pacienteHipotese.idAtendimento = this.object.id;
+    this.hipoteseDiagnostica = new HipoteseDiagnostica();
 
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
@@ -339,7 +369,6 @@ export class AtendimentoFormComponent implements OnInit {
     this.pageLimit = id;
     this.setPage(1);
   }
-
 
   clear() {
     this.paciente = new Paciente();
@@ -588,13 +617,11 @@ export class AtendimentoFormComponent implements OnInit {
 
   loadDomains() {
     this.loading = true;
-    this.service.listDomains('hipotese-diagnostica').subscribe(hipoteses => {
       this.service.listDomains('especialidade').subscribe(especialidades => {
         this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {
           this.service.listDomains('grupo-material').subscribe(gruposMateriais => {
             this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {
               this.domains.push({
-                hipoteses: hipoteses,
                 especialidades: especialidades,
                 tipoFichas: tipoFichas,
                 classificacaoRiscos: classificacaoRiscos,
@@ -610,14 +637,52 @@ export class AtendimentoFormComponent implements OnInit {
               else
                 this.loading = false;
             });
-          });
         });
       });
     });
   }
 
+  selecionaHipoteseDiagnostica(item) {
+    this.hipoteseDiagnostica = item;
+  }
+
+  pesquisaHipoteseDiagnostica() {
+    this.loading = true;
+    let params = "";
+    this.allItemsPesquisaHipoteseDiagnostica = [];
+    this.errors = [];
+
+    if (Util.isEmpty(this.hipoteseDiagnostica.nome) && Util.isEmpty(this.hipoteseDiagnostica.cid_10))
+    {
+       this.errors = [{message:"Informe o nome ou código CID 10"}];
+       this.loading = false;
+       return;
+    }
+
+    if (!Util.isEmpty(this.hipoteseDiagnostica.nome))
+    {
+      if(this.hipoteseDiagnostica.nome.length<3){
+       this.errors = [{message:"Informe o nome, ao menos 3 caracteres"}];
+       this.loading = false;
+       return;
+      }
+    }
+
+    if (!Util.isEmpty(this.hipoteseDiagnostica.cid_10))
+    {
+      if (this.hipoteseDiagnostica.cid_10.length < 2)
+      { 
+        this.errors = [{message:"Informe o código CID 10, ao menos 2 caracteres"}];
+        this.loading = false;
+        return;
+      }
+    }
+
+    this.buscaHipoteseDiagnostica();
+  }
+
   disableHipoteseButton() {
-    return Util.isEmpty(this.pacienteHipotese.idHipoteseDiagnostica) || Util.isEmpty(this.pacienteHipotese.idPaciente);
+    return Util.isEmpty(this.hipoteseDiagnostica.id);
   }
 
   disableEncaminhamentoButton() {
@@ -639,6 +704,10 @@ export class AtendimentoFormComponent implements OnInit {
     this.message = "";
     this.errors = [];
     this.loading = true;
+    
+    this.pacienteHipotese.idHipoteseDiagnostica = this.hipoteseDiagnostica.id;
+    this.pacienteHipotese.idPaciente = this.object.idPaciente;
+    this.pacienteHipotese.idAtendimento = this.object.id;
 
     this.service.saveHipotese(this.pacienteHipotese).subscribe(result => {
       this.message = "Hipótese diagnóstica inserida com sucesso!"
@@ -804,10 +873,25 @@ export class AtendimentoFormComponent implements OnInit {
     this.setPagePagined(this.pager.offset, this.paging.limit);
   }
 
+  loadQuantityPerPagePaginationHipotese(event) {
+    let id = parseInt(event.target.value);
+    this.paging.limit = id;
+
+    this.setPagePaginedHipotese(this.pager.offset, this.paging.limit);
+  }
+
   setPagePagined(offset: number, limit: Number) {
     this.paging.offset = offset !== undefined ? offset : 0;
     this.paging.limit = limit ? limit : this.paging.limit;
+    
     this.buscaPaciente(this.paging.offset, this.paging.limit);
+  }
+
+  setPagePaginedHipotese(offset: number, limit: Number) {
+    this.paging.offset = offset !== undefined ? offset : 0;
+    this.paging.limit = limit ? limit : this.paging.limit;
+    
+    this.buscaHipoteseDiagnostica(this.paging.offset, this.paging.limit);
   }
 
   carregaEntidadeCampoPorEspecialidade() {
