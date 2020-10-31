@@ -178,8 +178,15 @@ module.exports = function (app) {
         const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
 
         try {            
-            var response = await atendimentoRepository.buscaPorPacienteIdProntuario(id, tipo);
-            res.status(200).json(response);
+            var response = await atendimentoRepository.buscaPorPacienteIdProntuario(id, tipo);            
+            var atendimentos = response;
+            if(atendimentos){
+                for (const itemAtendimento of atendimentos) {               
+                    var historicos = await atendimentoRepository.buscaHistoricoPorAtendimento(itemAtendimento.id);           
+                    itemAtendimento.historicos = historicos ? historicos : null;
+                }
+            }
+            res.status(200).json(atendimentos);
         }
         catch (exception) {
             res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado " + exception, ""));            

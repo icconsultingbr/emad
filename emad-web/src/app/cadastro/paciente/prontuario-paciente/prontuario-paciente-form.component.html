@@ -506,38 +506,43 @@
           <div class="card-header text-left">
             Atendimentos realizados
           </div>
-          <div class="card-body text-left">
-            <div class="row">
-              <div class="col-12 table-responsive">
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>Atendimento</th>
-                      <th>Tipo de atendimento</th>
-                      <th>Classificação de risco</th>
-                      <th>Queixa</th>
-                      <th>Situação</th>
-                      <th>Data</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody *ngIf="allItemsAtendimentos.length">
-                    <tr class="text-left" *ngFor="let item of allItemsAtendimentos">
-                      <td class="text-secondary">{{item.id}}</td>
-                      <td class="text-secondary">{{item.fichaNome}}</td>
-                      <td class="text-secondary">{{item.classificacaoNome}}</td>
-                      <td class="text-secondary">{{item.motivoQueixa}}</td>
-                      <td class="text-secondary">{{item.situacaoNome}}</td>
-                      <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
-                      <td class="text-secondary">
-                        <button class="btn btn-primary" title="Visualizar atendimento"
-                          type="button" (click)="openHistorico(contentAtendimentoHistorico, item.id)">
-                          <i class="fa fa-search"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+          <div class="row">
+            <div class="card-body text-left">
+              <div *ngIf="atendimentoHistorico.length" class="timeline">
+                <div *ngFor="let itemAtendimento of allItemsAtendimentos" class="timeline-item">
+                  <div class="timeline-badge" [title]="itemAtendimento.classificacaoNome">                                        
+                    <i class="fa fa-circle" [style.color]="itemAtendimento.corIconeGrid" style="font-size: -webkit-xxx-large"></i>
+                  </div>
+                  <div class="timeline-body">
+                      <div class="timeline-body-top">
+                        ID do Atendimento: {{itemAtendimento.id}}
+                      </div>
+                      <div class="timeline-body-content">
+                          <p><b>Unidade:</b> {{itemAtendimento.estabelecimentoNome}}&nbsp;&nbsp;&nbsp;<b>Tipo de atendimento:</b> {{itemAtendimento.fichaNome}}&nbsp;&nbsp;&nbsp;<b>Situação atual:</b> {{itemAtendimento.situacaoNome}}&nbsp;&nbsp;&nbsp;<b>Motivo da queixa:</b> {{itemAtendimento.motivoQueixa}}.</p>                          
+                      </div>
+                      <div class="card-body text-left">
+                        <div *ngIf="itemAtendimento.historicos.length" class="timeline">
+                          <div *ngFor="let itemHistorico of itemAtendimento.historicos" class="timeline-item">
+                            <div class="timeline-badge">
+                              <img class="float-left" *ngIf="itemHistorico.fotoProfissional" [src]="pathFiles + itemHistorico.fotoProfissional">
+                              <img class="float-left" *ngIf="!itemHistorico.fotoProfissional" src="assets/imgs/user2-160x160.jpg">
+                            </div>
+                            <div class="timeline-body">
+                                <div class="timeline-body-top">
+                                  {{itemHistorico.nomeTipoHistorico}}
+                                </div>
+                                <div class="timeline-body-content">
+                                    <p><span class="text-muted">{{itemHistorico.dataHistorico}} - </span>Profissional: <b>{{itemHistorico.nomeProfissional}}</b> executou <b>{{itemHistorico.nomeTipoHistorico}}</b>.</p>
+                                    <p><button class="btn btn-primary" type="button" (click)="openHistorico(contentAtendimentoHistorico, null, itemHistorico.idHistorico)">
+                                      <i class="fa fa-search"></i>  Visualizar
+                                    </button></p>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -706,7 +711,7 @@
                       <td class="text-secondary">{{item.estabelecimentoNome}}</td>
                       <td class="text-secondary">
                         <button class="btn btn-primary" title="Visualizar atendimento"
-                          type="button" (click)="openHistorico(contentAtendimentoHistorico, item.id)">
+                          type="button" (click)="openHistorico(contentAtendimentoHistorico, item.id, null)">
                           <i class="fa fa-search"></i>
                         </button>
                       </td>
@@ -747,7 +752,7 @@
                       <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
                       <td class="text-secondary">                       
                         <button class="btn btn-primary" *ngIf="item.idAtendimento" title="Visualizar atendimento"
-                          type="button" (click)="openHistorico(contentAtendimentoHistorico, item.idAtendimento)">
+                          type="button" (click)="openHistorico(contentAtendimentoHistorico, item.idAtendimento, null)">
                           <i class="fa fa-search"></i>
                         </button>
                       </td>
@@ -779,9 +784,17 @@
 
 <ng-template #contentAtendimentoHistorico>
   <div class="modal-header">
-    <div class="row">
+    <div class="row" *ngIf="!mostraHistorico">
       <div class="col-xl-12">
         <h4 class="modal-title text-left">Atendimento {{objectHistorico.id}}</h4>
+      </div>
+    </div>
+    <div class="row" *ngIf="mostraHistorico">
+      <div class="col-xl-12">
+        <h4 class="modal-title text-left">Histórico do atendimento</h4>
+      </div>
+      <div class="col-xl-12 text-left">
+        <span class="text-muted">{{dataHistorico}} - </span>Profissional: <b>{{nomeProfissional}}</b> executou <b>{{nomeTipoHistorico}}</b>.
       </div>
     </div>
     <button type="button" class="close" (click)="close()">

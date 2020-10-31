@@ -318,12 +318,14 @@ AtendimentoDAO.prototype.buscaPorPacienteIdProntuario = async function (idPacien
                                 ficha.nome fichaNome,
                                 clas.nome classificacaoNome,
                                 estabelecimento.nomeFantasia estabelecimentoNome,
-                                usuario.nome nomeProfissional
+                                usuario.nome nomeProfissional,
+                                cor.cor corIconeGrid
     from tb_atendimento a 
     inner join tb_tipo_ficha ficha on ficha.id = a.tipoFicha
     inner join tb_classificacao_risco clas on clas.id = a.idClassificacaoRisco
     inner join tb_estabelecimento estabelecimento on a.idEstabelecimento = estabelecimento.id
     inner join tb_usuario usuario on usuario.id = a.idUsuario
+    INNER JOIN tb_cor_classificacao_risco cor on cor.id = clas.idCorClassificacaoRisco
     WHERE a.idPaciente = ? ${where} order by a.id desc`, idPaciente); 
     return response;
 }

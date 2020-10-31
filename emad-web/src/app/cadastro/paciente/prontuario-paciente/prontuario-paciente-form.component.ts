@@ -10,7 +10,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ReciboReceitaImpressaoService } from '../../../shared/services/recibo-receita-impressao.service';
 import { MainChartLine } from '../../../_core/_models/MainChart';
 import { AtendimentoService } from '../../../operacao/atendimento/atendimento.service';
-import { Atendimento } from '../../../_core/_models/Atendimento';
+import { Atendimento, AtendimentoHistorico } from '../../../_core/_models/Atendimento';
 
 @Component({
   selector: 'app-prontuario-paciente-form',
@@ -21,6 +21,7 @@ import { Atendimento } from '../../../_core/_models/Atendimento';
 export class ProntuarioPacienteFormComponent implements OnInit {
   object: Paciente = new Paciente();
   objectHistorico: Atendimento = new Atendimento();
+  atendimentoHistorico: AtendimentoHistorico = new AtendimentoHistorico();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
   method: string = 'paciente';
   fields = [];
@@ -60,6 +61,12 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   totalSaturacao: number;
   totalTemperatura: number;
   totalPeso: number;
+
+  idHistorico: number;
+  dataHistorico: string;
+  nomeProfissional: string;
+  nomeTipoHistorico: string;
+  mostraHistorico: boolean = false;
 
   @ViewChild('addresstext') addresstext: ElementRef;
  
@@ -218,6 +225,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       this.findSinaisVitaisPorPaciente();
     }else if(tab == 4){//Atendimentos
       this.findAtendimentoPorPaciente();
+      this.findHistoricoPorAtendimento();
     }else if(tab == 5){//Medicamentos      
       this.findReceitaPorPaciente();
     }else if(tab == 6){//Fichas de atendimentos
@@ -522,9 +530,11 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.reciboReceitaService.imprimir(ano_receita, unidade_receita, numero_receita, true);
   }
 
-  openHistorico(content: any, idHistorico: number) {
+  openHistorico(content: any, idAtendimento: number, idHistorico: number) {
     this.createGroupHistorico();
-    this.encontraAtendimentoHistorico(idHistorico);
+    this.encontraAtendimentoHistorico(idAtendimento, idHistorico);
+    this.mostraHistorico = idAtendimento ? false : true;
+    
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
       keyboard: false,
@@ -533,11 +543,12 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     });
   }
 
-  encontraAtendimentoHistorico(idAtendimento: number) {
+  encontraAtendimentoHistorico(idAtendimento: number, idHistorico: number) {
     this.object.id = this.id;
     this.errors = [];
     this.message = "";
 
+    
     if (idAtendimento) {
       this.loading = true; 
       this.atendimentoService.findById(idAtendimento, "atendimento").subscribe(result => {
@@ -551,9 +562,34 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       this.loading = false;
       this.close();
       this.errors.push({
-        message: "Atendimento histórico não encontrado"
+        message: "Atendimento não encontrado"
       });                                         
     });      
+    }
+    else{
+      this.loading = true; 
+      this.atendimentoService.findByHistoricoId(idHistorico).subscribe(result => {
+      this.objectHistorico = result;
+      this.objectHistorico.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
+      this.loading = false;
+
+      this.objectHistorico = result;
+      this.dataHistorico = result.dataHistorico;
+      this.nomeProfissional = result.nomeProfissional;
+      this.nomeTipoHistorico = result.nomeTipoHistorico;
+      this.objectHistorico.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
+      this.loading = false;
+
+      this.findHipotesePorAtendimento(idAtendimento);
+      this.findEncaminhamentoPorAtendimento(idAtendimento);
+      this.findMedicamentoPorAtendimento(idAtendimento);                  
+    }, error => {
+      this.loading = false;
+      this.close();
+      this.errors.push({
+        message: "Atendimento histórico não encontrado"
+      });                                         
+    }); 
     }
   }
 
@@ -716,6 +752,19 @@ export class ProntuarioPacienteFormComponent implements OnInit {
         url,
         '_blank'
       );
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+  
+  findHistoricoPorAtendimento() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.atendimentoService.findHistoricoByAtendimento(586).subscribe(result => {
+      this.atendimentoHistorico = result;
+      this.loading = false;
     }, error => {
       this.loading = false;
       this.errors = Util.customHTTPResponse(error);
