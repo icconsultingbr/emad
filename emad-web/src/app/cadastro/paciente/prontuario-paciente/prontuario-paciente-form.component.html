@@ -508,7 +508,7 @@
           </div>
           <div class="row">
             <div class="card-body text-left">
-              <div *ngIf="atendimentoHistorico.length" class="timeline">
+              <div *ngIf="atendimentoHistorico?.length" class="timeline">
                 <div *ngFor="let itemAtendimento of allItemsAtendimentos" class="timeline-item">
                   <div class="timeline-badge" [title]="itemAtendimento.classificacaoNome">                                        
                     <i class="fa fa-circle" [style.color]="itemAtendimento.corIconeGrid" style="font-size: -webkit-xxx-large"></i>
@@ -521,7 +521,7 @@
                           <p><b>Unidade:</b> {{itemAtendimento.estabelecimentoNome}}&nbsp;&nbsp;&nbsp;<b>Tipo de atendimento:</b> {{itemAtendimento.fichaNome}}&nbsp;&nbsp;&nbsp;<b>Situação atual:</b> {{itemAtendimento.situacaoNome}}&nbsp;&nbsp;&nbsp;<b>Motivo da queixa:</b> {{itemAtendimento.motivoQueixa}}.</p>                          
                       </div>
                       <div class="card-body text-left">
-                        <div *ngIf="itemAtendimento.historicos.length" class="timeline">
+                        <div *ngIf="itemAtendimento.historicos?.length" class="timeline">
                           <div *ngFor="let itemHistorico of itemAtendimento.historicos" class="timeline-item">
                             <div class="timeline-badge">
                               <img class="float-left" *ngIf="itemHistorico.fotoProfissional" [src]="pathFiles + itemHistorico.fotoProfissional">
