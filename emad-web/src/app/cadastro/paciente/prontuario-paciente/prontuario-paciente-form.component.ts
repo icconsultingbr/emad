@@ -21,7 +21,6 @@ import { Atendimento, AtendimentoHistorico } from '../../../_core/_models/Atendi
 export class ProntuarioPacienteFormComponent implements OnInit {
   object: Paciente = new Paciente();
   objectHistorico: Atendimento = new Atendimento();
-  atendimentoHistorico: AtendimentoHistorico = new AtendimentoHistorico();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
   method: string = 'paciente';
   fields = [];
@@ -225,7 +224,6 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       this.findSinaisVitaisPorPaciente();
     }else if(tab == 4){//Atendimentos
       this.findAtendimentoPorPaciente();
-      this.findHistoricoPorAtendimento();
     }else if(tab == 5){//Medicamentos      
       this.findReceitaPorPaciente();
     }else if(tab == 6){//Fichas de atendimentos
@@ -534,7 +532,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.createGroupHistorico();
     this.encontraAtendimentoHistorico(idAtendimento, idHistorico);
     this.mostraHistorico = idAtendimento ? false : true;
-    
+
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
       keyboard: false,
@@ -752,19 +750,6 @@ export class ProntuarioPacienteFormComponent implements OnInit {
         url,
         '_blank'
       );
-    }, error => {
-      this.loading = false;
-      this.errors = Util.customHTTPResponse(error);
-    });
-  }
-  
-  findHistoricoPorAtendimento() {
-    this.message = "";
-    this.errors = [];
-    this.loading = true;
-    this.atendimentoService.findHistoricoByAtendimento(586).subscribe(result => {
-      this.atendimentoHistorico = result;
-      this.loading = false;
     }, error => {
       this.loading = false;
       this.errors = Util.customHTTPResponse(error);
