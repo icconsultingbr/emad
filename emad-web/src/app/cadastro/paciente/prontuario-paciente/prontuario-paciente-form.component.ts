@@ -60,6 +60,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   totalSaturacao: number;
   totalTemperatura: number;
   totalPeso: number;
+  pathFiles = `${environment.apiUrl}/fotos/`;
 
   idHistorico: number;
   dataHistorico: string;
