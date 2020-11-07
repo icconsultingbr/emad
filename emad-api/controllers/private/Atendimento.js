@@ -631,7 +631,7 @@ module.exports = function (app) {
         let errors = [];
         let obj = {};        
 
-        obj.situacao = body.situacao;
+        obj.situacao = body.situacao ? body.situacao : "2"; //Concluído
 
         const connection = await app.dao.connections.EatendConnection.connection();
 
