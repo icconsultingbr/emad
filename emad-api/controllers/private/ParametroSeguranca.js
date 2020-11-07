@@ -96,6 +96,26 @@ module.exports = function (app) {
         });
     }); 
 
+    app.get('/parametro-seguranca/busca-chave/:id', async function (req, res) {                
+        let chave = req.params.id;
+        
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const parametroSegurancaRepository = new app.dao.ParametroSegurancaDAO(connection);
+        
+        try {
+            var valorChave = await parametroSegurancaRepository.buscarValorPorChaveSync("'" + chave + "'");           
+            res.status(201).send(valorChave[0]);
+        }
+        catch (exception) {
+            console.log("Erro ao carregar parametro (" + id + "), exception: " + exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });
+
+
     app.delete('/parametro-seguranca/:id', function(req,res){     
         var util = new app.util.Util();
         let usuario = req.usuario;
