@@ -626,20 +626,82 @@ module.exports = function (app) {
 
     app.put('/atendimento/:id/finalizar', async function(req, res){
         const atendimentoId = req.params.id;
-        const usuarioId = req.usuario;
+        const body = req.body;
+        let util = new app.util.Util();        
+        let errors = [];
+        let obj = {};        
+
+        obj.situacao = body.situacao;
 
         const connection = await app.dao.connections.EatendConnection.connection();
-        
-        try {
-            await Promise.resolve();
 
-            res.status(200).json('ok');
+        const profissionalRepository = new app.dao.ProfissionalDAO(connection);
+        const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
+
+        try {
+
+            await connection.beginTransaction();
+
+            var buscaAtendimento = await atendimentoRepository.buscaPorIdSync(atendimentoId);
+
+            if (!buscaAtendimento) {
+                errors = util.customError(errors, "header", "Atendimento não encontrado", atendimentoId);
+                res.status(400).send(errors);
+                await connection.rollback();
+                return;
+            }
+
+            if(buscaAtendimento.dataFinalizacao || buscaAtendimento.dataCancelamento){
+                errors = util.customError(errors, "header", "Atendimento já foi finalizado/cancelado", atendimentoId);
+                res.status(400).send(errors);
+                await connection.rollback();
+                return;
+            }
+
+            var objHistorico = Object.assign({},buscaAtendimento);
+            delete objHistorico.pacienteNome;
+            delete objHistorico.pacienteHistoriaProgressa; 
+            delete objHistorico.pesquisaCentral;   
+            delete objHistorico.tipoHistoriaClinica;
+            delete objHistorico.nome;
+            delete objHistorico.historiaProgressaFamiliar;
+            delete objHistorico.idMunicipioEstabelecimento;
+            delete objHistorico.idUfEstabelecimento;
+
+            if(obj.situacao == 'X'){
+                obj.dataCancelamento = new Date();
+                obj.motivoCancelamento = "Cancelamento realizado pela ficha digital";
+                objHistorico.dataCancelamento = obj.dataCancelamento;
+                objHistorico.motivoCancelamento = obj.motivoCancelamento;
+            }else{
+                obj.dataFinalizacao = new Date();
+                objHistorico.dataFinalizacao = new Date();
+            }
+
+            obj.idUsuarioAlteracao = buscaAtendimento.idUsuario;
+            var atualizaAtendimento = await atendimentoRepository.atualizaPorIdSync(obj, atendimentoId);
+            delete objHistorico.dataCriacao;
+            delete objHistorico.id;
+            objHistorico.idUsuarioAlteracao = buscaAtendimento.idUsuario;
+            objHistorico.situacao = obj.situacao;
+            objHistorico.idTipoAtendimentoHistorico = 7;
+            objHistorico.textoHistorico = "";
+            objHistorico.idAtendimento = atendimentoId;
+            
+
+            var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
+
+            res.status(201).send('ok');
+
+            await connection.commit();
         }
         catch (exception) {
-            const errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
+            console.log("Erro ao salvar o atendimento (" + atendimentoId + "), exception: " + exception);
+            errors = util.customError(errors, "data", "Erro ao salvar o atendimento (" + atendimentoId + "), exception: " + exception, "objs");
             res.status(500).send(errors);
+            await connection.rollback();
         }
-        finally{
+        finally {
             await connection.close();
         }
     });
