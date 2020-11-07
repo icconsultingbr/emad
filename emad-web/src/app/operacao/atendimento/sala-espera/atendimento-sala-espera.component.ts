@@ -46,6 +46,9 @@ export class AtendimentoSalaEsperaComponent implements OnInit {
   showLabels: Boolean = false;
   loading: boolean = false;
 
+  sortColumn: string = 'id';
+  sortOrder: string = 'desc';
+
   //ACTION BUTTONS
   @Input() create: Boolean = true;  
   @Input() view: Boolean = true;  
@@ -178,6 +181,10 @@ export class AtendimentoSalaEsperaComponent implements OnInit {
 
     params += (params == "" ? "?" : "&") + "situacao=0";
 
+    if(this.sortColumn) {
+      params += (params == "" ? "?" : "&") +  `sortColumn=${this.sortColumn}&sortOrder=${this.sortOrder}`;
+    }
+    
     this.service.list(this.method + params).subscribe(result => {
       this.warning = "";
       this.paging.total = result.total;
@@ -379,5 +386,19 @@ export class AtendimentoSalaEsperaComponent implements OnInit {
       centered: true,
       size: "sm"
     });
+  }
+
+  sort(field: string): void {
+    if(this.sortColumn === field){
+      this.toggleSort();
+    }
+
+    this.sortColumn = field;
+  
+    this.getListPaged(this.paging.offset, this.paging.limit);
+  }
+
+  toggleSort(): void {
+    this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
   }
 }

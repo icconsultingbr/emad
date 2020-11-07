@@ -36,8 +36,10 @@ AtendimentoDAO.prototype.listarAsync = async function(addFilter) {
         if (addFilter.situacao) {
             where+=" AND a.situacao  = '"+addFilter.situacao+"'";
             
-            if(addFilter.situacao == "0")
-                orderBy = " cla.peso desc, a.dataCriacao asc ";
+            if(addFilter.situacao == "0"){
+                orderBy = " cla.peso desc, a.dataCriacao ";
+                addFilter.sortOrder = "";
+            }
         }
 
         if(addFilter.idSap){
