@@ -533,7 +533,9 @@ AtendimentoDAO.prototype.buscaPorIdSync = async function (id) {
 AtendimentoDAO.prototype.buscaHistoricoPorAtendimento = async function (id) {
     let atendimento =  await this._connection.query(`select historico.id idHistorico, historico.idAtendimento, historico.idTipoAtendimentoHistorico, 
     tipo_historico.nome nomeTipoHistorico, usu.nome nomeProfissional, usu.foto fotoProfissional,
-    historico.textoHistorico, DATE_FORMAT(DATE_ADD(historico.dataCriacao, INTERVAL -3 hour),'%d/%m/%Y %H:%i:%s') dataHistorico
+    historico.textoHistorico, DATE_FORMAT(DATE_ADD(historico.dataCriacao, INTERVAL -3 hour),'%d/%m/%Y %H:%i:%s') dataHistorico,
+     DATE_FORMAT(historico.dataFinalizacao,'%d/%m/%Y %H:%i:%s') dataFinalizacao,
+      DATE_FORMAT(historico.dataCancelamento,'%d/%m/%Y %H:%i:%s') dataCancelamento
     from tb_atendimento_historico historico 
     inner join tb_tipo_atendimento_historico tipo_historico on tipo_historico.id = historico.idTipoAtendimentoHistorico
     inner join tb_usuario usu on usu.id = historico.idUsuario

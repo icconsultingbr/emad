@@ -633,9 +633,14 @@ module.exports = function (app) {
 
         obj.situacao = body.situacao ? body.situacao : "2"; //Concluído
 
-        const connection = await app.dao.connections.EatendConnection.connection();
+        if(obj.situacao == 'X')
+            obj.dataCancelamento = body.dataCancelamento ? body.dataCancelamento : new Date();
+        else
+            obj.dataFinalizacao = body.dataFinalizacao ? body.dataFinalizacao : new Date();        
+        
 
-        const profissionalRepository = new app.dao.ProfissionalDAO(connection);
+        const connection = await app.dao.connections.EatendConnection.connection();
+        
         const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
 
         try {
@@ -669,13 +674,11 @@ module.exports = function (app) {
             delete objHistorico.idUfEstabelecimento;
 
             if(obj.situacao == 'X'){
-                obj.dataCancelamento = new Date();
-                obj.motivoCancelamento = "Cancelamento realizado pela ficha digital";
-                objHistorico.dataCancelamento = obj.dataCancelamento;
+                obj.motivoCancelamento = "Cancelamento realizado pela ficha digital";                
                 objHistorico.motivoCancelamento = obj.motivoCancelamento;
+                objHistorico.dataCancelamento = obj.dataCancelamento;
             }else{
-                obj.dataFinalizacao = new Date();
-                objHistorico.dataFinalizacao = new Date();
+                objHistorico.dataFinalizacao = obj.dataFinalizacao;
             }
 
             obj.idUsuarioAlteracao = buscaAtendimento.idUsuario;
@@ -688,7 +691,6 @@ module.exports = function (app) {
             objHistorico.textoHistorico = "";
             objHistorico.idAtendimento = atendimentoId;
             
-
             var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
 
             res.status(201).send('ok');

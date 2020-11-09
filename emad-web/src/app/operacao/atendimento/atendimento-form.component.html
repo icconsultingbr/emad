@@ -511,7 +511,10 @@
                         {{itemHistorico.nomeTipoHistorico}}
                       </div>
                       <div class="timeline-body-content">
-                          <p><span class="text-muted">{{itemHistorico.dataHistorico}} - </span>Profissional: <b>{{itemHistorico.nomeProfissional}}</b> executou <b>{{itemHistorico.nomeTipoHistorico}}</b>.</p>
+                          <p><span class="text-muted">{{
+                              itemHistorico.idTipoAtendimentoHistorico == 7 &&  itemHistorico.dataCancelamento ? itemHistorico.dataCancelamento :
+                              itemHistorico.idTipoAtendimentoHistorico == 7 &&  itemHistorico.dataFinalizacao ? itemHistorico.dataFinalizacao :
+                              itemHistorico.dataHistorico}} - </span>Profissional: <b>{{itemHistorico.nomeProfissional}}</b> executou <b>{{itemHistorico.nomeTipoHistorico}}</b>.</p>
                           <p><button class="btn btn-primary" type="button" (click)="openHistorico(contentAtendimentoHistorico, itemHistorico.idHistorico)">
                             <i class="fa fa-search"></i>  Visualizar
                           </button></p>
