@@ -149,12 +149,6 @@ export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
       if (Object.keys(this.object).length) {
         for (let key of Object.keys(this.object)) {
           if (!Util.isEmpty(this.object[key])) {
-            if (this.object[key].length<3)
-            {
-              this.errors = [{message:"Digite ao menos 3 caracteres"}];    
-              this.loading = false;          
-              return;
-            }
             params += key + "=" + this.object[key] + "&";
           }
         }
