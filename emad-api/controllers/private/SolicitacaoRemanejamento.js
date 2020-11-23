@@ -190,142 +190,144 @@ module.exports = function (app) {
                     var responseItem = await itemSolicitacaoRemanejamentoRepository.atualiza(itemSolicitacao);
                 }                
 
-                for (const itemMovimento of itemSolicitacao.itensEstoque) {
+                if(itemSolicitacao.itensEstoque){
+                    for (const itemMovimento of itemSolicitacao.itensEstoque) {
 
-                    existeRemanejamento = true;
+                        existeRemanejamento = true;
 
-                    var saldoAnteriorUnidade = 0;
-                    var saldoAnteriorUnidadeLote = 0;
-                    var saldoAtualUnidade = 0;
-                    var saldoEntregue = 0;
-                    //var estoque = {};
-                    var qtdEstoque = 0;
-                    var nomeMaterial = "";
-                    var idEstoqueAux = 0;
+                        var saldoAnteriorUnidade = 0;
+                        var saldoAnteriorUnidadeLote = 0;
+                        var saldoAtualUnidade = 0;
+                        var saldoEntregue = 0;
+                        //var estoque = {};
+                        var qtdEstoque = 0;
+                        var nomeMaterial = "";
+                        var idEstoqueAux = 0;
 
-                    itemMovimentoGeral = {};
-                    itemMovimentoGeral.idMovimentoGeral = movimentoGeral.id;
-                    itemMovimentoGeral.idMaterial = itemMovimento.idMaterial;
-                    itemMovimentoGeral.idFabricante = itemMovimento.idFabricante ? itemMovimento.idFabricante : itemMovimento.idFabricanteMaterial;
-                    itemMovimentoGeral.idFabricanteMaterial = itemMovimento.idFabricante ? itemMovimento.idFabricante : itemMovimento.idFabricanteMaterial;
-                    itemMovimentoGeral.lote = itemMovimento.lote;
-                    itemMovimentoGeral.validade = itemMovimento.validade;
-                    itemMovimentoGeral.quantidade = (solicitacaoRemanejamento.idTipoMovimento == 5) ? parseInt(itemMovimento.quantidade) : parseInt(itemMovimento.qtdDispensar);
-                    itemMovimentoGeral.idItemReceita = null;
-                    itemMovimentoGeral.idEstabelecimento = movimentoGeral.idEstabelecimento;
-                    itemMovimentoGeral.itemSolicitacaoRemanejamento = itemSolicitacao.id;
+                        itemMovimentoGeral = {};
+                        itemMovimentoGeral.idMovimentoGeral = movimentoGeral.id;
+                        itemMovimentoGeral.idMaterial = itemMovimento.idMaterial;
+                        itemMovimentoGeral.idFabricante = itemMovimento.idFabricante ? itemMovimento.idFabricante : itemMovimento.idFabricanteMaterial;
+                        itemMovimentoGeral.idFabricanteMaterial = itemMovimento.idFabricante ? itemMovimento.idFabricante : itemMovimento.idFabricanteMaterial;
+                        itemMovimentoGeral.lote = itemMovimento.lote;
+                        itemMovimentoGeral.validade = itemMovimento.validade;
+                        itemMovimentoGeral.quantidade = (solicitacaoRemanejamento.idTipoMovimento == 5) ? parseInt(itemMovimento.quantidade) : parseInt(itemMovimento.qtdDispensar);
+                        itemMovimentoGeral.idItemReceita = null;
+                        itemMovimentoGeral.idEstabelecimento = movimentoGeral.idEstabelecimento;
+                        itemMovimentoGeral.itemSolicitacaoRemanejamento = itemSolicitacao.id;
 
-                    itemMovimentoGeral.idUsuarioCriacao = usuario.id;
-                    itemMovimentoGeral.dataCriacao = new Date();
-                    itemMovimentoGeral.situacao = 1;
+                        itemMovimentoGeral.idUsuarioCriacao = usuario.id;
+                        itemMovimentoGeral.dataCriacao = new Date();
+                        itemMovimentoGeral.situacao = 1;
 
-                    var responseItemMovimentoGeral = await itemMovimentoGeralRepository.salva(itemMovimentoGeral);
-                    itemMovimentoGeral.id = responseItemMovimentoGeral[0].insertId;
+                        var responseItemMovimentoGeral = await itemMovimentoGeralRepository.salva(itemMovimentoGeral);
+                        itemMovimentoGeral.id = responseItemMovimentoGeral[0].insertId;
 
-                    //obtem a quantidade de material de uma unidade no estoque
-                    saldoAnteriorUnidadeLote = await estoqueRepository.carregaQuantidadePorMaterialEstabelecimentoLote(itemMovimentoGeral);
+                        //obtem a quantidade de material de uma unidade no estoque
+                        saldoAnteriorUnidadeLote = await estoqueRepository.carregaQuantidadePorMaterialEstabelecimentoLote(itemMovimentoGeral);
 
-                    //obtem o saldo anterior de um material no estoque
-                    saldoAnteriorUnidade = await estoqueRepository.carregaQuantidadePorMaterialEstabelecimento(itemMovimentoGeral);
+                        //obtem o saldo anterior de um material no estoque
+                        saldoAnteriorUnidade = await estoqueRepository.carregaQuantidadePorMaterialEstabelecimento(itemMovimentoGeral);
 
-                    //verifica se eh uma insercao ou uma atualizacao no estoque
-                    var estoque = await estoqueRepository.carregaEstoquePorMaterial(itemMovimentoGeral);
+                        //verifica se eh uma insercao ou uma atualizacao no estoque
+                        var estoque = await estoqueRepository.carregaEstoquePorMaterial(itemMovimentoGeral);
 
-                    let materialComBloqueio = 0;
+                        let materialComBloqueio = 0;
 
-                    var temEstoqueInsuficiente = [];
+                        var temEstoqueInsuficiente = [];
 
-                    if(estoque.length > 0){                            
-                        qtdEstoque = estoque[0].quantidade;
-                        nomeMaterial = estoque[0].nomeMaterial;
-                        idEstoqueAux = estoque[0].id;   
-                        
-                        var qtd = 0;
+                        if(estoque.length > 0){                            
+                            qtdEstoque = estoque[0].quantidade;
+                            nomeMaterial = estoque[0].nomeMaterial;
+                            idEstoqueAux = estoque[0].id;   
+                            
+                            var qtd = 0;
 
-                        if(operacaoTipoMovimento == '1')
-                            qtd = (qtdEstoque > 0 ? qtdEstoque : 0) + itemMovimentoGeral.quantidade;                                                       
-                        else
-                            qtd = (qtdEstoque > 0 ? qtdEstoque : 0) - itemMovimentoGeral.quantidade;  
-                                                
-                        if(qtd >= 0)
-                            var responseAtualizacaoQtd = await estoqueRepository.atualizaQuantidadeEstoque(qtd, usuario.id, idEstoqueAux);  
+                            if(operacaoTipoMovimento == '1')
+                                qtd = (qtdEstoque > 0 ? qtdEstoque : 0) + itemMovimentoGeral.quantidade;                                                       
+                            else
+                                qtd = (qtdEstoque > 0 ? qtdEstoque : 0) - itemMovimentoGeral.quantidade;  
+                                                    
+                            if(qtd >= 0)
+                                var responseAtualizacaoQtd = await estoqueRepository.atualizaQuantidadeEstoque(qtd, usuario.id, idEstoqueAux);  
+                            else{
+                                temEstoqueInsuficiente.push(itemMovimento);
+                            }
+                        }
                         else{
-                            temEstoqueInsuficiente.push(itemMovimento);
+                            //verificando se existe material/lote/fabricante bloqueado para alguma unidade
+                            var estoqueComBloqueio = await estoqueRepository.carregaEstoquePorMaterialBloqueado(itemMovimentoGeral);
+                            materialComBloqueio = (estoqueComBloqueio.length > 0) ? 1 : 0;
+
+                            novoEstoque = {};
+                            novoEstoque.idFabricanteMaterial = itemMovimento.idFabricante ? itemMovimento.idFabricante : itemMovimento.idFabricanteMaterial;
+                            novoEstoque.idMaterial = itemMovimento.idMaterial;
+                            novoEstoque.idEstabelecimento = movimentoGeral.idEstabelecimento;
+                            novoEstoque.lote = itemMovimento.lote;
+                            novoEstoque.validade = new Date(itemMovimento.validade);
+                            novoEstoque.quantidade = itemMovimentoGeral.quantidade;
+                            novoEstoque.bloqueado = materialComBloqueio;                   
+            
+                            novoEstoque.idUsuarioCriacao = usuario.id;
+                            novoEstoque.dataCriacao = new Date();
+                            novoEstoque.situacao = 1;
+
+                            var responseEstoque = await estoqueRepository.salvaSync(novoEstoque);
                         }
-                    }
-                    else{
-                        //verificando se existe material/lote/fabricante bloqueado para alguma unidade
-                        var estoqueComBloqueio = await estoqueRepository.carregaEstoquePorMaterialBloqueado(itemMovimentoGeral);
-                        materialComBloqueio = (estoqueComBloqueio.length > 0) ? 1 : 0;
 
-                        novoEstoque = {};
-                        novoEstoque.idFabricanteMaterial = itemMovimento.idFabricante ? itemMovimento.idFabricante : itemMovimento.idFabricanteMaterial;
-                        novoEstoque.idMaterial = itemMovimento.idMaterial;
-                        novoEstoque.idEstabelecimento = movimentoGeral.idEstabelecimento;
-                        novoEstoque.lote = itemMovimento.lote;
-                        novoEstoque.validade = new Date(itemMovimento.validade);
-                        novoEstoque.quantidade = itemMovimentoGeral.quantidade;
-                        novoEstoque.bloqueado = materialComBloqueio;                   
-        
-                        novoEstoque.idUsuarioCriacao = usuario.id;
-                        novoEstoque.dataCriacao = new Date();
-                        novoEstoque.situacao = 1;
-
-                        var responseEstoque = await estoqueRepository.salvaSync(novoEstoque);
-                    }
-
-                    if(temEstoqueInsuficiente.length > 0){
-                        for (const itemSemEstoque of temEstoqueInsuficiente) {   
-                            errors.push(util.customError(errors, "header", "Medicamento com estoque insuficiente " + itemSemEstoque.nomeMaterial + ".", ""));
-                        }                        
-                        res.status(400).send(errors);
-                        await connection.rollback();
-                        return;
-                    }
-
-                    saldoEntregue = itemMovimentoGeral.quantidade;               
-                    
-                    saldoAtualUnidade = await estoqueRepository.carregaQuantidadePorMaterialEstabelecimento(itemMovimentoGeral);
-
-                    var responseMovimentoLivro = await movimentoLivroRepository.carregaLivroPorMovimento(itemMovimentoGeral);
-                    
-                    if(responseMovimentoLivro.length > 0){
-                        if(operacaoTipoMovimento == '1'){
-                            var qtdeEntradaLivro =parseInt( responseMovimentoLivro[0].quantidadeEntrada) + itemMovimentoGeral.quantidade;
-                            var responseAtualizacaoMovimentoLivro = await movimentoLivroRepository.atualizaEntrada(qtdeEntradaLivro, saldoAtualUnidade, itemMovimentoGeral, usuario.id);
-                        }else{
-                            var qtdeSaidaLivro = parseInt(responseMovimentoLivro[0].quantidadeSaida) + itemMovimentoGeral.quantidade;
-                            var responseAtualizacaoMovimentoLivro = await movimentoLivroRepository.atualizaSaida(qtdeSaidaLivro, saldoAtualUnidade, itemMovimentoGeral, usuario.id);
+                        if(temEstoqueInsuficiente.length > 0){
+                            for (const itemSemEstoque of temEstoqueInsuficiente) {   
+                                errors.push(util.customError(errors, "header", "Medicamento com estoque insuficiente " + itemSemEstoque.nomeMaterial + ".", ""));
+                            }                        
+                            res.status(400).send(errors);
+                            await connection.rollback();
+                            return;
                         }
-                    }
-                    else{                        
-                        var historico = nomeTipoMovimento + " a partir da solicitação: " + movimentoGeral.numeroDocumento + " da unidade " + nomeEstabelecimento;
 
-                        let movimentoLivro = {};
-                        movimentoLivro.idMovimentoGeral = movimentoGeral.id;
-                        movimentoLivro.idEstabelecimento = movimentoGeral.idEstabelecimento;
-                        movimentoLivro.idMaterial = itemMovimentoGeral.idMaterial;
-                        movimentoLivro.idTipoMovimento = movimentoGeral.idTipoMovimento;
-                        movimentoLivro.saldoAnterior = saldoAnteriorUnidade;
-
-                        if(operacaoTipoMovimento == '1')
-                            movimentoLivro.quantidadeEntrada = itemMovimentoGeral.quantidade;
-                        else if(operacaoTipoMovimento == '2')
-                            movimentoLivro.quantidadeSaida = itemMovimentoGeral.quantidade;
-                        else if(operacaoTipoMovimento == '3')
-                            movimentoLivro.quantidadePerda = itemMovimentoGeral.quantidade;
-
-                        movimentoLivro.saldoAtual = saldoAtualUnidade;
-                        movimentoLivro.dataMovimentacao = new Date();
-                        movimentoLivro.historico = historico;
-
-                        movimentoLivro.idUsuarioCriacao = usuario.id;
-                        movimentoLivro.dataCriacao = new Date;
-                        movimentoLivro.situacao = 1;
+                        saldoEntregue = itemMovimentoGeral.quantidade;               
                         
-                        var responseMovimentoLivro = await movimentoLivroRepository.salva(movimentoLivro);
-                        movimentoLivro.id = responseMovimentoLivro[0].insertId;
+                        saldoAtualUnidade = await estoqueRepository.carregaQuantidadePorMaterialEstabelecimento(itemMovimentoGeral);
 
+                        var responseMovimentoLivro = await movimentoLivroRepository.carregaLivroPorMovimento(itemMovimentoGeral);
+                        
+                        if(responseMovimentoLivro.length > 0){
+                            if(operacaoTipoMovimento == '1'){
+                                var qtdeEntradaLivro =parseInt( responseMovimentoLivro[0].quantidadeEntrada) + itemMovimentoGeral.quantidade;
+                                var responseAtualizacaoMovimentoLivro = await movimentoLivroRepository.atualizaEntrada(qtdeEntradaLivro, saldoAtualUnidade, itemMovimentoGeral, usuario.id);
+                            }else{
+                                var qtdeSaidaLivro = parseInt(responseMovimentoLivro[0].quantidadeSaida) + itemMovimentoGeral.quantidade;
+                                var responseAtualizacaoMovimentoLivro = await movimentoLivroRepository.atualizaSaida(qtdeSaidaLivro, saldoAtualUnidade, itemMovimentoGeral, usuario.id);
+                            }
+                        }
+                        else{                        
+                            var historico = nomeTipoMovimento + " a partir da solicitação: " + movimentoGeral.numeroDocumento + " da unidade " + nomeEstabelecimento;
+
+                            let movimentoLivro = {};
+                            movimentoLivro.idMovimentoGeral = movimentoGeral.id;
+                            movimentoLivro.idEstabelecimento = movimentoGeral.idEstabelecimento;
+                            movimentoLivro.idMaterial = itemMovimentoGeral.idMaterial;
+                            movimentoLivro.idTipoMovimento = movimentoGeral.idTipoMovimento;
+                            movimentoLivro.saldoAnterior = saldoAnteriorUnidade;
+
+                            if(operacaoTipoMovimento == '1')
+                                movimentoLivro.quantidadeEntrada = itemMovimentoGeral.quantidade;
+                            else if(operacaoTipoMovimento == '2')
+                                movimentoLivro.quantidadeSaida = itemMovimentoGeral.quantidade;
+                            else if(operacaoTipoMovimento == '3')
+                                movimentoLivro.quantidadePerda = itemMovimentoGeral.quantidade;
+
+                            movimentoLivro.saldoAtual = saldoAtualUnidade;
+                            movimentoLivro.dataMovimentacao = new Date();
+                            movimentoLivro.historico = historico;
+
+                            movimentoLivro.idUsuarioCriacao = usuario.id;
+                            movimentoLivro.dataCriacao = new Date;
+                            movimentoLivro.situacao = 1;
+                            
+                            var responseMovimentoLivro = await movimentoLivroRepository.salva(movimentoLivro);
+                            movimentoLivro.id = responseMovimentoLivro[0].insertId;
+
+                        }
                     }
                 }
             }
