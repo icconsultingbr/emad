@@ -187,6 +187,8 @@ module.exports = function (app) {
                     itemSolicitacao.dataAlteracao = new Date();
                     itemSolicitacao.idUsuarioAlteracao = usuario.id;
 
+                    itemSolicitacao.qtdAtendida = itemSolicitacao.qtdAtendida ? itemSolicitacao.qtdAtendida : 0;
+
                     var responseItem = await itemSolicitacaoRemanejamentoRepository.atualiza(itemSolicitacao);
                 }                
 
