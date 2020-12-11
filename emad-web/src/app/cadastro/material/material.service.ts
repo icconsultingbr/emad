@@ -159,6 +159,16 @@ export class MaterialService extends GenericsService {
       validator: ['', '']
     },
     {
+      field: "vacina",
+      type: "checkbox",
+      label: "Vacina",
+      grid: true,
+      form: true,
+      translate: { 1: "Sim", 0: "Não" },
+      required: false,
+      validator: ['', '']
+    },
+    {
       field: "situacao",
       type: "checkbox",
       label: "Situação",

@@ -35,22 +35,22 @@ export class MaterialFormComponent implements OnInit {
     this.loadDomains();
   }
 
-  loadDomains() {    
+  loadDomains() {
     this.service.listDomains('unidade-material').subscribe(unidadeMaterial => {
       this.service.listDomains('lista-controle-especial').subscribe(listaControleEspecial => {
-        this.service.listDomains('grupo-material').subscribe(grupoMaterial => {          
+        this.service.listDomains('grupo-material').subscribe(grupoMaterial => {
           this.service.listDomains('tipo-material').subscribe(tipoMaterial => {
-            this.domains.push({            
+            this.domains.push({
               idUnidadeMaterial: unidadeMaterial,
               idListaControleEspecial: listaControleEspecial,
               idGrupoMaterial: grupoMaterial,
               idSubGrupoMaterial: [],
               idFamiliaMaterial: [],
               idTipoMaterial: tipoMaterial,
-             });                      
-          });                      
-        });                      
-      });                      
+             });
+          });
+        });
+      });
     });
-  }    
+  }
 }
