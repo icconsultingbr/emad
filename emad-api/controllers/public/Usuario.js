@@ -278,22 +278,30 @@ module.exports = function (app) {
     });
 
     async function buscaPorEmail(usuario) {
-        //const context = await app.dao.ConnectionFactory();
         const connection = await app.dao.connections.EatendConnection.connection();
         const usuarioDAO = new app.dao.UsuarioDAO(connection);
-
-        return await usuarioDAO.buscaPorEmail(usuario).catch(exception => {
+        try {
+            return await usuarioDAO.buscaPorEmail(usuario);
+        } catch (error) {
             console.log(exception);
-        });
+        }
+        finally {
+            await connection.close();
+        }
     }
 
     async function buscaPorCPF(cpf) {
         const connection = await app.dao.connections.EatendConnection.connection();
         const usuarioDAO = new app.dao.UsuarioDAO(connection);
 
-        return await usuarioDAO.buscaPorCPF(cpf).catch(exception => {
+        try {
+            return await usuarioDAO.buscaPorCPF(cpf);
+        } catch (error) {
             console.log(exception);
-        });
+        }
+        finally {
+            await connection.close();
+        }
     }
 
     function gravaUsuario(cadastro, res) {
@@ -324,10 +332,15 @@ module.exports = function (app) {
         delete usuario.logo;
         delete usuario.cor;
 
-        return await usuarioDAO.atualiza(usuario, id).catch(exception => {
+        try {
+            return await usuarioDAO.atualiza(usuario, id);
+        } catch (error) {
             console.log('Erro ao atualizar os dados do usuario', exception);
             res.status(500).send(exception);
-        });
+        } 
+        finally {
+            await connection.close();
+        }
     }
 
     async function atualizaToken(usuario, res) {
@@ -339,10 +352,15 @@ module.exports = function (app) {
         delete usuario.logo;
         delete usuario.cor;
 
-        return await usuarioDAO.atualizaToken(usuario, id).catch(exception => {
-            console.log('Erro ao atualizar o token no banco', exception);
+        try {
+            return await usuarioDAO.atualizaToken(usuario, id);    
+        } catch (error) {
+            console.log('Erro ao atualizar o token no banco', error);
             res.status(500).send(exception);
-        });
+        }
+        finally {
+            await connection.close();
+        }
     }
 
     function atualizaTentativa(id, res) {
@@ -396,10 +414,15 @@ module.exports = function (app) {
         const menuDAO = new app.dao.MenuDAO(connection);
         let errors = [];
 
-        return await menuDAO.listaRotasPorTipoUsuario(idTipoUsuario).catch(exception => {
+        try {
+            return await menuDAO.listaRotasPorTipoUsuario(idTipoUsuario);
+        } catch (error) {
             errors = util.customError(errors, "data", "Erro ao acessar os dados", "menu");
             res.status(500).send(errors);
-        });
+        }
+        finally {
+            await connection.close();
+        }
     }
 
     async function listaEstabelecimentoPorUsuarioLogin(idUsuario, idTipoUsuario, res) {
@@ -408,19 +431,21 @@ module.exports = function (app) {
         const estabelecimentoUsuarioDAO = new app.dao.EstabelecimentoUsuarioDAO(connection);
         const estabelecimentoDAO = new app.dao.EstabelecimentoDAO(connection);
         let errors = [];
+        try {
+            if (idTipoUsuario == util.SUPER_ADMIN) {
+                return await estabelecimentoDAO.lista(null);
+            }
+            else {
+                return await estabelecimentoUsuarioDAO.buscaPorUsuario(idUsuario).catch(exception => {});
+            }
+        } catch (error) {
+            errors = util.customError(errors, "data", "Erro ao acessar os dados", "estabelecimento");
+            res.status(500).send(errors);
+        }
+        finally {
+            await connection.close();
+        }
 
-        if (idTipoUsuario == util.SUPER_ADMIN) {
-            return await estabelecimentoDAO.lista(null).catch(exception => {
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "estabelecimento");
-                res.status(500).send(errors);
-            });
-        }
-        else {
-            return await estabelecimentoUsuarioDAO.buscaPorUsuario(idUsuario).catch(exception => {
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "estabelecimento");
-                res.status(500).send(errors);
-            });
-        }
     }
 
     function addLog(req) {
@@ -462,11 +487,16 @@ module.exports = function (app) {
         var errors = [];
         result = [];
 
-        return await objDAO.buscarValorPorChaveSync(chave).catch(exception => {
+        try {
+            return await objDAO.buscarValorPorChaveSync(chave);
+        } catch (error) {
             console.log(exception);
             errors = util.customError(errors, "data", "Erro ao editar os dados", "atendimento");
             res.status(500).send(errors);
-        });
+        }
+        finally {
+            await connection.close();
+        }
     }
 
 }
