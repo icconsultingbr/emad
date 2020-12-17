@@ -23,7 +23,7 @@ EstabelecimentoDAO.prototype.listaEstabelecimentosNivelSuperior = function(id, c
     WHERE e.situacao = 1 and nivelSuperior = 1 and e.id <> ? ORDER BY e.nomeFantasia ASC`,id, callback);
 }
 
-EstabelecimentoDAO.prototype.lista = function(addFilter, callback) {
+EstabelecimentoDAO.prototype.lista = async function(addFilter) {
     let where = "";
 
     if(addFilter != null){       
@@ -49,7 +49,7 @@ EstabelecimentoDAO.prototype.lista = function(addFilter, callback) {
         }
     }
 
-    this._connection.query(`SELECT 
+    return await this._connection.query(`SELECT 
         e.id,
         e.cnes,
         e.cnpj,
@@ -86,7 +86,7 @@ EstabelecimentoDAO.prototype.lista = function(addFilter, callback) {
     INNER JOIN 
         tb_uf as u ON(e.idUf = u.id) 
     INNER JOIN 
-        tb_tipo_unidade as tu ON(e.idTipoUnidade = tu.id) WHERE e.situacao = 1 ORDER BY e.nomeFantasia ASC ${where} `,callback);
+        tb_tipo_unidade as tu ON(e.idTipoUnidade = tu.id) WHERE e.situacao = 1 ORDER BY e.nomeFantasia ASC ${where} `);
 }
 
 EstabelecimentoDAO.prototype.buscaPorId = function (id,callback) {
