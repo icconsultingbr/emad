@@ -43,10 +43,10 @@ MenuDAO.prototype.listaDescricao = function(callback) {
             m.menuPai ASC, m2.nome ASC, m.nome ASC`, callback);
 } 
 
-MenuDAO.prototype.listaRotasPorTipoUsuario = function(idTipoUsuario, callback) {
-    this._connection.query(
+MenuDAO.prototype.listaRotasPorTipoUsuario = async function(idTipoUsuario) {
+    return await this._connection.query(
         "select m.rota from "+this._table+" as m INNER JOIN tb_tipo_usuario_menu tum ON(m.id = tum.idMenu) WHERE tum.idTipoUsuario = ? AND m.situacao = 1 ORDER BY ordem ASC", 
-        idTipoUsuario, callback);
+        idTipoUsuario);
 }
 
 MenuDAO.prototype.listaOrdemMenuFilhoPorMenuPai = function(idMenuPai, callback) {

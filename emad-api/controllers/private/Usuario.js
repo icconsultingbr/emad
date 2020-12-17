@@ -682,15 +682,12 @@ module.exports = function (app) {
       let id = cadastro.id;
       delete cadastro.id;
 
-      usuarioDAO.atualiza(cadastro, id, function (exception, result) {
-        if (exception) {
+      usuarioDAO.atualiza(cadastro, id).then(result => {
+        d.resolve(result);
+      }).catch(exception => {
           console.log("Erro ao inserir no banco de dados", exception);
           res.status(500).send(exception);
           d.reject(exception);
-          return;
-        } else {
-          d.resolve(result);
-        }
       });
     } else {
       usuarioDAO.salva(cadastro, function (exception, result) {

@@ -8,14 +8,14 @@ UsuarioDAO.prototype.salva = function (usuario, callback) {
     console.log(query.sql);
 }
 
-UsuarioDAO.prototype.atualiza = function (usuario, id, callback) {
+UsuarioDAO.prototype.atualiza = async function (usuario, id) {
 
-    this._connection.query(`UPDATE ${this._table} SET ? where id= ?`, [usuario, id], callback);
+   return await this._connection.query(`UPDATE ${this._table} SET ? where id= ?`, [usuario, id]);
 }
 
-UsuarioDAO.prototype.atualizaToken = function (usuario, id, callback) {
+UsuarioDAO.prototype.atualizaToken = async function (usuario, id) {
 
-    this._connection.query(`UPDATE ${this._table} SET 
+    return await this._connection.query(`UPDATE ${this._table} SET 
 
     token = '${usuario.token}', 
     dataToken = current_timestamp(), 
@@ -23,7 +23,7 @@ UsuarioDAO.prototype.atualizaToken = function (usuario, id, callback) {
     ultimoLogin = current_timestamp(), 
     tentativasSenha = 0 
     
-    where id= ?`, id, callback);
+    where id= ?`, id);
 }
 
 UsuarioDAO.prototype.atualizaTentativa = function (id, callback) {
@@ -108,7 +108,7 @@ UsuarioDAO.prototype.listaPorEmpresa = function (id, callback) {
         FROM ${this._table} WHERE id = ?`, [id], callback);
 }
 
-UsuarioDAO.prototype.buscaPorEmail = function (usuario, callback) {
+UsuarioDAO.prototype.buscaPorEmail = async function (usuario) {
 
     let where = "";
 
@@ -121,14 +121,14 @@ UsuarioDAO.prototype.buscaPorEmail = function (usuario, callback) {
         where += "AND u.id <> ?";
     }
 
-    this._connection.query(`
+    return await this._connection.query(`
         SELECT u.*, 
         IF((DATE_ADD(IFNULL(u.dataAtualizacaoSenha,u.dataCriacao),  INTERVAL tu.periodoSenha DAY)) <= CURRENT_TIMESTAMP(), 1,0) as expiredPassword,
         tu.bloqueioTentativas 
         
         FROM ${this._table} as u 
         INNER JOIN tb_tipo_usuario as tu ON(u.idTipoUsuario = tu.id) 
-        WHERE u.situacao = true AND tu.situacao = true ${where}`, [usuario.email, usuario.id], callback);
+        WHERE u.situacao = true AND tu.situacao = true ${where}`, [usuario.email, usuario.id]);
 }
 
 UsuarioDAO.prototype.buscaPorToken = function (token, callback) {
@@ -137,7 +137,7 @@ UsuarioDAO.prototype.buscaPorToken = function (token, callback) {
     WHERE u.situacao = true AND tu.situacao = true AND token = ?", token, callback);
 }
 
-UsuarioDAO.prototype.buscaPorCPF = function (usuario, callback) {
+UsuarioDAO.prototype.buscaPorCPF = async function (usuario) {
 
     let where = " AND u.cpf = ? ";
 
@@ -145,8 +145,8 @@ UsuarioDAO.prototype.buscaPorCPF = function (usuario, callback) {
         where += "AND u.id <> ?";
     }
 
-    this._connection.query(`select u.* from ${this._table} as u 
-    WHERE 1=1 ${where}`, [usuario.cpf, usuario.id], callback);
+    return await this._connection.query(`select u.* from ${this._table} as u 
+    WHERE 1=1 ${where}`, [usuario.cpf, usuario.id]);
 }
 
 UsuarioDAO.prototype.deletaPorId = function (id, callback) {
