@@ -130,9 +130,11 @@ ReceitaDAO.prototype.buscaPorPacienteIdProntuario = async function (idPaciente) 
                                 ELSE 'Finalizada'
                                 END as situacaoNome
     from ${this._table} a     
+    INNER JOIN tb_item_receita tir ON (a.id = tir.idReceita)
+    INNER JOIN tb_material material ON (tir.idMaterial = material.id)
     INNER JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
     INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
-    WHERE a.idPaciente = ? order by a.id desc`, idPaciente); 
+    WHERE a.idPaciente = ? AND material.vacina = 0 order by a.id desc`, idPaciente); 
     return response;
 }
 
@@ -187,6 +189,52 @@ ReceitaDAO.prototype.lista = function(addFilter, callback) {
                             INNER JOIN tb_uf uf on uf.id = a.idUf
                             WHERE 1=1 ${where}
                             ORDER BY a.id desc`, callback);
+}
+ReceitaDAO.prototype.buscaPorPacienteIdProntuarioVacinacao = async function (idPaciente) {    
+    const response =  await this._connection.query(`SELECT 
+        a.id
+        ,a.idEstabelecimento
+        ,estabelecimento.nomeFantasia nomeEstabelecimento
+        ,a.idProfissional
+        ,profissional.nome nomeProfissional
+        ,material.codigo 
+        ,material.descricao 
+        ,tir.qtdPrescrita 
+        ,tir.qtdDispAnterior
+        ,tir.dataUltDisp 
+    from ${this._table} a     
+    INNER JOIN tb_item_receita tir ON (a.id = tir.idReceita)
+    INNER JOIN tb_material material ON (tir.idMaterial = material.id)
+    INNER JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
+    INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
+    WHERE a.idPaciente = ? AND material.vacina = 1 order by a.id desc`, idPaciente); 
+    return response;
+}
+ReceitaDAO.prototype.buscaCarteiraVacinacaoPorPaciente = async function (idPaciente) {    
+    const response =  await this._connection.query(`SELECT 
+    tm.descricao 
+    ,tr.dataUltimaDispensacao 
+    FROM tb_receita tr     
+    INNER JOIN tb_item_receita tir ON (tr.id = tir.idReceita)
+    INNER JOIN tb_material tm ON (tir.idMaterial = tm.id)
+    WHERE tm.vacina = 1 AND tr.idPaciente = ?`, idPaciente); 
+    
+    const pivoted = response.reduce((prev, cur) => {
+
+        let existing = prev.find(x => x.descricao === cur.descricao);
+      
+        if (existing)
+          existing.datasUltimaDispensacao.push(cur.dataUltimaDispensacao)
+        else
+          prev.push({
+            descricao: cur.descricao,
+            datasUltimaDispensacao: [cur.dataUltimaDispensacao]
+          });
+      
+        return prev;
+      }, []);
+
+    return pivoted;
 }
 module.exports = function(){
     return ReceitaDAO;

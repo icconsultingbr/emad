@@ -93,3 +93,7 @@ ul.timeline > li {
   .timeline .timeline-body-content > :last-child {
     margin-bottom: 8px;
   }
+  .container-header{
+      display: flex;
+      justify-content: space-between;
+  }
