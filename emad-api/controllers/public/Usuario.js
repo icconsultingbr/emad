@@ -436,7 +436,7 @@ module.exports = function (app) {
                 return await estabelecimentoDAO.lista(null);
             }
             else {
-                return await estabelecimentoUsuarioDAO.buscaPorUsuario(idUsuario).catch(exception => {});
+                return await estabelecimentoUsuarioDAO.buscaPorUsuario(idUsuario);
             }
         } catch (error) {
             errors = util.customError(errors, "data", "Erro ao acessar os dados", "estabelecimento");
