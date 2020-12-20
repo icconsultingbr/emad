@@ -640,36 +640,34 @@ module.exports = function (app) {
     }
   });
 
-  function buscaPorEmail(usuario) {
-    let q = require("q");
-    let d = q.defer();
-    let connection = app.dao.ConnectionFactory();
+  async function buscaPorEmail(usuario) {
+    const connection = await app.dao.connections.EatendConnection.connection();
     let usuarioDAO = new app.dao.UsuarioDAO(connection);
 
-    usuarioDAO.buscaPorEmail(usuario, function (exception, result) {
-      if (exception) {
-        d.reject(exception);
-      } else {
-        d.resolve(result);
-      }
-    });
-    return d.promise;
+    try {
+      return await usuarioDAO.buscaPorEmail(usuario);
+    } catch (error) {
+      console.log("Erro ao carregar usuario por email (" + usuario.email + "), exception: " + exception);
+      return 'Erro ao carregar usuário por email';
+    }
+    finally{
+      await connection.close();
+    }
   }
 
-  function buscaPorCPF(usuario) {
-    let q = require("q");
-    let d = q.defer();
-    let connection = app.dao.ConnectionFactory();
+  async function buscaPorCPF(usuario) {
+    const connection = await app.dao.connections.EatendConnection.connection();
     let usuarioDAO = new app.dao.UsuarioDAO(connection);
 
-    usuarioDAO.buscaPorCPF(usuario, function (exception, result) {
-      if (exception) {
-        d.reject(exception);
-      } else {
-        d.resolve(result);
-      }
-    });
-    return d.promise;
+    try {
+      return await usuarioDAO.buscaPorCPF(usuario);
+    } catch (error) {
+      console.log("Erro ao carregar usuario por CPF (" + usuario.cpf + "), exception: " + exception);
+      return 'Erro ao carregar usuário por CPF';
+    }
+    finally{
+      await connection.close();
+    }
   }
 
   function gravaUsuario(cadastro, res) {
