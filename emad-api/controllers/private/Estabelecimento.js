@@ -188,51 +188,40 @@ module.exports = function (app) {
     });
 
 
-    function listaPorUsuario(usuario, res) {
-        var q = require('q');
-        var d = q.defer();
+    async function listaPorUsuario(usuario, res) {
         var util = new app.util.Util();
-        var connection = app.dao.ConnectionFactory();
+        const connection = await app.dao.connections.EatendConnection.connection();
+
         var objDAO = new app.dao.EstabelecimentoDAO(connection);
 
-        var errors = [];
-
-        objDAO.listaPorUsuario(usuario.id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
+        try{
+            return await objDAO.listaPorUsuario(usuario.id);
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "data", "Erro ao acessar os dados", "objs"));
+            await connection.rollback();
+        }
+        finally {
+            await connection.close();
+        }
     }
 
-    function lista(addFilter, res) {
-
-        var q = require('q');
-        var d = q.defer();
+    async function lista(addFilter, res) {
         var util = new app.util.Util();
-        var connection = app.dao.ConnectionFactory();
+        const connection = await app.dao.connections.EatendConnection.connection();
+
         var objDAO = new app.dao.EstabelecimentoDAO(connection);
 
-        var errors = [];
-
-        objDAO.lista(addFilter, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
+        try{
+            return await objDAO.lista(addFilter);
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "data", "Erro ao acessar os dados", "objs"));
+            await connection.rollback();
+        }
+        finally {
+            await connection.close();
+        }
     }
 
     function listaEstabelecimentosNivelSuperior(id, res) {

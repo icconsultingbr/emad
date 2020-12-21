@@ -532,28 +532,21 @@ module.exports = function (app) {
         return d.promise;
     }
 
-    function buscarEstabelecimentosPorUsuario(id, res) {
-        var q = require('q');
-        var d = q.defer();
+    async function buscarEstabelecimentosPorUsuario(id, res) {
         var util = new app.util.Util();
-        
-        var connection = app.dao.ConnectionFactory();
+
+        const connection = await app.dao.connections.EatendConnection.connection();
         var objDAO = new app.dao.EstabelecimentoUsuarioDAO(connection);
-        var errors = [];
-        
-        objDAO.buscaPorUsuario(id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
-                res.status(500).send(errors);
-                return;
-            } else {
 
-                d.resolve(result);
-            }
-        });
-        return d.promise;
+        try{
+            return await objDAO.buscaPorUsuario(id);
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "data", "Erro ao acessar os dados", "obj"));
+            await connection.rollback();
+        }
+        finally {
+            await connection.close();
+        }
     }
-
 }

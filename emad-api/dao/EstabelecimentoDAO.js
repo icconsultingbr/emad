@@ -11,11 +11,11 @@ EstabelecimentoDAO.prototype.atualiza = function(estabelecimento, id, callback) 
     this._connection.query(`UPDATE ${this._table} SET geom = POINT(?, ?), ? WHERE id= ?`, [estabelecimento.longitude, estabelecimento.latitude, estabelecimento, id], callback);
 }
 
-EstabelecimentoDAO.prototype.listaPorUsuario = function(id, callback) {
+EstabelecimentoDAO.prototype.listaPorUsuario = async function(id) {
     
-    this._connection.query(`select t.* FROM ${this._table} as t 
+    return await this._connection.query(`select t.* FROM ${this._table} as t 
     INNER JOIN tb_estabelecimento_usuario as eu ON(t.id = eu.idEstabelecimento) 
-    WHERE eu.idUsuario = ? ORDER BY t.nomeFantasia ASC`,id, callback);
+    WHERE eu.idUsuario = ? ORDER BY t.nomeFantasia ASC`,id);
 }
 
 EstabelecimentoDAO.prototype.listaEstabelecimentosNivelSuperior = function(id, callback) {    
