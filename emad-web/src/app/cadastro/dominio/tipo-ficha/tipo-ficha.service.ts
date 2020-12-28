@@ -59,6 +59,15 @@ export class TipoFichaService extends GenericsService {
       validator: ['', Validators.required]
     },
     {
+      field: "tipoAtendimentoSus",
+      type: "text",
+      label: "Código Atendimento e-SUS",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
       field: "situacao",
       type: "checkbox",
       label: "Situação",

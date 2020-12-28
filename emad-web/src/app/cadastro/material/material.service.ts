@@ -169,6 +169,15 @@ export class MaterialService extends GenericsService {
       validator: ['', '']
     },
     {
+      field: "codigoVacinaSus",
+      type: "text",
+      label: "Código Vacina e-SUS",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
       field: "situacao",
       type: "checkbox",
       label: "Situação",

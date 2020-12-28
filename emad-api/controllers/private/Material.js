@@ -20,6 +20,7 @@ module.exports = function (app) {
         req.assert("periodoDispensavel").isLength({ min: 0, max: 5 }).withMessage("O campo Período dispensável deve ter no máximo 5 dígitos");
         req.assert("estoqueMinimo").matches(/^[0-9]+$/).withMessage("O campo Estoque mínimo deve conter somente números");
         req.assert("estoqueMinimo").isLength({ min: 0, max: 10 }).withMessage("O campo Estoque mínimo deve ter no máximo 10 dígitos");
+        req.assert("codigoVacinaSus").isNumeric().withMessage("O campo código vacina e-SUS permite apenas números");
 
         errors = req.validationErrors();
         
@@ -55,6 +56,7 @@ module.exports = function (app) {
         req.assert("periodoDispensavel").isLength({ min: 0, max: 5 }).withMessage("O campo Período dispensável deve ter no máximo 5 dígitos");
         req.assert("estoqueMinimo").matches(/^[0-9]+$/).withMessage("O campo Estoque mínimo deve conter somente números");
         req.assert("estoqueMinimo").isLength({ min: 0, max: 10 }).withMessage("O campo Estoque mínimo deve ter no máximo 10 dígitos");
+        req.assert("codigoVacinaSus").isNumeric().withMessage("O campo código vacina e-SUS permite apenas números");
 
         errors = req.validationErrors();
         

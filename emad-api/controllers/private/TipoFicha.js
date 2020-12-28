@@ -7,6 +7,7 @@ module.exports = function (app) {
         var errors = [];
 
         req.assert("nome").notEmpty().withMessage("Nome é um campo Obrigatório");
+        req.assert("tipoAtendimentoSus").isNumeric().withMessage("O campo código atendimento e-SUS permite apenas números");
 
         errors = req.validationErrors();
         
@@ -44,6 +45,7 @@ module.exports = function (app) {
         var errors = [];
 
         req.assert("nome").notEmpty().withMessage("Nome é um campo Obrigatório");
+        req.assert("tipoAtendimentoSus").isNumeric().withMessage("O campo código Atendimento e-SUS permite apenas números");
 
         errors = req.validationErrors();
         
