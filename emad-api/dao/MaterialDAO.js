@@ -47,6 +47,7 @@ MaterialDAO.prototype.lista = function(callback) {
                             ,tipoMaterial.nome nomeTipoMaterial
                             ,a.descricaoCompleta
                             ,a.situacao
+                            ,a.vacina
                             FROM ${this._table} a
                             INNER JOIN tb_unidade_material unidadeMaterial ON (a.idUnidadeMaterial = unidadeMaterial.id)
                             LEFT JOIN tb_lista_controle_especial listaControleEspecial ON (a.idListaControleEspecial = listaControleEspecial.id)

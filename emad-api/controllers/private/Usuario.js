@@ -234,10 +234,10 @@ module.exports = function (app) {
                   for (var i = 0; i < estabelecimentosDIM.length; i++) {
                     arrEstabelecimentosDim.push(
                       "(" +
-                        estabelecimentosDIM[i].idUnidadeCorrespondenteDim +
-                        ", " +
-                        estabelecimentosDIM[i].idProfissionalCorrespondenteDim +
-                        ", NOW(), 6)"
+                      estabelecimentosDIM[i].idUnidadeCorrespondenteDim +
+                      ", " +
+                      estabelecimentosDIM[i].idProfissionalCorrespondenteDim +
+                      ", NOW(), 6)"
                     );
                   }
 
@@ -414,11 +414,11 @@ module.exports = function (app) {
                     for (var i = 0; i < estabelecimentosDIM.length; i++) {
                       arrEstabelecimentosDim.push(
                         "(" +
-                          estabelecimentosDIM[i].idUnidadeCorrespondenteDim +
-                          ", " +
-                          estabelecimentosDIM[i]
-                            .idProfissionalCorrespondenteDim +
-                          ", NOW(), 6)"
+                        estabelecimentosDIM[i].idUnidadeCorrespondenteDim +
+                        ", " +
+                        estabelecimentosDIM[i]
+                          .idProfissionalCorrespondenteDim +
+                        ", NOW(), 6)"
                       );
                     }
 
@@ -640,36 +640,34 @@ module.exports = function (app) {
     }
   });
 
-  function buscaPorEmail(usuario) {
-    let q = require("q");
-    let d = q.defer();
-    let connection = app.dao.ConnectionFactory();
+  async function buscaPorEmail(usuario) {
+    const connection = await app.dao.connections.EatendConnection.connection();
     let usuarioDAO = new app.dao.UsuarioDAO(connection);
 
-    usuarioDAO.buscaPorEmail(usuario, function (exception, result) {
-      if (exception) {
-        d.reject(exception);
-      } else {
-        d.resolve(result);
-      }
-    });
-    return d.promise;
+    try {
+      return await usuarioDAO.buscaPorEmail(usuario);
+    } catch (error) {
+      console.log("Erro ao carregar usuario por email (" + usuario.email + "), exception: " + exception);
+      return 'Erro ao carregar usuário por email';
+    }
+    finally{
+      await connection.close();
+    }
   }
 
-  function buscaPorCPF(usuario) {
-    let q = require("q");
-    let d = q.defer();
-    let connection = app.dao.ConnectionFactory();
+  async function buscaPorCPF(usuario) {
+    const connection = await app.dao.connections.EatendConnection.connection();
     let usuarioDAO = new app.dao.UsuarioDAO(connection);
 
-    usuarioDAO.buscaPorCPF(usuario, function (exception, result) {
-      if (exception) {
-        d.reject(exception);
-      } else {
-        d.resolve(result);
-      }
-    });
-    return d.promise;
+    try {
+      return await usuarioDAO.buscaPorCPF(usuario);
+    } catch (error) {
+      console.log("Erro ao carregar usuario por CPF (" + usuario.cpf + "), exception: " + exception);
+      return 'Erro ao carregar usuário por CPF';
+    }
+    finally{
+      await connection.close();
+    }
   }
 
   function gravaUsuario(cadastro, res) {
@@ -682,15 +680,12 @@ module.exports = function (app) {
       let id = cadastro.id;
       delete cadastro.id;
 
-      usuarioDAO.atualiza(cadastro, id, function (exception, result) {
-        if (exception) {
-          console.log("Erro ao inserir no banco de dados", exception);
-          res.status(500).send(exception);
-          d.reject(exception);
-          return;
-        } else {
-          d.resolve(result);
-        }
+      usuarioDAO.atualiza(cadastro, id).then(result => {
+        d.resolve(result);
+      }).catch(exception => {
+        console.log("Erro ao inserir no banco de dados", exception);
+        res.status(500).send(exception);
+        d.reject(exception);
       });
     } else {
       usuarioDAO.salva(cadastro, function (exception, result) {
@@ -1097,32 +1092,21 @@ module.exports = function (app) {
     return d.promise;
   }
 
-  function buscarEstabelecimentosPorUsuario(id, res) {
-    var q = require("q");
-    var d = q.defer();
+  async function buscarEstabelecimentosPorUsuario(id, res) {
     var util = new app.util.Util();
-
-    var connection = app.dao.ConnectionFactory();
-    var objDAO = new app.dao.EstabelecimentoUsuarioDAO(connection);
+    const connection = await app.dao.connections.EatendConnection.connection();
+    const estabelecimentoUsuarioDAO = new app.dao.EstabelecimentoUsuarioDAO(connection);
     var errors = [];
 
-    objDAO.buscaPorUsuario(id, function (exception, result) {
-      if (exception) {
-        d.reject(exception);
-        console.log(exception);
-        errors = util.customError(
-          errors,
-          "data",
-          "Erro ao acessar os dados",
-          "obj"
-        );
-        res.status(500).send(errors);
-        return;
-      } else {
-        d.resolve(result);
-      }
-    });
-    return d.promise;
+    try {
+      return await estabelecimentoUsuarioDAO.buscaPorUsuario(id);
+    } catch (error) {
+      errors = util.customError(errors, "data", "Erro ao acessar os dados", "estabelecimento");
+      res.status(500).send(errors);
+    }
+    finally {
+      await connection.close();
+    }
   }
 
   function atualizaEstabelecimentosPorProfissionalDim(

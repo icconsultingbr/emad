@@ -16,5 +16,6 @@ export class Material {
     @Input() idFamiliaMaterial: number;
     @Input() idTipoMaterial: number;
     @Input() descricaoCompleta: string;
-    @Input() situacao: Boolean;
+    @Input() vacina: boolean;
+    @Input() situacao: boolean;
 }

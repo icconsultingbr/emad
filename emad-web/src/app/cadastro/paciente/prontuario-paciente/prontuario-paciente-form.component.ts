@@ -50,6 +50,8 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   allItemsFichas: any[] = [];
   allItemsExames: any[] = [];  
   allItemsReceita: any[] = [];
+  allItemsVacina: any[] = [];
+  allItemsCarteiraVacinacao: any[] = [];
   listaMaterialLoteDispensadoGravado: any[] = [];
   listaMaterialLoteDispensadoFinalizado: any[] = [];
   virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
@@ -233,7 +235,9 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       this.findExamesPorPaciente();
     }else if(tab == 8){//Hipótes diagnosticada
       this.findHipotesePorPaciente();
-    }    
+    }else if(tab == 9){//Vacinas
+      this.findProntuarioVacinacaoPorPaciente();
+    }     
   }
 
   carregaNaturalidade() {
@@ -492,6 +496,32 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     });
   }
 
+  findProntuarioVacinacaoPorPaciente() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.service.findProntuarioVacinacaoByPaciente(this.object.id).subscribe(result => {
+       this.allItemsVacina = result;
+       this.loading = false;
+    }, error => {
+       this.loading = false;
+       this.errors = Util.customHTTPResponse(error);
+    });
+  }
+
+  findCarteiraVacinacaoPorPaciente() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.service.findCarteiraVacinacaoByPaciente(this.object.id).subscribe(result => {
+       this.allItemsCarteiraVacinacao = result;
+       this.loading = false;
+    }, error => {
+       this.loading = false;
+       this.errors = Util.customHTTPResponse(error);
+    });
+  }
+  
   visualizaAtendimentos(id : any) : void {
     let url = this.router.url.replace('paciente','') + this.virtualDirectory + "#/atendimentos/cadastro/" + id;
     this.service.file('atendimento/consulta-por-paciente', url).subscribe(result=>{
@@ -534,6 +564,16 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.encontraAtendimentoHistorico(idAtendimento, idHistorico);
     this.mostraHistorico = idAtendimento ? false : true;
 
+    this.modalRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      windowClass: 'modal-gg'
+    });
+  }
+
+  openCarteiraVacinacao(content: any) {
+    this.findCarteiraVacinacaoPorPaciente();
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
       keyboard: false,

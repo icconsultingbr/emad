@@ -53,30 +53,30 @@ module.exports = function (app) {
                     usuario.situacao = 1;
 
                     atualizaUsuario(usuario).then(function (responseAtualiza) {
-                        buscaParametroSegurancaPorChave("'CONTA_EMAIL'", res).then(function (responseEMAIL) {                                
-                            if(responseEMAIL){
-                                buscaParametroSegurancaPorChave("'SENHA_EMAIL'", res).then(function (responseSENHA) {                                
-                                    if(responseSENHA){
+                        buscaParametroSegurancaPorChave("'CONTA_EMAIL'", res).then(function (responseEMAIL) {
+                            if (responseEMAIL) {
+                                buscaParametroSegurancaPorChave("'SENHA_EMAIL'", res).then(function (responseSENHA) {
+                                    if (responseSENHA) {
                                         mail.sendMail(responseEmail[0], responseEMAIL, responseSENHA, "Esqueceu a senha?", "forgotPassword.html");
                                         let retorno = {};
                                         retorno.email = responseEmail[0].email;
                                         retorno.timezone = timezone;
                                         res.status(200).json(retorno);
                                     }
-                                    else{
+                                    else {
                                         errors = util.customError(errors, "ESQUECEU A SENHA", "DADOS DE ACESSO DO E-MAIL REMETENTE NÃO ENCONTRADO", null);
                                         res.status(400).json(errors);
                                         return;
-                                    }                                                               
+                                    }
                                 });
 
                             }
-                            else{
+                            else {
                                 errors = util.customError(errors, "ESQUECEU A SENHA", "CONTA DE E-MAIL REMETENTE NÃO ENCONTRADA", null);
                                 res.status(400).json(errors);
                                 return;
-                            }                                                               
-                        });                        
+                            }
+                        });
                     });
 
                 }
@@ -103,29 +103,29 @@ module.exports = function (app) {
 
                     atualizaUsuario(usuario).then(function (responseAtualiza) {
 
-                        buscaParametroSegurancaPorChave("'CONTA_EMAIL'", res).then(function (responseEMAIL) {                                
-                            if(responseEMAIL){
-                                buscaParametroSegurancaPorChave("'SENHA_EMAIL'", res).then(function (responseSENHA) {                                
-                                    if(responseSENHA){
+                        buscaParametroSegurancaPorChave("'CONTA_EMAIL'", res).then(function (responseEMAIL) {
+                            if (responseEMAIL) {
+                                buscaParametroSegurancaPorChave("'SENHA_EMAIL'", res).then(function (responseSENHA) {
+                                    if (responseSENHA) {
                                         mail.sendMail(responseCPF[0], responseEMAIL, responseSENHA, "Redefinição de senha", "forgotPassword.html");
                                         let retorno = {};
                                         retorno.cpf = usuario.cpf;
                                         res.status(200).json(retorno);
                                     }
-                                    else{
+                                    else {
                                         errors = util.customError(errors, "ESQUECEU A SENHA", "DADOS DE ACESSO DO E-MAIL REMETENTE NÃO ENCONTRADO", null);
                                         res.status(400).json(errors);
                                         return;
-                                    }                                                               
+                                    }
                                 });
                             }
-                            else{
+                            else {
                                 errors = util.customError(errors, "ESQUECEU A SENHA", "CONTA DE E-MAIL REMETENTE NÃO ENCONTRADA", null);
                                 res.status(400).json(errors);
                                 return;
-                            }                                                               
+                            }
                         });
-                        
+
                     });
                 }
                 else {
@@ -150,7 +150,7 @@ module.exports = function (app) {
 
         let tipo = "";
 
-        if (!Number(usuario.email.replace('.','').replace('-',''))) {
+        if (!Number(usuario.email.replace('.', '').replace('-', ''))) {
             tipo = "e";
             req.assert("email").notEmpty().withMessage("Email é um campo obrigatório;").isEmail().trim().withMessage("Insira um e-mail válido;");
         }
@@ -166,7 +166,7 @@ module.exports = function (app) {
         if (errors) {
             res.status(400).send(errors);
             return;
-        }          
+        }
 
         buscaPorEmail(usuario).then(function (responseEmail) {
             let hash = "";
@@ -180,39 +180,39 @@ module.exports = function (app) {
 
 
                 if (util.checkPassword(usuario.senha, senha) || usuario.senha == "e8a8ff016c") {
-                    let expiredPassword = responseEmail[0].expiredPassword;                 
+                    let expiredPassword = responseEmail[0].expiredPassword;
                     usuario = responseEmail[0];
 
-                    if(usuario.bloqueioTentativas <= usuario.tentativasSenha) {
+                    if (usuario.bloqueioTentativas <= usuario.tentativasSenha) {
                         errors = util.customError(errors, "email", `Usuário bloqueado por exceder a quantidade tentativas de senha permitida(tentativa ${usuario.tentativasSenha} de ${usuario.bloqueioTentativas})!`, usuario.email);
                         res.status(404).json(errors);
                         return;
 
-                    } if(usuario.situacao == 0){
+                    } if (usuario.situacao == 0) {
                         errors = util.customError(errors, "email", `Usuário desativado ou bloqueado!`, usuario.email);
                         res.status(404).json(errors);
                         return;
 
-                    } else {                        
+                    } else {
                         hash = util.createHashEmail(usuario.email);
                         token = util.createWebToken(app, req, usuario);
                         usuario.token = token;
                         usuarioID = usuario.id;
-                        
-    
+
+
                         let timezone = usuario.timezone;
                         delete usuario.timezone;
                         delete usuario.expiredPassword;
                         delete usuario.bloqueioTentativas;
-    
+
                         atualizaToken(usuario, res).then(function (resAtualiza) {
                             delete usuario.senha;
                             delete usuario.hash;
                             return listaMenuPorTipoUsuario(usuario.idTipoUsuario, res);
-    
+
                         }).then(function (responseMenu) {
-                            
-                            usuario.ep = expiredPassword;                        
+
+                            usuario.ep = expiredPassword;
                             usuario.token = token;
                             usuario.hash = hash;
                             usuario.id = usuarioID;
@@ -220,19 +220,19 @@ module.exports = function (app) {
                             usuario.logo = logo;
                             usuario.cor = cor;
                             usuario.menu = responseMenu;
-    
+
                             delete usuario.cpf;
                             delete usuario.hash;
                             delete usuario.celular;
                             delete usuario.nomeMae;
                             delete usuario.dataNascimento;
-    
+
                             return listaEstabelecimentoPorUsuarioLogin(usuarioID, usuario.idTipoUsuario, res);
 
                         }).then(function (responseEstabelecimento) {
 
                             usuario.estabelecimentos = responseEstabelecimento;
-                            res.status(200).json(usuario);   
+                            res.status(200).json(usuario);
                             return;
                         })
                     }
@@ -248,25 +248,25 @@ module.exports = function (app) {
             }
         });
 
-        function badPassword(usuario, res) {      
+        function badPassword(usuario, res) {
 
             atualizaTentativa(usuario.id, res).then(function (resultado) {
 
-                if(usuario.bloqueioTentativas > usuario.tentativasSenha){
-                    errors = util.customError(errors, "email", `Senha inválida (tentativa ${usuario.tentativasSenha+1} de ${usuario.bloqueioTentativas})`, usuario.id);
-                    res.status(404).json(errors);           
+                if (usuario.bloqueioTentativas > usuario.tentativasSenha) {
+                    errors = util.customError(errors, "email", `Senha inválida (tentativa ${usuario.tentativasSenha + 1} de ${usuario.bloqueioTentativas})`, usuario.id);
+                    res.status(404).json(errors);
                 } else {
-                    if(usuario.situacao == 1){
+                    if (usuario.situacao == 1) {
                         atualizaSituacaoUsuario(usuario.id, res).then(function (resultado) {
                             errors = util.customError(errors, "email", `Usuário bloqueado por exceder a quantidade tentativas de senha permitida(tentativa ${usuario.tentativasSenha} de ${usuario.bloqueioTentativas})!`, usuario.id);
                             res.status(404).json(errors);
                         });
                     } else {
                         errors = util.customError(errors, "email", `Usuário bloqueado por exceder a quantidade tentativas de senha permitida(tentativa ${usuario.tentativasSenha} de ${usuario.bloqueioTentativas})!`, usuario.id);
-                        res.status(404).json(errors);           
-                    }                    
-                }                  
-            });           
+                        res.status(404).json(errors);
+                    }
+                }
+            });
         }
 
         function userUnknown(res) {
@@ -277,40 +277,31 @@ module.exports = function (app) {
         }
     });
 
-    function buscaPorEmail(usuario) {
-        let q = require('q');
-        let d = q.defer();
-        let connection = app.dao.ConnectionFactory();
-        let usuarioDAO = new app.dao.UsuarioDAO(connection);
-
-        usuarioDAO.buscaPorEmail(usuario, function (exception, result) {
-
-            if (exception) {
-                console.log(exception);
-                d.reject(exception);
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
+    async function buscaPorEmail(usuario) {
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const usuarioDAO = new app.dao.UsuarioDAO(connection);
+        try {
+            return await usuarioDAO.buscaPorEmail(usuario);
+        } catch (error) {
+            console.log(exception);
+        }
+        finally {
+            await connection.close();
+        }
     }
 
-    function buscaPorCPF(cpf) {
+    async function buscaPorCPF(cpf) {
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const usuarioDAO = new app.dao.UsuarioDAO(connection);
 
-
-        let q = require('q');
-        let d = q.defer();
-        let connection = app.dao.ConnectionFactory();
-        let usuarioDAO = new app.dao.UsuarioDAO(connection);
-
-        usuarioDAO.buscaPorCPF(cpf, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
+        try {
+            return await usuarioDAO.buscaPorCPF(cpf);
+        } catch (error) {
+            console.log(exception);
+        }
+        finally {
+            await connection.close();
+        }
     }
 
     function gravaUsuario(cadastro, res) {
@@ -332,58 +323,45 @@ module.exports = function (app) {
         return d.promise;
     }
 
-    function atualizaUsuario(usuario, res) {
+    async function atualizaUsuario(usuario, res) {
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const usuarioDAO = new app.dao.UsuarioDAO(connection);
 
-        let connection = app.dao.ConnectionFactory();
-        let usuarioDAO = new app.dao.UsuarioDAO(connection);
-        let q = require('q');
-        let d = q.defer();
         let id = usuario.id;
         delete usuario.id;
         delete usuario.logo;
         delete usuario.cor;
 
-        usuarioDAO.atualiza(usuario, id, function (exception, result) {
-
-            if (exception) {
-                console.log('Erro ao inserir a foto no banco de dados', exception);
-                res.status(500).send(exception);
-                d.reject(exception);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
+        try {
+            return await usuarioDAO.atualiza(usuario, id);
+        } catch (error) {
+            console.log('Erro ao atualizar os dados do usuario', exception);
+            res.status(500).send(exception);
+        } 
+        finally {
+            await connection.close();
+        }
     }
 
-    function atualizaToken(usuario, res) {
+    async function atualizaToken(usuario, res) {
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const usuarioDAO = new app.dao.UsuarioDAO(connection);
 
-        let connection = app.dao.ConnectionFactory();
-        let usuarioDAO = new app.dao.UsuarioDAO(connection);
-        let q = require('q');
-        let d = q.defer();
-        let id = usuario.id;
+        const id = usuario.id;
         delete usuario.id;
         delete usuario.logo;
         delete usuario.cor;
 
-        usuarioDAO.atualizaToken(usuario, id, function (exception, result) {
-
-            if (exception) {
-                console.log('Erro ao inserir a foto no banco de dados', exception);
-                res.status(500).send(exception);
-                d.reject(exception);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
+        try {
+            return await usuarioDAO.atualizaToken(usuario, id);    
+        } catch (error) {
+            console.log('Erro ao atualizar o token no banco', error);
+            res.status(500).send(exception);
+        }
+        finally {
+            await connection.close();
+        }
     }
-
-
-    
 
     function atualizaTentativa(id, res) {
 
@@ -428,65 +406,46 @@ module.exports = function (app) {
         return d.promise;
     }
 
-    
 
-    function listaMenuPorTipoUsuario(idTipoUsuario, res) {
-        let q = require('q');
-        let d = q.defer();
-        let util = new app.util.Util();
 
-        let connection = app.dao.ConnectionFactory();
-        let menuDAO = new app.dao.MenuDAO(connection);
+    async function listaMenuPorTipoUsuario(idTipoUsuario, res) {
+        const util = new app.util.Util();
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const menuDAO = new app.dao.MenuDAO(connection);
         let errors = [];
 
-        menuDAO.listaRotasPorTipoUsuario(idTipoUsuario, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "menu");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
+        try {
+            return await menuDAO.listaRotasPorTipoUsuario(idTipoUsuario);
+        } catch (error) {
+            errors = util.customError(errors, "data", "Erro ao acessar os dados", "menu");
+            res.status(500).send(errors);
+        }
+        finally {
+            await connection.close();
+        }
     }
 
-    function listaEstabelecimentoPorUsuarioLogin(idUsuario, idTipoUsuario, res) {
-        let q = require('q');
-        let d = q.defer();
-        let util = new app.util.Util();
-
-        let connection = app.dao.ConnectionFactory();
-        let estabelecimentoUsuarioDAO = new app.dao.EstabelecimentoUsuarioDAO(connection);
-        let estabelecimentoDAO = new app.dao.EstabelecimentoDAO(connection);
+    async function listaEstabelecimentoPorUsuarioLogin(idUsuario, idTipoUsuario, res) {
+        const util = new app.util.Util();
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const estabelecimentoUsuarioDAO = new app.dao.EstabelecimentoUsuarioDAO(connection);
+        const estabelecimentoDAO = new app.dao.EstabelecimentoDAO(connection);
         let errors = [];
-
-        if (idTipoUsuario == util.SUPER_ADMIN) {
-            estabelecimentoDAO.lista(null, function (exception, result) {
-                if (exception) {
-                    d.reject(exception);
-                    errors = util.customError(errors, "data", "Erro ao acessar os dados", "estabelecimento");
-                    res.status(500).send(errors);
-                    return;
-                } else {
-                    d.resolve(result);
-                }
-            });
+        try {
+            if (idTipoUsuario == util.SUPER_ADMIN) {
+                return await estabelecimentoDAO.lista(null);
+            }
+            else {
+                return await estabelecimentoUsuarioDAO.buscaPorUsuario(idUsuario);
+            }
+        } catch (error) {
+            errors = util.customError(errors, "data", "Erro ao acessar os dados", "estabelecimento");
+            res.status(500).send(errors);
         }
-        else {
-            estabelecimentoUsuarioDAO.buscaPorUsuario(idUsuario, function (exception, result) {
-                if (exception) {
-                    d.reject(exception);
-                    errors = util.customError(errors, "data", "Erro ao acessar os dados", "estabelecimento");
-                    res.status(500).send(errors);
-                    return;
-                } else {
-                    d.resolve(result);
-                }
-            });
-        }       
-        return d.promise;
+        finally {
+            await connection.close();
+        }
+
     }
 
     function addLog(req) {
@@ -494,7 +453,7 @@ module.exports = function (app) {
         let obj = {};
 
         obj.email = req.body.email;
-        
+
 
         let q = require('q');
         let d = q.defer();
@@ -521,29 +480,24 @@ module.exports = function (app) {
 
     }
 
-    function buscaParametroSegurancaPorChave(chave, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.ParametroSegurancaDAO(connection);
+    async function buscaParametroSegurancaPorChave(chave, res) {
+        const util = new app.util.Util();
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const objDAO = new app.dao.ParametroSegurancaDAO(connection);
         var errors = [];
         result = [];
-        
-        objDAO.buscarValorPorChave(chave, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao editar os dados", "atendimento");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result[0]);
-            }
-        });
-        return d.promise;
+
+        try {
+            return await objDAO.buscarValorPorChaveSync(chave);
+        } catch (error) {
+            console.log(exception);
+            errors = util.customError(errors, "data", "Erro ao editar os dados", "atendimento");
+            res.status(500).send(errors);
+        }
+        finally {
+            await connection.close();
+        }
     }
-    
+
 }
 

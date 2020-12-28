@@ -23,11 +23,11 @@ EstabelecimentoUsuarioDAO.prototype.atualizaEstabelecimentosPorUsuarioSync = asy
     return result;
 }
 
-EstabelecimentoUsuarioDAO.prototype.buscaPorUsuario = function (id, callback) {
-    this._connection.query(`
+EstabelecimentoUsuarioDAO.prototype.buscaPorUsuario = async function (id) {
+    return await this._connection.query(`
         SELECT e.id, e.nomeFantasia as nome, e.nomeFantasia FROM ${this._table} as ep 
         INNER JOIN tb_estabelecimento e ON(ep.idEstabelecimento = e.id) 
-        WHERE ep.idUsuario = ? AND e.situacao = 1`, id, callback);
+        WHERE ep.idUsuario = ? AND e.situacao = 1`, id);
 }
 
 EstabelecimentoUsuarioDAO.prototype.buscaPorUsuarioSync = async function (id) {
