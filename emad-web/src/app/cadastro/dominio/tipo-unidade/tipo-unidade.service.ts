@@ -39,6 +39,15 @@ export class TipoUnidadeService extends GenericsService {
       translate: {1: "Ativo", 0: "Inativo"},
       required: true,
       validator:['', Validators.required]
+    },
+    {
+      field: "localDeAtendimentoSus",
+      type: "text",
+      label: "Código local atendimento e-SUS",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
     }
   ];
 }
