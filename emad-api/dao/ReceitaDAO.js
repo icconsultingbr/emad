@@ -134,7 +134,7 @@ ReceitaDAO.prototype.buscaPorPacienteIdProntuario = async function (idPaciente) 
     INNER JOIN tb_material material ON (tir.idMaterial = material.id)
     INNER JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
     INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
-    WHERE a.idPaciente = ? AND material.vacina = 0 order by a.id desc`, idPaciente); 
+    WHERE a.idPaciente = ? order by a.id desc`, idPaciente); 
     return response;
 }
 
