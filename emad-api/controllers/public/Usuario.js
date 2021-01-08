@@ -140,7 +140,7 @@ module.exports = function (app) {
 
     app.post('/usuario/login', function (req, res) {
         let usuario = req.body;
-        addLog(req);
+        //addLog(req);
 
         let util = new app.util.Util();
         let q = require('q');
