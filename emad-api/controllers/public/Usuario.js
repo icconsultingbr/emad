@@ -57,7 +57,7 @@ module.exports = function (app) {
                             if (responseEMAIL) {
                                 buscaParametroSegurancaPorChave("'SENHA_EMAIL'", res).then(function (responseSENHA) {
                                     if (responseSENHA) {
-                                        mail.sendMail(responseEmail[0], responseEMAIL, responseSENHA, "Esqueceu a senha?", "forgotPassword.html");
+                                        //mail.sendMail(responseEmail[0], responseEMAIL, responseSENHA, "Esqueceu a senha?", "forgotPassword.html");
                                         let retorno = {};
                                         retorno.email = responseEmail[0].email;
                                         retorno.timezone = timezone;

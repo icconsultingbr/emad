@@ -322,7 +322,7 @@ module.exports = function (app) {
                 if (responseEmailPaciente[0].email != null) {
                     obj.email = responseEmailPaciente[0].email;
                     
-                    var teste = await mail.enviaEmailFicha(obj, emailRemetente, senhaRemetente, "Abertura de atendimento", "createTreatment.html");
+                    //var teste = await mail.enviaEmailFicha(obj, emailRemetente, senhaRemetente, "Abertura de atendimento", "createTreatment.html");
                 }
             }
 

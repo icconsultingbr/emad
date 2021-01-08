@@ -75,7 +75,6 @@ module.exports = function (app) {
     let cadastro = req.body;
     delete cadastro.usuario;
     let util = new app.util.Util();
-    let mail = new app.util.Mail();
     let token = "";
     let errors = [];
 
