@@ -30,6 +30,15 @@ export class EspecialidadeService extends GenericsService {
       validator:['', Validators.required]
     },
     {
+      field: "codigoCBO", 
+      type: "text", 
+      label: "CBO", 
+      grid: false,  
+      form: true,
+      required: true, 
+      validator:['', Validators.required]
+    },
+    {
       field: "visualizaProntuario", 
       type: "checkbox", 
       label: "Visualizar prontuário do paciente?", 

@@ -38,4 +38,5 @@ export class Profissional {
     @Input() idTipoUsuario: number;
     @Input() senha : string;
     @Input() confirmaSenha : string;
+    @Input() profissionalCNS : Number;
 }

@@ -437,6 +437,15 @@ ProfissionalDAO.prototype.carregaProfissionalPorMedicamento = async function(add
     return medicamento;
 }
 
+ProfissionalDAO.prototype.buscarProfissionalPorEstabelecimentoEsus = async function(id) {
+    return await this._connection.query(`
+        SELECT tp.id, tp.profissionalCNS, te.codigoCBO 
+        FROM ${this._table} tp 
+        INNER JOIN tb_estabelecimento_usuario as ep ON (tp.idUsuario = ep.idUsuario) 
+        INNER JOIN tb_especialidade te ON (tp.idEspecialidade = te.id)
+        WHERE ep.idEstabelecimento = ? AND tp.situacao = 1`, id);
+}
+
 module.exports = function(){
     return ProfissionalDAO;
 };
