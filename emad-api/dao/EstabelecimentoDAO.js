@@ -187,6 +187,13 @@ EstabelecimentoDAO.prototype.carregaPorId = async function(id){
     return result ? result[0] : null;
 }
 
+EstabelecimentoDAO.prototype.buscaEstabelecimentoESus = async function(id){
+    let result =  await this._connection.query(`SELECT tm.codigo, te.cnes, te.cnpj, te.cnpj, te.nomeFantasia FROM ${this._table} te
+                                                INNER JOIN tb_municipio tm ON (te.idMunicipio = tm.id)
+                                                where te.id = ?`, [id]);
+    return result ? result[0] : null;
+}
+
 module.exports = function(){
     return EstabelecimentoDAO;
 };

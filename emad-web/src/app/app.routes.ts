@@ -79,7 +79,8 @@ const appRoutes : Routes = [
     { path: 'motivo-ajuste-estoque-relatorio', canActivate: [AuthGuard], loadChildren: './farmacia/relatorios/medicamento-ajuste-estoque/medicamento-ajuste-estoque.module#MedicamentoAjusteEstoqueModule' },
     { path: 'livro-medicamento-controlado', canActivate: [AuthGuard], loadChildren: './farmacia/relatorios/medicamento-livro-controlado/medicamento-livro-controlado.module#MedicamentoLivroControladoModule' },
     { path: 'visualizacao-bi', canActivate: [AuthGuard], loadChildren: './bi/power-bi/visualizacao-power-bi.module#VisualizacaoPowerBIModule' },
-
+    { path: 'integracao-e-sus', canActivate: [AuthGuard], loadChildren: './integracao/e-sus/esus.module#ESusModule' },
+    
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 
 ];

@@ -320,6 +320,15 @@ export class ProfissionalService extends GenericsService {
       validator: ['', Validators.required],
     },
     {
+      field: "profissionalCNS",
+      type: "text",
+      label: "CNS",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required],
+    },
+    {
       field: "cargaHorariaSemanal",
       type: "text",
       mask: "9999999",
