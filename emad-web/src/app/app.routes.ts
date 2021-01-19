@@ -80,6 +80,7 @@ const appRoutes : Routes = [
     { path: 'livro-medicamento-controlado', canActivate: [AuthGuard], loadChildren: './farmacia/relatorios/medicamento-livro-controlado/medicamento-livro-controlado.module#MedicamentoLivroControladoModule' },
     { path: 'visualizacao-bi', canActivate: [AuthGuard], loadChildren: './bi/power-bi/visualizacao-power-bi.module#VisualizacaoPowerBIModule' },
     { path: 'integracao-e-sus', canActivate: [AuthGuard], loadChildren: './integracao/e-sus/esus.module#ESusModule' },
+    { path: 'tipos-exames', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/tipo-exame/tipo-exame.module#TipoExameModule' },
     
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 
