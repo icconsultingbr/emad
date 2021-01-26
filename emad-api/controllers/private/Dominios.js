@@ -402,9 +402,20 @@ module.exports = function (app) {
     app.get('/dominios/tipo-exame', function(req, res) {
 
         var connection = app.dao.ConnectionFactory();
-        var dao = new app.dao.GenericDAO(connection);
+        var dao = new app.dao.GenericDAO(connection, "tb_tipo_exame");
 
         listaDominios(dao, "Tipo de exame", res).then(function(response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+                
+    app.get('/dominios/metodo-exame', function(req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_metodo_exame");
+
+        listaDominios(dao, "Métodos de exame", res).then(function(response) {
             res.status(200).json(response);
             return;
         });

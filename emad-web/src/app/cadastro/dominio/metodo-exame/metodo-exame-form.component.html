@@ -1,0 +1,8 @@
+<h4 class="mb-5 text-left">{{id!=null?'Editar '+label:'Adicionar '+label}}</h4>
+
+<app-form
+  [fields]="fields"
+  [object]="object"
+  [method]="method"
+  [redirectAfterInsert]="'/metodos-exames'">
+</app-form>
