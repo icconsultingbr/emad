@@ -212,26 +212,24 @@ module.exports = function (app) {
 
         profissionais.forEach(profissional => {
             const listAtendimentos = list.atendimentos.filter(x => x.idProfissional == profissional.id);
-            let uuidFicha = uuidv4();
+            var uuidFicha = uuidv4();
 
             if (listAtendimentos.length == 0) { return; } // || (!profissional.profissionalCNS || !profissional.codigoCBO)
 
-            let doc = create({ version: '1.0', encoding: 'UTF-8', standalone: 'yes' })
+            let doc = create({ version: '1.0', encoding: 'UTF-8', keepNullNodes: false, keepNullAttributes: false })
             .ele('ns3:dadoTransporteTransportXml', { 'xmlns:ns2': 'http://esus.ufsc.br/dadoinstalacao', 'xmlns:ns3': 'http://esus.ufsc.br/dadotransporte', 'xmlns:ns4': 'http://esus.ufsc.br/fichaatendimentoindividualmaster' })
             .ele('uuidDadoSerializado').txt(uuidFicha).up()
             .ele('tipoDadoSerializado').txt('4').up()
             .ele('codIbge').txt(estabelecimento.codigo).up()
             .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up()
             .ele('ns4:fichaAtendimentoIndividualMasterTransport')
-                .ele('tpCdsOrigem').txt('3').up()
-                .ele('uuidFicha').txt(uuidFicha).up()
                 .ele('headerTransport')
                     .ele('lotacaoFormPrincipal')
                         .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
                         .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
                         .ele('cnes').txt(estabelecimento.cnes).up()
                     .up()
-                    .ele('dataAtendimento').txt(Date.now()).up()
+                    .ele('dataAtendimento').txt(new Date(listAtendimentos[0].dataCriacao).getTime() / 1000).up()
                     .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
                 .up()
             .up()
@@ -251,7 +249,7 @@ module.exports = function (app) {
                 .ele('versaoSistema').txt('3.2.18').up()
                 .ele('nomeBancoDados').txt('MySQL').up()
             .up()
-            .ele('versao', { major: '4', minor: '0', revision: '3' })
+            .ele('versao', { major: '4', minor: '0', revision: '1' })
             .doc();
 
         listAtendimentos.forEach(atendimento => {
@@ -264,25 +262,39 @@ module.exports = function (app) {
             let avaliacao = preencheAvaliacaoAtendimentoIndividual(listAvaliacao, atendimento.idAtendimento);
             let condutas = preencheCondutasAtendimentoIndividual(listCondutas, atendimento.idAtendimento)
 
-            let atend = fragment().ele('atendimentosIndividuais')
-                .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : '').up()
-                .ele('dataNascimentoCidadao').txt(new Date(atendimento.dataNascimento).getTime() / 1000).up()
+            let atend = fragment({keepNullAttributes: false, keepNullNodes: false }).ele('atendimentosIndividuais')
+                .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : undefined).up()
+                .ele('cpfCidadao').txt(atendimento.cpfCidadao ? atendimento.cpfCidadao : undefined).up()
+                .ele('dataNascimento').txt(new Date(atendimento.dataNascimento).getTime() / 1000).up()
                 .ele('localDeAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
                 .ele('sexo').txt(atendimento.sexo).up()
                 .ele('turno').txt(atendimento.turno).up()
-                .ele('tipoAtendimento').txt(atendimento.tipoAtendimentoSus ? atendimento.tipoAtendimentoSus : '').up()
-                .ele('dataHoraInicialAtendimento').txt(new Date(atendimento.dataCriacao).getTime() / 1000).up()
-                .ele('dataHoraFinalAtendimento').txt(new Date(atendimento.dataFinalizacao).getTime() / 1000).up()
-                .ele('cpfCidadao').txt(atendimento.cpfCidadao ? atendimento.cpfCidadao : '').up()
-                .import(avaliacao)
-                .up()
-
+                .ele('tipoAtendimento').txt(atendimento.tipoAtendimentoSus ? atendimento.tipoAtendimentoSus : undefined).up()
+                .import(avaliacao);
+                
             condutas.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosIndividuais', true, true).import(x));
 
+            atend.ele('dataHoraInicialAtendimento').txt(new Date(atendimento.dataCriacao).getTime() / 1000).up()
+                 .ele('dataHoraFinalAtendimento').txt(new Date(atendimento.dataFinalizacao).getTime() / 1000).up()
+                 .up();
+            
             doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoIndividualMasterTransport', true, true).import(atend);
+            
+            let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento','tipoAtendimento'];
+
+            fieldToValidate.forEach(field => {
+                doc.each(x => { 
+                    if (x.node.nodeName == field && !x.node._firstChild._data) {
+                        x.node.removeChild(x.node._firstChild);
+                        x.remove();
+                    }
+                }, true, true)
+            })
         })
-            xmls.push(doc.doc().end({ prettyPrint: true }))
-        })
+            doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoIndividualMasterTransport', true, true).ele('tpCdsOrigem').txt('3').up().ele('uuidFicha').txt(uuidFicha).up();
+
+            xmls.push(doc.doc().end({ prettyPrint: true, allowEmptyTags: false }));
+        }) 
 
         return xmls;
     }
@@ -324,7 +336,7 @@ module.exports = function (app) {
         profissionais.forEach(profissional => {
             const listVacinas = list.vacinas.filter(x => x.idProfissional == profissional.id);
             let uuidFicha = uuidv4();
-
+            
             if (listVacinas.length == 0 ) { return; } //|| (!profissional.profissionalCNS || !profissional.codigoCBO)
 
             let doc = create({ version: '1.0', encoding: 'UTF-8', standalone: 'yes' })
@@ -334,15 +346,15 @@ module.exports = function (app) {
             .ele('codIbge').txt(estabelecimento.codigo).up()
             .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up()
             .ele('ns4:fichaVacinacaoMasterTransport')
-                .ele('tpCdsOrigem').txt('3').up()
-                .ele('uuidFicha').txt(uuidFicha).up()
                 .ele('headerTransport')
-                .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
-                .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
-                .ele('cnes').txt(estabelecimento.cnes).up()
-                .ele('dataAtendimento').txt(Date.now()).up()
-                .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
+                    .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
+                    .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
+                    .ele('cnes').txt(estabelecimento.cnes).up()
+                    .ele('dataAtendimento').txt(new Date(listVacinas[0].dataCriacao).getTime() / 1000).up()
+                    .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
                 .up()
+                .ele('uuidFicha').txt(uuidFicha).up()
+                .ele('tpCdsOrigem').txt('3').up()
             .up()
             .ele('ns2:remetente')
                 .ele('contraChave').txt('E-ATENDE-VERSAO').up()
@@ -360,7 +372,7 @@ module.exports = function (app) {
                 .ele('versaoSistema').txt('3.2.18').up()
                 .ele('nomeBancoDados').txt('MySQL').up()
             .up()
-            .ele('versao', { major: '4', minor: '3', revision: '0' })
+            .ele('versao', { major: '4', minor: '0', revision: '1' })
             .doc();
 
             listVacinas.forEach(vacina => {
@@ -371,21 +383,33 @@ module.exports = function (app) {
                 let vac = fragment().ele('vacinacoes')
                     .ele('turno').txt(vacina.turno).up()
                     .ele('cnsCidadao').txt(vacina.cartaoSus ? vacina.cartaoSus : '').up()
-                    .ele('dataNascimentoCidadao').txt(new Date(vacina.dataNascimento).getTime() / 1000).up()
+                    .ele('cpfCidadao').txt(vacina.cpfCidadao ? vacina.cpfCidadao : '').up()
+                    .ele('dtNascimento').txt(new Date(vacina.dataNascimento).getTime() / 1000).up()
                     .ele('sexo').txt(vacina.sexo).up()
-                    .ele('localDeAtendimento').txt(vacina.localDeAtendimentoSus ? vacina.localDeAtendimentoSus : '').up()
+                    .ele('localAtendimento').txt(vacina.localDeAtendimentoSus ? vacina.localDeAtendimentoSus : '').up()
                     .ele('viajante').txt(vacina.viajante).up()
                     .ele('gestante').txt(vacina.gestante).up()
-                    .ele('puerpera').txt(vacina.puerpera).up()
-                    .ele('dataHoraInicialAtendimento').txt(new Date(vacina.dataCriacao).getTime() / 1000).up()
-                    .ele('dataHoraFinalAtendimento').txt(new Date(vacina.dataUltimaDispensacao).getTime() / 1000).up()
-                    .ele('cpfCidadao').txt(vacina.cpfCidadao ? vacina.cpfCidadao : '').up();
+                    .ele('puerpera').txt(vacina.puerpera).up();
 
                 let child = preencheVacinasChild(listVacinaChild, vacina.idReceita);
                 child.forEach(x => vac.import(x));
-                vac.up();
+
+                vac.ele('dataHoraInicialAtendimento').txt(new Date(vacina.dataCriacao).getTime() / 1000).up()
+                .ele('dataHoraFinalAtendimento').txt(new Date(vacina.dataUltimaDispensacao).getTime() / 1000).up()
+                .up();
 
                 doc.find(x => x.node.nodeName == 'ns4:fichaVacinacaoMasterTransport', true, true).import(vac);
+                
+                let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento'];
+
+                fieldToValidate.forEach(field => {
+                    doc.each(x => { 
+                        if (x.node.nodeName == field && !x.node._firstChild._data) {
+                            x.node.removeChild(x.node._firstChild);
+                            x.remove();
+                        }
+                    }, true, true)
+                })
             })
 
             xmls.push(doc.doc().end({ prettyPrint: true }));
