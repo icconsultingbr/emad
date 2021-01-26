@@ -71,7 +71,8 @@ ProfissionalDAO.prototype.lista = function(addFilter, callback) {
             prof.latitude,
             prof.longitude,
             prof.idUsuario,
-            usu.nome nomeUsuario
+            usu.nome nomeUsuario,
+            prof.profissionalCNS profissionalCNS
         FROM tb_profissional prof 
         INNER JOIN tb_estabelecimento_usuario ep ON (ep.idUsuario = prof.idUsuario)
         INNER JOIN tb_usuario usu ON (prof.idUsuario = usu.id)
@@ -118,7 +119,8 @@ ProfissionalDAO.prototype.lista = function(addFilter, callback) {
             prof.latitude,
             prof.longitude,
             prof.idUsuario,
-            usu.nome `,
+            usu.nome,
+            prof.profissionalCNS `,
     callback);
 }
 
@@ -158,7 +160,8 @@ ProfissionalDAO.prototype.buscaPorId = function (id,callback) {
         pro.latitude,
         pro.longitude,
         pro.idUsuario,
-        usu.idTipoUsuario
+        usu.idTipoUsuario,
+        pro.profissionalCNS
      FROM ${this._table} as pro
      LEFT JOIN tb_usuario as usu ON (usu.id = pro.idUsuario) 
      WHERE pro.id = ?`,id,callback);
@@ -351,7 +354,8 @@ ProfissionalDAO.prototype.buscaPorIdSync = async function (id) {
         pro.latitude,
         pro.longitude,
         pro.idUsuario,
-        usu.idTipoUsuario
+        usu.idTipoUsuario,
+        pro.profissionalCNS
      FROM ${this._table} as pro
      LEFT JOIN tb_usuario as usu ON (usu.id = pro.idUsuario) 
      WHERE pro.id = ?`,id);
