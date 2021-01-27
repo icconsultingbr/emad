@@ -1,5 +1,13 @@
 <h2 class="text-left">Integração e-SUS</h2><br />
 
+<div *ngIf="errors.length" class="alert alert-danger">
+    <div *ngFor="let error of errors" class="row">
+        <div class="col-12 text-left">
+            {{error.message}}
+        </div>
+    </div>
+</div>
+
 <div class="card mb-4">
     <div class="card mb-12">
         <div class="card-header text-left">

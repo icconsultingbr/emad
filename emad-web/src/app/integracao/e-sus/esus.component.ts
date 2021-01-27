@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.service';
 import { IntegracaoEsus } from '../../shared/services/integracao-e-sus.service';
 import { IntegracaoEsusModel } from '../../_core/_models/IntegracaoEsus';
+import { Util } from '../../_core/_util/Util';
 
 @Component({
   selector: 'app-esus',
@@ -16,6 +17,8 @@ export class ESusComponent implements OnInit {
   domains: any[] = [];
   periodoCriacao: boolean = false;
   periodoAlteracao: boolean = false;
+  errors: any[] = [];
+  loading: boolean = false;
 
   constructor(
     public nav: AppNavbarService,
@@ -34,14 +37,14 @@ export class ESusComponent implements OnInit {
         { id: '2', nome: "Ficha de Cadastro Individual" },
         { id: '4', nome: "Ficha de Atendimento Individual" },
         { id: '14', nome: "Ficha de Vacinação" }],
-        tipoPeriodo: [
-          { id: '1', nome: "Criação" },
-          { id: '2', nome: "Alteração" }]
+      tipoPeriodo: [
+        { id: '1', nome: "Criação" },
+        { id: '2', nome: "Alteração" }]
     });
   }
 
   tipoPeriodoAlterado(event) {
-    if(event == 1){
+    if (event == 1) {
       this.periodoCriacao = true;
       this.periodoAlteracao = false;
     } else {
@@ -56,7 +59,7 @@ export class ESusComponent implements OnInit {
       const url = window.URL.createObjectURL(blob);
       let link = document.createElement('a');
       link.href = url;
-      
+
       switch (this.object.idFichaEsus) {
         case '2':
           link.download = `lote-ficha-cadastro-individual.zip`;
@@ -73,6 +76,10 @@ export class ESusComponent implements OnInit {
       }
 
       link.click();
+    }, erro => {
+      let encoded = String.fromCharCode.apply(null, new Uint8Array(erro) as any);
+      let err = JSON.parse(decodeURIComponent(escape(encoded)));
+      this.errors = Util.customHTTPResponse(err);
     });
   }
 }

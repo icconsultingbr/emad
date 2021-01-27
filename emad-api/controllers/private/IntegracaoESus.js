@@ -8,40 +8,60 @@ module.exports = function (app) {
         req.assert("periodoExtracao").notEmpty().withMessage("O campo Periodo é um campo obrigatório");
         req.assert("idFichaEsus").notEmpty().withMessage("O campo Ficha é um campo obrigatório");
 
-        let retorno;
-        let cad, atend, vac;
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const profissionalRepository = new app.dao.ProfissionalDAO(connection);
+        let util = new app.util.Util();
+        let error = req.validationErrors();
 
-        if (filtro) {
-            switch (filtro.idFichaEsus) {
-                case '0':
-                    cad = await listaCadastroIndividual(filtro);
-                    atend = await listaAtendimentoIndividual(filtro);
-                    vac = await listaFichaVacinacao(filtro);
-                    let xmls = cad.concat(atend,vac);
-                    retorno = generateZipFiles(xmls, 'ficha')
-                    break;
-                case '2':
-                    cad = await listaCadastroIndividual(filtro);
-                    retorno = generateZipFiles(cad, 'ficha-cadastro-individual')
-                    break;
-                case '4':
-                    atend = await listaAtendimentoIndividual(filtro);
-                    retorno = generateZipFiles(atend, 'ficha-atendimento-individual')
-                    break;
-                case '14':
-                    vac = await listaFichaVacinacao(filtro);
-                    retorno = generateZipFiles(vac, 'ficha-vacinas')
-                    break;
-                default:
-                    return retorno;
-                    break;
+        try {
+
+            let usuarioProfissional = await profissionalRepository.buscaProfissionalSusPorUsuarioSync(req.usuario.id);
+
+            if (!usuarioProfissional) {
+                res.status(400).send(util.customError(error, "header", "O seu usuário não possui profissional vinculado, não é permitido realizar exportações", ""));
+                return;
             }
-        }
 
-        res.status(200).send(retorno);
+            let retorno;
+            let cad, atend, vac;
+    
+            if (filtro) {
+                switch (filtro.idFichaEsus) {
+                    case '0':
+                        cad = await listaCadastroIndividual(filtro, usuarioProfissional);
+                        atend = await listaAtendimentoIndividual(filtro);
+                        vac = await listaFichaVacinacao(filtro);
+                        let xmls = cad.concat(atend,vac);
+                        retorno = generateZipFiles(xmls, 'ficha')
+                        break;
+                    case '2':
+                        cad = await listaCadastroIndividual(filtro, usuarioProfissional);
+                        retorno = generateZipFiles(cad, 'ficha-cadastro-individual')
+                        break;
+                    case '4':
+                        atend = await listaAtendimentoIndividual(filtro);
+                        retorno = generateZipFiles(atend, 'ficha-atendimento-individual')
+                        break;
+                    case '14':
+                        vac = await listaFichaVacinacao(filtro);
+                        retorno = generateZipFiles(vac, 'ficha-vacinas')
+                        break;
+                    default:
+                        return retorno;
+                        break;
+                }
+            }
+    
+            res.status(200).send(retorno);
+
+        } catch (error) {
+            console.log(error);
+        } finally {
+            await connection.close();
+        }
     });
 
-    async function listaCadastroIndividual(filtro) {
+    async function listaCadastroIndividual(filtro, profissional) {
         let tipoCampoData;
 
         if(filtro.idTipoPeriodo == 1) {
@@ -66,7 +86,7 @@ module.exports = function (app) {
             await connection.close();
         }
 
-        return preencheXMLCadastroIndividual(list, estabelecimento);
+        return preencheXMLCadastroIndividual(list, estabelecimento, profissional);
     }
 
     async function listaAtendimentoIndividual(filtro) {
@@ -131,7 +151,7 @@ module.exports = function (app) {
         return preencheXMLFichaVacinacao(listaVacinas, estabelecimento, profissionais);
     }
 
-    function preencheXMLCadastroIndividual(list, estabelecimento) {
+    function preencheXMLCadastroIndividual(list, estabelecimento, profissional) {
         const { create } = require('xmlbuilder2');
         const { v4: uuidv4 } = require('uuid');
         let xmls = [];
@@ -150,34 +170,34 @@ module.exports = function (app) {
                     .ele('emSituacaoDeRua').up()
                     .ele('fichaAtualizada').txt('false').up()
                     .ele('identificacaoUsuarioCidadao')
-                    .ele('codigoIbgeMunicipioNascimento').txt(paciente.codigoIbgeMunicipioNascimento).up()
-                    .ele('dataNascimentoCidadao').txt(new Date(paciente.dataNascimento).getTime() / 1000).up()
-                    .ele('desconheceNomeMae').txt(paciente.desconheceNomeMae).up()
-                    .ele('emailCidadao').txt(paciente.email ? paciente.email : '').up()
-                    .ele('nacionalidadeCidadao').txt(paciente.idNacionalidadeSUS).up()
-                    .ele('nomeCidadao').txt(paciente.nome).up()
-                    .ele('nomeMaeCidadao').txt(paciente.desconheceNomeMae == 1 ? '' : paciente.nomeMae).up()
-                    .ele('cpfCidadao').txt(paciente.cpfCidadao).up()
-                    .ele('telefoneCelular').txt(paciente.foneCelular ? paciente.foneCelular : '').up()
-                    .ele('paisNascimento').txt(paciente.paisNascimento).up()
-                    .ele('racaCorCidadao').txt(paciente.idRacaSus ? paciente.idRacaSus : '1').up()
-                    .ele('sexoCidadao').txt(paciente.sexo).up()
-                    .ele('nomePaiCidadao').txt(paciente.desconheceNomePai == 1 ? '' : paciente.nomePai).up()
-                    .ele('desconheceNomePai').txt(paciente.desconheceNomePai).up()
-                .up()
-                .ele('informacoesSocioDemograficas').up()
-                .ele('saidaCidadaoCadastro').up()
-                .ele('statusTermoRecusaCadastroIndividualAtencaoBasica').txt('false').up()
-                .ele('tpCdsOrigem').txt('3').up()
-                .ele('uuid').txt(uuidFicha).up()
-                .ele('uuidFichaOriginadora').txt(uuidFicha).up()
-                .ele('headerTransport')
-                    .ele('profissionalCNS').txt('3').up()
-                    .ele('cboCodigo_2002').txt('3').up()
-                    .ele('cnes').txt(estabelecimento.cnes).up()
-                    .ele('dataAtendimento').txt(Date.now()).up()
-                    .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
-                .up()
+                        .ele('codigoIbgeMunicipioNascimento').txt(paciente.codigoIbgeMunicipioNascimento).up()
+                        .ele('dataNascimentoCidadao').txt(new Date(paciente.dataNascimento).getTime() / 1000).up()
+                        .ele('desconheceNomeMae').txt(paciente.desconheceNomeMae).up()
+                        .ele('emailCidadao').txt(paciente.email ? paciente.email : '').up()
+                        .ele('nacionalidadeCidadao').txt(paciente.idNacionalidadeSUS).up()
+                        .ele('nomeCidadao').txt(paciente.nome).up()
+                        .ele('nomeMaeCidadao').txt(paciente.desconheceNomeMae == 1 ? '' : paciente.nomeMae).up()
+                        .ele('cpfCidadao').txt(paciente.cpfCidadao ? paciente.cpfCidadao : undefined).up()
+                        .ele('telefoneCelular').txt(paciente.foneCelular ? paciente.foneCelular : '').up()
+                        .ele('paisNascimento').txt(paciente.paisNascimento).up()
+                        .ele('racaCorCidadao').txt(paciente.idRacaSus ? paciente.idRacaSus : '1').up()
+                        .ele('sexoCidadao').txt(paciente.sexo).up()
+                        .ele('nomePaiCidadao').txt(paciente.desconheceNomePai == 1 ? '' : paciente.nomePai).up()
+                        .ele('desconheceNomePai').txt(paciente.desconheceNomePai).up()
+                    .up()
+                    .ele('informacoesSocioDemograficas').up()
+                    .ele('saidaCidadaoCadastro').up()
+                    .ele('statusTermoRecusaCadastroIndividualAtencaoBasica').txt('false').up()
+                    .ele('tpCdsOrigem').txt('3').up()
+                    .ele('uuid').txt(uuidFicha).up()
+                    .ele('uuidFichaOriginadora').txt(uuidFicha).up()
+                    .ele('headerTransport')
+                        .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
+                        .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
+                        .ele('cnes').txt(estabelecimento.cnes).up()
+                        .ele('dataAtendimento').txt(Date.now()).up()
+                        .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
+                    .up()
                 .up()
                 .ele('ns2:remetente')
                     .ele('contraChave').txt('E-ATENDE-VERSAO').up()
@@ -196,9 +216,20 @@ module.exports = function (app) {
                     .ele('nomeBancoDados').txt('MySQL').up()
                 .up()
                 .ele('versao', { major: '4', minor: '0', revision: '3' })
-                .doc().end({ prettyPrint: true });
+                .doc();
 
-            xmls.push(doc);
+            let fieldToValidate = ['emailCidadao', 'nomeMaeCidadao', 'cpfCidadao', 'telefoneCelular', 'racaCorCidadao', 'nomePaiCidadao'];
+
+            fieldToValidate.forEach(field => {
+                doc.each(x => { 
+                    if (x.node.nodeName == field && !x.node._firstChild._data) {
+                        x.node.removeChild(x.node._firstChild);
+                        x.remove();
+                    }
+                }, true, true)
+            })
+
+            xmls.push(doc.doc().end({ prettyPrint: true, allowEmptyTags: false }));
         });
 
         return xmls;

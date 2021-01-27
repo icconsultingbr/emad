@@ -450,6 +450,14 @@ ProfissionalDAO.prototype.buscarProfissionalPorEstabelecimentoEsus = async funct
         WHERE ep.idEstabelecimento = ? AND tp.situacao = 1`, id);
 }
 
+ProfissionalDAO.prototype.buscaProfissionalSusPorUsuarioSync = async function (idUsuario) {    
+    let profissional =  await this._connection.query(`SELECT *, te.codigoCBO FROM tb_profissional as p 
+    INNER JOIN tb_especialidade te ON (p.idEspecialidade = te.id)
+    WHERE p.idUsuario = ? AND p.situacao = 1`, [idUsuario]);
+
+    return profissional[0];
+}
+
 module.exports = function(){
     return ProfissionalDAO;
 };
