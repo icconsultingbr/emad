@@ -3,6 +3,7 @@ import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.
 import { IntegracaoEsus } from '../../shared/services/integracao-e-sus.service';
 import { IntegracaoEsusModel } from '../../_core/_models/IntegracaoEsus';
 import { Util } from '../../_core/_util/Util';
+declare function escape(s:string): string;
 
 @Component({
   selector: 'app-esus',
