@@ -5,25 +5,23 @@ function ItemExameDAO(connection) {
     this._table = `tb_item_receita`;
 }
 
+
 ItemExameDAO.prototype.salva = async function(itemExame) {
-    const novoItemExame = await this._connection.query(`INSERT INTO tb_item_receita (idReceita, idMaterial, qtdPrescrita, tempoTratamento, qtdDispAnterior, 
-                                                        qtdDispMes, dataUltDisp, numReceitaControlada, observacao, situacao, idUsuarioCriacao, dataCriacao)
-                                                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
-                                                          [itemExame.idReceita, itemExame.idMaterial, itemExame.qtdPrescrita, itemExame.tempoTratamento,
-                                                            itemExame.qtdDispAnterior, itemExame.qtdDispMes, itemExame.dataUltDisp ? new Date(itemExame.dataUltDisp) : null,
-                                                            itemExame.numReceitaControlada, itemExame.observacao, 
+    const novoItemExame = await this._connection.query(`INSERT INTO tb_item_exame (idExame, idProdutoExame, idMetodoExame, resultado, situacao, 
+                                                         idUsuarioCriacao, dataCriacao)
+                                                          VALUES (?, ?, ?, ?, ?, ?, ?)`, 
+                                                          [itemExame.idExame, itemExame.idProdutoExame, itemExame.idMetodoExame, itemExame.resultado,
                                                             itemExame.situacao, itemExame.idUsuarioCriacao, itemExame.dataCriacao]);
 
     return [novoItemExame];
 }
 
 ItemExameDAO.prototype.atualiza = async function(itemExame) {
-    const itemExameAtualizado = await this._connection.query(`UPDATE tb_item_receita SET qtdDispAnterior=?, qtdDispMes=?, dataUltDisp=?, observacao=?, 
-                                                            idMotivoFimReceita=?, dataFimReceita=?, idUsuarioFimReceita=?, situacao=?, idUsuarioAlteracao=?, dataAlteracao=? 
+    const itemExameAtualizado = await this._connection.query(`UPDATE tb_item_exame SET idExame=?, idProdutoExame=?, idMetodoExame=?, resultado=?, 
+                                                            situacao=?, idUsuarioAlteracao=?, dataAlteracao=? 
                                                             WHERE id=?`, 
-                                                          [ itemExame.qtdDispAnterior, itemExame.qtdDispMes, itemExame.dataUltDisp ? new Date(itemExame.dataUltDisp) : null,
-                                                            itemExame.observacao, itemExame.idMotivoFimReceita, itemExame.dataFimReceita ? new Date(itemExame.dataFimReceita) : null,
-                                                            itemExame.idUsuarioFimReceita, itemExame.situacao, itemExame.idUsuarioAlteracao, itemExame.dataAlteracao, itemExame.id]);
+                                                          [ itemExame.idExame, itemExame.idProdutoExame, itemExame.idMetodoExame,
+                                                            itemExame.resultado, itemExame.situacao, itemExame.idUsuarioAlteracao, itemExame.dataAlteracao, itemExame.id]);
 
     return [itemExameAtualizado];
 }

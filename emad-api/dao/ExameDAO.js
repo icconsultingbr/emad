@@ -18,6 +18,11 @@ ExameDAO.prototype.buscaPorId = async function(id){
     return result ? result[0] : null;
 }
 
+ExameDAO.prototype.atualizaStatus = async function(obj){
+    const response =  await this._connection.query(`UPDATE tb_exame SET situacao = ?, idUsuarioAlteracao = ?, dataAlteracao  = ?, situacao = ?, resultado = ? WHERE id= ?`, [obj.situacao, obj.idUsuarioAlteracao, obj.dataAlteracao, obj.situacao, obj.resultado, obj.id]);
+    return [response];
+}
+
 // ExameDAO.prototype.atualizaStatus = async function(obj){
 //     const receitaAtualizada =  await this._connection.query(`UPDATE tb_receita SET situacao = ?, idUsuarioAlteracao = ?, dataAlteracao  = ?, dataUltimaDispensacao = ? WHERE id= ?`, [obj.situacao, obj.idUsuarioAlteracao, obj.dataAlteracao, obj.dataUltimaDispensacao,  obj.id]);
 //     return [receitaAtualizada];

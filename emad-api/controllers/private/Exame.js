@@ -89,15 +89,17 @@ module.exports = function (app) {
                 
             //Gravar itens do exame
             for (const itemExame of exame.itensExame) {  
-                itemReceita.situacao = 1;//FINALIZADO
+                itemExame.situacao = 1;//FINALIZADO
 
                 delete itemExame.nomeExame;
                 delete itemExame.nomeProdutoExame;                
                 delete itemExame.nomeMetodoExame;
                 delete itemExame.nomeResultado;
 
+                itemExame.idExame = exame.id;
                 itemExame.idUsuarioCriacao = usuario.id;
-                
+                itemExame.dataCriacao= new Date;
+
                 if(itemExame.id){                      
                     delete itemExame.dataCriacao;
                     delete itemExame.idUsuarioCriacao;
@@ -111,9 +113,9 @@ module.exports = function (app) {
                 }
             }           
             
+            exame.resultado = exame.resultadoFinal;
             exame.dataAlteracao = new Date;
-            exame.idUsuarioAlteracao = usuario.id;
-            exame.situacao = (receita.acao == 'F' ? 3 : situacao);                       
+            exame.idUsuarioAlteracao = usuario.id;            
             
             //atualiza o status da receita
             var responseExame = await exameRepository.atualizaStatus(exame);
@@ -123,7 +125,7 @@ module.exports = function (app) {
             await connection.commit();
         }
         catch (exception) {
-            console.log("Erro ao salvar o exame (" + receita.numero + "), exception: " +  exception);
+            console.log("Erro ao salvar o exame (" + exame.id + "), exception: " +  exception);
             res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
             await connection.rollback();
         }
