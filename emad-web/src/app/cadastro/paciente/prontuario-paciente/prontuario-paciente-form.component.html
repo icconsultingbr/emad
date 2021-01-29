@@ -1,4 +1,4 @@
-<h4 class="mb-5 text-left">Prontuário eletrônico</h4>
+<h4 class="mb-3 text-left">Prontuário eletrônico</h4>
 <app-loader [loading]="loading"></app-loader>
 <p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
 <div *ngIf="errors.length" class="alert alert-danger sticky-top">
@@ -8,7 +8,13 @@
     </div>
   </div>
 </div>
-
+<div class="row container mb-3">
+  <span class="input-group-btn ml-2">
+    <a class="btn btn-primary" style="color: #fff !important;" (click)="imprimirPdfProntuario()">
+        <i class="far fa-file-pdf"></i> Gerar PDF prontuário
+    </a>
+  </span>
+</div>
 <form [formGroup]="form">
   <div>
     <tabset>

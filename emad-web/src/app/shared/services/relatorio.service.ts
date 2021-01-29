@@ -3,7 +3,7 @@ export abstract class RelatorioService {
     protected style = '';
     protected script = '';
 
-    print(content: string, ano: number, idEstabelecimento: number, numero: string | number, target: string = '_blank'){
+    print(content: string, target: string = '_blank', ano?: number, idEstabelecimento?: number, numero?: string | number,){
         var popupWin = window.open(null, target);
 
         popupWin.document.open();

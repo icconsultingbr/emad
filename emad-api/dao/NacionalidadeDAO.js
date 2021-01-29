@@ -28,6 +28,10 @@ NacionalidadeDAO.prototype.deletaPorId = function (id,callback) {
     this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
 }
 
+NacionalidadeDAO.prototype.buscaPorIdSync = async function (id) {
+    return await this._connection.query("select * from "+this._table+" where id = ?",id); 
+}
+
 
 module.exports = function(){
     return NacionalidadeDAO;
