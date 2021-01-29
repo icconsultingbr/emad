@@ -31,7 +31,7 @@ ProdutoExameDAO.prototype.listaAsync = async function(addFilter) {
 
     const join = `  FROM ${this._table} a
         INNER JOIN tb_tipo_exame tipoExame on tipoExame.id = a.idTipoExame
-        WHERE 1 == 1 ${where}`;
+        WHERE 1 = 1 ${where}`;
 
     const count = await this._connection.query(`SELECT COUNT(1) as total ${join}`);
 

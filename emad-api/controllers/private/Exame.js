@@ -49,7 +49,7 @@ module.exports = function (app) {
     });
 
     app.put('/exame', async function (req, res) {
-        let receita = req.body;
+        let exame = req.body;
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
@@ -60,13 +60,9 @@ module.exports = function (app) {
         const guid =  uuidv4();
 
         req.assert("idEstabelecimento").notEmpty().withMessage("O campo Estabelecimento é um campo obrigatório");
-        req.assert("idMunicipio").notEmpty().withMessage("O campo Município é um campo obrigatório");
-        req.assert("idProfissional").notEmpty().withMessage("O campo Profissional é um campo obrigatório");
+        //req.assert("idProfissional").notEmpty().withMessage("O campo Profissional é um campo obrigatório");
         req.assert("idPaciente").notEmpty().withMessage("O campo Paciente é um campo obrigatório");
-        req.assert("idSubgrupoOrigem").notEmpty().withMessage("O campo Origem é um campo obrigatório");
-        req.assert("ano").notEmpty().withMessage("O campo Ano é um campo obrigatório");
-        req.assert("dataEmissao").notEmpty().withMessage("O campo Data emissão é um campo obrigatório");
-
+        
         errors = req.validationErrors();
 
         if (errors) {
@@ -74,199 +70,60 @@ module.exports = function (app) {
             return;
         }
 
-        if (receita.idSubgrupoOrigem == "null") {
-            errors = util.customError(errors, "header", "Origem é um campo obrigatório", "");
-            res.status(400).send(errors);
-            return;
-        }
-
-        if (receita.itensReceita.length == 0) {
-            errors = util.customError(errors, "header", "Nenhum medicamento foi adicionado", "");
+        if (exame.itensExame.length == 0) {
+            errors = util.customError(errors, "header", "Nenhum produto foi adicionado", "");
             res.status(400).send(errors);
             return;
         }
         
         const connection = await app.dao.connections.EatendConnection.connection();
 
-        const receitaRepository = new app.dao.ReceitaDAO(connection);
-        const itemReceitaRepository = new app.dao.ItemReceitaDAO(connection);
-        const estoqueRepository = new app.dao.EstoqueDAO(connection);
-        const movimentoGeralRepository = new app.dao.MovimentoGeralDAO(connection);
-        const itemMovimentoGeralRepository = new app.dao.ItemMovimentoGeralDAO(connection);
-        const movimentoLivroRepository = new app.dao.MovimentoLivroDAO(connection);
-        const pacienteLivroRepository = new app.dao.PacienteDAO(connection);
-
+        const exameRepository = new app.dao.ExameDAO(connection);
+        const itemExameRepository = new app.dao.ItemExameDAO(connection);
+        
         try {
             await connection.beginTransaction();           
 
-            if(receita.itensReceita.length > 0)
+            if(exame.itensExame.length > 0)
                 situacao = 3;//FINALIZADA            
+                
+            //Gravar itens do exame
+            for (const itemExame of exame.itensExame) {  
+                itemReceita.situacao = 1;//FINALIZADO
 
-            //Gravar itens da receita
-            for (const itemReceita of receita.itensReceita) {  
-                itemReceita.qtdDispMes = itemReceita.qtdDispMes == "" ? 0 : Number(itemReceita.qtdDispMes);
-                itemReceita.idReceita = receita.id;
-                itemReceita.dataCriacao = new Date;
-                itemReceita.dataUltDisp = itemReceita.qtdDispMes > 0 ? itemReceita.dataCriacao : itemReceita.dataUltDisp;
-                if(itemReceita.situacao != 2)                
-                    itemReceita.qtdDispAnterior = (itemReceita.qtdDispAnterior ? parseInt(itemReceita.qtdDispAnterior) : 0)  + (itemReceita.qtdDispMes > 0 ? parseInt(itemReceita.qtdDispMes) : 0);
-                itemReceita.idUsuarioCriacao = usuario.id;
-                itemReceita.situacao = 2;//FINALIZADO
-                itemReceita.dataFimReceita = new Date;
-                itemReceita.idUsuarioFimReceita = usuario.id;                
+                delete itemExame.nomeExame;
+                delete itemExame.nomeProdutoExame;                
+                delete itemExame.nomeMetodoExame;
+                delete itemExame.nomeResultado;
 
-                //Se algum item não foi dispensado completamente, ele ficará como ABERTO e a RECEITA também
-                if(itemReceita.qtdPrescrita > itemReceita.qtdDispAnterior && receita.acao != 'F'){
-                    situacao = 2; // ABERTA
-                    itemReceita.situacao = 1; //ABERTO
-                    itemReceita.dataFimReceita = null;
-                    itemReceita.idUsuarioFimReceita = null;
-                }
-
-                //Se o item possuir algum item de estoque, será necessário gravar o movimento
-                if(itemReceita.itensEstoque && itemReceita.itensEstoque.length > 0)
-                    gravaMovimento = true;
-
-                if(itemReceita.id){                      
-                    delete itemReceita.dataCriacao;
-                    delete itemReceita.idUsuarioCriacao;
-                    itemReceita.dataAlteracao = new Date;
-                    itemReceita.idUsuarioAlteracao = usuario.id;
-                    var item = await itemReceitaRepository.atualiza(itemReceita);  
+                itemExame.idUsuarioCriacao = usuario.id;
+                
+                if(itemExame.id){                      
+                    delete itemExame.dataCriacao;
+                    delete itemExame.idUsuarioCriacao;
+                    itemExame.dataAlteracao = new Date;
+                    itemExame.idUsuarioAlteracao = usuario.id;
+                    var item = await itemExameRepository.atualiza(itemExame);  
                 }
                 else{
-                    var responseItemReceita = await itemReceitaRepository.salva(itemReceita);    
-                    itemReceita.id = responseItemReceita[0].insertId; 
+                    var responseItemExame = await itemExameRepository.salva(itemExame);    
+                    itemExame.id = responseItemExame[0].insertId; 
                 }
             }           
             
-            receita.dataAlteracao = new Date;
-            receita.idUsuarioAlteracao = usuario.id;
-            receita.situacao = (receita.acao == 'F' ? 3 : situacao);
-            receita.dataUltimaDispensacao = gravaMovimento ? receita.dataAlteracao : null;
+            exame.dataAlteracao = new Date;
+            exame.idUsuarioAlteracao = usuario.id;
+            exame.situacao = (receita.acao == 'F' ? 3 : situacao);                       
             
             //atualiza o status da receita
-            var responseReceita = await receitaRepository.atualizaStatus(receita);
-            
-            if(gravaMovimento)
-            {
-                movimentoGeral.idTipoMovimento = 3;
-                movimentoGeral.idUsuario = usuario.id;
-                movimentoGeral.idEstabelecimento = receita.idEstabelecimento;
-                movimentoGeral.idReceita = receita.id;
-                movimentoGeral.idPaciente = receita.idPaciente;
-                movimentoGeral.numeroDocumento = receita.ano + "-" + receita.idEstabelecimento + "-" + receita.numero;
-                movimentoGeral.numeroEmpenho = null;
-                movimentoGeral.idMovimentoEstornado = null;
-                movimentoGeral.dataMovimento = new Date;
-                movimentoGeral.numeroControle = guid;
-                movimentoGeral.idUsuarioCriacao = usuario.id;
-                movimentoGeral.dataCriacao = new Date;
-                movimentoGeral.situacao = 1;
-
-                var responseMovimentoGeral = await movimentoGeralRepository.salva(movimentoGeral);
-                movimentoGeral.id = responseMovimentoGeral[0].insertId;
-
-                for (const itemReceita of receita.itensReceita) {                
-                    if(itemReceita.itensEstoque){
-                        for (const itemEstoque of itemReceita.itensEstoque) {                    
-                            var saldoAnteriorUnidade = 0;
-                            var saldoAtualUnidade = 0;
-                            //var estoque = {};
-                            var qtdEstoque = 0;
-                            var nomeMaterial = "";
-                            var idEstoqueAux = 0;
-
-                            itemMovimentoGeral = {};
-                            itemMovimentoGeral.idMovimentoGeral = movimentoGeral.id;
-                            itemMovimentoGeral.idMaterial = itemEstoque.idMaterial;
-                            itemMovimentoGeral.idFabricante = itemEstoque.idFabricanteMaterial;
-                            itemMovimentoGeral.lote = itemEstoque.lote;
-                            itemMovimentoGeral.validade = itemEstoque.validade;
-                            itemMovimentoGeral.quantidade = parseInt(itemEstoque.qtdDispensar);
-                            itemMovimentoGeral.idItemReceita = itemReceita.id;
-                            itemMovimentoGeral.idEstabelecimento = receita.idEstabelecimento;
-
-                            itemMovimentoGeral.idUsuarioCriacao = usuario.id;
-                            itemMovimentoGeral.dataCriacao = new Date();
-                            itemMovimentoGeral.situacao = 1;
-
-                            var responseItemMovimentoGeral = await itemMovimentoGeralRepository.salva(itemMovimentoGeral);
-                            itemMovimentoGeral.id = responseItemMovimentoGeral[0].insertId;
-
-                            saldoAnteriorUnidade = await estoqueRepository.carregaQuantidadePorMaterialEstabelecimento(itemEstoque);
-
-                            var estoque = await estoqueRepository.carregaEstoquePorMaterial(itemEstoque);
-
-                            if(estoque.length > 0){                            
-                                qtdEstoque = estoque[0].quantidade;
-                                nomeMaterial = estoque[0].nomeMaterial;
-                                idEstoqueAux = estoque[0].id;   
-                                
-                                if(qtdEstoque > 0){
-                                var qtd = parseInt(qtdEstoque) - itemMovimentoGeral.quantidade;
-                                    
-                                    if(qtd > 0)
-                                        var responseAtualizacaoQtd = await estoqueRepository.atualizaQuantidadeEstoque(qtd, usuario.id, idEstoqueAux);
-                                    else{
-                                            //lista de estoque insuficiente
-                                    }
-                                }
-                                else{
-                                    //lista de estoque insuficiente
-                                }
-                            }
-
-                            saldoAtualUnidade = await estoqueRepository.carregaQuantidadePorMaterialEstabelecimento(itemEstoque);
-
-                            var responseMovimentoLivro = await movimentoLivroRepository.carregaLivroPorMovimento(itemMovimentoGeral);
-                            
-                            if(responseMovimentoLivro.length > 0){
-
-                                var qtdeSaidaLivro = parseInt(responseMovimentoLivro[0].quantidadeSaida) + itemMovimentoGeral.quantidade;
-                                var responseAtualizacaoMovimentoLivro = await movimentoLivroRepository.atualizaSaida(qtdeSaidaLivro, saldoAtualUnidade, itemMovimentoGeral, usuario.id);
-                            }
-                            else{
-
-                                var nomePaciente = await pacienteLivroRepository.carregaNomePaciente(receita.idPaciente);
-                                var historico = nomePaciente + " Nº da receita: " 
-                                    + receita.ano + "-" 
-                                    + receita.idEstabelecimento + "-" 
-                                    + receita.numero 
-                                    + ((itemReceita.numReceitaControlada) ? " NR: " + itemReceita.numReceitaControlada : "");
-
-                                let movimentoLivro = {};
-                                movimentoLivro.idMovimentoGeral = movimentoGeral.id;
-                                movimentoLivro.idEstabelecimento = receita.idEstabelecimento;
-                                movimentoLivro.idMaterial = itemEstoque.idMaterial;
-                                movimentoLivro.idTipoMovimento = 3;
-                                movimentoLivro.saldoAnterior = saldoAnteriorUnidade;
-                                movimentoLivro.quantidadeSaida = itemMovimentoGeral.quantidade;
-                                movimentoLivro.quantidadeEntrada = null;
-                                movimentoLivro.quantidadePerda = null;
-                                movimentoLivro.saldoAtual = saldoAtualUnidade;
-                                movimentoLivro.dataMovimentacao = new Date();
-                                movimentoLivro.historico = historico;
-
-                                movimentoLivro.idUsuarioCriacao = usuario.id;
-                                movimentoLivro.dataCriacao = new Date;
-                                movimentoLivro.situacao = 1;
-                                
-                                var responseMovimentoLivro = await movimentoLivroRepository.salva(movimentoLivro);
-                                movimentoLivro.id = responseMovimentoLivro[0].insertId;
-
-                            }
-                        }
-                    }
-                }
-            }
-
-            res.status(201).send(responseReceita);
+            var responseExame = await exameRepository.atualizaStatus(exame);
+           
+            res.status(201).send(responseExame);
 
             await connection.commit();
         }
         catch (exception) {
-            console.log("Erro ao salvar a receita (" + receita.numero + "), exception: " +  exception);
+            console.log("Erro ao salvar o exame (" + receita.numero + "), exception: " +  exception);
             res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
             await connection.rollback();
         }
