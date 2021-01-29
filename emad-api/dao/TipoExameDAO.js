@@ -16,18 +16,20 @@ TipoExameDAO.prototype.atualizaSync = async function(objeto) {
 }
 
 TipoExameDAO.prototype.buscaPorIdSync = async function(id){
-    let result =  await this._connection.query(`SELECT * FROM ${this._table} where id=?`, [id]);
+    let result =  await this._connection.query(`SELECT a.*, 
+                                                CONCAT(h.cid_10, ' - ', h.nome) as nomeHipoteseDiagnostica FROM ${this._table} a 
+                                                INNER JOIN tb_hipotese_diagnostica h on h.id = a.idHipoteseDiagnostica where a.id=?`, [id]);
     return result ? result[0] : null;
 }
 
 TipoExameDAO.prototype.listaAsync = async function(addFilter) {     
     let orderBy = addFilter.sortColumn ? `${addFilter.sortColumn}` : "id";
 
-    const join = ` FROM ${this._table} a`;
+    const join = ` FROM ${this._table} a INNER JOIN tb_hipotese_diagnostica h on h.id = a.idHipoteseDiagnostica`;
 
     const count = await this._connection.query(`SELECT COUNT(1) as total ${join}`);
 
-    const query = QueryBuilder.datatable(`SELECT * ${join}`, orderBy, addFilter.sortOrder, addFilter.limit, addFilter.offset);
+    const query = QueryBuilder.datatable(`SELECT a.*, CONCAT(h.cid_10, ' - ', h.nome) as nomeHipoteseDiagnostica ${join}`, orderBy, addFilter.sortOrder, addFilter.limit, addFilter.offset);
 
     const result = await this._connection.query(query);
 

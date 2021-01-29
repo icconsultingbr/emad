@@ -1,11 +1,13 @@
 module.exports = function (app) {
     app.post('/tipo-exame', async function(req,res){
+        let util = new app.util.Util();
         let obj = req.body;
         let usuario = req.usuario; 
         let errors = [];
 
         req.assert("nome").notEmpty().withMessage("O campo Nome é um campo obrigatório");
         req.assert("nome").isLength({ min: 0, max: 50 }).withMessage("O campo Nome deve ter no máximo 50 caractere(s)");
+        req.assert("idHipoteseDiagnostica").notEmpty().withMessage("O campo Hipótese diagnóstica é um campo obrigatório");
 
         errors = req.validationErrors();
         
@@ -18,6 +20,7 @@ module.exports = function (app) {
         const repository = new app.dao.TipoExameDAO(connection);
 
         try {
+            delete obj.nomeHipoteseDiagnostica;
             obj.dataCriacao = new Date;
             obj.idUsuarioCriacao = usuario.id;
 
@@ -41,7 +44,8 @@ module.exports = function (app) {
 
         req.assert("nome").notEmpty().withMessage("O campo Nome é um campo obrigatório");
         req.assert("nome").isLength({ min: 0, max: 50 }).withMessage("O campo Nome deve ter no máximo 50 caractere(s)");
-        
+        req.assert("idHipoteseDiagnostica").notEmpty().withMessage("O campo Hipótese diagnóstica é um campo obrigatório");
+
         errors = req.validationErrors();
         
         if(errors){
@@ -53,6 +57,10 @@ module.exports = function (app) {
         const repository = new app.dao.TipoExameDAO(connection);
 
         try {
+            delete obj.nomeHipoteseDiagnostica;
+            delete obj.dataCriacao;
+            delete obj.idUsuarioCriacao;
+
             obj.dataAlteracao = new Date;
             obj.idUsuarioAlteracao = usuario.id;
 
