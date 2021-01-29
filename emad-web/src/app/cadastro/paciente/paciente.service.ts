@@ -21,43 +21,43 @@ export class PacienteService extends GenericsService {
       form: true,
       required: false,
       validator: ['', '']
-      },
-      {
-        field: "cartaoSus",
-        type: "text",
-        label: "Cartão SUS",
-        grid: true,
-        form: true,
-        required: false,
-        validator: ['', ''],
-        autoFocus: true,
-        filter: {
-          type: "text"
-        }
-      },
-      {
-        field: "idSap",
-        type: "text",
-        label: "ID SAP",
-        grid: true,
-        form: true,
-        required: false,
-        autoFocus: true,
-        filter: {
-          type: "text"
-        }
-      },
-      {
-        field: "nome",
-        type: "text",
-        label: "Nome",
-        grid: true,
-        form: true,
-        required: true,
-        validator: ['', Validators.required],
-        filter: {
-          type: 'text'
-        }
+    },
+    {
+      field: "cartaoSus",
+      type: "text",
+      label: "Cartão SUS",
+      grid: true,
+      form: true,
+      required: false,
+      validator: ['', ''],
+      autoFocus: true,
+      filter: {
+        type: "text"
+      }
+    },
+    {
+      field: "idSap",
+      type: "text",
+      label: "ID SAP",
+      grid: true,
+      form: true,
+      required: false,
+      autoFocus: true,
+      filter: {
+        type: "text"
+      }
+    },
+    {
+      field: "nome",
+      type: "text",
+      label: "Nome",
+      grid: true,
+      form: true,
+      required: true,
+      validator: ['', Validators.required],
+      filter: {
+        type: 'text'
+      }
     },
     {
       field: "dataNascimento",
@@ -361,17 +361,17 @@ export class PacienteService extends GenericsService {
       validator: ['', '']
     },
     {
-        field: "pacienteOutroEstabelecimento",
-        type: "text",
-        label: "Visualizar pacientes de outros estabelecimentos",
-        grid: false,
-        form: false,
-        translate: { "1": "Sim", "2": "Não"},
-        required: false,
-        validator: ['', ''],
-        filter: {
-            type: "select"
-        }      
+      field: "pacienteOutroEstabelecimento",
+      type: "text",
+      label: "Visualizar pacientes de outros estabelecimentos",
+      grid: false,
+      form: false,
+      translate: { "1": "Sim", "2": "Não" },
+      required: false,
+      validator: ['', ''],
+      filter: {
+        type: "select"
+      }
     }
   ];
 
@@ -393,12 +393,12 @@ export class PacienteService extends GenericsService {
 
   saveHipotese(obj: any) {
     if (obj.id) {
-        return this.http
-            .put('atendimento-hipotese', JSON.stringify(obj));
+      return this.http
+        .put('atendimento-hipotese', JSON.stringify(obj));
     }
     else {
-        return this.http
-            .post('atendimento-hipotese', JSON.stringify(obj));
+      return this.http
+        .post('atendimento-hipotese', JSON.stringify(obj));
     }
   }
 
@@ -431,7 +431,7 @@ export class PacienteService extends GenericsService {
       + periodo + "&idEstabelecimento="
       + JSON.parse(localStorage.getItem("est"))[0].id);
   }
-  
+
   carregaAtendimentoSituacaoExistentePorPeriodo(periodo: number): Observable<any> {
     return this.http.get("atendimento-situacao-existente-por-periodo?periodo="
       + periodo + "&idEstabelecimento="
@@ -442,5 +442,9 @@ export class PacienteService extends GenericsService {
     return this.http.get("atendimento-situacao-por-periodo?periodo="
       + periodo + "&idEstabelecimento="
       + JSON.parse(localStorage.getItem("est"))[0].id);
+  }
+
+  obterProntuarioPacienteRelatorio(idPaciente: number) : Observable<any> {
+    return this.http.get('paciente/prontuario/report/' + idPaciente);
   }
 }

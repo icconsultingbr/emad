@@ -25,7 +25,9 @@ UfDAO.prototype.buscaPorPais = function (idPais,callback) {
     this._connection.query("select id, nome from "+this._table+" where idPais = ?",idPais,callback);
 }
 
-
+UfDAO.prototype.buscaPorIdSync = async function (id) {
+    return await this._connection.query("select * from "+this._table+" where id = ?",id);
+}
 
 module.exports = function(){
     return UfDAO;

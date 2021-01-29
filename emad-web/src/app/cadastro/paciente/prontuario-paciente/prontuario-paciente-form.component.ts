@@ -11,6 +11,7 @@ import { ReciboReceitaImpressaoService } from '../../../shared/services/recibo-r
 import { MainChartLine } from '../../../_core/_models/MainChart';
 import { AtendimentoService } from '../../../operacao/atendimento/atendimento.service';
 import { Atendimento, AtendimentoHistorico } from '../../../_core/_models/Atendimento';
+import { ProntuarioPacienteImpressaoService } from '../../../shared/services/prontuario-paciente-impressao.service';
 
 @Component({
   selector: 'app-prontuario-paciente-form',
@@ -114,7 +115,8 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     private ref: ChangeDetectorRef,
     private modalService: NgbModal,
     private reciboReceitaService: ReciboReceitaImpressaoService,
-    private router: Router) {
+    private router: Router,
+    private prontuarioPacienteImpressao: ProntuarioPacienteImpressaoService) {
     this.fields = service.fields;
   }
 
@@ -557,6 +559,10 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
   abreReceitaMedica(ano_receita: number, numero_receita: number, unidade_receita: number) {
     this.reciboReceitaService.imprimir(ano_receita, unidade_receita, numero_receita, true);
+  }
+
+  imprimirPdfProntuario() {
+    this.prontuarioPacienteImpressao.imprimir(this.id);
   }
 
   openHistorico(content: any, idAtendimento: number, idHistorico: number) {
