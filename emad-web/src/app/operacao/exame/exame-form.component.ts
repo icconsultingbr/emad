@@ -107,19 +107,26 @@ export class ExameFormComponent implements OnInit {
     this.errors = [];    
     event.preventDefault();
     
-    //this.object.acao = acao ? acao : 'A';
-    ///this.close(false);
+    this.object.acao = acao ? acao : 'A';
+    this.close(false);
 
     this.service
       .inserir(this.object, "exame")
       .subscribe((res: any) => {
         if (this.object.id){
-          if(acao != 'A')
-            this.openConfirmacao(this.contentRecibo);        
+          if(acao == 'F')
+            this.openConfirmacao(this.contentRecibo);      
+          else
+            this.close(true);
         }          
         else{
           this.message = "Exame " + res.id + " criada com sucesso!";
+          this.object.id = res.id;
           this.object.situacao = res.situacao;
+          this.service.list(`produto-exame/tipo-exame/${this.object.idTipoExame}`).subscribe(produtoExame => {
+            this.domains[0].idProdutoExame = produtoExame;                              
+            this.object.idTipoExame = this.object.idTipoExame;
+          });  
         }          
         
         this.warning = "";
@@ -135,11 +142,7 @@ export class ExameFormComponent implements OnInit {
     this.loading = true;
     this.service.findById(this.id, "exame").subscribe(result => {
       this.object = result;  
-      this.label = this.object.situacao == '1' ? 'Editar receita (Situação: Pendente medicamentos)' : 
-                   this.object.situacao == '2' ? 'Completar receita (Situação: Aberta)': 'Visualizar receita (Situação: Finalizada)';
-      this.listaItensExame = this.object.itensExame;
-                   //this.listaMaterialAguardandoDispensacao = this.object.itensReceita.filter(item=> item.situacao == 1);
-      //this.listaMaterialLoteDispensadoFinalizado = this.object.itensReceita.filter(item=> item.situacao == 2);    
+      this.label = this.object.situacao == '1' ? 'Editar exame' : 'Visualizar exame (Situação: Finalizado)';      
       
       this.service.list(`produto-exame/tipo-exame/${result.idTipoExame}`).subscribe(produtoExame => {
         this.domains[0].idProdutoExame = produtoExame;                              
@@ -193,7 +196,7 @@ export class ExameFormComponent implements OnInit {
       idEstabelecimento: ['', ''],
       idProdutoExame: ['', ''],
       idMetodoExame:['', ''],
-      idTipoExame: ['', ''],
+      idTipoExame:['', ''],
       resultado: ['', ''],
       resultadoFinal: ['', ''],
       numero: ['', ''],

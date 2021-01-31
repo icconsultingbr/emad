@@ -53,12 +53,9 @@ module.exports = function (app) {
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
-        let situacao = 1;//PENDENTE MEDICAMENTOS
-        let gravaMovimento = false;
-        let movimentoGeral = {};
-        let itemMovimentoGeral = {};
+        let situacao = 1;//Aberto        
         const guid =  uuidv4();
-
+        let objHipotese = {};
         req.assert("idEstabelecimento").notEmpty().withMessage("O campo Estabelecimento é um campo obrigatório");
         //req.assert("idProfissional").notEmpty().withMessage("O campo Profissional é um campo obrigatório");
         req.assert("idPaciente").notEmpty().withMessage("O campo Paciente é um campo obrigatório");
@@ -75,18 +72,23 @@ module.exports = function (app) {
             res.status(400).send(errors);
             return;
         }
+
+        if (exame.acao == 'F' && !exame.resultadoFinal) {
+            errors = util.customError(errors, "header", "Para finalizar o exame preencha o campo Interpretação do resultado", "");
+            res.status(400).send(errors);
+            return;
+        }
         
         const connection = await app.dao.connections.EatendConnection.connection();
 
         const exameRepository = new app.dao.ExameDAO(connection);
         const itemExameRepository = new app.dao.ItemExameDAO(connection);
-        
+        const tipoExameRepository = new app.dao.TipoExameDAO(connection);
+        const atendimentoHipoteseRepository = new app.dao.AtendimentoHipoteseDiagnosticaDAO(connection);
+
         try {
             await connection.beginTransaction();           
 
-            if(exame.itensExame.length > 0)
-                situacao = 3;//FINALIZADA            
-                
             //Gravar itens do exame
             for (const itemExame of exame.itensExame) {  
                 itemExame.situacao = 1;//FINALIZADO
@@ -115,9 +117,33 @@ module.exports = function (app) {
             
             exame.resultado = exame.resultadoFinal;
             exame.dataAlteracao = new Date;
-            exame.idUsuarioAlteracao = usuario.id;            
-            
-            //atualiza o status da receita
+            exame.idUsuarioAlteracao = usuario.id;   
+            exame.situacao = (exame.acao == 'F' ? 2 : situacao);
+
+            //Quando a interpretação do resultado for reagente, criar hipotese no paciente
+            if(exame.situacao == '2' && exame.resultado == '2')
+            {
+                var responseBuscaHipotese = await tipoExameRepository.carregaHipotese(exame.idTipoExame);
+
+                if (!responseBuscaHipotese.idHipoteseDiagnostica) {
+                    errors = util.customError(errors, "header", "Nenhuma hipótese foi vinculada ao tipo de exame!", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
+                }
+                
+                objHipotese.idPaciente = exame.idPaciente;
+                objHipotese.idExame = exame.id;
+                objHipotese.idHipoteseDiagnostica = responseBuscaHipotese.idHipoteseDiagnostica;
+                objHipotese.dataCriacao = new Date;
+                objHipotese.idUsuarioCriacao = usuario.id;
+                objHipotese.situacao = 1;            
+        
+                var responseHipotese = await atendimentoHipoteseRepository.salva(objHipotese);           
+                objHipotese.id = responseHipotese[0].insertId;
+            }
+
+            //atualiza o status do exame
             var responseExame = await exameRepository.atualizaStatus(exame);
            
             res.status(201).send(responseExame);
@@ -144,14 +170,13 @@ module.exports = function (app) {
         const connection = await app.dao.connections.EatendConnection.connection();
 
         const exameRepository = new app.dao.ExameDAO(connection);
-        //const itemExameRepository = new app.dao.ItemExameDAO(connection);
+        const itemExameRepository = new app.dao.ItemExameDAO(connection);
 
         try {
             
             var responseExame = await exameRepository.buscaPorId(id);
-
-            //var itensReceita = await itemExameRepository.buscarPorReceita(id);            
-            //responseExame.itensReceita = itensReceita ? itensReceita : null;
+            var itensExame = await itemExameRepository.buscarPorExame(id);            
+            responseExame.itensExame = itensExame ? itensExame : null;
 
             res.status(200).json(responseExame);
         }
@@ -185,45 +210,6 @@ module.exports = function (app) {
         }
     });
 
-    app.get('/exame/ano/:ano/idEstabelecimento/:idEstabelecimento/numero/:numero', async function (req, res) {
-        let usuario = req.usuario;
-        let ano = req.params.ano;
-        let idEstabelecimento = req.params.idEstabelecimento;
-        let numero = req.params.numero;
-        let util = new app.util.Util();
-        let errors = [];
-        
-        const connection = await app.dao.connections.EatendConnection.connection();
-
-        const receitaRepository = new app.dao.ReceitaDAO(connection);        
-        const itemReceitaRepository = new app.dao.ItemReceitaDAO(connection);        
-        const itemMovimentoGeralRepository = new app.dao.ItemMovimentoGeralDAO(connection);        
-
-        try {
-            
-            var responseReceita = await receitaRepository.buscaReciboReceita(ano, idEstabelecimento, numero);
-            var receita = responseReceita[0];
-
-            if(receita){
-                var itensReceita = await itemReceitaRepository.buscarPorReceita(receita.id);            
-                receita.itensReceita = itensReceita ? itensReceita : null;
-
-                for (const itemReceita of receita.itensReceita) {               
-
-                    var itensEstoque = await itemMovimentoGeralRepository.buscarPorItemReceita(receita.id, itemReceita.id);            
-                    itemReceita.itensEstoque = itensEstoque ? itensEstoque : null;
-                }
-            }
-            res.status(200).json(receita);
-        }
-        catch (exception) {
-            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
-        }
-        finally {
-            await connection.close();
-        }
-    });
-
     app.get('/exame/prontuario-paciente/paciente/:idPaciente', async function (req, res) {
         let usuario = req.usuario;
         let id = req.params.idPaciente;
@@ -232,10 +218,10 @@ module.exports = function (app) {
 
         const connection = await app.dao.connections.EatendConnection.connection();
 
-        const receitaRepository = new app.dao.ReceitaDAO(connection);
+        const exameRepository = new app.dao.ExameDAO(connection);
 
         try {            
-            var response = await receitaRepository.buscaPorPacienteIdProntuario(id);
+            var response = await exameRepository.buscaPorPacienteId(id, );
             res.status(200).json(response);
         }
         catch (exception) {
@@ -267,49 +253,4 @@ module.exports = function (app) {
             await connection.close();
         }
     });
-
-    app.get('/exame/carteira-vacinacao/paciente/:idPaciente', async function (req, res) {
-        let usuario = req.usuario;
-        let id = req.params.idPaciente;
-        let util = new app.util.Util();
-        let errors = [];
-
-        const connection = await app.dao.connections.EatendConnection.connection();
-
-        const receitaRepository = new app.dao.ReceitaDAO(connection);
-
-        try {            
-            var response = await receitaRepository.buscaCarteiraVacinacaoPorPaciente(id);
-            res.status(200).json(response);
-        }
-        catch (exception) {
-            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado " + exception, ""));            
-        }
-        finally {
-            await connection.close();
-        }
-    });
-
-    function lista(addFilter, res) {
-        let q = require('q');
-        let d = q.defer();
-        let util = new app.util.Util();
-        let connection = app.dao.ConnectionFactory();
-        let objDAO = new app.dao.ReceitaDAO(connection);
-
-        let errors = [];
-
-        objDAO.lista(addFilter, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                console.log(exception);
-                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
-                res.status(500).send(errors);
-                return;
-            } else {
-                d.resolve(result);
-            }
-        });
-        return d.promise;
-    }
 }

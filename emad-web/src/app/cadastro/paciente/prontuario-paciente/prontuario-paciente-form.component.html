@@ -724,10 +724,11 @@
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th>Atendimento</th>
-                      <th>Tipo de atendimento</th>
+                      <th>Exame</th>
+                      <th>Tipo de exame</th>
                       <th>Profissional</th>
                       <th>Situação</th>
+                      <th>Resultado</th>
                       <th>Data</th>
                       <th>Estabelecimento</th>
                       <th></th>
@@ -736,13 +737,14 @@
                   <tbody *ngIf="allItemsExames.length">
                     <tr class="text-left" *ngFor="let item of allItemsExames">
                       <td class="text-secondary">{{item.id}}</td>
-                      <td class="text-secondary">{{item.fichaNome}}</td>
+                      <td class="text-secondary">{{item.nomeTipoExame}}</td>
                       <td class="text-secondary">{{item.nomeProfissional}}</td>
                       <td class="text-secondary">{{item.situacaoNome}}</td>
+                      <td class="text-secondary">{{item.resultadoNome}}</td>
                       <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
                       <td class="text-secondary">{{item.estabelecimentoNome}}</td>
                       <td class="text-secondary">
-                        <button class="btn btn-primary" title="Visualizar ficha médica" type="button"
+                        <button class="btn btn-primary" title="Visualizar relatório" type="button"
                           (click)="abreAtendimentoFichaDigital(item.id)">
                           <i class="fa fa-file-alt"></i>
                         </button>
@@ -774,6 +776,7 @@
                       <th>CID 10</th>
                       <th>Data</th>
                       <th>Atendimento</th>
+                      <th>Exame</th>
                     </tr>
                   </thead>
                   <tbody *ngIf="allItemsHipotese.length">
@@ -785,6 +788,12 @@
                       <td class="text-secondary">
                         <button class="btn btn-primary" *ngIf="item.idAtendimento" title="Visualizar atendimento"
                           type="button" (click)="openHistorico(contentAtendimentoHistorico, item.idAtendimento, null)">
+                          <i class="fa fa-search"></i>
+                        </button>
+                      </td>
+                      <td class="text-secondary">
+                        <button class="btn btn-primary" *ngIf="item.idExame" title="Visualizar atendimento"
+                          type="button" (click)="openExame(contentExame, item.idExame)">
                           <i class="fa fa-search"></i>
                         </button>
                       </td>
@@ -1236,6 +1245,104 @@
           </div>
         </div>
       </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #contentExame>
+  <div class="modal-header">
+    <div class="row">
+      <div class="col-xl-12">
+        <h4 class="modal-title text-left">Exame {{objectExame.id}}</h4>
+      </div>
+    </div>
+    <button type="button" class="close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="form" (submit)="sendForm($event,null)">
+      <div class="card mb-4">  
+        <div class="card mb-12">
+          <div class="card-header text-left">
+            Exame    
+          </div>
+          <div class="card-body text-left">        
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Tipo de exame <span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-4">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="objectExame.idTipoExame" 
+                      formControlName="idTipoExame">
+                      <option [value]="null">Selecione...</option>
+                      <option *ngFor="let item of domains[0]?.idTipoExame" [value]="item.id">{{item.nome}}</option>
+                    </select>
+                  </div>
+                </div>              
+              </div>
+            </div>
+          </div>
+        </div>  
+      </div>     
+      <div class="card mb-4">
+        <div class="card mb-12">
+          <div class="card-header text-left">
+            Produtos/Método
+          </div>
+          <div class="card-body text-left">                    
+            <div class="row">
+              <div class="col-12 table-responsive">
+                <div class="form-group row">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Produto</th>
+                        <th>Método</th>
+                        <th>Resultado</th>
+                      </tr>
+                    </thead>
+                    <tbody *ngIf="this.objectExame.itensExame?.length">
+                        <tr class="text-left" *ngFor="let item of this.objectExame.itensExame">
+                          <td class="text-secondary">{{item.nomeProdutoExame}}</td>
+                          <td class="text-secondary">{{item.nomeMetodoExame}}</td>
+                          <td class="text-secondary">{{item.nomeResultado}}</td>                    
+                        </tr>
+                      </tbody>
+                  </table>
+                </div>            
+              </div>
+            </div>       
+          </div>
+        </div>    
+      </div>    
+      <div class="card mb-4">  
+        <div class="card mb-12">
+          <div class="card-header text-left">
+            Interpretação do resultado    
+          </div>
+          <div class="card-body text-left">        
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Resultado <span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-4">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="objectExame.resultadoFinal" 
+                      formControlName="resultadoFinal">
+                      <option [value]="null">Selecione...</option>
+                      <option *ngFor="let item of domains[0]?.resultadoFinal" [value]="item.id">{{item.nome}}</option>
+                    </select>
+                  </div>
+                </div>              
+              </div>
+            </div>
+          </div>
+        </div>  
+      </div> 
     </form>
   </div>
 </ng-template>

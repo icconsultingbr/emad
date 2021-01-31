@@ -406,6 +406,10 @@ export class PacienteService extends GenericsService {
     return this.http.get("atendimento/prontuario-paciente/paciente/" + id + "/tipo-atendimento/" + tipo);
   }
 
+  findExameByPaciente(id: any): Observable<any> {
+    return this.http.get("exame/prontuario-paciente/paciente/" + id);
+  }
+
   findReceitaByPaciente(id: any): Observable<any> {
     return this.http.get("receita/prontuario-paciente/paciente/" + id);
   }

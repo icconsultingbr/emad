@@ -13,7 +13,7 @@ ExameDAO.prototype.salva = async function(exame) {
 }
 
 ExameDAO.prototype.buscaPorId = async function(id){
-    let result =  await this._connection.query(`SELECT a.*, pac.nome nomePaciente 
+    let result =  await this._connection.query(`SELECT a.*, pac.nome nomePaciente, a.resultado resultadoFinal
                                                 FROM ${this._table} a inner join tb_paciente pac on pac.id = a.idPaciente where a.id=?`, [id]);
     return result ? result[0] : null;
 }
@@ -23,97 +23,45 @@ ExameDAO.prototype.atualizaStatus = async function(obj){
     return [response];
 }
 
-// ExameDAO.prototype.atualizaStatus = async function(obj){
-//     const receitaAtualizada =  await this._connection.query(`UPDATE tb_receita SET situacao = ?, idUsuarioAlteracao = ?, dataAlteracao  = ?, dataUltimaDispensacao = ? WHERE id= ?`, [obj.situacao, obj.idUsuarioAlteracao, obj.dataAlteracao, obj.dataUltimaDispensacao,  obj.id]);
-//     return [receitaAtualizada];
-// }
+ExameDAO.prototype.buscaPorPacienteId = async function (idPaciente) {    
+    const response =  await  this._connection.query(`select 
+                                                        a.id, 
+                                                        a.idPaciente, 
+                                                        p.cartaoSus,
+                                                        p.cpf, 
+                                                        p.nome as nomePaciente, 
+                                                        a.dataCriacao,                                            
+                                                        a.idEstabelecimento, 
+                                                        e.nomeFantasia estabelecimentoNome, 
+                                                        a.idUsuarioCriacao, 
+                                                        pro.nome nomeProfissional, 
+                                                        a.situacao,
+                                                        p.idSap,
+                                                        a.idTipoExame,
+                                                        tipoExame.nome nomeTipoExame,                                            
+                                                        pro.id as idProfissional,
+                                                        hipotese.nome nomeHipoteseDiagnostica,
+                                                        a.resultado,
+                                                        CASE  
+                                                            WHEN a.situacao = '1'  THEN 'Aberto'  
+                                                            WHEN a.situacao = '2'  THEN 'Finalizado'                                                                                          
+                                                        END as situacaoNome,
+                                                        CASE  
+                                                            WHEN a.resultado = '1'  THEN 'Amostra não reagente'  
+                                                            WHEN a.resultado = '2'  THEN 'Amostra reagente'                                  
+                                                            ELSE 'Não realizado'
+                                                        END as resultadoNome  
+                                                        FROM tb_exame a
+                                                        INNER JOIN tb_paciente p ON(a.idPaciente = p.id)  
+                                                        INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
+                                                        INNER JOIN tb_usuario u ON(a.idUsuarioCriacao = u.id) 
+                                                        INNER JOIN tb_profissional pro on pro.idUsuario = u.id
+                                                        INNER JOIN tb_tipo_exame tipoExame on tipoExame.id = a.idTipoExame
+                                                        LEFT JOIN tb_hipotese_diagnostica hipotese on hipotese.id = a.idHipoteseDiagnostica 
+                                                        WHERE a.idPaciente = ? AND a.situacao = 2` ,[idPaciente]); 
 
-// ExameDAO.prototype.atualiza = function(obj, id, callback) {
-//     this._connection.query(`UPDATE ${this._table} SET     
-//     idEstabelecimento = ?, idUf = ?, idMunicipio = ?, idProfissional = ?, idPaciente = ?, 
-//     idSubgrupoOrigem = ?, dataEmissao = ?, situacao = ?, idUsuarioAlteracao = ?, dataAlteracao  = ?
-//     WHERE id= ?`, [obj.idEstabelecimento, obj.idUf, obj.idMunicipio, obj.idProfissional,
-//         obj.idPaciente, obj.idSubgrupoOrigem, new Date(obj.dataEmissao), obj.situacao, obj.idUsuarioAlteracao, obj.dataAlteracao, id],
-//         callback);
-// }
-
-
-
-// ExameDAO.prototype.buscaReciboReceita = async function (ano, idEstabelecimento, numero) {
-//     const receita = await  this._connection.query(`SELECT                             
-//                             a.id
-//                             ,a.idEstabelecimento
-//                             ,estabelecimento.nomeFantasia nomeEstabelecimento
-//                             ,a.idMunicipio
-//                             ,municipio.nome nomeMunicipio
-//                             ,a.idProfissional
-//                             ,profissional.nome nomeProfissional
-//                             ,a.idPaciente
-//                             ,paciente.nome nomePaciente
-//                             ,a.idSubgrupoOrigem
-//                             ,subgrupoOrigem.nome nomeSubgrupoOrigem
-//                             ,a.ano
-//                             ,a.numero
-//                             ,a.dataEmissao
-//                             ,a.dataUltimaDispensacao
-//                             ,a.idMotivoFimReceita
-//                             ,a.idPacienteOrigem
-//                             ,pacienteOrigem.nome nomePacienteOrigem
-//                             ,a.idMandadoJudicial                            
-//                             ,a.situacao
-//                             ,a.idUf
-//                             ,CONCAT(municipio.nome,'/',uf.uf) textoCidade
-//                             ,movimento.id idMovimentoGeral
-//                             ,paciente.cartaoSus as cartaoSusPaciente
-//                             ,paciente.dataNascimento
-//                             ,YEAR(CURRENT_TIMESTAMP) - YEAR(paciente.dataNascimento ) - (RIGHT(CURRENT_TIMESTAMP, 5) < RIGHT(paciente.dataNascimento, 5)) as pacienteIdade
-//                             ,paciente.idSap                            
-//                             FROM ${this._table} a
-//                             INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
-//                             INNER JOIN tb_municipio municipio ON (a.idMunicipio = municipio.id)
-//                             INNER JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
-//                             INNER JOIN tb_paciente paciente ON (a.idPaciente = paciente.id)
-//                             INNER JOIN tb_subgrupo_origem subgrupoOrigem ON (a.idSubgrupoOrigem = subgrupoOrigem.id)
-//                             LEFT JOIN tb_paciente pacienteOrigem ON (a.idPacienteOrigem = paciente.id)                                                         
-//                             INNER JOIN tb_uf uf on uf.id = a.idUf
-//                             LEFT JOIN tb_movimento_geral movimento ON (movimento.idReceita = a.id)
-//                             WHERE a.ano = ? and a.idEstabelecimento=? and a.numero=?`, [ano, idEstabelecimento, numero]);
-//     return receita;
-// }
-
-// ExameDAO.prototype.buscaPorPacienteIdProntuario = async function (idPaciente) {    
-//     const response =  await this._connection.query(`select 
-//                                 a.id
-//                                 ,a.idEstabelecimento
-//                                 ,estabelecimento.nomeFantasia nomeEstabelecimento
-//                                 ,a.idProfissional
-//                                 ,profissional.nome nomeProfissional
-//                                 ,a.ano
-//                                 ,a.numero
-//                                 ,a.dataEmissao
-//                                 ,a.idAtendimento                                
-//                                 ,CASE  
-//                                 WHEN a.situacao = '1'  THEN 'Pendente medicamentos'  
-//                                 WHEN a.situacao = '2'  THEN 'Aberta'                                                                  
-//                                 ELSE 'Finalizada'
-//                                 END as situacaoNome
-//     from ${this._table} a     
-//     INNER JOIN tb_item_receita tir ON (a.id = tir.idReceita)
-//     INNER JOIN tb_material material ON (tir.idMaterial = material.id)
-//     INNER JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
-//     INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
-//     WHERE a.idPaciente = ? order by a.id desc`, idPaciente); 
-//     return response;
-// }
-
-// ExameDAO.prototype.buscaDominio = function (callback) {
-//     this._connection.query(`SELECT id, nome FROM ${this._table} WHERE situacao = 1`, callback);
-// }
-
-// ExameDAO.prototype.deletaPorId = function (id,callback) {
-//     this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
-// }
-
+    return response;
+}
 
 ExameDAO.prototype.listar = async function(addFilter) { 
     let where = "";
@@ -206,7 +154,7 @@ ExameDAO.prototype.listar = async function(addFilter) {
                                             a.resultado,
                                             CASE  
                                                 WHEN a.resultado = '1'  THEN 'Amostra não reagente'  
-                                                WHEN a.situacao = '2'  THEN 'Amostra reagente'                                  
+                                                WHEN a.resultado = '2'  THEN 'Amostra reagente'                                  
                                                 ELSE 'Não realizado'
                                             END as resultadoNome              
                                             ${join}`, orderBy, addFilter.sortOrder, addFilter.limit, addFilter.offset);
@@ -219,52 +167,6 @@ ExameDAO.prototype.listar = async function(addFilter) {
     }
 }
 
-// ExameDAO.prototype.buscaPorPacienteIdProntuarioVacinacao = async function (idPaciente) {    
-//     const response =  await this._connection.query(`SELECT 
-//         a.id
-//         ,a.idEstabelecimento
-//         ,estabelecimento.nomeFantasia nomeEstabelecimento
-//         ,a.idProfissional
-//         ,profissional.nome nomeProfissional
-//         ,material.codigo 
-//         ,material.descricao 
-//         ,tir.qtdPrescrita 
-//         ,tir.qtdDispAnterior
-//         ,tir.dataUltDisp 
-//     from ${this._table} a     
-//     INNER JOIN tb_item_receita tir ON (a.id = tir.idReceita)
-//     INNER JOIN tb_material material ON (tir.idMaterial = material.id)
-//     INNER JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
-//     INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
-//     WHERE a.idPaciente = ? AND material.vacina = 1 order by a.id desc`, idPaciente); 
-//     return response;
-// }
-// ExameDAO.prototype.buscaCarteiraVacinacaoPorPaciente = async function (idPaciente) {    
-//     const response =  await this._connection.query(`SELECT 
-//     tm.descricao 
-//     ,tr.dataUltimaDispensacao 
-//     FROM tb_receita tr     
-//     INNER JOIN tb_item_receita tir ON (tr.id = tir.idReceita)
-//     INNER JOIN tb_material tm ON (tir.idMaterial = tm.id)
-//     WHERE tm.vacina = 1 AND tr.idPaciente = ?`, idPaciente); 
-    
-//     const pivoted = response.reduce((prev, cur) => {
-
-//         let existing = prev.find(x => x.descricao === cur.descricao);
-      
-//         if (existing)
-//           existing.datasUltimaDispensacao.push(cur.dataUltimaDispensacao)
-//         else
-//           prev.push({
-//             descricao: cur.descricao,
-//             datasUltimaDispensacao: [cur.dataUltimaDispensacao]
-//           });
-      
-//         return prev;
-//       }, []);
-
-//     return pivoted;
-// }
 
 module.exports = function(){
     return ExameDAO;

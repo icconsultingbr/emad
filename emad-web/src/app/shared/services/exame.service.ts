@@ -89,7 +89,7 @@ export class ExameService extends GenericsService {
       label: "Situação",
       grid: true,
       form: false,
-      translate: { "1": "Aberto", "2": "Concluído" },
+      translate: { "1": "Aberto", "2": "Finalizado" },
       required: true,
       validator: ['', ''],
       filter: {

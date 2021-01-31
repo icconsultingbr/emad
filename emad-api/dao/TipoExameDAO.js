@@ -22,6 +22,11 @@ TipoExameDAO.prototype.buscaPorIdSync = async function(id){
     return result ? result[0] : null;
 }
 
+TipoExameDAO.prototype.carregaHipotese = async function(id){
+    let result =  await this._connection.query(`SELECT a.idHipoteseDiagnostica FROM ${this._table} a where a.id=?`, [id]);
+    return result ? result[0] : null;
+}
+
 TipoExameDAO.prototype.listaAsync = async function(addFilter) {     
     let orderBy = addFilter.sortColumn ? `${addFilter.sortColumn}` : "id";
 
