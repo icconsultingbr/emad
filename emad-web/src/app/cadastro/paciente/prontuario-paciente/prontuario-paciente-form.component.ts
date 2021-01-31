@@ -11,7 +11,7 @@ import { ReciboReceitaImpressaoService } from '../../../shared/services/recibo-r
 import { MainChartLine } from '../../../_core/_models/MainChart';
 import { AtendimentoService } from '../../../operacao/atendimento/atendimento.service';
 import { Atendimento, AtendimentoHistorico } from '../../../_core/_models/Atendimento';
-import { ProntuarioPacienteImpressaoService } from '../../../shared/services/prontuario-paciente-impressao.service';
+import { Exame } from '../../../_core/_models/Exame';
 
 @Component({
   selector: 'app-prontuario-paciente-form',
@@ -21,6 +21,7 @@ import { ProntuarioPacienteImpressaoService } from '../../../shared/services/pro
 })
 export class ProntuarioPacienteFormComponent implements OnInit {
   object: Paciente = new Paciente();
+  objectExame: Exame = new Exame();
   objectHistorico: Atendimento = new Atendimento();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
   method: string = 'paciente';
@@ -126,7 +127,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     });
     this.createGroup();
     this.loadDomains();
-  }
+  } 
 
   loadDomains() {
     this.loading = true;
@@ -139,58 +140,66 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                 this.service.listDomains('atencao-continuada').subscribe(atencaoContinuada => {
                   this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {
                     this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {
-                      this.domains.push({
-                        idUf: ufs,
-                        idNacionalidade: paises,
-                        idNaturalidade: [],
-                        idMunicipio: [],
-                        hipoteses: hipoteseDiagnostica,
-                        idEstabelecimentoCadastro: estabelecimentos,
-                        tipoFichas: tipoFichas,
-                        classificacaoRiscos: classificacaoRiscos,
-                        tipoHistoriaClinica: [
-                          { id: 1, nome: "Anamnese" },
-                          { id: 2, nome: "Evolução" }],
-                        escolaridade: [
-                          { id: 1, nome: "Educação infantil" },
-                          { id: 2, nome: "Fundamental" },
-                          { id: 3, nome: "Médio" },
-                          { id: 4, nome: "Superior (Graduação)" },
-                          { id: 5, nome: "Pós-graduação" },
-                          { id: 6, nome: "Mestrado" },
-                          { id: 7, nome: "Doutorado" },
-                          { id: 8, nome: "Escola" },
-                          { id: 9, nome: "Analfabeto" },
-                          { id: 10, nome: "Não informado" }
-                        ],
-                        idModalidade: modalidades,
-                        sexo: [
-                          { id: "1", nome: "Masculino" },
-                          { id: "2", nome: "Feminino" },
-                          { id: "3", nome: "Ambos" },
-                          { id: "4", nome: "Não informado" }
-                        ],
-                        idTipoSanguineo: [
-                          { id: "1", nome: "A_POSITIVO" },
-                          { id: "2", nome: "A_NEGATIVO" },
-                          { id: "3", nome: "B_POSITIVO" },
-                          { id: "4", nome: "B_NEGATIVO" },
-                          { id: "5", nome: "AB_POSITIVO" },
-                          { id: "6", nome: "AB_NEGATIVO" },
-                          { id: "7", nome: "O_POSITIVO" },
-                          { id: "8", nome: "O_NEGATIVO" },
-                        ],
-                        idRaca: racas,
-                        idAtencaoContinuada: atencaoContinuada,
-                        gruposAtencaoContinuada: atencaoContinuada,
+                      this.service.listDomains('tipo-exame').subscribe(tipoExame => {                      
+                        this.domains.push({
+                          idUf: ufs,
+                          idNacionalidade: paises,
+                          idNaturalidade: [],
+                          idMunicipio: [],
+                          hipoteses: hipoteseDiagnostica,
+                          idEstabelecimentoCadastro: estabelecimentos,
+                          tipoFichas: tipoFichas,
+                          classificacaoRiscos: classificacaoRiscos,
+                          tipoHistoriaClinica: [
+                            { id: 1, nome: "Anamnese" },
+                            { id: 2, nome: "Evolução" }],
+                          escolaridade: [
+                            { id: 1, nome: "Educação infantil" },
+                            { id: 2, nome: "Fundamental" },
+                            { id: 3, nome: "Médio" },
+                            { id: 4, nome: "Superior (Graduação)" },
+                            { id: 5, nome: "Pós-graduação" },
+                            { id: 6, nome: "Mestrado" },
+                            { id: 7, nome: "Doutorado" },
+                            { id: 8, nome: "Escola" },
+                            { id: 9, nome: "Analfabeto" },
+                            { id: 10, nome: "Não informado" }
+                          ],
+                          idModalidade: modalidades,
+                          sexo: [
+                            { id: "1", nome: "Masculino" },
+                            { id: "2", nome: "Feminino" },
+                            { id: "3", nome: "Ambos" },
+                            { id: "4", nome: "Não informado" }
+                          ],
+                          idTipoSanguineo: [
+                            { id: "1", nome: "A_POSITIVO" },
+                            { id: "2", nome: "A_NEGATIVO" },
+                            { id: "3", nome: "B_POSITIVO" },
+                            { id: "4", nome: "B_NEGATIVO" },
+                            { id: "5", nome: "AB_POSITIVO" },
+                            { id: "6", nome: "AB_NEGATIVO" },
+                            { id: "7", nome: "O_POSITIVO" },
+                            { id: "8", nome: "O_NEGATIVO" },
+                          ],
+                          idRaca: racas,
+                          idAtencaoContinuada: atencaoContinuada,
+                          gruposAtencaoContinuada: atencaoContinuada,
+                          idTipoExame: tipoExame,
+                          resultadoFinal: [
+                            { id: 1, nome: "Amostra não reagente" },
+                            { id: 2, nome: "Amostra reagente" },
+                            { id: 3, nome: "Não realizado" }
+                          ], 
+                        });
+                        if (!Util.isEmpty(this.id)) {
+                          this.encontraPaciente();
+                        }
+                        else{
+                          this.loading = false;
+                          this.loadPhoto = true;
+                        }
                       });
-                      if (!Util.isEmpty(this.id)) {
-                        this.encontraPaciente();
-                      }
-                      else{
-                        this.loading = false;
-                        this.loadPhoto = true;
-                      }
                     });
                   });
                 });
@@ -476,7 +485,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.message = "";
     this.errors = [];
     this.loading = true;
-    this.service.findAtendimentoByPaciente(this.object.id, 3).subscribe(result => {
+    this.service.findExameByPaciente(this.object.id).subscribe(result => {
        this.allItemsExames = result;
        this.loading = false;
     }, error => {
@@ -575,6 +584,41 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       keyboard: false,
       centered: true,
       windowClass: 'modal-gg'
+    });
+  }
+
+  openExame(content: any, idExame: number) {
+    this.createGroupExame();
+    this.carregaExame(idExame);    
+
+    this.modalRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      windowClass: 'modal-gg'
+    });
+  }  
+
+  carregaExame(id: number) {
+    this.errors = [];
+    this.message = "";
+    this.loading = true;
+    this.service.findById(id, "exame").subscribe(result => {
+      this.objectExame = result;  
+      this.loading = false;
+    }, error => {
+      this.objectExame = new Exame();      
+      this.errors.push({
+        message: "Exame não encontrado"
+      });
+    });
+  }
+
+  
+  createGroupExame() {
+    this.form = this.fb.group({      
+      idTipoExame:['', ''],      
+      resultadoFinal: ['', ''],      
     });
   }
 

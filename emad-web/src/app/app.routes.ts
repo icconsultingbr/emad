@@ -57,6 +57,7 @@ const appRoutes : Routes = [
     { path: 'grupos-origens', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/grupo-origem/grupo-origem.module#GrupoOrigemModule' },
     { path: 'subgrupos-origens', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/subgrupo-origem/subgrupo-origem.module#SubgrupoOrigemModule' },
     { path: 'receitas', canActivate: [AuthGuard], loadChildren: './farmacia/receita/receita.module#ReceitaModule' },
+    { path: 'exames', canActivate: [AuthGuard], loadChildren: './operacao/exame/exame.module#ExameModule' },
     { path: 'bloqueio-lote', canActivate: [AuthGuard], loadChildren: './estoque/components/bloqueio-lote/bloqueio-lote.module#BloqueioLoteModule' },
     { path: 'altera-validade', canActivate: [AuthGuard], loadChildren: './estoque/components/altera-validade/altera-validade.module#AlteraValidadeModule' },
     { path: 'estoques-unidades', canActivate: [AuthGuard], loadChildren: './estoque/relatorios/estoque-unidade/estoque-unidade.module#EstoqueUnidadeModule' },
@@ -80,6 +81,9 @@ const appRoutes : Routes = [
     { path: 'livro-medicamento-controlado', canActivate: [AuthGuard], loadChildren: './farmacia/relatorios/medicamento-livro-controlado/medicamento-livro-controlado.module#MedicamentoLivroControladoModule' },
     { path: 'visualizacao-bi', canActivate: [AuthGuard], loadChildren: './bi/power-bi/visualizacao-power-bi.module#VisualizacaoPowerBIModule' },
     { path: 'integracao-e-sus', canActivate: [AuthGuard], loadChildren: './integracao/e-sus/esus.module#ESusModule' },
+    { path: 'tipos-exames', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/tipo-exame/tipo-exame.module#TipoExameModule' },
+    { path: 'produtos-exames', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/produto-exame/produto-exame.module#ProdutoExameModule' },
+    { path: 'metodos-exames', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/metodo-exame/metodo-exame.module#MetodoExameModule' },
     
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent }, 

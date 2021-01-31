@@ -1,0 +1,206 @@
+<h4 class="mb-5 text-left">{{label}}</h4>
+<app-loader [loading]="loading"></app-loader>
+<p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
+<div *ngIf="errors.length" class="alert alert-danger sticky-top"> 
+  <div *ngFor="let error of errors" class="row">
+    <div class="col-12 text-left">
+      {{error.message}}
+    </div>
+  </div>
+</div>
+
+<div class="card mb-4" *ngIf="!object.id || (object.id && object.idPaciente)">
+  <app-pesquisa-paciente (pacienteSelecionadoEvent)="pacienteSelecionado($event)" [idPaciente]="object.idPaciente" [pacienteNome]="object.nomePaciente"></app-pesquisa-paciente>
+</div>
+
+<form [formGroup]="form" (submit)="sendForm($event,null)">
+  <div class="card mb-4">  
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Exame        
+        <button *ngIf="object.id && object.ano && object.numero && object.idEstabelecimento" class="mr-2 btn btn-primary float-right rounded" type="button" 
+        (click)="abreReceitaMedica(object.ano, object.numero, object.idEstabelecimento, false)">
+        <i class="fa fa-file-medical-alt"></i>
+      </button>
+      </div>
+      <div class="card-body text-left">        
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Tipo de exame <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idTipoExame" 
+                  formControlName="idTipoExame">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.idTipoExame" [value]="item.id">{{item.nome}}</option>
+                </select>
+              </div>
+            </div>              
+          </div>
+        </div>
+      </div>
+    </div>  
+  </div> 
+
+  <div class="card mb-4" *ngIf="object.id">
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Produtos/Método
+      </div>
+      <div class="card-body text-left">        
+        <div class="row" *ngIf="object.situacao != '2'">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Produto <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="itemExame.idProdutoExame" 
+                  formControlName="idProdutoExame">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.idProdutoExame" [value]="item.id">{{item.nome}}</option>
+                </select>
+              </div>  
+              <label class="col-xl-2 col-form-label text-left">
+                Método<span class="text-danger font-weight-bold"> *</span>
+              </label>              
+              <div class="col-xl-4">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="itemExame.idMetodoExame" 
+                formControlName="idMetodoExame">
+                <option [value]="null">Selecione...</option>
+                <option *ngFor="let item of domains[0]?.idMetodoExame" [value]="item.id">{{item.nome}}</option>
+              </select>
+              </div>
+            </div>         
+          </div>          
+        </div>
+        <div class="row" *ngIf="object.situacao != '2'">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Resultado <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="itemExame.resultado" 
+                  formControlName="resultado">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.resultado" [value]="item.id">{{item.nome}}</option>
+                </select>
+              </div>  
+            </div>         
+          </div>          
+        </div>
+        <div class="row" *ngIf="object.situacao != '2'">
+          <div class="col-12">
+            <div class="form-group text-right">              
+              <span>{{ object.mensagemPaciente }}</span>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              
+              <button class="btn btn-primary" type="button" (click)="confirmaItem()" [disabled]="toggleItem()">
+                <i class="fa fa-save"></i>Adicionar
+              </button>  
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 table-responsive">
+            <div class="form-group row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Produto</th>
+                    <th>Método</th>
+                    <th>Resultado</th>
+                    <th *ngIf="object.situacao != '2'" >Remover</th>   
+                  </tr>
+                </thead>
+                <tbody *ngIf="this.object.itensExame?.length">
+                    <tr class="text-left" *ngFor="let item of this.object.itensExame">
+                      <td class="text-secondary">{{item.nomeProdutoExame}}</td>
+                      <td class="text-secondary">{{item.nomeMetodoExame}}</td>
+                      <td class="text-secondary">{{item.nomeResultado}}</td>                       
+                      <a class="btn btn-link" *ngIf="object.situacao != '2'" (click)="removeItemExame(item)">
+                        <i class="fa fa-trash-alt"></i> Remover
+                      </a>                  
+                    </tr>
+                  </tbody>
+              </table>
+            </div>            
+          </div>
+        </div>       
+      </div>
+    </div>    
+  </div>
+
+  <div class="card mb-4" *ngIf="object.id">  
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Interpretação do resultado    
+      </div>
+      <div class="card-body text-left">        
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Resultado <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.resultadoFinal" 
+                  formControlName="resultadoFinal">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.resultadoFinal" [value]="item.id">{{item.nome}}</option>
+                </select>
+              </div>
+            </div>              
+          </div>
+        </div>
+      </div>
+    </div>  
+  </div> 
+
+  <div class="form-group text-right">
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="object.idPaciente && object.situacao != '2'">
+      <i class="fa fa-save"></i> {{ object.situacao == '1' ? 'Salvar' : 'Criar exame' }} 
+    </button>  
+    <button class="btn btn-primary" type="button" (click)="openConfirmacao(contentConfirmacaoFinalizar)"  
+      [disabled]="form.invalid" *ngIf="object.idPaciente && object.situacao == '1'">
+      <i class="fa fa-save"></i> Finalizar exame
+    </button>  
+    <button (click)="back()" class="btn btn-default" type="button">
+      <i class="fa fa-arrow-left"></i> Retornar
+    </button>
+  </div>
+</form>
+
+<ng-template #contentConfirmacaoFinalizar>
+  <div class="modal-header">
+    <h4 class="modal-title">Mensagem</h4>
+    <button type="button" class="close" (click)="close(false)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Tem certeza que deseja finalizar o exame ?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="sendForm($event, 'F')">Sim</button>
+    <button type="button" class="btn btn-danger"  (click)="close()">Não</button>    
+  </div>
+</ng-template>
+
+<ng-template #contentRecibo>
+  <div class="modal-header">
+    <h4 class="modal-title">Relatório Exame</h4>
+    <button type="button" class="close" (click)="close(false)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Deseja imprimir o relatório?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="abreReceitaMedica(object.ano, object.numero, object.idEstabelecimento, true)">Sim</button>
+    <button type="button" class="btn btn-danger"  (click)="close(true)">Não</button>    
+  </div>
+</ng-template>
