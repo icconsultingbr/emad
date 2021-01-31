@@ -414,6 +414,7 @@ module.exports = function (app) {
         const estabelecimentoRepository = new app.dao.EstabelecimentoDAO(connection);
         const nacionalidadeRepository = new app.dao.NacionalidadeDAO(connection);
         const ufRepository = new app.dao.UfDAO(connection);
+        const exameRepository = new app.dao.ExameDAO(connection);
 
         try {
             let paciente = await pacienteRepository.buscaPorIdSync(idPaciente);
@@ -452,7 +453,7 @@ module.exports = function (app) {
             }
 
             const fichasAtendimento = await atendimentoRepository.buscaPorPacienteIdProntuario(idPaciente, 2);
-            const exames = await atendimentoRepository.buscaPorPacienteIdProntuario(idPaciente, 3);
+            const exames = await exameRepository.buscaPorPacienteId(idPaciente);
             const hipoteseDiagnostica = await atendimentoHipoteseRepository.listarPorPaciente(idPaciente);
             const vacinas = await receitaRepository.buscaPorPacienteIdProntuarioVacinacao(idPaciente);
             const estabelecimento = await estabelecimentoRepository.carregaPorId(paciente[0].idEstabelecimentoCadastro)

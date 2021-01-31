@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { PacienteService } from "../../cadastro/paciente/paciente.service";
-import { RelatorioService } from "./relatorio.service";
 import * as _moment from 'moment';
 import { environment } from "../../../environments/environment";
+import { RelatorioProntuarioPacienteService } from "./prontuario-paciente.service";
 
 @Injectable()
-export class ProntuarioPacienteImpressaoService extends RelatorioService {
+export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacienteService {
 
     pathFiles = `${environment.apiUrl}/fotos/`;
 
@@ -288,10 +288,11 @@ export class ProntuarioPacienteImpressaoService extends RelatorioService {
                                 <table class="table table-striped">
                                     <thead>
                                     <tr>
-                                    <th style="width:16%">Atendimento</th>
-                                    <th style="width:16%">Tipo de atendimento</th>
-                                    <th style="width:17%">Profissional</th>
+                                    <th style="width:5%">Exame</th>
+                                    <th style="width:15%">Tipo de exame</th>
+                                    <th style="width:16%">Profissional</th>
                                     <th style="width:16%">Situação</th>
+                                    <th style="width:16%">Resultado</th>
                                     <th style="width:16%">Data</th>
                                     <th style="width:16%">Estabelecimento</th>   
                                     </tr>
@@ -301,12 +302,13 @@ export class ProntuarioPacienteImpressaoService extends RelatorioService {
 
                     result.exames.forEach(exame => {
                         exames += `<tr class="text-left">
-                                        <td class="text-secondary">${exame.idSap}</td>
-                                        <td class="text-secondary">${exame.idSap}</td>
-                                        <td class="text-secondary">${exame.idSap}</td>
-                                        <td class="text-secondary">${exame.idSap}</td>
-                                        <td class="text-secondary">${exame.idSap}</td>
-                                        <td class="text-secondary">${exame.idSap}</td>
+                                        <td class="text-secondary">${exame.id}</td>
+                                        <td class="text-secondary">${exame.nomeTipoExame}</td>
+                                        <td class="text-secondary">${exame.nomeProfissional}</td>
+                                        <td class="text-secondary">${exame.situacaoNome}</td>
+                                        <td class="text-secondary">${exame.resultadoNome}</td>
+                                        <td class="text-secondary">${exame.dataCriacao ? _moment(exame.dataCriacao).format('DD/MM/YYYY HH:mm') : ''}</td>
+                                        <td class="text-secondary">${exame.estabelecimentoNome}</td>
                                     </tr>`
                     });
 
@@ -519,7 +521,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioService {
                     //</div>
                     //</div>
 
-                this.print(conteudo, target);
+                this.print(conteudo, target, result.paciente[0].nome);
             });
     }
 }

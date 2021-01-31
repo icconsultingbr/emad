@@ -221,7 +221,7 @@ module.exports = function (app) {
         const exameRepository = new app.dao.ExameDAO(connection);
 
         try {            
-            var response = await exameRepository.buscaPorPacienteId(id, );
+            var response = await exameRepository.buscaPorPacienteId(id);
             res.status(200).json(response);
         }
         catch (exception) {
