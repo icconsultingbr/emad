@@ -11,4 +11,7 @@ export class Exame {
     @Input() itensExame: ItemExame[] = [];  
     @Input() acao: string;
     @Input() mensagemPaciente: string;    
+    @Input() ano: number;
+    @Input() mes: string;	
+    @Input() numero: string;
 }
