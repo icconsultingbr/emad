@@ -12,6 +12,7 @@ import { MainChartLine } from '../../../_core/_models/MainChart';
 import { AtendimentoService } from '../../../operacao/atendimento/atendimento.service';
 import { Atendimento, AtendimentoHistorico } from '../../../_core/_models/Atendimento';
 import { Exame } from '../../../_core/_models/Exame';
+import { ProntuarioPacienteImpressaoService } from '../../../shared/services/prontuario-paciente-impressao.service';
 
 @Component({
   selector: 'app-prontuario-paciente-form',
