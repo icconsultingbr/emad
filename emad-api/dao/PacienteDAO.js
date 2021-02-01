@@ -789,6 +789,11 @@ PacienteDAO.prototype.carregaPacientePorMedicamento = async function(addFilter, 
     return medicamento;
 }
 
+PacienteDAO.prototype.buscaPacientePorSapId = async function(idSap){
+    let result =  await this._connection.query(`SELECT * FROM ${this._table} tp where tp.idSap = ?`, [idSap]);
+    return result[0] ? result[0] : "";
+}
+
 module.exports = function () {
     return PacienteDAO;
 };

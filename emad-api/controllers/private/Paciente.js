@@ -469,6 +469,48 @@ module.exports = function (app) {
         }
     });
 
+    app.put('/paciente/:idSap/transferencia-unidade/:idUnidadeDestino', async function (req, res) {
+        let idSapPaciente = req.params.idSap;
+        let idUnidadeDestino = req.params.idUnidadeDestino;
+        let usuario = req.usuario;
+        let errors = [];
+        const util = new app.util.Util();
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const pacienteRepository = new app.dao.PacienteDAO(connection);
+
+        try {
+            await connection.beginTransaction();
+
+            let paciente = await pacienteRepository.buscaPacientePorSapId(idSapPaciente);
+            paciente.dataAlteracao = new Date;
+            paciente.idUsuarioAlteracao = usuario.id;
+
+            if(!paciente) {
+                errors = util.customError(errors, "header", "Não existe nenhum paciente cadastrado com este ID SAP!", "");
+                res.status(400).send(errors);
+                return;
+            }
+
+            await pacienteRepository.gravaEstabelecimento(paciente, new Date, usuario.id);
+
+            paciente.idEstabelecimentoCadastro = idUnidadeDestino;
+
+            await pacienteRepository.transferirUnidade(paciente);
+
+            res.status(201).send(paciente);
+
+            await connection.commit();
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado" + exception, ""));
+            await connection.rollback();
+        }
+        finally {
+            await connection.close();
+        }
+    });
+
     function lista(addFilter, res) {
         var q = require('q');
         var d = q.defer();
