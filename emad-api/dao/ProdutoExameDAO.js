@@ -52,6 +52,11 @@ ProdutoExameDAO.prototype.listaDominio = async function(idTipoExame){
     return result;
 }
 
+ProdutoExameDAO.prototype.buscaProdutoExamePorId = async function(id){
+    let result =  await this._connection.query(`SELECT * FROM tb_produto_exame a where a.idTipoExame=?`, [id]);
+    return result ? result[0] : null;
+}
+
 module.exports = function(){
     return ProdutoExameDAO;
 };

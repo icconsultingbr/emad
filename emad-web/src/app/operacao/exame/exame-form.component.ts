@@ -4,14 +4,10 @@ import { Exame } from '../../_core/_models/Exame';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Util } from '../../_core/_util/Util';
-import { environment } from '../../../environments/environment';
-import { ItemReceita } from '../../_core/_models/ItemReceita';
-import { Estoque } from '../../_core/_models/Estoque';
-import { Material } from '../../_core/_models/Material';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import * as uuid from 'uuid';
-import { ReciboReceitaImpressaoService } from '../../shared/services/recibo-receita-impressao.service';
 import { ItemExame } from '../../_core/_models/ItemExame';
+import { ReciboExameImpressaoService } from '../../shared/services/recibo-exame-impressao.service';
 const myId = uuid.v4();
 
 @Component({
@@ -48,7 +44,7 @@ export class ExameFormComponent implements OnInit {
     private service: ExameService,
     private route: ActivatedRoute,
     private modalService: NgbModal,   
-    private reciboReceitaService: ReciboReceitaImpressaoService, 
+    private reciboExameService: ReciboExameImpressaoService, 
     private ref: ChangeDetectorRef,
     private router: Router) {
       this.fields = service.fields;
@@ -182,9 +178,9 @@ export class ExameFormComponent implements OnInit {
                                                     itemExistente.idProdutoExame != item.idProdutoExame);          
   }
 
-  abreReceitaMedica(ano_receita: number, numero_receita: number, unidade_receita: number, retornaGrid: boolean) {
+  abreReciboExame(exameId: number, retornaGrid: boolean) {
     this.close(retornaGrid);
-    this.reciboReceitaService.imprimir(ano_receita, unidade_receita, numero_receita, true);
+    this.reciboExameService.imprimir(exameId);
   }
 
   createGroup() {

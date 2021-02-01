@@ -563,7 +563,8 @@
                             <div class="timeline-body-content">
                               <p><span class="text-muted">{{itemHistorico.dataHistorico}} - </span>Profissional:
                                 <b>{{itemHistorico.nomeProfissional}}</b> executou
-                                <b>{{itemHistorico.nomeTipoHistorico}}</b>.</p>
+                                <b>{{itemHistorico.nomeTipoHistorico}}</b>.
+                              </p>
                               <p><button class="btn btn-primary" type="button"
                                   (click)="openHistorico(contentAtendimentoHistorico, null, itemHistorico.idHistorico)">
                                   <i class="fa fa-search"></i> Visualizar
@@ -744,7 +745,12 @@
                       <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
                       <td class="text-secondary">{{item.estabelecimentoNome}}</td>
                       <td class="text-secondary">
-                        <button class="btn btn-primary" title="Visualizar relatório" type="button"
+                        <button type="button" class="btn btn-primary float-left"
+                          (click)="abreReciboExame(item.id)"
+                          title="Visualizar relatório">
+                          <i class="fa fa-file-medical-alt"></i>
+                        </button>
+                        <button class="btn btn-primary" style="margin-left: 5px;" title="Visualizar ficha médica" type="button"
                           (click)="abreAtendimentoFichaDigital(item.id)">
                           <i class="fa fa-file-alt"></i>
                         </button>
@@ -823,7 +829,7 @@
         </ng-template>
         <div class="card mb-4">
           <div class="card-header container-header">
-            <span class="text-left">Receitas</span> 
+            <span class="text-left">Receitas</span>
             <span class="input-group-btn ml-2">
               <a class="btn btn-primary" [routerLink]="" (click)="openCarteiraVacinacao(contentCarteiraVacinacao)">
                 <i class="far fa-address-card"></i> Carteirinha de Vacinação

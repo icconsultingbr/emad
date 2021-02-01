@@ -507,7 +507,8 @@ PacienteDAO.prototype.buscaPorIdSync = async function (id) {
     apelido,
     observacao, 
     historiaProgressaFamiliar,
-    foto
+    foto,
+    YEAR(CURRENT_TIMESTAMP) - YEAR(dataNascimento) - (RIGHT(CURRENT_TIMESTAMP, 5) < RIGHT(dataNascimento, 5)) as pacienteIdade
     FROM ${this._table} WHERE id = ?`, id);
     return responsePaciente;
 }

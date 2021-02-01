@@ -168,6 +168,12 @@ ExameDAO.prototype.listar = async function(addFilter) {
 }
 
 
+ExameDAO.prototype.buscaReportExameId = async function(id){
+    let result =  await this._connection.query(`SELECT a.*, pac.nome nomePaciente 
+                                                FROM ${this._table} a inner join tb_paciente pac on pac.id = a.idPaciente where a.id=?`, [id]);
+    return result ? result[0] : null;
+}
+
 module.exports = function(){
     return ExameDAO;
 };

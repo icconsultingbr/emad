@@ -117,5 +117,10 @@ export class ExameService extends GenericsService {
   obterMaterialDispensadoPorPaciente(idMaterial: number, idPaciente: number): Observable<any>{ 
     return this.http.get("item-receita" + "/idMaterial/" + idMaterial + "/idPaciente/" + idPaciente);
   }
+
+  obterRelatorioExame(exameId: number): Observable<any>{ 
+    return this.http.get("exame/receita/" + exameId);
+  }
+
 }
 
