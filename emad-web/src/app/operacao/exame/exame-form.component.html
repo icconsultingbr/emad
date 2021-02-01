@@ -18,8 +18,8 @@
     <div class="card mb-12">
       <div class="card-header text-left">
         Exame        
-        <button *ngIf="object.id && object.ano && object.numero && object.idEstabelecimento" class="mr-2 btn btn-primary float-right rounded" type="button" 
-        (click)="abreReceitaMedica(object.ano, object.numero, object.idEstabelecimento, false)">
+        <button *ngIf="object.id" class="mr-2 btn btn-primary float-right rounded" type="button" 
+        (click)="abreReciboExame(object.id, false)">
         <i class="fa fa-file-medical-alt"></i>
       </button>
       </div>
@@ -200,7 +200,7 @@
     <p>Deseja imprimir o relatório?</p>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="abreReceitaMedica(object.ano, object.numero, object.idEstabelecimento, true)">Sim</button>
+    <button type="button" class="btn btn-primary" (click)="abreReciboExame(object.id, true)">Sim</button>
     <button type="button" class="btn btn-danger"  (click)="close(true)">Não</button>    
   </div>
 </ng-template>

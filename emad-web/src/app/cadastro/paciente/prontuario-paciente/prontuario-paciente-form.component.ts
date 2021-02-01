@@ -13,12 +13,13 @@ import { AtendimentoService } from '../../../operacao/atendimento/atendimento.se
 import { Atendimento, AtendimentoHistorico } from '../../../_core/_models/Atendimento';
 import { Exame } from '../../../_core/_models/Exame';
 import { ProntuarioPacienteImpressaoService } from '../../../shared/services/prontuario-paciente-impressao.service';
+import { ReciboExameImpressaoService } from '../../../shared/services/recibo-exame-impressao.service';
 
 @Component({
   selector: 'app-prontuario-paciente-form',
   templateUrl: './prontuario-paciente-form.component.html',
   styleUrls: ['./prontuario-paciente-form.component.css'],
-  providers : [PacienteService]
+  providers: [PacienteService]
 })
 export class ProntuarioPacienteFormComponent implements OnInit {
   object: Paciente = new Paciente();
@@ -49,9 +50,9 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   allItemsSinaisVitaisPulso: any[] = [];
   allItemsSinaisVitaisSaturacao: any[] = [];
   allItemsSinaisVitaisTemperatura: any[] = [];
-  allItemsSinaisVitaisPeso: any[] = [];  
+  allItemsSinaisVitaisPeso: any[] = [];
   allItemsFichas: any[] = [];
-  allItemsExames: any[] = [];  
+  allItemsExames: any[] = [];
   allItemsReceita: any[] = [];
   allItemsVacina: any[] = [];
   allItemsCarteiraVacinacao: any[] = [];
@@ -74,36 +75,36 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   mostraHistorico: boolean = false;
 
   @ViewChild('addresstext') addresstext: ElementRef;
- 
-  public lineChartDataPressaoArterial: Array<any> = [ { data: [] } ];
+
+  public lineChartDataPressaoArterial: Array<any> = [{ data: [] }];
   public lineChartLabelsPressaoArterial: Array<any> = [];
 
-  public lineChartDataPulso: Array<any> = [ { data: [] } ];
+  public lineChartDataPulso: Array<any> = [{ data: [] }];
   public lineChartLabelsPulso: Array<any> = [];
 
-  public lineChartDataSaturacao: Array<any> = [ { data: [] } ];
+  public lineChartDataSaturacao: Array<any> = [{ data: [] }];
   public lineChartLabelsSaturacao: Array<any> = [];
 
-  public lineChartDataTemperatura: Array<any> = [ { data: [] } ];
+  public lineChartDataTemperatura: Array<any> = [{ data: [] }];
   public lineChartLabelsTemperatura: Array<any> = [];
 
-  public lineChartDataPeso: Array<any> = [ { data: [] } ];
+  public lineChartDataPeso: Array<any> = [{ data: [] }];
   public lineChartLabelsPeso: Array<any> = [];
-  
+
   public pieChartLabels = [];
   public pieChartData = [];
 
   public lineChartLegend: boolean = false;
-  public lineChartType: string = 'line';  
+  public lineChartType: string = 'line';
 
-  objectTipoAtendimento: MainChartLine = new MainChartLine();    
-  objectAtendimentoSituacao: MainChartLine = new MainChartLine();    
-  
+  objectTipoAtendimento: MainChartLine = new MainChartLine();
+  objectAtendimentoSituacao: MainChartLine = new MainChartLine();
+
   public barChartType: string = 'bar';
-  public barChartLegend: boolean = true;  
-  public barChartDataTipoAtendimento: any[] = [ { data: [], label: '' } ];
+  public barChartLegend: boolean = true;
+  public barChartDataTipoAtendimento: any[] = [{ data: [], label: '' }];
   public barChartLabelsTipoAtendimento: string[] = [];
-  public barChartDataAtendimentoSituacao: any[] = [ { data: [], label: '' } ];
+  public barChartDataAtendimentoSituacao: any[] = [{ data: [], label: '' }];
   public barChartLabelsAtendimentoSituacao: string[] = [];
 
 
@@ -118,6 +119,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     private modalService: NgbModal,
     private reciboReceitaService: ReciboReceitaImpressaoService,
     private router: Router,
+    private reciboExameService: ReciboExameImpressaoService,
     private prontuarioPacienteImpressao: ProntuarioPacienteImpressaoService) {
     this.fields = service.fields;
   }
@@ -128,7 +130,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     });
     this.createGroup();
     this.loadDomains();
-  } 
+  }
 
   loadDomains() {
     this.loading = true;
@@ -141,7 +143,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                 this.service.listDomains('atencao-continuada').subscribe(atencaoContinuada => {
                   this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {
                     this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {
-                      this.service.listDomains('tipo-exame').subscribe(tipoExame => {                      
+                      this.service.listDomains('tipo-exame').subscribe(tipoExame => {
                         this.domains.push({
                           idUf: ufs,
                           idNacionalidade: paises,
@@ -191,12 +193,12 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                             { id: 1, nome: "Amostra não reagente" },
                             { id: 2, nome: "Amostra reagente" },
                             { id: 3, nome: "Não realizado" }
-                          ], 
+                          ],
                         });
                         if (!Util.isEmpty(this.id)) {
                           this.encontraPaciente();
                         }
-                        else{
+                        else {
                           this.loading = false;
                           this.loadPhoto = true;
                         }
@@ -226,7 +228,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     }, error => {
       this.object = new Paciente();
       this.loadPhoto = true;
-      this.loading = false;      ;
+      this.loading = false;;
       this.allItemsHipotese = [];
       this.errors.push({
         message: "Paciente não encontrado"
@@ -234,22 +236,22 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     });
   }
 
-  tabSelected(tab: number){
-    if(tab == 3){//Sinais vitais
+  tabSelected(tab: number) {
+    if (tab == 3) {//Sinais vitais
       this.findSinaisVitaisPorPaciente();
-    }else if(tab == 4){//Atendimentos
+    } else if (tab == 4) {//Atendimentos
       this.findAtendimentoPorPaciente();
-    }else if(tab == 5){//Medicamentos      
+    } else if (tab == 5) {//Medicamentos      
       this.findReceitaPorPaciente();
-    }else if(tab == 6){//Fichas de atendimentos
+    } else if (tab == 6) {//Fichas de atendimentos
       this.findFichasPorPaciente();
-    }else if(tab == 7){//Exames
+    } else if (tab == 7) {//Exames
       this.findExamesPorPaciente();
-    }else if(tab == 8){//Hipótes diagnosticada
+    } else if (tab == 8) {//Hipótes diagnosticada
       this.findHipotesePorPaciente();
-    }else if(tab == 9){//Vacinas
+    } else if (tab == 9) {//Vacinas
       this.findProntuarioVacinacaoPorPaciente();
-    }     
+    }
   }
 
   carregaNaturalidade() {
@@ -270,22 +272,22 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   createGroup() {
     this.form = this.fb.group({
       id: [''],
-      cartaoSus: ['',''],
+      cartaoSus: ['', ''],
       nome: ['', Validators.required],
       nomeSocial: ['', ''],
       apelido: ['', ''],
       nomeMae: ['', Validators.required],
       nomePai: ['', ''],
       dataNascimento: ['', Validators.required],
-      sexo: new FormControl({value: '', disabled: true}),
-      idNacionalidade: new FormControl({value: '', disabled: true}),
-      idNaturalidade: new FormControl({value: '', disabled: true}),
+      sexo: new FormControl({ value: '', disabled: true }),
+      idNacionalidade: new FormControl({ value: '', disabled: true }),
+      idNaturalidade: new FormControl({ value: '', disabled: true }),
       ocupacao: ['', ''],
       cpf: ['', ''],
       rg: ['', ''],
       dataEmissao: ['', ''],
       orgaoEmissor: ['', ''],
-      escolaridade: new FormControl({value: '', disabled: true}),
+      escolaridade: new FormControl({ value: '', disabled: true }),
       cep: ['', ''],
       logradouro: ['', ''],
       numero: ['', ''],
@@ -309,43 +311,43 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       idAtencaoContinuada: ['', ''],
       historiaProgressaFamiliar: ['', ''],
       observacao: ['', ''],
-      idEstabelecimentoCadastro: new FormControl({value: '', disabled: (this.id > 0 || this.object.id > 0) ? true : false}, Validators.required),
+      idEstabelecimentoCadastro: new FormControl({ value: '', disabled: (this.id > 0 || this.object.id > 0) ? true : false }, Validators.required),
       gruposAtencaoContinuada: ['', ''],
-      falecido: new FormControl({value: '', disabled: true}),
-      situacao: new FormControl({value: '', disabled: true}),
+      falecido: new FormControl({ value: '', disabled: true }),
+      situacao: new FormControl({ value: '', disabled: true }),
     });
   }
 
- 
+
   findHipotesePorPaciente() {
     this.message = "";
     this.errors = [];
     this.loading = true;
     this.service.findHipoteseByPaciente(this.object.id).subscribe(result => {
-       this.allItemsHipotese = result;
+      this.allItemsHipotese = result;
 
-       this.service.findHipoteseByPacienteAgrupado(this.object.id).subscribe(resultChart => {
+      this.service.findHipoteseByPacienteAgrupado(this.object.id).subscribe(resultChart => {
         var labels = [];
-        for(var itemLabel in resultChart){        
+        for (var itemLabel in resultChart) {
           labels.push(resultChart[itemLabel].label);
-        }        
-        this.pieChartLabels =  labels;
+        }
+        this.pieChartLabels = labels;
         var data = [];
-        for(var item in resultChart){        
+        for (var item in resultChart) {
           data.push(resultChart[item].data);
-        } 
+        }
         this.pieChartData = data;
 
         this.ref.detectChanges();
         this.loading = false;
-     }, error => {
+      }, error => {
         this.loading = false;
         this.errors = Util.customHTTPResponse(error);
-     });
+      });
 
     }, error => {
-       this.loading = false;
-       this.errors = Util.customHTTPResponse(error);
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
     });
   }
 
@@ -354,11 +356,11 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.errors = [];
     this.loading = true;
     this.service.findAtendimentoByPaciente(this.object.id, 1).subscribe(result => {
-       this.allItemsAtendimentos = result;
-       this.loading = false;
+      this.allItemsAtendimentos = result;
+      this.loading = false;
     }, error => {
-       this.loading = false;
-       this.errors = Util.customHTTPResponse(error);
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
     });
   }
 
@@ -367,14 +369,14 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.message = "";
     this.errors = [];
     this.loading = true;
-    this.lineChartDataPressaoArterial = [ { data: [] }];    
-    this.lineChartDataPulso = [ { data: [] }];    
-    this.lineChartDataSaturacao = [ { data: [] }];    
-    this.lineChartDataTemperatura = [ { data: [] }];    
-    this.lineChartDataPeso = [ { data: [] }];    
+    this.lineChartDataPressaoArterial = [{ data: [] }];
+    this.lineChartDataPulso = [{ data: [] }];
+    this.lineChartDataSaturacao = [{ data: [] }];
+    this.lineChartDataTemperatura = [{ data: [] }];
+    this.lineChartDataPeso = [{ data: [] }];
 
     this.service.findSinaisVitaisByPaciente(this.object.id, 'pressaoArterial').subscribe(result => {
-        this.allItemsSinaisVitaisPressaoArterial = result;
+      this.allItemsSinaisVitaisPressaoArterial = result;
       //  this.totalPressaoArterial = this.allItemsSinaisVitaisPressaoArterial.length;
       //  var labels = [];
       //   for(var item in result){        
@@ -387,98 +389,98 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       //   } 
       //   this.lineChartDataPressaoArterial[0].data = data;
 
-       this.service.findSinaisVitaisByPaciente(this.object.id, 'pulso').subscribe(result => {
-            this.allItemsSinaisVitaisPulso = result;
-            this.totalPulso = this.allItemsSinaisVitaisPulso.length;
+      this.service.findSinaisVitaisByPaciente(this.object.id, 'pulso').subscribe(result => {
+        this.allItemsSinaisVitaisPulso = result;
+        this.totalPulso = this.allItemsSinaisVitaisPulso.length;
+        var labels = [];
+        for (var item in result) {
+          labels.push(result[item].label);
+        }
+        this.lineChartLabelsPulso = labels;
+        var data = [];
+        for (var item in result) {
+          data.push(result[item].pulso);
+        }
+        this.lineChartDataPulso[0].data = data;
+
+        this.service.findSinaisVitaisByPaciente(this.object.id, 'saturacao').subscribe(result => {
+          this.allItemsSinaisVitaisSaturacao = result;
+          this.totalSaturacao = this.allItemsSinaisVitaisSaturacao.length;
+          var labels = [];
+          for (var item in result) {
+            labels.push(result[item].label);
+          }
+          this.lineChartLabelsSaturacao = labels;
+          var data = [];
+          for (var item in result) {
+            data.push(result[item].saturacao);
+          }
+          this.lineChartDataSaturacao[0].data = data;
+
+          this.service.findSinaisVitaisByPaciente(this.object.id, 'temperatura').subscribe(result => {
+            this.allItemsSinaisVitaisTemperatura = result;
+            this.totalTemperatura = this.allItemsSinaisVitaisTemperatura.length;
             var labels = [];
-              for(var item in result){        
-                labels.push(result[item].label);
-              } 
-              this.lineChartLabelsPulso = labels;  
-              var data = [];
-              for(var item in result){        
-                data.push(result[item].pulso);
-              } 
-              this.lineChartDataPulso[0].data = data;
+            for (var item in result) {
+              labels.push(result[item].label);
+            }
+            this.lineChartLabelsTemperatura = labels;
+            var data = [];
+            for (var item in result) {
+              data.push(result[item].temperatura);
+            }
+            this.lineChartDataTemperatura[0].data = data;
 
-            this.service.findSinaisVitaisByPaciente(this.object.id, 'saturacao').subscribe(result => {
-              this.allItemsSinaisVitaisSaturacao = result;
-              this.totalSaturacao = this.allItemsSinaisVitaisSaturacao.length;
+            this.service.findSinaisVitaisByPaciente(this.object.id, 'peso').subscribe(result => {
+              this.allItemsSinaisVitaisPeso = result;
+              this.totalPeso = this.allItemsSinaisVitaisPeso.length;
               var labels = [];
-                for(var item in result){        
-                  labels.push(result[item].label);
-                } 
-                this.lineChartLabelsSaturacao = labels;  
-                var data = [];
-                for(var item in result){        
-                  data.push(result[item].saturacao);
-                } 
-                this.lineChartDataSaturacao[0].data = data;
+              for (var item in result) {
+                labels.push(result[item].label);
+              }
+              this.lineChartLabelsPeso = labels;
+              var data = [];
+              for (var item in result) {
+                data.push(result[item].peso);
+              }
+              this.lineChartDataPeso[0].data = data;
 
-              this.service.findSinaisVitaisByPaciente(this.object.id, 'temperatura').subscribe(result => {
-                this.allItemsSinaisVitaisTemperatura = result;
-                this.totalTemperatura = this.allItemsSinaisVitaisTemperatura.length;
-                var labels = [];
-                  for(var item in result){        
-                    labels.push(result[item].label);
-                  } 
-                  this.lineChartLabelsTemperatura = labels;  
-                  var data = [];
-                  for(var item in result){        
-                    data.push(result[item].temperatura);
-                  } 
-                  this.lineChartDataTemperatura[0].data = data;
-
-                this.service.findSinaisVitaisByPaciente(this.object.id, 'peso').subscribe(result => {
-                  this.allItemsSinaisVitaisPeso = result;
-                  this.totalPeso = this.allItemsSinaisVitaisPeso.length;
-                  var labels = [];
-                    for(var item in result){        
-                      labels.push(result[item].label);
-                    } 
-                    this.lineChartLabelsPeso = labels;  
-                    var data = [];
-                    for(var item in result){        
-                      data.push(result[item].peso);
-                    } 
-                    this.lineChartDataPeso[0].data = data;
-    
-              }, error => {
-                  this.loading = false;
-                  this.errors = Util.customHTTPResponse(error);
-              });
-  
             }, error => {
-                this.loading = false;
-                this.errors = Util.customHTTPResponse(error);
+              this.loading = false;
+              this.errors = Util.customHTTPResponse(error);
             });
 
           }, error => {
-              this.loading = false;
-              this.errors = Util.customHTTPResponse(error);
+            this.loading = false;
+            this.errors = Util.customHTTPResponse(error);
           });
 
         }, error => {
-            this.loading = false;
-            this.errors = Util.customHTTPResponse(error);
+          this.loading = false;
+          this.errors = Util.customHTTPResponse(error);
         });
 
+      }, error => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(error);
+      });
+
     }, error => {
-       this.loading = false;
-       this.errors = Util.customHTTPResponse(error);
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
     });
-  }  
+  }
 
   findFichasPorPaciente() {
     this.message = "";
     this.errors = [];
     this.loading = true;
     this.service.findAtendimentoByPaciente(this.object.id, 2).subscribe(result => {
-       this.allItemsFichas = result;
-       this.loading = false;
+      this.allItemsFichas = result;
+      this.loading = false;
     }, error => {
-       this.loading = false;
-       this.errors = Util.customHTTPResponse(error);
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
     });
   }
 
@@ -487,11 +489,11 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.errors = [];
     this.loading = true;
     this.service.findExameByPaciente(this.object.id).subscribe(result => {
-       this.allItemsExames = result;
-       this.loading = false;
+      this.allItemsExames = result;
+      this.loading = false;
     }, error => {
-       this.loading = false;
-       this.errors = Util.customHTTPResponse(error);
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
     });
   }
 
@@ -500,11 +502,11 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.errors = [];
     this.loading = true;
     this.service.findReceitaByPaciente(this.object.id).subscribe(result => {
-       this.allItemsReceita = result;
-       this.loading = false;
+      this.allItemsReceita = result;
+      this.loading = false;
     }, error => {
-       this.loading = false;
-       this.errors = Util.customHTTPResponse(error);
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
     });
   }
 
@@ -513,11 +515,11 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.errors = [];
     this.loading = true;
     this.service.findProntuarioVacinacaoByPaciente(this.object.id).subscribe(result => {
-       this.allItemsVacina = result;
-       this.loading = false;
+      this.allItemsVacina = result;
+      this.loading = false;
     }, error => {
-       this.loading = false;
-       this.errors = Util.customHTTPResponse(error);
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
     });
   }
 
@@ -526,17 +528,17 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.errors = [];
     this.loading = true;
     this.service.findCarteiraVacinacaoByPaciente(this.object.id).subscribe(result => {
-       this.allItemsCarteiraVacinacao = result;
-       this.loading = false;
+      this.allItemsCarteiraVacinacao = result;
+      this.loading = false;
     }, error => {
-       this.loading = false;
-       this.errors = Util.customHTTPResponse(error);
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
     });
   }
-  
-  visualizaAtendimentos(id : any) : void {
-    let url = this.router.url.replace('paciente','') + this.virtualDirectory + "#/atendimentos/cadastro/" + id;
-    this.service.file('atendimento/consulta-por-paciente', url).subscribe(result=>{
+
+  visualizaAtendimentos(id: any): void {
+    let url = this.router.url.replace('paciente', '') + this.virtualDirectory + "#/atendimentos/cadastro/" + id;
+    this.service.file('atendimento/consulta-por-paciente', url).subscribe(result => {
       this.loading = false;
       window.open(
         url,
@@ -545,7 +547,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     });
   }
 
-  carregaEstoque(item: any){
+  carregaEstoque(item: any) {
     this.loading = true;
     this.listaMaterialLoteDispensadoGravado = [];
     this.listaMaterialLoteDispensadoFinalizado.forEach(itemEstoque => {
@@ -563,7 +565,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   close() {
-    if(this.modalRef)
+    if (this.modalRef)
       this.modalRef.close();
   }
 
@@ -573,6 +575,10 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
   imprimirPdfProntuario() {
     this.prontuarioPacienteImpressao.imprimir(this.id);
+  }
+  
+  abreReciboExame(exameId: number) {
+    this.reciboExameService.imprimir(exameId);
   }
 
   openHistorico(content: any, idAtendimento: number, idHistorico: number) {
@@ -590,7 +596,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
   openExame(content: any, idExame: number) {
     this.createGroupExame();
-    this.carregaExame(idExame);    
+    this.carregaExame(idExame);
 
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
@@ -598,28 +604,28 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       centered: true,
       windowClass: 'modal-gg'
     });
-  }  
+  }
 
   carregaExame(id: number) {
     this.errors = [];
     this.message = "";
     this.loading = true;
     this.service.findById(id, "exame").subscribe(result => {
-      this.objectExame = result;  
+      this.objectExame = result;
       this.loading = false;
     }, error => {
-      this.objectExame = new Exame();      
+      this.objectExame = new Exame();
       this.errors.push({
         message: "Exame não encontrado"
       });
     });
   }
 
-  
+
   createGroupExame() {
-    this.form = this.fb.group({      
-      idTipoExame:['', ''],      
-      resultadoFinal: ['', ''],      
+    this.form = this.fb.group({
+      idTipoExame: ['', ''],
+      resultadoFinal: ['', ''],
     });
   }
 
@@ -638,48 +644,48 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.errors = [];
     this.message = "";
 
-    
+
     if (idAtendimento) {
-      this.loading = true; 
+      this.loading = true;
       this.atendimentoService.findById(idAtendimento, "atendimento").subscribe(result => {
-      this.objectHistorico = result;
-      this.objectHistorico.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
-      this.loading = false;
-      this.findHipotesePorAtendimento(idAtendimento);
-      this.findEncaminhamentoPorAtendimento(idAtendimento);
-      this.findMedicamentoPorAtendimento(idAtendimento);                  
-    }, error => {
-      this.loading = false;
-      this.close();
-      this.errors.push({
-        message: "Atendimento não encontrado"
-      });                                         
-    });      
+        this.objectHistorico = result;
+        this.objectHistorico.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
+        this.loading = false;
+        this.findHipotesePorAtendimento(idAtendimento);
+        this.findEncaminhamentoPorAtendimento(idAtendimento);
+        this.findMedicamentoPorAtendimento(idAtendimento);
+      }, error => {
+        this.loading = false;
+        this.close();
+        this.errors.push({
+          message: "Atendimento não encontrado"
+        });
+      });
     }
-    else{
-      this.loading = true; 
+    else {
+      this.loading = true;
       this.atendimentoService.findByHistoricoId(idHistorico).subscribe(result => {
-      this.objectHistorico = result;
-      this.objectHistorico.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
-      this.loading = false;
+        this.objectHistorico = result;
+        this.objectHistorico.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
+        this.loading = false;
 
-      this.objectHistorico = result;
-      this.dataHistorico = result.dataHistorico;
-      this.nomeProfissional = result.nomeProfissional;
-      this.nomeTipoHistorico = result.nomeTipoHistorico;
-      this.objectHistorico.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
-      this.loading = false;
+        this.objectHistorico = result;
+        this.dataHistorico = result.dataHistorico;
+        this.nomeProfissional = result.nomeProfissional;
+        this.nomeTipoHistorico = result.nomeTipoHistorico;
+        this.objectHistorico.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
+        this.loading = false;
 
-      this.findHipotesePorAtendimento(idAtendimento);
-      this.findEncaminhamentoPorAtendimento(idAtendimento);
-      this.findMedicamentoPorAtendimento(idAtendimento);                  
-    }, error => {
-      this.loading = false;
-      this.close();
-      this.errors.push({
-        message: "Atendimento histórico não encontrado"
-      });                                         
-    }); 
+        this.findHipotesePorAtendimento(idAtendimento);
+        this.findEncaminhamentoPorAtendimento(idAtendimento);
+        this.findMedicamentoPorAtendimento(idAtendimento);
+      }, error => {
+        this.loading = false;
+        this.close();
+        this.errors.push({
+          message: "Atendimento histórico não encontrado"
+        });
+      });
     }
   }
 
@@ -707,7 +713,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       this.errors = Util.customHTTPResponse(error);
     });
   }
-  
+
   findEncaminhamentoPorAtendimento(idAtendimento: number) {
     this.message = "";
     this.errors = [];
@@ -801,7 +807,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   };
 
   public lineChartColors: Array<any> = this.renderBgChart('rgba(0, 0, 0, 0)', 'rgba(255,255,255,1)', 'rgba(255,255,255,1)', '#fff', '#B4B4B4', 'rgba(255,255,255,0.8)');
-  public lineChartColors2: Array<any> = this.renderBgChart('rgba(0, 0, 0, 0)', 'rgba(219,219,219,1)', 'rgba(219,219,219,1)', '#00929c', 'rgb(77, 111, 160,1)', 'rgba(46,79,143,0.8)');  
+  public lineChartColors2: Array<any> = this.renderBgChart('rgba(0, 0, 0, 0)', 'rgba(219,219,219,1)', 'rgba(219,219,219,1)', '#00929c', 'rgb(77, 111, 160,1)', 'rgba(46,79,143,0.8)');
   public pieChartType = 'pie';
 
   // events
@@ -827,7 +833,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
     return lineChartColors;
   }
-  
+
   abreAtendimentoFichaDigital(id: Number) {
     this.errors = [];
     let url =

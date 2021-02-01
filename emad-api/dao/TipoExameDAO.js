@@ -44,6 +44,11 @@ TipoExameDAO.prototype.listaAsync = async function(addFilter) {
     }
 }
 
+TipoExameDAO.prototype.buscaTipoExamePorId = async function(id){
+    let result =  await this._connection.query(`SELECT * FROM tb_tipo_exame a where a.id=?`, [id]);
+    return result ? result[0] : null;
+}
+
 module.exports = function(){
     return TipoExameDAO;
 };

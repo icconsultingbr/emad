@@ -253,4 +253,35 @@ module.exports = function (app) {
             await connection.close();
         }
     });
+
+    app.get('/exame/receita/:exameId', async function (req, res) {
+        let id = req.params.exameId;
+        let util = new app.util.Util();
+        let errors = [];
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const exameRepository = new app.dao.ExameDAO(connection);
+        const tipoExameRepository = new app.dao.TipoExameDAO(connection);
+        const pacienteRepository = new app.dao.PacienteDAO(connection);
+        const estabelecimentoRepository = new app.dao.EstabelecimentoDAO(connection);
+        const itensExameRepository = new app.dao.ItemExameDAO(connection);
+        const profissionalRepository = new app.dao.ProfissionalDAO(connection)
+
+        try {            
+            let exame = await exameRepository.buscaReportExameId(id);
+            exame.tipoExame = await tipoExameRepository.buscaTipoExamePorId(exame.idTipoExame);
+            let paciente = await pacienteRepository.buscaPorIdSync(exame.idPaciente);
+            exame.paciente = paciente[0];
+            exame.estabelecimento = await estabelecimentoRepository.carregaPorId(exame.idEstabelecimento);
+            exame.itensExame = await itensExameRepository.buscarPorExame(id);
+            exame.profissional = await profissionalRepository.buscaProfissionalPorUsuarioSync(exame.idUsuarioCriacao)
+            res.status(200).json(exame);
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado " + exception, ""));            
+        }
+        finally {
+            await connection.close();
+        }
+    });
 }
