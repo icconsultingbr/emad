@@ -49,6 +49,15 @@ export class TipoExameService extends GenericsService {
       translate: {1: "Ativo", 0: "Inativo"},
       required: true,
       validator:['', Validators.required]
+    },
+    {
+      field: "nomeProcedimento",
+      type: "text",
+      label: "Procedimento",
+      grid: true,
+      form: false,
+      required: false,
+      validator: ['', '']
     }
   ];
 
