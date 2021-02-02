@@ -119,7 +119,7 @@ export class ExameService extends GenericsService {
   }
 
   obterRelatorioExame(exameId: number): Observable<any>{ 
-    return this.http.get("exame/receita/" + exameId);
+    return this.http.get("exame/relatorio/" + exameId);
   }
 
 }

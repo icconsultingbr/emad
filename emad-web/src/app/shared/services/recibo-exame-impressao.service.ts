@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
-import { RelatorioService } from "./relatorio.service";
 import * as _moment from 'moment';
 import { ExameService } from "./exame.service";
+import { RelatorioReciboExameService } from "./relatorio-recibo-exame.service";
 
 @Injectable()
-export class ReciboExameImpressaoService extends RelatorioService {
+export class ReciboExameImpressaoService extends RelatorioReciboExameService {
 
     resultadoFinal = [
         { id: 1, nome: "Amostra não reagente" },
@@ -215,7 +215,7 @@ export class ReciboExameImpressaoService extends RelatorioService {
                                                 <span> Cartão SUS: ${result.paciente.cartaoSus}</span>
                                             </div>    
                                             <div class="col s3">
-                                                <span> Data de nascimento: ${result.paciente.dataNascimento ? _moment(result.paciente.dataNascimento).format('DD/MM/YYYY') : ' '} (${result.paciente.pacienteIdade} anos)</span>
+                                                <span> Data de nascimento: ${result.paciente.dataNascimento ? result.paciente.dataNascimento : ' '} (${result.paciente.pacienteIdade} anos)</span>
                                             </div>    
                                             <div class="col s3">
                                                 <span> Id SAP: ${result.paciente.idSap}</span>
@@ -238,7 +238,7 @@ export class ReciboExameImpressaoService extends RelatorioService {
                                 </div>
                             </div>`
 
-                this.print(tela, target, ano, result.idEstabelecimento, result.id);
+                this.print(tela, result.id);
             });
     }
 }

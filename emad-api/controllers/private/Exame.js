@@ -254,7 +254,7 @@ module.exports = function (app) {
         }
     });
 
-    app.get('/exame/receita/:exameId', async function (req, res) {
+    app.get('/exame/relatorio/:exameId', async function (req, res) {
         let id = req.params.exameId;
         let util = new app.util.Util();
         let errors = [];
