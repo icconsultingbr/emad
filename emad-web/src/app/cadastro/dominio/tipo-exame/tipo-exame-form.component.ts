@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { HipoteseDiagnostica } from '../../../_core/_models/HipoteseDiagnostica';
 import { Util } from '../../../_core/_util/Util';
+import { Procedimento } from '../../../_core/_models/Procedimento';
 
 @Component({
     selector: 'app-tipo-exame-form',
@@ -31,8 +32,10 @@ export class TipoExameFormComponent implements OnInit {
   message: string = "";
   errors: any[] = [];
   hipoteseDiagnostica: HipoteseDiagnostica = new HipoteseDiagnostica();
+  procedimento: Procedimento = new Procedimento();
   allItemsHipotese: any[] = [];
   allItemsPesquisaHipoteseDiagnostica: any[] = null;
+  allItemsPesquisaProcedimento: any[] = null;
 
   //PAGINATION
   pager: any = {};
@@ -104,7 +107,9 @@ export class TipoExameFormComponent implements OnInit {
       nome: ['', Validators.required],
       idHipoteseDiagnostica: [null],
       nomeHipoteseDiagnostica: [''],
-      situacao: ['', Validators.required]
+      situacao: ['', Validators.required],
+      nomeProcedimento : ['',''],
+      idProcedimento : ['',''],
     });
   }
 
@@ -113,6 +118,20 @@ export class TipoExameFormComponent implements OnInit {
     this.message = "";
     this.hipoteseDiagnostica = new HipoteseDiagnostica();
     this.allItemsPesquisaHipoteseDiagnostica = [];
+
+    this.modalRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      size: "lg"
+    });
+  }
+
+  openProcedimento(content: any) {
+    this.errors = [];
+    this.message = "";
+    this.procedimento = new Procedimento();
+    this.allItemsPesquisaProcedimento = [];
 
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
@@ -157,6 +176,41 @@ export class TipoExameFormComponent implements OnInit {
     this.buscaHipoteseDiagnostica();
   }
 
+  pesquisaProcedimento() {
+    this.loading = true;
+    let params = "";
+    this.allItemsPesquisaProcedimento = [];
+    this.errors = [];
+
+    if (Util.isEmpty(this.procedimento.co_procedimento) && Util.isEmpty(this.procedimento.no_procedimento))
+    {
+       this.errors = [{message:"Informe o código ou nome do procedimento"}];
+       this.loading = false;
+       return;
+    }
+
+    if (!Util.isEmpty(this.procedimento.no_procedimento))
+    {
+      if(this.procedimento.no_procedimento.length<3){
+       this.errors = [{message:"Informe o nome, ao menos 3 caracteres"}];
+       this.loading = false;
+       return;
+      }
+    }
+
+    if (!Util.isEmpty(this.procedimento.co_procedimento))
+    {
+      if (this.procedimento.co_procedimento.length < 2)
+      { 
+        this.errors = [{message:"Informe o código, ao menos 2 caracteres"}];
+        this.loading = false;
+        return;
+      }
+    }
+
+    this.buscaProcedimento();
+  }
+
   buscaHipoteseDiagnostica(offset: Number = null, limit: Number = null) {
     this.loading = true;
 
@@ -183,8 +237,39 @@ export class TipoExameFormComponent implements OnInit {
     });
   }
 
+
+  buscaProcedimento(offset: Number = null, limit: Number = null) {
+    this.loading = true;
+
+    this.paging.offset = offset ? offset : 0;
+    this.paging.limit = limit ? limit : 10;    
+
+    var params = "?codigo=" + this.procedimento.co_procedimento + "&nome=" + this.procedimento.no_procedimento;
+
+    if (this.paging.offset != null && this.paging.limit != null) {
+      params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+    }    
+
+    this.service.list('procedimento' + params).subscribe(result => {
+      this.warning = "";
+      this.paging.total = result.total;
+      this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
+      this.allItemsPesquisaProcedimento = result.items;
+      setTimeout(() => {
+        this.loading = false;
+      }, 300);
+    }, erro => {
+      setTimeout(() => this.loading = false, 300);
+      this.errors = Util.customHTTPResponse(erro);
+    });
+  }
+
   selecionaHipoteseDiagnostica(item) {
     this.hipoteseDiagnostica = item;
+  }
+
+  selecionaProcedimento(item) {
+    this.procedimento = item;
   }
 
   close() {
@@ -196,11 +281,23 @@ export class TipoExameFormComponent implements OnInit {
     return Util.isEmpty(this.hipoteseDiagnostica.id);
   }
 
+  disableProcedimentoButton() {
+    return Util.isEmpty(this.procedimento.id);
+  }
+
   saveHipotese() {
     this.message = "";
     this.errors = [];
     this.tipoExame.nomeHipoteseDiagnostica = this.hipoteseDiagnostica.cid_10 + ' - ' + this.hipoteseDiagnostica.nome 
     this.tipoExame.idHipoteseDiagnostica = this.hipoteseDiagnostica.id;
+    this.close();
+  }
+
+  saveProcedimento() {
+    this.message = "";
+    this.errors = [];
+    this.tipoExame.nomeProcedimento = this.procedimento.co_procedimento + ' - ' + this.procedimento.no_procedimento 
+    this.tipoExame.idProcedimento = this.procedimento.id;
     this.close();
   }
 
@@ -212,7 +309,21 @@ export class TipoExameFormComponent implements OnInit {
     this.setPagePaginedHipotese(this.pager.offset, this.paging.limit);
   }
 
+  loadQuantityPerPagePaginationProcedimento(event) {
+    let id = parseInt(event.target.value);
+    this.paging.limit = id;
+
+    this.setPagePaginedHipotese(this.pager.offset, this.paging.limit);
+  }
+
   setPagePaginedHipotese(offset: number, limit: Number) {
+    this.paging.offset = offset !== undefined ? offset : 0;
+    this.paging.limit = limit ? limit : this.paging.limit;
+    
+    this.buscaHipoteseDiagnostica(this.paging.offset, this.paging.limit);
+  }
+
+  setPagePaginedProcedimento(offset: number, limit: Number) {
     this.paging.offset = offset !== undefined ? offset : 0;
     this.paging.limit = limit ? limit : this.paging.limit;
     
