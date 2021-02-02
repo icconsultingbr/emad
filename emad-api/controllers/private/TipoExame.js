@@ -21,6 +21,8 @@ module.exports = function (app) {
 
         try {
             delete obj.nomeHipoteseDiagnostica;
+            delete obj.nomeProcedimento;
+            
             obj.dataCriacao = new Date;
             obj.idUsuarioCriacao = usuario.id;
 
@@ -58,6 +60,7 @@ module.exports = function (app) {
 
         try {
             delete obj.nomeHipoteseDiagnostica;
+            delete obj.nomeProcedimento;
             delete obj.dataCriacao;
             delete obj.idUsuarioCriacao;
 

@@ -40,10 +40,19 @@ export class ProcedimentoService extends GenericsService {
       validator: ['', Validators.required]
     },
     {
+      field: "dt_competencia_formatada",
+      type: "text",
+      label: "Competência",
+      grid: true,
+      form: false,
+      required: false,
+      validator: ['', ''],
+    },
+    {
       field: "dt_competencia",
       type: "text",
-      label: "Competencia",
-      grid: true,
+      label: "Competência",
+      grid: false,
       form: true,
       required: false,
       validator: ['', ''],

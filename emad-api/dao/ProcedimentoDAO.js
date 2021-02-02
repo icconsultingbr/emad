@@ -20,10 +20,10 @@ ProcedimentoDAO.prototype.lista = async function (queryFilter) {
 
     if(queryFilter.codigo || queryFilter.nome){
 
-        where += "WHERE "
+        where += "WHERE 1 = 1"
 
         if(queryFilter.codigo && queryFilter.codigo != 'null' && queryFilter.codigo != 'undefined'){
-            where += `UPPER(co_procedimento) LIKE '%${queryFilter.codigo.toUpperCase()}%'`;
+            where += ` AND UPPER(co_procedimento) LIKE '%${queryFilter.codigo.toUpperCase()}%'`;
         }
 
         if(queryFilter.nome && queryFilter.nome != 'null' && queryFilter.nome != 'undefined'){
@@ -33,7 +33,7 @@ ProcedimentoDAO.prototype.lista = async function (queryFilter) {
 
     const count = await this._connection.query(`SELECT COUNT(1) as total FROM ${this._table}`);
 
-    const query = QueryBuilder.datatable(`SELECT *, CONCAT(SUBSTRING(thd.dt_competencia, 1, 4), '/',SUBSTRING(thd.dt_competencia, 5, 6)) as dt_competencia FROM ${this._table} a ${where}`, orderBy, queryFilter.sortOrder, queryFilter.limit, queryFilter.offset);
+    const query = QueryBuilder.datatable(`SELECT *, CONCAT(SUBSTRING(a.dt_competencia, 1, 4), '/',SUBSTRING(a.dt_competencia, 5, 6)) as dt_competencia_formatada FROM ${this._table} a ${where}`, orderBy, queryFilter.sortOrder, queryFilter.limit, queryFilter.offset);
 
     let result = await this._connection.query(query);
 
