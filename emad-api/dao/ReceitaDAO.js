@@ -5,11 +5,13 @@ function ReceitaDAO(connection) {
 
 ReceitaDAO.prototype.salva = async function(receita) {
     const novaReceita = await this._connection.query(`INSERT INTO tb_receita (idEstabelecimento, idUf, idMunicipio, idProfissional, idPaciente, 
-                                                          idSubgrupoOrigem, ano, numero, dataEmissao, situacao, idUsuarioCriacao, dataCriacao, idAtendimento)
-                                                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+                                                          idSubgrupoOrigem, ano, numero, dataEmissao, situacao, idUsuarioCriacao, dataCriacao, idAtendimento, 
+                                                          receitaExterna, nomeProfissionalExterno, profissionalExternoCrm, profissionalExternoCpf)
+                                                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
                                                           [receita.idEstabelecimento, receita.idUf, receita.idMunicipio, receita.idProfissional,
                                                            receita.idPaciente, receita.idSubgrupoOrigem, receita.ano, receita.numero, 
-                                                           new Date(receita.dataEmissao), receita.situacao, receita.idUsuarioCriacao, receita.dataCriacao, receita.idAtendimento]);
+                                                           new Date(receita.dataEmissao), receita.situacao, receita.idUsuarioCriacao, receita.dataCriacao, receita.idAtendimento,
+                                                           receita.receitaExterna, receita.nomeProfissionalExterno, receita.profissionalExternoCrm, receita.profissionalExternoCpf]);
 
     return [novaReceita];
 }

@@ -466,8 +466,21 @@ export class ReceitaFormComponent implements OnInit {
       observacoesGerais: ['', ''],
       mensagemPaciente: ['', ''],
       situacao: [Validators.required],
-      qtdDispensarLote: ['','']
+      qtdDispensarLote: ['',''],
+      receitaExterna: ['',''],
+      nomeProfissionalExterno: ['',''],
+      profissionalExternoCrm: ['',''],
+      profissionalExternoCpf: ['',''],
     });
   }
 
+  checkReceitaExterna(event: any){
+    if(event.srcElement.checked){
+      this.form.get('idProfissional').clearValidators();
+      this.form.get('idProfissional').updateValueAndValidity();
+    } else {
+      this.form.get('idProfissional').setValidators([Validators.required]);
+      this.form.get('idProfissional').updateValueAndValidity();
+    }
+  }
 }

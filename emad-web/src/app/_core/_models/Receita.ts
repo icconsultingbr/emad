@@ -22,6 +22,10 @@ export class Receita {
     @Input() itensReceita: ItemReceita[] = [];      
     @Input() itensReceitaFinalizado: ItemReceita[] = [];  
     @Input() acao: string;
-    @Input() mensagemPaciente: string;    
+    @Input() mensagemPaciente: string;
+    @Input() receitaExterna: boolean = false;
+    @Input() nomeProfissionalExterno: string;
+    @Input() profissionalExternoCrm: string;
+    @Input() profissionalExternoCpf: string;    
 }
 

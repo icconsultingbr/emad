@@ -14,12 +14,18 @@ module.exports = function (app) {
 
         req.assert("idEstabelecimento").notEmpty().withMessage("O campo Estabelecimento é um campo obrigatório");
         req.assert("idMunicipio").notEmpty().withMessage("O campo Município é um campo obrigatório");
-        req.assert("idProfissional").notEmpty().withMessage("O campo Profissional é um campo obrigatório");
         req.assert("idPaciente").notEmpty().withMessage("O campo Paciente é um campo obrigatório");
         req.assert("idSubgrupoOrigem").notEmpty().withMessage("O campo Origem é um campo obrigatório");
         req.assert("ano").notEmpty().withMessage("O campo Ano é um campo obrigatório");
         req.assert("ano").matches(/^[0-9]+$/).withMessage("O campo Ano deve conter somente números");
         req.assert("dataEmissao").notEmpty().withMessage("O campo Data emissão é um campo obrigatório");
+
+        if(receita.receitaExterna) {
+            req.assert("nomeProfissionalExterno").notEmpty().withMessage("O campo nome do profissional é obrigatório");
+            req.assert("profissionalExternoCrm").notEmpty().withMessage("O campo CRM do profissional é obrigatório");
+        } else {
+            req.assert("idProfissional").notEmpty().withMessage("O campo Profissional é um campo obrigatório");
+        }
 
         errors = req.validationErrors();
 
