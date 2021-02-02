@@ -291,7 +291,7 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
     </div>`
     }
 
-        this.print(tela, target, ano, idEstabelecimento, numero, );
+        this.print(tela, target, ano, idEstabelecimento, numero);
         });
     }
 }

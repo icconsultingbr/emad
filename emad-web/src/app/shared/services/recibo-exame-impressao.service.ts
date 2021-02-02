@@ -238,7 +238,7 @@ export class ReciboExameImpressaoService extends RelatorioService {
                                 </div>
                             </div>`
 
-                this.print(tela, ano, result.idEstabelecimento, result.id, target);
+                this.print(tela, target, ano, result.idEstabelecimento, result.id);
             });
     }
 }
