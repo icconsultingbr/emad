@@ -331,6 +331,54 @@
 
           <div class="card mb-4" *ngIf="object.idPaciente && object.id">
             <div class="card-header text-left">
+              Procedimentos
+            </div>
+            <div class="card-body text-left">
+              <div class="row">
+                <div class="col-12 mb-3">
+                  <button *ngIf="!disableFields()" type="button" class="btn btn-primary float-left mr-2" (click)="openProcedimento(contentProcedimento)" [disabled]="!object.id">
+                    <i class="fa fa-plus-circle"></i>
+                  </button>
+
+                  <button type="button" class="btn btn-default float-left" (click)="findProcedimentoPorAtendimento()">
+                    <i class="fa fa-sync-alt"></i>
+                  </button>
+                </div>
+                <div class="col-12 table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Código</th>
+                        <th>Nome</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody *ngIf="!allItemsProcedimento.length">
+                      <tr class="text-left">
+                        <td colspan="99" class="text-secondary">
+                          <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para inserir uma hipótese diagnóstica!'}}</i>
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tbody *ngIf="allItemsProcedimento.length">
+                      <tr class="text-left" *ngFor="let item of allItemsProcedimento">
+                        <td class="text-secondary">{{item.co_procedimento}}</td>
+                        <td class="text-secondary">{{item.no_procedimento}}</td>
+                        <td class="text-secondary text-right">
+                          <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]="" (click)="removeProcedimento(item)">
+                            <i class="fa fa-trash-alt"></i> Remover
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+            <div class="card-header text-left">
               Prescrição Medicamentos
             </div>
             <div class="card-body text-left">
@@ -1254,6 +1302,138 @@
   </div>
 </ng-template>
 
+<ng-template #contentProcedimento>
+  <div class="modal-header">
+    <h4 class="modal-title">Procedimentos</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="errors.length" class="alert alert-danger">
+      <div *ngFor="let error of errors" class="row">
+        <div class="col-12 text-left">
+          {{error.message}}
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-xl-4 col-sm-12 col-form-label text-left">
+        Código procedimento:
+      </label>
+      <div class="col-xl-8 col-sm-12">
+        <input type="text" class="form-control has-error" [(ngModel)]="procedimento.co_procedimento">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-xl-4 col-sm-12 col-form-label text-left">
+        Nome procedimento:
+      </label>
+      <div class="col-xl-8 col-sm-12">
+        <input type="text" class="form-control has-error" [(ngModel)]="procedimento.no_procedimento">
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-12">
+        <button [routerLink]="" class="btn btn-primary float-right" (click)="pesquisaProcedimento()">
+          <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin text-left">
+            <i class="fa fa-spinner"></i>
+          </i>
+          <i *ngIf="!loading" class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-12 table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr class="text-left">
+              <th></th>                      
+              <th>Código</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let item of allItemsPesquisaProcedimento let index=index; let odd='odd'; let even='even';">
+            <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
+              <td class="text-secondary">
+                <div class="custom-control custom-radio float-left">
+                  <input type="radio" (change)="selecionaProcedimento(item)" class="custom-control-input" id="{{ item.id }}"
+                    name="radio-item">
+                  <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
+                </div>
+              </td>           
+              <td class="text-secondary">{{item.co_procedimento}}</td>              
+              <td class="text-secondary">{{item.no_procedimento}}</td>   
+            </tr>
+          </tbody>
+          <tbody *ngIf="!allItemsPesquisaProcedimento || allItemsPesquisaProcedimento.length==0">
+            <tr class="text-left">
+              <td colspan="99" class="text-secondary">
+                <i>Não há resultados...</i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div *ngIf="allItemsPesquisaProcedimento && allItemsPesquisaProcedimento.length"
+          class="text text-secondary col-md-12 pr-0 mx-auto">
+          <i>
+              Exibindo {{paging.offset === (totalPages-1)?paging.total:(paging.offset+1)*paging.limit}} de
+              {{paging.total}}
+              resultado(s).
+          </i>
+      </div>
+    </div>
+    <div class="row mb-2 mt-4">
+      <ul *ngIf="allItemsPesquisaProcedimento && allItemsPesquisaProcedimento.length" class="pagination mx-auto">
+          <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
+              <a class="page-link" (click)="setPagePaginedProcedimento(0)">
+                  <i class="fas fa-angle-double-left"></i>
+              </a>
+          </li>
+          <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
+              <a class="page-link" (click)="setPagePaginedProcedimento(paging.offset - 1)">
+                  <i class="fas fa-angle-left"></i>
+              </a>
+          </li>
+          <li>
+              <select (change)="loadQuantityPerPagePaginationProcedimento($event, 'hipotese')" class="custom-select d-block w-100"
+                  style="border: 1px solid #dee2e6">
+
+                  <option [ngValue]="10">10</option>
+                  <option [ngValue]="25">25</option>
+                  <option [ngValue]="50">50</option>
+              </select>
+          </li>
+          <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
+              <a class="page-link" (click)="setPagePaginedProcedimento(paging.offset + 1)">
+                  <i class="fas fa-angle-right"></i>
+              </a>
+          </li>
+          <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
+              <a class="page-link" (click)="setPagePaginedProcedimento(totalPages-1)">
+                  <i class="fas fa-angle-double-right"></i>
+              </a>
+          </li>
+      </ul>
+    </div>
+
+    <div class="form-group row text-right">
+      <div class="col-12">
+        <button class="btn btn-primary  mr-2" type="button" [disabled]="disableProcedimentoButton()"
+          (click)="saveProcedimento()">
+          <i class="fa fa-plus-circle"></i> Adicionar
+        </button>
+        <button class="btn btn-default" (click)="close()" type="button">
+          <i class="fa fa-times"></i> Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
 
 
 <ng-template #contentEncaminhamento>

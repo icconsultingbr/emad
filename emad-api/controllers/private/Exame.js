@@ -25,9 +25,19 @@ module.exports = function (app) {
         const connection = await app.dao.connections.EatendConnection.connection();
 
         const repository = new app.dao.ExameDAO(connection);
+        const profissionalRepository = new app.dao.ProfissionalDAO(connection);
 
         try {
             await connection.beginTransaction();
+
+            var buscaProfissional = await profissionalRepository.buscaProfissionalPorUsuarioSync(usuario.id);            
+
+            if (!buscaProfissional) {
+                errors = util.customError(errors, "header", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar exames", "");
+                 res.status(400).send(errors);
+                await connection.rollback();
+                return;
+            }
 
             exame.dataCriacao = new Date;
             exame.idUsuarioCriacao = usuario.id;
@@ -85,9 +95,19 @@ module.exports = function (app) {
         const itemExameRepository = new app.dao.ItemExameDAO(connection);
         const tipoExameRepository = new app.dao.TipoExameDAO(connection);
         const atendimentoHipoteseRepository = new app.dao.AtendimentoHipoteseDiagnosticaDAO(connection);
+        const profissionalRepository = new app.dao.ProfissionalDAO(connection);
 
         try {
             await connection.beginTransaction();           
+            
+            var buscaProfissional = await profissionalRepository.buscaProfissionalPorUsuarioSync(usuario.id);
+
+            if (!buscaProfissional) {
+                errors = util.customError(errors, "header", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar exames", "");
+                 res.status(400).send(errors);
+                await connection.rollback();
+                return;
+            }
 
             //Gravar itens do exame
             for (const itemExame of exame.itensExame) {  
