@@ -15,6 +15,8 @@ import { Material } from '../../_core/_models/Material';
 import { ReciboReceitaImpressaoService } from '../../shared/services/recibo-receita-impressao.service';
 import { environment } from '../../../environments/environment';
 import { HipoteseDiagnostica } from '../../_core/_models/HipoteseDiagnostica';
+import { PacienteProcedimento } from '../../_core/_models/PacienteProcedimento';
+import { Procedimento } from '../../_core/_models/Procedimento';
 
 @Component({
   selector: 'app-atendimento-form',
@@ -56,6 +58,10 @@ export class AtendimentoFormComponent implements OnInit {
   domains: any[] = [];
   allItemsEntidadeCampo: any[] = null;
   allItemsPesquisaHipoteseDiagnostica: any[] = null;
+  pacienteProcedimento: PacienteProcedimento = new PacienteProcedimento();
+  procedimento: Procedimento = new Procedimento();
+  allItemsPesquisaProcedimento: any[] = null;
+  allItemsProcedimento: any[] = [];
 
   //PAGINATION
   allItems: any[] = [];
@@ -359,6 +365,21 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
+  openProcedimento(content: any) {
+    this.errors = [];
+    this.message = "";
+    this.allItemsPesquisaProcedimento = [];
+    this.pacienteProcedimento = new PacienteProcedimento();
+    this.procedimento = new Procedimento();
+
+    this.modalRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      size: "lg"
+    });
+  }
+
   setPage(page: number) {
     this.pager = this.pagerService.getPager(this.allItems.length, page, this.pageLimit);
     this.pagedItems = this.allItems.slice(this.pager.startIndex, this.pager.endIndex + 1);
@@ -413,6 +434,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.findEncaminhamentoPorAtendimento();
       this.findMedicamentoPorAtendimento();
       this.findHistoricoPorAtendimento();
+      this.findProcedimentoPorAtendimento();
 
     }, error => {
       this.object = new Atendimento();
@@ -450,6 +472,7 @@ export class AtendimentoFormComponent implements OnInit {
         this.findEncaminhamentoPorAtendimento();
         this.findMedicamentoPorAtendimento();
         this.findHistoricoPorAtendimento();
+        this.findProcedimentoPorAtendimento();
 
       }, error => {
         this.loading = false;
@@ -534,6 +557,7 @@ export class AtendimentoFormComponent implements OnInit {
         this.findEncaminhamentoPorAtendimento();
         this.findMedicamentoPorAtendimento();
         this.findHistoricoPorAtendimento();
+        this.findProcedimentoPorAtendimento();
       }
       else
         this.limpaAtendimento();
@@ -603,6 +627,19 @@ export class AtendimentoFormComponent implements OnInit {
     this.loading = true;
     this.service.findHistoricoByAtendimento(this.object.id).subscribe(result => {
       this.atendimentoHistorico = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+
+  findProcedimentoPorAtendimento() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.service.findProcedimentoByAtendimento(this.object.id).subscribe(result => {
+      this.allItemsProcedimento = result;
       this.loading = false;
     }, error => {
       this.loading = false;
@@ -781,6 +818,15 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
+  removeProcedimento(item) {
+    this.service.removeProcedimento(item.id).subscribe(result => {
+      this.message = "Hipótese diagnóstica removida com sucesso!"
+      this.close();
+      this.loading = false;
+      this.findProcedimentoPorAtendimento();
+    });
+  }
+
   disableFields(): boolean {
     if (!this.object) {
       return true;
@@ -920,5 +966,108 @@ export class AtendimentoFormComponent implements OnInit {
         '_blank'
       );
     });
+  }
+
+  pesquisaProcedimento() {
+    this.loading = true;
+    let params = "";
+    this.allItemsPesquisaProcedimento = [];
+    this.errors = [];
+
+    if (Util.isEmpty(this.procedimento.co_procedimento) && Util.isEmpty(this.procedimento.no_procedimento))
+    {
+       this.errors = [{message:"Informe o código ou nome do procedimento"}];
+       this.loading = false;
+       return;
+    }
+
+    if (!Util.isEmpty(this.procedimento.no_procedimento))
+    {
+      if(this.procedimento.no_procedimento.length<3){
+       this.errors = [{message:"Informe o nome, ao menos 3 caracteres"}];
+       this.loading = false;
+       return;
+      }
+    }
+
+    if (!Util.isEmpty(this.procedimento.co_procedimento))
+    {
+      if (this.procedimento.co_procedimento.length < 2)
+      { 
+        this.errors = [{message:"Informe o código, ao menos 2 caracteres"}];
+        this.loading = false;
+        return;
+      }
+    }
+
+    this.buscaProcedimento();
+  }
+
+  buscaProcedimento(offset: Number = null, limit: Number = null) {
+    this.loading = true;
+
+    this.paging.offset = offset ? offset : 0;
+    this.paging.limit = limit ? limit : 10;    
+
+    var params = "?codigo=" + this.procedimento.co_procedimento + "&nome=" + this.procedimento.no_procedimento;
+
+    if (this.paging.offset != null && this.paging.limit != null) {
+      params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+    }    
+
+    this.service.list('procedimento' + params).subscribe(result => {
+      this.warning = "";
+      this.paging.total = result.total;
+      this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
+      this.allItemsPesquisaProcedimento = result.items;
+      setTimeout(() => {
+        this.loading = false;
+      }, 300);
+    }, erro => {
+      setTimeout(() => this.loading = false, 300);
+      this.errors = Util.customHTTPResponse(erro);
+    });
+  }
+
+  selecionaProcedimento(item) {
+    this.procedimento = item;
+  }
+
+  saveProcedimento() {
+    this.message = "";
+    this.errors = [];
+    this.pacienteProcedimento.idProcedimento = this.procedimento.id;
+    this.pacienteProcedimento.idPaciente = this.object.idPaciente;
+    this.pacienteProcedimento.idAtendimento = this.object.id;
+
+    this.service.saveProcedimento(this.pacienteProcedimento).subscribe(result => {
+      this.message = "Procedimento inserido com sucesso!"
+      this.modalRef.close();
+      this.loading = false;
+      this.findProcedimentoPorAtendimento();
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+
+    this.close();
+  }
+
+  loadQuantityPerPagePaginationProcedimento(event) {
+    let id = parseInt(event.target.value);
+    this.paging.limit = id;
+
+    this.setPagePaginedHipotese(this.pager.offset, this.paging.limit);
+  }
+  
+  setPagePaginedProcedimento(offset: number, limit: Number) {
+    this.paging.offset = offset !== undefined ? offset : 0;
+    this.paging.limit = limit ? limit : this.paging.limit;
+    
+    this.buscaHipoteseDiagnostica(this.paging.offset, this.paging.limit);
+  }
+
+  disableProcedimentoButton() {
+    return Util.isEmpty(this.procedimento.id);
   }
 }

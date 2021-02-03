@@ -13,14 +13,14 @@ export class AtendimentoService extends GenericsService {
             field: "corIconeGrid",
             type: "icone",
             label: "",
-            icon: "fa-square",            
+            icon: "fa-square",
             grid: true,
             colunaDescricao: "tooltipIconeGrid",
             form: false,
             required: false,
             validator: ['', ''],
             sortable: false
-        },         
+        },
         {
             field: "id",
             type: "hidden",
@@ -30,7 +30,7 @@ export class AtendimentoService extends GenericsService {
             required: false,
             validator: ['', ''],
             sortable: true
-        },      
+        },
         {
             field: "cartaoSus",
             type: "text",
@@ -156,18 +156,19 @@ export class AtendimentoService extends GenericsService {
             label: "Situação",
             grid: true,
             form: false,
-            translate: { 
-                         "0": "Sala de espera",         
-                         "C": "Em aberto", 
-                         "2": "Concluído",
-                         "A": "Alta",                          
-                         "E": "Evasão", 
-                         "5": "Transferência hospitalar/ambulatório",
-                         "6": "Transferência unidade prisional",
-                         "7": "Desinternação",
-                         "8": "Álvara de soltura",
-                         "O": "Óbito", 
-                         "X": "Cancelado" },
+            translate: {
+                "0": "Sala de espera",
+                "C": "Em aberto",
+                "2": "Concluído",
+                "A": "Alta",
+                "E": "Evasão",
+                "5": "Transferência hospitalar/ambulatório",
+                "6": "Transferência unidade prisional",
+                "7": "Desinternação",
+                "8": "Álvara de soltura",
+                "O": "Óbito",
+                "X": "Cancelado"
+            },
             required: true,
             validator: ['', ''],
             filter: {
@@ -213,7 +214,7 @@ export class AtendimentoService extends GenericsService {
 
     findByHistoricoId(id: any): Observable<any> {
         return this.http.get("atendimento/historico/" + id);
-    }    
+    }
 
     saveHipotese(obj: any) {
         if (obj.id) {
@@ -272,12 +273,30 @@ export class AtendimentoService extends GenericsService {
     atribuirAtendimento(obj: any) {
         return this.http.put('atendimento/atribuir-atendimento/', JSON.stringify(obj));
     }
-    
+
     carregaEntidadeCampoPorEspecialidade(): Observable<any> {
         return this.http.get("especialidade-entidade-campo/especialidade");
     }
 
     findHipoteseByPaciente(id: any): Observable<any> {
         return this.http.get("atendimento-hipotese/paciente/" + id);
-      }
+    }
+
+    saveProcedimento(obj: any) {
+        if (obj.id) {
+            return this.http
+                .put('atendimento-procedimento', JSON.stringify(obj));
+        }
+        else {
+            return this.http
+                .post('atendimento-procedimento', JSON.stringify(obj));
+        }
+    }
+
+    findProcedimentoByAtendimento(id: any): Observable<any> {
+        return this.http.get("atendimento-procedimento/atendimento/" + id);
+    }
+    removeProcedimento(params: any) {
+        return this.http.delete('atendimento-procedimento/' + params);
+    }
 }
