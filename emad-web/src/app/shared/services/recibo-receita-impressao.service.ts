@@ -215,7 +215,7 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
                     </div>
                     <div class="row">
                         <div class="col s3">
-                            <span> Prescritor: ${result.nomeProfissional}</span>
+                            <span> Prescritor: ${result.nomeProfissional ? result.nomeProfissional : result.nomeProfissionalExterno}</span>
                         </div> 
                         <div class="col s3">
                             <span> Data da prescrição: ${result.dataEmissao ? _moment(result.dataEmissao).format('DD/MM/YYYY') : ' ' }</span>
@@ -272,7 +272,7 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
                 </div>
                 <div class="row">
                     <div class="col s3">
-                        <span> Prescritor: ${result.nomeProfissional}</span>
+                        <span> Prescritor: ${result.nomeProfissional ? result.nomeProfissional : result.nomeProfissionalExterno}</span>
                     </div> 
                     <div class="col s3">
                         <span> Data da prescrição: ${result.dataEmissao ? _moment(result.dataEmissao).format('DD/MM/YYYY') : ' ' }</span>

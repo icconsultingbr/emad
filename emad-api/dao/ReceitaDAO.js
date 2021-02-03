@@ -60,10 +60,14 @@ ReceitaDAO.prototype.buscaPorId = async function (id) {
                             ,a.situacao
                             ,a.idUf
                             ,CONCAT(municipio.nome,'/',uf.uf) textoCidade
+                            ,a.receitaExterna
+                            ,a.nomeProfissionalExterno
+                            ,a.profissionalExternoCrm
+                            ,a.profissionalExternoCpf
                             FROM ${this._table} a
                             INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
                             INNER JOIN tb_municipio municipio ON (a.idMunicipio = municipio.id)
-                            INNER JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
+                            LEFT JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
                             INNER JOIN tb_paciente paciente ON (a.idPaciente = paciente.id)
                             INNER JOIN tb_subgrupo_origem subgrupoOrigem ON (a.idSubgrupoOrigem = subgrupoOrigem.id)
                             LEFT JOIN tb_paciente pacienteOrigem ON (a.idPacienteOrigem = paciente.id)                                                         
@@ -101,11 +105,15 @@ ReceitaDAO.prototype.buscaReciboReceita = async function (ano, idEstabelecimento
                             ,paciente.cartaoSus as cartaoSusPaciente
                             ,paciente.dataNascimento
                             ,YEAR(CURRENT_TIMESTAMP) - YEAR(paciente.dataNascimento ) - (RIGHT(CURRENT_TIMESTAMP, 5) < RIGHT(paciente.dataNascimento, 5)) as pacienteIdade
-                            ,paciente.idSap                            
+                            ,paciente.idSap
+                            ,a.receitaExterna
+                            ,a.nomeProfissionalExterno
+                            ,a.profissionalExternoCrm
+                            ,a.profissionalExternoCpf                            
                             FROM ${this._table} a
                             INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
                             INNER JOIN tb_municipio municipio ON (a.idMunicipio = municipio.id)
-                            INNER JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
+                            LEFT JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
                             INNER JOIN tb_paciente paciente ON (a.idPaciente = paciente.id)
                             INNER JOIN tb_subgrupo_origem subgrupoOrigem ON (a.idSubgrupoOrigem = subgrupoOrigem.id)
                             LEFT JOIN tb_paciente pacienteOrigem ON (a.idPacienteOrigem = paciente.id)                                                         
@@ -134,7 +142,7 @@ ReceitaDAO.prototype.buscaPorPacienteIdProntuario = async function (idPaciente) 
     from ${this._table} a     
     INNER JOIN tb_item_receita tir ON (a.id = tir.idReceita)
     INNER JOIN tb_material material ON (tir.idMaterial = material.id)
-    INNER JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
+    LEFT JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
     INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
     WHERE a.idPaciente = ? order by a.id desc`, idPaciente); 
     return response;
@@ -184,7 +192,7 @@ ReceitaDAO.prototype.lista = function(addFilter, callback) {
                             FROM ${this._table} a
                             INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
                             INNER JOIN tb_municipio municipio ON (a.idMunicipio = municipio.id)
-                            INNER JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
+                            LEFT JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
                             INNER JOIN tb_paciente paciente ON (a.idPaciente = paciente.id)
                             INNER JOIN tb_subgrupo_origem subgrupoOrigem ON (a.idSubgrupoOrigem = subgrupoOrigem.id)
                             LEFT JOIN tb_paciente pacienteOrigem ON (a.idPacienteOrigem = paciente.id)
@@ -207,7 +215,7 @@ ReceitaDAO.prototype.buscaPorPacienteIdProntuarioVacinacao = async function (idP
     from ${this._table} a     
     INNER JOIN tb_item_receita tir ON (a.id = tir.idReceita)
     INNER JOIN tb_material material ON (tir.idMaterial = material.id)
-    INNER JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
+    LEFT JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
     INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
     WHERE a.idPaciente = ? AND material.vacina = 1 order by a.id desc`, idPaciente); 
     return response;

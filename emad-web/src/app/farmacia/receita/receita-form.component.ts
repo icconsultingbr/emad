@@ -48,6 +48,7 @@ export class ReceitaFormComponent implements OnInit {
   listaMaterialLoteDispensadoFinalizado: any[] = [];  
   modalRef: NgbModalRef = null;  
   objectMaterial: Material = new Material();
+  disabled: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -63,6 +64,9 @@ export class ReceitaFormComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.id = params['id'];
+      if(this.id){
+        this.disabled = true;
+      }
       this.loadDomains();
       this.createGroup();      
     });    
@@ -169,6 +173,7 @@ export class ReceitaFormComponent implements OnInit {
     this.loading = true;
     this.service.findById(this.id, "receita").subscribe(result => {
       this.object = result;  
+      this.object.receitaExterna ? this.object.idProfissional = 999 : this.object.idProfissional;
       this.label = this.object.situacao == '1' ? 'Editar receita (Situação: Pendente medicamentos)' : 
                    this.object.situacao == '2' ? 'Completar receita (Situação: Aberta)': 'Visualizar receita (Situação: Finalizada)';
       this.listaMaterialAguardandoDispensacao = this.object.itensReceita.filter(item=> item.situacao == 1);
@@ -478,9 +483,11 @@ export class ReceitaFormComponent implements OnInit {
     if(event.srcElement.checked){
       this.form.get('idProfissional').clearValidators();
       this.form.get('idProfissional').updateValueAndValidity();
+      this.object.idProfissional = 999;
     } else {
       this.form.get('idProfissional').setValidators([Validators.required]);
       this.form.get('idProfissional').updateValueAndValidity();
+      this.object.idProfissional = 0;
     }
   }
 }

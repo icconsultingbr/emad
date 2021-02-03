@@ -167,6 +167,10 @@ module.exports = function (app) {
             receita.situacao = (receita.acao == 'F' ? 3 : situacao);
             receita.dataUltimaDispensacao = gravaMovimento ? receita.dataAlteracao : null;
             
+            if(receita.idProfissional == 999) {
+                delete receita.idProfissional;
+            }
+
             //atualiza o status da receita
             var responseReceita = await receitaRepository.atualizaStatus(receita);
             
