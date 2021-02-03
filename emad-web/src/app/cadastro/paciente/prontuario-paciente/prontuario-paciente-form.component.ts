@@ -55,6 +55,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   allItemsExames: any[] = [];
   allItemsReceita: any[] = [];
   allItemsVacina: any[] = [];
+  allItemsProcedimentos: any[] = [];
   allItemsCarteiraVacinacao: any[] = [];
   listaMaterialLoteDispensadoGravado: any[] = [];
   listaMaterialLoteDispensadoFinalizado: any[] = [];
@@ -251,6 +252,8 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       this.findHipotesePorPaciente();
     } else if (tab == 9) {//Vacinas
       this.findProntuarioVacinacaoPorPaciente();
+    } else if (tab == 10) {//Procedimentos
+      this.findProcedimentosPorPaciente();
     }
   }
 
@@ -529,6 +532,19 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.loading = true;
     this.service.findCarteiraVacinacaoByPaciente(this.object.id).subscribe(result => {
       this.allItemsCarteiraVacinacao = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+
+  findProcedimentosPorPaciente() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.service.findAtendimentoProcedimentoByPaciente(this.object.id).subscribe(result => {
+      this.allItemsProcedimentos = result;
       this.loading = false;
     }, error => {
       this.loading = false;

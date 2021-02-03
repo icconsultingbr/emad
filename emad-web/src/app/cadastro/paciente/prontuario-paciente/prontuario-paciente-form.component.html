@@ -587,6 +587,46 @@
           </div>
         </div>
       </tab>
+      <tab (select)="tabSelected(10)">
+        <ng-template tabHeading>
+          <i class="fa fa-notes-medical" title="Principal"></i> Procedimentos
+        </ng-template>
+        <div class="card mb-4">
+          <div class="card-header text-left">
+            Procedimentos
+          </div>
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-12 table-responsive">
+                <div class="form-group row">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Estabelecimento</th>
+                        <th>Profissional</th>
+                        <th>Código</th>
+                        <th>Nome</th>
+                        <th>Data emissão</th>
+                      </tr>
+                    </thead>
+                    <tbody *ngIf="allItemsProcedimentos.length">
+                      <ng-container *ngFor="let item of allItemsProcedimentos">
+                        <tr class="text-left">
+                          <td class="text-secondary">{{item.nomeFantasia}}</td>
+                          <td class="text-secondary">{{item.nome}}</td>
+                          <td class="text-secondary">{{item.co_procedimento}}</td>
+                          <td class="text-secondary">{{item.no_procedimento}}</td>
+                          <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tab>
       <tab (select)="tabSelected(5)">
         <ng-template tabHeading>
           <i class="fa fa-file-medical-alt" title="Principal"></i> Medicamentos

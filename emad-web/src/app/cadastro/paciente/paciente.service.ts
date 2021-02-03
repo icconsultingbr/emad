@@ -422,6 +422,10 @@ export class PacienteService extends GenericsService {
     return this.http.get("receita/carteira-vacinacao/paciente/" + id);
   }
 
+  findAtendimentoProcedimentoByPaciente(id: any): Observable<any> {
+    return this.http.get("atendimento-procedimento/paciente/" + id);
+  }
+
   removeHipotese(params: any) {
     return this.http.delete('atendimento-hipotese/' + params);
   }

@@ -417,6 +417,7 @@ module.exports = function (app) {
         const nacionalidadeRepository = new app.dao.NacionalidadeDAO(connection);
         const ufRepository = new app.dao.UfDAO(connection);
         const exameRepository = new app.dao.ExameDAO(connection);
+        const atendimentoProcedimentoRepository = new app.dao.AtendimentoProcedimentoDAO(connection);
 
         try {
             let paciente = await pacienteRepository.buscaPorIdSync(idPaciente);
@@ -458,9 +459,10 @@ module.exports = function (app) {
             const exames = await exameRepository.buscaPorPacienteId(idPaciente);
             const hipoteseDiagnostica = await atendimentoHipoteseRepository.listarPorPaciente(idPaciente);
             const vacinas = await receitaRepository.buscaPorPacienteIdProntuarioVacinacao(idPaciente);
-            const estabelecimento = await estabelecimentoRepository.carregaPorId(paciente[0].idEstabelecimentoCadastro)
+            const estabelecimento = await estabelecimentoRepository.carregaPorId(paciente[0].idEstabelecimentoCadastro);
+            const procedimentos = await atendimentoProcedimentoRepository.listarPorPaciente(idPaciente);
 
-            let response = { paciente, estabelecimento, sinaisVitais, atendimentos, receitas, fichasAtendimento, exames, hipoteseDiagnostica, vacinas };
+            let response = { paciente, estabelecimento, sinaisVitais, atendimentos, receitas, fichasAtendimento, exames, hipoteseDiagnostica, vacinas, procedimentos };
 
             res.status(200).json(response);
 

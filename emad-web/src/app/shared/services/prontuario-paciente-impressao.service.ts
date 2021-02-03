@@ -133,6 +133,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                 let exames = '';
                 let hipoteseDiagnostica = '';
                 let vacinas = '';
+                let procedimentos = '';
 
                 if (result.sinaisVitais) {
                     sinaisVitais += `<div class="col s12">
@@ -374,6 +375,34 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
 
                 }
 
+                if (result.procedimentos) {
+                    procedimentos += `<div class="col s12">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                <th style="width:20%">Estabelecimento</th>
+                                                <th style="width:20%">Profissional</th>
+                                                <th style="width:20%">Código</th>
+                                                <th style="width:20%">Nome</th>
+                                                <th style="width:20%">Data emissão</th>
+                                                </tr>
+                                            </thead>`
+
+                    procedimentos += (result.procedimentos.length > 0 ? `<tbody>` : ``);
+
+                    result.procedimentos.forEach(procedimento => {
+                        procedimentos += `<tr class="text-left">
+                                                <td class="text-secondary">${procedimento.nomeFantasia}</td>
+                                                <td class="text-secondary">${procedimento.nome}</td>
+                                                <td class="text-secondary">${procedimento.co_procedimento}</td>
+                                                <td class="text-secondary">${procedimento.no_procedimento}</td>
+                                                <td class="text-secondary">${procedimento.dataCriacao ? _moment(procedimento.dataCriacao).format('DD/MM/YYYY HH:mm') : ''}</td>
+                                            </tr>`
+                    });
+
+                    procedimentos += (result.procedimentos.length > 0 ? `</tbody></table></div>` : `</table></div>`);
+                }
+
                 let conteudo = `
                     <div class="page">
                         <div class="content">
@@ -478,6 +507,13 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                 <hr size = 7>
                                 <div class="row" style="break-inside: avoid;">
                                     <div class="col" style="text-align: left;width: 100%;">
+                                        <span style="font-family: Arial; font-size: 18px; font-weight:bold">Procedimentos</span>
+                                    </div>
+                                    ${procedimentos}
+                                </div>
+                                <hr size = 7>
+                                <div class="row" style="break-inside: avoid;">
+                                    <div class="col" style="text-align: left;width: 100%;">
                                         <span style="font-family: Arial; font-size: 18px; font-weight:bold">Medicamentos</span>
                                     </div>
                                     ${receitas}
@@ -514,12 +550,12 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                         </div>
                     </div>`
 
-                    //trecho para renderizar
-                    // <div class="col s2">
-                    //<div class="avatar-container">
-                    //<img width="180" height="180" style="max-width: 100%; border-radius: 50%;" src="${this.pathFiles + result.paciente[0].foto}">
-                    //</div>
-                    //</div>
+                //trecho para renderizar
+                // <div class="col s2">
+                //<div class="avatar-container">
+                //<img width="180" height="180" style="max-width: 100%; border-radius: 50%;" src="${this.pathFiles + result.paciente[0].foto}">
+                //</div>
+                //</div>
 
                 this.print(conteudo, target, result.paciente[0].nome);
             });
