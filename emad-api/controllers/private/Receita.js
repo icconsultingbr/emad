@@ -47,6 +47,10 @@ module.exports = function (app) {
         try {
             await connection.beginTransaction();
 
+            if(receita.idProfissional == 999) {
+                delete receita.idProfissional;
+            }
+            
             receita.dataCriacao = new Date;
             receita.idUsuarioCriacao = usuario.id;
             receita.situacao = 1;
