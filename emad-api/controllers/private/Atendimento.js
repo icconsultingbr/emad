@@ -448,6 +448,7 @@ module.exports = function (app) {
                 receita.dataCriacao = new Date;
                 receita.idUsuarioCriacao = usuario.id;
                 receita.situacao = 2;
+                receita.receitaExterna = 0;
 
                 receita.numero = await receitaRepository.obterProximoNumero(receita.ano, receita.idEstabelecimento);
                 var response = await receitaRepository.salva(receita);
