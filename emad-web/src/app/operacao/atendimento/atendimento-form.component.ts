@@ -84,7 +84,7 @@ export class AtendimentoFormComponent implements OnInit {
     total: 0
   };
   warning: string = "";
-  totalPages: Number;
+  totalPages: number;
 
   id: number;
   idHistorico: number;
@@ -1004,6 +1004,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   buscaProcedimento(offset: Number = null, limit: Number = null) {
+    debugger
     this.loading = true;
 
     this.paging.offset = offset ? offset : 0;
@@ -1057,14 +1058,14 @@ export class AtendimentoFormComponent implements OnInit {
     let id = parseInt(event.target.value);
     this.paging.limit = id;
 
-    this.setPagePaginedHipotese(this.pager.offset, this.paging.limit);
+    this.setPagePaginedProcedimento(this.pager.offset, this.paging.limit);
   }
   
   setPagePaginedProcedimento(offset: number, limit: Number) {
     this.paging.offset = offset !== undefined ? offset : 0;
     this.paging.limit = limit ? limit : this.paging.limit;
     
-    this.buscaHipoteseDiagnostica(this.paging.offset, this.paging.limit);
+    this.buscaProcedimento(this.paging.offset, this.paging.limit);
   }
 
   disableProcedimentoButton() {
