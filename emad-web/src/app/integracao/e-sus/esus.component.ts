@@ -3,7 +3,7 @@ import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.
 import { IntegracaoEsus } from '../../shared/services/integracao-e-sus.service';
 import { IntegracaoEsusModel } from '../../_core/_models/IntegracaoEsus';
 import { Util } from '../../_core/_util/Util';
-declare function escape(s:string): string;
+declare function escape(s: string): string;
 
 @Component({
   selector: 'app-esus',
@@ -37,6 +37,7 @@ export class ESusComponent implements OnInit {
         { id: '0', nome: "Todas" },
         { id: '2', nome: "Ficha de Cadastro Individual" },
         { id: '4', nome: "Ficha de Atendimento Individual" },
+        { id: '7', nome: "Ficha de Procedimentos" },
         { id: '14', nome: "Ficha de Vacinação" }],
       tipoPeriodo: [
         { id: '1', nome: "Criação" },
@@ -67,6 +68,9 @@ export class ESusComponent implements OnInit {
           break;
         case '4':
           link.download = `lote-ficha-atendimento-individual.zip`;
+          break;
+        case '7':
+          link.download = `lote-ficha-procedimentos.zip`;
           break;
         case '14':
           link.download = `lote-ficha-vacinacao.zip`;
