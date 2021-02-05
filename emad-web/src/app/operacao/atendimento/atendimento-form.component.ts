@@ -1004,7 +1004,6 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   buscaProcedimento(offset: Number = null, limit: Number = null) {
-    debugger
     this.loading = true;
 
     this.paging.offset = offset ? offset : 0;
