@@ -1194,6 +1194,40 @@
 
       <div class="card mb-4">
         <div class="card-header text-left">
+          Procedimentos
+        </div>
+        <div class="card-body text-left">
+          <div class="row">
+            <div class="col-12 table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Nome</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="!allItemsProcedimentos.length">
+                  <tr class="text-left">
+                    <td colspan="99" class="text-secondary">
+                      <i>Não há resultados...</i>
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody *ngIf="allItemsProcedimentos.length">
+                  <tr class="text-left" *ngFor="let item of allItemsProcedimentos">
+                    <td class="text-secondary">{{item.co_procedimento}}</td>
+                    <td class="text-secondary">{{item.no_procedimento}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header text-left">
           Prescrição Medicamentos
         </div>
         <div class="card-body text-left">

@@ -356,7 +356,7 @@
                     <tbody *ngIf="!allItemsProcedimento.length">
                       <tr class="text-left">
                         <td colspan="99" class="text-secondary">
-                          <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para inserir uma hipótese diagnóstica!'}}</i>
+                          <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para inserir um procedimento diagnóstica!'}}</i>
                         </td>
                       </tr>
                     </tbody>
@@ -843,6 +843,40 @@
                   <tr class="text-left" *ngFor="let item of allItemsHipotese">
                     <td class="text-secondary">{{item.codigo}}</td>
                     <td class="text-secondary">{{item.nome}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header text-left">
+          Procedimentos
+        </div>
+        <div class="card-body text-left">
+          <div class="row">
+            <div class="col-12 table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Nome</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="!allItemsProcedimento.length">
+                  <tr class="text-left">
+                    <td colspan="99" class="text-secondary">
+                      <i>Não há resultados...</i>
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody *ngIf="allItemsProcedimento.length">
+                  <tr class="text-left" *ngFor="let item of allItemsProcedimento">
+                    <td class="text-secondary">{{item.co_procedimento}}</td>
+                    <td class="text-secondary">{{item.no_procedimento}}</td>
                   </tr>
                 </tbody>
               </table>

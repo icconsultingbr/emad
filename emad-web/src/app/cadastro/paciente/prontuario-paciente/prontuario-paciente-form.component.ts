@@ -670,6 +670,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
         this.findHipotesePorAtendimento(idAtendimento);
         this.findEncaminhamentoPorAtendimento(idAtendimento);
         this.findMedicamentoPorAtendimento(idAtendimento);
+        this.findProcedimentoPorAtendimento(idAtendimento);
       }, error => {
         this.loading = false;
         this.close();
@@ -692,9 +693,10 @@ export class ProntuarioPacienteFormComponent implements OnInit {
         this.objectHistorico.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
         this.loading = false;
 
-        this.findHipotesePorAtendimento(idAtendimento);
-        this.findEncaminhamentoPorAtendimento(idAtendimento);
-        this.findMedicamentoPorAtendimento(idAtendimento);
+        this.findHipotesePorAtendimento(result.idAtendimento);
+        this.findEncaminhamentoPorAtendimento(result.idAtendimento);
+        this.findMedicamentoPorAtendimento(result.idAtendimento);
+        this.findProcedimentoPorAtendimento(result.idAtendimento);
       }, error => {
         this.loading = false;
         this.close();
@@ -756,6 +758,18 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     });
   }
 
+  findProcedimentoPorAtendimento(idAtendimento: number) {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.atendimentoService.findProcedimentoByAtendimento(idAtendimento).subscribe(result => {
+      this.allItemsProcedimentos = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
 
   createGroupHistorico() {
     this.formHistorico = this.fb.group({
