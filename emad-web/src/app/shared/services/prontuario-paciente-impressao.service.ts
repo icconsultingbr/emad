@@ -9,6 +9,11 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
 
     pathFiles = `${environment.apiUrl}/fotos/`;
 
+    tipoHistoriaClinica = [
+        { id: 1, nome: "Anamnese" },
+        { id: 2, nome: "Evolução" },
+      ]
+
     constructor(private pacienteService: PacienteService) {
         super();
 
@@ -170,6 +175,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
 
                 if (result.atendimentos) {
                     result.atendimentos.forEach(atendimento => {
+                        var tpHistoriaClinica = this.tipoHistoriaClinica.find(x => x.id == atendimento.tipoHistoriaClinica);
                         let atividadesAtendimento = ""
 
                         atividadesAtendimento += `<div class="col s12">
@@ -197,7 +203,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                             <span> <b>Unidade</b>: ${atendimento.estabelecimentoNome}</span>
                                             <span> <b>Tipo de atendimento</b>: ${atendimento.fichaNome}</span>
                                             <span> <b>Situação atual</b>: ${atendimento.situacaoNome}</span>
-                                            <span> <b>Motivo da queixa</b>: ${atendimento.motivoQueixa}</span>
+                                            <span> <b>Motivo da queixa</b>: ${atendimento.motivoQueixa ? atendimento.motivoQueixa : ''}</span>
+                                            <span> <b>Tipo</b>: ${atendimento.tipoHistoriaClinica ? tpHistoriaClinica.nome : ''}</span>
+                                            <span> <b>Descrição</b>: ${atendimento.historicoClinico ? atendimento.historicoClinico : ''}</span>
                                             ${atividadesAtendimento}
                                         </div>`
                     });
@@ -274,7 +282,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 <td class="text-secondary">${ficha.id}</td>
                                                 <td class="text-secondary">${ficha.fichaNome}</td>
                                                 <td class="text-secondary">${ficha.classificacaoNome}</td>
-                                                <td class="text-secondary">${ficha.motivoQueixa}</td>
+                                                <td class="text-secondary">${ficha.motivoQueixa ? ficha.motivoQueixa : ''}</td>
                                                 <td class="text-secondary">${ficha.situacaoNome}</td>
                                                 <td class="text-secondary">${ficha.dataCriacao ? _moment(ficha.dataCriacao).format('DD/MM/YYYY HH:mm') : ''}</td>
                                                 <td class="text-secondary">${ficha.estabelecimentoNome}</td>
@@ -362,7 +370,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                     result.vacinas.forEach(vacina => {
                         vacinas += `<tr class="text-left">
                                         <td class="text-secondary">${vacina.nomeEstabelecimento}</td>
-                                        <td class="text-secondary">${vacina.nomeProfissional}</td>
+                                        <td class="text-secondary">${vacina.nomeProfissional ? vacina.nomeProfissional : ''}</td>
                                         <td class="text-secondary">${vacina.codigo}</td>
                                         <td class="text-secondary">${vacina.descricao}</td>
                                         <td class="text-secondary">${vacina.qtdPrescrita}</td>
