@@ -279,7 +279,8 @@ module.exports = function (app) {
         const parametroSegurancaRepository = new app.dao.ParametroSegurancaDAO(connection);
         const tipoFichaRepository = new app.dao.TipoFichaDAO(connection);
 
-        try {
+        try { 
+            console.log('Iniciando transacao do paciente: ' + obj.idPaciente + ', at: ' + new Date());
             await connection.beginTransaction();
 
             var buscaProfissional = await profissionalRepository.buscaProfissionalPorUsuarioSync(usuario.id);
@@ -294,7 +295,8 @@ module.exports = function (app) {
             var responseAtendimento = await atendimentoRepository.salvaSync(obj);
 
             obj.id = responseAtendimento[0].insertId;
-        
+            console.log('Iniciando transacao do paciente: ' + obj.id + ', at: ' + new Date());
+
             objHistorico.idTipoAtendimentoHistorico = obj.situacao == "0" ? 4 : 1;
             objHistorico.textoHistorico = "";
             objHistorico.idAtendimento = obj.id;
@@ -327,6 +329,10 @@ module.exports = function (app) {
             }
 
             var template = await tipoFichaRepository.buscaTemplatePorIdSync(obj.tipoFicha);
+            
+            
+            await connection.commit();
+            console.log('Commit transacao do atendimento: ' + obj.id + ', at: ' + new Date());
 
             if(template.length){        
 
@@ -335,19 +341,21 @@ module.exports = function (app) {
                      var dadosFicha = await atendimentoRepository.buscaDadosFichaAtendimentoSync(template[0].queryTemplate, obj.id);    
                     
                     if (dadosFicha && dadosFicha.length) {  
-                        obj.dadosFicha = dadosFicha[0];            
+                        obj.dadosFicha = dadosFicha[0];       
+                        console.log('Iniciando processo de envio da ficha: ' + obj.id + ', at: ' + new Date());
                         var client = new app.services.FichaDigitalService();
                         var envioFicha = await client.enviaFichaSync(dadosFicha[0], urlFicha, template[0].xmlTemplate);                              
+                        console.log('Envio da ficha realizado: ' + obj.id + ', at: ' + new Date());
                      }
                 }
             } 
 
             res.status(201).send(obj);
 
-            await connection.commit();
         }
         catch (exception) {
             res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado " + exception, ""));
+            console.log('rollback transacao do atendimento: ' + obj.id + ', at: ' + new Date() + ', exception:' + exception);
             await connection.rollback();
         }
         finally {
