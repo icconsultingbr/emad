@@ -51,6 +51,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   allItemsSinaisVitaisSaturacao: any[] = [];
   allItemsSinaisVitaisTemperatura: any[] = [];
   allItemsSinaisVitaisPeso: any[] = [];
+  allItemsSinaisVitaisGlicemia: any[] = [];
   allItemsFichas: any[] = [];
   allItemsExames: any[] = [];
   allItemsReceita: any[] = [];
@@ -67,6 +68,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   totalSaturacao: number;
   totalTemperatura: number;
   totalPeso: number;
+  totalGlicemia: number;
   pathFiles = `${environment.apiUrl}/fotos/`;
 
   idHistorico: number;
@@ -91,6 +93,9 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
   public lineChartDataPeso: Array<any> = [{ data: [] }];
   public lineChartLabelsPeso: Array<any> = [];
+
+  public lineChartDataGlicemia: Array<any> = [{ data: [] }];
+  public lineChartLabelsGlicemia: Array<any> = [];
 
   public pieChartLabels = [];
   public pieChartData = [];
@@ -377,6 +382,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.lineChartDataSaturacao = [{ data: [] }];
     this.lineChartDataTemperatura = [{ data: [] }];
     this.lineChartDataPeso = [{ data: [] }];
+    this.lineChartDataGlicemia = [{ data: [] }];
 
     this.service.findSinaisVitaisByPaciente(this.object.id, 'pressaoArterial').subscribe(result => {
       this.allItemsSinaisVitaisPressaoArterial = result;
@@ -447,6 +453,25 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                 data.push(result[item].peso);
               }
               this.lineChartDataPeso[0].data = data;
+
+              this.service.findSinaisVitaisByPaciente(this.object.id, 'glicemia').subscribe(result => {
+                this.allItemsSinaisVitaisGlicemia = result;
+                this.totalGlicemia = this.allItemsSinaisVitaisGlicemia.length;
+                var labels = [];
+                for (var item in result) {
+                  labels.push(result[item].label);
+                }
+                this.lineChartLabelsGlicemia = labels;
+                var data = [];
+                for (var item in result) {
+                  data.push(result[item].peso);
+                }
+                this.lineChartDataGlicemia[0].data = data;
+  
+              }, error => {
+                this.loading = false;
+                this.errors = Util.customHTTPResponse(error);
+              });
 
             }, error => {
               this.loading = false;

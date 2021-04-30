@@ -145,12 +145,13 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                             <table class="table table-striped">
                                                 <thead>
                                                 <tr>
-                                                <th style="width:16%">Pressão arterial</th>
-                                                <th style="width:16%">Pulso</th>
-                                                <th style="width:16%">Saturação</th>
-                                                <th style="width:16%">Temperatura</th>
-                                                <th style="width:16%">Peso</th>
-                                                <th style="width:17%">Data</th>   
+                                                <th style="width:15%">Pressão arterial</th>
+                                                <th style="width:14%">Pulso</th>
+                                                <th style="width:14%">Saturação</th>
+                                                <th style="width:14%">Temperatura</th>
+                                                <th style="width:14%">Peso</th>
+                                                <th style="width:14%">Glicemia</th>
+                                                <th style="width:15%">Data</th>   
                                                 </tr>
                                             </thead>`
 
@@ -164,6 +165,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                         <td class="text-secondary">${sinais.saturacao ? sinais.saturacao : ''}</td>
                                         <td class="text-secondary">${sinais.temperatura ? sinais.temperatura : ''}</td>
                                         <td class="text-secondary">${sinais.peso ? sinais.peso : ''}</td>
+                                        <td class="text-secondary">${sinais.glicemia ? sinais.glicemia : ''}</td>
                                         <td class="text-secondary">${sinais.label ? sinais.label : ''}</td>
                                     </tr>`
 

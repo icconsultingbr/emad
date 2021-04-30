@@ -189,6 +189,19 @@
                   </div>
                 </div>
               </div>
+              <div class="row">
+                <div class="col-xl-6">
+                  <div class="form-group row">
+                    <label class="col-xl-4 col-form-label text-left">
+                      Glicemia
+                    </label>
+                    <div class="col-xl-8">
+                      <input type="text" class="form-control has-error" [(ngModel)]="object.glicemia" formControlName="glicemia" [readonly]="disableFields()" 
+                      currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

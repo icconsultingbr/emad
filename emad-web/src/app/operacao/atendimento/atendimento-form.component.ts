@@ -141,6 +141,7 @@ export class AtendimentoFormComponent implements OnInit {
       idClassificacaoRisco: ['', Validators.required],
       motivoQueixa: ['', ''],
       tipoHistoriaClinica: ['', ''],
+      glicemia: ['', ''],
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -176,6 +177,7 @@ export class AtendimentoFormComponent implements OnInit {
       idClassificacaoRisco: new FormControl({ value: '', disabled: true }),
       motivoQueixa: new FormControl({ value: '', disabled: true }),
       tipoHistoriaClinica: new FormControl({ value: '', disabled: true }),
+      glicemia: new FormControl({ value: '', disabled: true })
     });
 
     this.formHipotese = this.fbHipotese.group({

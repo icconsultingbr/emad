@@ -525,6 +525,53 @@
                 </div>
               </div>
             </div>
+            <div class="row">
+              <div class="col-12 table-responsive">
+                <div class="card mb-4">
+                  <div class="card-header text-left">
+                    Glicemia
+                  </div>
+                  <div class="card-body text-left">
+                    <div class="row">
+                      <div class="col-9 table-responsive">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th>Atendimento</th>
+                              <th>Glicemia</th>
+                              <th>Data</th>
+                            </tr>
+                          </thead>
+                          <tbody *ngIf="allItemsSinaisVitaisGlicemia.length">
+                            <tr class="text-left" *ngFor="let item of allItemsSinaisVitaisGlicemia">
+                              <td class="text-secondary">{{item.id}}</td>
+                              <td class="text-secondary">{{item.glicemia}}</td>
+                              <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="col-3 table-responsive">
+                        <div class="col-sm-12 col-md-12 col-xl-12 mb-4">
+                          <div class="card text-white bg-primary pb-4">
+                            <div class="card-body pb-0">
+                              <div class="text-left medium">Coleta(s) realizada(s): <label
+                                  style="font-weight:bold;">{{totalGlicemia}}</label>
+                              </div>
+                              <br />
+                              <canvas baseChart height="80" [datasets]="lineChartDataGlicemia"
+                                [labels]="lineChartLabelsGlicemia" [options]="lineChartOptions"
+                                [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType"
+                                (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </tab>
