@@ -805,6 +805,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       temperatura: new FormControl({ value: '', disabled: true }),
       altura: new FormControl({ value: '', disabled: true }),
       peso: new FormControl({ value: '', disabled: true }),
+      glicemia: new FormControl({ value: '', disabled: true }),
       historicoClinico: new FormControl({ value: '', disabled: true }),
       exameFisico: new FormControl({ value: '', disabled: true }),
       observacoesGerais: new FormControl({ value: '', disabled: true }),
