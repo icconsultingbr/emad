@@ -39,6 +39,9 @@ import { SharedServiceModule } from "../../shared/services/shared-service.module
         ExameFormComponent,
     ],
     providers: [
+    ],
+    exports: [
+        ExameFormComponent
     ]
 })
 export class ExameModule {

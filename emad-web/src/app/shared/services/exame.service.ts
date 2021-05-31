@@ -96,6 +96,21 @@ export class ExameService extends GenericsService {
           type: "select",
           grid: true
       }
+    },
+    {
+      field: "dataCriacao",
+      type: "text",
+      label: "Data criação",
+      grid: true,
+      form: false,
+      isDateTime: true,
+      required: false,
+      validator: ['', ''],
+      filter: {
+        type: 'date',
+        placeHolder: '99/99/9999',
+        grid: true
+      },
     }
   ];
 

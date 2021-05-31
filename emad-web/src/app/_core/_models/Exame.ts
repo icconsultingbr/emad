@@ -14,4 +14,5 @@ export class Exame {
     @Input() ano: number;
     @Input() mes: string;	
     @Input() numero: string;
+    @Input() resultadoFinal: string;
 }

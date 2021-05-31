@@ -17,6 +17,9 @@ import { environment } from '../../../environments/environment';
 import { HipoteseDiagnostica } from '../../_core/_models/HipoteseDiagnostica';
 import { PacienteProcedimento } from '../../_core/_models/PacienteProcedimento';
 import { Procedimento } from '../../_core/_models/Procedimento';
+import { ExameService } from '../../shared/services/exame.service';
+import { Translation } from '../../_core/_locale/Translation';
+import { Exame } from '../../_core/_models/Exame';
 
 @Component({
   selector: 'app-atendimento-form',
@@ -32,6 +35,7 @@ export class AtendimentoFormComponent implements OnInit {
   message: string = "";
   errors: any[] = [];
   modalRef: NgbModalRef = null;
+  modalFormularioRef: NgbModalRef = null;
 
   //FORMS
   form: FormGroup;
@@ -69,11 +73,13 @@ export class AtendimentoFormComponent implements OnInit {
   pagedItems: any[];
   pageLimit: number = 10;
   fieldsPacientes: any[] = [];
+  fieldsExames: any[] = [];
 
   allItemsHipotese: any[] = [];
   allItemsEncaminhamento: any[] = [];
   allItemsMedicamento: any[] = [];
   allMedicamentos: any[] = [];
+  allItemsExame: any[] = [];
   removeId: number;
 
   pathFiles = `${environment.apiUrl}/fotos/`;
@@ -81,7 +87,9 @@ export class AtendimentoFormComponent implements OnInit {
   paging: any = {
     offset: 0,
     limit: 10,
-    total: 0
+    total: 0,
+    sortColumn: '',
+    sortOrder: ''
   };
   warning: string = "";
   totalPages: number;
@@ -91,12 +99,15 @@ export class AtendimentoFormComponent implements OnInit {
   dataHistorico: string;
   nomeProfissional: string;
   nomeTipoHistorico: string;
+  urlForm: string;
+  exameId: number = 0;
 
   constructor(
     private service: AtendimentoService,
     private pagerService: PagerService,
     private pacienteService: PlanoTerapeuticoService,
     private reciboReceitaService: ReciboReceitaImpressaoService,
+    private exameService: ExameService,
     private fb: FormBuilder,
     private fbHipotese: FormBuilder,
     private fbMedicamento: FormBuilder,
@@ -107,6 +118,12 @@ export class AtendimentoFormComponent implements OnInit {
     for (let field of this.pacienteService.fields) {
       if (field.grid) {
         this.fieldsPacientes.push(field);
+      }
+    }
+
+    for (let field of this.exameService.fields) {
+      if (field.grid) {
+        this.fieldsExames.push(field);
       }
     }
   }
@@ -237,13 +254,13 @@ export class AtendimentoFormComponent implements OnInit {
     this.loading = true;
 
     this.paging.offset = offset ? offset : 0;
-    this.paging.limit = limit ? limit : 10;    
+    this.paging.limit = limit ? limit : 10;
 
     var params = "?nome=" + this.hipoteseDiagnostica.nome + "&cid=" + this.hipoteseDiagnostica.cid_10;
 
     if (this.paging.offset != null && this.paging.limit != null) {
       params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
-    }    
+    }
 
     this.service.list('hipotese-diagnostica' + params).subscribe(result => {
       this.warning = "";
@@ -282,6 +299,56 @@ export class AtendimentoFormComponent implements OnInit {
       this.errors = Util.customHTTPResponse(erro);
     });
 
+  }
+
+  buscaExames(offset: Number = null, limit: Number = null) {
+    this.loading = true;
+    let params = "pesquisa=1&";
+
+    this.paging.offset = offset ? offset : 0;
+    this.paging.limit = limit ? limit : 10;
+    this.paging.sortColumn = 'dataCriacao';
+    this.paging.sortOrder = 'desc';
+
+    let exame = new Exame();
+
+    exame.nomePaciente = this.object.pacienteNome;
+    exame.idPaciente = this.object.idPaciente;
+    exame.idEstabelecimento = this.paciente.idEstabelecimento;
+
+    if (!Util.isEmpty(exame)) {
+      if (Object.keys(exame).length) {
+        for (let key of Object.keys(exame)) {
+          if (!Util.isEmpty(exame[key])) {
+            params += key + "=" + exame[key] + "&";
+          }
+        }
+
+        if (params != "") {
+          params = "?" + params;
+        }
+      }
+    }
+
+    if (this.paging.offset != null && this.paging.limit != null) {
+      params += (params == "" ? "?" : "") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+    }
+
+    if (this.paging.sortColumn) {
+      params += (params == "" ? "?" : "&") + `sortColumn=${this.paging.sortColumn}&sortOrder=${this.paging.sortOrder}`;
+    }
+
+    this.service.list('exame' + params).subscribe(result => {
+      this.paging.total = result.total;
+      this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
+      this.allItemsExame = result.items;
+      setTimeout(() => {
+        this.loading = false;
+      }, 300);
+    }, erro => {
+      setTimeout(() => this.loading = false, 300);
+      this.errors = Util.customHTTPResponse(erro);
+    });
   }
 
   open(content: any) {
@@ -380,6 +447,34 @@ export class AtendimentoFormComponent implements OnInit {
       centered: true,
       size: "lg"
     });
+  }
+
+  openExame(content: any) {
+    this.clear();
+    this.allItemsExame = [];
+    this.buscaExames();
+
+    this.modalRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      windowClass: 'modal-gg'
+    });
+  }
+
+  openFormularioExame(content: any) {
+    this.exameId = 0;
+    this.modalFormularioRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      windowClass: 'modal-gg'
+    });
+  }
+
+  formularioSalvoChange(event) {
+    this.modalFormularioRef.close();
+    this.buscaExames();
   }
 
   setPage(page: number) {
@@ -654,28 +749,33 @@ export class AtendimentoFormComponent implements OnInit {
       this.modalRef.close();
   }
 
+  closeExameFormulario() {
+    if (this.modalFormularioRef)
+      this.modalFormularioRef.close();
+  }
+
   loadDomains() {
     this.loading = true;
-      this.service.listDomains('especialidade').subscribe(especialidades => {
-        this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {
-          this.service.listDomains('grupo-material').subscribe(gruposMateriais => {
-            this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {
-              this.domains.push({
-                especialidades: especialidades,
-                tipoFichas: tipoFichas,
-                classificacaoRiscos: classificacaoRiscos,
-                idGrupoMaterial: gruposMateriais,
-                tipoHistoriaClinica: [
-                  { id: 1, nome: "Anamnese" },
-                  { id: 2, nome: "Evolução" },
-                ],
-              });
-              if (!Util.isEmpty(this.id)) {
-                this.encontraAtendimento();
-              }
-              else
-                this.loading = false;
+    this.service.listDomains('especialidade').subscribe(especialidades => {
+      this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {
+        this.service.listDomains('grupo-material').subscribe(gruposMateriais => {
+          this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {
+            this.domains.push({
+              especialidades: especialidades,
+              tipoFichas: tipoFichas,
+              classificacaoRiscos: classificacaoRiscos,
+              idGrupoMaterial: gruposMateriais,
+              tipoHistoriaClinica: [
+                { id: 1, nome: "Anamnese" },
+                { id: 2, nome: "Evolução" },
+              ],
             });
+            if (!Util.isEmpty(this.id)) {
+              this.encontraAtendimento();
+            }
+            else
+              this.loading = false;
+          });
         });
       });
     });
@@ -691,27 +791,23 @@ export class AtendimentoFormComponent implements OnInit {
     this.allItemsPesquisaHipoteseDiagnostica = [];
     this.errors = [];
 
-    if (Util.isEmpty(this.hipoteseDiagnostica.nome) && Util.isEmpty(this.hipoteseDiagnostica.cid_10))
-    {
-       this.errors = [{message:"Informe o nome ou código CID 10"}];
-       this.loading = false;
-       return;
+    if (Util.isEmpty(this.hipoteseDiagnostica.nome) && Util.isEmpty(this.hipoteseDiagnostica.cid_10)) {
+      this.errors = [{ message: "Informe o nome ou código CID 10" }];
+      this.loading = false;
+      return;
     }
 
-    if (!Util.isEmpty(this.hipoteseDiagnostica.nome))
-    {
-      if(this.hipoteseDiagnostica.nome.length<3){
-       this.errors = [{message:"Informe o nome, ao menos 3 caracteres"}];
-       this.loading = false;
-       return;
+    if (!Util.isEmpty(this.hipoteseDiagnostica.nome)) {
+      if (this.hipoteseDiagnostica.nome.length < 3) {
+        this.errors = [{ message: "Informe o nome, ao menos 3 caracteres" }];
+        this.loading = false;
+        return;
       }
     }
 
-    if (!Util.isEmpty(this.hipoteseDiagnostica.cid_10))
-    {
-      if (this.hipoteseDiagnostica.cid_10.length < 2)
-      { 
-        this.errors = [{message:"Informe o código CID 10, ao menos 2 caracteres"}];
+    if (!Util.isEmpty(this.hipoteseDiagnostica.cid_10)) {
+      if (this.hipoteseDiagnostica.cid_10.length < 2) {
+        this.errors = [{ message: "Informe o código CID 10, ao menos 2 caracteres" }];
         this.loading = false;
         return;
       }
@@ -743,7 +839,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.message = "";
     this.errors = [];
     this.loading = true;
-    
+
     this.pacienteHipotese.idHipoteseDiagnostica = this.hipoteseDiagnostica.id;
     this.pacienteHipotese.idPaciente = this.object.idPaciente;
     this.pacienteHipotese.idAtendimento = this.object.id;
@@ -841,13 +937,6 @@ export class AtendimentoFormComponent implements OnInit {
     }
   }
 
-  back() {
-    if (this.modalRef)
-      this.modalRef.close();
-
-    this.router.navigate([this.url]);
-  }
-
   abreHistorico(id: Number) {
     if (!id)
       return;
@@ -931,14 +1020,14 @@ export class AtendimentoFormComponent implements OnInit {
   setPagePagined(offset: number, limit: Number) {
     this.paging.offset = offset !== undefined ? offset : 0;
     this.paging.limit = limit ? limit : this.paging.limit;
-    
+
     this.buscaPaciente(this.paging.offset, this.paging.limit);
   }
 
   setPagePaginedHipotese(offset: number, limit: Number) {
     this.paging.offset = offset !== undefined ? offset : 0;
     this.paging.limit = limit ? limit : this.paging.limit;
-    
+
     this.buscaHipoteseDiagnostica(this.paging.offset, this.paging.limit);
   }
 
@@ -976,27 +1065,23 @@ export class AtendimentoFormComponent implements OnInit {
     this.allItemsPesquisaProcedimento = [];
     this.errors = [];
 
-    if (Util.isEmpty(this.procedimento.co_procedimento) && Util.isEmpty(this.procedimento.no_procedimento))
-    {
-       this.errors = [{message:"Informe o código ou nome do procedimento"}];
-       this.loading = false;
-       return;
+    if (Util.isEmpty(this.procedimento.co_procedimento) && Util.isEmpty(this.procedimento.no_procedimento)) {
+      this.errors = [{ message: "Informe o código ou nome do procedimento" }];
+      this.loading = false;
+      return;
     }
 
-    if (!Util.isEmpty(this.procedimento.no_procedimento))
-    {
-      if(this.procedimento.no_procedimento.length<3){
-       this.errors = [{message:"Informe o nome, ao menos 3 caracteres"}];
-       this.loading = false;
-       return;
+    if (!Util.isEmpty(this.procedimento.no_procedimento)) {
+      if (this.procedimento.no_procedimento.length < 3) {
+        this.errors = [{ message: "Informe o nome, ao menos 3 caracteres" }];
+        this.loading = false;
+        return;
       }
     }
 
-    if (!Util.isEmpty(this.procedimento.co_procedimento))
-    {
-      if (this.procedimento.co_procedimento.length < 2)
-      { 
-        this.errors = [{message:"Informe o código, ao menos 2 caracteres"}];
+    if (!Util.isEmpty(this.procedimento.co_procedimento)) {
+      if (this.procedimento.co_procedimento.length < 2) {
+        this.errors = [{ message: "Informe o código, ao menos 2 caracteres" }];
         this.loading = false;
         return;
       }
@@ -1009,13 +1094,13 @@ export class AtendimentoFormComponent implements OnInit {
     this.loading = true;
 
     this.paging.offset = offset ? offset : 0;
-    this.paging.limit = limit ? limit : 10;    
+    this.paging.limit = limit ? limit : 10;
 
     var params = "?codigo=" + this.procedimento.co_procedimento + "&nome=" + this.procedimento.no_procedimento;
 
     if (this.paging.offset != null && this.paging.limit != null) {
       params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
-    }    
+    }
 
     this.service.list('procedimento' + params).subscribe(result => {
       this.warning = "";
@@ -1061,15 +1146,37 @@ export class AtendimentoFormComponent implements OnInit {
 
     this.setPagePaginedProcedimento(this.pager.offset, this.paging.limit);
   }
-  
+
   setPagePaginedProcedimento(offset: number, limit: Number) {
     this.paging.offset = offset !== undefined ? offset : 0;
     this.paging.limit = limit ? limit : this.paging.limit;
-    
+
     this.buscaProcedimento(this.paging.offset, this.paging.limit);
   }
 
   disableProcedimentoButton() {
     return Util.isEmpty(this.procedimento.id);
+  }
+
+  translate(term, obj) {
+    if (typeof (obj) == 'object') {
+      return obj[term];
+    }
+    else {
+      return Translation.t(term);
+    }
+  }
+
+  viewer(id: number, content: any) {
+    if (!id) return;
+
+    this.exameId = id;
+
+    this.modalFormularioRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      windowClass: 'modal-gg'
+    });
   }
 }

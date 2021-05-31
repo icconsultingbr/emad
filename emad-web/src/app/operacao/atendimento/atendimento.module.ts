@@ -21,6 +21,7 @@ import { AtendimentoSalaEsperaFormComponent } from "./sala-espera/atendimento-sa
 import { AtendimentoSalaEsperaComponent } from "./sala-espera/atendimento-sala-espera.component";
 import { AppSelectModule } from "../../_core/_components/app-select/app-select.module";
 import { AppSelectModalModule } from "../../_core/_components/app-select-modal/app-select-modal.module";
+import { ExameFormularioModule } from "../exame-formulario/exame-formulario.module";
 
 @NgModule({
     imports: [
@@ -40,7 +41,8 @@ import { AppSelectModalModule } from "../../_core/_components/app-select-modal/a
         SharedServiceModule,
         TabsModule.forRoot(),
         AppSelectModule,
-        AppSelectModalModule
+        AppSelectModalModule,
+        ExameFormularioModule
     ],
     declarations: [
         AtendimentoComponent,
