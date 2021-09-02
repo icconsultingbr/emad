@@ -204,6 +204,11 @@ export class AtendimentoService extends GenericsService {
         return this.http.get("atendimento-encaminhamento/atendimento/" + id);
     }
 
+    findEncaminhamentoByPaciente(id: any): Observable<any> {
+        return this.http.get("atendimento-encaminhamento/usuario/" + id);
+    }
+
+
     findMedicamentoByAtendimento(id: any): Observable<any> {
         return this.http.get("atendimento-medicamento/atendimento/" + id);
     }

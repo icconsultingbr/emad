@@ -11,7 +11,7 @@
 <div class="row container mb-3">
   <span class="input-group-btn ml-2">
     <a class="btn btn-primary" style="color: #fff !important;" (click)="imprimirPdfProntuario()">
-        <i class="far fa-file-pdf"></i> Gerar PDF prontuário
+      <i class="far fa-file-pdf"></i> Gerar PDF prontuário
     </a>
   </span>
 </div>
@@ -838,8 +838,7 @@
                       <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
                       <td class="text-secondary">{{item.estabelecimentoNome}}</td>
                       <td class="text-secondary">
-                        <button type="button" class="btn btn-primary float-left"
-                          (click)="abreReciboExame(item.id)"
+                        <button type="button" class="btn btn-primary float-left" (click)="abreReciboExame(item.id)"
                           title="Visualizar relatório">
                           <i class="fa fa-file-medical-alt"></i>
                         </button>
@@ -961,6 +960,39 @@
           </div>
 
         </div>
+      </tab>
+      <tab (select)="tabSelected(11)">
+        <ng-template tabHeading>
+          <i class="fa fa-share" title="Principal"></i> Encaminhamentos
+        </ng-template>
+        <div class="card mb-4">
+          <div class="card-header text-left">
+            Encaminhamento
+          </div>
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-12 table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Especialidade</th>
+                      <th>Motivo</th>
+                      <th>Data do Encaminhamento</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="allItemsEncaminhamentoHistoricoPaciente">
+                    <tr class="text-left" *ngFor="let item of allItemsEncaminhamentoHistoricoPaciente">
+                      <td class="text-secondary">{{item.nome}}</td>
+                      <td class="text-secondary">{{item.motivo}}</td>
+                      <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </tab>
     </tabset>
   </div>
@@ -1125,8 +1157,9 @@
                   Glicemia
                 </label>
                 <div class="col-xl-8">
-                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.glicemia" formControlName="glicemia" [readonly]="disableFields()" 
-                  currencyMask [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }"/>
+                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.glicemia"
+                    formControlName="glicemia" [readonly]="disableFields()" currencyMask
+                    [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }" />
                 </div>
               </div>
             </div>
@@ -1404,12 +1437,12 @@
   </div>
   <div class="modal-body">
     <form [formGroup]="form" (submit)="sendForm($event,null)">
-      <div class="card mb-4">  
+      <div class="card mb-4">
         <div class="card mb-12">
           <div class="card-header text-left">
-            Exame    
+            Exame
           </div>
-          <div class="card-body text-left">        
+          <div class="card-body text-left">
             <div class="row">
               <div class="col-12">
                 <div class="form-group row">
@@ -1417,24 +1450,24 @@
                     Tipo de exame <span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="objectExame.idTipoExame" 
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="objectExame.idTipoExame"
                       formControlName="idTipoExame">
                       <option [value]="null">Selecione...</option>
                       <option *ngFor="let item of domains[0]?.idTipoExame" [value]="item.id">{{item.nome}}</option>
                     </select>
                   </div>
-                </div>              
+                </div>
               </div>
             </div>
           </div>
-        </div>  
-      </div>     
+        </div>
+      </div>
       <div class="card mb-4">
         <div class="card mb-12">
           <div class="card-header text-left">
             Produtos/Método
           </div>
-          <div class="card-body text-left">                    
+          <div class="card-body text-left">
             <div class="row">
               <div class="col-12 table-responsive">
                 <div class="form-group row">
@@ -1447,25 +1480,25 @@
                       </tr>
                     </thead>
                     <tbody *ngIf="this.objectExame.itensExame?.length">
-                        <tr class="text-left" *ngFor="let item of this.objectExame.itensExame">
-                          <td class="text-secondary">{{item.nomeProdutoExame}}</td>
-                          <td class="text-secondary">{{item.nomeMetodoExame}}</td>
-                          <td class="text-secondary">{{item.nomeResultado}}</td>                    
-                        </tr>
-                      </tbody>
+                      <tr class="text-left" *ngFor="let item of this.objectExame.itensExame">
+                        <td class="text-secondary">{{item.nomeProdutoExame}}</td>
+                        <td class="text-secondary">{{item.nomeMetodoExame}}</td>
+                        <td class="text-secondary">{{item.nomeResultado}}</td>
+                      </tr>
+                    </tbody>
                   </table>
-                </div>            
+                </div>
               </div>
-            </div>       
+            </div>
           </div>
-        </div>    
-      </div>    
-      <div class="card mb-4">  
+        </div>
+      </div>
+      <div class="card mb-4">
         <div class="card mb-12">
           <div class="card-header text-left">
-            Interpretação do resultado    
+            Interpretação do resultado
           </div>
-          <div class="card-body text-left">        
+          <div class="card-body text-left">
             <div class="row">
               <div class="col-12">
                 <div class="form-group row">
@@ -1473,18 +1506,18 @@
                     Resultado <span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="objectExame.resultadoFinal" 
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="objectExame.resultadoFinal"
                       formControlName="resultadoFinal">
                       <option [value]="null">Selecione...</option>
                       <option *ngFor="let item of domains[0]?.resultadoFinal" [value]="item.id">{{item.nome}}</option>
                     </select>
                   </div>
-                </div>              
+                </div>
               </div>
             </div>
           </div>
-        </div>  
-      </div> 
+        </div>
+      </div>
     </form>
   </div>
 </ng-template>
