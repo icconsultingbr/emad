@@ -4,20 +4,20 @@ function ProfissionalDAO(connection, connectionDim) {
     this._table = "tb_profissional";
 }
 
-ProfissionalDAO.prototype.listaPorEstabelecimento = function(estabelecimento, callback) {
+ProfissionalDAO.prototype.listaPorEstabelecimento = function (estabelecimento, callback) {
     this._connection.query(`
         SELECT * 
         FROM ${this._table} as t 
         INNER JOIN tb_estabelecimento_usuario as ep ON (t.idUsuario = ep.idUsuario) 
-        WHERE ep.idEstabelecimento = ?`, 
-    estabelecimento.id, 
-    callback);
+        WHERE ep.idEstabelecimento = ?`,
+        estabelecimento.id,
+        callback);
 }
 
-ProfissionalDAO.prototype.lista = function(addFilter, callback) {
+ProfissionalDAO.prototype.lista = function (addFilter, callback) {
     let where = "";
 
-    if (addFilter != null) {       
+    if (addFilter != null) {
         if (addFilter.nome) {
             where += ` AND prof.nome = ${addFilter.nome}`;
         }
@@ -30,7 +30,7 @@ ProfissionalDAO.prototype.lista = function(addFilter, callback) {
             where += ` AND prof.idEspecialidade = ${addFilter.idEspecialidade}`;
         }
 
-        if(addFilter.idEstabelecimento) {
+        if (addFilter.idEstabelecimento) {
             where += ` AND ep.idEstabelecimento = ${addFilter.idEstabelecimento}`;
         }
     }
@@ -72,7 +72,8 @@ ProfissionalDAO.prototype.lista = function(addFilter, callback) {
             prof.longitude,
             prof.idUsuario,
             usu.nome nomeUsuario,
-            prof.profissionalCNS profissionalCNS
+            prof.profissionalCNS profissionalCNS,
+            prof.idConselho
         FROM tb_profissional prof 
         INNER JOIN tb_estabelecimento_usuario ep ON (ep.idUsuario = prof.idUsuario)
         INNER JOIN tb_usuario usu ON (prof.idUsuario = usu.id)
@@ -91,7 +92,6 @@ ProfissionalDAO.prototype.lista = function(addFilter, callback) {
             prof.nomeMae,
             prof.nomePai,
             prof.dataNascimento,
-            
             prof.sexo,
             nac.nome,
             nat.nome,
@@ -121,10 +121,10 @@ ProfissionalDAO.prototype.lista = function(addFilter, callback) {
             prof.idUsuario,
             usu.nome,
             prof.profissionalCNS `,
-    callback);
+        callback);
 }
 
-ProfissionalDAO.prototype.buscaPorId = function (id,callback) {
+ProfissionalDAO.prototype.buscaPorId = function (id, callback) {
     this._connection.query(`SELECT 
         pro.id,
         pro.cpf,
@@ -161,30 +161,31 @@ ProfissionalDAO.prototype.buscaPorId = function (id,callback) {
         pro.longitude,
         pro.idUsuario,
         usu.idTipoUsuario,
-        pro.profissionalCNS
+        pro.profissionalCNS,
+        pro.idConselho
      FROM ${this._table} as pro
      LEFT JOIN tb_usuario as usu ON (usu.id = pro.idUsuario) 
-     WHERE pro.id = ?`,id,callback);
+     WHERE pro.id = ?`, id, callback);
 }
 
 ProfissionalDAO.prototype.buscaDominio = function (callback) {
     this._connection.query(`SELECT id, nome FROM ${this._table}`, callback);
 }
 
-ProfissionalDAO.prototype.deletaPorId = function (id,callback) {
+ProfissionalDAO.prototype.deletaPorId = function (id, callback) {
     const conn = this._connection;
     const connDim = this._connectionDim;
     const table = this._table;
 
     let novoprod = {};
 
-    conn.beginTransaction(function(err) {
+    conn.beginTransaction(function (err) {
         if (err) { throw err; }
-        conn.query(`UPDATE ${table} SET situacao = 0, idUsuario = null WHERE id = ?`, id, 
-        
-        function (error, results) {
-            if (error) {return conn.rollback(function() {throw error;});}   
-            
+        conn.query(`UPDATE ${table} SET situacao = 0, idUsuario = null WHERE id = ?`, id,
+
+            function (error, results) {
+                if (error) { return conn.rollback(function () { throw error; }); }
+
                 novoprod = results;
                 console.log('Update no e-atend do ID ' + id);
                 conn.query(`SELECT 
@@ -192,42 +193,42 @@ ProfissionalDAO.prototype.deletaPorId = function (id,callback) {
                         6 usua_alt, 
                         now() as data_alt, 
                         idProfissionalCorrespondenteDim
-                    from tb_profissional tp where tp.id = ?`, id, 
-                    
-            function (error, dadosProfissionais) {
-                if (error) {return conn.rollback(function() {console.log('Erro' + error);throw error;});}                
+                    from tb_profissional tp where tp.id = ?`, id,
 
-                    console.log('Select ' + JSON.stringify(dadosProfissionais));
-                    connDim.query(`UPDATE profissional SET status_2=?, usua_alt=?,
+                    function (error, dadosProfissionais) {
+                        if (error) { return conn.rollback(function () { console.log('Erro' + error); throw error; }); }
+
+                        console.log('Select ' + JSON.stringify(dadosProfissionais));
+                        connDim.query(`UPDATE profissional SET status_2=?, usua_alt=?,
                     data_alt=? WHERE id_profissional=?`
-                        , [dadosProfissionais[0].status_2,dadosProfissionais[0].usua_alt,
-                        dadosProfissionais[0].data_alt, dadosProfissionais[0].idProfissionalCorrespondenteDim], 
-                        
-                function (error, novoProfissional) {                    
-                    if (error) {return conn.rollback(function() {console.log('Erro no update ' + error);throw error;});}
+                            , [dadosProfissionais[0].status_2, dadosProfissionais[0].usua_alt,
+                            dadosProfissionais[0].data_alt, dadosProfissionais[0].idProfissionalCorrespondenteDim],
 
-                        console.log('Atualizou no dim o ID ' + dadosProfissionais[0].idProfissionalCorrespondenteDim);
-                        console.log('Ultimo ' + JSON.stringify(novoProfissional));
+                            function (error, novoProfissional) {
+                                if (error) { return conn.rollback(function () { console.log('Erro no update ' + error); throw error; }); }
 
-                        conn.commit(
-                        
-                    function(err) 
-                        {if (err) {return conn.rollback(function() {throw err;});}
-                        
-                        console.log('Sucesso!');              
-                        return callback(null,novoprod);             
+                                console.log('Atualizou no dim o ID ' + dadosProfissionais[0].idProfissionalCorrespondenteDim);
+                                console.log('Ultimo ' + JSON.stringify(novoProfissional));
+
+                                conn.commit(
+
+                                    function (err) {
+                                        if (err) { return conn.rollback(function () { throw err; }); }
+
+                                        console.log('Sucesso!');
+                                        return callback(null, novoprod);
+                                    });
+                            });
                     });
-                });
             });
-        });    
-    }); 
+    });
 }
 
-ProfissionalDAO.prototype.dominio = function(callback) {
-    this._connection.query("select id, nome FROM "+this._table+" WHERE situacao = 1 ORDER BY nome ASC",callback);
+ProfissionalDAO.prototype.dominio = function (callback) {
+    this._connection.query("select id, nome FROM " + this._table + " WHERE situacao = 1 ORDER BY nome ASC", callback);
 }
 
-ProfissionalDAO.prototype.buscarPorEstabelecimento = function(id, callback) {
+ProfissionalDAO.prototype.buscarPorEstabelecimento = function (id, callback) {
     this._connection.query(`
         SELECT t.id, t.nome 
         FROM ${this._table} as t 
@@ -235,7 +236,7 @@ ProfissionalDAO.prototype.buscarPorEstabelecimento = function(id, callback) {
         WHERE ep.idEstabelecimento = ? AND t.situacao = 1 `, id, callback);
 }
 
-ProfissionalDAO.prototype.buscaPorEquipe = function(id, callback) {
+ProfissionalDAO.prototype.buscaPorEquipe = function (id, callback) {
     this._connection.query(`
         SELECT p.id, p.nome 
         FROM ${this._table} as p 
@@ -249,46 +250,46 @@ ProfissionalDAO.prototype.atualizaEstabelecimentosPorProfissionalDim = function 
 
     let novoprod = {};
 
-    connDim.beginTransaction(function(err) {
-    if (err) { throw err; }        
-            conn.query(`SELECT 
+    connDim.beginTransaction(function (err) {
+        if (err) { throw err; }
+        conn.query(`SELECT 
                         idProfissionalCorrespondenteDim
-                        from tb_profissional tp where tp.idUsuario = ?`, idUsuario, 
-                    
-        function (error, dadosProfissionais) {
-            if (error) {return connDim.rollback(function() {console.log('Erro' + error);throw error;});}                
+                        from tb_profissional tp where tp.idUsuario = ?`, idUsuario,
+
+            function (error, dadosProfissionais) {
+                if (error) { return connDim.rollback(function () { console.log('Erro' + error); throw error; }); }
 
                 novoprod = dadosProfissionais;
                 console.log('Select ' + JSON.stringify(dadosProfissionais));
 
                 connDim.query(`DELETE FROM unidade_has_profissional WHERE profissional_id_profissional=?`
-                , [dadosProfissionais[0].idProfissionalCorrespondenteDim], 
-                        
-            function (error, resultDelete) {                    
-                if (error) {return connDim.rollback(function() {console.log('Erro no delete ' + error);throw error;});}
+                    , [dadosProfissionais[0].idProfissionalCorrespondenteDim],
 
-                    console.log('Delete no dim o ID profissional ' + dadosProfissionais[0].idProfissionalCorrespondenteDim);
-                    console.log(JSON.stringify(resultDelete));
+                    function (error, resultDelete) {
+                        if (error) { return connDim.rollback(function () { console.log('Erro no delete ' + error); throw error; }); }
 
-                    connDim.query("INSERT INTO unidade_has_profissional (unidade_id_unidade, profissional_id_profissional, date_incl, usua_incl) VALUES " + estabelecimentos
-                    ,                            
-                function (error, resultInsert) {                    
-                    if (error) {return connDim.rollback(function() {console.log('Erro no INSERT ' + error);throw error;});}
+                        console.log('Delete no dim o ID profissional ' + dadosProfissionais[0].idProfissionalCorrespondenteDim);
+                        console.log(JSON.stringify(resultDelete));
 
-                    console.log(JSON.stringify(resultInsert));
+                        connDim.query("INSERT INTO unidade_has_profissional (unidade_id_unidade, profissional_id_profissional, date_incl, usua_incl) VALUES " + estabelecimentos
+                            ,
+                            function (error, resultInsert) {
+                                if (error) { return connDim.rollback(function () { console.log('Erro no INSERT ' + error); throw error; }); }
 
-                    connDim.commit(
-                        
-                    function(err) 
-                        {if (err) {return connDim.rollback(function() {throw err;});}
-                        
-                        console.log('Sucesso!');              
-                        return callback(null,novoprod);             
+                                console.log(JSON.stringify(resultInsert));
+
+                                connDim.commit(
+
+                                    function (err) {
+                                        if (err) { return connDim.rollback(function () { throw err; }); }
+
+                                        console.log('Sucesso!');
+                                        return callback(null, novoprod);
+                                    });
+                            });
                     });
-                });
             });
-        });  
-    });  
+    });
 }
 
 ProfissionalDAO.prototype.buscaEstabelecimentoPorProfissionalParaDim = function (idUsuario, callback) {
@@ -312,14 +313,14 @@ ProfissionalDAO.prototype.buscaProfissionalPorUsuario = function (idUsuario, cal
         WHERE p.idUsuario = ? AND p.situacao = 1`, idUsuario, callback);
 }
 
-ProfissionalDAO.prototype.buscaProfissionalPorUsuarioSync = async function (idUsuario) {    
-    let profissional =  await this._connection.query(`SELECT * FROM tb_profissional as p WHERE p.idUsuario = ? AND p.situacao = 1`, [idUsuario]);
+ProfissionalDAO.prototype.buscaProfissionalPorUsuarioSync = async function (idUsuario) {
+    let profissional = await this._connection.query(`SELECT * FROM tb_profissional as p WHERE p.idUsuario = ? AND p.situacao = 1`, [idUsuario]);
 
     return profissional[0];
 }
 
 ProfissionalDAO.prototype.buscaPorIdSync = async function (id) {
-    let profissional =  await this._connection.query(`SELECT 
+    let profissional = await this._connection.query(`SELECT 
         pro.id,
         pro.cpf,
         pro.nome,
@@ -355,49 +356,50 @@ ProfissionalDAO.prototype.buscaPorIdSync = async function (id) {
         pro.longitude,
         pro.idUsuario,
         usu.idTipoUsuario,
-        pro.profissionalCNS
+        pro.profissionalCNS,
+        pro.idConselho
      FROM ${this._table} as pro
      LEFT JOIN tb_usuario as usu ON (usu.id = pro.idUsuario) 
-     WHERE pro.id = ?`,id);
+     WHERE pro.id = ?`, id);
 
-     return profissional[0];
+    return profissional[0];
 }
 
 ProfissionalDAO.prototype.salvaSync = async function (profissional) {
-    let profissionalResult =  await this._connection.query(`INSERT INTO tb_profissional SET geom = POINT(?, ?), ?`, [profissional.longitude, profissional.latitude, profissional]);
+    let profissionalResult = await this._connection.query(`INSERT INTO tb_profissional SET geom = POINT(?, ?), ?`, [profissional.longitude, profissional.latitude, profissional]);
     return profissionalResult;
 }
 
 ProfissionalDAO.prototype.atualizaSync = async function (profissional, id) {
-    let profissionalResult =  await this._connection.query(`UPDATE tb_profissional SET geom = POINT(?, ?), ? WHERE id= ?`, [profissional.longitude, profissional.latitude, profissional, id]);
+    let profissionalResult = await this._connection.query(`UPDATE tb_profissional SET geom = POINT(?, ?), ? WHERE id= ?`, [profissional.longitude, profissional.latitude, profissional, id]);
     return profissionalResult;
 }
 
-ProfissionalDAO.prototype.carregaProfissionalPorMedicamento = async function(addFilter, material){
+ProfissionalDAO.prototype.carregaProfissionalPorMedicamento = async function (addFilter, material) {
     let where = "";
     let orderBy = "  ";
 
-    if(addFilter != null){   
+    if (addFilter != null) {
         if (addFilter.idEstabelecimento && addFilter.idEstabelecimento != "undefined" && addFilter.idEstabelecimento != "null") {
-            where+=" AND rec.idEstabelecimento = " + addFilter.idEstabelecimento + "";
+            where += " AND rec.idEstabelecimento = " + addFilter.idEstabelecimento + "";
         }
 
         if (addFilter.idMaterial && addFilter.idMaterial != "undefined") {
-            where+=" AND item.idMaterial = " + addFilter.idMaterial + "";
-        }   
-        
-        if (addFilter.dataInicial && addFilter.dataFinal) {           
-            where+=" AND rec.dataEmissao >= '" + addFilter.dataInicial + " 00:00:00' AND rec.dataEmissao <= '" + addFilter.dataFinal + " 23:59:59'";
+            where += " AND item.idMaterial = " + addFilter.idMaterial + "";
         }
 
-        if(addFilter.ordenadoPor){
+        if (addFilter.dataInicial && addFilter.dataFinal) {
+            where += " AND rec.dataEmissao >= '" + addFilter.dataInicial + " 00:00:00' AND rec.dataEmissao <= '" + addFilter.dataFinal + " 23:59:59'";
+        }
+
+        if (addFilter.ordenadoPor) {
             orderBy += " order by " + addFilter.ordenadoPor + " asc";
         }
     }
     let medicamento;
 
-    if(material){
-        medicamento =  await this._connection.query(`select distinct mat.id idMaterial,
+    if (material) {
+        medicamento = await this._connection.query(`select distinct mat.id idMaterial,
                                                             mat.codigo as codigoMaterial,
                                                             mat.descricao as nomeMaterial,
                                                         sum(item.qtdPrescrita) as totalQtdPrescrita,
@@ -414,8 +416,8 @@ ProfissionalDAO.prototype.carregaProfissionalPorMedicamento = async function(add
                                                         ${where}                                                                                                                                                                 
                                                         group by mat.id
                                                         order by mat.descricao desc`);
-    }else{
-        medicamento =  await this._connection.query(`select prof.nome nomeProfissional,
+    } else {
+        medicamento = await this._connection.query(`select prof.nome nomeProfissional,
                                                         prof.crm inscricaoProfissional,
                                                         espec.nome nomeEspecialidade, 
                                                         sum(item.qtdPrescrita) as qtdPrescrita,
@@ -436,12 +438,12 @@ ProfissionalDAO.prototype.carregaProfissionalPorMedicamento = async function(add
                                                 group by prof.nome, prof.crm, espec.nome, unid.nomeFantasia                                                 
                                                 ${orderBy} `);
     }
-    
-    
+
+
     return medicamento;
 }
 
-ProfissionalDAO.prototype.buscarProfissionalPorEstabelecimentoEsus = async function(id) {
+ProfissionalDAO.prototype.buscarProfissionalPorEstabelecimentoEsus = async function (id) {
     return await this._connection.query(`
         SELECT tp.id, tp.profissionalCNS, te.codigoCBO 
         FROM ${this._table} tp 
@@ -450,14 +452,14 @@ ProfissionalDAO.prototype.buscarProfissionalPorEstabelecimentoEsus = async funct
         WHERE ep.idEstabelecimento = ? AND tp.situacao = 1`, id);
 }
 
-ProfissionalDAO.prototype.buscaProfissionalSusPorUsuarioSync = async function (idUsuario) {    
-    let profissional =  await this._connection.query(`SELECT *, te.codigoCBO FROM tb_profissional as p 
+ProfissionalDAO.prototype.buscaProfissionalSusPorUsuarioSync = async function (idUsuario) {
+    let profissional = await this._connection.query(`SELECT *, te.codigoCBO FROM tb_profissional as p 
     INNER JOIN tb_especialidade te ON (p.idEspecialidade = te.id)
     WHERE p.idUsuario = ? AND p.situacao = 1`, [idUsuario]);
 
     return profissional[0];
 }
 
-module.exports = function(){
+module.exports = function () {
     return ProfissionalDAO;
 };
