@@ -616,13 +616,23 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
   imprimirPdfProntuario() {
 
+    let dataInicialConvertida
+    let dataFinalConvertida
+
     if (this.dataFinal < this.dataInicial) {
       this.warning = "Atenção: A data final e menor que a data Inicial, efetue a correção."
       return
     }
 
-    const dataInicialConvertida = this.dataInicial != undefined ? this.dataInicial.toISOString() : undefined
-    const dataFinalConvertida = this.dataFinal != undefined ? this.dataFinal.toISOString() : undefined
+    if (this.dataInicial) {
+      this.dataInicial.setHours(0, 0, 0, 0)
+      dataInicialConvertida = this.dataInicial.toISOString()
+    }
+
+    if (this.dataFinal) {
+      this.dataFinal.setHours(23, 59, 0, 0)
+      dataFinalConvertida = this.dataFinal.toISOString()
+    }
 
     this.prontuarioPacienteImpressao.imprimir(this.id, dataInicialConvertida, dataFinalConvertida);
   }

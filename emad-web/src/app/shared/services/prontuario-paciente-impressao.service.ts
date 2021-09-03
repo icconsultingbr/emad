@@ -137,7 +137,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
     }
 
     imprimir(idPaciente: number, dataInicial: string, dataFinal: string, target: string = '_blank') {
-
+    
         this.pacienteService.obterProntuarioPacienteRelatorio(idPaciente)
             .subscribe((result) => {
                 let sinaisVitais = '';
@@ -150,7 +150,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                 let procedimentos = '';
                 let encaminhamentos = '';
 
-                const sinaisVitaisFilter = this.filter(result.sinaisVitais, dataInicial, dataFinal, "label")
+                const sinaisVitaisFilter = this.filter(result.sinaisVitais, dataInicial, dataFinal, "dataCriacao")
                 const atendimentosFilter = this.filter(result.atendimentos, dataInicial, dataFinal, "dataCriacao")
                 const receitasFilter = this.filter(result.receitas, dataInicial, dataFinal, "dataEmissao")
                 const fichasAtendimentoFilter = this.filter(result.vacinas, dataInicial, dataFinal, "dataCriacao")
@@ -457,30 +457,6 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                     });
 
                     encaminhamentos += (encaminhamentosFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
-                }
-
-                if (result.encaminhamentos) {
-                    encaminhamentos += `<div class="col s12">
-                                            <table class="table table-striped">
-                                                <thead>
-                                                <tr>
-                                                <th style="width:35%">Especialidade</th>
-                                                <th style="width:35%">Motivo</th>
-                                                <th style="width:30%">Data do Encaminhamento</th>
-                                                </tr>
-                                            </thead>`
-
-                    encaminhamentos += (result.encaminhamentos.length > 0 ? `<tbody>` : ``);
-
-                    result.encaminhamentos.forEach(encaminhamento => {
-                        encaminhamentos += `<tr class="text-left">
-                                                <td class="text-secondary">${encaminhamento.nome}</td>
-                                                <td class="text-secondary">${encaminhamento.motivo}</td>
-                                                <td class="text-secondary">${encaminhamento.dataCriacao ? _moment(encaminhamento.dataCriacao).format('DD/MM/YYYY HH:mm') : ''}</td>
-                                            </tr>`
-                    });
-
-                    encaminhamentos += (result.encaminhamentos.length > 0 ? `</tbody></table></div>` : `</table></div>`);
                 }
 
                 let conteudo = `
