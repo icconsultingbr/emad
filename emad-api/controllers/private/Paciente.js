@@ -334,8 +334,6 @@ module.exports = function (app) {
         }
     });
 
-
-
     app.delete('/paciente/:id', function (req, res) {
         var util = new app.util.Util();
         let usuario = req.usuario;
@@ -402,7 +400,6 @@ module.exports = function (app) {
         }
     });
 
-
     app.get('/paciente/prontuario/report/:idPaciente', async function (req, res) {
         let idPaciente = req.params.idPaciente;
 
@@ -418,6 +415,7 @@ module.exports = function (app) {
         const ufRepository = new app.dao.UfDAO(connection);
         const exameRepository = new app.dao.ExameDAO(connection);
         const atendimentoProcedimentoRepository = new app.dao.AtendimentoProcedimentoDAO(connection);
+        const atendimentoEncaminhamentoRepository = new app.dao.AtendimentoEncaminhamentoDAO(connection);
 
         try {
             let paciente = await pacienteRepository.buscaPorIdSync(idPaciente);
@@ -426,30 +424,43 @@ module.exports = function (app) {
             const sinaisVitais = await atendimentoRepository.buscaSinaisVitaisPorPacienteId(idPaciente, '');
             const nacionalidade = await nacionalidadeRepository.buscaPorIdSync(paciente[0].idNacionalidade);
             const naturalidade = await ufRepository.buscaPorIdSync(paciente[0].idNaturalidade);
-            
-            if(nacionalidade) {
+
+
+            if (nacionalidade) {
                 paciente[0].nacionalidadeNome = nacionalidade[0].nome;
             }
 
-            if(naturalidade) {
+            if (naturalidade) {
                 paciente[0].naturalidadeNome = naturalidade[0].nome;
             }
 
-            if(paciente[0].escolaridade) {
+            if (paciente[0].escolaridade) {
                 paciente[0].escolaridadeNome = escolaridade.find(x => x.id == paciente[0].escolaridade).nome;
             }
 
             let atendimentos = await atendimentoRepository.buscaPorPacienteIdProntuario(idPaciente, 1);
             if (atendimentos) {
-                for (let atendimento of atendimentos) {               
+                for (let atendimento of atendimentos) {
                     let historicos = await atendimentoRepository.buscaHistoricoPorAtendimento(atendimento.id);
                     atendimento.historicos = historicos;
                 }
             }
 
+            let encaminhamentos = await atendimentoEncaminhamentoRepository.buscaEncaminhamentoPorPacienteId(idPaciente, function (exception, result) {
+                if (exception) {
+                    d.reject(exception);
+                    console.log(exception);
+                    errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
+                    res.status(500).send(errors);
+                    return;
+                } else {
+                    d.resolve(result);
+                }
+            });
+
             let receitas = await receitaRepository.buscaPorPacienteIdProntuario(idPaciente);
             if (receitas) {
-                for (let receita of receitas) {               
+                for (let receita of receitas) {
                     let itens = await itemReceitaRepository.buscarPorReceita(receita.id);
                     receita.itensReceita = itens;
                 }
@@ -462,7 +473,8 @@ module.exports = function (app) {
             const estabelecimento = await estabelecimentoRepository.carregaPorId(paciente[0].idEstabelecimentoCadastro);
             const procedimentos = await atendimentoProcedimentoRepository.listarPorPaciente(idPaciente);
 
-            let response = { paciente, estabelecimento, sinaisVitais, atendimentos, receitas, fichasAtendimento, exames, hipoteseDiagnostica, vacinas, procedimentos };
+
+            let response = { paciente, estabelecimento, sinaisVitais, atendimentos, receitas, fichasAtendimento, exames, hipoteseDiagnostica, vacinas, procedimentos, encaminhamentos };
 
             res.status(200).json(response);
 
@@ -490,7 +502,7 @@ module.exports = function (app) {
             paciente.dataAlteracao = new Date;
             paciente.idUsuarioAlteracao = usuario.id;
 
-            if(!paciente) {
+            if (!paciente) {
                 errors = util.customError(errors, "header", "Não existe nenhum paciente cadastrado com este ID SAP!", "");
                 res.status(400).send(errors);
                 return;
@@ -562,7 +574,6 @@ module.exports = function (app) {
         return d.promise;
     }
 
-
     function deletaPorId(id, res) {
         var q = require('q');
         var d = q.defer();
@@ -621,6 +632,6 @@ module.exports = function (app) {
         { id: 8, nome: "Escola" },
         { id: 9, nome: "Analfabeto" },
         { id: 10, nome: "Não informado" }
-      ];
+    ];
 
 }
