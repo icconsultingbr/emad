@@ -37,6 +37,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   form: FormGroup;
   loading: Boolean = false;
   message: string = "";
+  warning: string = "";
   errors: any[] = [];
   dropdownList = [];
   selectedItems = [];
@@ -76,6 +77,9 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   nomeProfissional: string;
   nomeTipoHistorico: string;
   mostraHistorico: boolean = false;
+
+  dataInicial: Date;
+  dataFinal: Date;
 
   @ViewChild('addresstext') addresstext: ElementRef;
 
@@ -467,7 +471,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                   data.push(result[item].peso);
                 }
                 this.lineChartDataGlicemia[0].data = data;
-  
+
               }, error => {
                 this.loading = false;
                 this.errors = Util.customHTTPResponse(error);
@@ -615,9 +619,18 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   imprimirPdfProntuario() {
-    this.prontuarioPacienteImpressao.imprimir(this.id);
+
+    if (this.dataFinal < this.dataInicial) {
+      this.warning = "Atenção: A data final e menor que a data Inicial, efetue a correção."
+      return
+    }
+
+    const dataconvertInicial = this.dataInicial != undefined ? this.dataInicial.toISOString() : undefined
+    const dataconvertFinal = this.dataFinal != undefined ? this.dataFinal.toISOString() : undefined
+
+    this.prontuarioPacienteImpressao.imprimir(this.id, dataconvertInicial, dataconvertFinal);
   }
-  
+
   abreReciboExame(exameId: number) {
     this.reciboExameService.imprimir(exameId);
   }

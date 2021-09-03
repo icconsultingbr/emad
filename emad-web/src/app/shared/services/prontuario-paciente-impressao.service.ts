@@ -3,6 +3,7 @@ import { PacienteService } from "../../cadastro/paciente/paciente.service";
 import * as _moment from 'moment';
 import { environment } from "../../../environments/environment";
 import { RelatorioProntuarioPacienteService } from "./prontuario-paciente.service";
+import { data } from "jquery";
 
 @Injectable()
 export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacienteService {
@@ -12,10 +13,12 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
     tipoHistoriaClinica = [
         { id: 1, nome: "Anamnese" },
         { id: 2, nome: "Evolução" },
-      ]
+    ]
 
     constructor(private pacienteService: PacienteService) {
         super();
+
+
 
         this.style = `<style type="text/css">
 
@@ -128,7 +131,13 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
         </script>`
     }
 
-    imprimir(idPaciente: number, target: string = '_blank') {
+    filter(result: any, dataInicial: string, dataFinal: string, nomeData: any) {
+        const resultFilter = dataInicial != undefined && dataFinal != undefined ? result.filter(m => (m[nomeData] >= dataInicial && m[nomeData] <= dataFinal)) : result
+        return resultFilter
+    }
+
+    imprimir(idPaciente: number, dataInicial: string, dataFinal: string, target: string = '_blank') {
+
         this.pacienteService.obterProntuarioPacienteRelatorio(idPaciente)
             .subscribe((result) => {
                 let sinaisVitais = '';
@@ -139,8 +148,20 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                 let hipoteseDiagnostica = '';
                 let vacinas = '';
                 let procedimentos = '';
+                let encaminhamentos = '';
 
-                if (result.sinaisVitais) {
+                const sinaisVitaisFilter = this.filter(result.sinaisVitais, dataInicial, dataFinal, "label")
+                const atendimentosFilter = this.filter(result.atendimentos, dataInicial, dataFinal, "dataCriacao")
+                const receitasFilter = this.filter(result.receitas, dataInicial, dataFinal, "dataEmissao")
+                const fichasAtendimentoFilter = this.filter(result.vacinas, dataInicial, dataFinal, "dataCriacao")
+                const examesFilter = this.filter(result.exames, dataInicial, dataFinal, "dataCriacao")
+                const hipoteseDiagnosticaFilter = this.filter(result.hipoteseDiagnostica, dataInicial, dataFinal, "dataCriacao")
+                const vacinasFilter = this.filter(result.vacinas, dataInicial, dataFinal, "dataUltDisp")
+                const procedimentosFilter = this.filter(result.procedimentos, dataInicial, dataFinal, "dataCriacao")
+                const encaminhamentosFilter = this.filter(result.encaminhamentos, dataInicial, dataFinal, "dataCriacao")
+
+
+                if (sinaisVitaisFilter) {
                     sinaisVitais += `<div class="col s12">
                                             <table class="table table-striped">
                                                 <thead>
@@ -155,9 +176,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 </tr>
                                             </thead>`
 
-                    sinaisVitais += (result.sinaisVitais.length > 0 ? `<tbody>` : ``);
+                    sinaisVitais += (sinaisVitaisFilter.length > 0 ? `<tbody>` : ``);
 
-                    result.sinaisVitais.forEach(sinais => {
+                    sinaisVitaisFilter.forEach(sinais => {
 
                         sinaisVitais += `<tr class="text-left">
                                         <td class="text-secondary">${sinais.pressaoArterial ? sinais.pressaoArterial : ''}</td>
@@ -172,11 +193,11 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
 
                     });
 
-                    sinaisVitais += (result.sinaisVitais.length > 0 ? `</tbody></table></div>` : `</table></div>`);
+                    sinaisVitais += (sinaisVitaisFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
                 }
 
-                if (result.atendimentos) {
-                    result.atendimentos.forEach(atendimento => {
+                if (atendimentosFilter) {
+                    atendimentosFilter.forEach(atendimento => {
                         var tpHistoriaClinica = this.tipoHistoriaClinica.find(x => x.id == atendimento.tipoHistoriaClinica);
                         let atividadesAtendimento = ""
 
@@ -213,9 +234,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                     });
                 }
 
-                if (result.receitas) {
+                if (receitasFilter) {
 
-                    result.receitas.forEach(receita => {
+                    receitasFilter.forEach(receita => {
                         let itensReceita = "";
 
                         itensReceita += `<div class="col s12">
@@ -262,7 +283,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
 
                 }
 
-                if (result.fichasAtendimento) {
+                if (fichasAtendimentoFilter) {
                     fichasAtendimento += `<div class="col s12">
                                             <table class="table table-striped">
                                                 <thead>
@@ -277,9 +298,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 </tr>
                                             </thead>`
 
-                    fichasAtendimento += (result.fichasAtendimento.length > 0 ? `<tbody>` : ``);
+                    fichasAtendimento += (fichasAtendimentoFilter.length > 0 ? `<tbody>` : ``);
 
-                    result.fichasAtendimento.forEach(ficha => {
+                    fichasAtendimentoFilter.forEach(ficha => {
                         fichasAtendimento += `<tr class="text-left">
                                                 <td class="text-secondary">${ficha.id}</td>
                                                 <td class="text-secondary">${ficha.fichaNome}</td>
@@ -291,10 +312,10 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                             </tr>`
                     });
 
-                    fichasAtendimento += (result.fichasAtendimento.length > 0 ? `</tbody></table></div>` : `</table></div>`);
+                    fichasAtendimento += (fichasAtendimentoFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
                 }
 
-                if (result.exames) {
+                if (examesFilter) {
                     exames += `<div class="col s12">
                                 <table class="table table-striped">
                                     <thead>
@@ -309,9 +330,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                     </tr>
                                 </thead>`
 
-                    exames += (result.exames.length > 0 ? `<tbody>` : ``);
+                    exames += (examesFilter.length > 0 ? `<tbody>` : ``);
 
-                    result.exames.forEach(exame => {
+                    examesFilter.forEach(exame => {
                         exames += `<tr class="text-left">
                                         <td class="text-secondary">${exame.id}</td>
                                         <td class="text-secondary">${exame.nomeTipoExame}</td>
@@ -323,10 +344,11 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                     </tr>`
                     });
 
-                    exames += (result.exames.length > 0 ? `</tbody></table></div>` : `</table></div>`);
+                    exames += (examesFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
                 }
 
-                if (result.hipoteseDiagnostica) {
+                if (hipoteseDiagnosticaFilter) {
+
                     hipoteseDiagnostica += `<div class="col s12">
                                             <table class="table table-striped">
                                                 <thead>
@@ -338,9 +360,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 </tr>
                                             </thead>`
 
-                    hipoteseDiagnostica += (result.hipoteseDiagnostica.length > 0 ? `<tbody>` : ``);
+                    hipoteseDiagnostica += (hipoteseDiagnosticaFilter.length > 0 ? `<tbody>` : ``);
 
-                    result.hipoteseDiagnostica.forEach(hipotese => {
+                    hipoteseDiagnosticaFilter.forEach(hipotese => {
                         hipoteseDiagnostica += `<tr class="text-left">
                                                     <td class="text-secondary">${hipotese.codigo}</td>
                                                     <td class="text-secondary">${hipotese.nome}</td>
@@ -349,10 +371,10 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 </tr>`
                     });
 
-                    hipoteseDiagnostica += (result.hipoteseDiagnostica.length > 0 ? `</tbody></table></div>` : `</table></div>`);
+                    hipoteseDiagnostica += (hipoteseDiagnosticaFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
                 }
 
-                if (result.vacinas) {
+                if (vacinasFilter) {
                     vacinas += `<div class="col s12">
                                 <table class="table table-striped">
                                     <thead>
@@ -367,9 +389,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                     </tr>
                                 </thead>`
 
-                    vacinas += (result.vacinas.length > 0 ? `<tbody>` : ``);
+                    vacinas += (vacinasFilter.length > 0 ? `<tbody>` : ``);
 
-                    result.vacinas.forEach(vacina => {
+                    vacinasFilter.forEach(vacina => {
                         vacinas += `<tr class="text-left">
                                         <td class="text-secondary">${vacina.nomeEstabelecimento}</td>
                                         <td class="text-secondary">${vacina.nomeProfissional ? vacina.nomeProfissional : ''}</td>
@@ -381,11 +403,11 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                     </tr>`
                     });
 
-                    vacinas += (result.vacinas.length > 0 ? `</tbody></table></div>` : `</table></div>`);
+                    vacinas += (vacinasFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
 
                 }
 
-                if (result.procedimentos) {
+                if (procedimentosFilter) {
                     procedimentos += `<div class="col s12">
                                             <table class="table table-striped">
                                                 <thead>
@@ -398,9 +420,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 </tr>
                                             </thead>`
 
-                    procedimentos += (result.procedimentos.length > 0 ? `<tbody>` : ``);
+                    procedimentos += (procedimentosFilter.length > 0 ? `<tbody>` : ``);
 
-                    result.procedimentos.forEach(procedimento => {
+                    procedimentosFilter.forEach(procedimento => {
                         procedimentos += `<tr class="text-left">
                                                 <td class="text-secondary">${procedimento.nomeFantasia}</td>
                                                 <td class="text-secondary">${procedimento.nome}</td>
@@ -410,7 +432,31 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                             </tr>`
                     });
 
-                    procedimentos += (result.procedimentos.length > 0 ? `</tbody></table></div>` : `</table></div>`);
+                    procedimentos += (procedimentosFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
+                }
+
+                if (encaminhamentosFilter) {
+                    encaminhamentos += `<div class="col s12">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                <th style="width:35%">Especialidade</th>
+                                                <th style="width:35%">Motivo</th>
+                                                <th style="width:30%">Data do Encaminhamento</th>
+                                                </tr>
+                                            </thead>`
+
+                    encaminhamentos += (encaminhamentosFilter.length > 0 ? `<tbody>` : ``);
+
+                    encaminhamentosFilter.forEach(encaminhamento => {
+                        encaminhamentos += `<tr class="text-left">
+                                                <td class="text-secondary">${encaminhamento.nome}</td>
+                                                <td class="text-secondary">${encaminhamento.motivo}</td>
+                                                <td class="text-secondary">${encaminhamento.dataCriacao ? _moment(encaminhamento.dataCriacao).format('DD/MM/YYYY HH:mm') : ''}</td>
+                                            </tr>`
+                    });
+
+                    encaminhamentos += (encaminhamentosFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
                 }
 
                 let conteudo = `
@@ -559,13 +605,6 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                             </form>
                         </div>
                     </div>`
-
-                //trecho para renderizar
-                // <div class="col s2">
-                //<div class="avatar-container">
-                //<img width="180" height="180" style="max-width: 100%; border-radius: 50%;" src="${this.pathFiles + result.paciente[0].foto}">
-                //</div>
-                //</div>
 
                 this.print(conteudo, target, result.paciente[0].nome);
             });
