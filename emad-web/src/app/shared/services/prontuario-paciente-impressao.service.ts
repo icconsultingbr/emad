@@ -137,7 +137,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
     }
 
     imprimir(idPaciente: number, dataInicial: string, dataFinal: string, target: string = '_blank') {
-
+    
         this.pacienteService.obterProntuarioPacienteRelatorio(idPaciente)
             .subscribe((result) => {
                 let sinaisVitais = '';
@@ -150,7 +150,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                 let procedimentos = '';
                 let encaminhamentos = '';
 
-                const sinaisVitaisFilter = this.filter(result.sinaisVitais, dataInicial, dataFinal, "label")
+                const sinaisVitaisFilter = this.filter(result.sinaisVitais, dataInicial, dataFinal, "dataCriacao")
                 const atendimentosFilter = this.filter(result.atendimentos, dataInicial, dataFinal, "dataCriacao")
                 const receitasFilter = this.filter(result.receitas, dataInicial, dataFinal, "dataEmissao")
                 const fichasAtendimentoFilter = this.filter(result.vacinas, dataInicial, dataFinal, "dataCriacao")
