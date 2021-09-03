@@ -73,14 +73,24 @@ export class ProfissionalFormComponent implements OnInit {
                       { id: "F", nome: "Feminino" },
                       { id: "M", nome: "Masculino" }
                     ],
+                    idConselho: [
+                      { id: 1, nome: "Conselho Regional de Assistência Social (CRAS)" },
+                      { id: 2, nome: "Conselho Regional de Enfermagem (COREN)" },
+                      { id: 3, nome: "Conselho Regional de Farmácia (CRF)" },
+                      { id: 4, nome: "Conselho Regional de Fonoaudiologia (CRFA)" },
+                      { id: 5, nome: "Conselho Regional de Medicina (CRM)" },
+                      { id: 6, nome: "Conselho Regional de Nutrição (CRN)" },
+                      { id: 7, nome: "Conselho Regional de Odontologia (CRO)" },
+                      { id: 8, nome: "Conselho Regional de Psicologia (CRP)" },
+                      { id: 9, nome: "Outros Conselhos" }
+                    ],
                     idUsuario: [], //usuarios,
                     idTipoUsuario: tiposUsuario,
                     estabelecimentos: estabelecimentos,
-
                 });            
                 this.buscaUsuariosSemProfissional();
               //});
-            });
+          });
           });
         });
       });

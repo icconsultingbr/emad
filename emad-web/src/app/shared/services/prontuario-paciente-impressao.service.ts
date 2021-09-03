@@ -459,6 +459,30 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                     encaminhamentos += (encaminhamentosFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
                 }
 
+                if (result.encaminhamentos) {
+                    encaminhamentos += `<div class="col s12">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                <th style="width:35%">Especialidade</th>
+                                                <th style="width:35%">Motivo</th>
+                                                <th style="width:30%">Data do Encaminhamento</th>
+                                                </tr>
+                                            </thead>`
+
+                    encaminhamentos += (result.encaminhamentos.length > 0 ? `<tbody>` : ``);
+
+                    result.encaminhamentos.forEach(encaminhamento => {
+                        encaminhamentos += `<tr class="text-left">
+                                                <td class="text-secondary">${encaminhamento.nome}</td>
+                                                <td class="text-secondary">${encaminhamento.motivo}</td>
+                                                <td class="text-secondary">${encaminhamento.dataCriacao ? _moment(encaminhamento.dataCriacao).format('DD/MM/YYYY HH:mm') : ''}</td>
+                                            </tr>`
+                    });
+
+                    encaminhamentos += (result.encaminhamentos.length > 0 ? `</tbody></table></div>` : `</table></div>`);
+                }
+
                 let conteudo = `
                     <div class="page">
                         <div class="content">
@@ -602,6 +626,13 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                     </div>
                                     ${vacinas}
                                 </div>
+                                <hr size = 7>
+                                <div class="row" style="break-inside: avoid;">
+                                <div class="col" style="text-align: left;width: 100%;">
+                                    <span style="font-family: Arial; font-size: 18px; font-weight:bold">Encaminhamentos</span>
+                                </div>
+                                ${encaminhamentos}
+                            </div>
                             </form>
                         </div>
                     </div>`

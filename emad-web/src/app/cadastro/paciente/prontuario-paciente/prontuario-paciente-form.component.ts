@@ -45,6 +45,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   allItemsHipotese: any[] = [];
   allItemsMedicamentoHistorico: any[] = [];
   allItemsEncaminhamentoHistorico: any[] = [];
+  allItemsEncaminhamentoHistoricoPaciente: any[] = [];
   allItemsHipoteseHistorico: any[] = [];
   allItemsAtendimentos: any[] = [];
   allItemsSinaisVitaisPressaoArterial: any[] = [];
@@ -140,6 +141,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     });
     this.createGroup();
     this.loadDomains();
+
   }
 
   loadDomains() {
@@ -247,23 +249,17 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   tabSelected(tab: number) {
-    if (tab == 3) {//Sinais vitais
-      this.findSinaisVitaisPorPaciente();
-    } else if (tab == 4) {//Atendimentos
-      this.findAtendimentoPorPaciente();
-    } else if (tab == 5) {//Medicamentos      
-      this.findReceitaPorPaciente();
-    } else if (tab == 6) {//Fichas de atendimentos
-      this.findFichasPorPaciente();
-    } else if (tab == 7) {//Exames
-      this.findExamesPorPaciente();
-    } else if (tab == 8) {//Hipótes diagnosticada
-      this.findHipotesePorPaciente();
-    } else if (tab == 9) {//Vacinas
-      this.findProntuarioVacinacaoPorPaciente();
-    } else if (tab == 10) {//Procedimentos
-      this.findProcedimentosPorPaciente();
-    }
+
+    tab == 3 ? this.findSinaisVitaisPorPaciente() : null  //Sinais vitais
+    tab == 4 ? this.findAtendimentoPorPaciente() : null   //Atendimentos
+    tab == 5 ? this.findReceitaPorPaciente() : null       //Medicamentos  
+    tab == 6 ? this.findFichasPorPaciente() : null        //Fichas de atendimentos
+    tab == 7 ? this.findExamesPorPaciente() : null        //Exames
+    tab == 8 ? this.findHipotesePorPaciente() : null      //Hipótes diagnosticada
+    tab == 9 ? this.findProntuarioVacinacaoPorPaciente() : null //Vacinas
+    tab == 10 ? this.findProcedimentosPorPaciente() : null //Procedimentos
+    tab == 11 ? this.findEncaminhamentoPorPaciente(this.object.id) : null //encaminhamentos
+
   }
 
   carregaNaturalidade() {
@@ -776,6 +772,19 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.loading = true;
     this.atendimentoService.findEncaminhamentoByAtendimento(idAtendimento).subscribe(result => {
       this.allItemsEncaminhamentoHistorico = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+
+  findEncaminhamentoPorPaciente(idUsuario: number) {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.atendimentoService.findEncaminhamentoByPaciente(idUsuario).subscribe(result => {
+      this.allItemsEncaminhamentoHistoricoPaciente = result;
       this.loading = false;
     }, error => {
       this.loading = false;

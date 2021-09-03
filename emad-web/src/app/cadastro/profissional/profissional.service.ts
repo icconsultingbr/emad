@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Validators } from '@angular/forms';
+import { MaxLengthValidator, Validators } from '@angular/forms';
 import { GenericsService } from '../../_core/_services/generics.service';
 import { Http } from '@angular/http';
 import { HttpClient } from '@angular/common/http';
@@ -114,7 +114,6 @@ export class ProfissionalService extends GenericsService {
       form: true,
       required: true,
       validator: ['', Validators.required],
-
     },
     {
       field: "rg",
@@ -124,7 +123,6 @@ export class ProfissionalService extends GenericsService {
       form: true,
       required: false,
       validator: ['', ''],
-
     },
     {
       field: "dataEmissao",
@@ -136,7 +134,6 @@ export class ProfissionalService extends GenericsService {
       form: true,
       required: false,
       validator: ['', ''],
-
     },
     {
       field: "orgaoEmissor",
@@ -311,9 +308,18 @@ export class ProfissionalService extends GenericsService {
       validator: ['', '']
     },
     {
+      field: "idConselho",
+      type: "select",
+      label: "Conselho",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', Validators.required],
+    },
+    {
       field: "crm",
       type: "text",
-      label: "CRM",
+      label: "Número do conselho",
       grid: false,
       form: true,
       required: true,
