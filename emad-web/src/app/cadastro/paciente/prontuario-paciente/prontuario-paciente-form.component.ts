@@ -625,10 +625,10 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       return
     }
 
-    const dataconvertInicial = this.dataInicial != undefined ? this.dataInicial.toISOString() : undefined
-    const dataconvertFinal = this.dataFinal != undefined ? this.dataFinal.toISOString() : undefined
+    const dataInicialConvertida = this.dataInicial != undefined ? this.dataInicial.toISOString() : undefined
+    const dataFinalConvertida = this.dataFinal != undefined ? this.dataFinal.toISOString() : undefined
 
-    this.prontuarioPacienteImpressao.imprimir(this.id, dataconvertInicial, dataconvertFinal);
+    this.prontuarioPacienteImpressao.imprimir(this.id, dataInicialConvertida, dataFinalConvertida);
   }
 
   abreReciboExame(exameId: number) {
