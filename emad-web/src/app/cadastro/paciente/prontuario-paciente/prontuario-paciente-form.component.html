@@ -1,6 +1,7 @@
 <h4 class="mb-3 text-left">Prontuário eletrônico</h4>
 <app-loader [loading]="loading"></app-loader>
 <p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
+<p *ngIf="warning.length" class="alert alert-danger sticky-top">{{ warning }}</p>
 <div *ngIf="errors.length" class="alert alert-danger sticky-top">
   <div *ngFor="let error of errors" class="row">
     <div class="col-12 text-left">
@@ -9,11 +10,45 @@
   </div>
 </div>
 <div class="row container mb-3">
-  <span class="input-group-btn ml-2">
-    <a class="btn btn-primary" style="color: #fff !important;" (click)="imprimirPdfProntuario()">
-      <i class="far fa-file-pdf"></i> Gerar PDF prontuário
-    </a>
-  </span>
+  <div class="row">
+    <div class="col-xl-10">
+
+      <div class="form-group row">
+        <!-- DATA INICIAL -->
+        <div class="col-xl-4">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <div class="input-group-text btn">
+                <i class="fa fa-calendar-alt"></i>
+              </div>
+            </div>
+            <input type="text" [(ngModel)]="dataInicial" placeholder="Data Inicial" bsDatepicker
+              [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control"
+              autocomplete="off" readonly>
+          </div>
+        </div>
+        <!-- DATA FINAL -->
+        <div class="col-xl-4">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <div class="input-group-text btn">
+                <i class="fa fa-calendar-alt"></i>
+              </div>
+            </div>
+            <input type="text" [(ngModel)]="dataFinal" placeholder="Data Final" bsDatepicker
+              [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control"
+              autocomplete="off" readonly>
+          </div>
+        </div>
+        <!-- BOTAO GERAR PDF -->
+        <span class="input-group-btn ml-2">
+          <a class="btn btn-primary" style="color: #fff !important;" (click)="imprimirPdfProntuario()">
+            <i class="far fa-file-pdf"></i> Gerar PDF prontuário
+          </a>
+        </span>
+      </div>
+    </div>
+  </div>
 </div>
 <form [formGroup]="form">
   <div>

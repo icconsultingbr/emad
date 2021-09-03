@@ -37,6 +37,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   form: FormGroup;
   loading: Boolean = false;
   message: string = "";
+  warning: string = "";
   errors: any[] = [];
   dropdownList = [];
   selectedItems = [];
@@ -77,6 +78,9 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   nomeProfissional: string;
   nomeTipoHistorico: string;
   mostraHistorico: boolean = false;
+
+  dataInicial: Date;
+  dataFinal: Date;
 
   @ViewChild('addresstext') addresstext: ElementRef;
 
@@ -611,7 +615,16 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   imprimirPdfProntuario() {
-    this.prontuarioPacienteImpressao.imprimir(this.id);
+
+    if (this.dataFinal < this.dataInicial) {
+      this.warning = "Atenção: A data final e menor que a data Inicial, efetue a correção."
+      return
+    }
+
+    const dataInicialConvertida = this.dataInicial != undefined ? this.dataInicial.toISOString() : undefined
+    const dataFinalConvertida = this.dataFinal != undefined ? this.dataFinal.toISOString() : undefined
+
+    this.prontuarioPacienteImpressao.imprimir(this.id, dataInicialConvertida, dataFinalConvertida);
   }
 
   abreReciboExame(exameId: number) {
