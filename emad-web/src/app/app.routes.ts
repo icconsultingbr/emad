@@ -5,19 +5,19 @@ import { AuthGuard } from './_core/_guards';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { UsuarioResetComponent } from './seguranca/usuario/usuario-reset.component';
 
-const appRoutes : Routes = [
-    { path : '', component : MainComponent, canActivate: [AuthGuard] },
-    { path : 'login', component : LoginComponent},
+const appRoutes: Routes = [
+    { path: '', component: MainComponent, canActivate: [AuthGuard] },
+    { path: 'login', component: LoginComponent },
 
-    { path : 'usuario-reset', component : UsuarioResetComponent, canActivate: [AuthGuard]  },  
-     
+    { path: 'usuario-reset', component: UsuarioResetComponent, canActivate: [AuthGuard] },
+
     { path: 'especialidades', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/especialidade/especialidade.module#EspecialidadeModule' },
     { path: 'hipoteses-diagnosticas', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/hipotese-diagnostica/hipotese-diagnostica.module#HipoteseDiagnosticaModule' },
-    { path: 'modalidades', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/modalidade/modalidade.module#ModalidadeModule' },    
-    { path: 'modelos-canetas', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/modelo-caneta/modelo-caneta.module#ModeloCanetaModule' },    
-    { path: 'tipos-unidades', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/tipo-unidade/tipo-unidade.module#TipoUnidadeModule'},
-    { path: 'tipos-fichas', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/tipo-ficha/tipo-ficha.module#TipoFichaModule'},
-    { path: 'canetas', canActivate: [AuthGuard], loadChildren: './cadastro/caneta/caneta.module#CanetaModule'},
+    { path: 'modalidades', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/modalidade/modalidade.module#ModalidadeModule' },
+    { path: 'modelos-canetas', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/modelo-caneta/modelo-caneta.module#ModeloCanetaModule' },
+    { path: 'tipos-unidades', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/tipo-unidade/tipo-unidade.module#TipoUnidadeModule' },
+    { path: 'tipos-fichas', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/tipo-ficha/tipo-ficha.module#TipoFichaModule' },
+    { path: 'canetas', canActivate: [AuthGuard], loadChildren: './cadastro/caneta/caneta.module#CanetaModule' },
     { path: 'pacientes', canActivate: [AuthGuard], loadChildren: './cadastro/paciente/paciente.module#PacienteModule' },
     { path: 'equipes', canActivate: [AuthGuard], loadChildren: './cadastro/equipe/equipe.module#EquipeModule' },
     { path: 'profissionais', canActivate: [AuthGuard], loadChildren: './cadastro/profissional/profissional.module#ProfissionalModule' },
@@ -66,7 +66,7 @@ const appRoutes : Routes = [
     { path: 'entrada-material', canActivate: [AuthGuard], loadChildren: './estoque/components/entrada-material/entrada-material.module#EntradaMaterialModule' },
     { path: 'ajuste-estoque', canActivate: [AuthGuard], loadChildren: './estoque/components/ajuste-estoque/ajuste-estoque.module#AjusteEstoqueModule' },
     { path: 'reverter-ajuste-estoque', canActivate: [AuthGuard], loadChildren: './estoque/components/reverter-ajuste-estoque/reverter-ajuste-estoque.module#ReverterAjusteEstoqueModule' },
-    { path: 'pedidos-compras', canActivate: [AuthGuard], loadChildren: './estoque/components/pedido-compra/pedido-compra.module#PedidoCompraModule' },    
+    { path: 'pedidos-compras', canActivate: [AuthGuard], loadChildren: './estoque/components/pedido-compra/pedido-compra.module#PedidoCompraModule' },
     { path: 'solicitacoes-remanejamentos', canActivate: [AuthGuard], loadChildren: './estoque/components/solicitacao-remanejamento/solicitacao-remanejamento.module#SolicitacaoRemanejamentoModule' },
     { path: 'atendimentos-remanejamentos', canActivate: [AuthGuard], loadChildren: './estoque/components/atender-remanejamento/atender-remanejamento.module#AtenderRemanejamentoModule' },
     { path: 'recibo-receita', canActivate: [AuthGuard], loadChildren: './farmacia/relatorios/recibo-receita/recibo-receita.module#ReciboReceitaModule' },
@@ -85,9 +85,10 @@ const appRoutes : Routes = [
     { path: 'produtos-exames', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/produto-exame/produto-exame.module#ProdutoExameModule' },
     { path: 'metodos-exames', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/metodo-exame/metodo-exame.module#MetodoExameModule' },
     { path: 'procedimento', canActivate: [AuthGuard], loadChildren: './cadastro/procedimento/procedimento.module#ProcedimentoModule' },
-    
+    { path: 'comorbidades-estabelecimento', canActivate: [AuthGuard], loadChildren: './analise/relatorios/comorbidade-estabelecimento/comorbidade-estabelecimento.module#ComorbidadeEstabelecimentoModule' },
+
     { path: 'not-found', component: NotFoundComponent },
-    { path: '**', component: NotFoundComponent }, 
+    { path: '**', component: NotFoundComponent },
 ];
 
 export const routing = RouterModule.forRoot(appRoutes, { useHash: true });
