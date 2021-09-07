@@ -16,6 +16,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { AppModalModule } from "../../../_core/_components/app-modal/app-modal.module";
 import 'rxjs/add/operator/map';
 import { SharedServiceModule } from "../../../shared/services/shared-service.module";
+import { ComorbidadeEstabelecimentoImpressaoService } from "../../../shared/services/comorbidade-estabelecimento-impressao.service";
 
 @NgModule({
     imports: [
@@ -40,7 +41,8 @@ import { SharedServiceModule } from "../../../shared/services/shared-service.mod
         ComorbidadeEstabelecimentoComponent
     ],
     providers: [
-        ComorbidadeEstabelecimentoService
+        ComorbidadeEstabelecimentoService,
+        ComorbidadeEstabelecimentoImpressaoService
     ],
     exports: [
         ComorbidadeEstabelecimentoComponent
