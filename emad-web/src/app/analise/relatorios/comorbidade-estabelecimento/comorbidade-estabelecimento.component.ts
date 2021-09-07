@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ComorbidadeEstabelecimento } from '../../../_core/_models/ComorbidadeEstabelecimento';
+import { ComorbidadeEstabelecimentoService } from './comorbidade-estabelecimento.service';
 
 @Component({
   selector: 'app-comorbidade-estabelecimento',
@@ -7,9 +9,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ComorbidadeEstabelecimentoComponent implements OnInit {
 
-  constructor() { }
+
+  loading: Boolean = false;
+  message: string = "";
+  errors: any[] = [];
+
+  //MODELS (OBJECTS)
+  object: ComorbidadeEstabelecimento = new ComorbidadeEstabelecimento();
+
+  constructor(
+    private service: ComorbidadeEstabelecimentoService,
+  ) { }
+
 
   ngOnInit() {
+    console.log(this.object)
   }
 
 }
