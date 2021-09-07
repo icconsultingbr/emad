@@ -155,7 +155,7 @@ export class ComorbidadeEstabelecimentoImpressaoService extends RelatorioComorbi
                                                 Unidade: ${nomeEstabelecimento}               
                                             </div>           
                                             <div class="col s8" style="text-align: right; color: #7d0000; font-weight:bold">                
-                                                Comorbidade por estabelecimento
+                                                Comorbidades por estabelecimento
                                             </div>           
                                         </div>
                                         <hr size = 7>
