@@ -843,6 +843,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.pacienteHipotese.idHipoteseDiagnostica = this.hipoteseDiagnostica.id;
     this.pacienteHipotese.idPaciente = this.object.idPaciente;
     this.pacienteHipotese.idAtendimento = this.object.id;
+    this.paciente.idEstabelecimento = this.object.idEstabelecimento;
 
     this.service.saveHipotese(this.pacienteHipotese).subscribe(result => {
       this.message = "Hipótese diagnóstica inserida com sucesso!"

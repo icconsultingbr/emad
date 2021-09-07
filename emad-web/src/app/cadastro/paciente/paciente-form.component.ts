@@ -39,7 +39,7 @@ export class PacienteFormComponent implements OnInit {
   loadPhoto: boolean = false;
   allItemsPesquisaHipoteseDiagnostica: any[] = null;
   hipoteseDiagnostica: HipoteseDiagnostica = new HipoteseDiagnostica();
-  
+
   @ViewChild('addresstext') addresstext: ElementRef;
 
   //PAGINATION
@@ -418,27 +418,23 @@ export class PacienteFormComponent implements OnInit {
     this.allItemsPesquisaHipoteseDiagnostica = [];
     this.errors = [];
 
-    if (Util.isEmpty(this.hipoteseDiagnostica.nome) && Util.isEmpty(this.hipoteseDiagnostica.cid_10))
-    {
-       this.errors = [{message:"Informe o nome ou código CID 10"}];
-       this.loading = false;
-       return;
+    if (Util.isEmpty(this.hipoteseDiagnostica.nome) && Util.isEmpty(this.hipoteseDiagnostica.cid_10)) {
+      this.errors = [{ message: "Informe o nome ou código CID 10" }];
+      this.loading = false;
+      return;
     }
 
-    if (!Util.isEmpty(this.hipoteseDiagnostica.nome))
-    {
-      if(this.hipoteseDiagnostica.nome.length<3){
-       this.errors = [{message:"Informe o nome, ao menos 3 caracteres"}];
-       this.loading = false;
-       return;
+    if (!Util.isEmpty(this.hipoteseDiagnostica.nome)) {
+      if (this.hipoteseDiagnostica.nome.length < 3) {
+        this.errors = [{ message: "Informe o nome, ao menos 3 caracteres" }];
+        this.loading = false;
+        return;
       }
     }
 
-    if (!Util.isEmpty(this.hipoteseDiagnostica.cid_10))
-    {
-      if (this.hipoteseDiagnostica.cid_10.length < 2)
-      { 
-        this.errors = [{message:"Informe o código CID 10, ao menos 2 caracteres"}];
+    if (!Util.isEmpty(this.hipoteseDiagnostica.cid_10)) {
+      if (this.hipoteseDiagnostica.cid_10.length < 2) {
+        this.errors = [{ message: "Informe o código CID 10, ao menos 2 caracteres" }];
         this.loading = false;
         return;
       }
@@ -451,13 +447,13 @@ export class PacienteFormComponent implements OnInit {
     this.loading = true;
 
     this.paging.offset = offset ? offset : 0;
-    this.paging.limit = limit ? limit : 10;    
+    this.paging.limit = limit ? limit : 10;
 
     var params = "?nome=" + this.hipoteseDiagnostica.nome + "&cid=" + this.hipoteseDiagnostica.cid_10;
 
     if (this.paging.offset != null && this.paging.limit != null) {
       params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
-    }    
+    }
 
     this.service.list('hipotese-diagnostica' + params).subscribe(result => {
       this.warning = "";
@@ -493,6 +489,8 @@ export class PacienteFormComponent implements OnInit {
     this.pacienteHipotese.idHipoteseDiagnostica = this.hipoteseDiagnostica.id;
     this.pacienteHipotese.idPaciente = this.id;
     this.pacienteHipotese.funcionalidade = 'PACIENTE';
+    this.pacienteHipotese.idEstabelecimento = this.object.idEstabelecimentoCadastro;
+
     this.service.saveHipotese(this.pacienteHipotese).subscribe(result => {
       this.message = "Hipótese diagnóstica inserida com sucesso!"
       this.close();
@@ -513,7 +511,7 @@ export class PacienteFormComponent implements OnInit {
     });
   }
 
-  photoSaved(id: string){
+  photoSaved(id: string) {
     this.form.patchValue({ foto: id }, { emitEvent: false });
     this.object.foto = id;
   }
@@ -528,7 +526,7 @@ export class PacienteFormComponent implements OnInit {
   setPagePaginedHipotese(offset: number, limit: Number) {
     this.paging.offset = offset !== undefined ? offset : 0;
     this.paging.limit = limit ? limit : this.paging.limit;
-    
+
     this.buscaHipoteseDiagnostica(this.paging.offset, this.paging.limit);
   }
 }

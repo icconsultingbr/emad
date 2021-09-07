@@ -40,7 +40,8 @@ module.exports = function (app) {
             delete obj.funcionalidade;
             obj.dataCriacao = new Date;
             obj.idUsuarioCriacao = usuario.id;
-            obj.situacao = 1;            
+            obj.situacao = 1;
+            obj.idEstabelecimento = obj.idEstabelecimento;            
         
             var response = await atendimentoHipoteseRepository.salva(obj);           
             obj.id = response[0].insertId;
