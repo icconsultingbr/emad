@@ -157,7 +157,8 @@ module.exports = function (app) {
                 objHipotese.idHipoteseDiagnostica = responseBuscaHipotese.idHipoteseDiagnostica;
                 objHipotese.dataCriacao = new Date;
                 objHipotese.idUsuarioCriacao = usuario.id;
-                objHipotese.situacao = 1;            
+                objHipotese.situacao = 1;       
+                objHipotese.idEstabelecimento = exame.idEstabelecimento;     
         
                 var responseHipotese = await atendimentoHipoteseRepository.salva(objHipotese);           
                 objHipotese.id = responseHipotese[0].insertId;
