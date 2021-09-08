@@ -187,6 +187,10 @@ export class AtendimentoService extends GenericsService {
         return this.http.get("atendimento-hipotese/atendimento/" + id);
     }
 
+    findVacinaByAtendimento(id: any): Observable<any> {
+        return this.http.get("atendimento-vacina/atendimento/" + id);
+    }
+
     printDocument(url: string): Observable<any> {
         let object: any = {};
         object.url = url;
@@ -232,6 +236,17 @@ export class AtendimentoService extends GenericsService {
         }
     }
 
+    saveVacina(obj: any) {
+        if (obj.id) {
+            return this.http
+                .put('atendimento-vacina', JSON.stringify(obj));
+        }
+        else {
+            return this.http
+                .post('atendimento-vacina', JSON.stringify(obj));
+        }
+    }
+
     stopProcess(obj: any) {
         return this.http
             .put('atendimento/parar-atendimento', JSON.stringify(obj));
@@ -257,6 +272,10 @@ export class AtendimentoService extends GenericsService {
             return this.http
                 .post('atendimento-medicamento', JSON.stringify(obj));
         }
+    }
+
+    removeVacina(params: any) {
+        return this.http.delete('atendimento-vacina/' + params);
     }
 
     removeHipotese(params: any) {
