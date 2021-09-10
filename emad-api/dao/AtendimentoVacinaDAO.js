@@ -20,3 +20,6 @@ AtendimentoVacinaDAO.prototype.deletaPorId = async function (obj) {
     return atendimento;
 }
 
+module.exports = function () {
+    return AtendimentoVacinaDAO;
+};

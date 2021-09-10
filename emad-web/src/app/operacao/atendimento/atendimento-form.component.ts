@@ -142,7 +142,6 @@ export class AtendimentoFormComponent implements OnInit {
       this.id = params['id'];
       this.idHistorico = params['idHistorico'];
       this.carregaEntidadeCampoPorEspecialidade();
-      console.log(this.pacienteVacina)
     });
   }
 
