@@ -18,4 +18,12 @@ export class FileUploadService extends GenericsService {
         return res.id;
       }));
   }
+
+  uploadListImage(files: Array<FileUpload>) {
+    console.log(files)
+    return this.http.post('documentos/exame', JSON.stringify(files))
+      .pipe(map((res: any) => {
+        return res;
+      }));
+  }
 }

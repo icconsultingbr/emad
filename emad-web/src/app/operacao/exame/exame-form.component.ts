@@ -9,6 +9,9 @@ import * as uuid from 'uuid';
 import { ItemExame } from '../../_core/_models/ItemExame';
 import { ReciboExameImpressaoService } from '../../shared/services/recibo-exame-impressao.service';
 import { FileUploadService } from '../../_core/_components/app-file-upload/services/file-upload.service';
+import { FileUpload } from "../../_core/_components/app-file-upload/model/file-upload.model";
+import { Guid } from 'guid-typescript';
+
 const myId = uuid.v4();
 
 @Component({
@@ -249,19 +252,34 @@ export class ExameFormComponent implements OnInit {
   fileChangeEvent(event: any): void {
     this.images = event;
     this.ref.detectChanges();
-    console.log(this.images)
-  }
 
-  // imageCropped(file: FileUpload, event: ImageCroppedEvent) {
-  //   file.base64 = event.base64;
-  // }
+    if (this.images.length > 0) {
+
+      this.images.forEach(object => {
+        {
+          let reader = new FileReader();
+          reader.readAsDataURL(object);
+          reader.onload = function () {
+            object.base64 = reader.result
+          };
+        }
+      });
+    }
+  }
 
   salvarDocumentos() {
-    this.fileUploadService.uploadImage(this.images).subscribe((result) => {
-        this.id = result;
-        this.saved.emit(this.id);
-        this.close();
+    this.fileUploadService.uploadListImage(this.images).subscribe((result) => {
+      result.forEach(object => {
+        object.idExame = this.id;
+        object.nomeProfissional = this.object.nomeProfissional;
       });
+
+      this.service.salvarArquivoExame(result).subscribe((result) => {
+        console.log(result)
+      });
+
+    });
   }
+
 
 }

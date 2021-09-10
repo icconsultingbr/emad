@@ -9,18 +9,11 @@ ArquivosDAO.prototype.buscaPorId = async function (id) {
     return result;
 }
 
-ArquivosDAO.prototype.salva = function (obj, callback) {
+ArquivosDAO.prototype.salva = async function (obj, callback) {
     this._connection.query(`INSERT INTO ${this._table} SET ?`, obj, callback);
 }
 
 ArquivosDAO.prototype.atualiza = async function (obj) {
-    // let result = [];
-    // result = await this._connection.query(`UPDATE ${this._table} 
-    //                                        SET 
-    //                                        situacao = 0 AND 
-    //                                        dataAlteracao = obj.dataAlteracao AND 
-    //                                        idUsuarioAlteracao = obj.idUsuarioAlteracao WHERE id= ?`, [obj.idExame]);
-    // return result;
     let atendimento = await this._connection.query(`UPDATE ${this._table} set situacao=?, idUsuarioAlteracao=?, dataAlteracao=? where id=?`
         , [0, obj.idUsuarioAlteracao, obj.dataAlteracao, obj.idExame]);
     return atendimento;

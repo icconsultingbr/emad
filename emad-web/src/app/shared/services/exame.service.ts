@@ -141,5 +141,10 @@ export class ExameService extends GenericsService {
     return this.http.put('arquivo-exame/exame/' + obj.id, JSON.stringify(obj));
   }
 
+  salvarArquivoExame(obj: any) {
+    return this.http.post('arquivo-exame/', JSON.stringify(obj));
+  }
+
+
 }
 

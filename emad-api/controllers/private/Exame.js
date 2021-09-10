@@ -340,13 +340,44 @@ module.exports = function (app) {
             examedocumento.idUsuarioAlteracao = usuario.id;
             examedocumento.dataAlteracao = new Date();
 
-
             await exameArquivosRepository.atualiza(examedocumento);
             res.status(200).send(examedocumento);
             await connection.commit();
         }
         catch (exception) {
             res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+        }
+        finally {
+            await connection.close();
+        }
+    });
+
+    app.post('/arquivo-exame', async function (req, res) {
+        let exameDocumento = req.body;
+        let usuario = req.usuario;
+        const util = new app.util.Util();
+
+        let errors = [];
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const repository = new app.dao.ArquivosDAO(connection);
+
+        try {
+            await connection.beginTransaction();
+
+            for (const itemfile of exameDocumento) {
+                itemfile.dataCriacao = new Date;
+                itemfile.idUsuarioCriacao = usuario.id;
+                itemfile.situacao = 1;
+                var response = await repository.salva(itemfile);
+            }
+
+            res.status(201).send(response);
+            await connection.commit();
+        }
+        catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+            await connection.rollback();
         }
         finally {
             await connection.close();
