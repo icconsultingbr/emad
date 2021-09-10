@@ -11,7 +11,7 @@ export class ExameService extends GenericsService {
     super(http);
   }
 
-  public fields: any[] = [    
+  public fields: any[] = [
     {
       field: "id",
       type: "hidden",
@@ -66,7 +66,7 @@ export class ExameService extends GenericsService {
       required: true,
       validator: ['', ''],
       filter: {
-          type: "select"
+        type: "select"
       }
     },
     {
@@ -79,8 +79,8 @@ export class ExameService extends GenericsService {
       required: true,
       validator: ['', ''],
       filter: {
-          type: "select",
-          grid: true
+        type: "select",
+        grid: true
       }
     },
     {
@@ -93,8 +93,8 @@ export class ExameService extends GenericsService {
       required: true,
       validator: ['', ''],
       filter: {
-          type: "select",
-          grid: true
+        type: "select",
+        grid: true
       }
     },
     {
@@ -114,27 +114,31 @@ export class ExameService extends GenericsService {
     }
   ];
 
-  inserir(obj: any, metodo: string){ 
-    if(obj.id){
+  inserir(obj: any, metodo: string) {
+    if (obj.id) {
       return this.http
-      .put(metodo, JSON.stringify(obj));
+        .put(metodo, JSON.stringify(obj));
     }
-    else{
+    else {
       return this.http
-      .post(metodo, JSON.stringify(obj));
+        .post(metodo, JSON.stringify(obj));
     }
   }
 
-  obterRelatorio(ano: number, idEstabelecimento: number, numero: number): Observable<any>{ 
+  obterRelatorio(ano: number, idEstabelecimento: number, numero: number): Observable<any> {
     return this.http.get("receita" + "/ano/" + ano + "/idEstabelecimento/" + idEstabelecimento + "/numero/" + numero);
   }
 
-  obterMaterialDispensadoPorPaciente(idMaterial: number, idPaciente: number): Observable<any>{ 
+  obterMaterialDispensadoPorPaciente(idMaterial: number, idPaciente: number): Observable<any> {
     return this.http.get("item-receita" + "/idMaterial/" + idMaterial + "/idPaciente/" + idPaciente);
   }
 
-  obterRelatorioExame(exameId: number): Observable<any>{ 
+  obterRelatorioExame(exameId: number): Observable<any> {
     return this.http.get("exame/relatorio/" + exameId);
+  }
+
+  removeArquivoExame(obj: any) {
+    return this.http.put('arquivo-exame/exame/' + obj.id, JSON.stringify(obj));
   }
 
 }
