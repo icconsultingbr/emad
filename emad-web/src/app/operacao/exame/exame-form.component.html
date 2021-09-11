@@ -181,14 +181,13 @@
                         <th>Remover</th>
                       </tr>
                     </thead>
-                    <!-- //LISTAR ARQUIVOS AQUI DARIO -->
                     <tbody *ngIf="this.listaArquivosUpload?.length">
                       <tr class="text-left" *ngFor="let item of listaArquivosUpload">
                         <td class="text-secondary">{{item.nome}}</td>
                         <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
                         <td class="text-secondary">{{item.nomeProfissional}}
                         <td class="text-secondary">
-                          <a class="btn btn-link" *ngIf="item.situacao == '1'" (click)="removeItemArquivo(item)">
+                          <a class="btn btn-link" *ngIf="item.situacao == '1'" (click)="getData(item)">
                             <i class="fa fa-eye"></i> Visualizar
                           </a>
                         </td>
@@ -273,7 +272,7 @@
     <app-file-upload [formatsAllowed]="'.jpg,.png,.jpeg'" [multiple]="true" (changeFiles)="fileChangeEvent($event)">
     </app-file-upload>
   </div>
-  <div class="modal-footer">
+  <div *ngIf="this.images.length > 0" class="modal-footer">
     <button type="button" class="btn btn-outline-dark" (click)="salvarDocumentos()">
       Salvar
     </button>

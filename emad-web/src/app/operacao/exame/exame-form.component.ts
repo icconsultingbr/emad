@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { ExameService } from '../../shared/services/exame.service';
 import { Exame } from '../../_core/_models/Exame';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Util } from '../../_core/_util/Util';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -9,9 +9,6 @@ import * as uuid from 'uuid';
 import { ItemExame } from '../../_core/_models/ItemExame';
 import { ReciboExameImpressaoService } from '../../shared/services/recibo-exame-impressao.service';
 import { FileUploadService } from '../../_core/_components/app-file-upload/services/file-upload.service';
-import { FileUpload } from "../../_core/_components/app-file-upload/model/file-upload.model";
-import { Guid } from 'guid-typescript';
-
 const myId = uuid.v4();
 
 @Component({
@@ -44,6 +41,8 @@ export class ExameFormComponent implements OnInit {
   listaItensExame: any[] = [];
   arquivosVisible: boolean = false;
   listaArquivosUpload: any[] = [];
+  nomeProfissional: string;
+  thumbnail: any;
 
   public images: any[] = [];
 
@@ -65,6 +64,7 @@ export class ExameFormComponent implements OnInit {
       this.id = params['id'];
       this.loadDomains();
       this.createGroup();
+      console.log(this.listaArquivosUpload)
     });
   }
 
@@ -188,7 +188,7 @@ export class ExameFormComponent implements OnInit {
     });
   }
 
-  removeItemArquivo(item) {
+  removeItemArquivo(item: any) {
     this.service.removeArquivoExame(item).subscribe(produtoExame => {
       this.service.list(`arquivo-exame/exame/${this.id}`).subscribe(arquivosExame => {
         this.listaArquivosUpload = arquivosExame;
@@ -254,32 +254,45 @@ export class ExameFormComponent implements OnInit {
     this.ref.detectChanges();
 
     if (this.images.length > 0) {
-
       this.images.forEach(object => {
         {
           let reader = new FileReader();
-          reader.readAsDataURL(object);
           reader.onload = function () {
             object.base64 = reader.result
           };
+          reader.readAsDataURL(object);
         }
       });
     }
+    this.service.list(`arquivo-exame/exame/${this.id}`).subscribe(arquivosExame => {
+      this.listaArquivosUpload = arquivosExame;
+    });
+
   }
 
   salvarDocumentos() {
     this.fileUploadService.uploadListImage(this.images).subscribe((result) => {
       result.forEach(object => {
         object.idExame = this.id;
-        object.nomeProfissional = this.object.nomeProfissional;
+        object.nomeProfissional = JSON.parse(localStorage.getItem("currentUser")).nome;
       });
 
       this.service.salvarArquivoExame(result).subscribe((result) => {
-        console.log(result)
+        if (this.modalRef)
+          this.modalRef.close();
       });
-
     });
   }
 
+  getData(base: any) {
+    console.log(base.base64)
+    window.open(base.caminho, null);
+  }
 
 }
+
+  // let objectURL = 'data:image/jpeg;base64,' + baseImage.image;
+  // this.thumbnail = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+  // console.log(this.listaArquivosUpload)
+
+

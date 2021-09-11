@@ -314,6 +314,12 @@ module.exports = function (app) {
         try {
 
             items = await exameArquivosRepository.buscaPorId(idExame);
+
+            for (const itemfile of items) {
+                const fs = require('fs');
+                itemfile.base64 = fs.readFileSync(itemfile.caminho, { encoding: 'base64' });
+            }
+
             res.status(200).json(items);
         }
         catch (exception) {

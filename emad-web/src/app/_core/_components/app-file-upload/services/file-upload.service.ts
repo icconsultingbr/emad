@@ -20,8 +20,18 @@ export class FileUploadService extends GenericsService {
   }
 
   uploadListImage(files: Array<FileUpload>) {
-    console.log(files)
-    return this.http.post('documentos/exame', JSON.stringify(files))
+    let list = [];
+
+    files.forEach(element => {
+      list.push({
+        id: element.id,
+        name: element.name,
+        base64: element.base64,
+        extension: element.extension
+      })
+    });
+
+    return this.http.post('documentos/exame', JSON.stringify(list))
       .pipe(map((res: any) => {
         return res;
       }));
