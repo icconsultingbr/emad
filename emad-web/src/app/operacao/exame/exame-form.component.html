@@ -1,7 +1,7 @@
 <h4 class="mb-5 text-left">{{label}}</h4>
 <app-loader [loading]="loading"></app-loader>
 <p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
-<div *ngIf="errors.length" class="alert alert-danger sticky-top"> 
+<div *ngIf="errors.length" class="alert alert-danger sticky-top">
   <div *ngFor="let error of errors" class="row">
     <div class="col-12 text-left">
       {{error.message}}
@@ -10,20 +10,21 @@
 </div>
 
 <div class="card mb-4" *ngIf="!object.id || (object.id && object.idPaciente)">
-  <app-pesquisa-paciente (pacienteSelecionadoEvent)="pacienteSelecionado($event)" [idPaciente]="object.idPaciente" [pacienteNome]="object.nomePaciente"></app-pesquisa-paciente>
+  <app-pesquisa-paciente (pacienteSelecionadoEvent)="pacienteSelecionado($event)" [idPaciente]="object.idPaciente"
+    [pacienteNome]="object.nomePaciente"></app-pesquisa-paciente>
 </div>
 
 <form [formGroup]="form" (submit)="sendForm($event,null)">
-  <div class="card mb-4">  
+  <div class="card mb-4">
     <div class="card mb-12">
       <div class="card-header text-left">
-        Exame        
-        <button *ngIf="object.id" class="mr-2 btn btn-primary float-right rounded" type="button" 
-        (click)="abreReciboExame(object.id, false)">
-        <i class="fa fa-file-medical-alt"></i>
-      </button>
+        Exame
+        <button *ngIf="object.id" class="mr-2 btn btn-primary float-right rounded" type="button"
+          (click)="abreReciboExame(object.id, false)">
+          <i class="fa fa-file-medical-alt"></i>
+        </button>
       </div>
-      <div class="card-body text-left">        
+      <div class="card-body text-left">
         <div class="row">
           <div class="col-12">
             <div class="form-group row">
@@ -31,25 +32,25 @@
                 Tipo de exame <span class="text-danger font-weight-bold"> *</span>
               </label>
               <div class="col-xl-4">
-                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idTipoExame" 
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idTipoExame"
                   formControlName="idTipoExame">
                   <option [value]="null">Selecione...</option>
                   <option *ngFor="let item of domains[0]?.idTipoExame" [value]="item.id">{{item.nome}}</option>
                 </select>
               </div>
-            </div>              
+            </div>
           </div>
         </div>
       </div>
-    </div>  
-  </div> 
+    </div>
+  </div>
 
   <div class="card mb-4" *ngIf="object.id">
     <div class="card mb-12">
       <div class="card-header text-left">
         Produtos/Método
       </div>
-      <div class="card-body text-left">        
+      <div class="card-body text-left">
         <div class="row" *ngIf="object.situacao != '2'">
           <div class="col-12">
             <div class="form-group row">
@@ -57,24 +58,24 @@
                 Produto <span class="text-danger font-weight-bold"> *</span>
               </label>
               <div class="col-xl-4">
-                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="itemExame.idProdutoExame" 
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="itemExame.idProdutoExame"
                   formControlName="idProdutoExame">
                   <option [value]="null">Selecione...</option>
                   <option *ngFor="let item of domains[0]?.idProdutoExame" [value]="item.id">{{item.nome}}</option>
                 </select>
-              </div>  
+              </div>
               <label class="col-xl-2 col-form-label text-left">
                 Método<span class="text-danger font-weight-bold"> *</span>
-              </label>              
+              </label>
               <div class="col-xl-4">
-                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="itemExame.idMetodoExame" 
-                formControlName="idMetodoExame">
-                <option [value]="null">Selecione...</option>
-                <option *ngFor="let item of domains[0]?.idMetodoExame" [value]="item.id">{{item.nome}}</option>
-              </select>
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="itemExame.idMetodoExame"
+                  formControlName="idMetodoExame">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.idMetodoExame" [value]="item.id">{{item.nome}}</option>
+                </select>
               </div>
-            </div>         
-          </div>          
+            </div>
+          </div>
         </div>
         <div class="row" *ngIf="object.situacao != '2'">
           <div class="col-12">
@@ -83,23 +84,23 @@
                 Resultado <span class="text-danger font-weight-bold"> *</span>
               </label>
               <div class="col-xl-4">
-                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="itemExame.resultado" 
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="itemExame.resultado"
                   formControlName="resultado">
                   <option [value]="null">Selecione...</option>
                   <option *ngFor="let item of domains[0]?.resultado" [value]="item.id">{{item.nome}}</option>
                 </select>
-              </div>  
-            </div>         
-          </div>          
+              </div>
+            </div>
+          </div>
         </div>
         <div class="row" *ngIf="object.situacao != '2'">
           <div class="col-12">
-            <div class="form-group text-right">              
+            <div class="form-group text-right">
               <span>{{ object.mensagemPaciente }}</span>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <button class="btn btn-primary" type="button" (click)="confirmaItem()" [disabled]="toggleItem()">
                 <i class="fa fa-save"></i>Adicionar
-              </button>  
+              </button>
             </div>
           </div>
         </div>
@@ -112,33 +113,33 @@
                     <th>Produto</th>
                     <th>Método</th>
                     <th>Resultado</th>
-                    <th *ngIf="object.situacao != '2'" >Remover</th>   
+                    <th *ngIf="object.situacao != '2'">Remover</th>
                   </tr>
                 </thead>
                 <tbody *ngIf="this.object.itensExame?.length">
-                    <tr class="text-left" *ngFor="let item of this.object.itensExame">
-                      <td class="text-secondary">{{item.nomeProdutoExame}}</td>
-                      <td class="text-secondary">{{item.nomeMetodoExame}}</td>
-                      <td class="text-secondary">{{item.nomeResultado}}</td>                       
-                      <a class="btn btn-link" *ngIf="object.situacao != '2'" (click)="removeItemExame(item)">
-                        <i class="fa fa-trash-alt"></i> Remover
-                      </a>                  
-                    </tr>
-                  </tbody>
+                  <tr class="text-left" *ngFor="let item of this.object.itensExame">
+                    <td class="text-secondary">{{item.nomeProdutoExame}}</td>
+                    <td class="text-secondary">{{item.nomeMetodoExame}}</td>
+                    <td class="text-secondary">{{item.nomeResultado}}</td>
+                    <a class="btn btn-link" *ngIf="object.situacao != '2'" (click)="removeItemExame(item)">
+                      <i class="fa fa-trash-alt"></i> Remover
+                    </a>
+                  </tr>
+                </tbody>
               </table>
-            </div>            
+            </div>
           </div>
-        </div>       
+        </div>
       </div>
-    </div>    
+    </div>
   </div>
 
-  <div class="card mb-4" *ngIf="object.id">  
+  <div class="card mb-4" *ngIf="object.id">
     <div class="card mb-12">
       <div class="card-header text-left">
-        Interpretação do resultado    
+        Interpretação do resultado
       </div>
-      <div class="card-body text-left">        
+      <div class="card-body text-left">
         <div class="row">
           <div class="col-12">
             <div class="form-group row">
@@ -146,27 +147,87 @@
                 Resultado <span class="text-danger font-weight-bold"> *</span>
               </label>
               <div class="col-xl-4">
-                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.resultadoFinal" 
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.resultadoFinal"
                   formControlName="resultadoFinal">
                   <option [value]="null">Selecione...</option>
                   <option *ngFor="let item of domains[0]?.resultadoFinal" [value]="item.id">{{item.nome}}</option>
                 </select>
               </div>
-            </div>              
+            </div>
           </div>
         </div>
       </div>
-    </div>  
-  </div> 
+    </div>
+  </div>
+
+  <div class="card mb-4" *ngIf="arquivosVisible">
+    <div class="card mb-12">
+      <div class="card-header text-left">
+        Arquivos
+      </div>
+      <div class="card-body text-left">
+        <div class="row">
+          <div class="col-12 mb-3">
+            <button type="button" class="btn btn-primary float-left mr-2" (click)="recarregarDocumentos()">
+              <i class="fa fa-sync-alt"></i>
+            </button>
+          </div>
+          <div class="col-12">
+            <div class="row">
+              <div class="col-12 table-responsive">
+                <div class="form-group row">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Nome</th>
+                        <th>Data Inclusão</th>
+                        <th>Profissional</th>
+                        <th>Visualizar</th>
+                        <th>Remover</th>
+                      </tr>
+                    </thead>
+                    <tbody *ngIf="this.listaArquivosUpload?.length">
+                      <tr class="text-left" *ngFor="let item of listaArquivosUpload">
+                        <td class="text-secondary">{{item.nome}}</td>
+                        <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                        <td class="text-secondary">{{item.nomeProfissional}}
+                        <td class="text-secondary">
+                          <a class="btn btn-link" *ngIf="item.situacao == '1'" (click)="abrirDocumento(item)">
+                            <i class="fa fa-eye"></i> Visualizar
+                          </a>
+                        </td>
+                        <td class="text-secondary">
+                          <a class="btn btn-link" *ngIf="item.situacao == '1'" (click)="removeItemArquivo(item)">
+                            <i class="fa fa-trash-alt"></i> Remover
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="form-group text-right">
+                  <button *ngIf="!readOnly" type="button" class="btn btn-lg btn-outline-primary"
+                    (click)="openModal(content)">
+                    Upload resultado de Exame
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="form-group text-right">
-    <button class="btn btn-primary" type="submit" [disabled]="form.invalid" *ngIf="object.idPaciente && object.situacao != '2'">
-      <i class="fa fa-save"></i> {{ object.situacao == '1' ? 'Salvar' : 'Criar exame' }} 
-    </button>  
-    <button class="btn btn-primary" type="button" (click)="openConfirmacao(contentConfirmacaoFinalizar)"  
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid"
+      *ngIf="object.idPaciente && object.situacao != '2'">
+      <i class="fa fa-save"></i> {{ object.situacao == '1' ? 'Salvar' : 'Criar exame' }}
+    </button>
+    <button class="btn btn-primary" type="button" (click)="openConfirmacao(contentConfirmacaoFinalizar)"
       [disabled]="form.invalid" *ngIf="object.idPaciente && object.situacao == '1'">
       <i class="fa fa-save"></i> Finalizar exame
-    </button>  
+    </button>
     <button (click)="back()" class="btn btn-default" type="button">
       <i class="fa fa-arrow-left"></i> Retornar
     </button>
@@ -185,7 +246,7 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="sendForm($event, 'F')">Sim</button>
-    <button type="button" class="btn btn-danger"  (click)="close()">Não</button>    
+    <button type="button" class="btn btn-danger" (click)="close()">Não</button>
   </div>
 </ng-template>
 
@@ -201,6 +262,24 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="abreReciboExame(object.id, true)">Sim</button>
-    <button type="button" class="btn btn-danger"  (click)="close(true)">Não</button>    
+    <button type="button" class="btn btn-danger" (click)="close(true)">Não</button>
+  </div>
+</ng-template>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title center" id="modal-basic-title">Anexa documentos</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-file-upload [formatsAllowed]="'.jpg,.png,.jpeg'" [multiple]="true" (changeFiles)="fileChangeEvent($event)">
+    </app-file-upload>
+  </div>
+  <div *ngIf="this.images.length > 0" class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="salvarDocumentos()">
+      Salvar
+    </button>
   </div>
 </ng-template>
