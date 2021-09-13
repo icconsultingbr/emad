@@ -15,6 +15,7 @@ import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { PesquisaMedicamentoModule } from "../../components/pesquisa-medicamentos/pesquisa-medicamento.module";
 import { SharedServiceModule } from "../../shared/services/shared-service.module";
+import { AppFileUploadModule } from "../../_core/_components/app-file-upload/app-file-upload.module";
 
 @NgModule({
     imports: [
@@ -23,16 +24,17 @@ import { SharedServiceModule } from "../../shared/services/shared-service.module
         AppGridViewModule,
         AppFormModule,
         RouterModule.forChild(exameRoutes),
-        PesquisaPacienteModule,        
+        PesquisaPacienteModule,
         ReactiveFormsModule,
         FormsModule,
-        ReactiveFormsModule,        
+        ReactiveFormsModule,
         NgbModule,
         NgbCollapseModule,
         NgbDatepickerModule,
         BsDatepickerModule,
         PesquisaMedicamentoModule,
-        SharedServiceModule
+        SharedServiceModule,
+        AppFileUploadModule
     ],
     declarations: [
         ExameComponent,

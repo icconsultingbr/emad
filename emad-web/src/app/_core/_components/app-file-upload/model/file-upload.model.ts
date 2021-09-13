@@ -5,4 +5,5 @@ export interface FileUpload extends File {
   event?: any;
   extension: string;
   base64?: string | null;
+  name: string;
 }

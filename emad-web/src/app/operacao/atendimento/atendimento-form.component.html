@@ -343,8 +343,7 @@
                 <tbody *ngIf="!allItemsHipotese.length">
                   <tr class="text-left">
                     <td colspan="99" class="text-secondary">
-                      <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para inserir
-                        uma hipótese diagnóstica!'}}</i>
+                      <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para inserir uma hipótese diagnóstica!'}}</i>
                     </td>
                   </tr>
                 </tbody>
@@ -393,8 +392,7 @@
                 <tbody *ngIf="!allItemsProcedimento.length">
                   <tr class="text-left">
                     <td colspan="99" class="text-secondary">
-                      <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para inserir
-                        um procedimento diagnóstica!'}}</i>
+                      <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para inserir um procedimento diagnóstica!'}}</i>
                     </td>
                   </tr>
                 </tbody>
@@ -449,8 +447,7 @@
                 <tbody>
                   <tr class="text-left">
                     <td colspan="99" class="text-secondary" *ngIf="!allItemsMedicamento.length">
-                      <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para
-                        prescrever um medicamento!'}}</i>
+                      <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para prescrever um medicamento!'}}</i>
                     </td>
                   </tr>
                 </tbody>
@@ -465,60 +462,6 @@
                     <td class="text-secondary text-right">
                       <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]=""
                         (click)="removeMedicamento(item)">
-                        <i class="fa fa-trash-alt"></i> Remover
-                      </a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card mb-4" *ngIf="object.idPaciente && object.id">
-        <div class="card-header text-left">
-          Vacinas
-        </div>
-        <div class="card-body text-left">
-          <div class="row">
-            <div class="col-12 mb-3">
-              <button *ngIf="!disableFields()" type="button" class="btn btn-primary float-left mr-2"
-                [disabled]="!object.id" (click)="openVacinas(contentVacinas)">
-                <i class="fa fa-plus-circle"></i>
-              </button>
-
-              <button type="button" class="btn btn-default float-left" (click)="findVacinaPorAtendimento()">
-                <i class="fa fa-sync-alt"></i>
-              </button>
-            </div>
-            <div class="col-12 table-responsive">
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Nome</th>
-                    <th>Validade</th>
-                    <th>Lote</th>
-                    <th>Profissional</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="text-left">
-                    <td colspan="99" class="text-secondary" *ngIf="!allItemsVacina.length">
-                      <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para
-                        prescrever uma vacina!'}}</i>
-                    </td>
-                  </tr>
-                </tbody>
-                <tbody *ngIf="allItemsVacina.length">
-                  <tr class="text-left" *ngFor="let item of allItemsVacina">
-                    <td class="text-secondary">{{item.nome}}</td>
-                    <td class="text-secondary">{{item.validade | date :'dd/MM/yyyy'}}</td>
-                    <td class="text-secondary">{{item.lote}}</td>
-                    <td class="text-secondary">{{item.nomeProfissional}}</td>
-                    <td class="text-secondary text-right">
-                      <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]="" (click)="removeVacina(item)">
                         <i class="fa fa-trash-alt"></i> Remover
                       </a>
                     </td>
@@ -560,8 +503,7 @@
                 <tbody *ngIf="!allItemsEncaminhamento.length">
                   <tr class="text-left">
                     <td colspan="99" class="text-secondary">
-                      <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para fazer um
-                        encaminhamento!'}}</i>
+                      <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para fazer um encaminhamento!'}}</i>
                     </td>
                   </tr>
                 </tbody>
@@ -1048,45 +990,6 @@
                     <td class="text-secondary">{{item.quantidade}}</td>
                     <td class="text-secondary">{{item.apresentacao}}</td>
                     <td class="text-secondary">{{item.posologia}}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card mb-4">
-        <div class="card-header text-left">
-          Vacinas
-        </div>
-        <div class="card-body text-left">
-          <div class="row">
-            <div class="col-12 table-responsive">
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Nome</th>
-                    <th>Validade</th>
-                    <th>Lote</th>
-                    <th>Profissional</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody *ngIf="!allItemsVacina.length">
-                  <tr class="text-left">
-                    <td colspan="99" class="text-secondary">
-                      <i>Não há resultados...</i>
-                    </td>
-                  </tr>
-                </tbody>
-                <tbody *ngIf="allItemsVacina.length">
-                  <tr class="text-left" *ngFor="let item of allItemsVacina">
-                    <td class="text-secondary">{{item.nome}}</td>
-                    <td class="text-secondary">{{item.validade | date :'dd/MM/yyyy'}}</td>
-                    <td class="text-secondary">{{item.lote}}</td>
-                    <td class="text-secondary">{{item.nomeProfissional}}</td>
-                    <td class="text-secondary text-right">
                   </tr>
                 </tbody>
               </table>
@@ -2029,75 +1932,6 @@
   </div>
   <div class="modal-body">
     <app-exame-formulario [pacienteId]="object.idPaciente" [exibeHeader]="true" [exameId]="exameId"
-      (formularioChange)="formularioSalvoChange($event)"></app-exame-formulario>
-  </div>
-</ng-template>
-
-<ng-template #contentVacinas>
-  <div class="modal-header">
-    <h4 class="modal-title">Vacina</h4>
-    <button type="button" class="close" aria-label="Close" (click)="close()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <div *ngIf="errors.length" class="alert alert-danger">
-      <div *ngFor="let error of errors" class="row">
-        <div class="col-12 text-left">
-          {{error.message}}
-        </div>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-xl-4 col-sm-12 col-form-label text-left">
-        Nome do Profissional:
-      </label>
-      <div class="col-xl-8 col-sm-12">
-        <input type="text" class="form-control has-error" readonly [(ngModel)]="pacienteVacina.nomeProfissional">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-xl-4 col-sm-12 col-form-label text-left">
-        Nome da vacina:
-      </label>
-      <div class="col-xl-8 col-sm-12">
-        <input type="text" class="form-control has-error" [(ngModel)]="pacienteVacina.nome">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-xl-4 col-sm-12 col-form-label text-left">
-        Validade:
-      </label>
-      <div class="col-xl-8 col-sm-12">
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <div class="input-group-text btn">
-              <i class="fa fa-calendar-alt"></i>
-            </div>
-          </div>
-          <input type="text" [(ngModel)]="pacienteVacina.validade" placeholder="dd/mm/aaaa" bsDatepicker
-            [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control"
-            autocomplete="off">
-        </div>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-xl-4 col-sm-12 col-form-label text-left">
-        Lote:
-      </label>
-      <div class="col-xl-8 col-sm-12">
-        <input type="text" class="form-control has-error" [(ngModel)]="pacienteVacina.lote">
-      </div>
-    </div>
-    <div class=" form-group row text-right">
-      <div class="col-12">
-        <button class="btn btn-primary  mr-2" type="button" [disabled]="disableVacinaButton()" (click)="saveVacina()">
-          <i class="fa fa-plus-circle"></i> Adicionar
-        </button>
-        <button class="btn btn-default" (click)="close()" type="button">
-          <i class="fa fa-times"></i> Cancelar
-        </button>
-      </div>
-    </div>
+    (formularioChange)="formularioSalvoChange($event)"></app-exame-formulario>
   </div>
 </ng-template>

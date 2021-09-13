@@ -20,8 +20,6 @@ import { Procedimento } from '../../_core/_models/Procedimento';
 import { ExameService } from '../../shared/services/exame.service';
 import { Translation } from '../../_core/_locale/Translation';
 import { Exame } from '../../_core/_models/Exame';
-import { PacienteVacina } from '../../_core/_models/PacienteVacina';
-import * as moment from 'moment';
 
 @Component({
   selector: 'app-atendimento-form',
@@ -49,7 +47,6 @@ export class AtendimentoFormComponent implements OnInit {
   url: string = "atendimentos";
   object: Atendimento = new Atendimento();
   objectHistorico: AtendimentoHistorico = new AtendimentoHistorico();
-  pacienteVacina: PacienteVacina = new PacienteVacina()
   paciente: Paciente = new Paciente();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
   hipoteseDiagnostica: HipoteseDiagnostica = new HipoteseDiagnostica();
@@ -83,7 +80,6 @@ export class AtendimentoFormComponent implements OnInit {
   allItemsMedicamento: any[] = [];
   allMedicamentos: any[] = [];
   allItemsExame: any[] = [];
-  allItemsVacina: any[] = [];
   removeId: number;
 
   pathFiles = `${environment.apiUrl}/fotos/`;
@@ -105,11 +101,6 @@ export class AtendimentoFormComponent implements OnInit {
   nomeTipoHistorico: string;
   urlForm: string;
   exameId: number = 0;
-
-  nomeVacina: string;
-  validadeVacina: string;
-  loteVacina: string;
-
 
   constructor(
     private service: AtendimentoService,
@@ -423,20 +414,6 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
-  openVacinas(content: any) {
-    this.errors = [];
-    this.message = "";
-    this.atendimentoMedicamento.idPaciente = this.object.idPaciente;
-    this.atendimentoMedicamento.idAtendimento = this.object.id;
-
-    this.modalRef = this.modalService.open(content, {
-      backdrop: 'static',
-      keyboard: false,
-      centered: true,
-      windowClass: 'modal-gg'
-    });
-  }
-
   openConfirmacao(content: any) {
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
@@ -555,7 +532,6 @@ export class AtendimentoFormComponent implements OnInit {
       this.findMedicamentoPorAtendimento();
       this.findHistoricoPorAtendimento();
       this.findProcedimentoPorAtendimento();
-      this.findVacinaPorAtendimento();
 
     }, error => {
       this.object = new Atendimento();
@@ -594,7 +570,6 @@ export class AtendimentoFormComponent implements OnInit {
         this.findMedicamentoPorAtendimento();
         this.findHistoricoPorAtendimento();
         this.findProcedimentoPorAtendimento();
-        this.findVacinaPorAtendimento();
 
       }, error => {
         this.loading = false;
@@ -680,7 +655,6 @@ export class AtendimentoFormComponent implements OnInit {
         this.findMedicamentoPorAtendimento();
         this.findHistoricoPorAtendimento();
         this.findProcedimentoPorAtendimento();
-        this.findVacinaPorAtendimento();
       }
       else
         this.limpaAtendimento();
@@ -705,8 +679,6 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
-
-
   findHipotesePorAtendimento() {
     this.message = "";
     this.errors = [];
@@ -719,20 +691,6 @@ export class AtendimentoFormComponent implements OnInit {
       this.errors = Util.customHTTPResponse(error);
     });
   }
-
-  findVacinaPorAtendimento() {
-    this.message = "";
-    this.errors = [];
-    this.loading = true;
-    this.service.findVacinaByAtendimento(this.object.id).subscribe(result => {
-      this.allItemsVacina = result;
-      this.loading = false;
-    }, error => {
-      this.loading = false;
-      this.errors = Util.customHTTPResponse(error);
-    });
-  }
-
 
   findEncaminhamentoPorAtendimento() {
     this.message = "";
@@ -862,10 +820,6 @@ export class AtendimentoFormComponent implements OnInit {
     return Util.isEmpty(this.hipoteseDiagnostica.id);
   }
 
-  disableVacinaButton() {
-    return Util.isEmpty(this.pacienteVacina.validade) || Util.isEmpty(this.pacienteVacina.nome) || Util.isEmpty(this.pacienteVacina.lote);
-  }
-
   disableEncaminhamentoButton() {
     return Util.isEmpty(this.encaminhamento.idPaciente) || Util.isEmpty(this.encaminhamento.idEspecialidade) || Util.isEmpty(this.encaminhamento.motivo);
   }
@@ -896,26 +850,6 @@ export class AtendimentoFormComponent implements OnInit {
       this.modalRef.close();
       this.loading = false;
       this.findHipotesePorAtendimento();
-    }, error => {
-      this.loading = false;
-      this.errors = Util.customHTTPResponse(error);
-    });
-  }
-
-  saveVacina() {
-    this.message = "";
-    this.errors = [];
-    this.loading = true;
-
-    this.pacienteVacina.idPaciente = this.object.idPaciente;
-    this.pacienteVacina.idAtendimento = this.object.id;
-    this.pacienteVacina.validade = moment(this.pacienteVacina.validade).format('YYYY/MM/DD hh:mm:ss');
-
-    this.service.saveVacina(this.pacienteVacina).subscribe(result => {
-      this.message = "Vacina inserida com sucesso!"
-      this.modalRef.close();
-      this.loading = false;
-      this.findVacinaPorAtendimento();
     }, error => {
       this.loading = false;
       this.errors = Util.customHTTPResponse(error);
@@ -962,15 +896,6 @@ export class AtendimentoFormComponent implements OnInit {
       this.close();
       this.loading = false;
       this.findHipotesePorAtendimento();
-    });
-  }
-
-  removeVacina(item) {
-    this.service.removeVacina(item.id).subscribe(result => {
-      this.message = "Vacina removida com sucesso!"
-      this.close();
-      this.loading = false;
-      this.findVacinaPorAtendimento();
     });
   }
 
