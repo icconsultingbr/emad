@@ -2,27 +2,37 @@
   <div class="row">
     <div class="align-left col-sm-4">
       <label for="upload" class="btn btn-primary btn-sm afu-select-btn">{{
-        buttonLabel || "Selecione um arquivo"
-      }}</label>
-      <input
-        type="file"
-        id="upload"
-        style="display: none"
-        (change)="onChange($event)"
-        title="Selecione um arquivo"
-        name="files[]"
-        [accept]="formatsAllowed"
-        [attr.multiple]="multiple ? '' : null"
-      />
+        buttonLabel || "Selecione"
+        }}</label>
+      <input type="file" id="upload" style="display: none" (change)="onChange($event)" title="Selecione um arquivo"
+        name="files[]" [accept]="formatsAllowed" [attr.multiple]="multiple ? '' : null" />
     </div>
-    <div class="align-left col-sm-8">
-      <span *ngFor="let sf of allowedFiles; let i = index">
-        <span class="text-primary">{{ sf.name }}</span>
-        <strong>({{ convertSize(sf.size) }})</strong>&nbsp;&nbsp;
-        <a role="button" (click)="removeFile(i, 'sf')"
-          ><i class="fa fa-times"></i
-        ></a>
-      </span>
+  </div>
+
+  <div *ngIf="this.allowedFiles?.length && this.multiple === true" class="row">
+    <div class="col-12 table-responsive">
+      <div class="form-group row">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Tamanho</th>
+              <th>Remover</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let sf of allowedFiles; let i = index">
+              <td class="text-secondary">{{ sf.name }}</td>
+              <td class="text-secondary">{{ convertSize(sf.size) }}</td>
+              <td class="text-secondary">
+                <a class="btn btn-link" (click)="removeFile(i, 'sf')">
+                  <i class="fa fa-times"></i> Remover
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
