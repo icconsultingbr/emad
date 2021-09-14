@@ -10,7 +10,7 @@ ArquivosDAO.prototype.buscaPorId = async function (id) {
 }
 
 ArquivosDAO.prototype.salva = async function (obj, callback) {
-    this._connection.query(`INSERT INTO ${this._table} SET ?`, obj, callback);
+   return this._connection.query(`INSERT INTO ${this._table} SET ?`, obj, callback);
 }
 
 ArquivosDAO.prototype.atualiza = async function (obj) {

@@ -64,7 +64,7 @@ export class ExameFormComponent implements OnInit {
       this.id = params['id'];
       this.loadDomains();
       this.createGroup();
-      console.log(this.listaArquivosUpload)
+
     });
   }
 
@@ -265,10 +265,6 @@ export class ExameFormComponent implements OnInit {
         }
       });
     }
-    this.service.list(`arquivo-exame/exame/${this.id}`).subscribe(arquivosExame => {
-      this.listaArquivosUpload = arquivosExame;
-    });
-
   }
 
   salvarDocumentos() {
@@ -279,8 +275,8 @@ export class ExameFormComponent implements OnInit {
       });
 
       this.service.salvarArquivoExame(result).subscribe((result) => {
-        if (result){
-          this.recarregarDocumentos();
+        if (result) {
+          this.recarregarDocumentos()
         }
         if (this.modalRef)
           this.modalRef.close();
@@ -295,7 +291,7 @@ export class ExameFormComponent implements OnInit {
     w.document.write(image.outerHTML);
   }
 
-  recarregarDocumentos(){
+  recarregarDocumentos() {
     this.service.list(`arquivo-exame/exame/${this.id}`).subscribe(arquivosExame => {
       this.listaArquivosUpload = arquivosExame;
     });
