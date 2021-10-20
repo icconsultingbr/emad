@@ -500,6 +500,7 @@
                     <th>Validade</th>
                     <th>Lote</th>
                     <th>Profissional</th>
+                    <th>Dose</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -517,6 +518,7 @@
                     <td class="text-secondary">{{item.validade | date :'dd/MM/yyyy'}}</td>
                     <td class="text-secondary">{{item.lote}}</td>
                     <td class="text-secondary">{{item.nomeProfissional}}</td>
+                    <td class="text-secondary">{{item.dose}}</td>
                     <td class="text-secondary text-right">
                       <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]="" (click)="removeVacina(item)">
                         <i class="fa fa-trash-alt"></i> Remover
@@ -2087,6 +2089,14 @@
       </label>
       <div class="col-xl-8 col-sm-12">
         <input type="text" class="form-control has-error" [(ngModel)]="pacienteVacina.lote">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-xl-4 col-sm-12 col-form-label text-left">
+       Dose:
+      </label>
+      <div class="col-xl-8 col-sm-12">
+        <input type="number"  onKeyDown="return false" min='1' max="10" class="form-control has-error" [(ngModel)]="pacienteVacina.dose">
       </div>
     </div>
     <div class=" form-group row text-right">

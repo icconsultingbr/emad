@@ -9,7 +9,7 @@ AtendimentoVacinaDAO.prototype.salva = async function (objeto) {
 }
 
 AtendimentoVacinaDAO.prototype.buscarPorAtendimentoId = async function (idAtendimento) {
-    let atendimento = await this._connection.query(`select phd.id, phd.nome, phd.validade, phd.lote, phd.nomeProfissional from ${this._table} phd 
+    let atendimento = await this._connection.query(`select phd.id, phd.nome, phd.validade, phd.lote, phd.nomeProfissional, phd.dose from ${this._table} phd 
     WHERE phd.situacao = 1 AND phd.idAtendimento = ?` , idAtendimento);
     return atendimento;
 }
