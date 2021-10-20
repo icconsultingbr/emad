@@ -10,6 +10,6 @@ export class PacienteVacina {
     @Input() nomeProfissional: string = JSON.parse(localStorage.getItem("currentUser")).nome;
     @Input() idAtendimento: Number = null;
     @Input() idPaciente: Number = null;
-    @Input() dose: Number = null;
+    @Input() dose: Number = 1;
     @Input() dataCriacao: Date = null;
 }
