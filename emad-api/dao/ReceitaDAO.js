@@ -227,7 +227,9 @@ ReceitaDAO.prototype.buscaCarteiraVacinacaoPorPaciente = async function (idPacie
     FROM tb_receita tr     
     INNER JOIN tb_item_receita tir ON (tr.id = tir.idReceita)
     INNER JOIN tb_material tm ON (tir.idMaterial = tm.id)
-    WHERE tm.vacina = 1 AND tr.idPaciente = ?`, idPaciente); 
+    WHERE tm.vacina = 1 AND tr.idPaciente = ?
+    UNION ALL
+    select tav.nome, tav.dataCriacao from tb_atendimento_vacina tav where situacao=1 and idPaciente=?`, [idPaciente, idPaciente]); 
     
     const pivoted = response.reduce((prev, cur) => {
 
