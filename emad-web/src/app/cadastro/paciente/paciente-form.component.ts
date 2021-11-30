@@ -164,6 +164,7 @@ export class PacienteFormComponent implements OnInit {
       this.loading = false;
       this.loadPhoto = true;
       this.carregaNaturalidade();
+      this.carregaMunicipios();
       this.findHipotesePorPaciente();
     }, error => {
       this.object = new Paciente();
@@ -370,6 +371,23 @@ export class PacienteFormComponent implements OnInit {
           this.ref.detectChanges();
         });
       }
+    });
+  }
+
+  carregaMunicipios() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    
+    this.service.list(`municipio/uf/${this.object.idUf}`).subscribe(municipios => {
+      this.domains[0].idMunicipio = municipios;
+      let listaMunicipios = municipios.filter((municipio) => municipio.nome.toUpperCase() == municipio.toUpperCase());
+      if (listaMunicipios.length > 0) {
+        this.object.idMunicipio = listaMunicipios[0].id;
+      }
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
     });
   }
 
