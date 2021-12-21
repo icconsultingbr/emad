@@ -336,7 +336,7 @@ module.exports = function (app) {
 
             if(template.length){        
 
-                 if (template[0].queryTemplate != null && template[0].xmlTemplate != null) {
+                 if (template[0].queryTemplate && template[0].xmlTemplate) {
                     
                      var dadosFicha = await atendimentoRepository.buscaDadosFichaAtendimentoSync(template[0].queryTemplate, obj.id);    
                     
