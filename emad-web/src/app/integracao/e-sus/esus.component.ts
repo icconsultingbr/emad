@@ -56,6 +56,26 @@ export class ESusComponent implements OnInit {
   }
 
   gerarXMLsPorTipoFicha() {
+
+
+    let dataInicialConvertida
+    let dataFinalConvertida
+
+    if (this.object.periodoExtracao[0]) {
+      this.object.periodoExtracao[0].setHours(0, 0, 0, 0)
+      dataInicialConvertida =  this.object.periodoExtracao[0].toISOString()
+    }
+
+    if (this.object.periodoExtracao[1]) {
+      this.object.periodoExtracao[1].setHours(23, 59, 0, 0)
+      dataFinalConvertida =  this.object.periodoExtracao[1].toISOString()
+    }
+
+    this.object.periodoExtracao[0] = dataInicialConvertida
+    this.object.periodoExtracao[1] = dataFinalConvertida
+
+
+
     this.service.obterXmlsPorTipoFicha(this.object).subscribe((result: ArrayBuffer) => {
       const blob = new Blob([result], { type: 'application/zip;' });
       const url = window.URL.createObjectURL(blob);

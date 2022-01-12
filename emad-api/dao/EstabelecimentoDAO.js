@@ -78,7 +78,8 @@ EstabelecimentoDAO.prototype.lista = async function(addFilter) {
         e.idUnidadePesquisaMedicamentoDim,
         e.idUnidadeRegistroReceitaDim,
         e.nivelSuperior,
-        e.idEstabelecimentoNivelSuperior   
+        e.idEstabelecimentoNivelSuperior,
+        e.cnsProfissionaleSus   
     FROM 
         tb_estabelecimento AS e 
     INNER JOIN 
@@ -188,7 +189,7 @@ EstabelecimentoDAO.prototype.carregaPorId = async function(id){
 }
 
 EstabelecimentoDAO.prototype.buscaEstabelecimentoESus = async function(id){
-    let result =  await this._connection.query(`SELECT tm.codigo, te.cnes, te.cnpj, te.cnpj, te.nomeFantasia FROM ${this._table} te
+    let result =  await this._connection.query(`SELECT tm.codigo, te.cnes, te.cnpj, te.cnpj, te.nomeFantasia, te.cnsProfissionaleSus FROM ${this._table} te
                                                 INNER JOIN tb_municipio tm ON (te.idMunicipio = tm.id)
                                                 where te.id = ?`, [id]);
     return result ? result[0] : null;

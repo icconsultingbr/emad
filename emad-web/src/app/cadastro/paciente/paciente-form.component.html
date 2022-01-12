@@ -202,6 +202,21 @@
                       </option>
                     </select>
                   </div>
+                  
+                </div>
+
+
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Raça/Cor<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-4">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idRaca"
+                      formControlName="idRaca">
+                      <option [value]="">Selecione...</option>
+                      <option *ngFor="let item of domains[0]?.idRaca" [value]="item.id">{{item.nome}}</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
@@ -366,7 +381,7 @@
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                    Estado
+                    Estado<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
                     <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idUf"
@@ -376,10 +391,10 @@
                     </select>
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
-                    Município
+                    Município<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idMunicipio"
+                    <select  *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idMunicipio"
                       formControlName="idMunicipio">
                       <option [value]="">Selecione...</option>
                       <option *ngFor="let item of domains[0]?.idMunicipio" [value]="item.id">{{item.nome}}</option>
@@ -492,16 +507,7 @@
                       <option *ngFor="let item of domains[0]?.idTipoSanguineo" [value]="item.id">{{item.nome}}</option>
                     </select>
                   </div>
-                  <label class="col-xl-2 col-form-label text-left">
-                    Raça/Cor
-                  </label>
-                  <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idRaca"
-                      formControlName="idRaca">
-                      <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idRaca" [value]="item.id">{{item.nome}}</option>
-                    </select>
-                  </div>
+                 
                 </div>
               </div>
             </div>

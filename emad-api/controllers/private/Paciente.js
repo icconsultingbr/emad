@@ -69,6 +69,9 @@ module.exports = function (app) {
         req.assert("idNaturalidade").notEmpty().withMessage("Naturalidade é um campo obrigatório;");
         req.assert("escolaridade").notEmpty().withMessage("Escolaridade é um campo obrigatório;");
         req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
+        req.assert("idRaca").notEmpty().withMessage("Raça/Cor é um campo obrigatório;");
+        req.assert("idUf").notEmpty().withMessage("Estado é um campo obrigatório;");
+        req.assert("idMunicipio").notEmpty().withMessage("Municipio é um campo obrigatório;");
         req.assert("idSap").isLength({ min: 0, max: 20 }).withMessage("O campo ID SAP deve ter no máximo 20 caracteres");
         req.assert("cartaoSus").isLength({ min: 0, max: 50 }).withMessage("O campo Cartão SUS deve ter no máximo 50 caracteres");
         req.assert("numeroProntuario").isLength({ min: 0, max: 20 }).withMessage("O campo Número prontuário deve ter no máximo 20 caracteres");
@@ -236,6 +239,10 @@ module.exports = function (app) {
         req.assert("cartaoSus").isLength({ min: 0, max: 50 }).withMessage("O campo Cartão SUS deve ter no máximo 50 caracteres");
         req.assert("numeroProntuario").isLength({ min: 0, max: 20 }).withMessage("O campo Número prontuário deve ter no máximo 20 caracteres");
         req.assert("numeroProntuarioCnes").isLength({ min: 0, max: 20 }).withMessage("O campo Número prontuário Cnes deve ter no máximo 20 caracteres");
+        req.assert("idRaca").notEmpty().withMessage("Raça/Cor é um campo obrigatório;");
+        req.assert("idUf").notEmpty().withMessage("Estado é um campo obrigatório;");
+        req.assert("idMunicipio").notEmpty().withMessage("Municipio é um campo obrigatório;");
+
 
         errors = req.validationErrors();
 

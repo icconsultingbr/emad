@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { GenericsService } from '../../_core/_services/generics.service';
-import { Validators } from '@angular/forms';
+import { MaxLengthValidator, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class EstabelecimentoService extends GenericsService {
       required: false,
       validator: ['', '']
     },
-    {
+        {
       field: "cnes",
       type: "text",
       label: "CNES",
@@ -279,6 +279,16 @@ export class EstabelecimentoService extends GenericsService {
       form: true,
       required: false,
       validator: ['', '']
+    },
+    {
+      field: "cnsProfissionaleSus",
+      type: "text",
+      label: "CNS Profissional eSus",
+      grid: false,
+      form: true,
+      required: true,
+      validator:  ['',  [Validators.required]],
+      autoFocus : true
     },
     {
       field: "situacao",
