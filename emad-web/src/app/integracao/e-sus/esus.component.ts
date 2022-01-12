@@ -74,8 +74,6 @@ export class ESusComponent implements OnInit {
     this.object.periodoExtracao[0] = dataInicialConvertida
     this.object.periodoExtracao[1] = dataFinalConvertida
 
-
-
     this.service.obterXmlsPorTipoFicha(this.object).subscribe((result: ArrayBuffer) => {
       const blob = new Blob([result], { type: 'application/zip;' });
       const url = window.URL.createObjectURL(blob);
@@ -101,6 +99,9 @@ export class ESusComponent implements OnInit {
       }
 
       link.click();
+
+      this.object.periodoExtracao = []
+
     }, erro => {
       let encoded = String.fromCharCode.apply(null, new Uint8Array(erro) as any);
       let err = JSON.parse(decodeURIComponent(escape(encoded)));
