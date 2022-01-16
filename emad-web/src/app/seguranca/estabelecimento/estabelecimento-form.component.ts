@@ -39,9 +39,11 @@ export class EstabelecimentoFormComponent implements OnInit {
     this.service.listDomains('uf').subscribe(ufs => {
       this.service.listDomains('tipo-unidade').subscribe(tipos => {  
         this.service.list('estabelecimento/nivel-superior/' + this.id).subscribe(estabelecimentos => {
+          this.service.listDomains('especialidade').subscribe(cboProfEsus => {
           this.domains.push({
             idUf: ufs,
             idMunicipio: [],
+            cboProfissionalEsus: cboProfEsus,
             idTipoUnidade: tipos,
             grauDependencia: [
               { id: "I", nome: "Individual" },
@@ -57,8 +59,9 @@ export class EstabelecimentoFormComponent implements OnInit {
         });
       });
     });
-  }
-
+  });
+}
+  
   getGeocodeAddress(event) {
     let address: any = event.address;
     let object: Estabelecimento = event.object;

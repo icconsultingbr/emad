@@ -53,6 +53,7 @@ module.exports = function (app) {
 
         req.assert("cnsProfissionaleSus").matches(/^[0-9]+$/).withMessage("O campo CNS Profissional eSus deve conter somente números");
         req.assert("cnsProfissionaleSus").isLength({ min: 15, max: 15 }).withMessage("O campo CNS Profissional eSus deve ter no máximo 15 caracteres");
+        req.assert("cboProfissionalEsus").notEmpty().withMessage("O CBO do Profissional E-SUS é um campo obrigatório;");
         req.assert("cnes").notEmpty().withMessage("CNES é um campo obrigatório;");
         req.assert("cnpj").notEmpty().withMessage("CNPJ é um campo obrigatório;");
         req.assert("razaoSocial").notEmpty().withMessage("Razão social é um campo obrigatório;");

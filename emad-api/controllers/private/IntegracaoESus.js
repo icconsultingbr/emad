@@ -228,7 +228,7 @@ module.exports = function (app) {
                 .ele('uuidFichaOriginadora').txt(uuidFicha).up()
                 .ele('headerTransport')
                 .ele('profissionalCNS').txt(estabelecimento.cnsProfissionaleSus ? estabelecimento.cnsProfissionaleSus : '3').up()
-                .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
+                .ele('cboCodigo_2002').txt(estabelecimento.codigoCBO ? estabelecimento.codigoCBO : '3').up()
                 .ele('cnes').txt(estabelecimento.cnes).up()
                 .ele('dataAtendimento').txt(Date.now()).up()
                 .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()

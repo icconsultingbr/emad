@@ -79,13 +79,16 @@ EstabelecimentoDAO.prototype.lista = async function(addFilter) {
         e.idUnidadeRegistroReceitaDim,
         e.nivelSuperior,
         e.idEstabelecimentoNivelSuperior,
-        e.cnsProfissionaleSus   
+        e.cnsProfissionaleSus, 
+        es.codigoCBO  
     FROM 
         tb_estabelecimento AS e 
     INNER JOIN 
         tb_municipio as m ON(e.idMunicipio = m.id) 
     INNER JOIN 
         tb_uf as u ON(e.idUf = u.id) 
+    INNER JOIN
+        tb_especialidade es ON(e.cboProfissionalEsus = es.id)
     INNER JOIN 
         tb_tipo_unidade as tu ON(e.idTipoUnidade = tu.id) WHERE e.situacao = 1 ORDER BY e.nomeFantasia ASC ${where} `);
 }
@@ -189,8 +192,9 @@ EstabelecimentoDAO.prototype.carregaPorId = async function(id){
 }
 
 EstabelecimentoDAO.prototype.buscaEstabelecimentoESus = async function(id){
-    let result =  await this._connection.query(`SELECT tm.codigo, te.cnes, te.cnpj, te.cnpj, te.nomeFantasia, te.cnsProfissionaleSus FROM ${this._table} te
+    let result =  await this._connection.query(`SELECT tm.codigo, te.cnes, te.cnpj, te.cnpj, te.nomeFantasia, te.cnsProfissionaleSus, es.codigoCBO FROM ${this._table} te
                                                 INNER JOIN tb_municipio tm ON (te.idMunicipio = tm.id)
+                                                LEFT JOIN tb_especialidade es ON(te.cboProfissionalEsus = es.id)
                                                 where te.id = ?`, [id]);
     return result ? result[0] : null;
 }

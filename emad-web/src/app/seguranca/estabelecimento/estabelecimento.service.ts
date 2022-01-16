@@ -291,6 +291,18 @@ export class EstabelecimentoService extends GenericsService {
       autoFocus : true
     },
     {
+      field: "cboProfissionalEsus",
+      type: "select",
+      label: "CBO Profissional eSus",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ["", Validators.required],
+      filter: {
+        type: "select",
+      },
+    },
+    {
       field: "situacao",
       type: "checkbox",
       label: "Situação",
