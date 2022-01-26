@@ -318,12 +318,18 @@ module.exports = function (app) {
                 .ele('versao', { major: '4', minor: '0', revision: '1' })
                 .doc();
 
+            var qtdAtendimentosValidos = listAtendimentos.length;
+
             listAtendimentos.forEach(atendimento => {
 
                 const listAvaliacao = list.condicaoAvaliacao.filter(x => x.idAtendimento == atendimento.idAtendimento);
                 const listCondutas = list.condutaSus.filter(x => x.idAtendimento == atendimento.idAtendimento);
 
-                if (!listAvaliacao.some((o) => o.idAtendimento == atendimento.idAtendimento) || !listCondutas.some((o) => o.idAtendimento == atendimento.idAtendimento)) { return; }
+                if (!listAvaliacao.some((o) => o.idAtendimento == atendimento.idAtendimento) || !listCondutas.some((o) => o.idAtendimento == atendimento.idAtendimento)) 
+                {
+                    qtdAtendimentosValidos--;
+                    return; 
+                }                
 
                 let avaliacao = preencheAvaliacaoAtendimentoIndividual(listAvaliacao, atendimento.idAtendimento);
                 let condutas = preencheCondutasAtendimentoIndividual(listCondutas, atendimento.idAtendimento)
@@ -357,6 +363,9 @@ module.exports = function (app) {
                     }, true, true)
                 })
             })
+
+            if(qtdAtendimentosValidos == 0) { return; }            
+
             doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoIndividualMasterTransport', true, true).ele('tpCdsOrigem').txt('3').up().ele('uuidFicha').txt(uuidFicha).up();
 
             xmls.push(doc.doc().end({ prettyPrint: true, allowEmptyTags: false }));
@@ -373,7 +382,7 @@ module.exports = function (app) {
         const cid10 = fragment().ele('cid10').txt(listaAvaliacaoAtendimento[0].cid_10).up();
         avaliacao.import(cid10);
 
-        if (listaAvaliacaoAtendimento.length > 2) {
+        if (listaAvaliacaoAtendimento.length > 1) {
             const cid10_2 = fragment().ele('cid10_2').txt(listaAvaliacaoAtendimento[1].cid_10).up();
             avaliacao.import(cid10_2);
         }
