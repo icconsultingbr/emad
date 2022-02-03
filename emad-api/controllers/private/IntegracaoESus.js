@@ -9,18 +9,7 @@ module.exports = function (app) {
         req.assert("idFichaEsus").notEmpty().withMessage("O campo Ficha é um campo obrigatório");
 
         const connection = await app.dao.connections.EatendConnection.connection();
-        const profissionalRepository = new app.dao.ProfissionalDAO(connection);
-        let util = new app.util.Util();
-        let error = req.validationErrors();
-
         try {
-
-            let usuarioProfissional = await profissionalRepository.buscaProfissionalSusPorUsuarioSync(req.usuario.id);
-
-            if (!usuarioProfissional) {
-                res.status(400).send(util.customError(error, "header", "O seu usuário não possui profissional vinculado, não é permitido realizar exportações", ""));
-                return;
-            }
 
             let retorno;
             let cad, atend, vac, proc;
@@ -28,14 +17,14 @@ module.exports = function (app) {
             if (filtro) {
                 switch (filtro.idFichaEsus) {
                     case '0':
-                        cad = await listaCadastroIndividual(filtro, usuarioProfissional);
+                        cad = await listaCadastroIndividual(filtro);
                         atend = await listaAtendimentoIndividual(filtro);
                         vac = await listaFichaVacinacao(filtro);
                         let xmls = cad.concat(atend, vac);
                         retorno = generateZipFiles(xmls, 'ficha')
                         break;
                     case '2':
-                        cad = await listaCadastroIndividual(filtro, usuarioProfissional);
+                        cad = await listaCadastroIndividual(filtro);
                         retorno = generateZipFiles(cad, 'ficha-cadastro-individual')
                         break;
                     case '4':
@@ -52,7 +41,6 @@ module.exports = function (app) {
                         break;
                     default:
                         return retorno;
-                        break;
                 }
             }
 
@@ -65,7 +53,7 @@ module.exports = function (app) {
         }
     });
 
-    async function listaCadastroIndividual(filtro, profissional) {
+    async function listaCadastroIndividual(filtro) {
         let tipoCampoData;
 
         if (filtro.idTipoPeriodo == 1) {
@@ -90,7 +78,7 @@ module.exports = function (app) {
             await connection.close();
         }
 
-        return preencheXMLCadastroIndividual(list, estabelecimento, profissional);
+        return preencheXMLCadastroIndividual(list, estabelecimento);
     }
 
     async function listaAtendimentoIndividual(filtro) {
@@ -186,7 +174,7 @@ module.exports = function (app) {
         return preencheXMLFichaProcedimentos(listaProcedimentos, estabelecimento, profissionais);
     }
 
-    function preencheXMLCadastroIndividual(list, estabelecimento, profissional) {
+    function preencheXMLCadastroIndividual(list, estabelecimento) {
         const { create } = require('xmlbuilder2');
         const { v4: uuidv4 } = require('uuid');
         let xmls = [];
@@ -212,7 +200,8 @@ module.exports = function (app) {
                 .ele('nacionalidadeCidadao').txt(paciente.idNacionalidadeSUS).up()
                 .ele('nomeCidadao').txt(paciente.nome).up()
                 .ele('nomeMaeCidadao').txt(paciente.desconheceNomeMae == 1 ? '' : paciente.nomeMae).up()
-                .ele('cpfCidadao').txt(paciente.cpfCidadao ? paciente.cpfCidadao : undefined).up()
+                .ele('cnsCidadao').txt(paciente.cnsCidadao ? paciente.cnsCidadao : undefined).up()
+                .ele('cpfCidadao').txt(paciente.cnsCidadao ? undefined : paciente.cpfCidadao ? paciente.cpfCidadao : undefined).up()
                 .ele('telefoneCelular').txt(paciente.foneCelular ? paciente.foneCelular : '').up()
                 .ele('paisNascimento').txt(paciente.paisNascimento).up()
                 .ele('racaCorCidadao').txt(paciente.idRacaSus ? paciente.idRacaSus : '1').up()
@@ -250,10 +239,10 @@ module.exports = function (app) {
                 .ele('versaoSistema').txt('3.2.18').up()
                 .ele('nomeBancoDados').txt('MySQL').up()
                 .up()
-                .ele('versao', { major: '4', minor: '0', revision: '3' })
+                .ele('versao', { major: '4', minor: '0', revision: '1' })
                 .doc();
 
-            let fieldToValidate = ['emailCidadao', 'nomeMaeCidadao', 'cpfCidadao', 'telefoneCelular', 'racaCorCidadao', 'nomePaiCidadao'];
+            let fieldToValidate = ['emailCidadao', 'nomeMaeCidadao', 'cnsCidadao', 'cpfCidadao', 'telefoneCelular', 'racaCorCidadao', 'nomePaiCidadao'];
 
             fieldToValidate.forEach(field => {
                 doc.each(x => {
@@ -336,7 +325,7 @@ module.exports = function (app) {
 
                 let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('atendimentosIndividuais')
                     .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : undefined).up()
-                    .ele('cpfCidadao').txt(atendimento.cpfCidadao ? atendimento.cpfCidadao : undefined).up()
+                    .ele('cpfCidadao').txt(atendimento.cartaoSus ? undefined : atendimento.cpfCidadao ? atendimento.cpfCidadao : undefined).up()
                     .ele('dataNascimento').txt(new Date(atendimento.dataNascimento).getTime() / 1000).up()
                     .ele('localDeAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
                     .ele('sexo').txt(atendimento.sexo).up()
@@ -458,7 +447,7 @@ module.exports = function (app) {
                 let vac = fragment().ele('vacinacoes')
                     .ele('turno').txt(vacina.turno).up()
                     .ele('cnsCidadao').txt(vacina.cartaoSus ? vacina.cartaoSus : '').up()
-                    .ele('cpfCidadao').txt(vacina.cpfCidadao ? vacina.cpfCidadao : '').up()
+                    .ele('cpfCidadao').txt(vacina.cartaoSus ? '' : vacina.cpfCidadao ? vacina.cpfCidadao : '').up()
                     .ele('dtNascimento').txt(new Date(vacina.dataNascimento).getTime() / 1000).up()
                     .ele('sexo').txt(vacina.sexo).up()
                     .ele('localAtendimento').txt(vacina.localDeAtendimentoSus ? vacina.localDeAtendimentoSus : '').up()
@@ -565,7 +554,7 @@ module.exports = function (app) {
 
                 let proc = fragment().ele('atendProcedimentos')
                     .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : '').up()
-                    .ele('cpfCidadao').txt(atendimento.cpfCidadao ? atendimento.cpfCidadao : '').up()
+                    .ele('cpfCidadao').txt(atendimento.cartaoSus ? '' : atendimento.cpfCidadao ? atendimento.cpfCidadao : '').up()
                     .ele('dtNascimento').txt(new Date(atendimento.dataNascimento).getTime() / 1000).up()
                     .ele('sexo').txt(atendimento.sexo).up()
                     .ele('localAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()

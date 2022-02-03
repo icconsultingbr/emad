@@ -5,7 +5,7 @@ function IntegracaoESusDAO(connection, tipoCampoData) {
 }
 
 IntegracaoESusDAO.prototype.listaCadastroIndividual = async function(filtro) {   
-   return await this._connection.query(`SELECT * FROM vw_cadastro_individual_sus vw WHERE cpfCidadao IS NOT NULL and idEstabelecimentoCadastro = ? AND ${this.campoData} BETWEEN ? AND ? `, [filtro.idEstabelecimento, filtro.periodoExtracao[0],filtro.periodoExtracao[1]]);
+   return await this._connection.query(`SELECT * FROM vw_cadastro_individual_sus vw WHERE (cpfCidadao IS NOT NULL OR cnsCidadao IS NOT NULL) and idEstabelecimentoCadastro = ? AND ${this.campoData} BETWEEN ? AND ? `, [filtro.idEstabelecimento, filtro.periodoExtracao[0],filtro.periodoExtracao[1]]);
 }
 
 IntegracaoESusDAO.prototype.listaAtendimentoIndividual = async function(filtro) {  
