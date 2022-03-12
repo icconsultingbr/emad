@@ -106,6 +106,11 @@ module.exports = function (app) {
         else
             obj.dataNascimento = new Date(obj.dataNascimento);
 
+        if (obj.dumDaGestante.length == 10)
+            obj.dumDaGestante = util.dateToISO(obj.dumDaGestante);
+        else
+            obj.dumDaGestante = new Date(obj.dumDaGestante);
+
         const connection = await app.dao.connections.EatendConnection.connection();
 
         const pacienteRepository = new app.dao.PacienteDAO(connection, null);
@@ -271,6 +276,11 @@ module.exports = function (app) {
             obj.dataNascimento = util.dateToISO(obj.dataNascimento);
         else
             obj.dataNascimento = new Date(obj.dataNascimento);
+
+        if (obj.dumDaGestante.length == 10)
+            obj.dumDaGestante = util.dateToISO(obj.dumDaGestante);
+        else
+            obj.dumDaGestante = new Date(obj.dumDaGestante);
 
         const connection = await app.dao.connections.EatendConnection.connection();
 

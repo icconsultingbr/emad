@@ -329,6 +329,82 @@ export class PacienteService extends GenericsService {
       required: false,
       validator: ['', '']
     },
+
+    {
+      field: "necessidadeEspeciais",
+      type: "checkbox",
+      label: "Possui necessidades especiais",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "gestante",
+      type: "checkbox",
+      label: "Gestante",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "aleitamentoMaterno ",
+      type: "text",
+      label: "Cód aleita. materno",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "dumDaGestante",
+      type: "text",
+      mask: "99/99/9999",
+      placeholder: "99/99/9999",
+      label: "Dt. Ult. Menstruação",
+      grid: false,
+      //isDate: true,
+      form: true,
+      required: true,
+      validator: ['', Validators.required],
+    },
+    {
+      field: "idadeGestacional ",
+      type: "number",
+      label: "Idade Gest. em semanas",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "stGravidezPlanejada",
+      type: "checkbox",
+      label: "Gravidez Planejada",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "nuGestasPrevias",
+      type: "number",
+      label: "Núm. de gestações",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
+      field: "nuPartos",
+      type: "number",
+      label: "Núm. de Partos",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
     {
       field: "situacao",
       type: "checkbox",
@@ -452,7 +528,7 @@ export class PacienteService extends GenericsService {
       + JSON.parse(localStorage.getItem("est"))[0].id);
   }
 
-  obterProntuarioPacienteRelatorio(idPaciente: number) : Observable<any> {
+  obterProntuarioPacienteRelatorio(idPaciente: number): Observable<any> {
     return this.http.get('paciente/prontuario/report/' + idPaciente);
   }
 }

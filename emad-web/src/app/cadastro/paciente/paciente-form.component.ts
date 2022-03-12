@@ -239,6 +239,14 @@ export class PacienteFormComponent implements OnInit {
       idEstabelecimentoCadastro: new FormControl({ value: '', disabled: (this.id > 0 || this.object.id > 0) ? true : false }, Validators.required),
       gruposAtencaoContinuada: ['', ''],
       falecido: ['', ''],
+      necessidadeEspeciais: ['', ''],
+      gestante: ['', ''],
+      aleitamentoMaterno: ['', ''],
+      dumDaGestante: ['', Validators.required],
+      idadeGestacional: ['', ''],
+      stGravidezPlanejada: ['', ''],
+      nuGestasPrevias: ['', ''],
+      nuPartos: ['', ''],
       situacao: ['', Validators.required],
       foto: ['']
     });
@@ -364,7 +372,7 @@ export class PacienteFormComponent implements OnInit {
 
         this.service.list(`municipio/uf/${this.object.idUf}`).subscribe(municipios => {
           this.domains[0].idMunicipio = municipios;
-          let ufMunicipios = municipios.filter((uf) => uf.nome.toUpperCase() == municipio.toUpperCase());
+          let ufMunicipios = municipios.filter((uf) => uf.nome.toUpperCase() == municipio.toString().toUpperCase());
           if (ufMunicipios.length > 0) {
             this.object.idMunicipio = ufMunicipios[0].id;
           }
@@ -378,7 +386,7 @@ export class PacienteFormComponent implements OnInit {
     this.message = "";
     this.errors = [];
     this.loading = true;
-    
+
     this.service.list(`municipio/uf/${this.object.idUf}`).subscribe(municipios => {
       this.domains[0].idMunicipio = municipios;
       let listaMunicipios = municipios.filter((municipio) => municipio.nome.toUpperCase() == municipio.toUpperCase());
