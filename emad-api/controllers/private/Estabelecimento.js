@@ -31,7 +31,7 @@ module.exports = function (app) {
             res.status(200).json(response);
             return;
         });
-    }); 
+    });
 
     app.get('/estabelecimento/local/:id', function (req, res) {
         let usuario = req.usuario;
@@ -43,7 +43,7 @@ module.exports = function (app) {
             res.status(200).json(response);
             return;
         });
-    });    
+    });
 
     app.post('/estabelecimento', function (req, res) {
         var obj = req.body;
@@ -69,7 +69,6 @@ module.exports = function (app) {
         req.assert("esferaAdministradora").notEmpty().withMessage("Esfera administradora é um campo obrigatório;");
         req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
 
-
         var errors = req.validationErrors();
 
         if (errors) {
@@ -77,14 +76,19 @@ module.exports = function (app) {
             return;
         }
 
-        obj.dataCriacao = new Date;
+        if (obj.dataCriacao != null) {
+            if (obj.dataCriacao.length == 10)
+                obj.dataCriacao = util.dateToISO(obj.dataCriacao);
+            else
+                obj.dataCriacao = new Date(obj.dataCriacao);
+        }
 
         salva(obj, res).then(function (response) {
-            obj.id = response.insertId;
+            obj.id = response.insertId
             res.status(201).send(obj);
         });
-    });
 
+    });
 
     app.put('/estabelecimento', function (req, res) {
 
@@ -94,43 +98,51 @@ module.exports = function (app) {
         let errors = [];
         let id = obj.id;
         delete obj.id;
+        delete obj.tipoFichas;
 
-            req.assert("cnsProfissionaleSus").notEmpty().withMessage("CNS Profissional eSus é um campo obrigatório;");
-            req.assert("cnes").notEmpty().withMessage("CNES é um campo obrigatório;");
-            req.assert("cnpj").notEmpty().withMessage("CNPJ é um campo obrigatório;");
-            req.assert("razaoSocial").notEmpty().withMessage("Razão social é um campo obrigatório;");
-            req.assert("nomeFantasia").notEmpty().withMessage("Nome fantasia é um campo obrigatório;");
-            req.assert("logradouro").notEmpty().withMessage("Endereço é um campo obrigatório;");
-            req.assert("numero").notEmpty().withMessage("Número é um campo obrigatório;");
-            req.assert("bairro").notEmpty().withMessage("Bairro é um campo obrigatório;");
-            req.assert("idUf").notEmpty().withMessage("Estado é um campo obrigatório;");
-            req.assert("idMunicipio").notEmpty().withMessage("Município é um campo obrigatório;");
-            req.assert("grauDependencia").notEmpty().withMessage("Grau de dependência é um campo obrigatório;");
-            req.assert("terceiros").notEmpty().withMessage("Terceiros é um campo obrigatório;");
-            req.assert("idTipoUnidade").notEmpty().withMessage("Tipo de unidade é um campo obrigatório;");
-            req.assert("esferaAdministradora").notEmpty().withMessage("Esfera administradora é um campo obrigatório;");
-            req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
+        req.assert("cnsProfissionaleSus").notEmpty().withMessage("CNS Profissional eSus é um campo obrigatório;");
+        req.assert("cnes").notEmpty().withMessage("CNES é um campo obrigatório;");
+        req.assert("cnpj").notEmpty().withMessage("CNPJ é um campo obrigatório;");
+        req.assert("razaoSocial").notEmpty().withMessage("Razão social é um campo obrigatório;");
+        req.assert("nomeFantasia").notEmpty().withMessage("Nome fantasia é um campo obrigatório;");
+        req.assert("logradouro").notEmpty().withMessage("Endereço é um campo obrigatório;");
+        req.assert("numero").notEmpty().withMessage("Número é um campo obrigatório;");
+        req.assert("bairro").notEmpty().withMessage("Bairro é um campo obrigatório;");
+        req.assert("idUf").notEmpty().withMessage("Estado é um campo obrigatório;");
+        req.assert("idMunicipio").notEmpty().withMessage("Município é um campo obrigatório;");
+        req.assert("grauDependencia").notEmpty().withMessage("Grau de dependência é um campo obrigatório;");
+        req.assert("terceiros").notEmpty().withMessage("Terceiros é um campo obrigatório;");
+        req.assert("idTipoUnidade").notEmpty().withMessage("Tipo de unidade é um campo obrigatório;");
+        req.assert("esferaAdministradora").notEmpty().withMessage("Esfera administradora é um campo obrigatório;");
+        req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
 
-            errors = req.validationErrors();
+        errors = req.validationErrors();
 
-            if (errors) {
-                res.status(400).send(errors);
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
+
+        if (obj.dataCriacao != null) {
+            if (obj.dataCriacao.length == 10)
+                obj.dataCriacao = util.dateToISO(obj.dataCriacao);
+            else
+                obj.dataCriacao = new Date(obj.dataCriacao);
+        }
+
+        buscarPorId(id, res).then(function (response) {
+            if (typeof response != 'undefined') {
+                atualizaPorId(obj, id, res).then(function (response2) {
+                    res.status(200).json(obj);
+                    return;
+                });
+            }
+            else {
+                errors = util.customError(errors, "body", "Estabelecimento não encontrado!", obj.nome);
+                res.status(404).send(errors);
                 return;
             }
-
-            buscarPorId(id, res).then(function (response) {
-                if (typeof response != 'undefined') {
-                    atualizaPorId(obj, id, res).then(function (response2) {
-                        res.status(200).json(obj);
-                        return;
-                    });
-                }
-                else {
-                    errors = util.customError(errors, "body", "Estabelecimento não encontrado!", obj.nome);
-                    res.status(404).send(errors);
-                    return;
-                }
-            });
+        });
     });
 
     app.delete('/estabelecimento/:id', function (req, res) {
@@ -146,7 +158,6 @@ module.exports = function (app) {
             return;
         });
     });
-
 
     app.get('/estabelecimento/dominios', function (req, res) {
         let usuario = req.usuario;
@@ -181,16 +192,15 @@ module.exports = function (app) {
         let idModalidade = req.params.idModalidade;
         let sexo = req.params.sexo;
         let idadeDe = req.params.idadeDe;
-        let idadeAte= req.params.idadeAte;
+        let idadeAte = req.params.idadeAte;
         let util = new app.util.Util();
         let errors = [];
 
-        buscarPacientes(id, raio, idModalidade, sexo, idadeDe, idadeAte,  res).then(function (response) {
+        buscarPacientes(id, raio, idModalidade, sexo, idadeDe, idadeAte, res).then(function (response) {
             res.status(200).json(response);
             return;
         });
     });
-
 
     async function listaPorUsuario(usuario, res) {
         var util = new app.util.Util();
@@ -198,7 +208,7 @@ module.exports = function (app) {
 
         var objDAO = new app.dao.EstabelecimentoDAO(connection);
 
-        try{
+        try {
             return await objDAO.listaPorUsuario(usuario.id);
         }
         catch (exception) {
@@ -216,7 +226,7 @@ module.exports = function (app) {
 
         var objDAO = new app.dao.EstabelecimentoDAO(connection);
 
-        try{
+        try {
             return await objDAO.lista(addFilter);
         }
         catch (exception) {
@@ -274,7 +284,7 @@ module.exports = function (app) {
         });
         return d.promise;
     }
-    
+
     function buscaCidadePorIdEstabelecimento(id, res) {
         var q = require('q');
         var d = q.defer();
@@ -340,15 +350,18 @@ module.exports = function (app) {
                 res.status(500).send(errors);
                 return;
             } else {
+                obj.id = id;
                 d.resolve(result[0]);
             }
         });
         return d.promise;
     }
 
-
     function salva(estabelecimento, res) {
-        delete estabelecimento.id;
+
+        delete estabelecimento.tipoFichas
+        delete estabelecimento.distancia;
+
         var connection = app.dao.ConnectionFactory();
         var objDAO = new app.dao.EstabelecimentoDAO(connection);
         var q = require('q');
@@ -362,6 +375,7 @@ module.exports = function (app) {
                 return;
             }
             else {
+                estabelecimento.id = result.insertId
                 d.resolve(result);
             }
         });
@@ -390,5 +404,4 @@ module.exports = function (app) {
         });
         return d.promise;
     }
-
 }

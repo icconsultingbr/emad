@@ -20,7 +20,8 @@
           <div class="card-body text-left">
             <div class="row">
               <div class="col-sm-3 text-center">
-                <app-image-cropper-upload *ngIf="loadPhoto" [size]="150" [id]="object.foto" (saved)="photoSaved($event)">
+                <app-image-cropper-upload *ngIf="loadPhoto" [size]="150" [id]="object.foto"
+                  (saved)="photoSaved($event)">
                 </app-image-cropper-upload>
               </div>
               <div class="col-sm-9">
@@ -28,7 +29,7 @@
                   <div class="col-xl-12">
                     <div class="form-group row">
                       <label class="col-xl-2 col-form-label text-left">
-                        Cartão SUS
+                        Cartão SUS<span *ngIf="susObrigatorio == 1" class="text-danger font-weight-bold"> *</span>
                       </label>
                       <div class="col-xl-4">
                         <input type="text" class="form-control has-error" [(ngModel)]="object.cartaoSus"
@@ -162,7 +163,8 @@
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                    CPF
+                    CPF<span *ngIf="cpfObrigatorio == 1" class="text-danger font-weight-bold">
+                      *</span>
                   </label>
                   <div class="col-xl-4">
                     <input type="text" mask="999.999.999-99" class="form-control has-error" [(ngModel)]="object.cpf"
@@ -196,13 +198,15 @@
                   </label>
                   <div class="col-xl-4">
                     <select *ngIf="domains" class="custom-select d-block w-100"
-                      [(ngModel)]="object.idEstabelecimentoCadastro" formControlName="idEstabelecimentoCadastro">
+                      [(ngModel)]="object.idEstabelecimentoCadastro"
+                      (change)="onChangeEstabelecimento($event.target.value)"
+                      formControlName="idEstabelecimentoCadastro">
                       <option [value]="">Selecione...</option>
                       <option *ngFor="let item of domains[0]?.idEstabelecimentoCadastro" [value]="item.id">{{item.nome}}
                       </option>
                     </select>
                   </div>
-                  
+
                 </div>
 
 
@@ -260,6 +264,132 @@
                       <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao"
                         class="custom-control-input">
                       <label class="custom-control-label" for="situacao"></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Possui necessidades especiais
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="necessidadeEspeciais" [(ngModel)]="object.necessidadeEspeciais"
+                        formControlName="necessidadeEspeciais" class="custom-control-input">
+                      <label class="custom-control-label" for="necessidadeEspeciais"></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="object.sexo == 2" class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Gestante
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="gestante" [(ngModel)]="object.gestante" formControlName="gestante"
+                        class="custom-control-input">
+                      <label class="custom-control-label" for="gestante"></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="object.gestante == true" class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+
+                  <div class="col-xl-12">
+                    <div class="card mb-4">
+                      <div class="card-header text-left">
+                        Dados da Gestação
+                      </div>
+                      <div class="card-body text-left">
+
+                        <div class="row">
+                          <div class="col-xl-12">
+                            <div class="form-group row">
+                              <label class="col-xl-2 col-form-label text-left">
+                                Cód aleita. materno<span class="text-danger font-weight-bold"> *</span>
+                              </label>
+                              <div class="col-xl-4">
+                                <input type="text" id="aleitamentoMaterno" class="form-control has-error"
+                                  [(ngModel)]="object.aleitamentoMaterno " formControlName="aleitamentoMaterno" />
+                              </div>
+                              <label class="col-xl-2 col-form-label text-left">
+                                Dt. Ult. Menstruação<span class="text-danger font-weight-bold"> *</span>
+                              </label>
+                              <div class="col-xl-4">
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <div class="input-group-text btn">
+                                      <i class="fa fa-calendar-alt"></i>
+                                    </div>
+                                  </div>
+                                  <input type="text" [(ngModel)]="object.dumDaGestante" formControlName="dumDaGestante"
+                                    placeholder="dd/mm/aaaa" bsDatepicker
+                                    [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}"
+                                    class="form-control" autocomplete="off">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-xl-12">
+                            <div class="form-group row">
+                              <label class="col-xl-2 col-form-label text-left">
+                                Idade Gest. em semanas<span class="text-danger font-weight-bold"> *</span>
+                              </label>
+                              <div class="col-xl-4">
+                                <input type="number" onKeyDown="" min='1' max="42" class="form-control has-error"
+                                  [(ngModel)]="object.idadeGestacional" formControlName="idadeGestacional">
+                              </div>
+                              <label class="col-xl-2 col-form-label text-left">
+                                Gravidez Planejada<span class="text-danger font-weight-bold"> *</span>
+                              </label>
+                              <div class="col-xl-4">
+                                <div class="custom-control custom-checkbox" style="width: 25px">
+                                  <input type="checkbox" id="stGravidezPlanejada"
+                                    [(ngModel)]="object.stGravidezPlanejada" formControlName="stGravidezPlanejada"
+                                    class="custom-control-input">
+                                  <label class="custom-control-label" for="stGravidezPlanejada"></label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-xl-12">
+                            <div class="form-group row">
+                              <label class="col-xl-2 col-form-label text-left">
+                                Núm. de gestações<span class="text-danger font-weight-bold"> *</span>
+                              </label>
+                              <div class="col-xl-4">
+                                <input type="number" onKeyDown="" min='1' max="999" class="form-control has-error"
+                                  [(ngModel)]="object.nuGestasPrevias" formControlName="nuGestasPrevias">
+                              </div>
+                              <label class="col-xl-2 col-form-label text-left">
+                                Núm. de Partos<span class="text-danger font-weight-bold"> *</span>
+                              </label>
+                              <div class="col-xl-4">
+                                <input type="number" onKeyDown="" min='1' max="999" class="form-control has-error"
+                                  [(ngModel)]="object.nuPartos" formControlName="nuPartos">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -394,7 +524,7 @@
                     Município<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <select  *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idMunicipio"
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idMunicipio"
                       formControlName="idMunicipio">
                       <option [value]="">Selecione...</option>
                       <option *ngFor="let item of domains[0]?.idMunicipio" [value]="item.id">{{item.nome}}</option>
@@ -507,7 +637,7 @@
                       <option *ngFor="let item of domains[0]?.idTipoSanguineo" [value]="item.id">{{item.nome}}</option>
                     </select>
                   </div>
-                 
+
                 </div>
               </div>
             </div>
@@ -700,22 +830,23 @@
         <table class="table table-striped">
           <thead>
             <tr class="text-left">
-              <th></th>                      
+              <th></th>
               <th>Código</th>
               <th>Descrição</th>
             </tr>
           </thead>
-          <tbody *ngFor="let item of allItemsPesquisaHipoteseDiagnostica let index=index; let odd='odd'; let even='even';">
+          <tbody
+            *ngFor="let item of allItemsPesquisaHipoteseDiagnostica let index=index; let odd='odd'; let even='even';">
             <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
               <td class="text-secondary">
                 <div class="custom-control custom-radio float-left">
-                  <input type="radio" (change)="selecionaHipoteseDiagnostica(item)" class="custom-control-input" id="{{ item.id }}"
-                    name="radio-item">
+                  <input type="radio" (change)="selecionaHipoteseDiagnostica(item)" class="custom-control-input"
+                    id="{{ item.id }}" name="radio-item">
                   <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
                 </div>
-              </td>           
-              <td class="text-secondary">{{item.cid_10}}</td>              
-              <td class="text-secondary">{{item.nome}}</td>   
+              </td>
+              <td class="text-secondary">{{item.cid_10}}</td>
+              <td class="text-secondary">{{item.nome}}</td>
             </tr>
           </tbody>
           <tbody *ngIf="!allItemsPesquisaHipoteseDiagnostica || allItemsPesquisaHipoteseDiagnostica.length==0">
@@ -730,45 +861,46 @@
     </div>
     <div class="row mb-4">
       <div *ngIf="allItemsPesquisaHipoteseDiagnostica && allItemsPesquisaHipoteseDiagnostica.length"
-          class="text text-secondary col-md-12 pr-0 mx-auto">
-          <i>
-              Exibindo {{paging.offset === (totalPages-1)?paging.total:(paging.offset+1)*paging.limit}} de
-              {{paging.total}}
-              resultado(s).
-          </i>
+        class="text text-secondary col-md-12 pr-0 mx-auto">
+        <i>
+          Exibindo {{paging.offset === (totalPages-1)?paging.total:(paging.offset+1)*paging.limit}} de
+          {{paging.total}}
+          resultado(s).
+        </i>
       </div>
     </div>
     <div class="row mb-2 mt-4">
-      <ul *ngIf="allItemsPesquisaHipoteseDiagnostica && allItemsPesquisaHipoteseDiagnostica.length" class="pagination mx-auto">
-          <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
-              <a class="page-link" (click)="setPagePaginedHipotese(0)">
-                  <i class="fas fa-angle-double-left"></i>
-              </a>
-          </li>
-          <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
-              <a class="page-link" (click)="setPagePaginedHipotese(paging.offset - 1)">
-                  <i class="fas fa-angle-left"></i>
-              </a>
-          </li>
-          <li>
-              <select (change)="loadQuantityPerPagePaginationHipotese($event, 'hipotese')" class="custom-select d-block w-100"
-                  style="border: 1px solid #dee2e6">
+      <ul *ngIf="allItemsPesquisaHipoteseDiagnostica && allItemsPesquisaHipoteseDiagnostica.length"
+        class="pagination mx-auto">
+        <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
+          <a class="page-link" (click)="setPagePaginedHipotese(0)">
+            <i class="fas fa-angle-double-left"></i>
+          </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
+          <a class="page-link" (click)="setPagePaginedHipotese(paging.offset - 1)">
+            <i class="fas fa-angle-left"></i>
+          </a>
+        </li>
+        <li>
+          <select (change)="loadQuantityPerPagePaginationHipotese($event, 'hipotese')"
+            class="custom-select d-block w-100" style="border: 1px solid #dee2e6">
 
-                  <option [ngValue]="10">10</option>
-                  <option [ngValue]="25">25</option>
-                  <option [ngValue]="50">50</option>
-              </select>
-          </li>
-          <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
-              <a class="page-link" (click)="setPagePaginedHipotese(paging.offset + 1)">
-                  <i class="fas fa-angle-right"></i>
-              </a>
-          </li>
-          <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
-              <a class="page-link" (click)="setPagePaginedHipotese(totalPages-1)">
-                  <i class="fas fa-angle-double-right"></i>
-              </a>
-          </li>
+            <option [ngValue]="10">10</option>
+            <option [ngValue]="25">25</option>
+            <option [ngValue]="50">50</option>
+          </select>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
+          <a class="page-link" (click)="setPagePaginedHipotese(paging.offset + 1)">
+            <i class="fas fa-angle-right"></i>
+          </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
+          <a class="page-link" (click)="setPagePaginedHipotese(totalPages-1)">
+            <i class="fas fa-angle-double-right"></i>
+          </a>
+        </li>
       </ul>
     </div>
 

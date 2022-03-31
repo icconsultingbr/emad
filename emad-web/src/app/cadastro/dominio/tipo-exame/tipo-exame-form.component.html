@@ -23,8 +23,8 @@
     </label>
 
     <div class="col-sm-8">
-      <input type="text" name="nome" formControlName="nomeHipoteseDiagnostica" disabled [(ngModel)]="tipoExame.nomeHipoteseDiagnostica"
-        class="form-control has-error" />
+      <input type="text" name="nome" formControlName="nomeHipoteseDiagnostica" disabled
+        [(ngModel)]="tipoExame.nomeHipoteseDiagnostica" class="form-control has-error" />
     </div>
     <button type="button" class="btn btn-primary float-left mr-2" (click)="openHipotese(contentHipotese)">
       <i class="fa fa-plus-circle"></i>
@@ -37,12 +37,34 @@
     </label>
 
     <div class="col-sm-8">
-      <input type="text" name="nome" formControlName="nomeProcedimento" disabled [(ngModel)]="tipoExame.nomeProcedimento"
-        class="form-control has-error" />
+      <input type="text" name="nome" formControlName="nomeProcedimento" disabled
+        [(ngModel)]="tipoExame.nomeProcedimento" class="form-control has-error" />
     </div>
     <button type="button" class="btn btn-primary float-left mr-2" (click)="openProcedimento(contentProcedimento)">
       <i class="fa fa-plus-circle"></i>
     </button>
+  </div>
+
+  <div class="form-group row">
+    <label for="nome" class="col-sm-2 col-form-label text-left">
+      Codigo Sigtap
+    </label>
+
+    <div class="col-sm-8">
+      <input type="text" name="nome" formControlName="codSigtap" [(ngModel)]="tipoExame.codSigtap"
+        class="form-control has-error" />
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="nome" class="col-sm-2 col-form-label text-left">
+      Codigo AB
+    </label>
+
+    <div class="col-sm-8">
+      <input type="text" name="nome" formControlName="codAB" [(ngModel)]="tipoExame.codAB"
+        class="form-control has-error" />
+    </div>
   </div>
 
   <div class="form-group row">
@@ -118,22 +140,23 @@
         <table class="table table-striped">
           <thead>
             <tr class="text-left">
-              <th></th>                      
+              <th></th>
               <th>Código</th>
               <th>Descrição</th>
             </tr>
           </thead>
-          <tbody *ngFor="let item of allItemsPesquisaHipoteseDiagnostica let index=index; let odd='odd'; let even='even';">
+          <tbody
+            *ngFor="let item of allItemsPesquisaHipoteseDiagnostica let index=index; let odd='odd'; let even='even';">
             <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
               <td class="text-secondary">
                 <div class="custom-control custom-radio float-left">
-                  <input type="radio" (change)="selecionaHipoteseDiagnostica(item)" class="custom-control-input" id="{{ item.id }}"
-                    name="radio-item">
+                  <input type="radio" (change)="selecionaHipoteseDiagnostica(item)" class="custom-control-input"
+                    id="{{ item.id }}" name="radio-item">
                   <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
                 </div>
-              </td>           
-              <td class="text-secondary">{{item.cid_10}}</td>              
-              <td class="text-secondary">{{item.nome}}</td>   
+              </td>
+              <td class="text-secondary">{{item.cid_10}}</td>
+              <td class="text-secondary">{{item.nome}}</td>
             </tr>
           </tbody>
           <tbody *ngIf="!allItemsPesquisaHipoteseDiagnostica || allItemsPesquisaHipoteseDiagnostica.length==0">
@@ -148,45 +171,46 @@
     </div>
     <div class="row mb-4">
       <div *ngIf="allItemsPesquisaHipoteseDiagnostica && allItemsPesquisaHipoteseDiagnostica.length"
-          class="text text-secondary col-md-12 pr-0 mx-auto">
-          <i>
-              Exibindo {{paging.offset === (totalPages-1)?paging.total:(paging.offset+1)*paging.limit}} de
-              {{paging.total}}
-              resultado(s).
-          </i>
+        class="text text-secondary col-md-12 pr-0 mx-auto">
+        <i>
+          Exibindo {{paging.offset === (totalPages-1)?paging.total:(paging.offset+1)*paging.limit}} de
+          {{paging.total}}
+          resultado(s).
+        </i>
       </div>
     </div>
     <div class="row mb-2 mt-4">
-      <ul *ngIf="allItemsPesquisaHipoteseDiagnostica && allItemsPesquisaHipoteseDiagnostica.length" class="pagination mx-auto">
-          <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
-              <a class="page-link" (click)="setPagePaginedHipotese(0)">
-                  <i class="fas fa-angle-double-left"></i>
-              </a>
-          </li>
-          <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
-              <a class="page-link" (click)="setPagePaginedHipotese(paging.offset - 1)">
-                  <i class="fas fa-angle-left"></i>
-              </a>
-          </li>
-          <li>
-              <select (change)="loadQuantityPerPagePaginationHipotese($event, 'hipotese')" class="custom-select d-block w-100"
-                  style="border: 1px solid #dee2e6">
+      <ul *ngIf="allItemsPesquisaHipoteseDiagnostica && allItemsPesquisaHipoteseDiagnostica.length"
+        class="pagination mx-auto">
+        <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
+          <a class="page-link" (click)="setPagePaginedHipotese(0)">
+            <i class="fas fa-angle-double-left"></i>
+          </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
+          <a class="page-link" (click)="setPagePaginedHipotese(paging.offset - 1)">
+            <i class="fas fa-angle-left"></i>
+          </a>
+        </li>
+        <li>
+          <select (change)="loadQuantityPerPagePaginationHipotese($event, 'hipotese')"
+            class="custom-select d-block w-100" style="border: 1px solid #dee2e6">
 
-                  <option [ngValue]="10">10</option>
-                  <option [ngValue]="25">25</option>
-                  <option [ngValue]="50">50</option>
-              </select>
-          </li>
-          <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
-              <a class="page-link" (click)="setPagePaginedHipotese(paging.offset + 1)">
-                  <i class="fas fa-angle-right"></i>
-              </a>
-          </li>
-          <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
-              <a class="page-link" (click)="setPagePaginedHipotese(totalPages-1)">
-                  <i class="fas fa-angle-double-right"></i>
-              </a>
-          </li>
+            <option [ngValue]="10">10</option>
+            <option [ngValue]="25">25</option>
+            <option [ngValue]="50">50</option>
+          </select>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
+          <a class="page-link" (click)="setPagePaginedHipotese(paging.offset + 1)">
+            <i class="fas fa-angle-right"></i>
+          </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
+          <a class="page-link" (click)="setPagePaginedHipotese(totalPages-1)">
+            <i class="fas fa-angle-double-right"></i>
+          </a>
+        </li>
       </ul>
     </div>
 
@@ -251,7 +275,7 @@
         <table class="table table-striped">
           <thead>
             <tr class="text-left">
-              <th></th>                      
+              <th></th>
               <th>Código</th>
               <th>Descrição</th>
             </tr>
@@ -260,13 +284,13 @@
             <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
               <td class="text-secondary">
                 <div class="custom-control custom-radio float-left">
-                  <input type="radio" (change)="selecionaProcedimento(item)" class="custom-control-input" id="{{ item.id }}"
-                    name="radio-item">
+                  <input type="radio" (change)="selecionaProcedimento(item)" class="custom-control-input"
+                    id="{{ item.id }}" name="radio-item">
                   <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
                 </div>
-              </td>           
-              <td class="text-secondary">{{item.co_procedimento}}</td>              
-              <td class="text-secondary">{{item.no_procedimento}}</td>   
+              </td>
+              <td class="text-secondary">{{item.co_procedimento}}</td>
+              <td class="text-secondary">{{item.no_procedimento}}</td>
             </tr>
           </tbody>
           <tbody *ngIf="!allItemsPesquisaProcedimento || allItemsPesquisaProcedimento.length==0">
@@ -281,45 +305,45 @@
     </div>
     <div class="row mb-4">
       <div *ngIf="allItemsPesquisaProcedimento && allItemsPesquisaProcedimento.length"
-          class="text text-secondary col-md-12 pr-0 mx-auto">
-          <i>
-              Exibindo {{paging.offset === (totalPages-1)?paging.total:(paging.offset+1)*paging.limit}} de
-              {{paging.total}}
-              resultado(s).
-          </i>
+        class="text text-secondary col-md-12 pr-0 mx-auto">
+        <i>
+          Exibindo {{paging.offset === (totalPages-1)?paging.total:(paging.offset+1)*paging.limit}} de
+          {{paging.total}}
+          resultado(s).
+        </i>
       </div>
     </div>
     <div class="row mb-2 mt-4">
       <ul *ngIf="allItemsPesquisaProcedimento && allItemsPesquisaProcedimento.length" class="pagination mx-auto">
-          <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
-              <a class="page-link" (click)="setPagePaginedProcedimento(0)">
-                  <i class="fas fa-angle-double-left"></i>
-              </a>
-          </li>
-          <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
-              <a class="page-link" (click)="setPagePaginedProcedimento(paging.offset - 1)">
-                  <i class="fas fa-angle-left"></i>
-              </a>
-          </li>
-          <li>
-              <select (change)="loadQuantityPerPagePaginationProcedimento($event, 'hipotese')" class="custom-select d-block w-100"
-                  style="border: 1px solid #dee2e6">
+        <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
+          <a class="page-link" (click)="setPagePaginedProcedimento(0)">
+            <i class="fas fa-angle-double-left"></i>
+          </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
+          <a class="page-link" (click)="setPagePaginedProcedimento(paging.offset - 1)">
+            <i class="fas fa-angle-left"></i>
+          </a>
+        </li>
+        <li>
+          <select (change)="loadQuantityPerPagePaginationProcedimento($event, 'hipotese')"
+            class="custom-select d-block w-100" style="border: 1px solid #dee2e6">
 
-                  <option [ngValue]="10">10</option>
-                  <option [ngValue]="25">25</option>
-                  <option [ngValue]="50">50</option>
-              </select>
-          </li>
-          <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
-              <a class="page-link" (click)="setPagePaginedProcedimento(paging.offset + 1)">
-                  <i class="fas fa-angle-right"></i>
-              </a>
-          </li>
-          <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
-              <a class="page-link" (click)="setPagePaginedProcedimento(totalPages-1)">
-                  <i class="fas fa-angle-double-right"></i>
-              </a>
-          </li>
+            <option [ngValue]="10">10</option>
+            <option [ngValue]="25">25</option>
+            <option [ngValue]="50">50</option>
+          </select>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
+          <a class="page-link" (click)="setPagePaginedProcedimento(paging.offset + 1)">
+            <i class="fas fa-angle-right"></i>
+          </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
+          <a class="page-link" (click)="setPagePaginedProcedimento(totalPages-1)">
+            <i class="fas fa-angle-double-right"></i>
+          </a>
+        </li>
       </ul>
     </div>
 

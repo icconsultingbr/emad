@@ -705,8 +705,6 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
-
-
   findHipotesePorAtendimento() {
     this.message = "";
     this.errors = [];
@@ -732,7 +730,6 @@ export class AtendimentoFormComponent implements OnInit {
       this.errors = Util.customHTTPResponse(error);
     });
   }
-
 
   findEncaminhamentoPorAtendimento() {
     this.message = "";
@@ -799,7 +796,7 @@ export class AtendimentoFormComponent implements OnInit {
   loadDomains() {
     this.loading = true;
     this.service.listDomains('especialidade').subscribe(especialidades => {
-      this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {
+      this.service.findTipoFichaEstabelecimento(this.paciente.idEstabelecimento).subscribe(tipoFichas => {
         this.service.listDomains('grupo-material').subscribe(gruposMateriais => {
           this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {
             this.domains.push({
@@ -821,6 +818,7 @@ export class AtendimentoFormComponent implements OnInit {
         });
       });
     });
+
   }
 
   selecionaHipoteseDiagnostica(item) {
@@ -1254,5 +1252,10 @@ export class AtendimentoFormComponent implements OnInit {
       centered: true,
       windowClass: 'modal-gg'
     });
+  }
+
+  back() {
+    const route = "atendimentos";
+    this.router.navigate([route]);
   }
 }

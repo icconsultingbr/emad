@@ -1,4 +1,5 @@
 module.exports = function (app) {
+  
     app.post('/produto-exame', async function(req,res){
         let obj = req.body;
         let usuario = req.usuario; 

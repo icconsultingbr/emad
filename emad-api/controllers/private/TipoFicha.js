@@ -1,8 +1,8 @@
 module.exports = function (app) {
 
-    app.post('/tipo-ficha', function(req,res){
+    app.post('/tipo-ficha', function (req, res) {
         var obj = req.body;
-        var usuario = req.usuario; 
+        var usuario = req.usuario;
         let util = new app.util.Util();
         var errors = [];
 
@@ -10,37 +10,36 @@ module.exports = function (app) {
         req.assert("tipoAtendimentoSus").isNumeric().withMessage("O campo código atendimento e-SUS permite apenas números");
 
         errors = req.validationErrors();
-        
-        if(errors){
+
+        if (errors) {
             res.status(400).send(errors);
-            return; 
+            return;
         }
 
         obj.dataCriacao = new Date;
         var errors = [];
 
-        if(obj.queryTemplate){
-            if(obj.queryTemplate.toUpperCase().includes('DROP') 
-            || obj.queryTemplate.toUpperCase().includes('DELETE') 
-            || obj.queryTemplate.toUpperCase().includes('INSERT') 
-            || obj.queryTemplate.toUpperCase().includes('UPDATE')
-            || obj.queryTemplate.toUpperCase().includes('TRUNCATE'))
-            {
+        if (obj.queryTemplate) {
+            if (obj.queryTemplate.toUpperCase().includes('DROP')
+                || obj.queryTemplate.toUpperCase().includes('DELETE')
+                || obj.queryTemplate.toUpperCase().includes('INSERT')
+                || obj.queryTemplate.toUpperCase().includes('UPDATE')
+                || obj.queryTemplate.toUpperCase().includes('TRUNCATE')) {
                 errors = util.customError(errors, "header", "Existem palavras não permitidas no campo queryTemplate", null);
                 res.status(400).send(errors);
-                return; 
+                return;
             }
         }
 
-        salvar(obj, res).then(function(response) {
+        salvar(obj, res).then(function (response) {
             obj.id = response.insertId;
             res.status(201).send(obj);
-        }); 
+        });
     });
 
-    app.put('/tipo-ficha', function(req,res){
+    app.put('/tipo-ficha', function (req, res) {
         var obj = req.body;
-        var usuario = req.usuario; 
+        var usuario = req.usuario;
         let util = new app.util.Util();
         var errors = [];
 
@@ -48,34 +47,33 @@ module.exports = function (app) {
         req.assert("tipoAtendimentoSus").isNumeric().withMessage("O campo código Atendimento e-SUS permite apenas números");
 
         errors = req.validationErrors();
-        
-        if(errors){
+
+        if (errors) {
             res.status(400).send(errors);
-            return; 
+            return;
         }
 
-        if(obj.queryTemplate){
-            if(obj.queryTemplate.toUpperCase().includes('DROP') 
-            || obj.queryTemplate.toUpperCase().includes('DELETE') 
-            || obj.queryTemplate.toUpperCase().includes('INSERT') 
-            || obj.queryTemplate.toUpperCase().includes('UPDATE')
-            || obj.queryTemplate.toUpperCase().includes('TRUNCATE'))
-            {
+        if (obj.queryTemplate) {
+            if (obj.queryTemplate.toUpperCase().includes('DROP')
+                || obj.queryTemplate.toUpperCase().includes('DELETE')
+                || obj.queryTemplate.toUpperCase().includes('INSERT')
+                || obj.queryTemplate.toUpperCase().includes('UPDATE')
+                || obj.queryTemplate.toUpperCase().includes('TRUNCATE')) {
                 errors = util.customError(errors, "header", "Existem palavras não permitidas no campo queryTemplate", null);
                 res.status(400).send(errors);
-                return; 
+                return;
             }
         }
-        
+
         obj.dataCriacao = new Date;
         var errors = [];
 
-        atualizar(obj, res).then(function(response) {
+        atualizar(obj, res).then(function (response) {
             obj.id = response.insertId;
             res.status(201).send(obj);
-        });  
+        });
     });
-   
+
     app.get('/tipo-ficha', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
@@ -93,30 +91,29 @@ module.exports = function (app) {
         }
     });
 
-
-    app.get('/tipo-ficha/:id', function(req,res){        
+    app.get('/tipo-ficha/:id', function (req, res) {
         let usuario = req.usuario;
         let id = req.params.id;
         let util = new app.util.Util();
         let errors = [];
 
-        buscarPorId(id, res).then(function(response) {
+        buscarPorId(id, res).then(function (response) {
             res.status(200).json(response);
-            return;      
+            return;
         });
-    }); 
+    });
 
-    app.delete('/tipo-ficha/:id', function(req,res){     
+    app.delete('/tipo-ficha/:id', function (req, res) {
         var util = new app.util.Util();
         let usuario = req.usuario;
         let errors = [];
         let id = req.params.id;
         let tipoFicha = {};
         tipoFicha.id = id;
-        
-        deletaPorId(id, res).then(function(response) {
+
+        deletaPorId(id, res).then(function (response) {
             res.status(200).json(tipoFicha);
-            return;      
+            return;
         });
     });
 
@@ -142,17 +139,17 @@ module.exports = function (app) {
         });
         return d.promise;
     }
- 
-    function buscarPorId(id,  res) {
+
+    function buscarPorId(id, res) {
         var q = require('q');
         var d = q.defer();
         var util = new app.util.Util();
-       
+
         var connection = app.dao.ConnectionFactory();
         var TipoFichaDAO = new app.dao.TipoFichaDAO(connection);
-        var errors =[];
-     
-        TipoFichaDAO.buscaPorId(id, function(exception, result){
+        var errors = [];
+
+        TipoFichaDAO.buscaPorId(id, function (exception, result) {
             if (exception) {
                 d.reject(exception);
                 console.log(exception);
@@ -160,36 +157,35 @@ module.exports = function (app) {
                 res.status(500).send(errors);
                 return;
             } else {
-                
+
                 d.resolve(result[0]);
             }
         });
-        return d.promise;  
+        return d.promise;
     }
 
-
-    function salvar(tipoFicha, res){
+    function salvar(tipoFicha, res) {
         delete tipoFicha.id;
         var connection = app.dao.ConnectionFactory();
         var TipoFichaDAO = new app.dao.TipoFichaDAO(connection);
         var q = require('q');
         var d = q.defer();
 
-        TipoFichaDAO.salva(tipoFicha, function(exception, result){
-            if(exception){
+        TipoFichaDAO.salva(tipoFicha, function (exception, result) {
+            if (exception) {
                 console.log('Erro ao inserir Tipo da ficha', exception);
-                res.status(500).send(exception);   
+                res.status(500).send(exception);
                 d.reject(exception);
                 return;
             }
-            else{   
+            else {
                 d.resolve(result);
             }
         });
-        return d.promise; 
+        return d.promise;
     }
 
-    function atualizar(tipoFicha, res){
+    function atualizar(tipoFicha, res) {
         let id = tipoFicha.id;
         delete tipoFicha.id;
         var connection = app.dao.ConnectionFactory();
@@ -197,18 +193,18 @@ module.exports = function (app) {
         var q = require('q');
         var d = q.defer();
 
-        TipoFichaDAO.atualiza(tipoFicha, id, function(exception, result){
-            if(exception){
+        TipoFichaDAO.atualiza(tipoFicha, id, function (exception, result) {
+            if (exception) {
                 console.log('Erro ao alterar o Tipo da ficha', exception);
-                res.status(500).send(exception);   
+                res.status(500).send(exception);
                 d.reject(exception);
                 return;
             }
-            else{   
+            else {
                 d.resolve(result);
             }
         });
-        return d.promise; 
+        return d.promise;
     }
 
     function deletaPorId(id, res) {
@@ -228,6 +224,98 @@ module.exports = function (app) {
             } else {
 
                 d.resolve(result[0]);
+            }
+        });
+        return d.promise;
+
+    }
+
+    app.post('/tipo-ficha/estabelecimento/', function (req, res) {
+        var obj = req.body;
+        var usuario = req.usuario;
+        let util = new app.util.Util();
+        var errors = [];
+
+        salvaTiposFichaEstabelecimento(obj, res).then(function (response) {
+            res.status(201).send(obj);
+        });
+    });
+
+    app.delete('/tipo-ficha/estabelecimento/:id', function (req, res) {
+        var util = new app.util.Util();
+        let usuario = req.usuario;
+        let errors = [];
+        let id = req.params.id;
+        let tipoFicha = {};
+        tipoFicha.id = id;
+
+        deletaPorIdEstabelecimento(id, res).then(function (response) {
+            res.status(200).json(tipoFicha);
+            return;
+        });
+    });
+
+
+    function buscarPorIdEstabelecimento(id, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var TipoFichaDAO = new app.dao.TipoFichaDAO(connection);
+        var errors = [];
+
+        TipoFichaDAO.buscarPorIdEstabelecimento(id, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "tipoFicha");
+                res.status(500).send(errors);
+                return;
+            } else {
+
+                d.resolve(result[0]);
+            }
+        });
+        return d.promise;
+    }
+
+    function salvaTiposFichaEstabelecimento(obj) {
+
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.TipoFichaDAO(connection);
+        var q = require('q');
+        var d = q.defer();
+
+
+        objDAO.salvaTipoFichaEstabelecimento(obj, function (exception, result) {
+            if (exception) {
+                console.log('Erro ao inserir Lista de Fichas', exception);
+                res.status(500).send(exception);
+                d.reject(exception);
+                return;
+            }
+            else {
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }
+
+    function deletaPorIdEstabelecimento(id, res) {
+        var q = require('q');
+        var d = q.defer();
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.TipoFichaDAO(connection);
+
+        objDAO.deletaPorIdEstabelecimento(id, function (exception, result) {
+            if (exception) {
+                console.log('Erro ao excluir Lista de Fichas', exception);
+                res.status(500).send(exception);
+                d.reject(exception);
+                return;
+            } else {
+                d.resolve(result);
             }
         });
         return d.promise;
