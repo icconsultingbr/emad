@@ -45,7 +45,11 @@ module.exports = function (app) {
                                 errors = customError(errors, "header", "Tempo de ociosidade", "");
                                 return res.status(401).json(errors);
                             }
-                            if(req.usuario.id === config.idUsuarioIntegracao && ["atendimento", "finalizar"].some(el => !req.url.includes(el))){
+                            if(req.usuario.id === config.idUsuarioIntegracao && 
+                                (
+                                    ["atendimento", "finalizar"].some(el => !req.url.includes(el)) &&
+                                    ["paciente", "transferencia-unidade"].some(el => !req.url.includes(el))
+                                )){
                                 errors = customError(errors, "header", "Acesso negado", "");
                                 return res.status(403).json(errors);
                             }
