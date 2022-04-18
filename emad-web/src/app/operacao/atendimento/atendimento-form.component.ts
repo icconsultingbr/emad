@@ -110,6 +110,16 @@ export class AtendimentoFormComponent implements OnInit {
   validadeVacina: string;
   loteVacina: string;
 
+  atividadeTipo: number;
+  validatorPublicoAlvo: boolean;
+
+  pseEducacao: boolean;
+  pseSaude: boolean;
+
+  tipoFicha: number;
+
+  tiposFichaDomainFilter: any[];
+
 
   constructor(
     private service: AtendimentoService,
@@ -143,6 +153,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.idHistorico = params['idHistorico'];
       this.carregaEntidadeCampoPorEspecialidade();
     });
+
   }
 
   createGroup() {
@@ -168,6 +179,18 @@ export class AtendimentoFormComponent implements OnInit {
       motivoQueixa: ['', ''],
       tipoHistoriaClinica: ['', ''],
       glicemia: ['', ''],
+      ficouEmObservacao: ['', ''],
+      inep: ['', ''],
+      numParticipantes: ['', Validators.required],
+      profissionais: ['', ''],
+      atividadeTipo: ['', ''],
+      temasParaReuniao: ['', ''],
+      temasParaSaude: ['', ''],
+      publicoAlvo: ['', ''],
+      procedimento: ['', ''],
+      praticasEmSaude: ['', ''],
+      pseEducacao: ['', ''],
+      pseSaude: ['', ''],
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -203,7 +226,19 @@ export class AtendimentoFormComponent implements OnInit {
       idClassificacaoRisco: new FormControl({ value: '', disabled: true }),
       motivoQueixa: new FormControl({ value: '', disabled: true }),
       tipoHistoriaClinica: new FormControl({ value: '', disabled: true }),
-      glicemia: new FormControl({ value: '', disabled: true })
+      glicemia: new FormControl({ value: '', disabled: true }),
+      ficouEmObservacao: new FormControl({ value: '', disabled: true }),
+      inep: new FormControl({ value: '', disabled: true }),
+      numParticipantes: new FormControl({ value: '', disabled: true }),
+      profissionais: new FormControl({ value: '', disabled: true }),
+      atividadeTipo: new FormControl({ value: '', disabled: true }),
+      temasParaReuniao: new FormControl({ value: '', disabled: true }),
+      publicoAlvo: new FormControl({ value: '', disabled: true }),
+      procedimento: new FormControl({ value: '', disabled: true }),
+      temasParaSaude: new FormControl({ value: '', disabled: true }),
+      praticasEmSaude: new FormControl({ value: '', disabled: true }),
+      pseEducacao: new FormControl({ value: '', disabled: true }),
+      pseSaude: new FormControl({ value: '', disabled: true })
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -222,6 +257,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   buscaPaciente(offset: Number = null, limit: Number = null) {
+
     this.loading = true;
     let params = "pesquisa=1&";
 
@@ -423,6 +459,40 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
+  regrasAtividadeColetiva() {
+    this.errors = [];
+
+    //CAMPO = INEP
+    // É de preenchimento obrigatório se pseEducacao = true ou pseSaude = true;
+    if (this.object.pseEducacao == true && this.object.pseSaude == true && this.object.inep == '') {
+      this.errors = [{ message: "Informe o código Inep" }];
+      this.loading = false;
+      return;
+    }
+
+    // CAMPO = atividadeTipo
+    // 01 - Reunião de equipe;
+    // 02 - Reunião com outras equipes de saúde;
+    // 03 - Reunião intersetorial / Conselho local de saúde / Controle social;
+    // 05 - Atendimento em grupo.
+    //Não podem ser selecionados se pseEducacao = true e pseSaude = false
+    if (this.object.pseEducacao == true && this.object.pseSaude == false) {
+      this.tiposFichaDomainFilter = this.domains[0].atividadeTipo.filter(x => {
+        return x.id != 1 && x.id != 2 && x.id != 3 && x.id != 5;
+      });
+    }
+
+    // CAMPO = publicoAlvo
+    // É de preenchimento obrigatório se atividadeTipo for 4, 5, 6 ou 7;
+    // Não pode ser preenchido se atividadeTipo for 1, 2 ou 3
+    if (this.object.atividadeTipo === 1 || this.object.atividadeTipo === 2 || this.object.atividadeTipo === 3) {
+      this.errors = [{ message: "Selecione o publico alvo da atividade" }];
+      this.loading = false;
+      return;
+    }
+
+  }
+
   openVacinas(content: any) {
     this.errors = [];
     this.message = "";
@@ -539,6 +609,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   encontraAtendimento() {
+
     this.object.id = this.id;
     this.errors = [];
     this.message = "";
@@ -549,6 +620,12 @@ export class AtendimentoFormComponent implements OnInit {
       this.object.pacienteNome = result.nome;
       this.object.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
       this.loading = false;
+
+      this.tipoFicha = result.tipoFicha;
+
+      if (result.tipoFicha == 7) {
+        this.regrasAtividadeColetiva()
+      }
 
       this.findHipotesePorAtendimento();
       this.findEncaminhamentoPorAtendimento();
@@ -611,6 +688,10 @@ export class AtendimentoFormComponent implements OnInit {
     this.message = "";
     this.loading = true;
     event.preventDefault();
+
+    if (this.tipoFicha == 7) {
+      this.regrasAtividadeColetiva
+    }
 
     this.service
       .save(this.form.getRawValue(), this.method)
@@ -794,26 +875,46 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   loadDomains() {
+
     this.loading = true;
     this.service.listDomains('especialidade').subscribe(especialidades => {
       this.service.findTipoFichaEstabelecimento(this.paciente.idEstabelecimento).subscribe(tipoFichas => {
         this.service.listDomains('grupo-material').subscribe(gruposMateriais => {
           this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {
-            this.domains.push({
-              especialidades: especialidades,
-              tipoFichas: tipoFichas,
-              classificacaoRiscos: classificacaoRiscos,
-              idGrupoMaterial: gruposMateriais,
-              tipoHistoriaClinica: [
-                { id: 1, nome: "Anamnese" },
-                { id: 2, nome: "Evolução" },
-              ],
+            this.service.listDomains('atividade-procedimento').subscribe(atividadeProcedimento => {
+              this.service.listDomains('atividade-tipo').subscribe(atividadeTipo => {
+                this.service.listDomains('atividade-temas').subscribe(atividadeTemas => {
+                  this.service.listDomains('atividade-publico').subscribe(atividadePublico => {
+                    this.service.listDomains('atividade-praticas-saude').subscribe(atividadePraticasSaude => {
+                      this.service.listDomains('atividade-temas-saude').subscribe(atividadeTemasSaude => {
+                        this.regrasAtividadeColetiva();
+                        this.domains.push({
+                          especialidades: especialidades,
+                          tipoFichas: tipoFichas,
+                          classificacaoRiscos: classificacaoRiscos,
+                          idGrupoMaterial: gruposMateriais,
+                          atividadeProcedimento: atividadeProcedimento,
+                          atividadeTipo: atividadeTipo,
+                          atividadeTemas: atividadeTemas,
+                          atividadePublico: atividadePublico,
+                          atividadePraticasSaude: atividadePraticasSaude,
+                          atividadeTemasSaude: atividadeTemasSaude,
+                          tipoHistoriaClinica: [
+                            { id: 1, nome: "Anamnese" },
+                            { id: 2, nome: "Evolução" },
+                          ],
+                        });
+                        if (!Util.isEmpty(this.id)) {
+                          this.encontraAtendimento();
+                        }
+                        else
+                          this.loading = false;
+                      });
+                    });
+                  });
+                });
+              });
             });
-            if (!Util.isEmpty(this.id)) {
-              this.encontraAtendimento();
-            }
-            else
-              this.loading = false;
           });
         });
       });
@@ -1113,6 +1214,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.allItemsEntidadeCampo = result;
       this.createGroup();
       this.loadDomains();
+
       this.loading = false;
     }, error => {
       this.createGroup();

@@ -117,6 +117,31 @@ module.exports = function (app) {
         });
     });
 
+    app.post('/tipo-ficha/estabelecimento/', function (req, res) {
+        var obj = req.body;
+        var usuario = req.usuario;
+        let util = new app.util.Util();
+        var errors = [];
+
+        salvaTiposFichaEstabelecimento(obj, res).then(function (response) {
+            res.status(201).send(obj);
+        });
+    });
+
+    app.delete('/tipo-ficha/estabelecimento/:id', function (req, res) {
+        var util = new app.util.Util();
+        let usuario = req.usuario;
+        let errors = [];
+        let id = req.params.id;
+        let tipoFicha = {};
+        tipoFicha.id = id;
+
+        deletaPorIdEstabelecimento(id, res).then(function (response) {
+            res.status(200).json(tipoFicha);
+            return;
+        });
+    });
+
     function lista(res) {
         var q = require('q');
         var d = q.defer();
@@ -229,32 +254,6 @@ module.exports = function (app) {
         return d.promise;
 
     }
-
-    app.post('/tipo-ficha/estabelecimento/', function (req, res) {
-        var obj = req.body;
-        var usuario = req.usuario;
-        let util = new app.util.Util();
-        var errors = [];
-
-        salvaTiposFichaEstabelecimento(obj, res).then(function (response) {
-            res.status(201).send(obj);
-        });
-    });
-
-    app.delete('/tipo-ficha/estabelecimento/:id', function (req, res) {
-        var util = new app.util.Util();
-        let usuario = req.usuario;
-        let errors = [];
-        let id = req.params.id;
-        let tipoFicha = {};
-        tipoFicha.id = id;
-
-        deletaPorIdEstabelecimento(id, res).then(function (response) {
-            res.status(200).json(tipoFicha);
-            return;
-        });
-    });
-
 
     function buscarPorIdEstabelecimento(id, res) {
         var q = require('q');

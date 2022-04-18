@@ -91,8 +91,7 @@ export class PacienteFormComponent implements OnInit {
     this.createGroup();
     this.loadDomains();
 
-    this.onChangeEstabelecimento(this.object.idEstabelecimentoCadastro)
-
+    this.onChangeEstabelecimento(this.object.idEstabelecimentoCadastro);
   }
 
   ngAfterViewInit() {
@@ -144,6 +143,12 @@ export class PacienteFormComponent implements OnInit {
                       { id: "7", nome: "O_POSITIVO" },
                       { id: "8", nome: "O_NEGATIVO" },
                     ],
+                    aleitamentoMaterno: [
+                      { id: "1", nome: "Exclusivo" },
+                      { id: "2", nome: "Predominante" },
+                      { id: "3", nome: "Complementado" },
+                      { id: "4", nome: "Inexistente" },
+                    ],
                     idRaca: racas,
                     idAtencaoContinuada: atencaoContinuada,
                     gruposAtencaoContinuada: atencaoContinuada,
@@ -154,7 +159,7 @@ export class PacienteFormComponent implements OnInit {
                   else {
                     this.loading = false;
                     this.loadPhoto = true;
-                  }
+                  }                 
                 });
               });
             });
@@ -576,17 +581,17 @@ export class PacienteFormComponent implements OnInit {
       this.objectEstabelecimento = result;
       this.loading = false;
 
-      let estabelecimento = JSON.parse(JSON.stringify(result))
+      let estabelecimento = JSON.parse(JSON.stringify(result));
 
       // VALIDACAO EM TELA
-      this.cpfObrigatorio = estabelecimento.obrigaCpfNovoPaciente
-      this.susObrigatorio = estabelecimento.obrigaCartaoSusNovoPaciente
-      this.telefoneDefault = estabelecimento.celularDefaultNovoPaciente
+      this.cpfObrigatorio = estabelecimento.obrigaCpfNovoPaciente;
+      this.susObrigatorio = estabelecimento.obrigaCartaoSusNovoPaciente;
+      this.telefoneDefault = estabelecimento.celularDefaultNovoPaciente;
 
       //VALIDAR OS DADOS NA API
-      this.object.obrigaCpfNovoPaciente = estabelecimento.obrigaCpfNovoPaciente
-      this.object.obrigaCartaoSusNovoPaciente = estabelecimento.obrigaCartaoSusNovoPaciente
-      this.object.celularDefaultNovoPaciente = estabelecimento.celularDefaultNovoPaciente
+      this.object.obrigaCpfNovoPaciente = estabelecimento.obrigaCpfNovoPaciente;
+      this.object.obrigaCartaoSusNovoPaciente = estabelecimento.obrigaCartaoSusNovoPaciente;
+      this.object.celularDefaultNovoPaciente = estabelecimento.celularDefaultNovoPaciente;
 
     }, error => {
       this.objectEstabelecimento = new Estabelecimento();

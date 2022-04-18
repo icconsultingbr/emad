@@ -320,8 +320,12 @@
                                 Cód aleita. materno<span class="text-danger font-weight-bold"> *</span>
                               </label>
                               <div class="col-xl-4">
-                                <input type="text" id="aleitamentoMaterno" class="form-control has-error"
-                                  [(ngModel)]="object.aleitamentoMaterno " formControlName="aleitamentoMaterno" />
+                                <select *ngIf="domains" class="custom-select d-block w-100"
+                                  [(ngModel)]="object.aleitamentoMaterno" formControlName="aleitamentoMaterno">
+                                  <option [value]="">Selecione...</option>
+                                  <option *ngFor="let item of domains[0]?.aleitamentoMaterno" [value]="item.id">
+                                    {{item.nome}}</option>
+                                </select>
                               </div>
                               <label class="col-xl-2 col-form-label text-left">
                                 Dt. Ult. Menstruação<span class="text-danger font-weight-bold"> *</span>
