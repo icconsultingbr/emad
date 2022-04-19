@@ -584,8 +584,8 @@ export class PacienteFormComponent implements OnInit {
       let estabelecimento = JSON.parse(JSON.stringify(result));
 
       // VALIDACAO EM TELA
-      this.cpfObrigatorio = estabelecimento.obrigaCpfNovoPaciente;
-      this.susObrigatorio = estabelecimento.obrigaCartaoSusNovoPaciente;
+      this.cpfObrigatorio = estabelecimento.obrigaCpfNovoPaciente == 1;
+      this.susObrigatorio = estabelecimento.obrigaCartaoSusNovoPaciente == 1;
       this.telefoneDefault = estabelecimento.celularDefaultNovoPaciente;
 
       //VALIDAR OS DADOS NA API
