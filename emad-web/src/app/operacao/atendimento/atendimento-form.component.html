@@ -181,8 +181,8 @@
                   Tipo de Atv.
                 </label>
                 <div class="col-xl-8">
-                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.atividadeTipo"
-                    formControlName="atividadeTipo">
+                  <select (change)="changeFn($event)" *ngIf="domains" class="custom-select d-block w-100"
+                    [(ngModel)]="object.atividadeTipo" formControlName="atividadeTipo">
                     <option [value]="0">Selecione...</option>
                     <option *ngFor="let item of domains[0]?.atividadeTipo" [value]="item.id">{{item.nome}}
                     </option>
@@ -211,21 +211,6 @@
             <div class="col-xl-6">
               <div class="form-group row">
                 <label class="col-xl-4 col-form-label text-left">
-                  Público Alvo
-                </label>
-                <div class="col-xl-8">
-                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.publicoAlvo"
-                    formControlName="publicoAlvo">
-                    <option [value]="0">Selecione...</option>
-                    <option *ngFor="let item of domains[0]?.atividadePublico" [value]="item.id">{{item.nome}}
-                    </option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-6">
-              <div class="form-group row">
-                <label class="col-xl-4 col-form-label text-left">
                   Práticas em Saude
                 </label>
                 <div class="col-xl-8">
@@ -233,6 +218,21 @@
                     formControlName="praticasEmSaude">
                     <option [value]="0">Selecione...</option>
                     <option *ngFor="let item of domains[0]?.atividadePraticasSaude" [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="isVisible == true" class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Público Alvo
+                </label>
+                <div class="col-xl-8">
+                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.publicoAlvo"
+                    formControlName="publicoAlvo">
+                    <option [value]="0">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.atividadePublico" [value]="item.id">{{item.nome}}
                     </option>
                   </select>
                 </div>
@@ -281,8 +281,8 @@
                 </label>
                 <div class="col-xl-8">
                   <div class="custom-control custom-checkbox" style="width: 25px">
-                    <input (change)="regrasAtividadeColetiva()" type="checkbox" id="pseSaude"
-                      [(ngModel)]="object.pseSaude" formControlName="pseSaude" class="custom-control-input">
+                    <input type="checkbox" id="pseSaude" [(ngModel)]="object.pseSaude" formControlName="pseSaude"
+                      class="custom-control-input">
                     <label class="custom-control-label" for="pseSaude"></label>
                   </div>
                 </div>
@@ -1004,9 +1004,7 @@
                   <select *ngIf="domains" class="custom-select d-block w-100"
                     [(ngModel)]="objectHistorico.atividadeTipo" formControlName="atividadeTipo">
                     <option [value]="0">Selecione...</option>
-                    <option
-                      *ngFor="let a of (tiposFichaDomainFilter ? tiposFichaDomainFilter : domains[0]?.atividadeTipo)"
-                      [value]="item.id">{{item.nome}}
+                    <option *ngFor="let a of domains[0]?.atividadeTipo" [value]="item.id">{{item.nome}}
                     </option>
                   </select>
                 </div>
@@ -2469,8 +2467,7 @@
         Dose:
       </label>
       <div class="col-xl-8 col-sm-12">
-        <input type="number" min='1' max="10" class="form-control has-error"
-          [(ngModel)]="pacienteVacina.dose">
+        <input type="number" min='1' max="10" class="form-control has-error" [(ngModel)]="pacienteVacina.dose">
       </div>
     </div>
     <div class=" form-group row text-right">

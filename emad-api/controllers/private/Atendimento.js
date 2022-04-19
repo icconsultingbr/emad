@@ -405,6 +405,44 @@ module.exports = function (app) {
         if (obj.situacao == "X")
             req.assert("motivoCancelamento").notEmpty().withMessage("Motivo do cancelamento é obrigatório;");
 
+
+        //ATIVIDADE COLETIVA
+        if (obj.tipoFicha == 7) {
+
+            // CAMPO = INEP
+            // É de preenchimento obrigatório se pseEducacao = true ou pseSaude = true;
+            if (obj.pseEducacao == true && obj.pseSaude == true && obj.inep == '') {
+                errors = util.customError(errors, "header", "Informe o código Inep.", "");
+                res.status(400).send(errors);
+                return;
+            }
+
+            // CAMPO = atividadeTipo
+            // 01 - Reunião de equipe;
+            // 02 - Reunião com outras equipes de saúde;
+            // 03 - Reunião intersetorial / Conselho local de saúde / Controle social;
+            // 05 - Atendimento em grupo.
+            //Não podem ser selecionados se pseEducacao = true e pseSaude = false
+            if (obj.pseEducacao == true && obj.pseSaude == false) {
+                if (obj.atividadeTipo == 1 || obj.atividadeTipo == 2 || obj.atividadeTipo == 3 || obj.atividadeTipo == 5) {
+                    errors = util.customError(errors, "header", "Revisar o campo Tipo de Atividade não pode se pseEducacao marcado e pseSaude não marcado", "");
+                    res.status(400).send(errors);
+                    return;
+                }
+            }
+
+            if (obj.atividadeTipo === 4 || obj.atividadeTipo === 5 || obj.atividadeTipo === 6 || obj.atividadeTipo === 7) {
+                if (this.object.publicoAlvo == 0 || this.object.publicoAlvo == null) {
+                    errors = util.customError(errors, "header", "Selecione o publico alvo.", "");
+                    res.status(400).send(errors);
+                    return;
+                }
+              }
+
+
+        }
+
+
         errors = req.validationErrors();
 
         if (errors) {
