@@ -289,18 +289,6 @@ module.exports = function (app) {
                 }
             }
 
-            // CAMPO PSE
-            // Os itens do campo praticasEmSaude não devem ser selecionados;
-            // 2 - Aplicação tópica de flúor, 
-            // 9 - Escovação dental supervisionada, 
-            // 25 - PNCT* sessão 1, 
-            // 26 - PNCT* sessão 2, 
-            // 27 - PNCT* sessão 3, 
-            // 28 - PNCT* sessão 4, 
-            // 24 - Verificação da situação vacinal e 
-            // 30 - Outro procedimento coletivo 
-
-
             //VALIDAR CAMPOS OBRIGATORIOS
             req.assert("numParticipantes").notEmpty().withMessage("Preencha o campo número de participantes.");
             req.assert("atividadeTipo").notEmpty().withMessage("Preencha o campo tipo de atividade.");
