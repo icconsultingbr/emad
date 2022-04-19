@@ -732,26 +732,25 @@ module.exports = function (app) {
             //CAMPO = PROFISSIONAIS
             // Não pode ser preenchido se pseEducacao = true e pseSaude = false
             if (atendimento.pseEducacao == 1 && atendimento.pseSaude == 0) {
-                removeChild(doc.doc(), ['profissionais'])
+                removeNode(doc.doc(), ['profissionais'])
             }
 
-            // CAMPO = publicoAlvo
+            // CAMPO = publicoAlvo/temasParaSaude
             // Não pode ser preenchido se atividadeTipo for 1, 2 ou 3
             if (atendimento.atividadeTipo == 1 || atendimento.atividadeTipo == 2 || atendimento.atividadeTipo == 3) {
-                removeChild(doc.doc(), ['publicoAlvo'])
-                removeChild(doc.doc(), ['temasParaSaude'])
+                removeNode(doc.doc(), ['publicoAlvo', 'temasParaSaude'])
             }
 
             // CAMPO = procedimento
             // Só pode ser preenchido se o campo praticasEmSaude possuir o valor 30.
             if (atendimento.praticasEmSaude != 30) {
-                removeChild(doc.doc(), ['procedimento'])
+                removeNode(doc.doc(), ['procedimento'])
             }
 
             // CAMPO = praticasEmSaude
-            // Não pode ser preenchido se atividadeTipo for 1, 2 ou 3
+            // Não pode ser preenchido se atividadeTipo for 1, 2, 3, 4, 7
             if (atendimento.atividadeTipo == 1 || atendimento.atividadeTipo == 2 || atendimento.atividadeTipo == 3 || atendimento.atividadeTipo == 4 || atendimento.atividadeTipo == 7) {
-                removeChild(doc.doc(), ['praticasEmSaude'])
+                removeNode(doc.doc(), ['praticasEmSaude'])
             }
 
             xmls.push(doc.doc().end({ prettyPrint: true, allowEmptyTags: false }));
@@ -793,10 +792,10 @@ module.exports = function (app) {
         revision = configuracaoFicha.revision
     }
 
-    function removeChild(doc, fieldToValidate) {
+    function removeNode(doc, fieldToValidate) {
         fieldToValidate.forEach(field => {
             doc.each(x => {
-                if (x.node.nodeName == field && !x.node._firstChild._data) {
+                if (x.node.nodeName == field) {
                     x.node.removeChild(x.node._firstChild);
                     x.remove();
                 }

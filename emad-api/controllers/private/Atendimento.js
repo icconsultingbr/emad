@@ -519,6 +519,15 @@ module.exports = function (app) {
             else if (obj.situacao != "C" && obj.situacao != "0")
                 obj.dataFinalizacao = new Date();
 
+            obj.numParticipantes == '' ? obj.numParticipantes = 0 : obj.numParticipantes;
+            obj.atividadeTipo == '' ? obj.atividadeTipo = 0 : obj.atividadeTipo;
+            obj.procedimento == '' ? obj.procedimento = 0 : obj.procedimento;
+            obj.praticasEmSaude == '' ? obj.praticasEmSaude = 0 : obj.praticasEmSaude;
+            obj.pseEducacao == '' ? obj.pseEducacao = 0 : obj.pseEducacao;
+            obj.pseSaude == '' ? obj.pseSaude = 0 : obj.pseSaude;
+            obj.publicoAlvo == '' ? obj.publicoAlvo = 0 : obj.publicoAlvo;
+            obj.temasParaSaude == '' ? obj.temasParaSaude = 0 : obj.temasParaSaude;
+
             var atualizaAtendimento = await atendimentoRepository.atualizaPorIdSync(obj, id);
 
             obj.id = id;
@@ -528,6 +537,15 @@ module.exports = function (app) {
             objHistorico.textoHistorico = "";
             objHistorico.idAtendimento = obj.id;
             delete objHistorico.id;
+
+            objHistorico.numParticipantes == '' ? objHistorico.numParticipantes = 0 : objHistorico.numParticipantes;
+            objHistorico.atividadeTipo == '' ? objHistorico.atividadeTipo = 0 : objHistorico.atividadeTipo;
+            objHistorico.procedimento == '' ? objHistorico.procedimento = 0 : objHistorico.procedimento;
+            objHistorico.praticasEmSaude == '' ? objHistorico.praticasEmSaude = 0 : objHistorico.praticasEmSaude;
+            objHistorico.pseEducacao == '' ? objHistorico.pseEducacao = 0 : objHistorico.pseEducacao;
+            objHistorico.pseSaude == '' ? objHistorico.pseSaude = 0 : objHistorico.pseSaude;
+            objHistorico.publicoAlvo == '' ? objHistorico.publicoAlvo = 0 : objHistorico.publicoAlvo;
+            objHistorico.temasParaSaude == '' ? objHistorico.temasParaSaude = 0 : objHistorico.temasParaSaude;
 
             var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
 
