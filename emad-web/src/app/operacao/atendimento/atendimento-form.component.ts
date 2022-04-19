@@ -181,7 +181,7 @@ export class AtendimentoFormComponent implements OnInit {
       glicemia: ['', ''],
       ficouEmObservacao: ['', ''],
       inep: ['', ''],
-      numParticipantes: ['', Validators.required],
+      numParticipantes: ['', ''],
       profissionais: ['', ''],
       atividadeTipo: ['', ''],
       temasParaReuniao: ['', ''],
