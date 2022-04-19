@@ -28,7 +28,8 @@ module.exports = function (app) {
                         cad = await listaCadastroIndividual(filtro);
                         atend = await listaAtendimentoIndividual(filtro);
                         vac = await listaFichaVacinacao(filtro);
-                        let xmls = cad.concat(atend, vac);
+                        col = await listaAtividadeColetiva(filtro);
+                        let xmls = cad.concat(atend, vac, col);
                         retorno = generateZipFiles(xmls, 'ficha')
                         break;
                     case '2':
@@ -53,8 +54,8 @@ module.exports = function (app) {
                         break;
                     case '15':
                         configTipoFicha(7)
-                        vac = await listaAtividadeColetiva(filtro);
-                        retorno = generateZipFiles(vac, 'ficha-atividade-coletiva')
+                        col = await listaAtividadeColetiva(filtro);
+                        retorno = generateZipFiles(col, 'ficha-atividade-coletiva')
                         break;
                     default:
                         return retorno;
@@ -355,8 +356,11 @@ module.exports = function (app) {
                 .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
                 .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
                 .ele('cnes').txt(estabelecimento.cnes).up()
+                .up()
                 .ele('dataAtendimento').txt(new Date(listAtendimentos[0].dataCriacao).getTime() / 1000).up()
                 .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
+                .up()
+                .up()
                 .ele('ns2:remetente')
                 .ele('contraChave').txt('E-ATENDE-VERSAO').up()
                 .ele('uuidInstalacao').txt(uuidInstalacao).up()
@@ -364,6 +368,7 @@ module.exports = function (app) {
                 .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
                 .ele('versaoSistema').txt(versao).up()
                 .ele('nomeBancoDados').txt('MySQL').up()
+                .up()
                 .ele('ns2:originadora')
                 .ele('contraChave').txt('E-ATENDE-VERSAO').up()
                 .ele('uuidInstalacao').txt(uuidInstalacao).up()
@@ -371,6 +376,7 @@ module.exports = function (app) {
                 .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
                 .ele('versaoSistema').txt(versao).up()
                 .ele('nomeBancoDados').txt('MySQL').up()
+                .up()
                 .ele('versao', { major: major, minor: minor, revision: revision })
                 .doc();
 
@@ -421,7 +427,7 @@ module.exports = function (app) {
                 })
             })
 
-            if (qtdAtendimentosValidos == 0) { return; }
+            if(qtdAtendimentosValidos == 0) { return; }
 
             doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoIndividualMasterTransport', true, true).ele('tpCdsOrigem').txt('3').up().ele('uuidFicha').txt(uuidFicha).up();
 
@@ -588,29 +594,29 @@ module.exports = function (app) {
                 .ele('codIbge').txt(estabelecimento.codigo).up()
                 .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up()
                 .ele('ns4:fichaProcedimentoMasterTransport')
-                .ele('headerTransport')
-                .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
-                .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
-                .ele('cnes').txt(estabelecimento.cnes).up()
-                .ele('dataAtendimento').txt(new Date(listProcedimento[0].dataCriacao).getTime() / 1000).up()
-                .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
-                .up()
+                    .ele('headerTransport')
+                        .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
+                        .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
+                        .ele('cnes').txt(estabelecimento.cnes).up()
+                        .ele('dataAtendimento').txt(new Date(listProcedimento[0].dataCriacao).getTime() / 1000).up()
+                        .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
+                    .up()
                 .up()
                 .ele('ns2:remetente')
-                .ele('contraChave').txt('E-ATENDE-VERSAO').up()
-                .ele('uuidInstalacao').txt(uuidInstalacao).up()
-                .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
-                .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
-                .ele('versaoSistema').txt(versao).up()
-                .ele('nomeBancoDados').txt('MySQL').up()
+                    .ele('contraChave').txt('E-ATENDE-VERSAO').up()
+                    .ele('uuidInstalacao').txt(uuidInstalacao).up()
+                    .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
+                    .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
+                    .ele('versaoSistema').txt(versao).up()
+                    .ele('nomeBancoDados').txt('MySQL').up()
                 .up()
                 .ele('ns2:originadora')
-                .ele('contraChave').txt('E-ATENDE-VERSAO').up()
-                .ele('uuidInstalacao').txt(uuidInstalacao).up()
-                .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
-                .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
-                .ele('versaoSistema').txt(versao).up()
-                .ele('nomeBancoDados').txt('MySQL').up()
+                    .ele('contraChave').txt('E-ATENDE-VERSAO').up()
+                    .ele('uuidInstalacao').txt(uuidInstalacao).up()
+                    .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
+                    .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
+                    .ele('versaoSistema').txt(versao).up()
+                    .ele('nomeBancoDados').txt('MySQL').up()
                 .up()
                 .ele('versao', { major: major, minor: minor, revision: revision })
                 .doc();
@@ -651,11 +657,11 @@ module.exports = function (app) {
             })
 
             doc.find(x => x.node.nodeName == 'ns4:fichaProcedimentoMasterTransport', true, true).ele('uuidFicha').txt(uuidFicha).up()
-                .ele('tpCdsOrigem').txt('3').up()
-                .ele('numTotalAfericaoPa').txt('1').up()
-                .ele('numTotalAfericaoTemperatura').txt('1').up()
-                .ele('numTotalMedicaoAltura').txt('1').up()
-                .ele('numTotalMedicaoPeso').txt('1').up();
+                                                                                                .ele('tpCdsOrigem').txt('3').up()
+                                                                                                .ele('numTotalAfericaoPa').txt('1').up()
+                                                                                                .ele('numTotalAfericaoTemperatura').txt('1').up()
+                                                                                                .ele('numTotalMedicaoAltura').txt('1').up()
+                                                                                                .ele('numTotalMedicaoPeso').txt('1').up();
 
             xmls.push(doc.doc().end({ prettyPrint: true }));
         });
@@ -689,6 +695,7 @@ module.exports = function (app) {
                 .ele('codigoCbo2002').txt(profissional[0].codigoCBO).up()
                 .up()
                 .ele('atividadeTipo').txt(atendimento.atividadeTipo).up()
+                .ele('temasParaReuniao').txt(atendimento.temasParaReuniao).up()
                 .ele('publicoAlvo').txt(atendimento.publicoAlvo).up()
                 .ele('participantes')
                 .ele('cnsParticipante').txt(atendimento.cartaoSus).up()
@@ -698,8 +705,8 @@ module.exports = function (app) {
                 .ele('tbCdsOrigem').txt('3').up()
                 .ele('procedimento').txt(atendimento.codigoSIGTAP).up()
                 .ele('turno').txt(atendimento.turno).up()
-                .ele('pseEducacao').txt(atendimento.pseEducacao).up()
-                .ele('pseSaude').txt(atendimento.pseSaude).up()
+                .ele('pseEducacao').txt(!atendimento.pseEducacao ? false : atendimento.pseEducacao).up()
+                .ele('pseSaude').txt(!atendimento.pseSaude ? false : atendimento.pseSaude).up()
                 .ele('headerTransport')
                 .ele('profissionalCNS').txt(estabelecimento.cnsProfissionaleSus ? estabelecimento.cnsProfissionaleSus : '3').up()
                 .ele('cboCodigo_2002').txt(estabelecimento.codigoCBO ? estabelecimento.codigoCBO : '3').up()
@@ -731,8 +738,15 @@ module.exports = function (app) {
 
             //CAMPO = PROFISSIONAIS
             // Não pode ser preenchido se pseEducacao = true e pseSaude = false
-            if (atendimento.pseEducacao == 1 && atendimento.pseSaude == 0) {
-                removeNode(doc.doc(), ['profissionais'])
+            if (atendimento.pseEducacao == 1 && (!atendimento.pseSaude || atendimento.pseSaude == 0)) {
+                removeNode(doc.doc(), ['profissionais']);
+                removeNode(doc.doc(), ['temasParaReuniao']);
+            }
+
+            // CAMPO = publicoAlvo/temasParaReuniao
+            // Não pode ser preenchido se atividadeTipo for 4, 5, 6 ou 7
+            if (atendimento.atividadeTipo == 4 || atendimento.atividadeTipo == 5 || atendimento.atividadeTipo == 6 || atendimento.atividadeTipo == 7) {
+                removeNode(doc.doc(), ['temasParaReuniao']);
             }
 
             // CAMPO = publicoAlvo/temasParaSaude
