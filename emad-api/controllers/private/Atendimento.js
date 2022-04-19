@@ -340,6 +340,7 @@ module.exports = function (app) {
             obj.pseSaude == '' ? obj.pseSaude = 0 : obj.pseSaude;
             obj.publicoAlvo == '' ? obj.publicoAlvo = 0 : obj.publicoAlvo;
             obj.temasParaSaude == '' ? obj.temasParaSaude = 0 : obj.temasParaSaude;
+            obj.temasParaReuniao == '' ? obj.temasParaReuniao = 0 : obj.temasParaReuniao;
 
             var responseAtendimento = await atendimentoRepository.salvaSync(obj);
 
@@ -357,6 +358,8 @@ module.exports = function (app) {
             objHistorico.pseSaude == '' ? objHistorico.pseSaude = 0 : objHistorico.pseSaude;
             objHistorico.publicoAlvo == '' ? objHistorico.publicoAlvo = 0 : objHistorico.publicoAlvo;
             objHistorico.temasParaSaude == '' ? objHistorico.temasParaSaude = 0 : objHistorico.temasParaSaude;
+            objHistorico.temasParaReuniao == '' ? objHistorico.temasParaReuniao = 0 : objHistorico.temasParaReuniao;
+
             delete objHistorico.id;
 
             var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
@@ -380,8 +383,6 @@ module.exports = function (app) {
 
                 if (responseEmailPaciente[0].email != null) {
                     obj.email = responseEmailPaciente[0].email;
-
-                    //var teste = await mail.enviaEmailFicha(obj, emailRemetente, senhaRemetente, "Abertura de atendimento", "createTreatment.html");
                 }
             }
 
@@ -608,6 +609,7 @@ module.exports = function (app) {
             obj.pseSaude == '' ? obj.pseSaude = 0 : obj.pseSaude;
             obj.publicoAlvo == '' ? obj.publicoAlvo = 0 : obj.publicoAlvo;
             obj.temasParaSaude == '' ? obj.temasParaSaude = 0 : obj.temasParaSaude;
+            obj.temasParaReuniao == '' ? obj.temasParaReuniao = 0 : obj.temasParaReuniao;
 
             var atualizaAtendimento = await atendimentoRepository.atualizaPorIdSync(obj, id);
 
@@ -627,6 +629,7 @@ module.exports = function (app) {
             objHistorico.pseSaude == '' ? objHistorico.pseSaude = 0 : objHistorico.pseSaude;
             objHistorico.publicoAlvo == '' ? objHistorico.publicoAlvo = 0 : objHistorico.publicoAlvo;
             objHistorico.temasParaSaude == '' ? objHistorico.temasParaSaude = 0 : objHistorico.temasParaSaude;
+            objHistorico.temasParaReuniao == '' ? objHistorico.temasParaReuniao = 0 : objHistorico.temasParaReuniao;
 
             var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
 
