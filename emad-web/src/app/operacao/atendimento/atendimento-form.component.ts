@@ -118,8 +118,8 @@ export class AtendimentoFormComponent implements OnInit {
 
   tipoFicha: number;
 
-  tiposFichaDomainFilter: any[];
-
+  isVisible: boolean;
+  isRequired: boolean;
 
   constructor(
     private service: AtendimentoService,
@@ -459,40 +459,6 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
-  regrasAtividadeColetiva() {
-    this.errors = [];
-
-    //CAMPO = INEP
-    // É de preenchimento obrigatório se pseEducacao = true ou pseSaude = true;
-    if (this.object.pseEducacao == true && this.object.pseSaude == true && this.object.inep == '') {
-      this.errors = [{ message: "Informe o código Inep" }];
-      this.loading = false;
-      return;
-    }
-
-    // CAMPO = atividadeTipo
-    // 01 - Reunião de equipe;
-    // 02 - Reunião com outras equipes de saúde;
-    // 03 - Reunião intersetorial / Conselho local de saúde / Controle social;
-    // 05 - Atendimento em grupo.
-    //Não podem ser selecionados se pseEducacao = true e pseSaude = false
-    if (this.object.pseEducacao == true && this.object.pseSaude == false) {
-      this.tiposFichaDomainFilter = this.domains[0].atividadeTipo.filter(x => {
-        return x.id != 1 && x.id != 2 && x.id != 3 && x.id != 5;
-      });
-    }
-
-    // CAMPO = publicoAlvo
-    // É de preenchimento obrigatório se atividadeTipo for 4, 5, 6 ou 7;
-    // Não pode ser preenchido se atividadeTipo for 1, 2 ou 3
-    if (this.object.atividadeTipo === 1 || this.object.atividadeTipo === 2 || this.object.atividadeTipo === 3) {
-      this.errors = [{ message: "Selecione o publico alvo da atividade" }];
-      this.loading = false;
-      return;
-    }
-
-  }
-
   openVacinas(content: any) {
     this.errors = [];
     this.message = "";
@@ -621,10 +587,13 @@ export class AtendimentoFormComponent implements OnInit {
       this.object.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
       this.loading = false;
 
+      console.log(this.object.atividadeTipo)
       this.tipoFicha = result.tipoFicha;
 
-      if (result.tipoFicha == 7) {
-        this.regrasAtividadeColetiva()
+      if (result.atividadeTipo === 1 || result.atividadeTipo === 2 || result.atividadeTipo === 3) {
+        this.isVisible = false
+      } else {
+        this.isVisible = true
       }
 
       this.findHipotesePorAtendimento();
@@ -688,10 +657,6 @@ export class AtendimentoFormComponent implements OnInit {
     this.message = "";
     this.loading = true;
     event.preventDefault();
-
-    if (this.tipoFicha == 7) {
-      this.regrasAtividadeColetiva
-    }
 
     this.service
       .save(this.form.getRawValue(), this.method)
@@ -887,7 +852,6 @@ export class AtendimentoFormComponent implements OnInit {
                   this.service.listDomains('atividade-publico').subscribe(atividadePublico => {
                     this.service.listDomains('atividade-praticas-saude').subscribe(atividadePraticasSaude => {
                       this.service.listDomains('atividade-temas-saude').subscribe(atividadeTemasSaude => {
-                        this.regrasAtividadeColetiva();
                         this.domains.push({
                           especialidades: especialidades,
                           tipoFichas: tipoFichas,
@@ -1360,4 +1324,16 @@ export class AtendimentoFormComponent implements OnInit {
     const route = "atendimentos";
     this.router.navigate([route]);
   }
+
+  changeFn(event) {
+    let id = parseInt(event.target.value);
+
+    if (id === 1 || id === 2 || id === 3) {
+      this.isVisible = false
+    } else {
+      this.isVisible = true
+    }
+
+  }
+
 }
