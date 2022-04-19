@@ -1327,7 +1327,6 @@ export class AtendimentoFormComponent implements OnInit {
 
   changeFn(event) {
     let id = parseInt(event.target.value);
-    console.log(id)
 
     if (id === 1 || id === 2 || id === 3) {
       this.isVisible = false
