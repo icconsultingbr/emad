@@ -332,7 +332,6 @@ AtendimentoDAO.prototype.buscaPorPacienteIdProntuario = async function (idPacien
     return response;
 }
 
-
 AtendimentoDAO.prototype.buscaSinaisVitaisPorPacienteId = async function (idPaciente, tipo) {
     var where = "";
 

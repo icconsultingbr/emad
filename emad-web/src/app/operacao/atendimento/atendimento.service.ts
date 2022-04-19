@@ -320,6 +320,11 @@ export class AtendimentoService extends GenericsService {
     findProcedimentoByAtendimento(id: any): Observable<any> {
         return this.http.get("atendimento-procedimento/atendimento/" + id);
     }
+
+    findTipoFichaEstabelecimento(id: any): Observable<any> {
+        return this.http.get("atendimento-procedimento/tipo-ficha/" + id);
+    }
+   
     removeProcedimento(params: any) {
         return this.http.delete('atendimento-procedimento/' + params);
     }

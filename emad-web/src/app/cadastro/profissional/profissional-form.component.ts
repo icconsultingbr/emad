@@ -126,7 +126,7 @@ export class ProfissionalFormComponent implements OnInit {
       
       this.service.list(`municipio/uf/${object.idUf}`).subscribe(municipios => {
         this.domains[0].idMunicipio = municipios;
-        let ufMunicipios = municipios.filter((uf) => uf.nome.toUpperCase() == address.municipio.toUpperCase());
+        let ufMunicipios = municipios.filter((uf) => uf.nome.toUpperCase() == address.municipio.toString().toUpperCase());
         if (ufMunicipios.length > 0) {
           object.idMunicipio = ufMunicipios[0].id;
         }

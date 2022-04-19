@@ -6,4 +6,9 @@ export class TipoFicha {
     @Input() xmlTemplate: string;
     @Input() queryTemplate: string;
     @Input() situacao: Boolean;
+    @Input() versaoSistema: string;
+    @Input() uuidInstalacao: string;
+    @Input() major: string;
+    @Input() minor: string;
+    @Input() revision: string;
 }

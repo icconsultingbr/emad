@@ -9,10 +9,10 @@ import { Util } from '../../../_core/_util/Util';
 import { Procedimento } from '../../../_core/_models/Procedimento';
 
 @Component({
-    selector: 'app-tipo-exame-form',
-    templateUrl: './tipo-exame-form.component.html',
-    styleUrls: ['./tipo-exame-form.component.css'],
-    providers: [TipoExameService]
+  selector: 'app-tipo-exame-form',
+  templateUrl: './tipo-exame-form.component.html',
+  styleUrls: ['./tipo-exame-form.component.css'],
+  providers: [TipoExameService]
 })
 
 export class TipoExameFormComponent implements OnInit {
@@ -27,7 +27,7 @@ export class TipoExameFormComponent implements OnInit {
   groupForm: any = {};
   mensagem: string = "";
   warning: string = "";
-  tipoExame: TipoExame = new TipoExame();  
+  tipoExame: TipoExame = new TipoExame();
   modalRef: NgbModalRef = null;
   message: string = "";
   errors: any[] = [];
@@ -54,8 +54,8 @@ export class TipoExameFormComponent implements OnInit {
     private modalService: NgbModal,
     private route: ActivatedRoute,
     private router: Router) {
-      this.fields = service.fields;
-    }
+    this.fields = service.fields;
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -68,12 +68,12 @@ export class TipoExameFormComponent implements OnInit {
             this.loading = false;
           }, erro => {
             this.loading = false;
-          let json = erro;
-          this.warning = "";
-          for (var key in json) {
-            this.warning += "-" + json[key].msg + '\n';
+            let json = erro;
+            this.warning = "";
+            for (var key in json) {
+              this.warning += "-" + json[key].msg + '\n';
+            }
           }
-        }
         );
       }
     });
@@ -98,7 +98,7 @@ export class TipoExameFormComponent implements OnInit {
           this.warning += "-" + json[key].msg + '\n';
         }
       }
-    );
+      );
   }
 
   createGroup() {
@@ -108,8 +108,10 @@ export class TipoExameFormComponent implements OnInit {
       idHipoteseDiagnostica: [null],
       nomeHipoteseDiagnostica: [''],
       situacao: ['', Validators.required],
-      nomeProcedimento : ['',''],
-      idProcedimento : ['',''],
+      nomeProcedimento: ['', ''],
+      idProcedimento: ['', ''],
+      codSigtap: ['', ''],
+      codAB: ['', '']
     });
   }
 
@@ -140,34 +142,30 @@ export class TipoExameFormComponent implements OnInit {
       size: "lg"
     });
   }
-  
+
   pesquisaHipoteseDiagnostica() {
     this.loading = true;
     let params = "";
     this.allItemsPesquisaHipoteseDiagnostica = [];
     this.errors = [];
 
-    if (Util.isEmpty(this.hipoteseDiagnostica.nome) && Util.isEmpty(this.hipoteseDiagnostica.cid_10))
-    {
-       this.errors = [{message:"Informe o nome ou código CID 10"}];
-       this.loading = false;
-       return;
+    if (Util.isEmpty(this.hipoteseDiagnostica.nome) && Util.isEmpty(this.hipoteseDiagnostica.cid_10)) {
+      this.errors = [{ message: "Informe o nome ou código CID 10" }];
+      this.loading = false;
+      return;
     }
 
-    if (!Util.isEmpty(this.hipoteseDiagnostica.nome))
-    {
-      if(this.hipoteseDiagnostica.nome.length<3){
-       this.errors = [{message:"Informe o nome, ao menos 3 caracteres"}];
-       this.loading = false;
-       return;
+    if (!Util.isEmpty(this.hipoteseDiagnostica.nome)) {
+      if (this.hipoteseDiagnostica.nome.length < 3) {
+        this.errors = [{ message: "Informe o nome, ao menos 3 caracteres" }];
+        this.loading = false;
+        return;
       }
     }
 
-    if (!Util.isEmpty(this.hipoteseDiagnostica.cid_10))
-    {
-      if (this.hipoteseDiagnostica.cid_10.length < 2)
-      { 
-        this.errors = [{message:"Informe o código CID 10, ao menos 2 caracteres"}];
+    if (!Util.isEmpty(this.hipoteseDiagnostica.cid_10)) {
+      if (this.hipoteseDiagnostica.cid_10.length < 2) {
+        this.errors = [{ message: "Informe o código CID 10, ao menos 2 caracteres" }];
         this.loading = false;
         return;
       }
@@ -182,27 +180,23 @@ export class TipoExameFormComponent implements OnInit {
     this.allItemsPesquisaProcedimento = [];
     this.errors = [];
 
-    if (Util.isEmpty(this.procedimento.co_procedimento) && Util.isEmpty(this.procedimento.no_procedimento))
-    {
-       this.errors = [{message:"Informe o código ou nome do procedimento"}];
-       this.loading = false;
-       return;
+    if (Util.isEmpty(this.procedimento.co_procedimento) && Util.isEmpty(this.procedimento.no_procedimento)) {
+      this.errors = [{ message: "Informe o código ou nome do procedimento" }];
+      this.loading = false;
+      return;
     }
 
-    if (!Util.isEmpty(this.procedimento.no_procedimento))
-    {
-      if(this.procedimento.no_procedimento.length<3){
-       this.errors = [{message:"Informe o nome, ao menos 3 caracteres"}];
-       this.loading = false;
-       return;
+    if (!Util.isEmpty(this.procedimento.no_procedimento)) {
+      if (this.procedimento.no_procedimento.length < 3) {
+        this.errors = [{ message: "Informe o nome, ao menos 3 caracteres" }];
+        this.loading = false;
+        return;
       }
     }
 
-    if (!Util.isEmpty(this.procedimento.co_procedimento))
-    {
-      if (this.procedimento.co_procedimento.length < 2)
-      { 
-        this.errors = [{message:"Informe o código, ao menos 2 caracteres"}];
+    if (!Util.isEmpty(this.procedimento.co_procedimento)) {
+      if (this.procedimento.co_procedimento.length < 2) {
+        this.errors = [{ message: "Informe o código, ao menos 2 caracteres" }];
         this.loading = false;
         return;
       }
@@ -215,13 +209,13 @@ export class TipoExameFormComponent implements OnInit {
     this.loading = true;
 
     this.paging.offset = offset ? offset : 0;
-    this.paging.limit = limit ? limit : 10;    
+    this.paging.limit = limit ? limit : 10;
 
     var params = "?nome=" + this.hipoteseDiagnostica.nome + "&cid=" + this.hipoteseDiagnostica.cid_10;
 
     if (this.paging.offset != null && this.paging.limit != null) {
       params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
-    }    
+    }
 
     this.service.list('hipotese-diagnostica' + params).subscribe(result => {
       this.warning = "";
@@ -237,18 +231,17 @@ export class TipoExameFormComponent implements OnInit {
     });
   }
 
-
   buscaProcedimento(offset: Number = null, limit: Number = null) {
     this.loading = true;
 
     this.paging.offset = offset ? offset : 0;
-    this.paging.limit = limit ? limit : 10;    
+    this.paging.limit = limit ? limit : 10;
 
     var params = "?codigo=" + this.procedimento.co_procedimento + "&nome=" + this.procedimento.no_procedimento;
 
     if (this.paging.offset != null && this.paging.limit != null) {
       params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
-    }    
+    }
 
     this.service.list('procedimento' + params).subscribe(result => {
       this.warning = "";
@@ -288,7 +281,7 @@ export class TipoExameFormComponent implements OnInit {
   saveHipotese() {
     this.message = "";
     this.errors = [];
-    this.tipoExame.nomeHipoteseDiagnostica = this.hipoteseDiagnostica.cid_10 + ' - ' + this.hipoteseDiagnostica.nome 
+    this.tipoExame.nomeHipoteseDiagnostica = this.hipoteseDiagnostica.cid_10 + ' - ' + this.hipoteseDiagnostica.nome
     this.tipoExame.idHipoteseDiagnostica = this.hipoteseDiagnostica.id;
     this.close();
   }
@@ -296,12 +289,12 @@ export class TipoExameFormComponent implements OnInit {
   saveProcedimento() {
     this.message = "";
     this.errors = [];
-    this.tipoExame.nomeProcedimento = this.procedimento.co_procedimento + ' - ' + this.procedimento.no_procedimento 
+    this.tipoExame.nomeProcedimento = this.procedimento.co_procedimento + ' - ' + this.procedimento.no_procedimento
     this.tipoExame.idProcedimento = this.procedimento.id;
     this.close();
   }
 
-  
+
   loadQuantityPerPagePaginationHipotese(event) {
     let id = parseInt(event.target.value);
     this.paging.limit = id;
@@ -319,14 +312,14 @@ export class TipoExameFormComponent implements OnInit {
   setPagePaginedHipotese(offset: number, limit: Number) {
     this.paging.offset = offset !== undefined ? offset : 0;
     this.paging.limit = limit ? limit : this.paging.limit;
-    
+
     this.buscaHipoteseDiagnostica(this.paging.offset, this.paging.limit);
   }
 
   setPagePaginedProcedimento(offset: number, limit: Number) {
     this.paging.offset = offset !== undefined ? offset : 0;
     this.paging.limit = limit ? limit : this.paging.limit;
-    
+
     this.buscaHipoteseDiagnostica(this.paging.offset, this.paging.limit);
   }
 }

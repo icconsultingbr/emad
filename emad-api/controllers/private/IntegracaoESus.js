@@ -1,5 +1,11 @@
 const { async } = require('q');
 
+let versao = "";
+let uuidInstalacao = "";
+let major = "";
+let minor = "";
+let revision = "";
+
 module.exports = function (app) {
 
     app.post('/integracao-e-sus', async function (req, res) {
@@ -9,6 +15,7 @@ module.exports = function (app) {
         req.assert("idFichaEsus").notEmpty().withMessage("O campo Ficha é um campo obrigatório");
 
         const connection = await app.dao.connections.EatendConnection.connection();
+
         try {
 
             let retorno;
@@ -17,27 +24,38 @@ module.exports = function (app) {
             if (filtro) {
                 switch (filtro.idFichaEsus) {
                     case '0':
+                        configTipoFicha(5)
                         cad = await listaCadastroIndividual(filtro);
                         atend = await listaAtendimentoIndividual(filtro);
                         vac = await listaFichaVacinacao(filtro);
-                        let xmls = cad.concat(atend, vac);
+                        col = await listaAtividadeColetiva(filtro);
+                        let xmls = cad.concat(atend, vac, col);
                         retorno = generateZipFiles(xmls, 'ficha')
                         break;
                     case '2':
+                        configTipoFicha(5)
                         cad = await listaCadastroIndividual(filtro);
                         retorno = generateZipFiles(cad, 'ficha-cadastro-individual')
                         break;
                     case '4':
+                        configTipoFicha(5)
                         atend = await listaAtendimentoIndividual(filtro);
                         retorno = generateZipFiles(atend, 'ficha-atendimento-individual')
                         break;
                     case '7':
+                        configTipoFicha(5)
                         proc = await listaProcedimentos(filtro);
                         retorno = generateZipFiles(proc, 'ficha-procedimentos')
                         break;
                     case '14':
+                        configTipoFicha(5)
                         vac = await listaFichaVacinacao(filtro);
                         retorno = generateZipFiles(vac, 'ficha-vacinas')
+                        break;
+                    case '15':
+                        configTipoFicha(7)
+                        col = await listaAtividadeColetiva(filtro);
+                        retorno = generateZipFiles(col, 'ficha-atividade-coletiva')
                         break;
                     default:
                         return retorno;
@@ -52,6 +70,30 @@ module.exports = function (app) {
             await connection.close();
         }
     });
+
+    function buscarPorId(id, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var TipoFichaDAO = new app.dao.TipoFichaDAO(connection);
+        var errors = [];
+
+        TipoFichaDAO.buscaPorId(id, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "tipoFicha");
+                res.status(500).send(errors);
+                return;
+            } else {
+
+                d.resolve(result[0]);
+            }
+        });
+        return d.promise;
+    }
 
     async function listaCadastroIndividual(filtro) {
         let tipoCampoData;
@@ -174,6 +216,37 @@ module.exports = function (app) {
         return preencheXMLFichaProcedimentos(listaProcedimentos, estabelecimento, profissionais);
     }
 
+    async function listaAtividadeColetiva(filtro) {
+        let tipoCampoData;
+
+        if (filtro.idTipoPeriodo == 1) {
+            tipoCampoData = 'dataCriacao'
+        } else {
+            tipoCampoData = 'dataFinalizacao'
+        }
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const integracaoESusDAO = new app.dao.IntegracaoESusDAO(connection, tipoCampoData);
+        const estabelecimentoDAO = new app.dao.EstabelecimentoDAO(connection);
+        const profissionalDAO = new app.dao.ProfissionalDAO(connection);
+
+        let list = [];
+        let estabelecimento = {};
+        let profissionais = [];
+
+        try {
+            profissionais = await profissionalDAO.buscarProfissionalPorEstabelecimentoEsus(filtro.idEstabelecimento)
+            estabelecimento = await estabelecimentoDAO.buscaEstabelecimentoESus(filtro.idEstabelecimento);
+            list = await integracaoESusDAO.listaAtividadeColetiva(filtro);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            await connection.close();
+        }
+
+        return preencheXMLAtividadeColetiva(list, estabelecimento, profissionais);
+    }
+
     function preencheXMLCadastroIndividual(list, estabelecimento) {
         const { create } = require('xmlbuilder2');
         const { v4: uuidv4 } = require('uuid');
@@ -225,21 +298,21 @@ module.exports = function (app) {
                 .up()
                 .ele('ns2:remetente')
                 .ele('contraChave').txt('E-ATENDE-VERSAO').up()
-                .ele('uuidInstalacao').txt('TREINAMENTO').up()
+                .ele('uuidInstalacao').txt(uuidInstalacao).up()
                 .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
                 .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
-                .ele('versaoSistema').txt('3.2.18').up()
+                .ele('versaoSistema').txt(versao).up()
                 .ele('nomeBancoDados').txt('MySQL').up()
                 .up()
                 .ele('ns2:originadora')
                 .ele('contraChave').txt('E-ATENDE-VERSAO').up()
-                .ele('uuidInstalacao').txt('TREINAMENTO').up()
+                .ele('uuidInstalacao').txt(uuidInstalacao).up()
                 .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
                 .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
-                .ele('versaoSistema').txt('3.2.18').up()
+                .ele('versaoSistema').txt(versao).up()
                 .ele('nomeBancoDados').txt('MySQL').up()
                 .up()
-                .ele('versao', { major: '4', minor: '0', revision: '1' })
+                .ele('versao', { major: major, minor: minor, revision: revision })
                 .doc();
 
             let fieldToValidate = ['emailCidadao', 'nomeMaeCidadao', 'cnsCidadao', 'cpfCidadao', 'telefoneCelular', 'racaCorCidadao', 'nomePaiCidadao'];
@@ -269,7 +342,7 @@ module.exports = function (app) {
             const listAtendimentos = list.atendimentos.filter(x => x.idProfissional == profissional.id);
             var uuidFicha = uuidv4();
 
-            if (listAtendimentos.length == 0) { return; } // || (!profissional.profissionalCNS || !profissional.codigoCBO)
+            if (listAtendimentos.length == 0) { return; }
 
             let doc = create({ version: '1.0', encoding: 'UTF-8', keepNullNodes: false, keepNullAttributes: false })
                 .ele('ns3:dadoTransporteTransportXml', { 'xmlns:ns2': 'http://esus.ufsc.br/dadoinstalacao', 'xmlns:ns3': 'http://esus.ufsc.br/dadotransporte', 'xmlns:ns4': 'http://esus.ufsc.br/fichaatendimentoindividualmaster' })
@@ -290,21 +363,21 @@ module.exports = function (app) {
                 .up()
                 .ele('ns2:remetente')
                 .ele('contraChave').txt('E-ATENDE-VERSAO').up()
-                .ele('uuidInstalacao').txt('TREINAMENTO').up()
+                .ele('uuidInstalacao').txt(uuidInstalacao).up()
                 .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
                 .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
-                .ele('versaoSistema').txt('3.2.18').up()
+                .ele('versaoSistema').txt(versao).up()
                 .ele('nomeBancoDados').txt('MySQL').up()
                 .up()
                 .ele('ns2:originadora')
                 .ele('contraChave').txt('E-ATENDE-VERSAO').up()
-                .ele('uuidInstalacao').txt('TREINAMENTO').up()
+                .ele('uuidInstalacao').txt(uuidInstalacao).up()
                 .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
                 .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
-                .ele('versaoSistema').txt('3.2.18').up()
+                .ele('versaoSistema').txt(versao).up()
                 .ele('nomeBancoDados').txt('MySQL').up()
                 .up()
-                .ele('versao', { major: '4', minor: '0', revision: '1' })
+                .ele('versao', { major: major, minor: minor, revision: revision })
                 .doc();
 
             var qtdAtendimentosValidos = listAtendimentos.length;
@@ -314,11 +387,10 @@ module.exports = function (app) {
                 const listAvaliacao = list.condicaoAvaliacao.filter(x => x.idAtendimento == atendimento.idAtendimento);
                 const listCondutas = list.condutaSus.filter(x => x.idAtendimento == atendimento.idAtendimento);
 
-                if (!listAvaliacao.some((o) => o.idAtendimento == atendimento.idAtendimento) || !listCondutas.some((o) => o.idAtendimento == atendimento.idAtendimento)) 
-                {
+                if (!listAvaliacao.some((o) => o.idAtendimento == atendimento.idAtendimento) || !listCondutas.some((o) => o.idAtendimento == atendimento.idAtendimento)) {
                     qtdAtendimentosValidos--;
-                    return; 
-                }                
+                    return;
+                }
 
                 let avaliacao = preencheAvaliacaoAtendimentoIndividual(listAvaliacao, atendimento.idAtendimento);
                 let condutas = preencheCondutasAtendimentoIndividual(listCondutas, atendimento.idAtendimento)
@@ -329,6 +401,8 @@ module.exports = function (app) {
                     .ele('dataNascimento').txt(new Date(atendimento.dataNascimento).getTime() / 1000).up()
                     .ele('localDeAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
                     .ele('sexo').txt(atendimento.sexo).up()
+                    .ele('alturaAcompanhamentoNutricional').txt(atendimento.altura).up()
+                    .ele('pesoAcompanhamentoNutricional').txt(atendimento.peso).up()
                     .ele('turno').txt(atendimento.turno).up()
                     .ele('tipoAtendimento').txt(atendimento.tipoAtendimentoSus ? atendimento.tipoAtendimentoSus : undefined).up()
                     .import(avaliacao);
@@ -353,7 +427,7 @@ module.exports = function (app) {
                 })
             })
 
-            if(qtdAtendimentosValidos == 0) { return; }            
+            if(qtdAtendimentosValidos == 0) { return; }
 
             doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoIndividualMasterTransport', true, true).ele('tpCdsOrigem').txt('3').up().ele('uuidFicha').txt(uuidFicha).up();
 
@@ -422,21 +496,21 @@ module.exports = function (app) {
                 .up()
                 .ele('ns2:remetente')
                 .ele('contraChave').txt('E-ATENDE-VERSAO').up()
-                .ele('uuidInstalacao').txt('TREINAMENTO').up()
+                .ele('uuidInstalacao').txt(uuidInstalacao).up()
                 .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
                 .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
-                .ele('versaoSistema').txt('3.2.18').up()
+                .ele('versaoSistema').txt(versao).up()
                 .ele('nomeBancoDados').txt('MySQL').up()
                 .up()
                 .ele('ns2:originadora')
                 .ele('contraChave').txt('E-ATENDE-VERSAO').up()
-                .ele('uuidInstalacao').txt('TREINAMENTO').up()
+                .ele('uuidInstalacao').txt(uuidInstalacao).up()
                 .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
                 .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
-                .ele('versaoSistema').txt('3.2.18').up()
+                .ele('versaoSistema').txt(versao).up()
                 .ele('nomeBancoDados').txt('MySQL').up()
                 .up()
-                .ele('versao', { major: '4', minor: '0', revision: '1' })
+                .ele('versao', { major: major, minor: minor, revision: revision })
                 .doc();
 
             listVacinas.forEach(vacina => {
@@ -530,21 +604,21 @@ module.exports = function (app) {
                 .up()
                 .ele('ns2:remetente')
                     .ele('contraChave').txt('E-ATENDE-VERSAO').up()
-                    .ele('uuidInstalacao').txt('TREINAMENTO').up()
+                    .ele('uuidInstalacao').txt(uuidInstalacao).up()
                     .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
                     .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
-                    .ele('versaoSistema').txt('3.2.18').up()
+                    .ele('versaoSistema').txt(versao).up()
                     .ele('nomeBancoDados').txt('MySQL').up()
                 .up()
                 .ele('ns2:originadora')
                     .ele('contraChave').txt('E-ATENDE-VERSAO').up()
-                    .ele('uuidInstalacao').txt('TREINAMENTO').up()
+                    .ele('uuidInstalacao').txt(uuidInstalacao).up()
                     .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
                     .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
-                    .ele('versaoSistema').txt('3.2.18').up()
+                    .ele('versaoSistema').txt(versao).up()
                     .ele('nomeBancoDados').txt('MySQL').up()
                 .up()
-                .ele('versao', { major: '4', minor: '0', revision: '1' })
+                .ele('versao', { major: major, minor: minor, revision: revision })
                 .doc();
 
             listProcedimento.forEach(atendimento => {
@@ -595,6 +669,110 @@ module.exports = function (app) {
         return xmls
     }
 
+    function preencheXMLAtividadeColetiva(list, estabelecimento, profissionais) {
+        const { create, fragment } = require('xmlbuilder2');
+        const { v4: uuidv4 } = require('uuid');
+
+        let xmls = [];
+
+        list.atendimentos.forEach(atendimento => {
+            var uuidFicha = uuidv4();
+
+            const profissional = profissionais.filter(x => x.id == atendimento.idProfissional);
+
+            let doc = create({ version: '1.0', encoding: 'UTF-8', keepNullNodes: false, keepNullAttributes: false })
+                .ele('ns3:dadoTransporteTransportXml', { 'xmlns:ns2': 'http://esus.ufsc.br/dadoinstalacao', 'xmlns:ns3': 'http://esus.ufsc.br/dadotransporte', 'xmlns:ns4': 'http://esus.ufsc.br/fichaatividadecoletiva' })
+                .ele('uuidDadoSerializado').txt(uuidFicha).up()
+                .ele('tipoDadoSerializado').txt('6').up()
+                .ele('codIbge').txt(estabelecimento.codigo).up()
+                .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up()
+                .ele('ns4:fichaAtividadeColetivaTransport')
+                .ele('uuidFicha').txt(uuidFicha).up()
+                .ele('inep').txt(atendimento.inep).up()
+                .ele('numParticipantes').txt(atendimento.numParticipantes).up()
+                .ele('profissionais')
+                .ele('cnsProfissional').txt(profissional[0].profissionalCNS).up()
+                .ele('codigoCbo2002').txt(profissional[0].codigoCBO).up()
+                .up()
+                .ele('atividadeTipo').txt(atendimento.atividadeTipo).up()
+                .ele('temasParaReuniao').txt(atendimento.temasParaReuniao).up()
+                .ele('publicoAlvo').txt(atendimento.publicoAlvo).up()
+                .ele('participantes')
+                .ele('cnsParticipante').txt(atendimento.cartaoSus).up()
+                .ele('dataNascimento').txt(new Date(atendimento.dataNascimento).getTime() / 1000).up()
+                .ele('sexo').txt(atendimento.sexo).up()
+                .up()
+                .ele('tbCdsOrigem').txt('3').up()
+                .ele('procedimento').txt(atendimento.codigoSIGTAP).up()
+                .ele('turno').txt(atendimento.turno).up()
+                .ele('pseEducacao').txt(!atendimento.pseEducacao ? false : atendimento.pseEducacao).up()
+                .ele('pseSaude').txt(!atendimento.pseSaude ? false : atendimento.pseSaude).up()
+                .ele('headerTransport')
+                .ele('profissionalCNS').txt(estabelecimento.cnsProfissionaleSus ? estabelecimento.cnsProfissionaleSus : '3').up()
+                .ele('cboCodigo_2002').txt(estabelecimento.codigoCBO ? estabelecimento.codigoCBO : '3').up()
+                .ele('cnes').txt(estabelecimento.cnes).up()
+                .ele('dataAtendimento').txt(Date.now()).up()
+                .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
+                .up()
+                .ele('temasParaSaude').txt(atendimento.temasParaSaude).up()
+                .ele('praticasEmSaude').txt(atendimento.praticasEmSaude).up()
+                .up()
+                .ele('ns2:remetente')
+                .ele('contraChave').txt('E-ATENDE-VERSAO').up()
+                .ele('uuidInstalacao').txt(uuidInstalacao).up()
+                .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
+                .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
+                .ele('versaoSistema').txt(versao).up()
+                .ele('nomeBancoDados').txt('MySQL').up()
+                .up()
+                .ele('ns2:originadora')
+                .ele('contraChave').txt('E-ATENDE-VERSAO').up()
+                .ele('uuidInstalacao').txt(uuidInstalacao).up()
+                .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
+                .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
+                .ele('versaoSistema').txt(versao).up()
+                .ele('nomeBancoDados').txt('MySQL').up()
+                .up()
+                .ele('versao', { major: major, minor: minor, revision: revision })
+                .doc();
+
+            //CAMPO = PROFISSIONAIS
+            // Não pode ser preenchido se pseEducacao = true e pseSaude = false
+            if (atendimento.pseEducacao == 1 && (!atendimento.pseSaude || atendimento.pseSaude == 0)) {
+                removeNode(doc.doc(), ['profissionais']);
+                removeNode(doc.doc(), ['temasParaReuniao']);
+            }
+
+            // CAMPO = publicoAlvo/temasParaReuniao
+            // Não pode ser preenchido se atividadeTipo for 4, 5, 6 ou 7
+            if (atendimento.atividadeTipo == 4 || atendimento.atividadeTipo == 5 || atendimento.atividadeTipo == 6 || atendimento.atividadeTipo == 7) {
+                removeNode(doc.doc(), ['temasParaReuniao']);
+            }
+
+            // CAMPO = publicoAlvo/temasParaSaude
+            // Não pode ser preenchido se atividadeTipo for 1, 2 ou 3
+            if (atendimento.atividadeTipo == 1 || atendimento.atividadeTipo == 2 || atendimento.atividadeTipo == 3) {
+                removeNode(doc.doc(), ['publicoAlvo', 'temasParaSaude'])
+            }
+
+            // CAMPO = procedimento
+            // Só pode ser preenchido se o campo praticasEmSaude possuir o valor 30.
+            if (atendimento.praticasEmSaude != 30) {
+                removeNode(doc.doc(), ['procedimento'])
+            }
+
+            // CAMPO = praticasEmSaude
+            // Não pode ser preenchido se atividadeTipo for 1, 2, 3, 4, 7
+            if (atendimento.atividadeTipo == 1 || atendimento.atividadeTipo == 2 || atendimento.atividadeTipo == 3 || atendimento.atividadeTipo == 4 || atendimento.atividadeTipo == 7) {
+                removeNode(doc.doc(), ['praticasEmSaude'])
+            }
+
+            xmls.push(doc.doc().end({ prettyPrint: true, allowEmptyTags: false }));
+        })
+
+        return xmls;
+    }
+
     function preencheProcedimentos(listProcedimento) {
         const { fragment } = require('xmlbuilder2');
         let procedimentos = []
@@ -616,6 +794,27 @@ module.exports = function (app) {
         })
 
         return zip.toBuffer();
+    }
+
+    async function configTipoFicha(tipoficha) {
+        let configuracaoFicha = {};
+        configuracaoFicha = await buscarPorId(tipoficha);
+        versao = configuracaoFicha.versaoSistema
+        uuidInstalacao = configuracaoFicha.uuidInstalacao
+        major = configuracaoFicha.major
+        minor = configuracaoFicha.minor
+        revision = configuracaoFicha.revision
+    }
+
+    function removeNode(doc, fieldToValidate) {
+        fieldToValidate.forEach(field => {
+            doc.each(x => {
+                if (x.node.nodeName == field) {
+                    x.node.removeChild(x.node._firstChild);
+                    x.remove();
+                }
+            }, true, true)
+        })
     }
 
 }

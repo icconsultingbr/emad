@@ -122,6 +122,190 @@
               </div>
             </div>
           </div>
+
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="form-group row">
+                <label class="col-xl-2 col-form-label text-left">
+                  Ficou em Observação
+                </label>
+                <div class="col-xl-10">
+                  <div class="custom-control custom-checkbox" style="width: 25px">
+                    <input type="checkbox" id="ficouEmObservacao" [(ngModel)]="object.ficouEmObservacao"
+                      formControlName="ficouEmObservacao" class="custom-control-input">
+                    <label class="custom-control-label" for="ficouEmObservacao"></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Ficha de Atividade Coletiva -->
+      <div *ngIf="object.tipoFicha == 7 || objectHistorico.tipoFicha == 7" class="card mb-4">
+        <div class="card-header text-left">
+          Dados da Atividade Coletiva
+        </div>
+        <div class="card-body text-left">
+
+          <div class="row">
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Inep
+                </label>
+                <div class="col-xl-8">
+                  <input type="text" class="form-control has-error" [(ngModel)]="object.inep" formControlName="inep" />
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Núm de participantes
+                </label>
+                <div class="col-xl-8">
+                  <input type="number" min="1" max="999" class="form-control has-error"
+                    [(ngModel)]="object.numParticipantes" formControlName="numParticipantes" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Tipo de Atv.
+                </label>
+                <div class="col-xl-8">
+                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.atividadeTipo"
+                    formControlName="atividadeTipo">
+                    <option [value]="0">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.atividadeTipo" [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Temas da Atv.
+                </label>
+                <div class="col-xl-8">
+                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.temasParaReuniao"
+                    formControlName="temasParaReuniao">
+                    <option [value]="0">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.atividadeTemas" [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Público Alvo
+                </label>
+                <div class="col-xl-8">
+                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.publicoAlvo"
+                    formControlName="publicoAlvo">
+                    <option [value]="0">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.atividadePublico" [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Práticas em Saude
+                </label>
+                <div class="col-xl-8">
+                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.praticasEmSaude"
+                    formControlName="praticasEmSaude">
+                    <option [value]="0">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.atividadePraticasSaude" [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Temas para Saude
+                </label>
+                <div class="col-xl-8">
+                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.temasParaSaude"
+                    formControlName="temasParaSaude">
+                    <option [value]="0">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.atividadeTemasSaude" [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Procedimentos SIGTAP
+                </label>
+                <div class="col-xl-8">
+                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.procedimento"
+                    formControlName="procedimento">
+                    <option [value]="0">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.atividadeProcedimento" [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 10px;">
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  PSE Saúde
+                </label>
+                <div class="col-xl-8">
+                  <div class="custom-control custom-checkbox" style="width: 25px">
+                    <input (change)="regrasAtividadeColetiva()" type="checkbox" id="pseSaude"
+                      [(ngModel)]="object.pseSaude" formControlName="pseSaude" class="custom-control-input">
+                    <label class="custom-control-label" for="pseSaude"></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  PSE Educação
+                </label>
+                <div class="col-xl-8">
+                  <div class="custom-control custom-checkbox" style="width: 25px">
+                    <input type="checkbox" id="pseEducacao" [(ngModel)]="object.pseEducacao"
+                      formControlName="pseEducacao" class="custom-control-input">
+                    <label class="custom-control-label" for="pseEducacao"></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
         </div>
       </div>
 
@@ -756,8 +940,196 @@
               </div>
             </div>
           </div>
+
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="form-group row">
+                <label class="col-xl-2 col-form-label text-left">
+                  Ficou em Observação
+                </label>
+                <div class="col-xl-10">
+                  <div class="custom-control custom-checkbox" style="width: 25px">
+                    <input type="checkbox" id="ficouEmObservacaoHistorico"
+                      [(ngModel)]="objectHistorico.ficouEmObservacao" formControlName="ficouEmObservacao"
+                      class="custom-control-input" [readonly]="disableFields()">
+                    <label class="custom-control-label" for="ficouEmObservacao"></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
+
+      <!-- Ficha de Atividade Coletiva -->
+      <div *ngIf="objectHistorico.tipoFicha == 7 || objectHistorico.tipoFicha == 7" class="card mb-4">
+        <div class="card-header text-left">
+          Dados da Atividade Coletiva
+        </div>
+        <div class="card-body text-left">
+
+          <div class="row">
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Inep
+                </label>
+                <div class="col-xl-8">
+                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.inep"
+                    formControlName="inep" />
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Núm de participantes
+                </label>
+                <div class="col-xl-8">
+                  <input type="number" min="1" max="999" class="form-control has-error"
+                    [(ngModel)]="objectHistorico.numParticipantes" formControlName="numParticipantes" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Tipo de Atv.
+                </label>
+                <div class="col-xl-8">
+                  <select *ngIf="domains" class="custom-select d-block w-100"
+                    [(ngModel)]="objectHistorico.atividadeTipo" formControlName="atividadeTipo">
+                    <option [value]="0">Selecione...</option>
+                    <option
+                      *ngFor="let a of (tiposFichaDomainFilter ? tiposFichaDomainFilter : domains[0]?.atividadeTipo)"
+                      [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Temas da Atv.
+                </label>
+                <div class="col-xl-8">
+                  <select *ngIf="domains" class="custom-select d-block w-100"
+                    [(ngModel)]="objectHistorico.temasParaReuniao" formControlName="temasParaReuniao">
+                    <option [value]="0">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.atividadeTemas" [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Público Alvo
+                </label>
+                <div class="col-xl-8">
+                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="objectHistorico.publicoAlvo"
+                    formControlName="publicoAlvo">
+                    <option [value]="0">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.atividadePublico" [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Práticas em Saude
+                </label>
+                <div class="col-xl-8">
+                  <select *ngIf="domains" class="custom-select d-block w-100"
+                    [(ngModel)]="objectHistorico.praticasEmSaude" formControlName="praticasEmSaude">
+                    <option [value]="0">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.atividadePraticasSaude" [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Temas para Saude
+                </label>
+                <div class="col-xl-8">
+                  <select *ngIf="domains" class="custom-select d-block w-100"
+                    [(ngModel)]="objectHistorico.temasParaSaude" formControlName="temasParaSaude">
+                    <option [value]="0">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.atividadeTemasSaude" [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Procedimentos SIGTAP
+                </label>
+                <div class="col-xl-8">
+                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="objectHistorico.procedimento"
+                    formControlName="procedimento">
+                    <option [value]="0">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.atividadeProcedimento" [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 10px;">
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  PSE Saúde
+                </label>
+                <div class="col-xl-8">
+                  <div class="custom-control custom-checkbox" style="width: 25px">
+                    <input type="checkbox" id="pseSaude" [(ngModel)]="objectHistorico.pseSaude"
+                      formControlName="pseSaude" class="custom-control-input">
+                    <label class="custom-control-label" for="pseSaude"></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-6">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  PSE Educação
+                </label>
+                <div class="col-xl-8">
+                  <div class="custom-control custom-checkbox" style="width: 25px">
+                    <input type="checkbox" id="pseEducacao" [(ngModel)]="objectHistorico.pseEducacao"
+                      formControlName="pseEducacao" class="custom-control-input">
+                    <label class="custom-control-label" for="pseEducacao"></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
 
       <div class="card mb-4">
         <div class="card-header text-left">
@@ -1794,6 +2166,7 @@
         </table>
       </div>
     </div>
+
     <div class="row mb-2">
       <div *ngIf="pager.pages && pager.pages.length" class="text text-secondary col-md-12 pr-0 mx-auto">
         <i>
@@ -2093,10 +2466,11 @@
     </div>
     <div class="form-group row">
       <label class="col-xl-4 col-sm-12 col-form-label text-left">
-       Dose:
+        Dose:
       </label>
       <div class="col-xl-8 col-sm-12">
-        <input type="number"  onKeyDown="return false" min='1' max="10" class="form-control has-error" [(ngModel)]="pacienteVacina.dose">
+        <input type="number" min='1' max="10" class="form-control has-error"
+          [(ngModel)]="pacienteVacina.dose">
       </div>
     </div>
     <div class=" form-group row text-right">

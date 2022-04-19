@@ -10,8 +10,8 @@ export class TipoFichaService extends GenericsService {
   constructor(public http: HttpClient) {
     super(http);
   }
-  
-  public fields: any[] = [    
+
+  public fields: any[] = [
     {
       field: "id",
       type: "hidden",
@@ -47,25 +47,26 @@ export class TipoFichaService extends GenericsService {
       form: true,
       required: false,
       validator: ['', '']
-    }    ,
+    },
     {
       field: "tipo",
       type: "select",
       label: "Tipo",
       grid: true,
       form: true,
-      translate: {1: "Atendimento", 2: "Avaliação", 3: "Exame"},
+      translate: { 1: "Atendimento", 2: "Avaliação", 3: "Exame" },
       required: true,
       validator: ['', Validators.required]
     },
     {
       field: "tipoAtendimentoSus",
-      type: "text",
+      type: "select",
       label: "Código Atendimento e-SUS",
       grid: false,
       form: true,
-      required: false,
-      validator: ['', '']
+      translate: { 1: "Atendimento", 2: "Avaliação", 3: "Exame" },
+      required: true,
+      validator: ['', Validators.required]
     },
     {
       field: "situacao",
@@ -73,10 +74,61 @@ export class TipoFichaService extends GenericsService {
       label: "Situação",
       grid: true,
       form: true,
-      translate: {1: "Ativo", 0: "Inativo"},
+      translate: { 1: "Ativo", 0: "Inativo" },
       required: true,
-      validator:['', Validators.required]
+      validator: ['', Validators.required]
+    },
+    {
+      field: "versaoSistema",
+      type: "text",
+      label: "Versão do sistema",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
+    },
+    {
+      field: "uuidInstalacao",
+      type: "text",
+      label: "UUID Instalação",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
+    },
+    {
+      field: "major",
+      type: "text",
+      label: "Major",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
+    },
+    {
+      field: "minor",
+      type: "text",
+      label: "Minor",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
+    },
+    {
+      field: "revision",
+      type: "text",
+      label: "Revision",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
     }
   ];
+  saveFichaEstabelecimento(obj: any) {
+    return this.http.post('tipo-ficha/estabelecimento/', JSON.stringify(obj));
+  }
+  deleteFichaEstabelecimento(id: any) {
+    return this.http.delete('tipo-ficha/estabelecimento/' + id);
+  }
 }
 

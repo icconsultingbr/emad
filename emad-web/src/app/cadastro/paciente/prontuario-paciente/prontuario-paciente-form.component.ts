@@ -323,6 +323,14 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       gruposAtencaoContinuada: ['', ''],
       falecido: new FormControl({ value: '', disabled: true }),
       situacao: new FormControl({ value: '', disabled: true }),
+      necessidadeEspeciais: new FormControl({ value: '', disabled: true }),
+      gestante: new FormControl({ value: '', disabled: true }),
+      aleitamentoMaterno: ['', ''],
+      dumDaGestante: ['', Validators.required],
+      idadeGestacional: ['', ''],
+      stGravidezPlanejada: new FormControl({ value: '', disabled: true }),
+      nuGestasPrevias: ['', ''],
+      nuPartos: ['', ''],
     });
   }
 

@@ -291,6 +291,138 @@
                 </div>
               </div>
             </div>
+
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Possui necessidades especiais
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="necessidadeEspeciais" [(ngModel)]="object.necessidadeEspeciais"
+                        formControlName="necessidadeEspeciais" class="custom-control-input" readonly>
+                      <label class="custom-control-label" for="necessidadeEspeciais"></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="object.sexo == 2" class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Gestante
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="gestante" [(ngModel)]="object.gestante" formControlName="gestante"
+                        class="custom-control-input" readonly>
+                      <label class="custom-control-label" for="gestante"></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="object.gestante == true" class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+
+                  <div class="col-xl-12">
+                    <div class="card mb-4">
+                      <div class="card-header text-left">
+                        Dados da Gestação
+                      </div>
+                      <div class="card-body text-left">
+
+                        <div class="row">
+                          <div class="col-xl-12">
+                            <div class="form-group row">
+                              <label class="col-xl-2 col-form-label text-left">
+                                Cód aleita. materno<span class="text-danger font-weight-bold"> *</span>
+                              </label>
+                              <div class="col-xl-4">
+                                <input type="text" id="aleitamentoMaterno" class="form-control has-error"
+                                  [(ngModel)]="object.aleitamentoMaterno" formControlName="aleitamentoMaterno"
+                                  readonly />
+                              </div>
+                              <label class="col-xl-2 col-form-label text-left">
+                                Dt. Ult. Menstruação<span class="text-danger font-weight-bold"> *</span>
+                              </label>
+                              <div class="col-xl-4">
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <div class="input-group-text btn">
+                                      <i class="fa fa-calendar-alt"></i>
+                                    </div>
+                                  </div>
+                                  <input type="text" [(ngModel)]="object.dumDaGestante" formControlName="dumDaGestante"
+                                    placeholder="dd/mm/aaaa" bsDatepicker
+                                    [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}"
+                                    class="form-control" autocomplete="off" readonly>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-xl-12">
+                            <div class="form-group row">
+                              <label class="col-xl-2 col-form-label text-left">
+                                Idade Gest. em semanas<span class="text-danger font-weight-bold"> *</span>
+                              </label>
+                              <div class="col-xl-4">
+                                <input type="number" onKeyDown="" min='1' max="42" class="form-control has-error"
+                                  [(ngModel)]="object.idadeGestacional" formControlName="idadeGestacional" readonly>
+                              </div>
+                              <label class="col-xl-2 col-form-label text-left">
+                                Gravidez Planejada<span class="text-danger font-weight-bold"> *</span>
+                              </label>
+                              <div class="col-xl-4">
+                                <div class="custom-control custom-checkbox" style="width: 25px">
+                                  <input type="checkbox" id="stGravidezPlanejada"
+                                    [(ngModel)]="object.stGravidezPlanejada" formControlName="stGravidezPlanejada"
+                                    class="custom-control-input">
+                                  <label class="custom-control-label" for="stGravidezPlanejada"></label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-xl-12">
+                            <div class="form-group row">
+                              <label class="col-xl-2 col-form-label text-left">
+                                Núm. de gestações<span class="text-danger font-weight-bold"> *</span>
+                              </label>
+                              <div class="col-xl-4">
+                                <input type="number" onKeyDown="" min='1' max="999" class="form-control has-error"
+                                  [(ngModel)]="object.nuGestasPrevias" formControlName="nuGestasPrevias" readonly>
+                              </div>
+                              <label class="col-xl-2 col-form-label text-left">
+                                Núm. de Partos<span class="text-danger font-weight-bold"> *</span>
+                              </label>
+                              <div class="col-xl-4">
+                                <input type="number" onKeyDown="" min='1' max="999" class="form-control has-error"
+                                  [(ngModel)]="object.nuPartos" formControlName="nuPartos" readonly>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
           </div>
         </div>
       </tab>

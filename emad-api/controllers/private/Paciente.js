@@ -1,6 +1,7 @@
 const { async } = require('q');
 
 module.exports = function (app) {
+
     app.get('/paciente', async function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
@@ -61,6 +62,28 @@ module.exports = function (app) {
         let gruposAtencaoContinuada = obj.gruposAtencaoContinuada;
         let arrAtencaoContinuada = [];
 
+        if (obj.obrigaCpfNovoPaciente == 1) {
+            req.assert("cpf").notEmpty().withMessage("CPF é um campo obrigatório;");
+        }
+
+        if (obj.obrigaCartaoSusNovoPaciente == 1) {
+            req.assert("cartaoSus").notEmpty().withMessage("O campo Cartão SUS é um campo obrigatório;");
+        }
+
+        if (obj.cpf) {
+            if(util.cpfValido(obj.cpf) == false)
+                req.assert("cpf").custom(util.cpfValido).withMessage("CPF inválido;");
+        }
+
+        if (obj.cartaoSus) {
+            if (util.cartaoSUSValido(obj.cartaoSus) == false) 
+                req.assert("cartaoSus").custom(util.cartaoSUSValido).withMessage("Cartão SUS inválido;");   
+        }
+
+        if (obj.foneCelular == null) {
+            obj.foneCelular = obj.celularDefaultNovoPaciente
+        }
+
         req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");
         req.assert("nomeMae").notEmpty().withMessage("Nome da mãe é um campo obrigatório;");
         req.assert("dataNascimento").notEmpty().withMessage("Data de nascimento é um campo obrigatório;");
@@ -90,6 +113,9 @@ module.exports = function (app) {
         delete obj.pesquisaCentral;
         delete obj.pacienteOutroEstabelecimento;
         delete obj.pacienteIdade;
+        delete obj.celularDefaultNovoPaciente
+        delete obj.obrigaCpfNovoPaciente
+        delete obj.obrigaCartaoSusNovoPaciente
 
         obj.dataCriacao = new Date;
         obj.idUsuarioCriacao = usuario.id;
@@ -105,6 +131,13 @@ module.exports = function (app) {
             obj.dataNascimento = util.dateToISO(obj.dataNascimento);
         else
             obj.dataNascimento = new Date(obj.dataNascimento);
+
+        if (obj.dumDaGestante != null) {
+            if (obj.dumDaGestante.length == 10)
+                obj.dumDaGestante = util.dateToISO(obj.dumDaGestante);
+            else
+                obj.dumDaGestante = new Date(obj.dumDaGestante);
+        }      
 
         const connection = await app.dao.connections.EatendConnection.connection();
 
@@ -243,6 +276,23 @@ module.exports = function (app) {
         req.assert("idUf").notEmpty().withMessage("Estado é um campo obrigatório;");
         req.assert("idMunicipio").notEmpty().withMessage("Municipio é um campo obrigatório;");
 
+        if (obj.obrigaCpfNovoPaciente == 1) {
+            req.assert("cpf").notEmpty().withMessage("CPF é um campo obrigatório;");
+        }
+
+        if (obj.obrigaCartaoSusNovoPaciente == 1) {
+            req.assert("cartaoSus").notEmpty().withMessage("O campo Cartão SUS é um campo obrigatório;");
+        }
+
+        if (obj.cpf) {
+            if(util.cpfValido(obj.cpf) == false)
+                req.assert("cpf").custom(util.cpfValido).withMessage("CPF inválido;");
+        }
+
+        if (obj.cartaoSus) {
+            if (util.cartaoSUSValido(obj.cartaoSus) == false) 
+                req.assert("cartaoSus").custom(util.cartaoSUSValido).withMessage("Cartão SUS inválido;");   
+        }
 
         errors = req.validationErrors();
 
@@ -256,6 +306,9 @@ module.exports = function (app) {
         delete obj.idUsuarioCriacao;
         delete obj.pacienteOutroEstabelecimento;
         delete obj.pacienteIdade;
+        delete obj.obrigaCpfNovoPaciente;
+        delete obj.obrigaCartaoSusNovoPaciente;
+        delete obj.obrigaValidarPacienteAtendimento;
 
         obj.dataAlteracao = new Date;
         obj.idUsuarioAlteracao = usuario.id;
@@ -272,6 +325,13 @@ module.exports = function (app) {
         else
             obj.dataNascimento = new Date(obj.dataNascimento);
 
+        if (obj.dumDaGestante != null) {
+            if (obj.dumDaGestante.length == 10)
+                obj.dumDaGestante = util.dateToISO(obj.dumDaGestante);
+            else
+                obj.dumDaGestante = new Date(obj.dumDaGestante);
+        }
+        
         const connection = await app.dao.connections.EatendConnection.connection();
 
         const pacienteRepository = new app.dao.PacienteDAO(connection);

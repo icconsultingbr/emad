@@ -11,6 +11,8 @@ import { environment } from '../../../environments/environment';
 import { PacienteHipotese } from '../../_core/_models/PacienteHipotese';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { HipoteseDiagnostica } from '../../_core/_models/HipoteseDiagnostica';
+import { Estabelecimento } from '../../_core/_models/Estabelecimento';
+import { EstabelecimentoService } from '../../seguranca/estabelecimento/estabelecimento.service';
 
 @Component({
   selector: 'app-paciente-form',
@@ -20,6 +22,7 @@ import { HipoteseDiagnostica } from '../../_core/_models/HipoteseDiagnostica';
 })
 export class PacienteFormComponent implements OnInit {
   object: Paciente = new Paciente();
+  objectEstabelecimento: Estabelecimento = new Estabelecimento();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
   method: string = 'paciente';
   fields = [];
@@ -40,6 +43,10 @@ export class PacienteFormComponent implements OnInit {
   allItemsPesquisaHipoteseDiagnostica: any[] = null;
   hipoteseDiagnostica: HipoteseDiagnostica = new HipoteseDiagnostica();
 
+  cpfObrigatorio: boolean = false;
+  susObrigatorio: boolean = false;
+  telefoneDefault: string = "";
+
   @ViewChild('addresstext') addresstext: ElementRef;
 
   //PAGINATION
@@ -56,6 +63,7 @@ export class PacienteFormComponent implements OnInit {
 
   constructor(
     private service: PacienteService,
+    private serviceEstabelecimento: EstabelecimentoService,
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private ref: ChangeDetectorRef,
@@ -82,6 +90,8 @@ export class PacienteFormComponent implements OnInit {
     });
     this.createGroup();
     this.loadDomains();
+
+    this.onChangeEstabelecimento(this.object.idEstabelecimentoCadastro);
   }
 
   ngAfterViewInit() {
@@ -133,6 +143,12 @@ export class PacienteFormComponent implements OnInit {
                       { id: "7", nome: "O_POSITIVO" },
                       { id: "8", nome: "O_NEGATIVO" },
                     ],
+                    aleitamentoMaterno: [
+                      { id: "1", nome: "Exclusivo" },
+                      { id: "2", nome: "Predominante" },
+                      { id: "3", nome: "Complementado" },
+                      { id: "4", nome: "Inexistente" },
+                    ],
                     idRaca: racas,
                     idAtencaoContinuada: atencaoContinuada,
                     gruposAtencaoContinuada: atencaoContinuada,
@@ -143,7 +159,7 @@ export class PacienteFormComponent implements OnInit {
                   else {
                     this.loading = false;
                     this.loadPhoto = true;
-                  }
+                  }                 
                 });
               });
             });
@@ -239,6 +255,14 @@ export class PacienteFormComponent implements OnInit {
       idEstabelecimentoCadastro: new FormControl({ value: '', disabled: (this.id > 0 || this.object.id > 0) ? true : false }, Validators.required),
       gruposAtencaoContinuada: ['', ''],
       falecido: ['', ''],
+      necessidadeEspeciais: ['', ''],
+      gestante: ['', ''],
+      aleitamentoMaterno: ['', ''],
+      dumDaGestante: ['', ''],
+      idadeGestacional: ['', ''],
+      stGravidezPlanejada: ['', ''],
+      nuGestasPrevias: ['', ''],
+      nuPartos: ['', ''],
       situacao: ['', Validators.required],
       foto: ['']
     });
@@ -364,7 +388,7 @@ export class PacienteFormComponent implements OnInit {
 
         this.service.list(`municipio/uf/${this.object.idUf}`).subscribe(municipios => {
           this.domains[0].idMunicipio = municipios;
-          let ufMunicipios = municipios.filter((uf) => uf.nome.toUpperCase() == municipio.toUpperCase());
+          let ufMunicipios = municipios.filter((uf) => uf.nome.toUpperCase() == municipio.toString().toUpperCase());
           if (ufMunicipios.length > 0) {
             this.object.idMunicipio = ufMunicipios[0].id;
           }
@@ -378,10 +402,10 @@ export class PacienteFormComponent implements OnInit {
     this.message = "";
     this.errors = [];
     this.loading = true;
-    
+
     this.service.list(`municipio/uf/${this.object.idUf}`).subscribe(municipios => {
       this.domains[0].idMunicipio = municipios;
-      let listaMunicipios = municipios.filter((municipio) => municipio.nome.toUpperCase() == municipio.toUpperCase());
+      let listaMunicipios = municipios.filter((municipio) => municipio.nome.toUpperCase() == municipio.toString().toUpperCase());
       if (listaMunicipios.length > 0) {
         this.object.idMunicipio = listaMunicipios[0].id;
       }
@@ -546,5 +570,35 @@ export class PacienteFormComponent implements OnInit {
     this.paging.limit = limit ? limit : this.paging.limit;
 
     this.buscaHipoteseDiagnostica(this.paging.offset, this.paging.limit);
+  }
+
+  onChangeEstabelecimento(idEstabelecimento) {
+    this.errors = [];
+    this.message = "";
+    this.loading = true;
+
+    this.serviceEstabelecimento.findById(idEstabelecimento, 'estabelecimento').subscribe(result => {
+      this.objectEstabelecimento = result;
+      this.loading = false;
+
+      let estabelecimento = JSON.parse(JSON.stringify(result));
+
+      // VALIDACAO EM TELA
+      this.cpfObrigatorio = estabelecimento.obrigaCpfNovoPaciente;
+      this.susObrigatorio = estabelecimento.obrigaCartaoSusNovoPaciente;
+      this.telefoneDefault = estabelecimento.celularDefaultNovoPaciente;
+
+      //VALIDAR OS DADOS NA API
+      this.object.obrigaCpfNovoPaciente = estabelecimento.obrigaCpfNovoPaciente;
+      this.object.obrigaCartaoSusNovoPaciente = estabelecimento.obrigaCartaoSusNovoPaciente;
+      this.object.celularDefaultNovoPaciente = estabelecimento.celularDefaultNovoPaciente;
+
+    }, error => {
+      this.objectEstabelecimento = new Estabelecimento();
+      this.loading = false;
+      this.errors.push({
+        message: "Estabelecimento não encontrado"
+      });
+    });
   }
 }

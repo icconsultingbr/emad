@@ -1,8 +1,7 @@
 import { Input } from "@angular/core";
 
 export class Estabelecimento {
-    id:Number;
-    @Input() nome: string;
+    id: Number;
     @Input() cnes: string;
     @Input() cnpj: string;
     @Input() razaoSocial: string;
@@ -23,10 +22,17 @@ export class Estabelecimento {
     @Input() idTipoUnidade: Number;
     @Input() esferaAdministradora: string;
     @Input() situacao: Boolean;
-    @Input() latitude: number;
-    @Input() longitude: number;
+    @Input() latitude: number = 0;
+    @Input() longitude: number = 0;
     @Input() distancia: number;
+    @Input() obrigaCpfNovoPaciente: Boolean;
+    @Input() obrigaCartaoSusNovoPaciente: Boolean;
+    @Input() obrigaValidarPacienteAtendimento: Boolean;
+    @Input() celularDefaultNovoPaciente: string;
     @Input() idUnidadeCorrespondenteDim: Number = null;
     @Input() idUnidadePesquisaMedicamentoDim: Number = null;
     @Input() idUnidadeRegistroReceitaDim: Number = null;
+    @Input() tipoFichas: any[];
+    @Input() cboProfissionalEsus: Number = null;
+    @Input() cnsProfissionaleSus: Number = null;
 }

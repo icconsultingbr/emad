@@ -35,8 +35,9 @@ export class ESusComponent implements OnInit {
     this.domains.push({
       tipoFicha: [
         { id: '0', nome: "Todas" },
-        { id: '2', nome: "Ficha de Cadastro Individual" },
         { id: '4', nome: "Ficha de Atendimento Individual" },
+        { id: '15', nome: "Ficha de Atividade Coletiva" },
+        { id: '2', nome: "Ficha de Cadastro Individual" },
         { id: '7', nome: "Ficha de Procedimentos" },
         { id: '14', nome: "Ficha de Vacinação" }],
       tipoPeriodo: [
@@ -63,12 +64,12 @@ export class ESusComponent implements OnInit {
 
     if (this.object.periodoExtracao[0]) {
       this.object.periodoExtracao[0].setHours(0, 0, 0, 0)
-      dataInicialConvertida =  this.object.periodoExtracao[0].toISOString()
+      dataInicialConvertida = this.object.periodoExtracao[0].toISOString()
     }
 
     if (this.object.periodoExtracao[1]) {
       this.object.periodoExtracao[1].setHours(23, 59, 0, 0)
-      dataFinalConvertida =  this.object.periodoExtracao[1].toISOString()
+      dataFinalConvertida = this.object.periodoExtracao[1].toISOString()
     }
 
     this.object.periodoExtracao[0] = dataInicialConvertida

@@ -6,6 +6,8 @@ export class TipoExame {
     @Input() situacao: Boolean;
     @Input() idHipoteseDiagnostica: Number;
     @Input() nomeHipoteseDiagnostica: string;
-    @Input() nomeProcedimento : string;
-    @Input() idProcedimento : number;
+    @Input() nomeProcedimento: string;
+    @Input() idProcedimento: number;
+    @Input() codSigTap: number;
+    @Input() codAB: number;
 }

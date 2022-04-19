@@ -6,7 +6,7 @@ module.exports = function (app) {
         let errors = [];
 
         const connection = await app.dao.connections.EatendConnection.connection();
-        
+
         try {
             const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
 
@@ -18,7 +18,7 @@ module.exports = function (app) {
             errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
             res.status(500).send(errors);
         }
-        finally{
+        finally {
             await connection.close();
         }
     });
@@ -30,7 +30,7 @@ module.exports = function (app) {
         let errors = [];
 
         const connection = await app.dao.connections.EatendConnection.connection();
-        
+
         try {
             const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
 
@@ -42,61 +42,61 @@ module.exports = function (app) {
             errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
             res.status(500).send(errors);
         }
-        finally{
+        finally {
             await connection.close();
         }
-    });   
+    });
 
-    app.put('/atendimento/envia-ficha', async function (req, res) {        
+    app.put('/atendimento/envia-ficha', async function (req, res) {
         var obj = req.body;
         let id = obj.id;
         let urlFicha;
-        
+
         const connection = await app.dao.connections.EatendConnection.connection();
         const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
         const parametroSegurancaRepository = new app.dao.ParametroSegurancaDAO(connection);
         const tipoFichaRepository = new app.dao.TipoFichaDAO(connection);
-        
+
         try {
-            
+
             var buscaAtendimento = await atendimentoRepository.buscaPorIdSync(id);
 
             if (!buscaAtendimento) {
                 errors = util.customError(errors, "header", "Atendimento não encontrado", "");
-                res.status(400).send(errors);                
+                res.status(400).send(errors);
                 return;
             }
 
             var valorChave = await parametroSegurancaRepository.buscarValorPorChaveSync("'URL_FICHA_DIGITAL_SERVICO'");
-            
+
             if (valorChave) {
-                urlFicha = valorChave.filter((url) => url.NOME == "URL_FICHA_DIGITAL_SERVICO")[0].VALOR;                
+                urlFicha = valorChave.filter((url) => url.NOME == "URL_FICHA_DIGITAL_SERVICO")[0].VALOR;
             }
             else {
                 errors = util.customError(errors, "header", "URL para envio da ficha digital não foi encontrada", "");
-                res.status(400).send(errors);                
+                res.status(400).send(errors);
                 return;
             }
 
             var template = await tipoFichaRepository.buscaTemplatePorIdSync(buscaAtendimento.tipoFicha);
 
-            if(template.length){
-                
+            if (template.length) {
+
                 if (template[0].queryTemplate != null && template[0].xmlTemplate != null) {
-                    
-                    var dadosFicha = await atendimentoRepository.buscaDadosFichaAtendimentoSync(template[0].queryTemplate, obj.id);    
-                    
-                    if (dadosFicha && dadosFicha.length) {                        
+
+                    var dadosFicha = await atendimentoRepository.buscaDadosFichaAtendimentoSync(template[0].queryTemplate, obj.id);
+
+                    if (dadosFicha && dadosFicha.length) {
                         var client = new app.services.FichaDigitalService();
-                        await client.enviaFichaSync(dadosFicha[0], urlFicha, template[0].xmlTemplate);                    
+                        await client.enviaFichaSync(dadosFicha[0], urlFicha, template[0].xmlTemplate);
                     }
                 }
-            }            
+            }
             res.status(201).send(buscaAtendimento);
         }
         catch (exception) {
             console.log("Erro ao enviar ficha do atendimento (" + id + "), exception: " + exception);
-            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
         }
         finally {
             await connection.close();
@@ -153,12 +153,12 @@ module.exports = function (app) {
 
         const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
 
-        try {            
+        try {
             var response = await atendimentoRepository.buscaPorHistoricoId(id);
             res.status(200).json(response[0]);
         }
         catch (exception) {
-            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado " + exception, ""));            
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado " + exception, ""));
         }
         finally {
             await connection.close();
@@ -177,19 +177,19 @@ module.exports = function (app) {
 
         const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
 
-        try {            
-            var response = await atendimentoRepository.buscaPorPacienteIdProntuario(id, tipo);            
+        try {
+            var response = await atendimentoRepository.buscaPorPacienteIdProntuario(id, tipo);
             var atendimentos = response;
-            if(atendimentos){
-                for (const itemAtendimento of atendimentos) {               
-                    var historicos = await atendimentoRepository.buscaHistoricoPorAtendimento(itemAtendimento.id);           
+            if (atendimentos) {
+                for (const itemAtendimento of atendimentos) {
+                    var historicos = await atendimentoRepository.buscaHistoricoPorAtendimento(itemAtendimento.id);
                     itemAtendimento.historicos = historicos ? historicos : null;
                 }
             }
             res.status(200).json(atendimentos);
         }
         catch (exception) {
-            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado " + exception, ""));            
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado " + exception, ""));
         }
         finally {
             await connection.close();
@@ -207,17 +207,17 @@ module.exports = function (app) {
 
         const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
 
-        try {            
+        try {
             var response = await atendimentoRepository.buscaSinaisVitaisPorPacienteId(id, tipo);
             res.status(200).json(response);
         }
         catch (exception) {
-            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado " + exception, ""));            
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado " + exception, ""));
         }
         finally {
             await connection.close();
         }
-    });    
+    });
 
     app.get('/atendimento/paciente/:id/:idEstabelecimento', function (req, res) {
         let usuario = req.usuario;
@@ -237,14 +237,14 @@ module.exports = function (app) {
         var usuario = req.usuario;
         var util = new app.util.Util();
         delete obj.pacienteNome;
-        delete obj.pacienteHistoriaProgressa; 
-        delete obj.pesquisaCentral;               
+        delete obj.pacienteHistoriaProgressa;
+        delete obj.pesquisaCentral;
         obj.idUsuario = usuario.id;
         obj.idUsuarioAlteracao = null;
         delete obj.idTipoAtendimentoHistorico;
         delete obj.textoHistorico;
         delete obj.tipoHistoriaClinica;
-        var objHistorico = Object.assign({},obj);
+        var objHistorico = Object.assign({}, obj);
         let idEstabelecimento = req.headers.est;
         let mail = new app.util.Mail();
 
@@ -273,13 +273,13 @@ module.exports = function (app) {
 
         const connection = await app.dao.connections.EatendConnection.connection();
 
-        const atendimentoRepository = new app.dao.AtendimentoDAO(connection);        
-        const profissionalRepository = new app.dao.ProfissionalDAO(connection);        
+        const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
+        const profissionalRepository = new app.dao.ProfissionalDAO(connection);
         const pacienteRepository = new app.dao.PacienteDAO(connection);
         const parametroSegurancaRepository = new app.dao.ParametroSegurancaDAO(connection);
         const tipoFichaRepository = new app.dao.TipoFichaDAO(connection);
 
-        try { 
+        try {
             console.log('Iniciando transacao do paciente: ' + obj.idPaciente + ', at: ' + new Date());
             await connection.beginTransaction();
 
@@ -287,10 +287,19 @@ module.exports = function (app) {
 
             if (!buscaProfissional) {
                 errors = util.customError(errors, "header", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos", "");
-                 res.status(400).send(errors);
+                res.status(400).send(errors);
                 await connection.rollback();
                 return;
             }
+
+            obj.numParticipantes == '' ? obj.numParticipantes = 0 : obj.numParticipantes;
+            obj.atividadeTipo == '' ? obj.atividadeTipo = 0 : obj.atividadeTipo;
+            obj.procedimento == '' ? obj.procedimento = 0 : obj.procedimento;
+            obj.praticasEmSaude == '' ? obj.praticasEmSaude = 0 : obj.praticasEmSaude;
+            obj.pseEducacao == '' ? obj.pseEducacao = 0 : obj.pseEducacao;
+            obj.pseSaude == '' ? obj.pseSaude = 0 : obj.pseSaude;
+            obj.publicoAlvo == '' ? obj.publicoAlvo = 0 : obj.publicoAlvo;
+            obj.temasParaSaude == '' ? obj.temasParaSaude = 0 : obj.temasParaSaude;
 
             var responseAtendimento = await atendimentoRepository.salvaSync(obj);
 
@@ -300,6 +309,14 @@ module.exports = function (app) {
             objHistorico.idTipoAtendimentoHistorico = obj.situacao == "0" ? 4 : 1;
             objHistorico.textoHistorico = "";
             objHistorico.idAtendimento = obj.id;
+            objHistorico.numParticipantes == '' ? objHistorico.numParticipantes = 0 : objHistorico.numParticipantes;
+            objHistorico.atividadeTipo == '' ? objHistorico.atividadeTipo = 0 : objHistorico.atividadeTipo;
+            objHistorico.procedimento == '' ? objHistorico.procedimento = 0 : objHistorico.procedimento;
+            objHistorico.praticasEmSaude == '' ? objHistorico.praticasEmSaude = 0 : objHistorico.praticasEmSaude;
+            objHistorico.pseEducacao == '' ? objHistorico.pseEducacao = 0 : objHistorico.pseEducacao;
+            objHistorico.pseSaude == '' ? objHistorico.pseSaude = 0 : objHistorico.pseSaude;
+            objHistorico.publicoAlvo == '' ? objHistorico.publicoAlvo = 0 : objHistorico.publicoAlvo;
+            objHistorico.temasParaSaude == '' ? objHistorico.temasParaSaude = 0 : objHistorico.temasParaSaude;
             delete objHistorico.id;
 
             var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
@@ -307,13 +324,13 @@ module.exports = function (app) {
             obj.emailProfissional = buscaProfissional.email;
 
             let buscaChaves = "'URL_FICHA_DIGITAL_SERVICO','CONTA_EMAIL', 'SENHA_EMAIL'";
-        
+
             var valorChave = await parametroSegurancaRepository.buscarValorPorChaveSync(buscaChaves);
-            
+
             if (valorChave) {
-                urlFicha = valorChave.filter((url) => url.NOME == "URL_FICHA_DIGITAL_SERVICO")[0].VALOR;                
-                emailRemetente = valorChave.filter((url) => url.NOME == "CONTA_EMAIL")[0].VALOR;                
-                senhaRemetente = valorChave.filter((url) => url.NOME == "SENHA_EMAIL")[0].VALOR;                
+                urlFicha = valorChave.filter((url) => url.NOME == "URL_FICHA_DIGITAL_SERVICO")[0].VALOR;
+                emailRemetente = valorChave.filter((url) => url.NOME == "CONTA_EMAIL")[0].VALOR;
+                senhaRemetente = valorChave.filter((url) => url.NOME == "SENHA_EMAIL")[0].VALOR;
             }
 
             var responseEmailPaciente = await pacienteRepository.buscaEmailPacienteSync(obj.idPaciente);
@@ -323,32 +340,32 @@ module.exports = function (app) {
 
                 if (responseEmailPaciente[0].email != null) {
                     obj.email = responseEmailPaciente[0].email;
-                    
+
                     //var teste = await mail.enviaEmailFicha(obj, emailRemetente, senhaRemetente, "Abertura de atendimento", "createTreatment.html");
                 }
             }
 
             var template = await tipoFichaRepository.buscaTemplatePorIdSync(obj.tipoFicha);
-            
-            
+
+
             await connection.commit();
             console.log('Commit transacao do atendimento: ' + obj.id + ', at: ' + new Date());
 
-            if(template.length){        
+            if (template.length) {
 
-                 if (template[0].queryTemplate && template[0].xmlTemplate) {
-                    
-                     var dadosFicha = await atendimentoRepository.buscaDadosFichaAtendimentoSync(template[0].queryTemplate, obj.id);    
-                    
-                    if (dadosFicha && dadosFicha.length) {  
-                        obj.dadosFicha = dadosFicha[0];       
+                if (template[0].queryTemplate && template[0].xmlTemplate) {
+
+                    var dadosFicha = await atendimentoRepository.buscaDadosFichaAtendimentoSync(template[0].queryTemplate, obj.id);
+
+                    if (dadosFicha && dadosFicha.length) {
+                        obj.dadosFicha = dadosFicha[0];
                         console.log('Iniciando processo de envio da ficha: ' + obj.id + ', at: ' + new Date());
                         var client = new app.services.FichaDigitalService();
-                        var envioFicha = await client.enviaFichaSync(dadosFicha[0], urlFicha, template[0].xmlTemplate);                              
+                        var envioFicha = await client.enviaFichaSync(dadosFicha[0], urlFicha, template[0].xmlTemplate);
                         console.log('Envio da ficha realizado: ' + obj.id + ', at: ' + new Date());
-                     }
+                    }
                 }
-            } 
+            }
 
             res.status(201).send(obj);
 
@@ -375,11 +392,11 @@ module.exports = function (app) {
         obj.idUsuarioAlteracao = usuario.id;
         delete obj.idUsuario;
         obj.historiaProgressa = obj.pacienteHistoriaProgressa;
-        var objHistorico = Object.assign({},obj);
+        var objHistorico = Object.assign({}, obj);
         objHistorico.idUsuario = usuario.id;
         delete obj.idTipoAtendimentoHistorico;
         delete obj.textoHistorico;
-        
+
         req.assert("idPaciente").notEmpty().withMessage("Paciente um campo obrigatório;");
         req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
         req.assert("tipoFicha").notEmpty().withMessage("Tipo de ficha é um campo obrigatório;");
@@ -387,7 +404,7 @@ module.exports = function (app) {
 
         if (obj.situacao == "X")
             req.assert("motivoCancelamento").notEmpty().withMessage("Motivo do cancelamento é obrigatório;");
-        
+
         errors = req.validationErrors();
 
         if (errors) {
@@ -411,9 +428,9 @@ module.exports = function (app) {
         try {
 
             await connection.beginTransaction();
-            
+
             var atualizaPaciente = await pacienteRepository.atualizaHistoriaProgressaFamiliar(obj.pacienteHistoriaProgressa, obj.idPaciente, usuario.id, new Date());
-            
+
             delete obj.pacienteHistoriaProgressa;
             delete objHistorico.pacienteHistoriaProgressa;
 
@@ -497,20 +514,38 @@ module.exports = function (app) {
                 }
             }
 
-            if(obj.situacao == "X")
+            if (obj.situacao == "X")
                 obj.dataCancelamento = new Date();
-            else if(obj.situacao != "C" && obj.situacao != "0")
+            else if (obj.situacao != "C" && obj.situacao != "0")
                 obj.dataFinalizacao = new Date();
+
+            obj.numParticipantes == '' ? obj.numParticipantes = 0 : obj.numParticipantes;
+            obj.atividadeTipo == '' ? obj.atividadeTipo = 0 : obj.atividadeTipo;
+            obj.procedimento == '' ? obj.procedimento = 0 : obj.procedimento;
+            obj.praticasEmSaude == '' ? obj.praticasEmSaude = 0 : obj.praticasEmSaude;
+            obj.pseEducacao == '' ? obj.pseEducacao = 0 : obj.pseEducacao;
+            obj.pseSaude == '' ? obj.pseSaude = 0 : obj.pseSaude;
+            obj.publicoAlvo == '' ? obj.publicoAlvo = 0 : obj.publicoAlvo;
+            obj.temasParaSaude == '' ? obj.temasParaSaude = 0 : obj.temasParaSaude;
 
             var atualizaAtendimento = await atendimentoRepository.atualizaPorIdSync(obj, id);
 
             obj.id = id;
             obj.ano_receita = receita ? receita.ano : null;
-            
+
             objHistorico.idTipoAtendimentoHistorico = obj.situacao == "0" ? "6" : obj.situacao == "C" ? 2 : "3";
             objHistorico.textoHistorico = "";
             objHistorico.idAtendimento = obj.id;
             delete objHistorico.id;
+
+            objHistorico.numParticipantes == '' ? objHistorico.numParticipantes = 0 : objHistorico.numParticipantes;
+            objHistorico.atividadeTipo == '' ? objHistorico.atividadeTipo = 0 : objHistorico.atividadeTipo;
+            objHistorico.procedimento == '' ? objHistorico.procedimento = 0 : objHistorico.procedimento;
+            objHistorico.praticasEmSaude == '' ? objHistorico.praticasEmSaude = 0 : objHistorico.praticasEmSaude;
+            objHistorico.pseEducacao == '' ? objHistorico.pseEducacao = 0 : objHistorico.pseEducacao;
+            objHistorico.pseSaude == '' ? objHistorico.pseSaude = 0 : objHistorico.pseSaude;
+            objHistorico.publicoAlvo == '' ? objHistorico.publicoAlvo = 0 : objHistorico.publicoAlvo;
+            objHistorico.temasParaSaude == '' ? objHistorico.temasParaSaude = 0 : objHistorico.temasParaSaude;
 
             var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
 
@@ -528,7 +563,7 @@ module.exports = function (app) {
         }
     });
 
-    app.put('/atendimento/atribuir-atendimento', async function (req, res) {        
+    app.put('/atendimento/atribuir-atendimento', async function (req, res) {
         let usuario = req.usuario;
         let obj = req.body;
         let util = new app.util.Util();
@@ -541,15 +576,15 @@ module.exports = function (app) {
         obj.idUsuario = usuario.id;
         obj.idUsuarioAlteracao = usuario.id;
         obj.historiaProgressa = obj.pacienteHistoriaProgressa;
-        var objHistorico = Object.assign({},obj);
+        var objHistorico = Object.assign({}, obj);
         objHistorico.idUsuario = usuario.id;
         delete obj.idTipoAtendimentoHistorico;
         delete obj.textoHistorico;
-        
+
         delete obj.pacienteHistoriaProgressa;
         delete objHistorico.pacienteHistoriaProgressa;
 
-        if(obj.tipoHistoriaClinica == ''){
+        if (obj.tipoHistoriaClinica == '') {
             delete obj.tipoHistoriaClinica;
             delete objHistorico.tipoHistoriaClinica;
         }
@@ -561,7 +596,7 @@ module.exports = function (app) {
 
         if (obj.situacao == "X")
             req.assert("motivoCancelamento").notEmpty().withMessage("Motivo do cancelamento é obrigatório;");
-        
+
         errors = req.validationErrors();
 
         if (errors) {
@@ -597,7 +632,7 @@ module.exports = function (app) {
 
             obj.situacao = 'C'; //Em aberto
             var atualizaAtendimento = await atendimentoRepository.atualizaPorIdSync(obj, id);
-            
+
             objHistorico.idTipoAtendimentoHistorico = 5;
             objHistorico.textoHistorico = "";
             objHistorico.idAtendimento = id;
@@ -633,23 +668,23 @@ module.exports = function (app) {
         });
     });
 
-    app.put('/atendimento/:id/finalizar', async function(req, res){
+    app.put('/atendimento/:id/finalizar', async function (req, res) {
         const atendimentoId = req.params.id;
         const body = req.body;
-        let util = new app.util.Util();        
+        let util = new app.util.Util();
         let errors = [];
-        let obj = {};        
+        let obj = {};
 
         obj.situacao = body.situacao ? body.situacao : "2"; //Concluído
 
-        if(obj.situacao == 'X')
+        if (obj.situacao == 'X')
             obj.dataCancelamento = body.dataCancelamento ? body.dataCancelamento : new Date();
         else
-            obj.dataFinalizacao = body.dataFinalizacao ? body.dataFinalizacao : new Date();        
-        
+            obj.dataFinalizacao = body.dataFinalizacao ? body.dataFinalizacao : new Date();
+
 
         const connection = await app.dao.connections.EatendConnection.connection();
-        
+
         const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
 
         try {
@@ -665,28 +700,28 @@ module.exports = function (app) {
                 return;
             }
 
-            if(buscaAtendimento.dataFinalizacao || buscaAtendimento.dataCancelamento){
+            if (buscaAtendimento.dataFinalizacao || buscaAtendimento.dataCancelamento) {
                 errors = util.customError(errors, "header", "Atendimento já foi finalizado/cancelado", atendimentoId);
                 res.status(400).send(errors);
                 await connection.rollback();
                 return;
             }
 
-            var objHistorico = Object.assign({},buscaAtendimento);
+            var objHistorico = Object.assign({}, buscaAtendimento);
             delete objHistorico.pacienteNome;
-            delete objHistorico.pacienteHistoriaProgressa; 
-            delete objHistorico.pesquisaCentral;   
+            delete objHistorico.pacienteHistoriaProgressa;
+            delete objHistorico.pesquisaCentral;
             delete objHistorico.tipoHistoriaClinica;
             delete objHistorico.nome;
             delete objHistorico.historiaProgressaFamiliar;
             delete objHistorico.idMunicipioEstabelecimento;
             delete objHistorico.idUfEstabelecimento;
 
-            if(obj.situacao == 'X'){
-                obj.motivoCancelamento = "Cancelamento realizado pela ficha digital";                
+            if (obj.situacao == 'X') {
+                obj.motivoCancelamento = "Cancelamento realizado pela ficha digital";
                 objHistorico.motivoCancelamento = obj.motivoCancelamento;
                 objHistorico.dataCancelamento = obj.dataCancelamento;
-            }else{
+            } else {
                 objHistorico.dataFinalizacao = obj.dataFinalizacao;
             }
 
@@ -699,7 +734,7 @@ module.exports = function (app) {
             objHistorico.idTipoAtendimentoHistorico = 7;
             objHistorico.textoHistorico = "";
             objHistorico.idAtendimento = atendimentoId;
-            
+
             var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
 
             res.status(201).send('ok');
