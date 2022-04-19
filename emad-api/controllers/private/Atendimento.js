@@ -256,6 +256,58 @@ module.exports = function (app) {
         req.assert("tipoFicha").notEmpty().withMessage("Tipo de ficha é um campo obrigatório;");
         req.assert("idClassificacaoRisco").notEmpty().withMessage("Classificação de risco é um campo obrigatório;");
 
+        //ATIVIDADE COLETIVA
+        if (obj.tipoFicha == 7) {
+
+            // CAMPO = INEP
+            // É de preenchimento obrigatório se pseEducacao = true ou pseSaude = true;
+            if (obj.pseEducacao == true && obj.pseSaude == true && obj.inep == '') {
+                errors = util.customError(errors, "header", "Informe o código Inep.", "");
+                res.status(400).send(errors);
+                return;
+            }
+
+            // CAMPO = atividadeTipo
+            // 01 - Reunião de equipe;
+            // 02 - Reunião com outras equipes de saúde;
+            // 03 - Reunião intersetorial / Conselho local de saúde / Controle social;
+            // 05 - Atendimento em grupo.
+            //Não podem ser selecionados se pseEducacao = true e pseSaude = false
+            if (obj.pseEducacao == true && obj.pseSaude == false) {
+                if (obj.atividadeTipo == 1 || obj.atividadeTipo == 2 || obj.atividadeTipo == 3 || obj.atividadeTipo == 5) {
+                    errors = util.customError(errors, "header", "O Tipo de Atividade selecionado não pode ser utilizado quando pseEducacao selecione e pseSaude não selecionado.", "");
+                    res.status(400).send(errors);
+                    return;
+                }
+            }
+
+            if (obj.atividadeTipo === 4 || obj.atividadeTipo === 5 || obj.atividadeTipo === 6 || obj.atividadeTipo === 7) {
+                if (this.object.publicoAlvo == 0 || this.object.publicoAlvo == null) {
+                    errors = util.customError(errors, "header", "Selecione o publico alvo.", "");
+                    res.status(400).send(errors);
+                    return;
+                }
+            }
+
+            // CAMPO PSE
+            // Os itens do campo praticasEmSaude não devem ser selecionados;
+            // 2 - Aplicação tópica de flúor, 
+            // 9 - Escovação dental supervisionada, 
+            // 25 - PNCT* sessão 1, 
+            // 26 - PNCT* sessão 2, 
+            // 27 - PNCT* sessão 3, 
+            // 28 - PNCT* sessão 4, 
+            // 24 - Verificação da situação vacinal e 
+            // 30 - Outro procedimento coletivo 
+
+
+            //VALIDAR CAMPOS OBRIGATORIOS
+            req.assert("numParticipantes").notEmpty().withMessage("Preencha o campo número de participantes.");
+            req.assert("atividadeTipo").notEmpty().withMessage("Preencha o campo tipo de atividade.");
+
+        }
+
+
         let errors = req.validationErrors();
 
         if (errors) {
@@ -437,8 +489,11 @@ module.exports = function (app) {
                     res.status(400).send(errors);
                     return;
                 }
-              }
+            }
 
+            //VALIDAR CAMPOS OBRIGATORIOS
+            req.assert("numParticipantes").notEmpty().withMessage("Preencha o campo numero de participantes.");
+            req.assert("atividadeTipo").notEmpty().withMessage("Preencha o campo tipo de atividade.");
 
         }
 
