@@ -72,6 +72,9 @@ EstabelecimentoDAO.prototype.listaEstabelecimentosNivelSuperior = function (id, 
 EstabelecimentoDAO.prototype.lista = async function (addFilter) {
     let where = "";
 
+
+
+
     if (addFilter != null) {
 
         if (addFilter.idUf) {
@@ -106,8 +109,8 @@ EstabelecimentoDAO.prototype.lista = async function (addFilter) {
         e.numero,
         e.complemento,
         e.bairro,
-        m.i as idMunicipio,
-        u.i as idUf,
+        m.id as idMunicipio,
+        u.id as idUf,
         e.telefone1,
         e.telefone2, 
         e.email,
