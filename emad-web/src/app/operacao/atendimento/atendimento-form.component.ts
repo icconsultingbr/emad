@@ -1428,11 +1428,6 @@ export class AtendimentoFormComponent implements OnInit {
     this.service.findParticipanteAtividadeColetivaByAtendimento(this.object.id).subscribe(result => {
       this.allParticipantesAtividadeColetiva = result;
       this.loading = false;
-      if (result.length < this.object.numParticipantes) {
-        this.isVisibleAddParticipante === true
-      } else {
-        this.isVisibleAddParticipante === false
-      }
     }, error => {
       this.loading = false;
       this.errors = Util.customHTTPResponse(error);
