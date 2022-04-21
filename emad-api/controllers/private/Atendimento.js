@@ -347,9 +347,9 @@ module.exports = function (app) {
 
 
             objParticipanteAtividadeColetiva.idPaciente = obj.idPaciente;
-            objParticipanteAtividadeColetiva.abandonouGrupo = obj.abandonouGrupo;
-            objParticipanteAtividadeColetiva.avaliacaoAlterada = obj.avaliacaoAlterada;
-            objParticipanteAtividadeColetiva.parouFumar = obj.parouFumar;
+            objParticipanteAtividadeColetiva.abandonouGrupo = !obj.abandonouGrupo ? false : obj.abandonouGrupo;
+            objParticipanteAtividadeColetiva.avaliacaoAlterada = !obj.avaliacaoAlterada ? false : obj.avaliacaoAlterada; 
+            objParticipanteAtividadeColetiva.parouFumar = !obj.parouFumar ? false : obj.parouFumar; 
 
             delete obj.abandonouGrupo;
             delete obj.avaliacaoAlterada;

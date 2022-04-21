@@ -619,7 +619,7 @@ export class AtendimentoFormComponent implements OnInit {
 
     }
 
-    this.close();
+    this.closeLocalizacaoPaciente();
 
   }
 
@@ -740,6 +740,10 @@ export class AtendimentoFormComponent implements OnInit {
           this.openConfirmacao(this.contentConfirmacao);
         }
 
+        if (this.tipoFicha == 7) {
+          this.findParticipanteAtividadeColetivaPorAtendimento()
+        }
+
         if (this.object.situacao) {
           if (this.object.situacao == 'X') {
             this.message = "Atendimento cancelado com sucesso";
@@ -752,11 +756,6 @@ export class AtendimentoFormComponent implements OnInit {
             this.object = new Atendimento();
           }
         }
-
-        if (this.tipoFicha == 7) {
-          this.findParticipanteAtividadeColetivaPorAtendimento()
-        }
-
         this.loading = false;
       }, erro => {
         setTimeout(() => this.loading = false, 300);

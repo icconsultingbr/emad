@@ -76,44 +76,32 @@
               <div *ngIf="object.tipoFicha == 7">
 
                 <div class="row" style="margin-top: 10px;">
-                  <div class="col-xl-6">
+                  <div class="col-xl-12">
                     <div class="form-group row">
-                      <label class="col-xl-4 col-form-label text-left">
+                      <label class="col-xl-2 col-form-label text-left">
                         Avaliação Alterada
                       </label>
-                      <div class="col-xl-8">
+                      <div class="col-xl-2">
                         <div class="custom-control custom-checkbox" style="width: 25px">
                           <input type="checkbox" id="avaliacaoAlterada" [(ngModel)]="object.avaliacaoAlterada"
                             formControlName="avaliacaoAlterada" class="custom-control-input">
                           <label class="custom-control-label" for="avaliacaoAlterada"></label>
                         </div>
                       </div>
-                    </div>
-                  </div>
-
-                  <div class="col-xl-6">
-                    <div class="form-group row">
-                      <label class="col-xl-4 col-form-label text-left">
+                      <label class="col-xl-2 col-form-label text-left">
                         Cessou o hábito de fumar
                       </label>
-                      <div class="col-xl-8">
+                      <div class="col-xl-2">
                         <div class="custom-control custom-checkbox" style="width: 25px">
                           <input type="checkbox" id="parouFumar" [(ngModel)]="object.parouFumar"
                             formControlName="parouFumar" class="custom-control-input">
                           <label class="custom-control-label" for="parouFumar"></label>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row" style="margin-top: 10px;">
-                  <div class="col-xl-6">
-                    <div class="form-group row">
-                      <label class="col-xl-4 col-form-label text-left">
+                      <label class="col-xl-2 col-form-label text-left">
                         Abandonou o grupo
                       </label>
-                      <div class="col-xl-8">
+                      <div class="col-xl-2">
                         <div class="custom-control custom-checkbox" style="width: 25px">
                           <input type="checkbox" id="abandonouGrupo" [(ngModel)]="object.abandonouGrupo"
                             formControlName="abandonouGrupo" class="custom-control-input">
@@ -837,7 +825,7 @@
             <div class="col-12 mb-3">
               <button type="button" class="btn btn-primary float-left mr-2"
                 (click)="openAtividadeColetivaParticipante(contentAtividadeColetivaParticipante)"
-                [disabled]="!object.id">
+                [disabled]="!object.id" *ngIf="!disableFields()">
                 <i class="fa fa-plus-circle"></i>
               </button>
 
@@ -878,7 +866,7 @@
                     <td class="text-secondary">{{item.abandonouGrupo === 1 ? 'Sim' : 'Não'}}</td>
                     <td class="text-secondary">{{item.parouFumar === 1 ? 'Sim' : 'Não'}}</td>
                     <td class="text-secondary text-left">
-                      <a class="btn btn-link" *ngIf="item.idPaciente != object.idPaciente" [routerLink]=""
+                      <a class="btn btn-link" *ngIf="!disableFields()" [routerLink]=""
                         (click)="removeParticipanteAtividadeColetivaPorAtendimento(item)">
                         <i class="fa fa-trash-alt"></i> Remover
                       </a>
