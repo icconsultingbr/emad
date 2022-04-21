@@ -22,6 +22,7 @@ import { Translation } from '../../_core/_locale/Translation';
 import { Exame } from '../../_core/_models/Exame';
 import { PacienteVacina } from '../../_core/_models/PacienteVacina';
 import * as moment from 'moment';
+import { ParticipanteAtividadeColetiva } from '../../_core/_models/ParticipanteAtividadeColetiva';
 
 @Component({
   selector: 'app-atendimento-form',
@@ -50,6 +51,7 @@ export class AtendimentoFormComponent implements OnInit {
   object: Atendimento = new Atendimento();
   objectHistorico: AtendimentoHistorico = new AtendimentoHistorico();
   pacienteVacina: PacienteVacina = new PacienteVacina()
+  participanteAtividadeColetiva: ParticipanteAtividadeColetiva = new ParticipanteAtividadeColetiva()
   paciente: Paciente = new Paciente();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
   hipoteseDiagnostica: HipoteseDiagnostica = new HipoteseDiagnostica();
@@ -60,6 +62,7 @@ export class AtendimentoFormComponent implements OnInit {
   atendimentoHistorico: AtendimentoHistorico = new AtendimentoHistorico();
   mostraFormulario: boolean = false;
   pacienteSelecionado: any = null;
+  participanteSelecionadoAtividadeColetiva: any = null;
   medicamentoSelecionado: any = null;
   hipoteseDiagnosticaSelecionada: any = null;
   domains: any[] = [];
@@ -86,6 +89,23 @@ export class AtendimentoFormComponent implements OnInit {
   allItemsVacina: any[] = [];
   removeId: number;
 
+  //ATIVIDADE COLETIVA
+  allParticipantesAtividadeColetiva: any[];
+  allProfissionaisAtividadeColetiva: any[];
+
+  parouFumarAtividadeColetiva: boolean = null;
+  abandonouGrupoAtividadeColetiva: boolean = null;
+
+  atividadeTipo: number;
+  validatorPublicoAlvo: boolean;
+  pseEducacao: boolean;
+  pseSaude: boolean;
+  tipoFicha: number;
+  tipoFichaSelecionada: string;
+  isVisible: boolean;
+  isRequired: boolean;
+  sexoPaciente: string;
+
   pathFiles = `${environment.apiUrl}/fotos/`;
 
   paging: any = {
@@ -110,16 +130,7 @@ export class AtendimentoFormComponent implements OnInit {
   validadeVacina: string;
   loteVacina: string;
 
-  atividadeTipo: number;
-  validatorPublicoAlvo: boolean;
 
-  pseEducacao: boolean;
-  pseSaude: boolean;
-
-  tipoFicha: number;
-
-  isVisible: boolean;
-  isRequired: boolean;
 
   constructor(
     private service: AtendimentoService,
@@ -558,7 +569,11 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   selecionaPaciente(item) {
-    this.pacienteSelecionado = item;
+    if (this.tipoFichaSelecionada === "7" || this.tipoFicha === 7) {
+      this.participanteSelecionadoAtividadeColetiva = item;
+    } else {
+      this.pacienteSelecionado = item;
+    }
   }
 
   selecionaMedicamento(item) {
@@ -566,12 +581,29 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   confirmaPaciente() {
-    this.object.idPaciente = this.pacienteSelecionado.id;
-    this.object.pacienteNome = this.pacienteSelecionado.nome;
-    this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
+
+    if (this.tipoFichaSelecionada === "7" || this.tipoFicha === 7) {
+
+      this.participanteAtividadeColetiva.idAtendimento = this.object.id;
+      this.participanteAtividadeColetiva.idPaciente = this.participanteSelecionadoAtividadeColetiva.id;
+      this.participanteAtividadeColetiva.nomePaciente = this.participanteSelecionadoAtividadeColetiva.nome;
+      this.participanteAtividadeColetiva.sexo = this.participanteSelecionadoAtividadeColetiva.sexo;
+      this.participanteAtividadeColetiva.cartaoSus = this.participanteSelecionadoAtividadeColetiva.cartaoSus;
+      this.participanteAtividadeColetiva.dataNascimento = this.participanteSelecionadoAtividadeColetiva.dataNascimento;
+      this.participanteAtividadeColetiva.sexo == 1 ? this.sexoPaciente = 'Masculino' : this.sexoPaciente = 'Feminino'
+
+    } else {
+
+      this.object.idPaciente = this.pacienteSelecionado.id;
+      this.object.pacienteNome = this.pacienteSelecionado.nome;
+      this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
+
+      this.findPacienteData(this.object.idPaciente);
+
+    }
+
     this.close();
 
-    this.findPacienteData(this.object.idPaciente);
   }
 
   encontraAtendimento() {
@@ -587,7 +619,6 @@ export class AtendimentoFormComponent implements OnInit {
       this.object.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
       this.loading = false;
 
-      console.log(this.object.atividadeTipo)
       this.tipoFicha = result.tipoFicha;
 
       if (result.atividadeTipo === 1 || result.atividadeTipo === 2 || result.atividadeTipo === 3) {
@@ -602,6 +633,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.findHistoricoPorAtendimento();
       this.findProcedimentoPorAtendimento();
       this.findVacinaPorAtendimento();
+      this.findParticipanteAtividadeColetivaPorAtendimento();
 
     }, error => {
       this.object = new Atendimento();
@@ -716,17 +748,27 @@ export class AtendimentoFormComponent implements OnInit {
     this.service.findByIdPaciente(idPaciente, this.object.idEstabelecimento, this.method).subscribe(result => {
 
       if (result) {
-        this.object = result;
-        this.object.pacienteNome = this.pacienteSelecionado.nome;
-        this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
-        this.loading = false;
 
-        this.findHipotesePorAtendimento();
-        this.findEncaminhamentoPorAtendimento();
-        this.findMedicamentoPorAtendimento();
-        this.findHistoricoPorAtendimento();
-        this.findProcedimentoPorAtendimento();
-        this.findVacinaPorAtendimento();
+        if (this.tipoFicha == 7) {
+          this.object = result;
+          this.object.pacienteNome = this.pacienteSelecionado.nome;
+          this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
+          this.loading = false;
+
+        } else {
+          this.object = result;
+          this.object.pacienteNome = this.pacienteSelecionado.nome;
+          this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
+          this.loading = false;
+
+          this.findHipotesePorAtendimento();
+          this.findEncaminhamentoPorAtendimento();
+          this.findMedicamentoPorAtendimento();
+          this.findHistoricoPorAtendimento();
+          this.findProcedimentoPorAtendimento();
+          this.findVacinaPorAtendimento();
+        }
+
       }
       else
         this.limpaAtendimento();
@@ -1320,11 +1362,11 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
+  //ATIVIDADE COLETIVA
   back() {
     const route = "atendimentos";
     this.router.navigate([route]);
   }
-
   changeFn(event) {
     let id = parseInt(event.target.value);
 
@@ -1333,7 +1375,62 @@ export class AtendimentoFormComponent implements OnInit {
     } else {
       this.isVisible = true
     }
-
   }
+  change(event) {
+    this.tipoFichaSelecionada = event.target.value;
+  }
+  openAtividadeColetivaParticipante(content: any) {
+    this.modalRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      size: "lg"
+    });
+  }
+  openAtividadeColetivaProfissional(content: any) {
+    this.modalRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      size: "lg"
+    });
+  }
+
+  saveParticipanteAtividadeColetiva() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+
+    this.service.saveParticipanteAtividadeColetiva(this.participanteAtividadeColetiva).subscribe(result => {
+      this.message = "Participante inserido com sucesso!"
+      this.close();
+      this.loading = false;
+      this.findParticipanteAtividadeColetivaPorAtendimento();
+
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+  findParticipanteAtividadeColetivaPorAtendimento() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.service.findParticipanteAtividadeColetivaByAtendimento(this.object.id).subscribe(result => {
+      this.allParticipantesAtividadeColetiva = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+  removeParticipanteAtividadeColetivaPorAtendimento(item) {
+    this.service.removeParticipante(item.id).subscribe(result => {
+      this.message = "Participante removido com sucesso!"
+      this.loading = false;
+      this.findParticipanteAtividadeColetivaPorAtendimento();
+    });
+  }
+
 
 }

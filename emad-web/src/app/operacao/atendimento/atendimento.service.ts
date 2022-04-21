@@ -263,6 +263,17 @@ export class AtendimentoService extends GenericsService {
         }
     }
 
+    saveParticipanteAtividadeColetiva(obj: any) {
+        if (obj.id) {
+            return this.http
+                .put('atendimento-participante-atividade-coletiva', JSON.stringify(obj));
+        }
+        else {
+            return this.http
+                .post('atendimento-participante-atividade-coletiva', JSON.stringify(obj));
+        }
+    }
+
     saveMedicamento(obj: any) {
         if (obj.id) {
             return this.http
@@ -284,6 +295,10 @@ export class AtendimentoService extends GenericsService {
 
     removeEncaminhamento(params: any) {
         return this.http.delete('atendimento-encaminhamento/' + params);
+    }
+
+    removeParticipante(params: any) {
+        return this.http.delete('participante-atividade-coletiva/' + params);
     }
 
     removeMedicamento(params: any) {
@@ -324,8 +339,13 @@ export class AtendimentoService extends GenericsService {
     findTipoFichaEstabelecimento(id: any): Observable<any> {
         return this.http.get("atendimento-procedimento/tipo-ficha/" + id);
     }
-   
+
     removeProcedimento(params: any) {
         return this.http.delete('atendimento-procedimento/' + params);
     }
+
+    findParticipanteAtividadeColetivaByAtendimento(id: any): Observable<any> {
+        return this.http.get("participante-atividade-coletiva/atendimento/" + id);
+    }
+
 }
