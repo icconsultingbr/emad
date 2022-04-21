@@ -39,6 +39,7 @@ export class AtendimentoFormComponent implements OnInit {
   message: string = "";
   errors: any[] = [];
   modalRef: NgbModalRef = null;
+  modalLocalizacaoPacienteRef: NgbModalRef = null;
   modalFormularioRef: NgbModalRef = null;
 
   //FORMS
@@ -425,7 +426,7 @@ export class AtendimentoFormComponent implements OnInit {
 
     this.allItems = [];
 
-    this.modalRef = this.modalService.open(content, {
+    this.modalLocalizacaoPacienteRef = this.modalService.open(content, {
       backdrop: 'static',
       keyboard: false,
       centered: true,
@@ -897,6 +898,13 @@ export class AtendimentoFormComponent implements OnInit {
     if (this.modalRef)
       this.modalRef.close();
   }
+
+  closeLocalizacaoPaciente() {
+    if (this.modalLocalizacaoPacienteRef)
+      this.modalLocalizacaoPacienteRef.close();
+  }
+
+
 
   closeExameFormulario() {
     if (this.modalFormularioRef)
