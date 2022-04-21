@@ -5,6 +5,7 @@ function AtendimentoParticipanteAtividadeColetivaDAO(connection) {
 AtendimentoParticipanteAtividadeColetivaDAO.prototype.buscaPorAtendimentoId = function (idAtendimento, callback) {
     this._connection.query(`SELECT 
       atvcol.id,
+      atvcol.idPaciente,
       paciente.cartaoSus,
       paciente.nome,
       paciente.dataNascimento,
@@ -21,6 +22,10 @@ AtendimentoParticipanteAtividadeColetivaDAO.prototype.deletaPorId = function (id
     this._connection.query(`DELETE FROM ${this._table} WHERE id=?`, id, callback);
 }
 
+AtendimentoParticipanteAtividadeColetivaDAO.prototype.salvaSync = async function (objeto) {
+    const response = await this._connection.query("INSERT INTO " + this._table + " SET ?", objeto);
+    return [response];
+}
 
 module.exports = function () {
     return AtendimentoParticipanteAtividadeColetivaDAO;

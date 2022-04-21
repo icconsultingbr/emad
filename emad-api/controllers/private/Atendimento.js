@@ -245,6 +245,7 @@ module.exports = function (app) {
         delete obj.textoHistorico;
         delete obj.tipoHistoriaClinica;
         var objHistorico = Object.assign({}, obj);
+        var objParticipanteAtividadeColetiva = Object.assign({});
         let idEstabelecimento = req.headers.est;
         let mail = new app.util.Mail();
 
@@ -293,6 +294,7 @@ module.exports = function (app) {
             req.assert("numParticipantes").notEmpty().withMessage("Preencha o campo número de participantes.");
             req.assert("atividadeTipo").notEmpty().withMessage("Preencha o campo tipo de atividade.");
 
+
         }
 
 
@@ -318,6 +320,7 @@ module.exports = function (app) {
         const pacienteRepository = new app.dao.PacienteDAO(connection);
         const parametroSegurancaRepository = new app.dao.ParametroSegurancaDAO(connection);
         const tipoFichaRepository = new app.dao.TipoFichaDAO(connection);
+        const participanteAtividadeColetivaRepository = new app.dao.AtendimentoParticipanteAtividadeColetivaDAO(connection);
 
         try {
             console.log('Iniciando transacao do paciente: ' + obj.idPaciente + ', at: ' + new Date());
@@ -342,6 +345,16 @@ module.exports = function (app) {
             obj.temasParaSaude == '' ? obj.temasParaSaude = 0 : obj.temasParaSaude;
             obj.temasParaReuniao == '' ? obj.temasParaReuniao = 0 : obj.temasParaReuniao;
 
+
+            objParticipanteAtividadeColetiva.idPaciente = obj.idPaciente;
+            objParticipanteAtividadeColetiva.abandonouGrupo = obj.abandonouGrupo;
+            objParticipanteAtividadeColetiva.avaliacaoAlterada = obj.avaliacaoAlterada;
+            objParticipanteAtividadeColetiva.parouFumar = obj.parouFumar;
+
+            delete obj.abandonouGrupo;
+            delete obj.avaliacaoAlterada;
+            delete obj.parouFumar;
+
             var responseAtendimento = await atendimentoRepository.salvaSync(obj);
 
             obj.id = responseAtendimento[0].insertId;
@@ -361,6 +374,9 @@ module.exports = function (app) {
             objHistorico.temasParaReuniao == '' ? objHistorico.temasParaReuniao = 0 : objHistorico.temasParaReuniao;
 
             delete objHistorico.id;
+            delete objHistorico.abandonouGrupo;
+            delete objHistorico.avaliacaoAlterada;
+            delete objHistorico.parouFumar;
 
             var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
 
@@ -407,6 +423,22 @@ module.exports = function (app) {
                     }
                 }
             }
+
+            //ATIVIDADE COLETIVA
+            if (obj.tipoFicha == 7) {
+
+                objParticipanteAtividadeColetiva.idAtendimento = obj.id;
+
+
+                var responseParticipanteAtividadeColetiva = await participanteAtividadeColetivaRepository.salvaSync(objParticipanteAtividadeColetiva);
+                if (!responseParticipanteAtividadeColetiva) {
+                    errors = util.customError(errors, "header", "Erro ao Inserir Participante atividade coletiva.", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
+                }
+            }
+
 
             res.status(201).send(obj);
 
@@ -473,7 +505,7 @@ module.exports = function (app) {
             }
 
             if (obj.atividadeTipo === 4 || obj.atividadeTipo === 5 || obj.atividadeTipo === 6 || obj.atividadeTipo === 7) {
-                if (this.object.publicoAlvo == 0 || this.object.publicoAlvo == null) {
+                if (obj.publicoAlvo == 0 || obj.publicoAlvo == null) {
                     errors = util.customError(errors, "header", "Selecione o publico alvo.", "");
                     res.status(400).send(errors);
                     return;
@@ -610,6 +642,12 @@ module.exports = function (app) {
             obj.publicoAlvo == '' ? obj.publicoAlvo = 0 : obj.publicoAlvo;
             obj.temasParaSaude == '' ? obj.temasParaSaude = 0 : obj.temasParaSaude;
             obj.temasParaReuniao == '' ? obj.temasParaReuniao = 0 : obj.temasParaReuniao;
+            obj.tipoHistoriaClinica == '' ? obj.tipoHistoriaClinica = 0 : obj.tipoHistoriaClinica;
+            obj.ficouEmObservacao == '' ? obj.ficouEmObservacao = 0 : obj.ficouEmObservacao;
+
+            delete obj.abandonouGrupo;
+            delete obj.avaliacaoAlterada;
+            delete obj.parouFumar;
 
             var atualizaAtendimento = await atendimentoRepository.atualizaPorIdSync(obj, id);
 
@@ -630,6 +668,12 @@ module.exports = function (app) {
             objHistorico.publicoAlvo == '' ? objHistorico.publicoAlvo = 0 : objHistorico.publicoAlvo;
             objHistorico.temasParaSaude == '' ? objHistorico.temasParaSaude = 0 : objHistorico.temasParaSaude;
             objHistorico.temasParaReuniao == '' ? objHistorico.temasParaReuniao = 0 : objHistorico.temasParaReuniao;
+            objHistorico.tipoHistoriaClinica == '' ? objHistorico.tipoHistoriaClinica = 0 : objHistorico.tipoHistoriaClinica;
+            objHistorico.ficouEmObservacao == '' ? objHistorico.ficouEmObservacao = 0 : objHistorico.ficouEmObservacao;
+
+            delete objHistorico.abandonouGrupo;
+            delete objHistorico.avaliacaoAlterada;
+            delete objHistorico.parouFumar;
 
             var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
 
@@ -981,5 +1025,69 @@ module.exports = function (app) {
             }
         });
         return d.promise;
+    }
+
+    function cleanObject(object) {
+
+        delete object.cartaoSus
+        delete object.nome
+        delete object.nomeSocial
+        delete object.nomeMae
+        delete object.nomePai
+        delete object.dataNascimento
+        delete object.sexo
+        delete object.idNacionalidade
+        delete object.idNaturalidade
+        delete object.ocupacao
+        delete object.cpf
+        delete object.rg
+        delete object.dataEmissao
+        delete object.orgaoEmissor
+        delete object.escolaridade
+        delete object.cep
+        delete object.logradouro
+        delete object.numero
+        delete object.complemento
+        delete object.bairro
+        delete object.idMunicipio
+        delete object.idUf
+        delete object.foneResidencial
+        delete object.foneCelular
+        delete object.foneContato
+        delete object.contato
+        delete object.email
+        delete object.situacao
+        delete object.idModalidade
+        delete object.latitude
+        delete object.longitude
+        delete object.distancia
+        delete object.idade
+        delete object.idSap
+        delete object.idTipoSanguineo
+        delete object.idRaca
+        delete object.numeroProntuario
+        delete object.numeroProntuarioCnes
+        delete object.falecido
+        delete object.idAtencaoContinuada
+        delete object.idEstabelecimentoCadastro
+        delete object.idEstabelecimento
+        delete object.gruposAtencaoContinuada
+        delete object.apelido
+        delete object.observacao
+        delete object.historiaProgressaFamiliar
+        delete object.pesquisaCentral
+        delete object.foto
+        delete object.pacienteOutroEstabelecimento
+        delete object.necessidadeEspeciais
+        delete object.gestante
+        delete object.aleitamentoMaterno
+        delete object.dumDaGestante
+        delete object.idadeGestacional
+        delete object.stGravidezPlanejada
+        delete object.nuGestasPrevias
+        delete object.nuPartos
+
+        return object;
+
     }
 }

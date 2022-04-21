@@ -64,4 +64,8 @@ export class Paciente {
     @Input() obrigaCartaoSusNovoPaciente: Boolean;
     @Input() celularDefaultNovoPaciente: string;
 
+    @Input() parouFumar: boolean = null;
+    @Input() abandonouGrupo: boolean = null;
+    @Input() avaliacaoAlterada: boolean = null;
+
 }

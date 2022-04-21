@@ -106,6 +106,8 @@ export class AtendimentoFormComponent implements OnInit {
   isRequired: boolean;
   sexoPaciente: string;
 
+  isVisibleAddParticipante: boolean;
+
   pathFiles = `${environment.apiUrl}/fotos/`;
 
   paging: any = {
@@ -202,6 +204,9 @@ export class AtendimentoFormComponent implements OnInit {
       praticasEmSaude: ['', ''],
       pseEducacao: ['', ''],
       pseSaude: ['', ''],
+      parouFumar: ['', ''],
+      abandonouGrupo: ['', ''],
+      avaliacaoAlterada: ['', ''],
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -249,7 +254,10 @@ export class AtendimentoFormComponent implements OnInit {
       temasParaSaude: new FormControl({ value: '', disabled: true }),
       praticasEmSaude: new FormControl({ value: '', disabled: true }),
       pseEducacao: new FormControl({ value: '', disabled: true }),
-      pseSaude: new FormControl({ value: '', disabled: true })
+      pseSaude: new FormControl({ value: '', disabled: true }),
+      parouFumar: new FormControl({ value: '', disabled: true }),
+      abandonouGrupo: new FormControl({ value: '', disabled: true }),
+      avaliacaoAlterada: new FormControl({ value: '', disabled: true })
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -601,6 +609,8 @@ export class AtendimentoFormComponent implements OnInit {
       this.findPacienteData(this.object.idPaciente);
 
     }
+
+    console.log(this.allParticipantesAtividadeColetiva)
 
     this.close();
 
@@ -1395,7 +1405,6 @@ export class AtendimentoFormComponent implements OnInit {
       size: "lg"
     });
   }
-
   saveParticipanteAtividadeColetiva() {
     this.message = "";
     this.errors = [];
@@ -1419,6 +1428,11 @@ export class AtendimentoFormComponent implements OnInit {
     this.service.findParticipanteAtividadeColetivaByAtendimento(this.object.id).subscribe(result => {
       this.allParticipantesAtividadeColetiva = result;
       this.loading = false;
+      if (result.length < this.object.numParticipantes) {
+        this.isVisibleAddParticipante === true
+      } else {
+        this.isVisibleAddParticipante === false
+      }
     }, error => {
       this.loading = false;
       this.errors = Util.customHTTPResponse(error);
@@ -1431,6 +1445,4 @@ export class AtendimentoFormComponent implements OnInit {
       this.findParticipanteAtividadeColetivaPorAtendimento();
     });
   }
-
-
 }
