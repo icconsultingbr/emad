@@ -23,6 +23,7 @@ import { Exame } from '../../_core/_models/Exame';
 import { PacienteVacina } from '../../_core/_models/PacienteVacina';
 import * as moment from 'moment';
 import { ParticipanteAtividadeColetiva } from '../../_core/_models/ParticipanteAtividadeColetiva';
+import { ProfissionalAtividadeColetiva } from '../../_core/_models/ProfissionalAtividadeColetiva';
 
 @Component({
   selector: 'app-atendimento-form',
@@ -52,6 +53,7 @@ export class AtendimentoFormComponent implements OnInit {
   objectHistorico: AtendimentoHistorico = new AtendimentoHistorico();
   pacienteVacina: PacienteVacina = new PacienteVacina()
   participanteAtividadeColetiva: ParticipanteAtividadeColetiva = new ParticipanteAtividadeColetiva()
+  profissionalAtividadeColetiva: ProfissionalAtividadeColetiva = new ProfissionalAtividadeColetiva()
   paciente: Paciente = new Paciente();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
   hipoteseDiagnostica: HipoteseDiagnostica = new HipoteseDiagnostica();
@@ -63,6 +65,7 @@ export class AtendimentoFormComponent implements OnInit {
   mostraFormulario: boolean = false;
   pacienteSelecionado: any = null;
   participanteSelecionadoAtividadeColetiva: any = null;
+  profissionalSelecionadoAtividadeColetiva: any = null;
   medicamentoSelecionado: any = null;
   hipoteseDiagnosticaSelecionada: any = null;
   domains: any[] = [];
@@ -72,6 +75,8 @@ export class AtendimentoFormComponent implements OnInit {
   procedimento: Procedimento = new Procedimento();
   allItemsPesquisaProcedimento: any[] = null;
   allItemsProcedimento: any[] = [];
+
+  profissionaisLista: any[];
 
   //PAGINATION
   allItems: any[] = [];
@@ -105,8 +110,6 @@ export class AtendimentoFormComponent implements OnInit {
   isVisible: boolean;
   isRequired: boolean;
   sexoPaciente: string;
-
-  isVisibleAddParticipante: boolean;
 
   pathFiles = `${environment.apiUrl}/fotos/`;
 
@@ -166,7 +169,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.idHistorico = params['idHistorico'];
       this.carregaEntidadeCampoPorEspecialidade();
     });
-
+    this.loading = true;
   }
 
   createGroup() {
@@ -583,6 +586,11 @@ export class AtendimentoFormComponent implements OnInit {
       this.pacienteSelecionado = item;
     }
   }
+  selecionaProfissional(item) {
+    this.profissionalSelecionadoAtividadeColetiva = item;
+    this.profissionalAtividadeColetiva.idProfissional = item.id;
+    this.profissionalAtividadeColetiva.idAtendimento = this.object.id;
+  }
 
   selecionaMedicamento(item) {
     this.medicamentoSelecionado = item;
@@ -609,8 +617,6 @@ export class AtendimentoFormComponent implements OnInit {
       this.findPacienteData(this.object.idPaciente);
 
     }
-
-    console.log(this.allParticipantesAtividadeColetiva)
 
     this.close();
 
@@ -644,6 +650,8 @@ export class AtendimentoFormComponent implements OnInit {
       this.findProcedimentoPorAtendimento();
       this.findVacinaPorAtendimento();
       this.findParticipanteAtividadeColetivaPorAtendimento();
+      this.findProfissionaisAtividadeColetivaPorAtendimento();
+      this.buscaProfissionais()
 
     }, error => {
       this.object = new Atendimento();
@@ -742,6 +750,10 @@ export class AtendimentoFormComponent implements OnInit {
             this.message = "Atendimento finalizado com sucesso"
             this.object = new Atendimento();
           }
+        }
+
+        if (this.tipoFicha == 7) {
+          this.findParticipanteAtividadeColetivaPorAtendimento()
         }
 
         this.loading = false;
@@ -1440,4 +1452,51 @@ export class AtendimentoFormComponent implements OnInit {
       this.findParticipanteAtividadeColetivaPorAtendimento();
     });
   }
+  findProfissionaisAtividadeColetivaPorAtendimento() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.service.findProfissionalAtividadeColetivaByAtendimento(this.object.id).subscribe(result => {
+      this.allProfissionaisAtividadeColetiva = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+  saveProfissionalAtividadeColetiva() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+
+    this.service.saveProfissionalAtividadeColetiva(this.profissionalAtividadeColetiva).subscribe(result => {
+      this.message = "Profissional inserido com sucesso!"
+      this.close();
+      this.loading = false;
+      this.findProfissionaisAtividadeColetivaPorAtendimento();
+
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+  removeProfissionalAtividadeColetivaPorAtendimento(item) {
+    this.service.removeProfissional(item.id).subscribe(result => {
+      this.message = "Profissional removido com sucesso!"
+      this.loading = false;
+      this.findProfissionaisAtividadeColetivaPorAtendimento();
+    });
+  }
+  buscaProfissionais() {
+    this.loading = true;
+    this.service.list('profissional/estabelecimento/' + JSON.parse(localStorage.getItem("est"))[0].id).subscribe(result => {
+      this.profissionaisLista = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+
+
 }

@@ -230,7 +230,7 @@ ProfissionalDAO.prototype.dominio = function (callback) {
 
 ProfissionalDAO.prototype.buscarPorEstabelecimento = function (id, callback) {
     this._connection.query(`
-        SELECT t.id, t.nome 
+        SELECT t.id, t.nome, t.profissionalCNS, t.cargoProfissional
         FROM ${this._table} as t 
         INNER JOIN tb_estabelecimento_usuario as ep ON (t.idUsuario = ep.idUsuario) 
         WHERE ep.idEstabelecimento = ? AND t.situacao = 1 `, id, callback);

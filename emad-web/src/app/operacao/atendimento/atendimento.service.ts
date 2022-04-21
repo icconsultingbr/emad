@@ -274,6 +274,17 @@ export class AtendimentoService extends GenericsService {
         }
     }
 
+    saveProfissionalAtividadeColetiva(obj: any) {
+        if (obj.id) {
+            return this.http
+                .put('profissional-atividade-coletiva', JSON.stringify(obj));
+        }
+        else {
+            return this.http
+                .post('profissional-atividade-coletiva', JSON.stringify(obj));
+        }
+    }
+
     saveMedicamento(obj: any) {
         if (obj.id) {
             return this.http
@@ -299,6 +310,10 @@ export class AtendimentoService extends GenericsService {
 
     removeParticipante(params: any) {
         return this.http.delete('participante-atividade-coletiva/' + params);
+    }
+
+    removeProfissional(params: any) {
+        return this.http.delete('profissional-atividade-coletiva/' + params);
     }
 
     removeMedicamento(params: any) {
@@ -347,5 +362,10 @@ export class AtendimentoService extends GenericsService {
     findParticipanteAtividadeColetivaByAtendimento(id: any): Observable<any> {
         return this.http.get("participante-atividade-coletiva/atendimento/" + id);
     }
+
+    findProfissionalAtividadeColetivaByAtendimento(id: any): Observable<any> {
+        return this.http.get("profissional-atividade-coletiva/atendimento/" + id);
+    }
+
 
 }
