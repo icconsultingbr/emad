@@ -171,6 +171,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.carregaEntidadeCampoPorEspecialidade();
     });
     this.loading = true;
+    this.buscaProfissionais();
   }
 
   createGroup() {
@@ -692,6 +693,8 @@ export class AtendimentoFormComponent implements OnInit {
         this.findHistoricoPorAtendimento();
         this.findProcedimentoPorAtendimento();
         this.findVacinaPorAtendimento();
+        this.findParticipanteAtividadeColetivaPorAtendimento();
+        this.findProfissionaisAtividadeColetivaPorAtendimento();
 
       }, error => {
         this.loading = false;
@@ -740,8 +743,11 @@ export class AtendimentoFormComponent implements OnInit {
           this.openConfirmacao(this.contentConfirmacao);
         }
 
-        if (this.tipoFicha == 7) {
-          this.findParticipanteAtividadeColetivaPorAtendimento()
+        if (this.tipoFicha == 7 || this.isVisible === true) {
+          this.findParticipanteAtividadeColetivaPorAtendimento();
+          this.findProfissionaisAtividadeColetivaPorAtendimento();
+          console.log('Passei aqui')
+          console.log(this.object.dadosFicha)
         }
 
         if (this.object.situacao) {
@@ -902,8 +908,6 @@ export class AtendimentoFormComponent implements OnInit {
     if (this.modalLocalizacaoPacienteRef)
       this.modalLocalizacaoPacienteRef.close();
   }
-
-
 
   closeExameFormulario() {
     if (this.modalFormularioRef)
@@ -1409,6 +1413,20 @@ export class AtendimentoFormComponent implements OnInit {
     this.tipoFichaSelecionada = event.target.value;
   }
   openAtividadeColetivaParticipante(content: any) {
+
+    this.clear();
+    this.participanteSelecionadoAtividadeColetiva = null;
+    this.participanteAtividadeColetiva.idPaciente = 0;
+    this.participanteAtividadeColetiva.nomePaciente = '';
+    this.participanteAtividadeColetiva.cartaoSus = '';
+    this.participanteAtividadeColetiva.dataNascimento = '';
+    this.participanteAtividadeColetiva.sexo = 0;
+    this.participanteAtividadeColetiva.parouFumar = false;
+    this.participanteAtividadeColetiva.abandonouGrupo = false;
+    this.participanteAtividadeColetiva.avaliacaoAlterada = false;
+    this.participanteAtividadeColetiva.peso = '';
+    this.participanteAtividadeColetiva.altura = '';
+
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
       keyboard: false,
@@ -1441,6 +1459,8 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
   findParticipanteAtividadeColetivaPorAtendimento() {
+    console.log(this.allParticipantesAtividadeColetiva)
+    console.log(this.object.idPaciente)
     this.message = "";
     this.errors = [];
     this.loading = true;
@@ -1499,6 +1519,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.service.list('profissional/estabelecimento/' + JSON.parse(localStorage.getItem("est"))[0].id).subscribe(result => {
       this.profissionaisLista = result;
       this.loading = false;
+      console.log(result)
     }, error => {
       this.loading = false;
       this.errors = Util.customHTTPResponse(error);

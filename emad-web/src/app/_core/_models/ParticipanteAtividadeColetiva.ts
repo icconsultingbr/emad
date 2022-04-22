@@ -11,4 +11,6 @@ export class ParticipanteAtividadeColetiva {
     @Input() parouFumar: boolean = null;
     @Input() abandonouGrupo: boolean = null;
     @Input() avaliacaoAlterada: boolean = null;
+    @Input() peso: string = null;
+    @Input() altura: string = null;
 }

@@ -12,7 +12,9 @@ AtendimentoParticipanteAtividadeColetivaDAO.prototype.buscaPorAtendimentoId = fu
       paciente.sexo,
       atvcol.avaliacaoAlterada,
       atvcol.abandonouGrupo,
-      atvcol.parouFumar
+      atvcol.parouFumar,
+      atvcol.peso,
+      atvcol.altura
     from ${this._table} atvcol   
     INNER JOIN tb_paciente paciente ON (paciente.id = atvcol.idPaciente) 
     WHERE atvcol.idAtendimento = ?` , idAtendimento, callback);
@@ -25,6 +27,12 @@ AtendimentoParticipanteAtividadeColetivaDAO.prototype.deletaPorId = function (id
 AtendimentoParticipanteAtividadeColetivaDAO.prototype.salvaSync = async function (objeto) {
     const response = await this._connection.query("INSERT INTO " + this._table + " SET ?", objeto);
     return [response];
+}
+
+AtendimentoParticipanteAtividadeColetivaDAO.prototype.atualizaPorId = async function (objeto, id) {
+    let participante = await this._connection.query("UPDATE " + this._table + " SET ?  where id= ?", [objeto, id]);
+
+    return participante[0];
 }
 
 module.exports = function () {

@@ -126,7 +126,7 @@
             <div class="col-xl-12">
               <div class="form-group row">
                 <label class="col-xl-2 col-form-label text-left">
-                  Tipo de atendimento<span class="text-danger font-weight-bold"> *</span>
+                  Tipo de atendimento<span class="text-danger font-weight-bold">*</span>
                 </label>
                 <div class="col-xl-4">
                   <select (change)="change($event)" *ngIf="domains" class="custom-select d-block w-100"
@@ -845,6 +845,8 @@
                     <th>Avaliação Alterada</th>
                     <th>Cessou o hábito de fumar</th>
                     <th>Abandonou o grupo</th>
+                    <th>Peso</th>
+                    <th>Altura</th>
                     <th>Ação</th>
                   </tr>
                 </thead>
@@ -865,11 +867,17 @@
                     <td class="text-secondary">{{item.avaliacaoAlterada === 1 ? 'Sim' : 'Não'}}</td>
                     <td class="text-secondary">{{item.abandonouGrupo === 1 ? 'Sim' : 'Não'}}</td>
                     <td class="text-secondary">{{item.parouFumar === 1 ? 'Sim' : 'Não'}}</td>
+                    <td class="text-secondary">{{item.altura}}</td>
+                    <td class="text-secondary">{{item.peso}}</td>
                     <td class="text-secondary text-left">
-                      <a class="btn btn-link" *ngIf="!disableFields()" [routerLink]=""
-                        (click)="removeParticipanteAtividadeColetivaPorAtendimento(item)">
-                        <i class="fa fa-trash-alt"></i> Remover
+                      <a class="btn btn-link" *ngIf="!disableFields()" [routerLink]="">
+                        <i class="fa fa-edit"></i>
                       </a>
+                      <a class="btn btn-link" *ngIf=" item.idPaciente != object.idPaciente && !disableFields()"
+                        [routerLink]="" (click)="removeParticipanteAtividadeColetivaPorAtendimento(item)">
+                        <i class="fa fa-trash-alt"></i>
+                      </a>
+
                     </td>
                   </tr>
                 </tbody>
@@ -903,7 +911,7 @@
                     <th>Profissional CNS</th>
                     <th>Nome</th>
                     <th>Cargo Profissional</th>
-                    <th>Ação</th>
+                    <th class="text-secondary text-center">Ação</th>
                   </tr>
                 </thead>
                 <tbody *ngIf="!allProfissionaisAtividadeColetiva">
@@ -920,10 +928,10 @@
                     <td class="text-secondary">{{item.profissionalCNS}}</td>
                     <td class="text-secondary">{{item.nome}}</td>
                     <td class="text-secondary">{{item.cargoProfissional}}</td>
-                    <td class="text-secondary text-right">
+                    <td class="text-secondary text-center">
                       <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]=""
                         (click)="removeProfissionalAtividadeColetivaPorAtendimento(item)">
-                        <i class="fa fa-trash-alt"></i> Remover
+                        <i class="fa fa-trash-alt"></i>
                       </a>
                     </td>
                   </tr>
@@ -2760,7 +2768,7 @@
       <div class="text-left">
         <div class="row">
           <div class="col-xl-12">
-            <label class="col-xl-4 col-form-label text-left">Cartão SUS do Paciente:
+            <label class="col-xl-4 col-form-label text-left">Cartão SUS do Participante:
             </label>
           </div>
         </div>
@@ -2779,7 +2787,45 @@
       <div class="text-left">
         <div class="row">
           <div class="col-xl-12">
-            <label class="col-xl-4 col-form-label text-left">Sexo do Paciente:
+            <label class="col-xl-4 col-form-label text-left">Peso do Participante:
+            </label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="col-xl-12">
+              <div class="input-group">
+                <input type="text" class="form-control has-error rounded"
+                  [(ngModel)]="participanteAtividadeColetiva.peso">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-left">
+        <div class="row">
+          <div class="col-xl-12">
+            <label class="col-xl-4 col-form-label text-left">Altura do Participante:
+            </label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="col-xl-12">
+              <div class="input-group">
+                <input type="text" class="form-control has-error rounded"
+                  [(ngModel)]="participanteAtividadeColetiva.altura">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-left">
+        <div class="row">
+          <div class="col-xl-12">
+            <label class="col-xl-4 col-form-label text-left">Sexo do Participante:
             </label>
           </div>
         </div>
@@ -2847,7 +2893,7 @@
   </div>
 
   <div class="modal-footer">
-    <button [disabled]="participanteSelecionadoAtividadeColetiva==null" class="btn btn-primary mr-2" type="button"
+    <button [disabled]="participanteSelecionadoAtividadeColetiva == null" class="btn btn-primary mr-2" type="button"
       (click)="saveParticipanteAtividadeColetiva()">
       <i class="fa fa-plus-circle"></i> Adicionar
     </button>
@@ -2883,9 +2929,9 @@
         <thead>
           <tr>
             <th></th>
-            <th>Profissional CNS</th>
-            <th>Nome</th>
-            <th>Cargo</th>
+            <th class="text-left">Profissional CNS</th>
+            <th class="text-left">Nome</th>
+            <th class="text-left">Cargo</th>
           </tr>
         </thead>
         <tbody *ngIf="!profissionaisLista.length">
