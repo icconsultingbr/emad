@@ -232,19 +232,21 @@ module.exports = function (app) {
 
         let list = [];
         let estabelecimento = {};
-        let profissionais = [];
+        let profissionais = {};
+        let pacientes = {};
 
         try {
-            profissionais = await profissionalDAO.buscarProfissionalPorEstabelecimentoEsus(filtro.idEstabelecimento)
             estabelecimento = await estabelecimentoDAO.buscaEstabelecimentoESus(filtro.idEstabelecimento);
             list = await integracaoESusDAO.listaAtividadeColetiva(filtro);
+            profissionais = await profissionalDAO.buscarProfissionalPorEstabelecimentoAtividadeColetiva(filtro.idEstabelecimento);
+            pacientes = await integracaoESusDAO.listaAtividadeColetivaParticipantes(filtro.idEstabelecimento);
         } catch (error) {
             console.log(error);
         } finally {
             await connection.close();
         }
 
-        return preencheXMLAtividadeColetiva(list, estabelecimento, profissionais);
+        return preencheXMLAtividadeColetiva(list, estabelecimento, profissionais, pacientes);
     }
 
     function preencheXMLCadastroIndividual(list, estabelecimento) {
@@ -451,6 +453,33 @@ module.exports = function (app) {
         }
 
         return avaliacao.up();
+    }
+
+    function preencheAtividadeColetivaProfissional(listProfissionais) {
+        const { fragment } = require('xmlbuilder2');
+        let itemFilhoVacinaColetiva = [];  
+        listProfissionais.forEach(x => {
+            let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('profissionais')
+            .ele('cnsProfissional').txt(x.profissionalCNS ? x.profissionalCNS: '').up()
+            .ele('codigoCbo2002').txt(x.codigoCBO ? x.codigoCBO : '').up()
+            .up();
+            itemFilhoVacinaColetiva.push(atend);
+        });   
+        return itemFilhoVacinaColetiva;
+    }
+
+    function preencheAtividadeColetivaParticipantes(listParticipantes) {
+        const { fragment } = require('xmlbuilder2');
+        let itemFilhoColetiva = [];  
+        listParticipantes.forEach(x => {
+            let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('participantes')                 
+            x.cartaoSus ? atend.ele('cnsParticipante').txt(x.cartaoSus).up() : atend.ele('cpfParticipante').txt(x.cpf).up()
+            atend.ele('dataNascimento').txt(new Date(x.dataNascimento).getTime() / 1000).up()
+            .ele('sexo').txt(x.sexo).up()
+            .up();
+            itemFilhoColetiva.push(atend);
+        });   
+        return itemFilhoColetiva;
     }
 
     function preencheCondutasAtendimentoIndividual(listCondutas, idAtendimento) {
@@ -669,7 +698,7 @@ module.exports = function (app) {
         return xmls
     }
 
-    function preencheXMLAtividadeColetiva(list, estabelecimento, profissionais) {
+    function preencheXMLAtividadeColetiva(list, estabelecimento, profissionais, pacientes) {
         const { create, fragment } = require('xmlbuilder2');
         const { v4: uuidv4 } = require('uuid');
 
@@ -678,8 +707,12 @@ module.exports = function (app) {
         list.atendimentos.forEach(atendimento => {
             var uuidFicha = uuidv4();
 
-            const profissional = profissionais.filter(x => x.id == atendimento.idProfissional);
+            let profissionaisAtendimento = profissionais.filter(x => x.idAtendimento == atendimento.idAtendimento);
+            let pacientesAtendimento = pacientes.filter(x => x.idAtendimento == atendimento.idAtendimento);
 
+            let itemParticipantes = preencheAtividadeColetivaParticipantes(pacientesAtendimento);
+            let itemProfissionais = preencheAtividadeColetivaProfissional(profissionaisAtendimento);
+            
             let doc = create({ version: '1.0', encoding: 'UTF-8', keepNullNodes: false, keepNullAttributes: false })
                 .ele('ns3:dadoTransporteTransportXml', { 'xmlns:ns2': 'http://esus.ufsc.br/dadoinstalacao', 'xmlns:ns3': 'http://esus.ufsc.br/dadotransporte', 'xmlns:ns4': 'http://esus.ufsc.br/fichaatividadecoletiva' })
                 .ele('uuidDadoSerializado').txt(uuidFicha).up()
@@ -689,20 +722,17 @@ module.exports = function (app) {
                 .ele('ns4:fichaAtividadeColetivaTransport')
                 .ele('uuidFicha').txt(uuidFicha).up()
                 .ele('inep').txt(atendimento.inep).up()
-                .ele('numParticipantes').txt(atendimento.numParticipantes).up()
-                .ele('profissionais')
-                .ele('cnsProfissional').txt(profissional[0].profissionalCNS).up()
-                .ele('codigoCbo2002').txt(profissional[0].codigoCBO).up()
-                .up()
-                .ele('atividadeTipo').txt(atendimento.atividadeTipo).up()
+                .ele('numParticipantes').txt(atendimento.numParticipantes).up();
+
+            itemProfissionais.forEach(x => doc.find(x => x.node.nodeName == 'ns4:fichaAtividadeColetivaTransport', true, true).import(x));
+
+            doc.ele('atividadeTipo').txt(atendimento.atividadeTipo).up()
                 .ele('temasParaReuniao').txt(atendimento.temasParaReuniao).up()
-                .ele('publicoAlvo').txt(atendimento.publicoAlvo).up()
-                .ele('participantes')
-                .ele('cnsParticipante').txt(atendimento.cartaoSus).up()
-                .ele('dataNascimento').txt(new Date(atendimento.dataNascimento).getTime() / 1000).up()
-                .ele('sexo').txt(atendimento.sexo).up()
-                .up()
-                .ele('tbCdsOrigem').txt('3').up()
+                .ele('publicoAlvo').txt(atendimento.publicoAlvo).up();
+
+            itemParticipantes.forEach(x => doc.find(x => x.node.nodeName == 'ns4:fichaAtividadeColetivaTransport', true, true).import(x));
+            
+            doc.ele('tbCdsOrigem').txt('3').up()
                 .ele('procedimento').txt(atendimento.codigoSIGTAP).up()
                 .ele('turno').txt(atendimento.turno).up()
                 .ele('pseEducacao').txt(!atendimento.pseEducacao ? false : atendimento.pseEducacao).up()
@@ -766,6 +796,17 @@ module.exports = function (app) {
             if (atendimento.atividadeTipo == 1 || atendimento.atividadeTipo == 2 || atendimento.atividadeTipo == 3 || atendimento.atividadeTipo == 4 || atendimento.atividadeTipo == 7) {
                 removeNode(doc.doc(), ['praticasEmSaude'])
             }
+
+            let fieldToValidate = ['cpfParticipante', 'cnsParticipante', 'cnsProfissional'];
+
+            fieldToValidate.forEach(field => {
+                doc.each(x => {
+                    if (x.node.nodeName == field && !x.node._firstChild._data) {
+                        x.node.removeChild(x.node._firstChild);
+                        x.remove();
+                    }
+                }, true, true)
+            })
 
             xmls.push(doc.doc().end({ prettyPrint: true, allowEmptyTags: false }));
         })
