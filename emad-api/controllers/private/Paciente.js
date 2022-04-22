@@ -113,9 +113,12 @@ module.exports = function (app) {
         delete obj.pesquisaCentral;
         delete obj.pacienteOutroEstabelecimento;
         delete obj.pacienteIdade;
-        delete obj.celularDefaultNovoPaciente
-        delete obj.obrigaCpfNovoPaciente
-        delete obj.obrigaCartaoSusNovoPaciente
+        delete obj.celularDefaultNovoPaciente;
+        delete obj.obrigaCpfNovoPaciente;
+        delete obj.obrigaCartaoSusNovoPaciente;
+        delete obj.parouFumar;
+        delete obj.abandonouGrupo;
+        delete obj.avaliacaoAlterada;
 
         obj.dataCriacao = new Date;
         obj.idUsuarioCriacao = usuario.id;
