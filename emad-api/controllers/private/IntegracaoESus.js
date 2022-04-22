@@ -796,18 +796,7 @@ module.exports = function (app) {
             if (atendimento.atividadeTipo == 1 || atendimento.atividadeTipo == 2 || atendimento.atividadeTipo == 3 || atendimento.atividadeTipo == 4 || atendimento.atividadeTipo == 7) {
                 removeNode(doc.doc(), ['praticasEmSaude'])
             }
-
-            let fieldToValidate = ['cpfParticipante', 'cnsParticipante', 'cnsProfissional'];
-
-            fieldToValidate.forEach(field => {
-                doc.each(x => {
-                    if (x.node.nodeName == field && !x.node._firstChild._data) {
-                        x.node.removeChild(x.node._firstChild);
-                        x.remove();
-                    }
-                }, true, true)
-            })
-
+            
             xmls.push(doc.doc().end({ prettyPrint: true, allowEmptyTags: false }));
         })
 
