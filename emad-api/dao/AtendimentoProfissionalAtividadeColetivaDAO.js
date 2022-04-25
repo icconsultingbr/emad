@@ -4,13 +4,13 @@ function AtendimentoProfissionalAtividadeColetivaDAO(connection) {
 }
 AtendimentoProfissionalAtividadeColetivaDAO.prototype.buscaPorAtendimentoId = function (idAtendimento, callback) {
     this._connection.query(`SELECT 
-      atvcol.id,
-      profissional.nome,
-      profissional.profissionalCNS,
-      profissional.cargoProfissional
-    from ${this._table} atvcol   
-    INNER JOIN tb_profissional profissional ON (atvcol.idProfissional = profissional.id ) 
-    WHERE atvcol.idAtendimento = ?` , idAtendimento, callback);
+        tacp.id,
+        tp.nome,
+        tp.profissionalCNS,
+        tp.cargoProfissional
+    FROM ${this._table} tacp   
+    INNER JOIN tb_profissional tp ON (tacp.idProfissional =  tp.idUsuario ) 
+    WHERE tacp.idAtendimento = ?` , idAtendimento, callback);
 }
 
 AtendimentoProfissionalAtividadeColetivaDAO.prototype.deletaPorId = function (id, callback) {

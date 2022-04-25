@@ -5,11 +5,6 @@ module.exports = function (app) {
     app.post('/profissional-atividade-coletiva', function (req, res) {
         let obj = req.body;
 
-        delete obj.nomePaciente;
-        delete obj.sexo;
-        delete obj.cartaoSus;
-        delete obj.dataNascimento;
-
         errors = req.validationErrors();
 
         if (errors) {
