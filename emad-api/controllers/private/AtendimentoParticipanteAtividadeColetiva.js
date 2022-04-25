@@ -2,7 +2,7 @@ module.exports = function (app) {
 
     const _table = "tb_atividade_coletiva_participantes";
 
-    app.post('/atendimento-participante-atividade-coletiva', function (req, res) {
+    app.post('/participante-atividade-coletiva', function (req, res) {
         let obj = req.body;
 
         delete obj.nomePaciente;
@@ -43,6 +43,28 @@ module.exports = function (app) {
         deletaPorId(id, res).then(function (response) {
             res.status(200).json(obj);
             return;
+        });
+    });
+
+    app.put('/participante-atividade-coletiva', function (req, res) {
+        let obj = req.body;
+        let errors = [];
+        let id = obj.id;
+
+        errors = req.validationErrors();
+
+        delete obj.nomePaciente;
+        delete obj.sexo;
+        delete obj.cartaoSus;
+        delete obj.dataNascimento;
+
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
+        atualizaPorId(obj, id, res).then(function (response) {
+            id = id;
+            res.status(201).send(obj);
         });
     });
 
@@ -111,6 +133,31 @@ module.exports = function (app) {
         });
         return d.promise;
 
+    }
+
+    function atualizaPorId(obj, id, res) {
+
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.AtendimentoParticipanteAtividadeColetivaDAO(connection);
+        var errors = [];
+
+        objDAO.atualizaPorId(obj, id, function (exception, result) {
+
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao editar os dados", "Atribuição da caneta");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result[0]);
+            }
+        });
+        return d.promise;
     }
 }
 

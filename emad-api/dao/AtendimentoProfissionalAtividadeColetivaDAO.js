@@ -22,6 +22,12 @@ AtendimentoProfissionalAtividadeColetivaDAO.prototype.salvaSync = async function
     return [response];
 }
 
+AtendimentoProfissionalAtividadeColetivaDAO.prototype.atualizaPorId = async function (objeto, id) {
+    let profissional = await this._connection.query("UPDATE " + this._table + " SET ?  where id= ?", [objeto, id]);
+
+    return profissional[0];
+}
+
 module.exports = function () {
     return AtendimentoProfissionalAtividadeColetivaDAO;
 };

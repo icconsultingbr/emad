@@ -266,11 +266,11 @@ export class AtendimentoService extends GenericsService {
     saveParticipanteAtividadeColetiva(obj: any) {
         if (obj.id) {
             return this.http
-                .put('atendimento-participante-atividade-coletiva', JSON.stringify(obj));
+                .put('participante-atividade-coletiva', JSON.stringify(obj));
         }
         else {
             return this.http
-                .post('atendimento-participante-atividade-coletiva', JSON.stringify(obj));
+                .post('participante-atividade-coletiva', JSON.stringify(obj));
         }
     }
 

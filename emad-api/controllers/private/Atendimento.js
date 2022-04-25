@@ -165,7 +165,6 @@ module.exports = function (app) {
         }
     });
 
-
     app.get('/atendimento/prontuario-paciente/paciente/:idPaciente/tipo-atendimento/:tipo', async function (req, res) {
         let usuario = req.usuario;
         let id = req.params.idPaciente;
@@ -345,7 +344,6 @@ module.exports = function (app) {
             obj.temasParaSaude == '' ? obj.temasParaSaude = 0 : obj.temasParaSaude;
             obj.temasParaReuniao == '' ? obj.temasParaReuniao = 0 : obj.temasParaReuniao;
 
-
             objParticipanteAtividadeColetiva.idPaciente = obj.idPaciente;
             objParticipanteAtividadeColetiva.abandonouGrupo = !obj.abandonouGrupo ? false : obj.abandonouGrupo;
             objParticipanteAtividadeColetiva.avaliacaoAlterada = !obj.avaliacaoAlterada ? false : obj.avaliacaoAlterada; 
@@ -428,7 +426,6 @@ module.exports = function (app) {
             if (obj.tipoFicha == 7) {
 
                 objParticipanteAtividadeColetiva.idAtendimento = obj.id;
-
 
                 var responseParticipanteAtividadeColetiva = await participanteAtividadeColetivaRepository.salvaSync(objParticipanteAtividadeColetiva);
                 if (!responseParticipanteAtividadeColetiva) {
@@ -1027,67 +1024,4 @@ module.exports = function (app) {
         return d.promise;
     }
 
-    function cleanObject(object) {
-
-        delete object.cartaoSus
-        delete object.nome
-        delete object.nomeSocial
-        delete object.nomeMae
-        delete object.nomePai
-        delete object.dataNascimento
-        delete object.sexo
-        delete object.idNacionalidade
-        delete object.idNaturalidade
-        delete object.ocupacao
-        delete object.cpf
-        delete object.rg
-        delete object.dataEmissao
-        delete object.orgaoEmissor
-        delete object.escolaridade
-        delete object.cep
-        delete object.logradouro
-        delete object.numero
-        delete object.complemento
-        delete object.bairro
-        delete object.idMunicipio
-        delete object.idUf
-        delete object.foneResidencial
-        delete object.foneCelular
-        delete object.foneContato
-        delete object.contato
-        delete object.email
-        delete object.situacao
-        delete object.idModalidade
-        delete object.latitude
-        delete object.longitude
-        delete object.distancia
-        delete object.idade
-        delete object.idSap
-        delete object.idTipoSanguineo
-        delete object.idRaca
-        delete object.numeroProntuario
-        delete object.numeroProntuarioCnes
-        delete object.falecido
-        delete object.idAtencaoContinuada
-        delete object.idEstabelecimentoCadastro
-        delete object.idEstabelecimento
-        delete object.gruposAtencaoContinuada
-        delete object.apelido
-        delete object.observacao
-        delete object.historiaProgressaFamiliar
-        delete object.pesquisaCentral
-        delete object.foto
-        delete object.pacienteOutroEstabelecimento
-        delete object.necessidadeEspeciais
-        delete object.gestante
-        delete object.aleitamentoMaterno
-        delete object.dumDaGestante
-        delete object.idadeGestacional
-        delete object.stGravidezPlanejada
-        delete object.nuGestasPrevias
-        delete object.nuPartos
-
-        return object;
-
-    }
 }

@@ -46,6 +46,49 @@ module.exports = function (app) {
         });
     });
 
+    app.put('/profissional-atividade-coletiva/:id', function (req, res) {
+        let usuario = req.usuario;
+        let obj = req.body;
+        let errors = [];
+        let id = obj.id;
+
+        errors = req.validationErrors();
+
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
+        atualizaPorId(obj, id, res).then(function (response) {
+            id = id;
+            res.status(201).send(obj);
+        });
+    });
+
+    function atualizaPorId(obj, id, res) {
+
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.AtendimentoProfissionalAtividadeColetivaDAO(connection);
+        var errors = [];
+
+        objDAO.atualizaPorId(obj, id, function (exception, result) {
+
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao editar os dados", "Atribuição da caneta");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result[0]);
+            }
+        });
+        return d.promise;
+    }
+
     function buscarPorAtendimentoId(id, res) {
         let q = require('q');
         let d = q.defer();
