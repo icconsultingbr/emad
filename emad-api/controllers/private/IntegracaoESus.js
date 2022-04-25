@@ -468,18 +468,25 @@ module.exports = function (app) {
         return itemFilhoVacinaColetiva;
     }
 
-    function preencheAtividadeColetivaParticipantes(listParticipantes) {
+    function preencheAtividadeColetivaParticipantes(listParticipantes, praticasEmSaude) {
         const { fragment } = require('xmlbuilder2');
         let itemFilhoColetiva = [];  
         listParticipantes.forEach(x => {
             let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('participantes')                 
             x.cartaoSus ? atend.ele('cnsParticipante').txt(x.cartaoSus).up() : atend.ele('cpfParticipante').txt(x.cpf).up()
-            atend.ele('dataNascimento').txt(new Date(x.dataNascimento).getTime() / 1000).up()
-            .ele('sexo').txt(x.sexo).up()
+            atend.ele('dataNascimento').txt(new Date(x.dataNascimento).getTime() / 1000).up()            
+            .ele('avaliacaoAlterada').txt(x.avaliacaoAlterada).up()            
+            .ele('peso').txt(x.peso ? x.peso.replace(',','.') : undefined).up()
+            .ele('altura').txt(x.altura ? (parseFloat(x.altura.replace(',','.')) * 100).toString() : undefined).up();
+            if(praticasEmSaude == 25 || praticasEmSaude == 26 || praticasEmSaude == 27 || praticasEmSaude == 28){
+                atend.ele('cessouHabitoFumar').txt(x.parouFumar).up()
+                .ele('abandonouGrupo').txt(x.abandonouGrupo).up();
+            }            
+            atend.ele('sexo').txt(x.sexo).up()
             .up();
             itemFilhoColetiva.push(atend);
         });   
-        return itemFilhoColetiva;
+        return itemFilhoColetiva;   
     }
 
     function preencheCondutasAtendimentoIndividual(listCondutas, idAtendimento) {
@@ -710,7 +717,7 @@ module.exports = function (app) {
             let profissionaisAtendimento = profissionais.filter(x => x.idAtendimento == atendimento.idAtendimento);
             let pacientesAtendimento = pacientes.filter(x => x.idAtendimento == atendimento.idAtendimento);
 
-            let itemParticipantes = preencheAtividadeColetivaParticipantes(pacientesAtendimento);
+            let itemParticipantes = preencheAtividadeColetivaParticipantes(pacientesAtendimento, atendimento.praticasEmSaude);
             let itemProfissionais = preencheAtividadeColetivaProfissional(profissionaisAtendimento);
             
             let doc = create({ version: '1.0', encoding: 'UTF-8', keepNullNodes: false, keepNullAttributes: false })
@@ -722,7 +729,8 @@ module.exports = function (app) {
                 .ele('ns4:fichaAtividadeColetivaTransport')
                 .ele('uuidFicha').txt(uuidFicha).up()
                 .ele('inep').txt(atendimento.inep).up()
-                .ele('numParticipantes').txt(atendimento.numParticipantes).up();
+                .ele('numParticipantes').txt(atendimento.numParticipantes).up()
+                .ele('numAvaliacoesAlteradas').txt(atendimento.numAvaliacoesAlteradas).up();
 
             itemProfissionais.forEach(x => doc.find(x => x.node.nodeName == 'ns4:fichaAtividadeColetivaTransport', true, true).import(x));
 
@@ -796,6 +804,17 @@ module.exports = function (app) {
             if (atendimento.atividadeTipo == 1 || atendimento.atividadeTipo == 2 || atendimento.atividadeTipo == 3 || atendimento.atividadeTipo == 4 || atendimento.atividadeTipo == 7) {
                 removeNode(doc.doc(), ['praticasEmSaude'])
             }
+
+            let fieldToValidate = ['peso', 'altura'];
+
+                fieldToValidate.forEach(field => {
+                    doc.each(x => {
+                        if (x.node.nodeName == field && !x.node._firstChild._data) {
+                            x.node.removeChild(x.node._firstChild);
+                            x.remove();
+                        }
+                    }, true, true)
+                })
             
             xmls.push(doc.doc().end({ prettyPrint: true, allowEmptyTags: false }));
         })
