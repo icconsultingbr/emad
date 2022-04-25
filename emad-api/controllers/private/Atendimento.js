@@ -245,6 +245,7 @@ module.exports = function (app) {
         delete obj.tipoHistoriaClinica;
         var objHistorico = Object.assign({}, obj);
         var objParticipanteAtividadeColetiva = Object.assign({});
+        var objProfissionalAtividadeColetiva = Object.assign({});
         let idEstabelecimento = req.headers.est;
         let mail = new app.util.Mail();
 
@@ -320,6 +321,7 @@ module.exports = function (app) {
         const parametroSegurancaRepository = new app.dao.ParametroSegurancaDAO(connection);
         const tipoFichaRepository = new app.dao.TipoFichaDAO(connection);
         const participanteAtividadeColetivaRepository = new app.dao.AtendimentoParticipanteAtividadeColetivaDAO(connection);
+        const profissionalAtividadeColetivaRepository = new app.dao.AtendimentoProfissionalAtividadeColetivaDAO(connection);
 
         try {
             console.log('Iniciando transacao do paciente: ' + obj.idPaciente + ', at: ' + new Date());
@@ -346,8 +348,8 @@ module.exports = function (app) {
 
             objParticipanteAtividadeColetiva.idPaciente = obj.idPaciente;
             objParticipanteAtividadeColetiva.abandonouGrupo = !obj.abandonouGrupo ? false : obj.abandonouGrupo;
-            objParticipanteAtividadeColetiva.avaliacaoAlterada = !obj.avaliacaoAlterada ? false : obj.avaliacaoAlterada; 
-            objParticipanteAtividadeColetiva.parouFumar = !obj.parouFumar ? false : obj.parouFumar; 
+            objParticipanteAtividadeColetiva.avaliacaoAlterada = !obj.avaliacaoAlterada ? false : obj.avaliacaoAlterada;
+            objParticipanteAtividadeColetiva.parouFumar = !obj.parouFumar ? false : obj.parouFumar;
 
             delete obj.abandonouGrupo;
             delete obj.avaliacaoAlterada;
@@ -402,6 +404,32 @@ module.exports = function (app) {
 
             var template = await tipoFichaRepository.buscaTemplatePorIdSync(obj.tipoFicha);
 
+            //ATIVIDADE COLETIVA
+            if (obj.tipoFicha == 7) {
+
+                objParticipanteAtividadeColetiva.idAtendimento = obj.id;
+                objProfissionalAtividadeColetiva.idAtendimento = obj.id;
+                objProfissionalAtividadeColetiva.idProfissional = obj.idUsuario;
+
+                //PACIENTE SELECIONADO INICIAL
+                var responseParticipanteAtividadeColetiva = await participanteAtividadeColetivaRepository.salvaSync(objParticipanteAtividadeColetiva);
+                if (!responseParticipanteAtividadeColetiva) {
+                    errors = util.customError(errors, "header", "Erro ao Inserir Participante Inicial atividade coletiva.", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
+                }
+
+                //PROFISSIONAL DO ATENDIMENTO INICIAL
+                var responseProfissionalAtividadeColetiva = await profissionalAtividadeColetivaRepository.salvaSync(objProfissionalAtividadeColetiva);
+                if (!responseProfissionalAtividadeColetiva) {
+                    errors = util.customError(errors, "header", "Erro ao Inserir Profissional Inicial atividade coletiva.", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
+                }
+
+            }
 
             await connection.commit();
             console.log('Commit transacao do atendimento: ' + obj.id + ', at: ' + new Date());
@@ -421,21 +449,6 @@ module.exports = function (app) {
                     }
                 }
             }
-
-            //ATIVIDADE COLETIVA
-            if (obj.tipoFicha == 7) {
-
-                objParticipanteAtividadeColetiva.idAtendimento = obj.id;
-
-                var responseParticipanteAtividadeColetiva = await participanteAtividadeColetivaRepository.salvaSync(objParticipanteAtividadeColetiva);
-                if (!responseParticipanteAtividadeColetiva) {
-                    errors = util.customError(errors, "header", "Erro ao Inserir Participante atividade coletiva.", "");
-                    res.status(400).send(errors);
-                    await connection.rollback();
-                    return;
-                }
-            }
-
 
             res.status(201).send(obj);
 
