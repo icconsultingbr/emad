@@ -53,6 +53,7 @@ export class AtendimentoFormComponent implements OnInit {
   object: Atendimento = new Atendimento();
   objectHistorico: AtendimentoHistorico = new AtendimentoHistorico();
   pacienteVacina: PacienteVacina = new PacienteVacina()
+  editParticipanteAtividadeColetiva: ParticipanteAtividadeColetiva = new ParticipanteAtividadeColetiva()
   participanteAtividadeColetiva: ParticipanteAtividadeColetiva = new ParticipanteAtividadeColetiva()
   profissionalAtividadeColetiva: ProfissionalAtividadeColetiva = new ProfissionalAtividadeColetiva()
   paciente: Paciente = new Paciente();
@@ -66,6 +67,7 @@ export class AtendimentoFormComponent implements OnInit {
   mostraFormulario: boolean = false;
   pacienteSelecionado: any = null;
   participanteSelecionadoAtividadeColetiva: any = null;
+  participanteEditSelecionadoAtividadeColetiva: any = null;
   profissionalSelecionadoAtividadeColetiva: any = null;
   medicamentoSelecionado: any = null;
   hipoteseDiagnosticaSelecionada: any = null;
@@ -109,8 +111,10 @@ export class AtendimentoFormComponent implements OnInit {
   tipoFicha: number;
   tipoFichaSelecionada: string;
   isVisible: boolean;
+  isVisibleParticipante: boolean;
   isRequired: boolean;
   sexoPaciente: string;
+  totalParticipantes: number;
 
   pathFiles = `${environment.apiUrl}/fotos/`;
 
@@ -135,8 +139,6 @@ export class AtendimentoFormComponent implements OnInit {
   nomeVacina: string;
   validadeVacina: string;
   loteVacina: string;
-
-
 
   constructor(
     private service: AtendimentoService,
@@ -746,8 +748,6 @@ export class AtendimentoFormComponent implements OnInit {
         if (this.tipoFicha == 7 || this.isVisible === true) {
           this.findParticipanteAtividadeColetivaPorAtendimento();
           this.findProfissionaisAtividadeColetivaPorAtendimento();
-          console.log('Passei aqui')
-          console.log(this.object.dadosFicha)
         }
 
         if (this.object.situacao) {
@@ -1416,7 +1416,7 @@ export class AtendimentoFormComponent implements OnInit {
 
     this.clear();
     this.participanteSelecionadoAtividadeColetiva = null;
-    this.participanteAtividadeColetiva.idPaciente = 0;
+    this.participanteAtividadeColetiva.idPaciente = null;
     this.participanteAtividadeColetiva.nomePaciente = '';
     this.participanteAtividadeColetiva.cartaoSus = '';
     this.participanteAtividadeColetiva.dataNascimento = '';
@@ -1448,7 +1448,23 @@ export class AtendimentoFormComponent implements OnInit {
     this.loading = true;
 
     this.service.saveParticipanteAtividadeColetiva(this.participanteAtividadeColetiva).subscribe(result => {
-      this.message = "Participante inserido com sucesso!"
+      this.message = "Profissional inserido com sucesso!"
+      this.close();
+      this.loading = false;
+      this.findParticipanteAtividadeColetivaPorAtendimento();
+
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+  saveEditParticipanteAtividadeColetiva() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+
+    this.service.saveParticipanteAtividadeColetiva(this.editParticipanteAtividadeColetiva).subscribe(result => {
+      this.message = "Profissional atualizado com sucesso!"
       this.close();
       this.loading = false;
       this.findParticipanteAtividadeColetivaPorAtendimento();
@@ -1459,14 +1475,20 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
   findParticipanteAtividadeColetivaPorAtendimento() {
-    console.log(this.allParticipantesAtividadeColetiva)
-    console.log(this.object.idPaciente)
     this.message = "";
     this.errors = [];
     this.loading = true;
     this.service.findParticipanteAtividadeColetivaByAtendimento(this.object.id).subscribe(result => {
       this.allParticipantesAtividadeColetiva = result;
       this.loading = false;
+      this.totalParticipantes = result.length;
+
+      if (result.length < this.object.numParticipantes) {
+        this.isVisibleParticipante = true
+      } else {
+        this.isVisibleParticipante = false
+      }
+
     }, error => {
       this.loading = false;
       this.errors = Util.customHTTPResponse(error);
@@ -1478,6 +1500,29 @@ export class AtendimentoFormComponent implements OnInit {
       this.loading = false;
       this.findParticipanteAtividadeColetivaPorAtendimento();
     });
+  }
+  editParticipanteAtividadeColetivaPorAtendimento(item, content) {
+
+    this.editParticipanteAtividadeColetiva.id = item.id;
+    this.editParticipanteAtividadeColetiva.idAtendimento = item.idAtendimento;
+    this.editParticipanteAtividadeColetiva.idPaciente = item.idPaciente;
+    this.editParticipanteAtividadeColetiva.nomePaciente = item.nome;
+    this.editParticipanteAtividadeColetiva.cartaoSus = item.cartaoSus;
+    this.editParticipanteAtividadeColetiva.dataNascimento = item.dataNascimento;
+    this.editParticipanteAtividadeColetiva.sexo = item.sexo;
+    this.editParticipanteAtividadeColetiva.parouFumar = item.parouFumar;
+    this.editParticipanteAtividadeColetiva.abandonouGrupo = item.abandonouGrupo;
+    this.editParticipanteAtividadeColetiva.avaliacaoAlterada = item.avaliacaoAlterada;
+    this.editParticipanteAtividadeColetiva.peso = item.peso;
+    this.editParticipanteAtividadeColetiva.altura = item.altura;
+
+    this.modalRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      size: "lg"
+    });
+
   }
   findProfissionaisAtividadeColetivaPorAtendimento() {
     this.message = "";
@@ -1519,7 +1564,6 @@ export class AtendimentoFormComponent implements OnInit {
     this.service.list('profissional/estabelecimento/' + JSON.parse(localStorage.getItem("est"))[0].id).subscribe(result => {
       this.profissionaisLista = result;
       this.loading = false;
-      console.log(result)
     }, error => {
       this.loading = false;
       this.errors = Util.customHTTPResponse(error);

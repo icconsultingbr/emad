@@ -29,10 +29,8 @@ AtendimentoParticipanteAtividadeColetivaDAO.prototype.salvaSync = async function
     return [response];
 }
 
-AtendimentoParticipanteAtividadeColetivaDAO.prototype.atualizaPorId = async function (objeto, id) {
-    let participante = await this._connection.query("UPDATE " + this._table + " SET ?  where id= ?", [objeto, id]);
-
-    return participante[0];
+AtendimentoParticipanteAtividadeColetivaDAO.prototype.atualizaPorId = async function (objeto, id, callback) {
+    this._connection.query("UPDATE " + this._table + " SET ?  where id= ?", [objeto, id], callback);
 }
 
 module.exports = function () {

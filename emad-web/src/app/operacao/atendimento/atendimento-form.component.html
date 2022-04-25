@@ -17,7 +17,7 @@
         <i class="fa fa-edit" title="Principal"></i> Principal
       </ng-template>
 
-      <div class="card mb-4">
+      <div *ngIf="object.tipoFicha != 7" class="card mb-4">
         <div class="card-header text-left">
           Paciente
 
@@ -118,6 +118,10 @@
       </div>
 
       <div class="card mb-4" *ngIf="object.idPaciente">
+
+        <input type="hidden" [(ngModel)]="object.id" formControlName="id">
+        <input type="hidden" [(ngModel)]="object.idPaciente" formControlName="idPaciente">
+
         <div class="card-header text-left">
           Dados da abertura do atendimento
         </div>
@@ -823,9 +827,8 @@
           <div class="row">
 
             <div class="col-12 mb-3">
-              <button type="button" class="btn btn-primary float-left mr-2"
-                (click)="openAtividadeColetivaParticipante(contentAtividadeColetivaParticipante)"
-                [disabled]="!object.id" *ngIf="!disableFields()">
+              <button *ngIf="isVisibleParticipante" type="button" class="btn btn-primary float-left mr-2"
+                (click)="openAtividadeColetivaParticipante(contentAtividadeColetivaParticipante)">
                 <i class="fa fa-plus-circle"></i>
               </button>
 
@@ -833,6 +836,14 @@
                 (click)="findParticipanteAtividadeColetivaPorAtendimento()">
                 <i class="fa fa-sync-alt"></i>
               </button>
+
+              <label class="float-right">
+                <b>
+                  Núm. Participantes: {{totalParticipantes}}/{{object.numParticipantes}}
+                </b>
+              </label>
+
+
             </div>
             <div class="col-12 table-responsive">
               <table class="table table-striped">
@@ -867,10 +878,12 @@
                     <td class="text-secondary">{{item.avaliacaoAlterada === 1 ? 'Sim' : 'Não'}}</td>
                     <td class="text-secondary">{{item.abandonouGrupo === 1 ? 'Sim' : 'Não'}}</td>
                     <td class="text-secondary">{{item.parouFumar === 1 ? 'Sim' : 'Não'}}</td>
-                    <td class="text-secondary">{{item.altura}}</td>
                     <td class="text-secondary">{{item.peso}}</td>
+                    <td class="text-secondary">{{item.altura}}</td>
                     <td class="text-secondary text-left">
-                      <a class="btn btn-link" *ngIf="!disableFields()" [routerLink]="">
+                      <a class="btn btn-link"
+                        (click)="editParticipanteAtividadeColetivaPorAtendimento(item, contentEditAtividadeColetivaParticipante)"
+                        *ngIf="!disableFields()" [routerLink]="">
                         <i class="fa fa-edit"></i>
                       </a>
                       <a class="btn btn-link" *ngIf=" item.idPaciente != object.idPaciente && !disableFields()"
@@ -2965,6 +2978,179 @@
     <button [disabled]="profissionalSelecionadoAtividadeColetiva==null" class="btn btn-primary mr-2" type="button"
       (click)="saveProfissionalAtividadeColetiva()">
       <i class="fa fa-plus-circle"></i> Adicionar
+    </button>
+    <button class="btn btn-default" (click)="close()" type="button">
+      <i class="fa fa-times"></i> Cancelar
+    </button>
+  </div>
+
+</ng-template>
+
+
+<ng-template #contentEditAtividadeColetivaParticipante>
+
+  <div class="modal-header">
+
+    <h4 class="modal-title">Editar Participante da Atividade Coletiva </h4>
+
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <div *ngIf="errors.length" class="alert alert-danger">
+      <div *ngFor="let error of errors" class="row">
+        <div class="col-12 text-left">
+          {{error.message}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="text-left">
+
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="col-xl-12">
+            <input type="hidden" [(ngModel)]="participanteAtividadeColetiva.id">
+            <input type="hidden" [(ngModel)]="participanteAtividadeColetiva.idPaciente">
+            <div class="input-group">
+              <input type="text" class="form-control has-error rounded"
+                [(ngModel)]="editParticipanteAtividadeColetiva.nomePaciente" readonly>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-left">
+      <div class="row">
+        <div class="col-xl-12">
+          <label class="col-xl-4 col-form-label text-left">Cartão SUS do Participante:
+          </label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="col-xl-12">
+            <div class="input-group">
+              <input type="text" class="form-control has-error rounded"
+                [(ngModel)]="editParticipanteAtividadeColetiva.cartaoSus" readonly>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-left">
+      <div class="row">
+        <div class="col-xl-12">
+          <label class="col-xl-4 col-form-label text-left">Peso do Participante:
+          </label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="col-xl-12">
+            <div class="input-group">
+              <input type="text" class="form-control has-error rounded"
+                [(ngModel)]="editParticipanteAtividadeColetiva.peso">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-left">
+      <div class="row">
+        <div class="col-xl-12">
+          <label class="col-xl-4 col-form-label text-left">Altura do Participante:
+          </label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="col-xl-12">
+            <div class="input-group">
+              <input type="text" class="form-control has-error rounded"
+                [(ngModel)]="editParticipanteAtividadeColetiva.altura">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-left">
+      <div class="row">
+        <div class="col-xl-12">
+          <label class="col-xl-4 col-form-label text-left">Sexo do Participante:
+          </label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="col-xl-12">
+            <div class="input-group">
+              <input type="text" class="form-control has-error rounded" [(ngModel)]="this.sexoPaciente" readonly>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-left">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="input-group">
+            <label class="col-xl-4 col-form-label text-left">Avaliação Alterada:
+            </label>
+            <div class="custom-control custom-checkbox" style="margin-top: 10px;">
+              <input type="checkbox" id="avaliacaoAlteradaNovo"
+                [(ngModel)]="this.editParticipanteAtividadeColetiva.avaliacaoAlterada" class="custom-control-input">
+              <label class="custom-control-label" for="avaliacaoAlteradaNovo"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-left">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="input-group">
+            <label class="col-xl-4 col-form-label text-left">Cessou o hábito de fumar:
+            </label>
+            <div class="custom-control custom-checkbox" style="margin-top: 10px;">
+              <input type="checkbox" id="parouFumarNovo" class="custom-control-input"
+                [(ngModel)]="this.editParticipanteAtividadeColetiva.parouFumar">
+              <label class="custom-control-label" for="parouFumarNovo"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-left">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="input-group">
+            <label class="col-xl-4 col-form-label text-left"> Abandonou o grupo:
+            </label>
+            <div class="custom-control custom-checkbox" style="margin-top: 10px;">
+              <input type="checkbox" id="abandonouGrupoNovo" class="custom-control-input"
+                [(ngModel)]="this.editParticipanteAtividadeColetiva.abandonouGrupo">
+              <label class="custom-control-label" for="abandonouGrupoNovo"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-primary mr-2" type="button" (click)="saveEditParticipanteAtividadeColetiva()">
+      <i class="fa fa-plus-circle"></i> Salvar
     </button>
     <button class="btn btn-default" (click)="close()" type="button">
       <i class="fa fa-times"></i> Cancelar

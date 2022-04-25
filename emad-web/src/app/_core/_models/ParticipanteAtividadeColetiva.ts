@@ -2,6 +2,7 @@ import { Input } from "@angular/core";
 import * as moment from 'moment';
 
 export class ParticipanteAtividadeColetiva {
+    @Input() id: Number = null;
     @Input() idPaciente: Number = null;
     @Input() idAtendimento: Number = null;
     @Input() nomePaciente: string = null;

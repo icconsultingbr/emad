@@ -2,7 +2,7 @@ module.exports = function (app) {
 
     const _table = "tb_atividade_coletiva_participantes";
 
-    app.post('/atendimento-participante-atividade-coletiva', function (req, res) {
+    app.post('/participante-atividade-coletiva', function (req, res) {
         let obj = req.body;
 
         delete obj.nomePaciente;
@@ -46,13 +46,17 @@ module.exports = function (app) {
         });
     });
 
-    app.put('/participante-atividade-coletiva/:id', function (req, res) {
-        let usuario = req.usuario;
+    app.put('/participante-atividade-coletiva', function (req, res) {
         let obj = req.body;
         let errors = [];
         let id = obj.id;
 
         errors = req.validationErrors();
+
+        delete obj.nomePaciente;
+        delete obj.sexo;
+        delete obj.cartaoSus;
+        delete obj.dataNascimento;
 
         if (errors) {
             res.status(400).send(errors);
@@ -138,7 +142,7 @@ module.exports = function (app) {
         var util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
-        var objDAO = new app.dao.AtendimentoProfissionalAtividadeColetivaDAO(connection);
+        var objDAO = new app.dao.AtendimentoParticipanteAtividadeColetivaDAO(connection);
         var errors = [];
 
         objDAO.atualizaPorId(obj, id, function (exception, result) {
