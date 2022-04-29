@@ -4,8 +4,8 @@ function AtendimentoTipoFornecimentoOdontoDAO(connection) {
 }
 AtendimentoTipoFornecimentoOdontoDAO.prototype.buscaPorAtendimentoId = function (idAtendimento, callback) {
     this._connection.query(`SELECT 
-      tpforn.id,
-      tpforn.nome
+        atvcol.id,
+        tpforn.nome
     from ${this._table} atvcol   
     INNER JOIN tb_tipo_fornecimento_odonto tpforn ON (tpforn.id = atvcol.idFornecimento) 
     WHERE atvcol.idAtendimento = ?` , idAtendimento, callback);

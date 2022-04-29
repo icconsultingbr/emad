@@ -692,7 +692,9 @@ export class AtendimentoFormComponent implements OnInit {
       this.findVacinaPorAtendimento();
       this.findParticipanteAtividadeColetivaPorAtendimento();
       this.findProfissionaisAtividadeColetivaPorAtendimento();
-      this.buscaProfissionais()
+      this.buscaProfissionais();
+      this.findtiposFornecimentoOdontoPorAtendimento();
+      this.findtiposVigilanciaOdontoPorAtendimento();
 
     }, error => {
       this.object = new Atendimento();
@@ -734,6 +736,8 @@ export class AtendimentoFormComponent implements OnInit {
         this.findVacinaPorAtendimento();
         this.findParticipanteAtividadeColetivaPorAtendimento();
         this.findProfissionaisAtividadeColetivaPorAtendimento();
+        this.findtiposFornecimentoOdontoPorAtendimento();
+        this.findtiposVigilanciaOdontoPorAtendimento();
 
       }, error => {
         this.loading = false;
@@ -785,6 +789,12 @@ export class AtendimentoFormComponent implements OnInit {
         if (this.tipoFicha == 7 || this.isVisible === true) {
           this.findParticipanteAtividadeColetivaPorAtendimento();
           this.findProfissionaisAtividadeColetivaPorAtendimento();
+        }
+
+        if(this.tipoFicha == 8)
+        {
+          this.findtiposFornecimentoOdontoPorAtendimento();
+          this.findtiposVigilanciaOdontoPorAtendimento();
         }
 
         if (this.object.situacao) {
@@ -1689,6 +1699,7 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
   removetiposVigilanciaOdontoPorAtendimento(item) {
+    console.log(item)
     this.service.removetiposVigilanciaOdontoPorAtendimento(item.id).subscribe(result => {
       this.message = "Item removido com sucesso!"
       this.loading = false;
@@ -1696,6 +1707,7 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
   removetiposFornecimentoOdontoPorAtendimento(item) {
+    console.log(item)
     this.service.removetiposFornecimentoOdontoPorAtendimento(item.id).subscribe(result => {
       this.message = "Item removido com sucesso!"
       this.loading = false;
@@ -1703,3 +1715,4 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 }
+

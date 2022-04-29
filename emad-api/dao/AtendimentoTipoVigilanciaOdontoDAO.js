@@ -1,13 +1,13 @@
 function AtendimentoTipoFornecimentoOdontoDAO(connection) {
     this._connection = connection;
-    this._table = "tb_tipo_fornecimento_odonto_atendimento";
+    this._table = "tb_tipo_vigilancia_odonto_atendimento";
 }
 AtendimentoTipoFornecimentoOdontoDAO.prototype.buscaPorAtendimentoId = function (idAtendimento, callback) {
     this._connection.query(`SELECT 
-        tpforn.id,
+        atvcol.id,
         tpforn.nome
     from ${this._table} atvcol   
-    INNER JOIN tb_tipo_vigilancia_odonto tpforn ON (tpforn.id = atvcol.idFornecimento) 
+    INNER JOIN tb_tipo_vigilancia_odonto tpforn ON (tpforn.id = atvcol.idVigilancia) 
     WHERE atvcol.idAtendimento = ?` , idAtendimento, callback);
 }
 
