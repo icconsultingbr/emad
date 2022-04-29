@@ -164,7 +164,7 @@
                 </label>
                 <div class="col-xl-4">
                   <select (change)="change($event)" *ngIf="domains" class="custom-select d-block w-100"
-                    [(ngModel)]="object.tiposConsultaOdonto" formControlName="tiposConsultaOdonto">
+                    [(ngModel)]="object.tipoConsultaOdonto" formControlName="tipoConsultaOdonto">
                     <option [value]="null">Selecione...</option>
                     <option *ngFor="let item of domains[0]?.tiposConsultaOdonto" [value]="item.id">{{item.nome}}
                     </option>
@@ -214,9 +214,9 @@
                   </label>
                   <div class="col-xl-10">
                     <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="ficouEmObservacao" [(ngModel)]="object.ficouEmObservacao"
-                        formControlName="ficouEmObservacao" class="custom-control-input">
-                      <label class="custom-control-label" for="ficouEmObservacao"></label>
+                      <input type="checkbox" id="gestante" [(ngModel)]="object.gestante" formControlName="gestante"
+                        class="custom-control-input">
+                      <label class="custom-control-label" for="gestante"></label>
                     </div>
                   </div>
                 </div>
@@ -231,9 +231,10 @@
                   </label>
                   <div class="col-xl-10">
                     <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="ficouEmObservacao" [(ngModel)]="object.ficouEmObservacao"
-                        formControlName="ficouEmObservacao" class="custom-control-input">
-                      <label class="custom-control-label" for="ficouEmObservacao"></label>
+                      <input type="checkbox" id="possuiNecessidadesEspeciais"
+                        [(ngModel)]="object.possuiNecessidadesEspeciais" formControlName="possuiNecessidadesEspeciais"
+                        class="custom-control-input">
+                      <label class="custom-control-label" for="possuiNecessidadesEspeciais"></label>
                     </div>
                   </div>
                 </div>
@@ -440,9 +441,7 @@
                   <tbody *ngIf="!allItemsProcedimento">
                     <tr class="text-left">
                       <td colspan="99" class="text-secondary">
-                        <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para
-                          inserir
-                          um procedimento diagnóstica!'}}</i>
+                        <i>Não há resultados...</i>
                       </td>
                     </tr>
                   </tbody>
@@ -492,9 +491,7 @@
                   <tbody *ngIf="!allTiposVigilanciaBucal">
                     <tr class="text-left">
                       <td colspan="99" class="text-secondary">
-                        <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para
-                          inserir
-                          um procedimento diagnóstica!'}}</i>
+                        <i>Não há resultados...</i>
                       </td>
                     </tr>
                   </tbody>
@@ -819,7 +816,8 @@
         </div>
 
         <!-- Prescrição Medicamentos -->
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7">
+        <div class="card mb-4"
+          *ngIf="object.idPaciente && object.id && object.tipoFicha != 7  && object.tipoFicha != 8">
           <div class="card-header text-left">
             Prescrição Medicamentos
           </div>

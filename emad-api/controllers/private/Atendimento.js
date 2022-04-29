@@ -346,6 +346,10 @@ module.exports = function (app) {
             obj.temasParaSaude == '' ? obj.temasParaSaude = 0 : obj.temasParaSaude;
             obj.temasParaReuniao == '' ? obj.temasParaReuniao = 0 : obj.temasParaReuniao;
 
+            obj.gestante == '' ? obj.gestante = 0 : obj.gestante;
+            obj.possuiNecessidadesEspeciais == '' ? obj.possuiNecessidadesEspeciais = 0 : obj.possuiNecessidadesEspeciais;
+            obj.tipoConsultaOdonto == '' ? obj.tipoConsultaOdonto = 0 : obj.tipoConsultaOdonto;
+
             objParticipanteAtividadeColetiva.idPaciente = obj.idPaciente;
             objParticipanteAtividadeColetiva.abandonouGrupo = !obj.abandonouGrupo ? false : obj.abandonouGrupo;
             objParticipanteAtividadeColetiva.avaliacaoAlterada = !obj.avaliacaoAlterada ? false : obj.avaliacaoAlterada;
@@ -354,6 +358,9 @@ module.exports = function (app) {
             delete obj.abandonouGrupo;
             delete obj.avaliacaoAlterada;
             delete obj.parouFumar;
+            delete obj.tiposFornecimOdonto;
+            delete obj.tiposConsultaOdonto;
+            delete obj.tiposVigilanciaSaudeBucal;
 
             var responseAtendimento = await atendimentoRepository.salvaSync(obj);
 
@@ -373,10 +380,17 @@ module.exports = function (app) {
             objHistorico.temasParaSaude == '' ? objHistorico.temasParaSaude = 0 : objHistorico.temasParaSaude;
             objHistorico.temasParaReuniao == '' ? objHistorico.temasParaReuniao = 0 : objHistorico.temasParaReuniao;
 
+            objHistorico.gestante == '' ? objHistorico.gestante = 0 : objHistorico.gestante;
+            objHistorico.possuiNecessidadesEspeciais == '' ? objHistorico.possuiNecessidadesEspeciais = 0 : objHistorico.possuiNecessidadesEspeciais;
+            objHistorico.tipoConsultaOdonto == '' ? objHistorico.tipoConsultaOdonto = 0 : objHistorico.tipoConsultaOdonto;
+
             delete objHistorico.id;
             delete objHistorico.abandonouGrupo;
             delete objHistorico.avaliacaoAlterada;
             delete objHistorico.parouFumar;
+            delete objHistorico.tiposFornecimOdonto;
+            delete objHistorico.tiposConsultaOdonto;
+            delete objHistorico.tiposVigilanciaSaudeBucal;
 
             var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
 
@@ -654,10 +668,17 @@ module.exports = function (app) {
             obj.temasParaReuniao == '' ? obj.temasParaReuniao = 0 : obj.temasParaReuniao;
             obj.tipoHistoriaClinica == '' ? obj.tipoHistoriaClinica = 0 : obj.tipoHistoriaClinica;
             obj.ficouEmObservacao == '' ? obj.ficouEmObservacao = 0 : obj.ficouEmObservacao;
+            obj.gestante == '' ? obj.gestante = 0 : obj.gestante;
+            obj.possuiNecessidadesEspeciais == '' ? obj.possuiNecessidadesEspeciais = 0 : obj.possuiNecessidadesEspeciais;
+            obj.tipoConsultaOdonto == '' ? obj.tipoConsultaOdonto = 0 : obj.tipoConsultaOdonto;
 
             delete obj.abandonouGrupo;
             delete obj.avaliacaoAlterada;
             delete obj.parouFumar;
+            delete obj.tiposFornecimOdonto;
+            delete obj.tiposConsultaOdonto;
+            delete obj.tiposVigilanciaSaudeBucal;
+
 
             var atualizaAtendimento = await atendimentoRepository.atualizaPorIdSync(obj, id);
 
@@ -680,10 +701,17 @@ module.exports = function (app) {
             objHistorico.temasParaReuniao == '' ? objHistorico.temasParaReuniao = 0 : objHistorico.temasParaReuniao;
             objHistorico.tipoHistoriaClinica == '' ? objHistorico.tipoHistoriaClinica = 0 : objHistorico.tipoHistoriaClinica;
             objHistorico.ficouEmObservacao == '' ? objHistorico.ficouEmObservacao = 0 : objHistorico.ficouEmObservacao;
+            objHistorico.gestante == '' ? objHistorico.gestante = 0 : objHistorico.gestante;
+            objHistorico.possuiNecessidadesEspeciais == '' ? objHistorico.possuiNecessidadesEspeciais = 0 : objHistorico.possuiNecessidadesEspeciais;
+            objHistorico.tipoConsultaOdonto == '' ? objHistorico.tipoConsultaOdonto = 0 : objHistorico.tipoConsultaOdonto;
+
 
             delete objHistorico.abandonouGrupo;
             delete objHistorico.avaliacaoAlterada;
             delete objHistorico.parouFumar;
+            delete objHistorico.tiposFornecimOdonto;
+            delete objHistorico.tiposConsultaOdonto;
+            delete objHistorico.tiposVigilanciaSaudeBucal;
 
             var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
 

@@ -226,9 +226,9 @@ export class AtendimentoFormComponent implements OnInit {
       parouFumar: ['', ''],
       abandonouGrupo: ['', ''],
       avaliacaoAlterada: ['', ''],
-      tiposFornecimOdonto: ['', ''],
-      tiposConsultaOdonto: ['', ''],
-      tiposVigilanciaSaudeBucal: ['', ''],
+      gestante: ['', ''],
+      possuiNecessidadesEspeciais: ['', ''],
+      tipoConsultaOdonto: ['', ''],
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -280,9 +280,9 @@ export class AtendimentoFormComponent implements OnInit {
       parouFumar: new FormControl({ value: '', disabled: true }),
       abandonouGrupo: new FormControl({ value: '', disabled: true }),
       avaliacaoAlterada: new FormControl({ value: '', disabled: true }),
-      tiposFornecimOdonto: new FormControl({ value: '', disabled: true }),
-      tiposConsultaOdonto: new FormControl({ value: '', disabled: true }),
-      tiposVigilanciaSaudeBucal: new FormControl({ value: '', disabled: true })
+      gestante: new FormControl({ value: '', disabled: true }),
+      possuiNecessidadesEspeciais: new FormControl({ value: '', disabled: true }),
+      tipoConsultaOdonto: new FormControl({ value: '', disabled: true }),
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -791,8 +791,7 @@ export class AtendimentoFormComponent implements OnInit {
           this.findProfissionaisAtividadeColetivaPorAtendimento();
         }
 
-        if(this.tipoFicha == 8)
-        {
+        if (this.tipoFicha == 8) {
           this.findtiposFornecimentoOdontoPorAtendimento();
           this.findtiposVigilanciaOdontoPorAtendimento();
         }
