@@ -24,6 +24,8 @@ import { PacienteVacina } from '../../_core/_models/PacienteVacina';
 import * as moment from 'moment';
 import { ParticipanteAtividadeColetiva } from '../../_core/_models/ParticipanteAtividadeColetiva';
 import { ProfissionalAtividadeColetiva } from '../../_core/_models/ProfissionalAtividadeColetiva';
+import { tiposFornecimOdonto } from '../../_core/_models/tiposFornecimOdonto';
+import { VigilanciaSaudeBucal } from '../../_core/_models/VigilanciaSaudeBucal';
 
 @Component({
   selector: 'app-atendimento-form',
@@ -69,6 +71,12 @@ export class AtendimentoFormComponent implements OnInit {
   participanteSelecionadoAtividadeColetiva: any = null;
   participanteEditSelecionadoAtividadeColetiva: any = null;
   profissionalSelecionadoAtividadeColetiva: any = null;
+
+  FornecimOdontoSelecionado: tiposFornecimOdonto = new tiposFornecimOdonto()
+  VigilanciaSaudeBucalSelecionado: VigilanciaSaudeBucal = new VigilanciaSaudeBucal()
+
+
+
   medicamentoSelecionado: any = null;
   hipoteseDiagnosticaSelecionada: any = null;
   domains: any[] = [];
@@ -100,6 +108,10 @@ export class AtendimentoFormComponent implements OnInit {
   //ATIVIDADE COLETIVA
   allParticipantesAtividadeColetiva: any[];
   allProfissionaisAtividadeColetiva: any[];
+
+  //FICHA ODONTO
+  allTiposFornecimento: any[];
+  allTiposVigilanciaBucal: any[];
 
   parouFumarAtividadeColetiva: boolean = null;
   abandonouGrupoAtividadeColetiva: boolean = null;
@@ -1609,8 +1621,85 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
-
   //FICHA ODONTOLOGICA
+  selecionatiposFornecimOdonto(item) {
+    this.FornecimOdontoSelecionado.idAtendimento = this.object.id;
+    this.FornecimOdontoSelecionado.idPaciente = this.object.idPaciente;
+    this.FornecimOdontoSelecionado.idFornecimento = item.id;
+  }
+  selecionatiposVigilanciaSaudeBucal(item) {
+    this.VigilanciaSaudeBucalSelecionado.idAtendimento = this.object.id;
+    this.VigilanciaSaudeBucalSelecionado.idPaciente = this.object.idPaciente;
+    this.VigilanciaSaudeBucalSelecionado.idVigilancia = item.id;
+  }
+  savetiposFornecimOdonto() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
 
+    this.service.savetiposFornecimOdonto(this.FornecimOdontoSelecionado).subscribe(result => {
+      this.message = "Registro adicionado com sucesso!"
+      this.close();
+      this.loading = false;
+      //this.findParticipanteAtividadeColetivaPorAtendimento();
 
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+  savetiposVigilanciaSaudeBucal() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+
+    this.service.savetiposVigilanciaSaudeBucal(this.VigilanciaSaudeBucalSelecionado).subscribe(result => {
+      this.message = "Registro adicionado com sucesso!"
+      this.close();
+      this.loading = false;
+      //this.findParticipanteAtividadeColetivaPorAtendimento();
+
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+  findtiposFornecimentoOdontoPorAtendimento() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.service.findtiposFornecimentoOdontoPorAtendimento(this.object.id).subscribe(result => {
+      this.allTiposFornecimento = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+  findtiposVigilanciaOdontoPorAtendimento() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.service.findtiposVigilanciaOdontoPorAtendimento(this.object.id).subscribe(result => {
+      this.allTiposVigilanciaBucal = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+  removetiposVigilanciaOdontoPorAtendimento(item) {
+    this.service.removetiposVigilanciaOdontoPorAtendimento(item.id).subscribe(result => {
+      this.message = "Item removido com sucesso!"
+      this.loading = false;
+      this.findtiposFornecimentoOdontoPorAtendimento();
+    });
+  }
+  removetiposFornecimentoOdontoPorAtendimento(item) {
+    this.service.removetiposFornecimentoOdontoPorAtendimento(item.id).subscribe(result => {
+      this.message = "Item removido com sucesso!"
+      this.loading = false;
+      this.findtiposVigilanciaOdontoPorAtendimento();
+    });
+  }
 }

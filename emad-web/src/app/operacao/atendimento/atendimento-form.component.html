@@ -423,7 +423,8 @@
                   <i class="fa fa-plus-circle"></i>
                 </button>
 
-                <button type="button" class="btn btn-default float-left" (click)="findProcedimentoPorAtendimento()">
+                <button type="button" class="btn btn-default float-left"
+                  (click)="findtiposFornecimentoOdontoPorAtendimento()">
                   <i class="fa fa-sync-alt"></i>
                 </button>
               </div>
@@ -436,7 +437,7 @@
                       <th></th>
                     </tr>
                   </thead>
-                  <tbody *ngIf="!allItemsProcedimento.length">
+                  <tbody *ngIf="!allItemsProcedimento">
                     <tr class="text-left">
                       <td colspan="99" class="text-secondary">
                         <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para
@@ -445,13 +446,13 @@
                       </td>
                     </tr>
                   </tbody>
-                  <tbody *ngIf="allItemsProcedimento.length">
-                    <tr class="text-left" *ngFor="let item of allItemsProcedimento">
+                  <tbody *ngIf="allTiposFornecimento">
+                    <tr class="text-left" *ngFor="let item of allTiposFornecimento">
                       <td class="text-secondary">{{item.id}}</td>
                       <td class="text-secondary">{{item.nome}}</td>
                       <td class="text-secondary text-right">
                         <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]=""
-                          (click)="removeProcedimento(item)">
+                          (click)="removetiposFornecimentoOdontoPorAtendimento(item)">
                           <i class="fa fa-trash-alt"></i> Remover
                         </a>
                       </td>
@@ -474,7 +475,8 @@
                   <i class="fa fa-plus-circle"></i>
                 </button>
 
-                <button type="button" class="btn btn-default float-left" (click)="findProcedimentoPorAtendimento()">
+                <button type="button" class="btn btn-default float-left"
+                  (click)="findtiposVigilanciaOdontoPorAtendimento()">
                   <i class="fa fa-sync-alt"></i>
                 </button>
               </div>
@@ -487,7 +489,7 @@
                       <th></th>
                     </tr>
                   </thead>
-                  <tbody *ngIf="!allItemsProcedimento.length">
+                  <tbody *ngIf="!allTiposVigilanciaBucal">
                     <tr class="text-left">
                       <td colspan="99" class="text-secondary">
                         <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para
@@ -496,13 +498,13 @@
                       </td>
                     </tr>
                   </tbody>
-                  <tbody *ngIf="allItemsProcedimento.length">
-                    <tr class="text-left" *ngFor="let item of allItemsProcedimento">
+                  <tbody *ngIf="allTiposVigilanciaBucal">
+                    <tr class="text-left" *ngFor="let item of allTiposVigilanciaBucal">
                       <td class="text-secondary">{{item.id}}</td>
                       <td class="text-secondary">{{item.nome}}</td>
                       <td class="text-secondary text-right">
                         <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]=""
-                          (click)="removeProcedimento(item)">
+                          (click)="removetiposVigilanciaOdontoPorAtendimento(item)">
                           <i class="fa fa-trash-alt"></i> Remover
                         </a>
                       </td>
@@ -3373,7 +3375,7 @@
           <tr class="text-left" *ngFor="let item of domains[0]?.tiposFornecimOdonto">
             <td class="text-secondary">
               <div class="custom-control custom-radio float-left">
-                <input type="radio" (change)="selecionaProfissional(item)" class="custom-control-input"
+                <input type="radio" (change)="selecionatiposFornecimOdonto(item)" class="custom-control-input"
                   id="{{ item.id }}" name="radio-item">
                 <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
               </div>
@@ -3388,8 +3390,8 @@
   </div>
 
   <div class="modal-footer">
-    <button [disabled]="profissionalSelecionadoAtividadeColetiva==null" class="btn btn-primary mr-2" type="button"
-      (click)="saveProfissionalAtividadeColetiva()">
+    <button [disabled]="FornecimOdontoSelecionado==null" class="btn btn-primary mr-2" type="button"
+      (click)="savetiposFornecimOdonto()">
       <i class="fa fa-plus-circle"></i> Adicionar
     </button>
     <button class="btn btn-default" (click)="close()" type="button">
@@ -3438,7 +3440,7 @@
           <tr class="text-left" *ngFor="let item of domains[0]?.tiposVigilanciaSaudeBucal">
             <td class="text-secondary">
               <div class="custom-control custom-radio float-left">
-                <input type="radio" (change)="selecionaProfissional(item)" class="custom-control-input"
+                <input type="radio" (change)="selecionatiposVigilanciaSaudeBucal(item)" class="custom-control-input"
                   id="{{ item.id }}" name="radio-item">
                 <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
               </div>
@@ -3453,8 +3455,8 @@
   </div>
 
   <div class="modal-footer">
-    <button [disabled]="profissionalSelecionadoAtividadeColetiva==null" class="btn btn-primary mr-2" type="button"
-      (click)="saveProfissionalAtividadeColetiva()">
+    <button [disabled]="VigilanciaSaudeBucalSelecionado==null" class="btn btn-primary mr-2" type="button"
+      (click)="savetiposVigilanciaSaudeBucal()">
       <i class="fa fa-plus-circle"></i> Adicionar
     </button>
     <button class="btn btn-default" (click)="close()" type="button">

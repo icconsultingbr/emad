@@ -274,6 +274,28 @@ export class AtendimentoService extends GenericsService {
         }
     }
 
+    savetiposFornecimOdonto(obj: any) {
+        if (obj.id) {
+            return this.http
+                .put('tipo-odonto-atendimento', JSON.stringify(obj));
+        }
+        else {
+            return this.http
+                .post('tipo-odonto-atendimento', JSON.stringify(obj));
+        }
+    }
+
+    savetiposVigilanciaSaudeBucal(obj: any) {
+        if (obj.id) {
+            return this.http
+                .put('tipo-vigilancia-odonto', JSON.stringify(obj));
+        }
+        else {
+            return this.http
+                .post('tipo-vigilancia-odonto', JSON.stringify(obj));
+        }
+    }
+
     saveProfissionalAtividadeColetiva(obj: any) {
         if (obj.id) {
             return this.http
@@ -314,6 +336,14 @@ export class AtendimentoService extends GenericsService {
 
     removeProfissional(params: any) {
         return this.http.delete('profissional-atividade-coletiva/' + params);
+    }
+
+    removetiposVigilanciaOdontoPorAtendimento(params: any) {
+        return this.http.delete('tipo-vigilancia-odonto/' + params);
+    }
+
+    removetiposFornecimentoOdontoPorAtendimento(params: any) {
+        return this.http.delete('tipo-odonto-atendimento/' + params);
     }
 
     removeMedicamento(params: any) {
@@ -367,5 +397,12 @@ export class AtendimentoService extends GenericsService {
         return this.http.get("profissional-atividade-coletiva/atendimento/" + id);
     }
 
+    findtiposFornecimentoOdontoPorAtendimento(id: any): Observable<any> {
+        return this.http.get("tipo-odonto-atendimento/" + id);
+    }
+
+    findtiposVigilanciaOdontoPorAtendimento(id: any): Observable<any> {
+        return this.http.get("tipo-vigilancia-odonto/" + id);
+    }
 
 }
