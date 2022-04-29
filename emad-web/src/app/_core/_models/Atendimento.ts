@@ -31,7 +31,10 @@ export class Atendimento {
     @Input() pesquisaCentral: string = null;
     @Input() idTipoAtendimentoHistorico: number = null;
     @Input() ficouEmObservacao: number = null;
-   
+    @Input() tiposConsultaOdonto: number = null;
+    @Input() tiposFornecimOdonto: number = null;
+    @Input() tiposVigilanciaSaudeBucal: number = null;
+
     @Input() inep: string;
     @Input() numParticipantes: number;
     @Input() profissionais: number;

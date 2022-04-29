@@ -214,6 +214,9 @@ export class AtendimentoFormComponent implements OnInit {
       parouFumar: ['', ''],
       abandonouGrupo: ['', ''],
       avaliacaoAlterada: ['', ''],
+      tiposFornecimOdonto: ['', ''],
+      tiposConsultaOdonto: ['', ''],
+      tiposVigilanciaSaudeBucal: ['', ''],
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -264,7 +267,10 @@ export class AtendimentoFormComponent implements OnInit {
       pseSaude: new FormControl({ value: '', disabled: true }),
       parouFumar: new FormControl({ value: '', disabled: true }),
       abandonouGrupo: new FormControl({ value: '', disabled: true }),
-      avaliacaoAlterada: new FormControl({ value: '', disabled: true })
+      avaliacaoAlterada: new FormControl({ value: '', disabled: true }),
+      tiposFornecimOdonto: new FormControl({ value: '', disabled: true }),
+      tiposConsultaOdonto: new FormControl({ value: '', disabled: true }),
+      tiposVigilanciaSaudeBucal: new FormControl({ value: '', disabled: true })
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -499,6 +505,24 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
+  openTipoVigilanciaOdonto(content: any) {
+    this.modalRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      windowClass: 'modal-gg'
+    });
+  }
+
+  openTipoFornecimentoOdonto(content: any) {
+    this.modalRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      windowClass: 'modal-gg'
+    });
+  }
+
   openConfirmacao(content: any) {
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
@@ -589,6 +613,7 @@ export class AtendimentoFormComponent implements OnInit {
     } else {
       this.pacienteSelecionado = item;
     }
+
   }
   selecionaProfissional(item) {
     this.profissionalSelecionadoAtividadeColetiva = item;
@@ -777,6 +802,8 @@ export class AtendimentoFormComponent implements OnInit {
 
       if (result) {
 
+        console.log(result)
+
         if (this.tipoFicha == 7) {
           this.object = result;
           this.object.pacienteNome = this.pacienteSelecionado.nome;
@@ -927,27 +954,38 @@ export class AtendimentoFormComponent implements OnInit {
                   this.service.listDomains('atividade-publico').subscribe(atividadePublico => {
                     this.service.listDomains('atividade-praticas-saude').subscribe(atividadePraticasSaude => {
                       this.service.listDomains('atividade-temas-saude').subscribe(atividadeTemasSaude => {
-                        this.domains.push({
-                          especialidades: especialidades,
-                          tipoFichas: tipoFichas,
-                          classificacaoRiscos: classificacaoRiscos,
-                          idGrupoMaterial: gruposMateriais,
-                          atividadeProcedimento: atividadeProcedimento,
-                          atividadeTipo: atividadeTipo,
-                          atividadeTemas: atividadeTemas,
-                          atividadePublico: atividadePublico,
-                          atividadePraticasSaude: atividadePraticasSaude,
-                          atividadeTemasSaude: atividadeTemasSaude,
-                          tipoHistoriaClinica: [
-                            { id: 1, nome: "Anamnese" },
-                            { id: 2, nome: "Evolução" },
-                          ],
+                        this.service.listDomains('odonto-fornecimento').subscribe(tiposFornecimOdonto => {
+                          this.service.listDomains('odonto-vigilancia').subscribe(tiposVigilanciaSaudeBucal => {
+                            this.domains.push({
+                              especialidades: especialidades,
+                              tipoFichas: tipoFichas,
+                              classificacaoRiscos: classificacaoRiscos,
+                              idGrupoMaterial: gruposMateriais,
+                              atividadeProcedimento: atividadeProcedimento,
+                              atividadeTipo: atividadeTipo,
+                              atividadeTemas: atividadeTemas,
+                              atividadePublico: atividadePublico,
+                              atividadePraticasSaude: atividadePraticasSaude,
+                              atividadeTemasSaude: atividadeTemasSaude,
+                              tiposFornecimOdonto: tiposFornecimOdonto,
+                              tiposVigilanciaSaudeBucal: tiposVigilanciaSaudeBucal,
+                              tipoHistoriaClinica: [
+                                { id: 1, nome: "Anamnese" },
+                                { id: 2, nome: "Evolução" },
+                              ],
+                              tiposConsultaOdonto: [
+                                { id: 1, nome: "Primeira consulta odontológica programática" },
+                                { id: 2, nome: "Consulta de retorno em odontologia" },
+                                { id: 4, nome: "Consulta de manutenção em odontologia" },
+                              ]
+                            });
+                            if (!Util.isEmpty(this.id)) {
+                              this.encontraAtendimento();
+                            }
+                            else
+                              this.loading = false;
+                          });
                         });
-                        if (!Util.isEmpty(this.id)) {
-                          this.encontraAtendimento();
-                        }
-                        else
-                          this.loading = false;
                       });
                     });
                   });
@@ -1411,6 +1449,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
   change(event) {
     this.tipoFichaSelecionada = event.target.value;
+    console.log(this.object)
   }
   openAtividadeColetivaParticipante(content: any) {
 
@@ -1569,6 +1608,9 @@ export class AtendimentoFormComponent implements OnInit {
       this.errors = Util.customHTTPResponse(error);
     });
   }
+
+
+  //FICHA ODONTOLOGICA
 
 
 }

@@ -266,6 +266,7 @@ AtendimentoDAO.prototype.buscaPorId = function (id, callback) {
                                 p.historiaProgressaFamiliar pacienteHistoriaProgressa,
                                 YEAR(a.dataCriacao) as ano_receita,
                                 a.numeroReceita as numero_receita,
+                                p.sexo,
                                 e.id as unidade_receita,
                                 a.* from ${this._table} a 
     INNER JOIN tb_paciente p ON(a.idPaciente = p.id) 

@@ -487,6 +487,29 @@ module.exports = function (app) {
         });
     });
 
+
+    app.get('/dominios/odonto-fornecimento', function (req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_tipo_fornecimento_odonto");
+
+        listaDominios(dao, "Tipos de fornecimento odonto", res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
+    app.get('/dominios/odonto-vigilancia', function (req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_tipo_vigilancia_odonto");
+
+        listaDominios(dao, "Tipo vigilancia odonto", res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
     function listaDominios(dao, dom, res) {
         var q = require('q');
         var d = q.defer();

@@ -17,6 +17,7 @@
         <i class="fa fa-edit" title="Principal"></i> Principal
       </ng-template>
 
+      <!-- Paciente -->
       <div *ngIf="object.tipoFicha != 7" class="card mb-4">
         <div class="card-header text-left">
           Paciente
@@ -117,6 +118,7 @@
         </div>
       </div>
 
+      <!-- Dados da abertura do atendimento -->
       <div class="card mb-4" *ngIf="object.idPaciente">
 
         <input type="hidden" [(ngModel)]="object.id" formControlName="id">
@@ -154,6 +156,24 @@
             </div>
           </div>
 
+          <div *ngIf="object.tipoFicha == 8" class="row">
+            <div class="col-xl-12">
+              <div class="form-group row">
+                <label class="col-xl-2 col-form-label text-left">
+                  Tipo de Consulta Odonto<span class="text-danger font-weight-bold">*</span>
+                </label>
+                <div class="col-xl-4">
+                  <select (change)="change($event)" *ngIf="domains" class="custom-select d-block w-100"
+                    [(ngModel)]="object.tiposConsultaOdonto" formControlName="tiposConsultaOdonto">
+                    <option [value]="null">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.tiposConsultaOdonto" [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div *ngIf="object.tipoFicha != 7" class="row">
             <div class="col-xl-12">
               <div class="form-group row">
@@ -179,6 +199,42 @@
                     <input type="checkbox" id="ficouEmObservacao" [(ngModel)]="object.ficouEmObservacao"
                       formControlName="ficouEmObservacao" class="custom-control-input">
                     <label class="custom-control-label" for="ficouEmObservacao"></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="object.tipoFicha == 8">
+            <div *ngIf="object.sexo == '2'" class=" row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Gestante
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="ficouEmObservacao" [(ngModel)]="object.ficouEmObservacao"
+                        formControlName="ficouEmObservacao" class="custom-control-input">
+                      <label class="custom-control-label" for="ficouEmObservacao"></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Possui Necessidades Especiais
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="ficouEmObservacao" [(ngModel)]="object.ficouEmObservacao"
+                        formControlName="ficouEmObservacao" class="custom-control-input">
+                      <label class="custom-control-label" for="ficouEmObservacao"></label>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -353,8 +409,116 @@
         </div>
       </div>
 
-      <div *ngIf="object.tipoFicha != 7">
+      <!-- Ficha Dados Ondotologia -->
+      <div *ngIf="object.tipoFicha == 8">
         <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+          <div class="card-header text-left">
+            Tipos Fornecimento Odonto
+          </div>
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-12 mb-3">
+                <button *ngIf="!disableFields()" type="button" class="btn btn-primary float-left mr-2"
+                  (click)="openTipoFornecimentoOdonto(contentTipoFornecimentoOdonto)" [disabled]="!object.id">
+                  <i class="fa fa-plus-circle"></i>
+                </button>
+
+                <button type="button" class="btn btn-default float-left" (click)="findProcedimentoPorAtendimento()">
+                  <i class="fa fa-sync-alt"></i>
+                </button>
+              </div>
+              <div class="col-12 table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Código</th>
+                      <th>Nome</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="!allItemsProcedimento.length">
+                    <tr class="text-left">
+                      <td colspan="99" class="text-secondary">
+                        <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para
+                          inserir
+                          um procedimento diagnóstica!'}}</i>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="allItemsProcedimento.length">
+                    <tr class="text-left" *ngFor="let item of allItemsProcedimento">
+                      <td class="text-secondary">{{item.id}}</td>
+                      <td class="text-secondary">{{item.nome}}</td>
+                      <td class="text-secondary text-right">
+                        <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]=""
+                          (click)="removeProcedimento(item)">
+                          <i class="fa fa-trash-alt"></i> Remover
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+          <div class="card-header text-left">
+            Tipos Vigilância Saúde Bucal
+          </div>
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-12 mb-3">
+                <button *ngIf="!disableFields()" type="button" class="btn btn-primary float-left mr-2"
+                  (click)="openTipoVigilanciaOdonto(contentTipoVigilanciaOdonto)" [disabled]="!object.id">
+                  <i class="fa fa-plus-circle"></i>
+                </button>
+
+                <button type="button" class="btn btn-default float-left" (click)="findProcedimentoPorAtendimento()">
+                  <i class="fa fa-sync-alt"></i>
+                </button>
+              </div>
+              <div class="col-12 table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Código</th>
+                      <th>Nome</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="!allItemsProcedimento.length">
+                    <tr class="text-left">
+                      <td colspan="99" class="text-secondary">
+                        <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para
+                          inserir
+                          um procedimento diagnóstica!'}}</i>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="allItemsProcedimento.length">
+                    <tr class="text-left" *ngFor="let item of allItemsProcedimento">
+                      <td class="text-secondary">{{item.id}}</td>
+                      <td class="text-secondary">{{item.nome}}</td>
+                      <td class="text-secondary text-right">
+                        <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]=""
+                          (click)="removeProcedimento(item)">
+                          <i class="fa fa-trash-alt"></i> Remover
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+
+        <!-- Sinais vitais -->
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8">
           <div class="card-header text-left">
             Sinais vitais
           </div>
@@ -453,7 +617,8 @@
           </div>
         </div>
 
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+        <!-- Análise física -->
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8">
           <div class="card-header text-left">
             Análise física
           </div>
@@ -485,7 +650,8 @@
           </div>
         </div>
 
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+        <!-- Histórico -->
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8">
           <div class="card-header text-left">
             Histórico
           </div>
@@ -506,7 +672,8 @@
           </div>
         </div>
 
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+        <!-- Anamnese/Evolução -->
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8">
           <div class="card-header text-left">
             Anamnese/Evolução
           </div>
@@ -544,7 +711,8 @@
           </div>
         </div>
 
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+        <!-- Hipótese diagnostica -->
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8">
           <div class="card-header text-left">
             Hipótese diagnostica
           </div>
@@ -595,7 +763,8 @@
           </div>
         </div>
 
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+        <!-- Procedimentos -->
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7">
           <div class="card-header text-left">
             Procedimentos
           </div>
@@ -647,7 +816,8 @@
           </div>
         </div>
 
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+        <!-- Prescrição Medicamentos -->
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7">
           <div class="card-header text-left">
             Prescrição Medicamentos
           </div>
@@ -707,7 +877,8 @@
           </div>
         </div>
 
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+        <!-- Vacinas -->
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8">
           <div class="card-header text-left">
             Vacinas
           </div>
@@ -763,7 +934,8 @@
           </div>
         </div>
 
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+        <!-- Encaminhamento -->
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8">
           <div class="card-header text-left">
             Encaminhamento
           </div>
@@ -793,7 +965,8 @@
                   <tbody *ngIf="!allItemsEncaminhamento.length">
                     <tr class="text-left">
                       <td colspan="99" class="text-secondary">
-                        <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para fazer
+                        <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para
+                          fazer
                           um
                           encaminhamento!'}}</i>
                       </td>
@@ -818,6 +991,7 @@
         </div>
       </div>
 
+      <!-- Participantes da Atividade Coletiva -->
       <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha == 7">
         <div class="card-header text-left">
           Participantes da Atividade Coletiva
@@ -900,6 +1074,7 @@
         </div>
       </div>
 
+      <!-- Profissionais da Atividade Coletiva -->
       <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha == 7">
         <div class="card-header text-left">
           Profissionais da Atividade Coletiva
@@ -955,6 +1130,7 @@
         </div>
       </div>
 
+      <!-- Situação -->
       <div class="card mb-4" *ngIf="object.idPaciente && object.id">
         <div class="card-body text-left">
           <div class="row">
@@ -2986,7 +3162,6 @@
 
 </ng-template>
 
-
 <ng-template #contentEditAtividadeColetivaParticipante>
 
   <div class="modal-header">
@@ -3151,6 +3326,136 @@
   <div class="modal-footer">
     <button class="btn btn-primary mr-2" type="button" (click)="saveEditParticipanteAtividadeColetiva()">
       <i class="fa fa-plus-circle"></i> Salvar
+    </button>
+    <button class="btn btn-default" (click)="close()" type="button">
+      <i class="fa fa-times"></i> Cancelar
+    </button>
+  </div>
+
+</ng-template>
+
+<ng-template #contentTipoFornecimentoOdonto>
+
+  <div class="modal-header">
+
+    <h4 class="modal-title">Adicionar Tipo de Fornecimento Odonto</h4>
+
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <div *ngIf="errors.length" class="alert alert-danger">
+      <div *ngFor="let error of errors" class="row">
+        <div class="col-12 text-left">
+          {{error.message}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <div class="col-xl-15">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="text-left">Descrição</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="!domains[0]?.tiposFornecimOdonto">
+          <tr class="text-left">
+            <td colspan="99" class="text-secondary">
+              <i>Não há resultados...</i>
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="domains[0]?.tiposFornecimOdonto">
+          <tr class="text-left" *ngFor="let item of domains[0]?.tiposFornecimOdonto">
+            <td class="text-secondary">
+              <div class="custom-control custom-radio float-left">
+                <input type="radio" (change)="selecionaProfissional(item)" class="custom-control-input"
+                  id="{{ item.id }}" name="radio-item">
+                <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
+              </div>
+            </td>
+            <td class="text-secondary">{{item.nome}}</td>
+            <td class="text-secondary text-right">
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button [disabled]="profissionalSelecionadoAtividadeColetiva==null" class="btn btn-primary mr-2" type="button"
+      (click)="saveProfissionalAtividadeColetiva()">
+      <i class="fa fa-plus-circle"></i> Adicionar
+    </button>
+    <button class="btn btn-default" (click)="close()" type="button">
+      <i class="fa fa-times"></i> Cancelar
+    </button>
+  </div>
+
+</ng-template>
+
+<ng-template #contentTipoVigilanciaOdonto>
+
+  <div class="modal-header">
+
+    <h4 class="modal-title">Adicionar tipos de vigilância de saúde bucal </h4>
+
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <div *ngIf="errors.length" class="alert alert-danger">
+      <div *ngFor="let error of errors" class="row">
+        <div class="col-12 text-left">
+          {{error.message}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <div class="col-xl-15">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="text-left">Descrição</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="!domains[0]?.tiposVigilanciaSaudeBucal">
+          <tr class="text-left">
+            <td colspan="99" class="text-secondary">
+              <i>Não há resultados...</i>
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="domains[0]?.tiposVigilanciaSaudeBucal">
+          <tr class="text-left" *ngFor="let item of domains[0]?.tiposVigilanciaSaudeBucal">
+            <td class="text-secondary">
+              <div class="custom-control custom-radio float-left">
+                <input type="radio" (change)="selecionaProfissional(item)" class="custom-control-input"
+                  id="{{ item.id }}" name="radio-item">
+                <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
+              </div>
+            </td>
+            <td class="text-secondary">{{item.nome}}</td>
+            <td class="text-secondary text-right">
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button [disabled]="profissionalSelecionadoAtividadeColetiva==null" class="btn btn-primary mr-2" type="button"
+      (click)="saveProfissionalAtividadeColetiva()">
+      <i class="fa fa-plus-circle"></i> Adicionar
     </button>
     <button class="btn btn-default" (click)="close()" type="button">
       <i class="fa fa-times"></i> Cancelar
