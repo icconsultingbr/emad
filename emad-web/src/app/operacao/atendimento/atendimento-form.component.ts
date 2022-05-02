@@ -786,7 +786,7 @@ export class AtendimentoFormComponent implements OnInit {
           this.openConfirmacao(this.contentConfirmacao);
         }
 
-        if (this.tipoFicha == 7 || this.isVisible === true) {
+        if (this.tipoFicha == 7 || this.tipoFichaSelecionada === "7" || this.isVisible === true) {
           this.findParticipanteAtividadeColetivaPorAtendimento();
           this.findProfissionaisAtividadeColetivaPorAtendimento();
         }
@@ -825,7 +825,7 @@ export class AtendimentoFormComponent implements OnInit {
 
         console.log(result)
 
-        if (this.tipoFicha == 7) {
+        if (this.tipoFicha == 7 || this.tipoFichaSelecionada === "7") {
           this.object = result;
           this.object.pacienteNome = this.pacienteSelecionado.nome;
           this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
