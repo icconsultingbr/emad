@@ -498,6 +498,22 @@ module.exports = function (app) {
         return tipoVigilancia
     }
 
+    function preencherProcedimentoOdonto(listProcedimentos, idAtendimento) {
+        const { fragment } = require('xmlbuilder2');
+        let itemFilhoVacinaColetiva = [];
+        listProcedimentos.forEach(x => {
+            if (x.idAtendimento == idAtendimento && x.situacao == 1) {
+                let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('procedimentosRealizados')
+                    .ele('coMsProcedimento').txt(x.co_procedimento ? x.co_procedimento : '').up()
+                    .ele('quantidade').txt(x.qtd ? x.qtd : '').up()
+                    .up();
+                itemFilhoVacinaColetiva.push(atend);
+            }
+
+        });
+        return itemFilhoVacinaColetiva;
+    }
+
     function preencheAtividadeColetivaParticipantes(listParticipantes, praticasEmSaude) {
         const { fragment } = require('xmlbuilder2');
         let itemFilhoColetiva = [];
@@ -896,7 +912,6 @@ module.exports = function (app) {
         })
     }
 
-
     async function listaAtendimentoOdontologicoIndividual(filtro) {
         let tipoCampoData;
 
@@ -914,6 +929,9 @@ module.exports = function (app) {
         let list = [];
         let estabelecimento = {};
         let profissionais = [];
+        let tipoFornecimentoOdonto = [];
+        let tipoVigilanciaOdonto = [];
+        let procedimentosOdonto = [];
 
         try {
             profissionais = await profissionalDAO.buscarProfissionalPorEstabelecimentoEsus(filtro.idEstabelecimento)
@@ -921,6 +939,7 @@ module.exports = function (app) {
             list = await integracaoESusDAO.listaAtendimentoOdontologicoIndividual(filtro);
             tipoFornecimentoOdonto = await integracaoESusDAO.listAtendimentoTipoFornecimentoOdonto(filtro.idEstabelecimento);
             tipoVigilanciaOdonto = await integracaoESusDAO.listAtendimentoTipoVigilanciaOdonto(filtro.idEstabelecimento);
+            procedimentosOdonto = await integracaoESusDAO.listaProcedimentos(filtro);
 
         } catch (error) {
             console.log(error);
@@ -928,10 +947,10 @@ module.exports = function (app) {
             await connection.close();
         }
 
-        return preencheXMLAtendimentoOdontologicoIndividual(list, estabelecimento, profissionais, tipoFornecimentoOdonto, tipoVigilanciaOdonto);
+        return preencheXMLAtendimentoOdontologicoIndividual(list, estabelecimento, profissionais, tipoFornecimentoOdonto, tipoVigilanciaOdonto, procedimentosOdonto);
     }
 
-    function preencheXMLAtendimentoOdontologicoIndividual(list, estabelecimento, profissionais, tipoFornecimentoOdonto, tipoVigilanciaOdonto) {
+    function preencheXMLAtendimentoOdontologicoIndividual(list, estabelecimento, profissionais, tipoFornecimentoOdonto, tipoVigilanciaOdonto, procedimentosOdonto) {
         const { create, fragment } = require('xmlbuilder2');
         const { v4: uuidv4 } = require('uuid');
 
@@ -940,7 +959,6 @@ module.exports = function (app) {
         profissionais.forEach(profissional => {
 
             const listAtendimentos = list.atendimentos.filter(x => x.idProfissional == profissional.id);
-
 
             var uuidFicha = uuidv4();
 
@@ -952,20 +970,11 @@ module.exports = function (app) {
                 .ele('tipoDadoSerializado').txt('5').up()
                 .ele('codIbge').txt(estabelecimento.codigo).up()
                 .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up()
-                .ele('ineDadoSerializado').txt(estabelecimento.cnes).up()///////////////////////////////VERIFICAR AONDE PEGAR
-                .ele('numLote').txt(estabelecimento.cnes).up()//////////////////////////////////////////VERIFICAR AONDE PEGAR
+                .ele('ineDadoSerializado').txt(estabelecimento.cnes).up()/////////////////////////VERIFICAR AONDE PEGAR
+                .ele('numLote').txt(estabelecimento.cnes).up()////////////////////////////////////VERIFICAR AONDE PEGAR
                 .ele('ns4:fichaAtendimentoOdontologicoMasterTransport')
                 .ele('uuidFicha').txt(uuidFicha).up()
                 .ele('tpCdsOrigem').txt('1').up()
-                .up()
-                .ele('headerTransport')/////////////////////////////////////////////////////////////////COLOCAR DENTRO DO fichaAtendimentoOdontologicoMasterTransport
-                .ele('lotacaoFormPrincipal')
-                .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
-                .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
-                .ele('cnes').txt(estabelecimento.cnes).up()
-                .up()
-                .ele('dataAtendimento').txt(new Date(listAtendimentos[0].dataCriacao).getTime() / 1000).up()
-                .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
                 .up()
                 .ele('ns2:remetente')
                 .ele('contraChave').txt('E-ATENDE-VERSAO').up()
@@ -990,47 +999,59 @@ module.exports = function (app) {
 
                 const listtipoFornecimentoOdontologico = tipoFornecimentoOdonto.filter(x => x.idAtendimento == atendimento.idAtendimento);
                 const listtipoVigilanciaOdontologico = tipoVigilanciaOdonto.filter(x => x.idAtendimento == atendimento.idAtendimento);
+                const listProcedimentoOdontologico = procedimentosOdonto.procedimentos.filter(x => x.idAtendimento == atendimento.idAtendimento);
 
                 let tipofornecimentos = preencherTipoFornecimentoOdonto(listtipoFornecimentoOdontologico, atendimento.idAtendimento);
                 let tipovigilancia = preencherTipoVigilanciaOdonto(listtipoVigilanciaOdontologico, atendimento.idAtendimento)
-
+                let procedimentosOdontologico = preencherProcedimentoOdonto(listProcedimentoOdontologico, atendimento.idAtendimento)
 
                 let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('atendimentosOdontologicos')
                     .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : undefined).up()
-                    .ele('dataNascimento').txt(new Date(atendimento.dataNascimento).getTime() / 1000).up()
-                    .ele('localDeAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
+                    .ele('dtNascimento').txt(new Date(atendimento.dataNascimento).getTime() / 1000).up()
                     .ele('gestante').txt(atendimento.gestante).up()
                     .ele('necessidadesEspeciais').txt(atendimento.possuiNecessidadesEspeciais).up()
+                    .ele('localAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
                     .ele('tipoAtendimento').txt(atendimento.tipoAtendimentoSus ? atendimento.tipoAtendimentoSus : undefined).up()
 
                 tipofornecimentos.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosOdontologicos', true, true).import(x));
                 tipovigilancia.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosOdontologicos', true, true).import(x));
 
                 atend.ele('tiposConsultaOdonto').txt(atendimento.tipoConsultaOdonto).up()
+
+                procedimentosOdontologico.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosOdontologicos', true, true).import(x));
+
+                atend.ele('turno').txt(atendimento.turno).up()
                     .ele('sexo').txt(atendimento.sexo).up()
+                    .ele('dataHoraInicialAtendimento').txt(new Date(atendimento.dataCriacao).getTime() / 1000).up()
+                    .ele('dataHoraFinalAtendimento').txt(new Date(atendimento.dataFinalizacao).getTime() / 1000).up()
                     .ele('alturaAcompanhamentoNutricional').txt(atendimento.altura).up()
                     .ele('pesoAcompanhamentoNutricional').txt(atendimento.peso).up()
-                    .ele('turno').txt(atendimento.turno).up()
-                atend.ele('dataHoraInicialAtendimento').txt(new Date(atendimento.dataCriacao).getTime() / 1000).up()
-                    .ele('dataHoraFinalAtendimento').txt(new Date(atendimento.dataFinalizacao).getTime() / 1000).up()
                     .up();
-
 
                 doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoOdontologicoMasterTransport', true, true).import(atend);
 
+                let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento', 'tipoAtendimento', 'alturaAcompanhamentoNutricional', 'pesoAcompanhamentoNutricional'];
+
+                fieldToValidate.forEach(field => {
+                    doc.each(x => {
+                        if (x.node.nodeName == field && !x.node._firstChild._data) {
+                            x.node.removeChild(x.node._firstChild);
+                            x.remove();
+                        }
+                    }, true, true)
+                })
             })
 
-
-            let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento', 'tipoAtendimento'];
-
-            fieldToValidate.forEach(field => {
-                doc.each(x => {
-                    if (x.node.nodeName == field && !x.node._firstChild._data) {
-                        x.node.removeChild(x.node._firstChild);
-                        x.remove();
-                    }
-                }, true, true)
-            })
+            let header = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('headerTransport')
+                .ele('lotacaoFormPrincipal')
+                .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
+                .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
+                .ele('cnes').txt(estabelecimento.cnes).up()
+                .up()
+                .ele('dataAtendimento').txt(new Date(listAtendimentos[0].dataCriacao).getTime() / 1000).up()
+                .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
+                .up()
+            doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoOdontologicoMasterTransport', true, true).import(header);
 
             xmls.push(doc.doc().end({ prettyPrint: true, allowEmptyTags: false }));
         })

@@ -423,7 +423,7 @@ module.exports = function (app) {
 
                 objParticipanteAtividadeColetiva.idAtendimento = obj.id;
                 objProfissionalAtividadeColetiva.idAtendimento = obj.id;
-                objProfissionalAtividadeColetiva.idProfissional = obj.idUsuario;
+                objProfissionalAtividadeColetiva.idProfissional = buscaProfissional.id;
 
                 //PACIENTE SELECIONADO INICIAL
                 var responseParticipanteAtividadeColetiva = await participanteAtividadeColetivaRepository.salvaSync(objParticipanteAtividadeColetiva);

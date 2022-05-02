@@ -9,7 +9,7 @@ AtendimentoProfissionalAtividadeColetivaDAO.prototype.buscaPorAtendimentoId = fu
         tp.profissionalCNS,
         tp.cargoProfissional
     FROM ${this._table} tacp   
-    INNER JOIN tb_profissional tp ON (tacp.idProfissional =  tp.idUsuario ) 
+    INNER JOIN tb_profissional tp ON (tacp.idProfissional =  tp.id ) 
     WHERE tacp.idAtendimento = ?` , idAtendimento, callback);
 }
 

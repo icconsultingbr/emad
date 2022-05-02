@@ -692,9 +692,9 @@ export class AtendimentoFormComponent implements OnInit {
       this.findVacinaPorAtendimento();
       this.findParticipanteAtividadeColetivaPorAtendimento();
       this.findProfissionaisAtividadeColetivaPorAtendimento();
-      this.buscaProfissionais();
       this.findtiposFornecimentoOdontoPorAtendimento();
       this.findtiposVigilanciaOdontoPorAtendimento();
+      this.buscaProfissionais();
 
     }, error => {
       this.object = new Atendimento();
@@ -843,6 +843,9 @@ export class AtendimentoFormComponent implements OnInit {
           this.findHistoricoPorAtendimento();
           this.findProcedimentoPorAtendimento();
           this.findVacinaPorAtendimento();
+          this.findtiposFornecimentoOdontoPorAtendimento();
+          this.findtiposVigilanciaOdontoPorAtendimento();
+
         }
 
       }
@@ -1651,8 +1654,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.message = "Registro adicionado com sucesso!"
       this.close();
       this.loading = false;
-      //this.findParticipanteAtividadeColetivaPorAtendimento();
-
+      this.findtiposFornecimentoOdontoPorAtendimento();
     }, error => {
       this.loading = false;
       this.errors = Util.customHTTPResponse(error);
@@ -1667,8 +1669,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.message = "Registro adicionado com sucesso!"
       this.close();
       this.loading = false;
-      //this.findParticipanteAtividadeColetivaPorAtendimento();
-
+      this.findtiposVigilanciaOdontoPorAtendimento();
     }, error => {
       this.loading = false;
       this.errors = Util.customHTTPResponse(error);
@@ -1699,19 +1700,17 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
   removetiposVigilanciaOdontoPorAtendimento(item) {
-    console.log(item)
     this.service.removetiposVigilanciaOdontoPorAtendimento(item.id).subscribe(result => {
       this.message = "Item removido com sucesso!"
       this.loading = false;
-      this.findtiposFornecimentoOdontoPorAtendimento();
+      this.findtiposVigilanciaOdontoPorAtendimento();
     });
   }
   removetiposFornecimentoOdontoPorAtendimento(item) {
-    console.log(item)
     this.service.removetiposFornecimentoOdontoPorAtendimento(item.id).subscribe(result => {
       this.message = "Item removido com sucesso!"
       this.loading = false;
-      this.findtiposVigilanciaOdontoPorAtendimento();
+      this.findtiposFornecimentoOdontoPorAtendimento();
     });
   }
 }

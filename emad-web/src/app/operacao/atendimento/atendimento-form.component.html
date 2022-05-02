@@ -223,7 +223,7 @@
               </div>
             </div>
 
-            <div class="row">
+            <div *ngIf="object.tipoFicha == 8" class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
@@ -3128,6 +3128,7 @@
         <thead>
           <tr>
             <th></th>
+            <th class="text-left">Id</th>
             <th class="text-left">Profissional CNS</th>
             <th class="text-left">Nome</th>
             <th class="text-left">Cargo</th>
@@ -3149,6 +3150,7 @@
                 <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
               </div>
             </td>
+            <td class="text-secondary">{{item.id}}</td>
             <td class="text-secondary">{{item.profissionalCNS}}</td>
             <td class="text-secondary">{{item.nome}}</td>
             <td class="text-secondary">{{item.cargoProfissional}}</td>

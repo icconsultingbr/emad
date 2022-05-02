@@ -39,7 +39,7 @@ IntegracaoESusDAO.prototype.listaVacinas = async function (filtro) {
 IntegracaoESusDAO.prototype.listaProcedimentos = async function (filtro) {
    let listaProcedimentos = {};
    listaProcedimentos.atendimentos = await this._connection.query(`SELECT * FROM vw_atendimento_individual_sus vw WHERE ${this.campoData} BETWEEN ? AND ? `, [filtro.periodoExtracao[0], filtro.periodoExtracao[1]]);
-   listaProcedimentos.procedimentos = await this._connection.query(`SELECT tap.idAtendimento, tp.co_procedimento FROM tb_atendimento_procedimento tap
+   listaProcedimentos.procedimentos = await this._connection.query(`SELECT tap.idAtendimento, tp.co_procedimento, tap.qtd, tap.situacao FROM tb_atendimento_procedimento tap
                                                                   INNER JOIN tb_procedimento tp ON (tap.idProcedimento = tp.id)`);
    return listaProcedimentos;
 }
