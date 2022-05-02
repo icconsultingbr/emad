@@ -29,7 +29,8 @@ module.exports = function (app) {
                         atend = await listaAtendimentoIndividual(filtro);
                         vac = await listaFichaVacinacao(filtro);
                         col = await listaAtividadeColetiva(filtro);
-                        let xmls = cad.concat(atend, vac, col);
+                        atendOdont = await listaAtendimentoIndividual(filtro);
+                        let xmls = cad.concat(atend, vac, col, atendOdont);
                         retorno = generateZipFiles(xmls, 'ficha')
                         break;
                     case '2':
@@ -56,6 +57,11 @@ module.exports = function (app) {
                         configTipoFicha(7)
                         col = await listaAtividadeColetiva(filtro);
                         retorno = generateZipFiles(col, 'ficha-atividade-coletiva')
+                        break;
+                    case '16':
+                        configTipoFicha(7)
+                        atendOdont = await listaAtendimentoOdontologicoIndividual(filtro);
+                        retorno = generateZipFiles(atendOdont, 'ficha-atendimento-odontologico-individual')
                         break;
                     default:
                         return retorno;
@@ -429,7 +435,7 @@ module.exports = function (app) {
                 })
             })
 
-            if(qtdAtendimentosValidos == 0) { return; }
+            if (qtdAtendimentosValidos == 0) { return; }
 
             doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoIndividualMasterTransport', true, true).ele('tpCdsOrigem').txt('3').up().ele('uuidFicha').txt(uuidFicha).up();
 
@@ -457,36 +463,60 @@ module.exports = function (app) {
 
     function preencheAtividadeColetivaProfissional(listProfissionais) {
         const { fragment } = require('xmlbuilder2');
-        let itemFilhoVacinaColetiva = [];  
+        let itemFilhoVacinaColetiva = [];
         listProfissionais.forEach(x => {
             let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('profissionais')
-            .ele('cnsProfissional').txt(x.profissionalCNS ? x.profissionalCNS: '').up()
-            .ele('codigoCbo2002').txt(x.codigoCBO ? x.codigoCBO : '').up()
-            .up();
+                .ele('cnsProfissional').txt(x.profissionalCNS ? x.profissionalCNS : '').up()
+                .ele('codigoCbo2002').txt(x.codigoCBO ? x.codigoCBO : '').up()
+                .up();
             itemFilhoVacinaColetiva.push(atend);
-        });   
+        });
         return itemFilhoVacinaColetiva;
+    }
+
+    function preencherTipoFornecimentoOdonto(listFornecimentos, idAtendimento) {
+        const { fragment } = require('xmlbuilder2');
+        let tipofornecimento = []
+        listFornecimentos.forEach(x => {
+            if (x.idAtendimento == idAtendimento) {
+                let c = fragment().ele('tiposFornecimOdonto').txt(x.idFornecimento ? x.idFornecimento : '').up()
+                tipofornecimento.push(c);
+            }
+        })
+        return tipofornecimento
+    }
+
+    function preencherTipoVigilanciaOdonto(listVigilancia, idAtendimento) {
+        const { fragment } = require('xmlbuilder2');
+        let tipoVigilancia = []
+        listVigilancia.forEach(x => {
+            if (x.idAtendimento == idAtendimento) {
+                let c = fragment().ele('tiposVigilanciaSaudeBucal').txt(x.idVigilancia ? x.idVigilancia : '').up()
+                tipoVigilancia.push(c);
+            }
+        })
+        return tipoVigilancia
     }
 
     function preencheAtividadeColetivaParticipantes(listParticipantes, praticasEmSaude) {
         const { fragment } = require('xmlbuilder2');
-        let itemFilhoColetiva = [];  
+        let itemFilhoColetiva = [];
         listParticipantes.forEach(x => {
-            let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('participantes')                 
+            let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('participantes')
             x.cartaoSus ? atend.ele('cnsParticipante').txt(x.cartaoSus).up() : atend.ele('cpfParticipante').txt(x.cpf).up()
-            atend.ele('dataNascimento').txt(new Date(x.dataNascimento).getTime() / 1000).up()            
-            .ele('avaliacaoAlterada').txt(x.avaliacaoAlterada).up()            
-            .ele('peso').txt(x.peso ? x.peso.replace(',','.') : undefined).up()
-            .ele('altura').txt(x.altura ? (parseFloat(x.altura.replace(',','.')) * 100).toString() : undefined).up();
-            if(praticasEmSaude == 25 || praticasEmSaude == 26 || praticasEmSaude == 27 || praticasEmSaude == 28){
+            atend.ele('dataNascimento').txt(new Date(x.dataNascimento).getTime() / 1000).up()
+                .ele('avaliacaoAlterada').txt(x.avaliacaoAlterada).up()
+                .ele('peso').txt(x.peso ? x.peso.replace(',', '.') : undefined).up()
+                .ele('altura').txt(x.altura ? (parseFloat(x.altura.replace(',', '.')) * 100).toString() : undefined).up();
+            if (praticasEmSaude == 25 || praticasEmSaude == 26 || praticasEmSaude == 27 || praticasEmSaude == 28) {
                 atend.ele('cessouHabitoFumar').txt(x.parouFumar).up()
-                .ele('abandonouGrupo').txt(x.abandonouGrupo).up();
-            }            
+                    .ele('abandonouGrupo').txt(x.abandonouGrupo).up();
+            }
             atend.ele('sexo').txt(x.sexo).up()
-            .up();
+                .up();
             itemFilhoColetiva.push(atend);
-        });   
-        return itemFilhoColetiva;   
+        });
+        return itemFilhoColetiva;
     }
 
     function preencheCondutasAtendimentoIndividual(listCondutas, idAtendimento) {
@@ -630,29 +660,29 @@ module.exports = function (app) {
                 .ele('codIbge').txt(estabelecimento.codigo).up()
                 .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up()
                 .ele('ns4:fichaProcedimentoMasterTransport')
-                    .ele('headerTransport')
-                        .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
-                        .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
-                        .ele('cnes').txt(estabelecimento.cnes).up()
-                        .ele('dataAtendimento').txt(new Date(listProcedimento[0].dataCriacao).getTime() / 1000).up()
-                        .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
-                    .up()
+                .ele('headerTransport')
+                .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
+                .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
+                .ele('cnes').txt(estabelecimento.cnes).up()
+                .ele('dataAtendimento').txt(new Date(listProcedimento[0].dataCriacao).getTime() / 1000).up()
+                .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
+                .up()
                 .up()
                 .ele('ns2:remetente')
-                    .ele('contraChave').txt('E-ATENDE-VERSAO').up()
-                    .ele('uuidInstalacao').txt(uuidInstalacao).up()
-                    .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
-                    .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
-                    .ele('versaoSistema').txt(versao).up()
-                    .ele('nomeBancoDados').txt('MySQL').up()
+                .ele('contraChave').txt('E-ATENDE-VERSAO').up()
+                .ele('uuidInstalacao').txt(uuidInstalacao).up()
+                .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
+                .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
+                .ele('versaoSistema').txt(versao).up()
+                .ele('nomeBancoDados').txt('MySQL').up()
                 .up()
                 .ele('ns2:originadora')
-                    .ele('contraChave').txt('E-ATENDE-VERSAO').up()
-                    .ele('uuidInstalacao').txt(uuidInstalacao).up()
-                    .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
-                    .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
-                    .ele('versaoSistema').txt(versao).up()
-                    .ele('nomeBancoDados').txt('MySQL').up()
+                .ele('contraChave').txt('E-ATENDE-VERSAO').up()
+                .ele('uuidInstalacao').txt(uuidInstalacao).up()
+                .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
+                .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
+                .ele('versaoSistema').txt(versao).up()
+                .ele('nomeBancoDados').txt('MySQL').up()
                 .up()
                 .ele('versao', { major: major, minor: minor, revision: revision })
                 .doc();
@@ -693,11 +723,11 @@ module.exports = function (app) {
             })
 
             doc.find(x => x.node.nodeName == 'ns4:fichaProcedimentoMasterTransport', true, true).ele('uuidFicha').txt(uuidFicha).up()
-                                                                                                .ele('tpCdsOrigem').txt('3').up()
-                                                                                                .ele('numTotalAfericaoPa').txt('1').up()
-                                                                                                .ele('numTotalAfericaoTemperatura').txt('1').up()
-                                                                                                .ele('numTotalMedicaoAltura').txt('1').up()
-                                                                                                .ele('numTotalMedicaoPeso').txt('1').up();
+                .ele('tpCdsOrigem').txt('3').up()
+                .ele('numTotalAfericaoPa').txt('1').up()
+                .ele('numTotalAfericaoTemperatura').txt('1').up()
+                .ele('numTotalMedicaoAltura').txt('1').up()
+                .ele('numTotalMedicaoPeso').txt('1').up();
 
             xmls.push(doc.doc().end({ prettyPrint: true }));
         });
@@ -719,7 +749,7 @@ module.exports = function (app) {
 
             let itemParticipantes = preencheAtividadeColetivaParticipantes(pacientesAtendimento, atendimento.praticasEmSaude);
             let itemProfissionais = preencheAtividadeColetivaProfissional(profissionaisAtendimento);
-            
+
             let doc = create({ version: '1.0', encoding: 'UTF-8', keepNullNodes: false, keepNullAttributes: false })
                 .ele('ns3:dadoTransporteTransportXml', { 'xmlns:ns2': 'http://esus.ufsc.br/dadoinstalacao', 'xmlns:ns3': 'http://esus.ufsc.br/dadotransporte', 'xmlns:ns4': 'http://esus.ufsc.br/fichaatividadecoletiva' })
                 .ele('uuidDadoSerializado').txt(uuidFicha).up()
@@ -739,7 +769,7 @@ module.exports = function (app) {
                 .ele('publicoAlvo').txt(atendimento.publicoAlvo).up();
 
             itemParticipantes.forEach(x => doc.find(x => x.node.nodeName == 'ns4:fichaAtividadeColetivaTransport', true, true).import(x));
-            
+
             doc.ele('tbCdsOrigem').txt('3').up()
                 .ele('procedimento').txt(atendimento.codigoSIGTAP).up()
                 .ele('turno').txt(atendimento.turno).up()
@@ -807,15 +837,15 @@ module.exports = function (app) {
 
             let fieldToValidate = ['peso', 'altura'];
 
-                fieldToValidate.forEach(field => {
-                    doc.each(x => {
-                        if (x.node.nodeName == field && !x.node._firstChild._data) {
-                            x.node.removeChild(x.node._firstChild);
-                            x.remove();
-                        }
-                    }, true, true)
-                })
-            
+            fieldToValidate.forEach(field => {
+                doc.each(x => {
+                    if (x.node.nodeName == field && !x.node._firstChild._data) {
+                        x.node.removeChild(x.node._firstChild);
+                        x.remove();
+                    }
+                }, true, true)
+            })
+
             xmls.push(doc.doc().end({ prettyPrint: true, allowEmptyTags: false }));
         })
 
@@ -864,6 +894,148 @@ module.exports = function (app) {
                 }
             }, true, true)
         })
+    }
+
+
+    async function listaAtendimentoOdontologicoIndividual(filtro) {
+        let tipoCampoData;
+
+        if (filtro.idTipoPeriodo == 1) {
+            tipoCampoData = 'dataCriacao'
+        } else {
+            tipoCampoData = 'dataFinalizacao'
+        }
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const integracaoESusDAO = new app.dao.IntegracaoESusDAO(connection, tipoCampoData);
+        const estabelecimentoDAO = new app.dao.EstabelecimentoDAO(connection);
+        const profissionalDAO = new app.dao.ProfissionalDAO(connection);
+
+        let list = [];
+        let estabelecimento = {};
+        let profissionais = [];
+
+        try {
+            profissionais = await profissionalDAO.buscarProfissionalPorEstabelecimentoEsus(filtro.idEstabelecimento)
+            estabelecimento = await estabelecimentoDAO.buscaEstabelecimentoESus(filtro.idEstabelecimento);
+            list = await integracaoESusDAO.listaAtendimentoOdontologicoIndividual(filtro);
+            tipoFornecimentoOdonto = await integracaoESusDAO.listAtendimentoTipoFornecimentoOdonto(filtro.idEstabelecimento);
+            tipoVigilanciaOdonto = await integracaoESusDAO.listAtendimentoTipoVigilanciaOdonto(filtro.idEstabelecimento);
+
+        } catch (error) {
+            console.log(error);
+        } finally {
+            await connection.close();
+        }
+
+        return preencheXMLAtendimentoOdontologicoIndividual(list, estabelecimento, profissionais, tipoFornecimentoOdonto, tipoVigilanciaOdonto);
+    }
+
+    function preencheXMLAtendimentoOdontologicoIndividual(list, estabelecimento, profissionais, tipoFornecimentoOdonto, tipoVigilanciaOdonto) {
+        const { create, fragment } = require('xmlbuilder2');
+        const { v4: uuidv4 } = require('uuid');
+
+        let xmls = [];
+
+        profissionais.forEach(profissional => {
+
+            const listAtendimentos = list.atendimentos.filter(x => x.idProfissional == profissional.id);
+
+
+            var uuidFicha = uuidv4();
+
+            if (listAtendimentos.length == 0) { return; }
+
+            let doc = create({ version: '1.0', encoding: 'UTF-8', keepNullNodes: false, keepNullAttributes: false })
+                .ele('ns3:dadoTransporteTransportXml', { 'xmlns:ns2': 'http://esus.ufsc.br/dadoinstalacao', 'xmlns:ns3': 'http://esus.ufsc.br/dadotransporte', 'xmlns:ns4': 'http://esus.ufsc.br/fichaatendimentoodontologicomaster' })
+                .ele('uuidDadoSerializado').txt(uuidFicha).up()
+                .ele('tipoDadoSerializado').txt('5').up()
+                .ele('codIbge').txt(estabelecimento.codigo).up()
+                .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up()
+                .ele('ineDadoSerializado').txt(estabelecimento.cnes).up()///////////////////////////////VERIFICAR AONDE PEGAR
+                .ele('numLote').txt(estabelecimento.cnes).up()//////////////////////////////////////////VERIFICAR AONDE PEGAR
+                .ele('ns4:fichaAtendimentoOdontologicoMasterTransport')
+                .ele('uuidFicha').txt(uuidFicha).up()
+                .ele('tpCdsOrigem').txt('1').up()
+                .up()
+                .ele('headerTransport')/////////////////////////////////////////////////////////////////COLOCAR DENTRO DO fichaAtendimentoOdontologicoMasterTransport
+                .ele('lotacaoFormPrincipal')
+                .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
+                .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
+                .ele('cnes').txt(estabelecimento.cnes).up()
+                .up()
+                .ele('dataAtendimento').txt(new Date(listAtendimentos[0].dataCriacao).getTime() / 1000).up()
+                .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
+                .up()
+                .ele('ns2:remetente')
+                .ele('contraChave').txt('E-ATENDE-VERSAO').up()
+                .ele('uuidInstalacao').txt(uuidInstalacao).up()
+                .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
+                .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
+                .ele('versaoSistema').txt(versao).up()
+                .ele('nomeBancoDados').txt('MySQL').up()
+                .up()
+                .ele('ns2:originadora')
+                .ele('contraChave').txt('E-ATENDE-VERSAO').up()
+                .ele('uuidInstalacao').txt(uuidInstalacao).up()
+                .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
+                .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
+                .ele('versaoSistema').txt(versao).up()
+                .ele('nomeBancoDados').txt('MySQL').up()
+                .up()
+                .ele('versao', { major: major, minor: minor, revision: revision })
+                .doc();
+
+            listAtendimentos.forEach(atendimento => {
+
+                const listtipoFornecimentoOdontologico = tipoFornecimentoOdonto.filter(x => x.idAtendimento == atendimento.idAtendimento);
+                const listtipoVigilanciaOdontologico = tipoVigilanciaOdonto.filter(x => x.idAtendimento == atendimento.idAtendimento);
+
+                let tipofornecimentos = preencherTipoFornecimentoOdonto(listtipoFornecimentoOdontologico, atendimento.idAtendimento);
+                let tipovigilancia = preencherTipoVigilanciaOdonto(listtipoVigilanciaOdontologico, atendimento.idAtendimento)
+
+
+                let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('atendimentosOdontologicos')
+                    .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : undefined).up()
+                    .ele('dataNascimento').txt(new Date(atendimento.dataNascimento).getTime() / 1000).up()
+                    .ele('localDeAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
+                    .ele('gestante').txt(atendimento.gestante).up()
+                    .ele('necessidadesEspeciais').txt(atendimento.possuiNecessidadesEspeciais).up()
+                    .ele('tipoAtendimento').txt(atendimento.tipoAtendimentoSus ? atendimento.tipoAtendimentoSus : undefined).up()
+
+                tipofornecimentos.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosOdontologicos', true, true).import(x));
+                tipovigilancia.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosOdontologicos', true, true).import(x));
+
+                atend.ele('tiposConsultaOdonto').txt(atendimento.tipoConsultaOdonto).up()
+                    .ele('sexo').txt(atendimento.sexo).up()
+                    .ele('alturaAcompanhamentoNutricional').txt(atendimento.altura).up()
+                    .ele('pesoAcompanhamentoNutricional').txt(atendimento.peso).up()
+                    .ele('turno').txt(atendimento.turno).up()
+                atend.ele('dataHoraInicialAtendimento').txt(new Date(atendimento.dataCriacao).getTime() / 1000).up()
+                    .ele('dataHoraFinalAtendimento').txt(new Date(atendimento.dataFinalizacao).getTime() / 1000).up()
+                    .up();
+
+
+                doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoOdontologicoMasterTransport', true, true).import(atend);
+
+            })
+
+
+            let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento', 'tipoAtendimento'];
+
+            fieldToValidate.forEach(field => {
+                doc.each(x => {
+                    if (x.node.nodeName == field && !x.node._firstChild._data) {
+                        x.node.removeChild(x.node._firstChild);
+                        x.remove();
+                    }
+                }, true, true)
+            })
+
+            xmls.push(doc.doc().end({ prettyPrint: true, allowEmptyTags: false }));
+        })
+
+        return xmls;
     }
 
 }

@@ -75,7 +75,7 @@ export class AtendimentoFormComponent implements OnInit {
   FornecimOdontoSelecionado: tiposFornecimOdonto = new tiposFornecimOdonto()
   VigilanciaSaudeBucalSelecionado: VigilanciaSaudeBucal = new VigilanciaSaudeBucal()
 
-
+  qtdProcedimento: number;
 
   medicamentoSelecionado: any = null;
   hipoteseDiagnosticaSelecionada: any = null;
@@ -1400,6 +1400,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.pacienteProcedimento.idProcedimento = this.procedimento.id;
     this.pacienteProcedimento.idPaciente = this.object.idPaciente;
     this.pacienteProcedimento.idAtendimento = this.object.id;
+    this.pacienteProcedimento.qtd = this.qtdProcedimento;
 
     this.service.saveProcedimento(this.pacienteProcedimento).subscribe(result => {
       this.message = "Procedimento inserido com sucesso!"

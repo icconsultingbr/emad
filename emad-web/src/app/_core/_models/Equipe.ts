@@ -3,7 +3,7 @@ import { Input } from "@angular/core";
 export class Equipe {
     id: Number;
     @Input() equipe: string;
-    @Input() cnes: string;
+    @Input() ine: string;
     @Input() nome: string;
     @Input() tipo: string;
     @Input() situacao: Boolean;

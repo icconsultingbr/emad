@@ -36,6 +36,7 @@ export class ESusComponent implements OnInit {
       tipoFicha: [
         { id: '0', nome: "Todas" },
         { id: '4', nome: "Ficha de Atendimento Individual" },
+        { id: '16', nome: "Ficha de Atendimento Odontologico Individual" },
         { id: '15', nome: "Ficha de Atividade Coletiva" },
         { id: '2', nome: "Ficha de Cadastro Individual" },
         { id: '7', nome: "Ficha de Procedimentos" },
@@ -93,6 +94,12 @@ export class ESusComponent implements OnInit {
           break;
         case '14':
           link.download = `lote-ficha-vacinacao.zip`;
+          break;
+        case '15':
+          link.download = `lote-ficha-atividade-coletiva.zip`;
+          break;
+        case '16':
+          link.download = `lote-ficha-atendimento-odontologico-individual.zip`;
           break;
         default:
           link.download = `lote-importacao-esus.zip`;

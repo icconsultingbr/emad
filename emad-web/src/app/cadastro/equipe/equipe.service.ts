@@ -10,7 +10,7 @@ export class EquipeService extends GenericsService {
   constructor(public http: HttpClient) {
     super(http);
   }
-  
+
   fields: any[] = [
     {
       field: "id",
@@ -25,20 +25,20 @@ export class EquipeService extends GenericsService {
       field: "equipe",
       type: "select",
       label: "Equipe",
-      toggleFields : [
-        { 
-          value : "EMAP", 
-          hide : ['cnes', 'nome', 'tipo', 'idEstabelecimento'],
-          show : ['idEquipeEmad', 'profissionais', 'situacao']
+      toggleFields: [
+        {
+          value: "EMAP",
+          hide: ['cnes', 'nome', 'tipo', 'idEstabelecimento'],
+          show: ['idEquipeEmad', 'profissionais', 'situacao']
         },
-        { 
-          value : "EMAD", 
-          show : ['cnes', 'nome', 'tipo', 'idEstabelecimento', 'profissionais', 'situacao'],
-          hide : ['idEquipeEmad']
+        {
+          value: "EMAD",
+          show: ['cnes', 'nome', 'tipo', 'idEstabelecimento', 'profissionais', 'situacao'],
+          hide: ['idEquipeEmad']
         },
-        { 
-          value : undefined, 
-          hide : ['cnes', 'nome', 'tipo', 'idEstabelecimento', 'idEquipeEmad', 'profissionais', 'situacao']
+        {
+          value: undefined,
+          hide: ['cnes', 'nome', 'tipo', 'idEstabelecimento', 'idEquipeEmad', 'profissionais', 'situacao']
         }
       ],
       grid: true,
@@ -48,14 +48,14 @@ export class EquipeService extends GenericsService {
       filter: {
         type: "select",
         changeMethod: 'profissional/equipe',
-        changeTarget: 'profissionais' 
+        changeTarget: 'profissionais'
       },
       autoFocus: true
     },
     {
-      field: "cnes",
+      field: "ine",
       type: "text",
-      label: "CNES",
+      label: "INE",
       grid: false,
       form: true,
       required: false,
@@ -69,7 +69,7 @@ export class EquipeService extends GenericsService {
       grid: true,
       form: true,
       required: false,
-      validator: ['',''],
+      validator: ['', ''],
     },
     {
       field: "tipo",
@@ -92,7 +92,7 @@ export class EquipeService extends GenericsService {
         type: "select",
         changeMethod: 'profissional/estabelecimento',
         changeTarget: 'profissionais',
-        grid : true
+        grid: true
       }
     },
     {
@@ -117,7 +117,7 @@ export class EquipeService extends GenericsService {
       field: "situacao",
       type: "checkbox",
       label: "Situação",
-      translate: {"1" : "Ativo" , "0" : "Inativo"},
+      translate: { "1": "Ativo", "0": "Inativo" },
       grid: true,
       form: true,
       required: true,
