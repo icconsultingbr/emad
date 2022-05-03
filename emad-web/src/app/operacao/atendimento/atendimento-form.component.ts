@@ -77,6 +77,8 @@ export class AtendimentoFormComponent implements OnInit {
 
   qtdProcedimento: number;
 
+  ListcondutaEncaminhamento: any[];
+
   medicamentoSelecionado: any = null;
   hipoteseDiagnosticaSelecionada: any = null;
   domains: any[] = [];
@@ -229,6 +231,7 @@ export class AtendimentoFormComponent implements OnInit {
       gestante: ['', ''],
       possuiNecessidadesEspeciais: ['', ''],
       tipoConsultaOdonto: ['', ''],
+      condutaEncaminhamento: ['', ''],
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -283,6 +286,7 @@ export class AtendimentoFormComponent implements OnInit {
       gestante: new FormControl({ value: '', disabled: true }),
       possuiNecessidadesEspeciais: new FormControl({ value: '', disabled: true }),
       tipoConsultaOdonto: new FormControl({ value: '', disabled: true }),
+      condutaEncaminhamento: new FormControl({ value: '', disabled: true }),
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -695,6 +699,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.findtiposFornecimentoOdontoPorAtendimento();
       this.findtiposVigilanciaOdontoPorAtendimento();
       this.buscaProfissionais();
+      this.carregarCondutaEncaminhamento(this.tipoFicha)
 
     }, error => {
       this.object = new Atendimento();
@@ -738,6 +743,7 @@ export class AtendimentoFormComponent implements OnInit {
         this.findProfissionaisAtividadeColetivaPorAtendimento();
         this.findtiposFornecimentoOdontoPorAtendimento();
         this.findtiposVigilanciaOdontoPorAtendimento();
+        this.carregarCondutaEncaminhamento(this.tipoFicha);
 
       }, error => {
         this.loading = false;
@@ -1474,7 +1480,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
   change(event) {
     this.tipoFichaSelecionada = event.target.value;
-    console.log(this.object)
+    this.carregarCondutaEncaminhamento(event.target.value)
   }
   openAtividadeColetivaParticipante(content: any) {
 
@@ -1713,5 +1719,17 @@ export class AtendimentoFormComponent implements OnInit {
       this.findtiposFornecimentoOdontoPorAtendimento();
     });
   }
+  carregarCondutaEncaminhamento(id) {
+    this.loading = true;
+    this.service.list('conduta-encaminhamento/' + id).subscribe(result => {
+      this.ListcondutaEncaminhamento = result;
+      console.log(result)
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+
 }
 
