@@ -1012,8 +1012,9 @@ module.exports = function (app) {
                     .ele('necessidadesEspeciais').txt(atendimento.possuiNecessidadesEspeciais).up()
                     .ele('localAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
                     .ele('tipoAtendimento').txt(atendimento.tipoAtendimentoSus ? atendimento.tipoAtendimentoSus : undefined).up()
-
-                tipofornecimentos.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosOdontologicos', true, true).import(x));
+                    .ele('tiposEncamOdonto').txt(atendimento.condutaEncaminhamento).up()
+                
+                    tipofornecimentos.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosOdontologicos', true, true).import(x));
                 tipovigilancia.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosOdontologicos', true, true).import(x));
 
                 atend.ele('tiposConsultaOdonto').txt(atendimento.tipoConsultaOdonto).up()

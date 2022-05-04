@@ -1187,6 +1187,21 @@
                 </div>
               </div>
             </div>
+            <div class="col-xl-6" *ngIf="object.situacao != 'X'">
+              <div class="form-group row">
+                <label class="col-xl-4 col-form-label text-left">
+                  Conduta encaminhamento
+                </label>
+                <div class="col-xl-8">
+                  <select (change)="change($event)" *ngIf="domains" class="custom-select d-block w-100"
+                    [(ngModel)]="object.condutaEncaminhamento" formControlName="condutaEncaminhamento">
+                    <option [value]="null">Selecione...</option>
+                    <option *ngFor="let item of ListcondutaEncaminhamento" [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

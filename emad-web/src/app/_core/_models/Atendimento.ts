@@ -51,6 +51,10 @@ export class Atendimento {
     @Input() gestante: number;
     @Input() possuiNecessidadesEspeciais: number;
     @Input() tipoConsultaOdonto: number;
+
+    @Input() condutaEncaminhamento: number;
+
+
 }
 
 export class AtendimentoHistorico {
@@ -97,5 +101,12 @@ export class AtendimentoHistorico {
     @Input() praticasEmSaude: number;
     @Input() pseEducacao: boolean;
     @Input() pseSaude: boolean;
+
+    @Input() gestante: number;
+    @Input() possuiNecessidadesEspeciais: number;
+    @Input() tipoConsultaOdonto: number;
+
+    @Input() condutaEncaminhamento: number;
+
 }
 
