@@ -163,7 +163,7 @@
                   Tipo de Consulta Odonto<span class="text-danger font-weight-bold">*</span>
                 </label>
                 <div class="col-xl-4">
-                  <select (change)="change($event)" *ngIf="domains" class="custom-select d-block w-100"
+                  <select *ngIf="domains" class="custom-select d-block w-100"
                     [(ngModel)]="object.tipoConsultaOdonto" formControlName="tipoConsultaOdonto">
                     <option [value]="null">Selecione...</option>
                     <option *ngFor="let item of domains[0]?.tiposConsultaOdonto" [value]="item.id">{{item.nome}}
@@ -1193,7 +1193,7 @@
                   Conduta encaminhamento
                 </label>
                 <div class="col-xl-8">
-                  <select (change)="change($event)" *ngIf="domains" class="custom-select d-block w-100"
+                  <select *ngIf="domains" class="custom-select d-block w-100"
                     [(ngModel)]="object.condutaEncaminhamento" formControlName="condutaEncaminhamento">
                     <option [value]="null">Selecione...</option>
                     <option *ngFor="let item of ListcondutaEncaminhamento" [value]="item.id">{{item.nome}}

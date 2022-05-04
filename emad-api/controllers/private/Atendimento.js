@@ -361,6 +361,7 @@ module.exports = function (app) {
             delete obj.tiposFornecimOdonto;
             delete obj.tiposConsultaOdonto;
             delete obj.tiposVigilanciaSaudeBucal;
+            delete obj.condutaEncaminhamento;
 
             var responseAtendimento = await atendimentoRepository.salvaSync(obj);
 
@@ -391,6 +392,7 @@ module.exports = function (app) {
             delete objHistorico.tiposFornecimOdonto;
             delete objHistorico.tiposConsultaOdonto;
             delete objHistorico.tiposVigilanciaSaudeBucal;
+            delete objHistorico.condutaEncaminhamento;
 
             var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
 

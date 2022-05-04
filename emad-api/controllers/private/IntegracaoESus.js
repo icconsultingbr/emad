@@ -518,12 +518,17 @@ module.exports = function (app) {
         const { fragment } = require('xmlbuilder2');
         let itemFilhoColetiva = [];
         listParticipantes.forEach(x => {
-            let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('participantes')
-            x.cartaoSus ? atend.ele('cnsParticipante').txt(x.cartaoSus).up() : atend.ele('cpfParticipante').txt(x.cpf).up()
+            let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('participantes');
+            
+            x.cartaoSus ? atend.ele('cnsParticipante').txt(x.cartaoSus).up() : x.cpf ? atend.ele('cpfParticipante').txt(x.cpf).up() : '';
+
             atend.ele('dataNascimento').txt(new Date(x.dataNascimento).getTime() / 1000).up()
-                .ele('avaliacaoAlterada').txt(x.avaliacaoAlterada).up()
-                .ele('peso').txt(x.peso ? x.peso.replace(',', '.') : undefined).up()
-                .ele('altura').txt(x.altura ? (parseFloat(x.altura.replace(',', '.')) * 100).toString() : undefined).up();
+                .ele('avaliacaoAlterada').txt(x.avaliacaoAlterada).up();               
+            
+                x.peso ? atend.ele('peso').txt(x.peso ? x.peso.replace(',', '.') : undefined).up() : '';               
+            
+                x.altura ? atend.ele('altura').txt(x.altura ? (parseFloat(x.altura.replace(',', '.')) * 100).toString() : undefined).up() : '';              
+
             if (praticasEmSaude == 25 || praticasEmSaude == 26 || praticasEmSaude == 27 || praticasEmSaude == 28) {
                 atend.ele('cessouHabitoFumar').txt(x.parouFumar).up()
                     .ele('abandonouGrupo').txt(x.abandonouGrupo).up();
@@ -851,7 +856,7 @@ module.exports = function (app) {
                 removeNode(doc.doc(), ['praticasEmSaude'])
             }
 
-            let fieldToValidate = ['peso', 'altura'];
+            let fieldToValidate = ['peso', 'altura', 'procedimento'];
 
             fieldToValidate.forEach(field => {
                 doc.each(x => {
