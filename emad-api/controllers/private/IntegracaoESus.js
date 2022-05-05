@@ -527,7 +527,7 @@ module.exports = function (app) {
             
                 x.peso ? atend.ele('peso').txt(x.peso ? x.peso.replace(',', '.') : undefined).up() : '';               
             
-                x.altura ? atend.ele('altura').txt(x.altura ? (parseFloat(x.altura.replace(',', '.')) * 100).toString() : undefined).up() : '';              
+                x.altura ? atend.ele('altura').txt(x.altura ? (parseFloat(x.altura.replace(',', '.'))).toString() : undefined).up() : '';              
 
             if (praticasEmSaude == 25 || praticasEmSaude == 26 || praticasEmSaude == 27 || praticasEmSaude == 28) {
                 atend.ele('cessouHabitoFumar').txt(x.parouFumar).up()
