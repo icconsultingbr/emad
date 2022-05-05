@@ -75,7 +75,7 @@ export class AtendimentoFormComponent implements OnInit {
   FornecimOdontoSelecionado: tiposFornecimOdonto = new tiposFornecimOdonto()
   VigilanciaSaudeBucalSelecionado: VigilanciaSaudeBucal = new VigilanciaSaudeBucal()
 
-  qtdProcedimento: number = 1;
+  qtdProcedimento: number;
 
   ListcondutaEncaminhamento: any[];
 
@@ -88,8 +88,6 @@ export class AtendimentoFormComponent implements OnInit {
   procedimento: Procedimento = new Procedimento();
   allItemsPesquisaProcedimento: any[] = null;
   allItemsProcedimento: any[] = [];
-
-  allItemsProcedimentoOdonto: any[] = [];
 
   profissionaisLista: any[];
 
@@ -568,10 +566,6 @@ export class AtendimentoFormComponent implements OnInit {
     this.pacienteProcedimento = new PacienteProcedimento();
     this.procedimento = new Procedimento();
 
-    if (this.tipoFicha == 8 || this.tipoFichaSelecionada == '8') {
-      this.buscaProcedimentoOdonto()
-    }
-
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
       keyboard: false,
@@ -834,6 +828,8 @@ export class AtendimentoFormComponent implements OnInit {
     this.service.findByIdPaciente(idPaciente, this.object.idEstabelecimento, this.method).subscribe(result => {
 
       if (result) {
+
+        console.log(result)
 
         if (this.tipoFicha == 7 || this.tipoFichaSelecionada === "7") {
           this.object = result;
@@ -1383,31 +1379,20 @@ export class AtendimentoFormComponent implements OnInit {
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
 
-    var params = "?codigo=" + this.procedimento.co_procedimento + "&nome=" + this.procedimento.no_procedimento;
+    var params = "?codigo=" + this.procedimento.co_procedimento + "&nome=" + this.procedimento.no_procedimento + "&tipoFicha=" + (this.tipoFichaSelecionada ? this.tipoFichaSelecionada : this.tipoFicha);
 
     if (this.paging.offset != null && this.paging.limit != null) {
       params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
     }
+
     this.service.list('procedimento' + params).subscribe(result => {
       this.warning = "";
-
       this.paging.total = result.total;
       this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
       this.allItemsPesquisaProcedimento = result.items;
       setTimeout(() => {
         this.loading = false;
       }, 300);
-    }, erro => {
-      setTimeout(() => this.loading = false, 300);
-      this.errors = Util.customHTTPResponse(erro);
-    });
-  }
-
-  buscaProcedimentoOdonto() {
-    this.loading = true;
-    this.service.list('procedimento-tipo-ficha/' + 5).subscribe(result => {
-      this.warning = "";
-      this.allItemsProcedimentoOdonto = result
     }, erro => {
       setTimeout(() => this.loading = false, 300);
       this.errors = Util.customHTTPResponse(erro);
@@ -1738,6 +1723,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.loading = true;
     this.service.list('conduta-encaminhamento/' + id).subscribe(result => {
       this.ListcondutaEncaminhamento = result;
+      console.log(result)
       this.loading = false;
     }, error => {
       this.loading = false;

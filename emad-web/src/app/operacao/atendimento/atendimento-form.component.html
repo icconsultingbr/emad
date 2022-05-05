@@ -163,8 +163,8 @@
                   Tipo de Consulta Odonto<span class="text-danger font-weight-bold">*</span>
                 </label>
                 <div class="col-xl-4">
-                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.tipoConsultaOdonto"
-                    formControlName="tipoConsultaOdonto">
+                  <select *ngIf="domains" class="custom-select d-block w-100"
+                    [(ngModel)]="object.tipoConsultaOdonto" formControlName="tipoConsultaOdonto">
                     <option [value]="null">Selecione...</option>
                     <option *ngFor="let item of domains[0]?.tiposConsultaOdonto" [value]="item.id">{{item.nome}}
                     </option>
@@ -771,8 +771,7 @@
             <div class="row">
               <div class="col-12 mb-3">
                 <button *ngIf="!disableFields()" type="button" class="btn btn-primary float-left mr-2"
-                  (click)="openProcedimento(object.tipoFicha == 8  ? contentProcedimentoOdonto : contentProcedimento)"
-                  [disabled]="!object.id">
+                  (click)="openProcedimento(contentProcedimento)" [disabled]="!object.id">
                   <i class="fa fa-plus-circle"></i>
                 </button>
 
@@ -1194,8 +1193,8 @@
                   Conduta encaminhamento
                 </label>
                 <div class="col-xl-8">
-                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.condutaEncaminhamento"
-                    formControlName="condutaEncaminhamento">
+                  <select *ngIf="domains" class="custom-select d-block w-100"
+                    [(ngModel)]="object.condutaEncaminhamento" formControlName="condutaEncaminhamento">
                     <option [value]="null">Selecione...</option>
                     <option *ngFor="let item of ListcondutaEncaminhamento" [value]="item.id">{{item.nome}}
                     </option>
@@ -3483,91 +3482,6 @@
   <div class="modal-footer">
     <button [disabled]="VigilanciaSaudeBucalSelecionado==null" class="btn btn-primary mr-2" type="button"
       (click)="savetiposVigilanciaSaudeBucal()">
-      <i class="fa fa-plus-circle"></i> Adicionar
-    </button>
-    <button class="btn btn-default" (click)="close()" type="button">
-      <i class="fa fa-times"></i> Cancelar
-    </button>
-  </div>
-
-</ng-template>
-
-<ng-template #contentProcedimentoOdonto>
-  <div class="modal-header">
-    <h4 class="modal-title">Procedimentos</h4>
-    <button type="button" class="close" aria-label="Close" (click)="close()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-    <div *ngIf="errors.length" class="alert alert-danger">
-      <div *ngFor="let error of errors" class="row">
-        <div class="col-12 text-left">
-          {{error.message}}
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="modal-body">
-    <div class="col-xl-15">
-      <div class="form-group row">
-        <label class="col-xl-4 col-sm-12 col-form-label text-left">
-          Código procedimento:
-        </label>
-        <div class="col-xl-8 col-sm-12">
-          <input type="text" class="form-control has-error" readonly [(ngModel)]="procedimento.co_procedimento">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-xl-4 col-sm-12 col-form-label text-left">
-          Nome procedimento:
-        </label>
-        <div class="col-xl-8 col-sm-12">
-          <input type="text" class="form-control has-error" readonly [(ngModel)]="procedimento.no_procedimento">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-xl-4 col-sm-12 col-form-label text-left">
-          Quantidade:
-        </label>
-        <div class="col-xl-8 col-sm-12">
-          <input type="number" class="form-control has-error" min="1" max="999" [(ngModel)]="qtdProcedimento">
-        </div>
-      </div>
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th></th>
-            <th class="text-left">Código</th>
-            <th class="text-left">Descrição</th>
-          </tr>
-        </thead>
-        <tbody *ngIf="!allItemsPesquisaProcedimento">
-          <tr class="text-left">
-            <td colspan="99" class="text-secondary">
-              <i>Não há resultados...</i>
-            </td>
-          </tr>
-        </tbody>
-        <tbody *ngIf="allItemsProcedimentoOdonto">
-          <tr class="text-left" *ngFor="let item of allItemsProcedimentoOdonto">
-            <td class="text-secondary">
-              <div class="custom-control custom-radio float-left">
-                <input type="radio" (change)="selecionaProcedimento(item)" class="custom-control-input"
-                  id="{{ item.id }}" name="radio-item">
-                <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
-              </div>
-            </td>
-            <td class="text-secondary">{{item.co_procedimento}}</td>
-            <td class="text-secondary">{{item.no_procedimento}}</td>
-            <td class="text-secondary text-right">
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="modal-footer">
-    <button [disabled]="disableProcedimentoButton()" class="btn btn-primary mr-2" type="button"
-      (click)="saveProcedimento()">
       <i class="fa fa-plus-circle"></i> Adicionar
     </button>
     <button class="btn btn-default" (click)="close()" type="button">

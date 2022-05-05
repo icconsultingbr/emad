@@ -17,23 +17,29 @@ ProcedimentoDAO.prototype.atualiza = async function (obj, id) {
 ProcedimentoDAO.prototype.lista = async function (queryFilter) {
     let orderBy = queryFilter.sortColumn ? `${queryFilter.sortColumn}` : "a.id";
     let where = "";
+    let join = "";
 
-    if (queryFilter.codigo || queryFilter.nome) {
+    if(queryFilter.codigo || queryFilter.nome){
 
         where += "WHERE 1 = 1"
 
-        if (queryFilter.codigo && queryFilter.codigo != 'null' && queryFilter.codigo != 'undefined') {
+        if(queryFilter.codigo && queryFilter.codigo != 'null' && queryFilter.codigo != 'undefined'){
             where += ` AND UPPER(co_procedimento) LIKE '%${queryFilter.codigo.toUpperCase()}%'`;
         }
 
-        if (queryFilter.nome && queryFilter.nome != 'null' && queryFilter.nome != 'undefined') {
+        if(queryFilter.nome && queryFilter.nome != 'null' && queryFilter.nome != 'undefined'){
             where += ` AND UPPER(no_procedimento) LIKE '%${queryFilter.nome.toUpperCase()}%'`;
         }
-    }
 
-    const count = await this._connection.query(`SELECT COUNT(1) as total FROM ${this._table}`);
+        if(queryFilter.tipoFicha && queryFilter.tipoFicha != 'null' && queryFilter.tipoFicha != 'undefined'){
+            join  += ` INNER JOIN tb_tipo_ficha c on c.id = ${queryFilter.tipoFicha} INNER JOIN tb_procedimento_tipo_ficha b on b.id_procedimento = a.id and b.id_tipo_ficha = c.tipoAtendimentoSus `;            
+        }
 
-    const query = QueryBuilder.datatable(`SELECT *, CONCAT(SUBSTRING(a.dt_competencia, 1, 4), '/',SUBSTRING(a.dt_competencia, 5, 6)) as dt_competencia_formatada FROM ${this._table} a ${where}`, orderBy, queryFilter.sortOrder, queryFilter.limit, queryFilter.offset);
+    }  
+
+    const count = await this._connection.query(`SELECT COUNT(1) as total FROM ${this._table} a ${join}`);
+
+    const query = QueryBuilder.datatable(`SELECT a.*, CONCAT(SUBSTRING(a.dt_competencia, 1, 4), '/',SUBSTRING(a.dt_competencia, 5, 6)) as dt_competencia_formatada FROM ${this._table} a ${join} ${where}`, orderBy, queryFilter.sortOrder, queryFilter.limit, queryFilter.offset);
 
     let result = await this._connection.query(query);
 
@@ -46,13 +52,6 @@ ProcedimentoDAO.prototype.lista = async function (queryFilter) {
 ProcedimentoDAO.prototype.buscaPorId = async function (id) {
     let result = await this._connection.query(`SELECT * FROM ${this._table} WHERE id = ?`, id);
     return result ? result[0] : null;
-}
-
-ProcedimentoDAO.prototype.buscaPorIdTipoFicha = async function (id) {
-    let result = await this._connection.query(` SELECT tp.id, tp.co_procedimento, tp.no_procedimento FROM ${this._table} as tp 
-                                                     INNER JOIN tb_procedimento_tipo_ficha as tptf ON (tp.id = tptf.id_procedimento)         
-                                                     WHERE tptf.id_tipo_ficha = ?`, id);
-    return result
 }
 
 ProcedimentoDAO.prototype.deletaPorId = async function (id) {
