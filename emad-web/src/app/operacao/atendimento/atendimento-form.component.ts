@@ -1379,7 +1379,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
 
-    var params = "?codigo=" + this.procedimento.co_procedimento + "&nome=" + this.procedimento.no_procedimento;
+    var params = "?codigo=" + this.procedimento.co_procedimento + "&nome=" + this.procedimento.no_procedimento + "&tipoFicha=" + (this.tipoFichaSelecionada ? this.tipoFichaSelecionada : this.tipoFicha);
 
     if (this.paging.offset != null && this.paging.limit != null) {
       params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
