@@ -19,6 +19,10 @@ TipoFichaDAO.prototype.buscaPorId = function (id, callback) {
     this._connection.query(`SELECT * FROM ${this._table} WHERE id = ?`, id, callback);
 }
 
+TipoFichaDAO.prototype.buscaConfigPorId = function (id, callback) {
+    this._connection.query(`SELECT * FROM ${this._table} WHERE tipoAtendimentoSus = ?`, id, callback);
+}
+
 TipoFichaDAO.prototype.buscaTemplatePorId = function (id, callback) {
     this._connection.query(`SELECT xmlTemplate, queryTemplate  FROM ${this._table} WHERE id = ?`, id, callback);
 }

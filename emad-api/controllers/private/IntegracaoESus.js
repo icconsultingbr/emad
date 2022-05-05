@@ -24,7 +24,7 @@ module.exports = function (app) {
             if (filtro) {
                 switch (filtro.idFichaEsus) {
                     case '0':
-                        configTipoFicha(5)
+                        configTipoFicha(1)
                         cad = await listaCadastroIndividual(filtro);
                         atend = await listaAtendimentoIndividual(filtro);
                         vac = await listaFichaVacinacao(filtro);
@@ -34,32 +34,32 @@ module.exports = function (app) {
                         retorno = generateZipFiles(xmls, 'ficha')
                         break;
                     case '2':
-                        configTipoFicha(5)
+                        configTipoFicha(1)
                         cad = await listaCadastroIndividual(filtro);
                         retorno = generateZipFiles(cad, 'ficha-cadastro-individual')
                         break;
                     case '4':
-                        configTipoFicha(5)
+                        configTipoFicha(1)
                         atend = await listaAtendimentoIndividual(filtro);
                         retorno = generateZipFiles(atend, 'ficha-atendimento-individual')
                         break;
                     case '7':
-                        configTipoFicha(5)
+                        configTipoFicha(1)
                         proc = await listaProcedimentos(filtro);
                         retorno = generateZipFiles(proc, 'ficha-procedimentos')
                         break;
                     case '14':
-                        configTipoFicha(5)
+                        configTipoFicha(1)
                         vac = await listaFichaVacinacao(filtro);
                         retorno = generateZipFiles(vac, 'ficha-vacinas')
                         break;
                     case '15':
-                        configTipoFicha(7)
+                        configTipoFicha(6)
                         col = await listaAtividadeColetiva(filtro);
                         retorno = generateZipFiles(col, 'ficha-atividade-coletiva')
                         break;
                     case '16':
-                        configTipoFicha(7)
+                        configTipoFicha(5)
                         atendOdont = await listaAtendimentoOdontologicoIndividual(filtro);
                         retorno = generateZipFiles(atendOdont, 'ficha-atendimento-odontologico-individual')
                         break;
@@ -86,7 +86,7 @@ module.exports = function (app) {
         var TipoFichaDAO = new app.dao.TipoFichaDAO(connection);
         var errors = [];
 
-        TipoFichaDAO.buscaPorId(id, function (exception, result) {
+        TipoFichaDAO.buscaConfigPorId(id, function (exception, result) {
             if (exception) {
                 d.reject(exception);
                 console.log(exception);
@@ -519,15 +519,15 @@ module.exports = function (app) {
         let itemFilhoColetiva = [];
         listParticipantes.forEach(x => {
             let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('participantes');
-            
+
             x.cartaoSus ? atend.ele('cnsParticipante').txt(x.cartaoSus).up() : x.cpf ? atend.ele('cpfParticipante').txt(x.cpf).up() : '';
 
             atend.ele('dataNascimento').txt(new Date(x.dataNascimento).getTime() / 1000).up()
-                .ele('avaliacaoAlterada').txt(x.avaliacaoAlterada).up();               
-            
-                x.peso ? atend.ele('peso').txt(x.peso ? x.peso.replace(',', '.') : undefined).up() : '';               
-            
-                x.altura ? atend.ele('altura').txt(x.altura ? (parseFloat(x.altura.replace(',', '.'))).toString() : undefined).up() : '';              
+                .ele('avaliacaoAlterada').txt(x.avaliacaoAlterada).up();
+
+            x.peso ? atend.ele('peso').txt(x.peso ? x.peso.replace(',', '.') : undefined).up() : '';
+
+            x.altura ? atend.ele('altura').txt(x.altura ? (parseFloat(x.altura.replace(',', '.'))).toString() : undefined).up() : '';
 
             if (praticasEmSaude == 25 || praticasEmSaude == 26 || praticasEmSaude == 27 || praticasEmSaude == 28) {
                 atend.ele('cessouHabitoFumar').txt(x.parouFumar).up()
@@ -1000,6 +1000,8 @@ module.exports = function (app) {
                 .ele('versao', { major: major, minor: minor, revision: revision })
                 .doc();
 
+            if (listAtendimentos.length == 0) { return; }
+
             listAtendimentos.forEach(atendimento => {
 
                 const listtipoFornecimentoOdontologico = tipoFornecimentoOdonto.filter(x => x.idAtendimento == atendimento.idAtendimento);
@@ -1013,13 +1015,13 @@ module.exports = function (app) {
                 let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('atendimentosOdontologicos')
                     .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : undefined).up()
                     .ele('dtNascimento').txt(new Date(atendimento.dataNascimento).getTime() / 1000).up()
-                    .ele('gestante').txt(atendimento.gestante).up()
-                    .ele('necessidadesEspeciais').txt(atendimento.possuiNecessidadesEspeciais).up()
                     .ele('localAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
+                    .ele('gestante').txt(atendimento.gestante == 1 ? true : false).up()
+                    .ele('necessidadesEspeciais').txt(atendimento.possuiNecessidadesEspeciais == 1 ? true : false).up()
                     .ele('tipoAtendimento').txt(atendimento.tipoAtendimentoSus ? atendimento.tipoAtendimentoSus : undefined).up()
                     .ele('tiposEncamOdonto').txt(atendimento.condutaEncaminhamento).up()
-                
-                    tipofornecimentos.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosOdontologicos', true, true).import(x));
+
+                tipofornecimentos.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosOdontologicos', true, true).import(x));
                 tipovigilancia.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosOdontologicos', true, true).import(x));
 
                 atend.ele('tiposConsultaOdonto').txt(atendimento.tipoConsultaOdonto).up()
