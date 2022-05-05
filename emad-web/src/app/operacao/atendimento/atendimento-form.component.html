@@ -3020,7 +3020,7 @@
       <div class="text-left">
         <div class="row">
           <div class="col-xl-12">
-            <label class="col-xl-4 col-form-label text-left">Altura do Participante:
+            <label class="col-xl-4 col-form-label text-left">Altura do Participante (cm):
             </label>
           </div>
         </div>
@@ -3028,7 +3028,7 @@
           <div class="col-xl-12">
             <div class="col-xl-12">
               <div class="input-group">
-                <input type="text" class="form-control has-error rounded"
+                <input type="number" min="20" max="250" pattern="^[0-9]" class="form-control has-error rounded"
                   [(ngModel)]="participanteAtividadeColetiva.altura">
               </div>
             </div>
@@ -3267,7 +3267,7 @@
     <div class="text-left">
       <div class="row">
         <div class="col-xl-12">
-          <label class="col-xl-4 col-form-label text-left">Altura do Participante:
+          <label class="col-xl-4 col-form-label text-left">Altura do Participante (cm):
           </label>
         </div>
       </div>
@@ -3275,7 +3275,7 @@
         <div class="col-xl-12">
           <div class="col-xl-12">
             <div class="input-group">
-              <input type="text" class="form-control has-error rounded"
+              <input type="number" min="20" max="250" pattern="^[0-9]" class="form-control has-error rounded"
                 [(ngModel)]="editParticipanteAtividadeColetiva.altura">
             </div>
           </div>
