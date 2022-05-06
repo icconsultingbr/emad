@@ -974,9 +974,9 @@ module.exports = function (app) {
                 .ele('uuidDadoSerializado').txt(uuidFicha).up()
                 .ele('tipoDadoSerializado').txt('5').up()
                 .ele('codIbge').txt(estabelecimento.codigo).up()
-                .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up()
-                .ele('ineDadoSerializado').txt(estabelecimento.cnes).up()/////////////////////////VERIFICAR AONDE PEGAR
-                .ele('numLote').txt(estabelecimento.cnes).up()////////////////////////////////////VERIFICAR AONDE PEGAR
+                .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up();
+                profissional.ine ? doc.ele('ineDadoSerializado').txt(profissional.ine).up() : '';                
+                doc.ele('numLote').txt(Math.floor(Date.now()/1000)).up()
                 .ele('ns4:fichaAtendimentoOdontologicoMasterTransport')
                 .ele('uuidFicha').txt(uuidFicha).up()
                 .ele('tpCdsOrigem').txt('1').up()

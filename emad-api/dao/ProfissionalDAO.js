@@ -445,10 +445,12 @@ ProfissionalDAO.prototype.carregaProfissionalPorMedicamento = async function (ad
 
 ProfissionalDAO.prototype.buscarProfissionalPorEstabelecimentoEsus = async function (id) {
     return await this._connection.query(`
-        SELECT tp.id, tp.profissionalCNS, te.codigoCBO 
+        SELECT tp.id, tp.profissionalCNS, te.codigoCBO, te2.ine
         FROM ${this._table} tp 
         INNER JOIN tb_estabelecimento_usuario as ep ON (tp.idUsuario = ep.idUsuario) 
         INNER JOIN tb_especialidade te ON (tp.idEspecialidade = te.id)
+        LEFT JOIN tb_profissional_equipe tpe ON tpe.idProfissional = tp.id
+        LEFT JOIN tb_equipe te2 ON te2.id = tpe.idEquipe AND te2.idEstabelecimento = ep.idEstabelecimento
         WHERE ep.idEstabelecimento = ? AND tp.situacao = 1`, id);
 }
 
