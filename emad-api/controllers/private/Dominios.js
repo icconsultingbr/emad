@@ -510,6 +510,39 @@ module.exports = function (app) {
         });
     });
 
+    app.get('/dominios/local-atendimento', function (req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_local_atendimento");
+
+        listaDominios(dao, "Local de atendimento", res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
+    app.get('/dominios/modalidade', function (req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_modalidade");
+
+        listaDominios(dao, "Modalidade", res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
+    app.get('/dominios/tipo-atendimento', function (req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_tipo_atendimento");
+
+        listaDominios(dao, "Tipo de Atendimento", res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
     function listaDominios(dao, dom, res) {
         var q = require('q');
         var d = q.defer();

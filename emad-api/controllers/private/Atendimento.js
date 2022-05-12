@@ -355,6 +355,9 @@ module.exports = function (app) {
             objParticipanteAtividadeColetiva.avaliacaoAlterada = !obj.avaliacaoAlterada ? false : obj.avaliacaoAlterada;
             objParticipanteAtividadeColetiva.parouFumar = !obj.parouFumar ? false : obj.parouFumar;
 
+            obj.modalidade == '' ? obj.modalidade = 0 : obj.modalidade;
+            obj.tipoAtendimento == '' ? obj.tipoAtendimento = 0 : obj.tipoAtendimento;
+
             delete obj.abandonouGrupo;
             delete obj.avaliacaoAlterada;
             delete obj.parouFumar;
@@ -380,6 +383,8 @@ module.exports = function (app) {
             objHistorico.publicoAlvo == '' ? objHistorico.publicoAlvo = 0 : objHistorico.publicoAlvo;
             objHistorico.temasParaSaude == '' ? objHistorico.temasParaSaude = 0 : objHistorico.temasParaSaude;
             objHistorico.temasParaReuniao == '' ? objHistorico.temasParaReuniao = 0 : objHistorico.temasParaReuniao;
+            objHistorico.modalidade == '' ? objHistorico.modalidade = 0 : objHistorico.modalidade;
+            objHistorico.tipoAtendimento == '' ? objHistorico.tipoAtendimento = 0 : objHistorico.tipoAtendimento;
 
             objHistorico.gestante == '' ? objHistorico.gestante = 0 : objHistorico.gestante;
             objHistorico.possuiNecessidadesEspeciais == '' ? objHistorico.possuiNecessidadesEspeciais = 0 : objHistorico.possuiNecessidadesEspeciais;
@@ -544,7 +549,6 @@ module.exports = function (app) {
 
         }
 
-
         errors = req.validationErrors();
 
         if (errors) {
@@ -673,6 +677,9 @@ module.exports = function (app) {
             obj.gestante == '' ? obj.gestante = 0 : obj.gestante;
             obj.possuiNecessidadesEspeciais == '' ? obj.possuiNecessidadesEspeciais = 0 : obj.possuiNecessidadesEspeciais;
             obj.tipoConsultaOdonto == '' ? obj.tipoConsultaOdonto = 0 : obj.tipoConsultaOdonto;
+            obj.modalidade == '' ? obj.modalidade = 0 : obj.modalidade;
+            obj.tipoAtendimento == '' ? obj.tipoAtendimento = 0 : obj.tipoAtendimento;
+
 
             delete obj.abandonouGrupo;
             delete obj.avaliacaoAlterada;
@@ -706,7 +713,8 @@ module.exports = function (app) {
             objHistorico.gestante == '' ? objHistorico.gestante = 0 : objHistorico.gestante;
             objHistorico.possuiNecessidadesEspeciais == '' ? objHistorico.possuiNecessidadesEspeciais = 0 : objHistorico.possuiNecessidadesEspeciais;
             objHistorico.tipoConsultaOdonto == '' ? objHistorico.tipoConsultaOdonto = 0 : objHistorico.tipoConsultaOdonto;
-
+            objHistorico.modalidade == '' ? objHistorico.modalidade = 0 : objHistorico.modalidade;
+            objHistorico.tipoAtendimento == '' ? objHistorico.tipoAtendimento = 0 : objHistorico.tipoAtendimento;
 
             delete objHistorico.abandonouGrupo;
             delete objHistorico.avaliacaoAlterada;

@@ -54,7 +54,10 @@ export class Atendimento {
 
     @Input() condutaEncaminhamento: number;
 
-
+    @Input() localDeAtendimento: number;
+    @Input() modalidade: number;
+    @Input() tipoAtendimento: number;
+    
 }
 
 export class AtendimentoHistorico {

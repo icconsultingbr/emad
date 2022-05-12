@@ -130,6 +130,8 @@ export class AtendimentoFormComponent implements OnInit {
   sexoPaciente: string;
   totalParticipantes: number;
 
+  localAtendimento: number;
+
   pathFiles = `${environment.apiUrl}/fotos/`;
 
   paging: any = {
@@ -232,6 +234,9 @@ export class AtendimentoFormComponent implements OnInit {
       possuiNecessidadesEspeciais: ['', ''],
       tipoConsultaOdonto: ['', ''],
       condutaEncaminhamento: ['', ''],
+      localDeAtendimento: ['', ''],
+      modalidade: ['', ''],
+      tipoAtendimento: ['', ''],
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -287,6 +292,9 @@ export class AtendimentoFormComponent implements OnInit {
       possuiNecessidadesEspeciais: new FormControl({ value: '', disabled: true }),
       tipoConsultaOdonto: new FormControl({ value: '', disabled: true }),
       condutaEncaminhamento: new FormControl({ value: '', disabled: true }),
+      localDeAtendimento: new FormControl({ value: '', disabled: true }),
+      modalidade: new FormControl({ value: '', disabled: true }),
+      tipoAtendimento: new FormControl({ value: '', disabled: true }),
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -678,6 +686,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.object = result;
       this.object.pacienteNome = result.nome;
       this.object.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
+      this.localAtendimento = result.localDeAtendimento;
       this.loading = false;
 
       this.tipoFicha = result.tipoFicha;
@@ -973,6 +982,8 @@ export class AtendimentoFormComponent implements OnInit {
 
   loadDomains() {
 
+
+
     this.loading = true;
     this.service.listDomains('especialidade').subscribe(especialidades => {
       this.service.findTipoFichaEstabelecimento(this.paciente.idEstabelecimento).subscribe(tipoFichas => {
@@ -986,34 +997,43 @@ export class AtendimentoFormComponent implements OnInit {
                       this.service.listDomains('atividade-temas-saude').subscribe(atividadeTemasSaude => {
                         this.service.listDomains('odonto-fornecimento').subscribe(tiposFornecimOdonto => {
                           this.service.listDomains('odonto-vigilancia').subscribe(tiposVigilanciaSaudeBucal => {
-                            this.domains.push({
-                              especialidades: especialidades,
-                              tipoFichas: tipoFichas,
-                              classificacaoRiscos: classificacaoRiscos,
-                              idGrupoMaterial: gruposMateriais,
-                              atividadeProcedimento: atividadeProcedimento,
-                              atividadeTipo: atividadeTipo,
-                              atividadeTemas: atividadeTemas,
-                              atividadePublico: atividadePublico,
-                              atividadePraticasSaude: atividadePraticasSaude,
-                              atividadeTemasSaude: atividadeTemasSaude,
-                              tiposFornecimOdonto: tiposFornecimOdonto,
-                              tiposVigilanciaSaudeBucal: tiposVigilanciaSaudeBucal,
-                              tipoHistoriaClinica: [
-                                { id: 1, nome: "Anamnese" },
-                                { id: 2, nome: "Evolução" },
-                              ],
-                              tiposConsultaOdonto: [
-                                { id: 1, nome: "Primeira consulta odontológica programática" },
-                                { id: 2, nome: "Consulta de retorno em odontologia" },
-                                { id: 4, nome: "Consulta de manutenção em odontologia" },
-                              ]
+                            this.service.listDomains('local-atendimento').subscribe(localDeAtendimento => {
+                              this.service.listDomains('modalidade').subscribe(modalidade => {
+                                this.service.listDomains('tipo-atendimento').subscribe(tipoAtendimento => {
+                                  this.domains.push({
+                                    especialidades: especialidades,
+                                    tipoFichas: tipoFichas,
+                                    classificacaoRiscos: classificacaoRiscos,
+                                    idGrupoMaterial: gruposMateriais,
+                                    atividadeProcedimento: atividadeProcedimento,
+                                    atividadeTipo: atividadeTipo,
+                                    atividadeTemas: atividadeTemas,
+                                    atividadePublico: atividadePublico,
+                                    atividadePraticasSaude: atividadePraticasSaude,
+                                    atividadeTemasSaude: atividadeTemasSaude,
+                                    tiposFornecimOdonto: tiposFornecimOdonto,
+                                    tiposVigilanciaSaudeBucal: tiposVigilanciaSaudeBucal,
+                                    localDeAtendimento: localDeAtendimento,
+                                    modalidade: modalidade,
+                                    tipoAtendimento: tipoAtendimento,
+                                    tipoHistoriaClinica: [
+                                      { id: 1, nome: "Anamnese" },
+                                      { id: 2, nome: "Evolução" },
+                                    ],
+                                    tiposConsultaOdonto: [
+                                      { id: 1, nome: "Primeira consulta odontológica programática" },
+                                      { id: 2, nome: "Consulta de retorno em odontologia" },
+                                      { id: 4, nome: "Consulta de manutenção em odontologia" },
+                                    ]
+                                  });
+                                  if (!Util.isEmpty(this.id)) {
+                                    this.encontraAtendimento();
+                                  }
+                                  else
+                                    this.loading = false;
+                                });
+                              });
                             });
-                            if (!Util.isEmpty(this.id)) {
-                              this.encontraAtendimento();
-                            }
-                            else
-                              this.loading = false;
                           });
                         });
                       });
@@ -1730,6 +1750,8 @@ export class AtendimentoFormComponent implements OnInit {
       this.errors = Util.customHTTPResponse(error);
     });
   }
-
+  changeLocal(event) {
+    this.localAtendimento = event.target.value
+  }
 }
 

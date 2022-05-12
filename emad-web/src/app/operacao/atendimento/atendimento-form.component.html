@@ -132,7 +132,7 @@
             <div class="col-xl-12">
               <div class="form-group row">
                 <label class="col-xl-2 col-form-label text-left">
-                  Tipo de atendimento<span class="text-danger font-weight-bold">*</span>
+                  Tipo de ficha<span class="text-danger font-weight-bold">*</span>
                 </label>
                 <div class="col-xl-4">
                   <select (change)="change($event)" *ngIf="domains" class="custom-select d-block w-100"
@@ -150,6 +150,52 @@
                     <option [value]="null">Selecione...</option>
                     <option *ngFor="let item of domains[0]?.classificacaoRiscos" [value]="item.id">{{item.nome}}
                     </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="form-group row">
+                <label class="col-xl-2 col-form-label text-left">
+                  Local de atendimento
+                </label>
+                <div class="col-xl-4">
+                  <select (change)="changeLocal($event)" *ngIf="domains" class="custom-select d-block w-100"
+                    [(ngModel)]="object.localDeAtendimento" formControlName="localDeAtendimento">
+                    <option [value]="null">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.localDeAtendimento" [value]="item.id">{{item.nome}}</option>
+                  </select>
+                </div>
+                <label *ngIf="localAtendimento > 1" class="col-xl-2 col-form-label text-left">
+                  Modalidade
+                </label>
+                <div *ngIf="localAtendimento > 1" class="col-xl-4">
+                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.modalidade"
+                    formControlName="modalidade">
+                    <option [value]="null">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.modalidade" [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="object.idPaciente && object.id" class="row">
+            <div class="col-xl-12">
+              <div class="form-group row">
+                <label class="col-xl-2 col-form-label text-left">
+                  Tipo de Atendimento
+                </label>
+                <div class="col-xl-10">
+                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.tipoAtendimento"
+                    formControlName="tipoAtendimento">
+                    <option [value]="null">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.tipoAtendimento" [value]="item.id">{{item.nome}}</option>
                   </select>
                 </div>
               </div>
@@ -938,7 +984,7 @@
         <!-- Encaminhamento -->
         <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8">
           <div class="card-header text-left">
-            Encaminhamento
+            Encaminhamento Especialidade
           </div>
           <div class="card-body text-left">
 
@@ -1286,7 +1332,7 @@
             <div class="col-xl-12">
               <div class="form-group row">
                 <label class="col-xl-2 col-form-label text-left">
-                  Tipo de atendimento<span class="text-danger font-weight-bold"> *</span>
+                  Tipo de ficha<span class="text-danger font-weight-bold"> *</span>
                 </label>
                 <div class="col-xl-4">
                   <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="objectHistorico.tipoFicha"
@@ -1336,6 +1382,51 @@
                       class="custom-control-input" [readonly]="disableFields()">
                     <label class="custom-control-label" for="ficouEmObservacao"></label>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="form-group row">
+                <label class="col-xl-2 col-form-label text-left">
+                  Tipo de Atendimento
+                </label>
+                <div class="col-xl-10">
+                  <select *ngIf="domains" class="custom-select d-block w-100"
+                    [(ngModel)]="objectHistorico.tipoAtendimento" formControlName="tipoAtendimento">
+                    <option [value]="null">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.tipoAtendimento" [value]="item.id">{{item.nome}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="form-group row">
+                <label class="col-xl-2 col-form-label text-left">
+                  Local de atendimento
+                </label>
+                <div class="col-xl-4">
+                  <select (change)="changeLocal($event)" *ngIf="domains" class="custom-select d-block w-100"
+                    [(ngModel)]="objectHistorico.localDeAtendimento" formControlName="localDeAtendimento">
+                    <option [value]="null">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.localDeAtendimento" [value]="item.id">{{item.nome}}</option>
+                  </select>
+                </div>
+                <label *ngIf="localAtendimento > 1" class="col-xl-2 col-form-label text-left">
+                  Modalidade
+                </label>
+                <div *ngIf="localAtendimento > 1" class="col-xl-4">
+                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="objectHistorico.modalidade"
+                    formControlName="modalidade">
+                    <option [value]="null">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.modalidade" [value]="item.id">{{item.nome}}
+                    </option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -1894,7 +1985,7 @@
 
         <div class="card mb-4">
           <div class="card-header text-left">
-            Encaminhamento
+            Encaminhamento Especialidade
           </div>
           <div class="card-body text-left">
             <div class="row">
@@ -2458,7 +2549,7 @@
 
 <ng-template #contentEncaminhamento>
   <div class="modal-header">
-    <h4 class="modal-title">Encaminhamento</h4>
+    <h4 class="modal-title">Encaminhamento Especialidade</h4>
     <button type="button" class="close" aria-label="Close" (click)="close()">
       <span aria-hidden="true">&times;</span>
     </button>
