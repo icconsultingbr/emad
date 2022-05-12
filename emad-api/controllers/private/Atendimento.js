@@ -357,6 +357,7 @@ module.exports = function (app) {
 
             obj.modalidade == '' ? obj.modalidade = 0 : obj.modalidade;
             obj.tipoAtendimento == '' ? obj.tipoAtendimento = 0 : obj.tipoAtendimento;
+            obj.vacinasEmDia == '' ? obj.vacinasEmDia = 0 : obj.vacinasEmDia;
 
             delete obj.abandonouGrupo;
             delete obj.avaliacaoAlterada;
@@ -385,6 +386,7 @@ module.exports = function (app) {
             objHistorico.temasParaReuniao == '' ? objHistorico.temasParaReuniao = 0 : objHistorico.temasParaReuniao;
             objHistorico.modalidade == '' ? objHistorico.modalidade = 0 : objHistorico.modalidade;
             objHistorico.tipoAtendimento == '' ? objHistorico.tipoAtendimento = 0 : objHistorico.tipoAtendimento;
+            objHistorico.vacinasEmDia == '' ? objHistorico.vacinasEmDia = 0 : objHistorico.vacinasEmDia;
 
             objHistorico.gestante == '' ? objHistorico.gestante = 0 : objHistorico.gestante;
             objHistorico.possuiNecessidadesEspeciais == '' ? objHistorico.possuiNecessidadesEspeciais = 0 : objHistorico.possuiNecessidadesEspeciais;
@@ -679,7 +681,7 @@ module.exports = function (app) {
             obj.tipoConsultaOdonto == '' ? obj.tipoConsultaOdonto = 0 : obj.tipoConsultaOdonto;
             obj.modalidade == '' ? obj.modalidade = 0 : obj.modalidade;
             obj.tipoAtendimento == '' ? obj.tipoAtendimento = 0 : obj.tipoAtendimento;
-
+            obj.vacinasEmDia == '' ? obj.vacinasEmDia = 0 : obj.vacinasEmDia;
 
             delete obj.abandonouGrupo;
             delete obj.avaliacaoAlterada;
@@ -715,6 +717,7 @@ module.exports = function (app) {
             objHistorico.tipoConsultaOdonto == '' ? objHistorico.tipoConsultaOdonto = 0 : objHistorico.tipoConsultaOdonto;
             objHistorico.modalidade == '' ? objHistorico.modalidade = 0 : objHistorico.modalidade;
             objHistorico.tipoAtendimento == '' ? objHistorico.tipoAtendimento = 0 : objHistorico.tipoAtendimento;
+            objHistorico.vacinasEmDia == '' ? objHistorico.vacinasEmDia = 0 : objHistorico.vacinasEmDia;
 
             delete objHistorico.abandonouGrupo;
             delete objHistorico.avaliacaoAlterada;

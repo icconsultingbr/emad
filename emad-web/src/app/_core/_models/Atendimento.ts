@@ -57,7 +57,8 @@ export class Atendimento {
     @Input() localDeAtendimento: number;
     @Input() modalidade: number;
     @Input() tipoAtendimento: number;
-    
+    @Input() vacinasEmDia: number;
+
 }
 
 export class AtendimentoHistorico {

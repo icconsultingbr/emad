@@ -237,6 +237,7 @@ export class AtendimentoFormComponent implements OnInit {
       localDeAtendimento: ['', ''],
       modalidade: ['', ''],
       tipoAtendimento: ['', ''],
+      vacinasEmDia: ['', ''],
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -295,6 +296,7 @@ export class AtendimentoFormComponent implements OnInit {
       localDeAtendimento: new FormControl({ value: '', disabled: true }),
       modalidade: new FormControl({ value: '', disabled: true }),
       tipoAtendimento: new FormControl({ value: '', disabled: true }),
+      vacinasEmDia: new FormControl({ value: '', disabled: true }),
     });
 
     this.formHipotese = this.fbHipotese.group({
