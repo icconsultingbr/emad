@@ -163,8 +163,8 @@
                   Tipo de Consulta Odonto<span class="text-danger font-weight-bold">*</span>
                 </label>
                 <div class="col-xl-4">
-                  <select *ngIf="domains" class="custom-select d-block w-100"
-                    [(ngModel)]="object.tipoConsultaOdonto" formControlName="tipoConsultaOdonto">
+                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.tipoConsultaOdonto"
+                    formControlName="tipoConsultaOdonto">
                     <option [value]="null">Selecione...</option>
                     <option *ngFor="let item of domains[0]?.tiposConsultaOdonto" [value]="item.id">{{item.nome}}
                     </option>
@@ -818,8 +818,7 @@
         </div>
 
         <!-- Prescrição Medicamentos -->
-        <div class="card mb-4"
-          *ngIf="object.idPaciente && object.id && object.tipoFicha != 7  && object.tipoFicha != 8">
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7">
           <div class="card-header text-left">
             Prescrição Medicamentos
           </div>
@@ -1193,8 +1192,8 @@
                   Conduta encaminhamento
                 </label>
                 <div class="col-xl-8">
-                  <select *ngIf="domains" class="custom-select d-block w-100"
-                    [(ngModel)]="object.condutaEncaminhamento" formControlName="condutaEncaminhamento">
+                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.condutaEncaminhamento"
+                    formControlName="condutaEncaminhamento">
                     <option [value]="null">Selecione...</option>
                     <option *ngFor="let item of ListcondutaEncaminhamento" [value]="item.id">{{item.nome}}
                     </option>
