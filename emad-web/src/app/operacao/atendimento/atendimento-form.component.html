@@ -678,7 +678,6 @@
               </div>
             </div>
 
-
           </div>
         </div>
 
@@ -1754,9 +1753,26 @@
                     Glicemia
                   </label>
                   <div class="col-xl-8">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.glicemia"
+                    <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.glicemia"
                       formControlName="glicemia" [readonly]="disableFields()" currencyMask
                       [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                   Vacinas Em dia
+                  </label>
+                  <div class="col-xl-10">
+                    <div class="custom-control custom-checkbox" style="width: 25px">
+                      <input type="checkbox" id="vacinasEmDia"
+                        [(ngModel)]="objectHistorico.vacinasEmDia" formControlName="vacinasEmDia"
+                        class="custom-control-input" [readonly]="disableFields()">
+                      <label class="custom-control-label" for="vacinasEmDia"></label>
+                    </div>
                   </div>
                 </div>
               </div>

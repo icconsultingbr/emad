@@ -112,5 +112,10 @@ export class AtendimentoHistorico {
 
     @Input() condutaEncaminhamento: number;
 
+    @Input() localDeAtendimento: number;
+    @Input() modalidade: number;
+    @Input() tipoAtendimento: number;
+    @Input() vacinasEmDia: number;
+
 }
 
