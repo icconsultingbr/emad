@@ -234,10 +234,10 @@ export class AtendimentoFormComponent implements OnInit {
       possuiNecessidadesEspeciais: ['', ''],
       tipoConsultaOdonto: ['', ''],
       condutaEncaminhamento: ['', ''],
-      localDeAtendimento: ['', ''],
+      localDeAtendimento: new FormControl({ value: '1', disabled: false }),
       modalidade: ['', ''],
       tipoAtendimento: ['', ''],
-      vacinasEmDia: ['', ''],
+      vacinasEmDia: ['', '']
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -883,6 +883,16 @@ export class AtendimentoFormComponent implements OnInit {
     this.allItemsEncaminhamento = [];
     this.allItemsHipotese = [];
     this.allItemsMedicamento = [];
+    this.allParticipantesAtividadeColetiva = [];
+    this.allProfissionaisAtividadeColetiva = [];
+    this.allTiposFornecimento = [];
+    this.allTiposVigilanciaBucal = [];   
+    this.allItemsProcedimento = [];   
+      
+    if(!this.object.id){
+      this.object.localDeAtendimento = 1;
+      this.object.tipoAtendimento = 5;
+    }
 
     this.errors.push({
       message: "Atendimento não encontrado"
