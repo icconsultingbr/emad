@@ -26,6 +26,8 @@ import { ParticipanteAtividadeColetiva } from '../../_core/_models/ParticipanteA
 import { ProfissionalAtividadeColetiva } from '../../_core/_models/ProfissionalAtividadeColetiva';
 import { tiposFornecimOdonto } from '../../_core/_models/tiposFornecimOdonto';
 import { VigilanciaSaudeBucal } from '../../_core/_models/VigilanciaSaudeBucal';
+import { CondicaoAvaliada } from '../../_core/_models/CondicaoAvaliada';
+import { PacienteCondicaoAvaliada } from '../../_core/_models/PacienteCondicaoAvaliada';
 
 @Component({
   selector: 'app-atendimento-form',
@@ -85,8 +87,12 @@ export class AtendimentoFormComponent implements OnInit {
   allItemsEntidadeCampo: any[] = null;
   allItemsPesquisaHipoteseDiagnostica: any[] = null;
   pacienteProcedimento: PacienteProcedimento = new PacienteProcedimento();
+  pacienteCondicaoAvaliada: PacienteCondicaoAvaliada = new PacienteCondicaoAvaliada();
   procedimento: Procedimento = new Procedimento();
+  condicaoAvaliada: CondicaoAvaliada = new CondicaoAvaliada();
+
   allItemsPesquisaProcedimento: any[] = null;
+  allItemsPesquisaCondicaoAvaliada: any[] = null;
   allItemsProcedimento: any[] = [];
 
   profissionaisLista: any[];
@@ -105,6 +111,7 @@ export class AtendimentoFormComponent implements OnInit {
   allMedicamentos: any[] = [];
   allItemsExame: any[] = [];
   allItemsVacina: any[] = [];
+  allItemsCondicaoAvalida: any[] = [];
   removeId: number;
 
   //ATIVIDADE COLETIVA
@@ -499,6 +506,21 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
+  openCondicaoAvaliada(content: any) {
+    this.errors = [];
+    this.message = "";
+    // this.encaminhamento = new Encaminhamento();
+    // this.encaminhamento.idPaciente = this.object.idPaciente;
+    // this.encaminhamento.idAtendimento = this.object.id;
+
+    this.modalRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      size: "lg"
+    });
+  }
+
   openMedicamento(content: any) {
     this.errors = [];
     this.message = "";
@@ -710,7 +732,8 @@ export class AtendimentoFormComponent implements OnInit {
       this.findtiposFornecimentoOdontoPorAtendimento();
       this.findtiposVigilanciaOdontoPorAtendimento();
       this.buscaProfissionais();
-      this.carregarCondutaEncaminhamento(this.tipoFicha)
+      this.carregarCondutaEncaminhamento(this.tipoFicha);
+      this.findCondicaoAvaliadaPorAtendimento();
 
     }, error => {
       this.object = new Atendimento();
@@ -755,6 +778,7 @@ export class AtendimentoFormComponent implements OnInit {
         this.findtiposFornecimentoOdontoPorAtendimento();
         this.findtiposVigilanciaOdontoPorAtendimento();
         this.carregarCondutaEncaminhamento(this.tipoFicha);
+        this.findCondicaoAvaliadaPorAtendimento();
 
       }, error => {
         this.loading = false;
@@ -862,6 +886,7 @@ export class AtendimentoFormComponent implements OnInit {
           this.findVacinaPorAtendimento();
           this.findtiposFornecimentoOdontoPorAtendimento();
           this.findtiposVigilanciaOdontoPorAtendimento();
+          this.findCondicaoAvaliadaPorAtendimento();
 
         }
 
@@ -886,10 +911,10 @@ export class AtendimentoFormComponent implements OnInit {
     this.allParticipantesAtividadeColetiva = [];
     this.allProfissionaisAtividadeColetiva = [];
     this.allTiposFornecimento = [];
-    this.allTiposVigilanciaBucal = [];   
-    this.allItemsProcedimento = [];   
-      
-    if(!this.object.id){
+    this.allTiposVigilanciaBucal = [];
+    this.allItemsProcedimento = [];
+
+    if (!this.object.id) {
       this.object.localDeAtendimento = 1;
       this.object.tipoAtendimento = 5;
     }
@@ -1765,5 +1790,103 @@ export class AtendimentoFormComponent implements OnInit {
   changeLocal(event) {
     this.localAtendimento = event.target.value
   }
+
+  loadQuantityPerPagePaginationCondicaoAvaliada(event) {
+    let id = parseInt(event.target.value);
+    this.paging.limit = id;
+
+    this.setPagePaginedCondicaoAvaliada(this.pager.offset, this.paging.limit);
+  }
+  setPagePaginedCondicaoAvaliada(offset: number, limit: Number) {
+    this.paging.offset = offset !== undefined ? offset : 0;
+    this.paging.limit = limit ? limit : this.paging.limit;
+
+    this.buscaProcedimento(this.paging.offset, this.paging.limit);
+  }
+  buscaCondicaoAvaliada(offset: Number = null, limit: Number = null) {
+    this.loading = true;
+
+    this.paging.offset = offset ? offset : 0;
+    this.paging.limit = limit ? limit : 10;
+
+    var params = "?descricaoAB=" + this.condicaoAvaliada.descricaoAB + "&codigoAB=" + this.condicaoAvaliada.codigoAB;
+
+    if (this.paging.offset != null && this.paging.limit != null) {
+      params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+    }
+
+    this.service.list('condicaoAvaliada' + params).subscribe(result => {
+      this.warning = "";
+      this.paging.total = result.total;
+      this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
+      this.allItemsPesquisaCondicaoAvaliada = result.items;
+      setTimeout(() => {
+        this.loading = false;
+      }, 300);
+    }, erro => {
+      setTimeout(() => this.loading = false, 300);
+      this.errors = Util.customHTTPResponse(erro);
+    });
+  }
+  disableCondicaoAvaliadaButton() {
+    return Util.isEmpty(this.condicaoAvaliada.id);
+  }
+  saveCondicaoAvaliada() {
+    this.message = "";
+    this.errors = [];
+    this.pacienteCondicaoAvaliada.idCondicaoAvaliada = this.condicaoAvaliada.id;
+    this.pacienteCondicaoAvaliada.idPaciente = this.object.idPaciente;
+    this.pacienteCondicaoAvaliada.idAtendimento = this.object.id;
+
+    this.service.saveAtendimentoCodicaoAvaliada(this.pacienteCondicaoAvaliada).subscribe(result => {
+      this.message = "Condição Avaliada inserida com sucesso!"
+      this.modalRef.close();
+      this.loading = false;
+      this.findCondicaoAvaliadaPorAtendimento();
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+
+    this.close();
+  }
+  selecionaCondicaoAvaliada(item) {
+    this.condicaoAvaliada = item;
+  }
+  pesquisaCondicaoAvaliada() {
+    this.loading = true;
+    let params = "";
+    this.allItemsPesquisaProcedimento = [];
+    this.errors = [];
+
+    if (Util.isEmpty(this.condicaoAvaliada.codigoAB) && Util.isEmpty(this.condicaoAvaliada.descricaoAB)) {
+      this.errors = [{ message: "Informe o código ou nome da Condição Avaliada" }];
+      this.loading = false;
+      return;
+    }
+
+    this.buscaCondicaoAvaliada();
+  }
+  findCondicaoAvaliadaPorAtendimento() {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.service.findCondicaoAvaliadaByAtendimento(this.object.id).subscribe(result => {
+      this.allItemsCondicaoAvalida = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
+  }
+  removeCondicaoAvaliadaAtendimento(item) {
+    this.service.removeCondicaoAvaliada(item.id).subscribe(result => {
+      this.message = "Condição Avaliada removida com sucesso!"
+      this.close();
+      this.loading = false;
+      this.findCondicaoAvaliadaPorAtendimento();
+    });
+  }
+
 }
 

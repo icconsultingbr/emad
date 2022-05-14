@@ -208,6 +208,11 @@ export class AtendimentoService extends GenericsService {
         return this.http.get("atendimento-encaminhamento/atendimento/" + id);
     }
 
+    findCondicaoAvaliadaByAtendimento(id: any): Observable<any> {
+        return this.http.get("atendimento-condicao-avaliada/atendimento/" + id);
+    }
+
+
     findEncaminhamentoByPaciente(id: any): Observable<any> {
         return this.http.get("atendimento-encaminhamento/usuario/" + id);
     }
@@ -330,6 +335,10 @@ export class AtendimentoService extends GenericsService {
         return this.http.delete('atendimento-encaminhamento/' + params);
     }
 
+    removeCondicaoAvaliada(params: any) {
+        return this.http.delete('atendimento-condicao-avaliada/' + params);
+    }
+
     removeParticipante(params: any) {
         return this.http.delete('participante-atividade-coletiva/' + params);
     }
@@ -374,6 +383,17 @@ export class AtendimentoService extends GenericsService {
         else {
             return this.http
                 .post('atendimento-procedimento', JSON.stringify(obj));
+        }
+    }
+
+    saveAtendimentoCodicaoAvaliada(obj: any) {
+        if (obj.id) {
+            return this.http
+                .put('atendimento-condicao-avaliada', JSON.stringify(obj));
+        }
+        else {
+            return this.http
+                .post('atendimento-condicao-avaliada', JSON.stringify(obj));
         }
     }
 

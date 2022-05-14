@@ -659,18 +659,17 @@
                 </div>
               </div>
             </div>
-           
+
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                   Vacinas Em dia
+                    Vacinas Em dia
                   </label>
                   <div class="col-xl-10">
                     <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="vacinasEmDia"
-                        [(ngModel)]="object.vacinasEmDia" formControlName="vacinasEmDia"
-                        class="custom-control-input" [readonly]="disableFields()">
+                      <input type="checkbox" id="vacinasEmDia" [(ngModel)]="object.vacinasEmDia"
+                        formControlName="vacinasEmDia" class="custom-control-input" [readonly]="disableFields()">
                       <label class="custom-control-label" for="vacinasEmDia"></label>
                     </div>
                   </div>
@@ -1055,6 +1054,66 @@
             </div>
           </div>
         </div>
+
+        <!-- Condição Avaliada -->
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8">
+          <div class="card-header text-left">
+            Condição Avaliada
+          </div>
+          <div class="card-body text-left">
+
+            <div class="row">
+
+              <div class="col-12 mb-3">
+                <button *ngIf="!disableFields()" type="button" class="btn btn-primary float-left mr-2"
+                  (click)="openCondicaoAvaliada(contentCondicaoAvaliada)" [disabled]="!object.id">
+                  <i class="fa fa-plus-circle"></i>
+                </button>
+
+                <button type="button" class="btn btn-default float-left" (click)="findCondicaoAvaliadaPorAtendimento()">
+                  <i class="fa fa-sync-alt"></i>
+                </button>
+              </div>
+              <div class="col-12 table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>CIAP2 Relacionada</th>
+                      <th>Descrição AB</th>
+                      <th>Código AB</th>
+                      <th>Sexo</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="!allItemsCondicaoAvalida.length">
+                    <tr class="text-left">
+                      <td colspan="99" class="text-secondary">
+                        <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para
+                          Adicionar uma condição avaliada!'}}</i>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="allItemsCondicaoAvalida.length">
+                    <tr class="text-left" *ngFor="let item of allItemsCondicaoAvalida">
+                      <td class="text-secondary">{{item.ciap2}}</td>
+                      <td class="text-secondary">{{item.descricaoAB}}</td>
+                      <td class="text-secondary">{{item.codigoAB}}</td>
+                      <td class="text-secondary">{{item.sexo}}</td>
+                      <td class="text-secondary text-right">
+                        <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]=""
+                          (click)="removeCondicaoAvaliadaAtendimento(item)">
+                          <i class="fa fa-trash-alt"></i> Remover
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
       </div>
 
       <!-- Participantes da Atividade Coletiva -->
@@ -1764,13 +1823,12 @@
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                   Vacinas Em dia
+                    Vacinas Em dia
                   </label>
                   <div class="col-xl-10">
                     <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="vacinasEmDia"
-                        [(ngModel)]="objectHistorico.vacinasEmDia" formControlName="vacinasEmDia"
-                        class="custom-control-input" [readonly]="disableFields()">
+                      <input type="checkbox" id="vacinasEmDia" [(ngModel)]="objectHistorico.vacinasEmDia"
+                        formControlName="vacinasEmDia" class="custom-control-input" [readonly]="disableFields()">
                       <label class="custom-control-label" for="vacinasEmDia"></label>
                     </div>
                   </div>
@@ -3615,4 +3673,140 @@
     </button>
   </div>
 
+</ng-template>
+
+<ng-template #contentCondicaoAvaliada>
+  <div class="modal-header">
+    <h4 class="modal-title">Condição Avaliada</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="errors.length" class="alert alert-danger">
+      <div *ngFor="let error of errors" class="row">
+        <div class="col-12 text-left">
+          {{error.message}}
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-xl-4 col-sm-12 col-form-label text-left">
+        Descricao AB:
+      </label>
+      <div class="col-xl-8 col-sm-12">
+        <input type="text" class="form-control has-error" [(ngModel)]="condicaoAvaliada.descricaoAB">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-xl-4 col-sm-12 col-form-label text-left">
+        Código AB:
+      </label>
+      <div class="col-xl-8 col-sm-12">
+        <input type="text" class="form-control has-error" [(ngModel)]="condicaoAvaliada.codigoAB">
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-12">
+        <button [routerLink]="" class="btn btn-primary float-right" (click)="pesquisaCondicaoAvaliada()">
+          <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin text-left">
+            <i class="fa fa-spinner"></i>
+          </i>
+          <i *ngIf="!loading" class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-12 table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr class="text-left">
+              <th></th>
+              <th>CIAP2 Relacionada</th>
+              <th>Descrição AB</th>
+              <th>Código AB</th>
+              <th>Sexo</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let item of allItemsPesquisaCondicaoAvaliada let index=index; let odd='odd'; let even='even';">
+            <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
+              <td class="text-secondary">
+                <div class="custom-control custom-radio float-left">
+                  <input type="radio" (change)="selecionaCondicaoAvaliada(item)" class="custom-control-input"
+                    id="{{ item.id }}" name="radio-item">
+                  <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
+                </div>
+              </td>
+              <td class="text-secondary">{{item.ciap2}}</td>
+              <td class="text-secondary">{{item.descricaoAB}}</td>
+              <td class="text-secondary">{{item.codigoAB}}</td>
+              <td class="text-secondary">{{item.sexo}}</td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="!allItemsPesquisaCondicaoAvaliada || allItemsPesquisaCondicaoAvaliada.length==0">
+            <tr class="text-left">
+              <td colspan="99" class="text-secondary">
+                <i>Não há resultados...</i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div *ngIf="allItemsPesquisaCondicaoAvaliada && allItemsPesquisaCondicaoAvaliada.length"
+        class="text text-secondary col-md-12 pr-0 mx-auto">
+        <i>
+          Exibindo {{paging.offset === (totalPages-1)?paging.total:(paging.offset+1)*paging.limit}} de
+          {{paging.total}}
+          resultado(s).
+        </i>
+      </div>
+    </div>
+    <div class="row mb-2 mt-4">
+      <ul *ngIf="allItemsPesquisaCondicaoAvaliada && allItemsPesquisaCondicaoAvaliada.length"
+        class="pagination mx-auto">
+        <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
+          <a class="page-link" (click)="setPagePaginedCondicaoAvaliada(0)">
+            <i class="fas fa-angle-double-left"></i>
+          </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
+          <a class="page-link" (click)="setPagePaginedCondicaoAvaliada(paging.offset - 1)">
+            <i class="fas fa-angle-left"></i>
+          </a>
+        </li>
+        <li>
+          <select (change)="loadQuantityPerPagePaginationCondicaoAvaliada($event, 'condicao')"
+            class="custom-select d-block w-100" style="border: 1px solid #dee2e6">
+
+            <option [ngValue]="10">10</option>
+            <option [ngValue]="25">25</option>
+            <option [ngValue]="50">50</option>
+          </select>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
+          <a class="page-link" (click)="setPagePaginedCondicaoAvaliada(paging.offset + 1)">
+            <i class="fas fa-angle-right"></i>
+          </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
+          <a class="page-link" (click)="setPagePaginedCondicaoAvaliada(totalPages-1)">
+            <i class="fas fa-angle-double-right"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="form-group row text-right">
+      <div class="col-12">
+        <button class="btn btn-primary  mr-2" type="button" [disabled]="disableCondicaoAvaliadaButton()"
+          (click)="saveCondicaoAvaliada()">
+          <i class="fa fa-plus-circle"></i> Adicionar
+        </button>
+        <button class="btn btn-default" (click)="close()" type="button">
+          <i class="fa fa-times"></i> Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
 </ng-template>
