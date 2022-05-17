@@ -573,6 +573,13 @@ module.exports = function (app) {
 
         try {
 
+            if (obj.dumDaGestante != null) {
+                if (obj.dumDaGestante.length == 10)
+                    obj.dumDaGestante = util.dateToISO(obj.dumDaGestante);
+                else
+                    obj.dumDaGestante = new Date(obj.dumDaGestante);
+            }
+
             await connection.beginTransaction();
 
             var atualizaPaciente = await pacienteRepository.atualizaHistoriaProgressaFamiliar(obj.pacienteHistoriaProgressa, obj.idPaciente, usuario.id, new Date());
@@ -692,6 +699,13 @@ module.exports = function (app) {
 
 
             var atualizaAtendimento = await atendimentoRepository.atualizaPorIdSync(obj, id);
+
+            if (objHistorico.dumDaGestante != null) {
+                if (objHistorico.dumDaGestante.length == 10)
+                    objHistorico.dumDaGestante = util.dateToISO(objHistorico.dumDaGestante);
+                else
+                    objHistorico.dumDaGestante = new Date(objHistorico.dumDaGestante);
+            }
 
             obj.id = id;
             obj.ano_receita = receita ? receita.ano : null;

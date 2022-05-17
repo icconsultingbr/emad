@@ -244,7 +244,12 @@ export class AtendimentoFormComponent implements OnInit {
       localDeAtendimento: new FormControl({ value: '1', disabled: false }),
       modalidade: ['', ''],
       tipoAtendimento: ['', ''],
-      vacinasEmDia: ['', '']
+      vacinasEmDia: ['', ''],
+      dumDaGestante: ['', ''],
+      idadeGestacional: ['', ''],
+      stGravidezPlanejada: ['', ''],
+      nuGestasPrevias: ['', ''],
+      nuPartos: ['', ''],
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -304,6 +309,11 @@ export class AtendimentoFormComponent implements OnInit {
       modalidade: new FormControl({ value: '', disabled: true }),
       tipoAtendimento: new FormControl({ value: '', disabled: true }),
       vacinasEmDia: new FormControl({ value: '', disabled: true }),
+      dumDaGestante: new FormControl({ value: '', disabled: true }),
+      idadeGestacional: new FormControl({ value: '', disabled: true }),
+      stGravidezPlanejada: new FormControl({ value: '', disabled: true }),
+      nuGestasPrevias: new FormControl({ value: '', disabled: true }),
+      nuPartos: new FormControl({ value: '', disabled: true }),
     });
 
     this.formHipotese = this.fbHipotese.group({
