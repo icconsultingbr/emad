@@ -409,8 +409,8 @@ module.exports = function (app) {
                     .ele('dataNascimento').txt(new Date(atendimento.dataNascimento).getTime()).up()
                     .ele('localDeAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
                     .ele('sexo').txt(atendimento.sexo).up()
-                    .ele('alturaAcompanhamentoNutricional').txt(atendimento.altura).up()
-                    .ele('pesoAcompanhamentoNutricional').txt(atendimento.peso).up()
+                    .ele('alturaAcompanhamentoNutricional').txt(atendimento.altura ? atendimento.altura : undefined).up()
+                    .ele('pesoAcompanhamentoNutricional').txt(atendimento.peso ? atendimento.peso: undefined).up()
                     .ele('turno').txt(atendimento.turno).up()
                     .ele('tipoAtendimento').txt(atendimento.tipoAtendimentoSus ? atendimento.tipoAtendimentoSus : undefined).up()
                     .import(avaliacao);
@@ -423,7 +423,7 @@ module.exports = function (app) {
 
                 doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoIndividualMasterTransport', true, true).import(atend);
 
-                let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento', 'tipoAtendimento'];
+                let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento', 'tipoAtendimento', 'alturaAcompanhamentoNutricional', 'pesoAcompanhamentoNutricional' ];
 
                 fieldToValidate.forEach(field => {
                     doc.each(x => {
