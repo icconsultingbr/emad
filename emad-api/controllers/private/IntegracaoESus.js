@@ -670,6 +670,12 @@ module.exports = function (app) {
 
         profissionais.forEach(profissional => {
             const listProcedimento = list.atendimentos.filter(x => x.idProfissional == profissional.id);
+
+            const numTotalAfericaoPa = list.numTotalAfericaoPa.filter(x => x.idProfissional == profissional.id);
+            const numTotalAfericaoTemperatura = list.numTotalAfericaoTemperatura.filter(x => x.idProfissional == profissional.id);
+            const numTotalMedicaoAltura = list.numTotalMedicaoAltura.filter(x => x.idProfissional == profissional.id);
+            const numTotalMedicaoPeso = list.numTotalMedicaoPeso.filter(x => x.idProfissional == profissional.id);
+            
             var uuidFicha = uuidv4();
 
             if (listProcedimento.length == 0) { return; } //|| (!profissional.profissionalCNS || !profissional.codigoCBO)
@@ -743,12 +749,22 @@ module.exports = function (app) {
                 })
             })
 
-            doc.find(x => x.node.nodeName == 'ns4:fichaProcedimentoMasterTransport', true, true).ele('uuidFicha').txt(uuidFicha).up()
-                .ele('tpCdsOrigem').txt('3').up()
-                .ele('numTotalAfericaoPa').txt('1').up()
-                .ele('numTotalAfericaoTemperatura').txt('1').up()
-                .ele('numTotalMedicaoAltura').txt('1').up()
-                .ele('numTotalMedicaoPeso').txt('1').up();
+            let afericoes = doc.find(x => x.node.nodeName == 'ns4:fichaProcedimentoMasterTransport', true, true)
+            .ele('uuidFicha').txt(uuidFicha).up();
+
+            afericoes.ele('tpCdsOrigem').txt('3').up();
+
+            if(numTotalAfericaoPa && numTotalAfericaoPa.length > 0)
+                afericoes.ele('numTotalAfericaoPa').txt(numTotalAfericaoPa[0].qtd).up();
+               
+            if(numTotalAfericaoTemperatura && numTotalAfericaoTemperatura.length > 0)
+                afericoes.ele('numTotalAfericaoTemperatura').txt(numTotalAfericaoTemperatura[0].qtd).up();
+
+            if(numTotalMedicaoAltura && numTotalMedicaoAltura.length > 0)
+                afericoes.ele('numTotalMedicaoAltura').txt(numTotalMedicaoAltura[0].qtd).up();
+            
+            if(numTotalMedicaoPeso && numTotalMedicaoPeso.length > 0 )
+                afericoes.ele('numTotalMedicaoPeso').txt(numTotalMedicaoPeso[0].qtd).up();
 
             xmls.push(doc.doc().end({ prettyPrint: true }));
         });
