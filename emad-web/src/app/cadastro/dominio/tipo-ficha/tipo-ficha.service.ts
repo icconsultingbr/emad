@@ -64,7 +64,7 @@ export class TipoFichaService extends GenericsService {
       label: "Código Atendimento e-SUS",
       grid: false,
       form: true,
-      translate: { 1: "Atendimento", 2: "Avaliação", 3: "Exame" },
+      translate: { 4: "Ficha de atendimento individual", 5: "Ficha de atendimento odontológico", 6: "Ficha de atividade coletiva", 10: "Ficha de atendimento domiciliar" },
       required: true,
       validator: ['', Validators.required]
     },

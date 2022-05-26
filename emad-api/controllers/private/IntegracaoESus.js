@@ -275,7 +275,7 @@ module.exports = function (app) {
                 .ele('fichaAtualizada').txt('false').up()
                 .ele('identificacaoUsuarioCidadao')
                 .ele('codigoIbgeMunicipioNascimento').txt(paciente.codigoIbgeMunicipioNascimento).up()
-                .ele('dataNascimentoCidadao').txt(new Date(paciente.dataNascimento).getTime() / 1000).up()
+                .ele('dataNascimentoCidadao').txt(new Date(paciente.dataNascimento).getTime()).up()
                 .ele('desconheceNomeMae').txt(paciente.desconheceNomeMae).up()
                 .ele('emailCidadao').txt(paciente.email ? paciente.email : '').up()
                 .ele('nacionalidadeCidadao').txt(paciente.idNacionalidadeSUS).up()
@@ -300,7 +300,7 @@ module.exports = function (app) {
                 .ele('profissionalCNS').txt(estabelecimento.cnsProfissionaleSus ? estabelecimento.cnsProfissionaleSus : '3').up()
                 .ele('cboCodigo_2002').txt(estabelecimento.codigoCBO ? estabelecimento.codigoCBO : '3').up()
                 .ele('cnes').txt(estabelecimento.cnes).up()
-                .ele('dataAtendimento').txt(Date.now()).up()
+                .ele('dataAtendimento').txt(new Date(paciente.dataCriacao).getTime()).up()
                 .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
                 .up()
                 .up()
@@ -365,7 +365,7 @@ module.exports = function (app) {
                 .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
                 .ele('cnes').txt(estabelecimento.cnes).up()
                 .up()
-                .ele('dataAtendimento').txt(new Date(listAtendimentos[0].dataCriacao).getTime() / 1000).up()
+                .ele('dataAtendimento').txt(new Date(listAtendimentos[0].dataCriacao).getTime()).up()
                 .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
                 .up()
                 .up()
@@ -406,7 +406,7 @@ module.exports = function (app) {
                 let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('atendimentosIndividuais')
                     .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : undefined).up()
                     .ele('cpfCidadao').txt(atendimento.cartaoSus ? undefined : atendimento.cpfCidadao ? atendimento.cpfCidadao : undefined).up()
-                    .ele('dataNascimento').txt(new Date(atendimento.dataNascimento).getTime() / 1000).up()
+                    .ele('dataNascimento').txt(new Date(atendimento.dataNascimento).getTime()).up()
                     .ele('localDeAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
                     .ele('sexo').txt(atendimento.sexo).up()
                     .ele('alturaAcompanhamentoNutricional').txt(atendimento.altura).up()
@@ -417,8 +417,8 @@ module.exports = function (app) {
 
                 condutas.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosIndividuais', true, true).import(x));
 
-                atend.ele('dataHoraInicialAtendimento').txt(new Date(atendimento.dataCriacao).getTime() / 1000).up()
-                    .ele('dataHoraFinalAtendimento').txt(new Date(atendimento.dataFinalizacao).getTime() / 1000).up()
+                atend.ele('dataHoraInicialAtendimento').txt(new Date(atendimento.dataCriacao).getTime()).up()
+                    .ele('dataHoraFinalAtendimento').txt(new Date(atendimento.dataFinalizacao).getTime()).up()
                     .up();
 
                 doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoIndividualMasterTransport', true, true).import(atend);
@@ -522,7 +522,7 @@ module.exports = function (app) {
 
             x.cartaoSus ? atend.ele('cnsParticipante').txt(x.cartaoSus).up() : x.cpf ? atend.ele('cpfParticipante').txt(x.cpf).up() : '';
 
-            atend.ele('dataNascimento').txt(new Date(x.dataNascimento).getTime() / 1000).up()
+            atend.ele('dataNascimento').txt(new Date(x.dataNascimento).getTime()).up()
                 .ele('avaliacaoAlterada').txt(x.avaliacaoAlterada).up();
 
             x.peso ? atend.ele('peso').txt(x.peso ? x.peso.replace(',', '.') : undefined).up() : '';
@@ -575,7 +575,7 @@ module.exports = function (app) {
                 .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
                 .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
                 .ele('cnes').txt(estabelecimento.cnes).up()
-                .ele('dataAtendimento').txt(new Date(listVacinas[0].dataCriacao).getTime() / 1000).up()
+                .ele('dataAtendimento').txt(new Date(listVacinas[0].dataCriacao).getTime()).up()
                 .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
                 .up()
                 .ele('uuidFicha').txt(uuidFicha).up()
@@ -609,7 +609,7 @@ module.exports = function (app) {
                     .ele('turno').txt(vacina.turno).up()
                     .ele('cnsCidadao').txt(vacina.cartaoSus ? vacina.cartaoSus : '').up()
                     .ele('cpfCidadao').txt(vacina.cartaoSus ? '' : vacina.cpfCidadao ? vacina.cpfCidadao : '').up()
-                    .ele('dtNascimento').txt(new Date(vacina.dataNascimento).getTime() / 1000).up()
+                    .ele('dtNascimento').txt(new Date(vacina.dataNascimento).getTime()).up()
                     .ele('sexo').txt(vacina.sexo).up()
                     .ele('localAtendimento').txt(vacina.localDeAtendimentoSus ? vacina.localDeAtendimentoSus : '').up()
                     .ele('viajante').txt(vacina.viajante).up()
@@ -619,8 +619,8 @@ module.exports = function (app) {
                 let child = preencheVacinasChild(listVacinaChild, vacina.idReceita);
                 child.forEach(x => vac.import(x));
 
-                vac.ele('dataHoraInicialAtendimento').txt(new Date(vacina.dataCriacao).getTime() / 1000).up()
-                    .ele('dataHoraFinalAtendimento').txt(new Date(vacina.dataUltimaDispensacao).getTime() / 1000).up()
+                vac.ele('dataHoraInicialAtendimento').txt(new Date(vacina.dataCriacao).getTime()).up()
+                    .ele('dataHoraFinalAtendimento').txt(new Date(vacina.dataUltimaDispensacao).getTime()).up()
                     .up();
 
                 doc.find(x => x.node.nodeName == 'ns4:fichaVacinacaoMasterTransport', true, true).import(vac);
@@ -685,7 +685,7 @@ module.exports = function (app) {
                 .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
                 .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
                 .ele('cnes').txt(estabelecimento.cnes).up()
-                .ele('dataAtendimento').txt(new Date(listProcedimento[0].dataCriacao).getTime() / 1000).up()
+                .ele('dataAtendimento').txt(new Date(listProcedimento[0].dataCriacao).getTime()).up()
                 .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
                 .up()
                 .up()
@@ -716,7 +716,7 @@ module.exports = function (app) {
                 let proc = fragment().ele('atendProcedimentos')
                     .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : '').up()
                     .ele('cpfCidadao').txt(atendimento.cartaoSus ? '' : atendimento.cpfCidadao ? atendimento.cpfCidadao : '').up()
-                    .ele('dtNascimento').txt(new Date(atendimento.dataNascimento).getTime() / 1000).up()
+                    .ele('dtNascimento').txt(new Date(atendimento.dataNascimento).getTime()).up()
                     .ele('sexo').txt(atendimento.sexo).up()
                     .ele('localAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
                     .ele('turno').txt(atendimento.turno).up()
@@ -725,8 +725,8 @@ module.exports = function (app) {
                 let child = preencheProcedimentos(listProcedimentoChild);
                 child.forEach(x => proc.import(x));
 
-                proc.ele('dataHoraInicialAtendimento').txt(new Date(atendimento.dataCriacao).getTime() / 1000).up()
-                    .ele('dataHoraFinalAtendimento').txt(new Date(atendimento.dataFinalizacao).getTime() / 1000).up()
+                proc.ele('dataHoraInicialAtendimento').txt(new Date(atendimento.dataCriacao).getTime()).up()
+                    .ele('dataHoraFinalAtendimento').txt(new Date(atendimento.dataFinalizacao).getTime()).up()
                     .up();
 
                 doc.find(x => x.node.nodeName == 'ns4:fichaProcedimentoMasterTransport', true, true).import(proc);
@@ -800,7 +800,7 @@ module.exports = function (app) {
                 .ele('profissionalCNS').txt(estabelecimento.cnsProfissionaleSus ? estabelecimento.cnsProfissionaleSus : '3').up()
                 .ele('cboCodigo_2002').txt(estabelecimento.codigoCBO ? estabelecimento.codigoCBO : '3').up()
                 .ele('cnes').txt(estabelecimento.cnes).up()
-                .ele('dataAtendimento').txt(Date.now()).up()
+                .ele('dataAtendimento').txt(new Date(atendimento.dataCriacao).getTime()).up()
                 .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
                 .up()
                 .ele('temasParaSaude').txt(atendimento.temasParaSaude).up()
@@ -1014,7 +1014,7 @@ module.exports = function (app) {
 
                 let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('atendimentosOdontologicos')
                     .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : undefined).up()
-                    .ele('dtNascimento').txt(new Date(atendimento.dataNascimento).getTime() / 1000).up()
+                    .ele('dtNascimento').txt(new Date(atendimento.dataNascimento).getTime()).up()
                     .ele('localAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
                     .ele('gestante').txt(atendimento.gestante == 1 ? true : false).up()
                     .ele('necessidadesEspeciais').txt(atendimento.possuiNecessidadesEspeciais == 1 ? true : false).up()
@@ -1030,8 +1030,8 @@ module.exports = function (app) {
 
                 atend.ele('turno').txt(atendimento.turno).up()
                     .ele('sexo').txt(atendimento.sexo).up()
-                    .ele('dataHoraInicialAtendimento').txt(new Date(atendimento.dataCriacao).getTime() / 1000).up()
-                    .ele('dataHoraFinalAtendimento').txt(new Date(atendimento.dataFinalizacao).getTime() / 1000).up()
+                    .ele('dataHoraInicialAtendimento').txt(new Date(atendimento.dataCriacao).getTime()).up()
+                    .ele('dataHoraFinalAtendimento').txt(new Date(atendimento.dataFinalizacao).getTime()).up()
                     .ele('alturaAcompanhamentoNutricional').txt(atendimento.altura).up()
                     .ele('pesoAcompanhamentoNutricional').txt(atendimento.peso).up()
                     .up();
@@ -1056,7 +1056,7 @@ module.exports = function (app) {
                 .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
                 .ele('cnes').txt(estabelecimento.cnes).up()
                 .up()
-                .ele('dataAtendimento').txt(new Date(listAtendimentos[0].dataCriacao).getTime() / 1000).up()
+                .ele('dataAtendimento').txt(new Date(listAtendimentos[0].dataCriacao).getTime()).up()
                 .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
                 .up()
             doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoOdontologicoMasterTransport', true, true).import(header);

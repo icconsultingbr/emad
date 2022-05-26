@@ -48,8 +48,19 @@ module.exports = function (app) {
 
         const connection = await app.dao.connections.EatendConnection.connection();
         const atendimentoCondicaoAvaliadaRepository = new app.dao.AtendimentoCondicaoAvaliadaDAO(connection);
+        const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
 
-        try {
+        try {            
+
+            var buscaAtendimento = await atendimentoRepository.buscaPorIdSync(obj.idAtendimento);
+            
+             // CAMPO = condicoesAvaliadas
+            // Não pode ser preenchido se o campo tipoAtendimento = 9 - Visita domiciliar pós-óbito;
+            if (buscaAtendimento.tipoAtendimento && buscaAtendimento.tipoAtendimento == '9') {
+                errors = util.customError(errors, "header", "Não pode inserir condições avaliadas se o tipo de atendimento é Não pode ser preenchido se o campo tipoAtendimento é Visita domiciliar pós-óbito", "");
+                res.status(400).send(errors);
+                return;
+            }
 
             await connection.beginTransaction();
 

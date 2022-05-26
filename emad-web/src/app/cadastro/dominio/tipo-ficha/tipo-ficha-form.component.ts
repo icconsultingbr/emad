@@ -43,7 +43,8 @@ export class TipoFichaFormComponent implements OnInit {
       tipoAtendimentoSus: [
         { id: '4', nome: "Ficha de atendimento individual" },
         { id: '5', nome: "Ficha de atendimento odontológico" },
-        { id: '6', nome: "Ficha de atividade coletiva" }]
+        { id: '6', nome: "Ficha de atividade coletiva" },
+        { id: '10', nome: "Ficha de atendimento domiciliar" }]
     });
   }
 }

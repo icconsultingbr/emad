@@ -258,7 +258,7 @@ module.exports = function (app) {
         req.assert("idClassificacaoRisco").notEmpty().withMessage("Classificação de risco é um campo obrigatório;");
 
         //ATIVIDADE COLETIVA
-        if (obj.tipoFicha == 7) {
+        if (obj.tipoFicha == '7') {
 
             // CAMPO = INEP
             // É de preenchimento obrigatório se pseEducacao = true ou pseSaude = true;
@@ -296,7 +296,25 @@ module.exports = function (app) {
 
 
         }
+        else if (obj.tipoFicha == '9') { //Ficha de Atendimento Domiciliar
 
+            // CAMPO = atencaoDomiciliarModalidade
+            // Apenas as opções 1, 2 e 3 são aceitas;
+            if (obj.modalidade && obj.modalidade.length > 0 && obj.modalidade != '1' && obj.modalidade != '2' && obj.modalidade != '3') {
+                errors = util.customError(errors, "header", "Apenas as modalidades AD1, AD2 e AD3 são aceitas para esse tipo de ficha.", "");
+                res.status(400).send(errors);
+                return;
+            }
+        }
+        else{
+            // CAMPO = localDeAtendimento
+            // 11, 12 e 13 Utilizado apenas na Ficha de Atendimento Domiciliar
+            if (obj.localDeAtendimento && (obj.localDeAtendimento == '11' || obj.localDeAtendimento == '12' || obj.localDeAtendimento == '13' )) {
+                errors = util.customError(errors, "header", "Esse local de atendimento só é permitido para Ficha de atendimento domiciliar", "");
+                res.status(400).send(errors);
+                return;
+            }
+        }
 
         let errors = req.validationErrors();
 
@@ -549,6 +567,16 @@ module.exports = function (app) {
             req.assert("numParticipantes").notEmpty().withMessage("Preencha o campo numero de participantes.");
             req.assert("atividadeTipo").notEmpty().withMessage("Preencha o campo tipo de atividade.");
 
+        }
+
+        if (obj.tipoFicha == '9') {
+            // CAMPO = atencaoDomiciliarModalidade
+            // Não pode ser preenchido se o campo tipoAtendimento = 9 - Visita domiciliar pós-óbito
+            if ( obj.tipoAtendimento && obj.tipoAtendimento == 9 && obj.modalidade && obj.modalidade > 0) {
+                errors = util.customError(errors, "header", "Modalidade não pode ser preenchida para esse tipo de atendimento Visita domiciliar pós-óbito", "");
+                res.status(400).send(errors);
+                return;
+            }
         }
 
         errors = req.validationErrors();
