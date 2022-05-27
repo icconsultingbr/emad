@@ -21,10 +21,9 @@ CondicaoAvaliadaDAO.prototype.lista = async function (queryFilter) {
         if (queryFilter.descricaoAB && queryFilter.descricaoAB != 'null' && queryFilter.descricaoAB != 'undefined') {
             where += ` AND UPPER(descricaoAB) LIKE '%${queryFilter.descricaoAB.toUpperCase()}%'`;
         }
-
     }
 
-    const count = await this._connection.query(`SELECT COUNT(1) as total FROM ${this._table} a ${join}`);
+    const count = await this._connection.query(`SELECT COUNT(1) as total FROM ${this._table} a ${join} ${where}`);
 
     const query = QueryBuilder.datatable(`SELECT a.* FROM ${this._table} a ${join} ${where}`, orderBy, queryFilter.sortOrder, queryFilter.limit, queryFilter.offset);
 

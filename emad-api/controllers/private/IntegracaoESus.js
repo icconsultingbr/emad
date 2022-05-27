@@ -394,14 +394,17 @@ module.exports = function (app) {
 
                 const listAvaliacao = list.condicaoAvaliacao.filter(x => x.idAtendimento == atendimento.idAtendimento);
                 const listCondutas = list.condutaSus.filter(x => x.idAtendimento == atendimento.idAtendimento);
+                const listCondicoesCiaps = list.condicaoCiaps.filter(x => x.idAtendimento == atendimento.idAtendimento);
 
-                if (!listAvaliacao.some((o) => o.idAtendimento == atendimento.idAtendimento) || !listCondutas.some((o) => o.idAtendimento == atendimento.idAtendimento)) {
+                if (!listCondutas.some((o) => o.idAtendimento == atendimento.idAtendimento) || 
+                        (!listAvaliacao.some((o) => o.idAtendimento == atendimento.idAtendimento) && !listCondicoesCiaps.some((o) => o.idAtendimento == atendimento.idAtendimento))) 
+                {
                     qtdAtendimentosValidos--;
                     return;
                 }
 
-                let avaliacao = preencheAvaliacaoAtendimentoIndividual(listAvaliacao, atendimento.idAtendimento);
-                let condutas = preencheCondutasAtendimentoIndividual(listCondutas, atendimento.idAtendimento)
+                let avaliacao = preencheAvaliacaoAtendimentoIndividual(listAvaliacao, listCondicoesCiaps, atendimento.idAtendimento);
+                let condutas = preencheCondutasAtendimentoIndividual(listCondutas, atendimento.idAtendimento);
 
                 let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('atendimentosIndividuais')
                     .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : undefined).up()
@@ -445,18 +448,28 @@ module.exports = function (app) {
         return xmls;
     }
 
-    function preencheAvaliacaoAtendimentoIndividual(listAvaliacao, idAtendimento) {
+    function preencheAvaliacaoAtendimentoIndividual(listAvaliacao, listCiaps, idAtendimento) {
         const { fragment } = require('xmlbuilder2');
         let avaliacao = fragment().ele('problemaCondicaoAvaliada');
 
         const listaAvaliacaoAtendimento = listAvaliacao.filter(x => x.idAtendimento == idAtendimento);
-        const cid10 = fragment().ele('cid10').txt(listaAvaliacaoAtendimento[0].cid_10).up();
-        avaliacao.import(cid10);
+        const listaCiapsAtendimento = listCiaps.filter(x => x.idAtendimento == idAtendimento);
 
-        if (listaAvaliacaoAtendimento.length > 1) {
-            const cid10_2 = fragment().ele('cid10_2').txt(listaAvaliacaoAtendimento[1].cid_10).up();
-            avaliacao.import(cid10_2);
-        }
+        listaCiapsAtendimento.forEach(ciaps => {
+            const codigoAB = fragment().ele('ciaps').txt(ciaps.codigoAB).up();
+            avaliacao.import(codigoAB);    
+        });
+
+        if(listaAvaliacaoAtendimento && listaAvaliacaoAtendimento.length > 0)
+        {
+            const cid10 = fragment().ele('cid10').txt(listaAvaliacaoAtendimento[0].cid_10).up();
+            avaliacao.import(cid10);
+    
+            if (listaAvaliacaoAtendimento.length > 1) {
+                const cid10_2 = fragment().ele('cid10_2').txt(listaAvaliacaoAtendimento[1].cid_10).up();
+                avaliacao.import(cid10_2);
+            }
+        }        
 
         return avaliacao.up();
     }

@@ -111,7 +111,7 @@ export class AtendimentoFormComponent implements OnInit {
   allMedicamentos: any[] = [];
   allItemsExame: any[] = [];
   allItemsVacina: any[] = [];
-  allItemsCondicaoAvalida: any[] = [];
+  allItemsCondicaoAvaliada: any[] = [];
   removeId: number;
 
   //ATIVIDADE COLETIVA
@@ -509,10 +509,10 @@ export class AtendimentoFormComponent implements OnInit {
   openCondicaoAvaliada(content: any) {
     this.errors = [];
     this.message = "";
-    // this.encaminhamento = new Encaminhamento();
-    // this.encaminhamento.idPaciente = this.object.idPaciente;
-    // this.encaminhamento.idAtendimento = this.object.id;
-
+    this.allItemsPesquisaCondicaoAvaliada = [];
+    this.pacienteCondicaoAvaliada = new PacienteCondicaoAvaliada();
+    this.condicaoAvaliada = new CondicaoAvaliada();
+    
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
       keyboard: false,
@@ -1797,12 +1797,14 @@ export class AtendimentoFormComponent implements OnInit {
 
     this.setPagePaginedCondicaoAvaliada(this.pager.offset, this.paging.limit);
   }
+
   setPagePaginedCondicaoAvaliada(offset: number, limit: Number) {
     this.paging.offset = offset !== undefined ? offset : 0;
     this.paging.limit = limit ? limit : this.paging.limit;
 
-    this.buscaProcedimento(this.paging.offset, this.paging.limit);
+    this.buscaCondicaoAvaliada(this.paging.offset, this.paging.limit);
   }
+
   buscaCondicaoAvaliada(offset: Number = null, limit: Number = null) {
     this.loading = true;
 
@@ -1856,7 +1858,7 @@ export class AtendimentoFormComponent implements OnInit {
   pesquisaCondicaoAvaliada() {
     this.loading = true;
     let params = "";
-    this.allItemsPesquisaProcedimento = [];
+    this.allItemsPesquisaCondicaoAvaliada = [];
     this.errors = [];
 
     if (Util.isEmpty(this.condicaoAvaliada.codigoAB) && Util.isEmpty(this.condicaoAvaliada.descricaoAB)) {
@@ -1872,7 +1874,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.errors = [];
     this.loading = true;
     this.service.findCondicaoAvaliadaByAtendimento(this.object.id).subscribe(result => {
-      this.allItemsCondicaoAvalida = result;
+      this.allItemsCondicaoAvaliada = result;
       this.loading = false;
     }, error => {
       this.loading = false;

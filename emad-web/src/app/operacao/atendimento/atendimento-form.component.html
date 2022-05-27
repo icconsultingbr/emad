@@ -773,6 +773,64 @@
             </div>
           </div>
         </div>
+        
+        <!-- Condição Avaliada -->
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8">
+          <div class="card-header text-left">
+            Condição Avaliada
+          </div>
+          <div class="card-body text-left">
+
+            <div class="row">
+
+              <div class="col-12 mb-3">
+                <button *ngIf="!disableFields()" type="button" class="btn btn-primary float-left mr-2"
+                  (click)="openCondicaoAvaliada(contentCondicaoAvaliada)" [disabled]="!object.id">
+                  <i class="fa fa-plus-circle"></i>
+                </button>
+
+                <button type="button" class="btn btn-default float-left" (click)="findCondicaoAvaliadaPorAtendimento()">
+                  <i class="fa fa-sync-alt"></i>
+                </button>
+              </div>
+              <div class="col-12 table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>CIAP2 Relacionada</th>
+                      <th>Descrição AB</th>
+                      <th>Código AB</th>
+                      <th>Sexo</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="!allItemsCondicaoAvaliada.length">
+                    <tr class="text-left">
+                      <td colspan="99" class="text-secondary">
+                        <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para
+                          Adicionar uma condição avaliada!'}}</i>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="allItemsCondicaoAvaliada.length">
+                    <tr class="text-left" *ngFor="let item of allItemsCondicaoAvaliada">
+                      <td class="text-secondary">{{item.ciap2}}</td>
+                      <td class="text-secondary">{{item.descricaoAB}}</td>
+                      <td class="text-secondary">{{item.codigoAB}}</td>
+                      <td class="text-secondary">{{item.sexo}}</td>
+                      <td class="text-secondary text-right">
+                        <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]=""
+                          (click)="removeCondicaoAvaliadaAtendimento(item)">
+                          <i class="fa fa-trash-alt"></i> Remover
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- Hipótese diagnostica -->
         <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8">
@@ -795,7 +853,7 @@
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th>Código</th>
+                      <th>Código (CID 10)</th>
                       <th>Diagnóstico</th>
                       <th></th>
                     </tr>
@@ -1044,64 +1102,6 @@
                       <td class="text-secondary text-right">
                         <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]=""
                           (click)="removeEncaminhamento(item)">
-                          <i class="fa fa-trash-alt"></i> Remover
-                        </a>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Condição Avaliada -->
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8">
-          <div class="card-header text-left">
-            Condição Avaliada
-          </div>
-          <div class="card-body text-left">
-
-            <div class="row">
-
-              <div class="col-12 mb-3">
-                <button *ngIf="!disableFields()" type="button" class="btn btn-primary float-left mr-2"
-                  (click)="openCondicaoAvaliada(contentCondicaoAvaliada)" [disabled]="!object.id">
-                  <i class="fa fa-plus-circle"></i>
-                </button>
-
-                <button type="button" class="btn btn-default float-left" (click)="findCondicaoAvaliadaPorAtendimento()">
-                  <i class="fa fa-sync-alt"></i>
-                </button>
-              </div>
-              <div class="col-12 table-responsive">
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>CIAP2 Relacionada</th>
-                      <th>Descrição AB</th>
-                      <th>Código AB</th>
-                      <th>Sexo</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody *ngIf="!allItemsCondicaoAvalida.length">
-                    <tr class="text-left">
-                      <td colspan="99" class="text-secondary">
-                        <i>{{object.id ? 'Não há resultados...' : 'Você precisa salvar o formulário primeiro para
-                          Adicionar uma condição avaliada!'}}</i>
-                      </td>
-                    </tr>
-                  </tbody>
-                  <tbody *ngIf="allItemsCondicaoAvalida.length">
-                    <tr class="text-left" *ngFor="let item of allItemsCondicaoAvalida">
-                      <td class="text-secondary">{{item.ciap2}}</td>
-                      <td class="text-secondary">{{item.descricaoAB}}</td>
-                      <td class="text-secondary">{{item.codigoAB}}</td>
-                      <td class="text-secondary">{{item.sexo}}</td>
-                      <td class="text-secondary text-right">
-                        <a *ngIf="!disableFields()" class="btn btn-link" [routerLink]=""
-                          (click)="removeCondicaoAvaliadaAtendimento(item)">
                           <i class="fa fa-trash-alt"></i> Remover
                         </a>
                       </td>
@@ -1930,6 +1930,7 @@
           </div>
         </div>
 
+
         <div class="card mb-4">
           <div class="card-header text-left">
             Hipótese diagnostica
@@ -1940,7 +1941,7 @@
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th>Código</th>
+                      <th>Codigo (CID 10)</th>
                       <th>Diagnóstico</th>
                     </tr>
                   </thead>

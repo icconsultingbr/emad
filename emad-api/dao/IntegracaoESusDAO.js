@@ -12,6 +12,7 @@ IntegracaoESusDAO.prototype.listaAtendimentoIndividual = async function (filtro)
    let listaAtendimentoIndividual = {};
    listaAtendimentoIndividual.atendimentos = await this._connection.query(`SELECT * FROM vw_atendimento_individual_sus vw WHERE ${this.campoData} BETWEEN ? AND ?  AND idEstabelecimento = ?`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1], filtro.idEstabelecimento]);
    listaAtendimentoIndividual.condicaoAvaliacao = await this._connection.query(`SELECT * FROM vw_problema_condicao_avaliacao_sus vw`);
+   listaAtendimentoIndividual.condicaoCiaps = await this._connection.query(`SELECT * FROM vw_ciaps_sus vw`);
    listaAtendimentoIndividual.condutaSus = await this._connection.query(`SELECT * FROM vw_condutas_sus vw WHERE condutas IS NOT NULL`);
    return listaAtendimentoIndividual;
 }
