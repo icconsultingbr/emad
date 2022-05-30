@@ -2,7 +2,7 @@ const QueryBuilder = require('../infrastructure/QueryBuilder');
 
 function CondicaoAvaliadaDAO(connection) {
     this._connection = connection;
-    this._table = "tb_condicao_avaliada";
+    this._table = "tb_condicao_avaliada_ciap2";
 }
 
 CondicaoAvaliadaDAO.prototype.lista = async function (queryFilter) {

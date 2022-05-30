@@ -298,6 +298,10 @@ module.exports = function (app) {
         }
         else if (obj.tipoFicha == '9') { //Ficha de Atendimento Domiciliar
 
+            if (obj.modalidade == null) {
+                req.assert("modalidade").notEmpty().withMessage("Modalidade é um campo obrigatório;");
+            }
+
             // CAMPO = atencaoDomiciliarModalidade
             // Apenas as opções 1, 2 e 3 são aceitas;
             if (obj.modalidade && obj.modalidade.length > 0 && obj.modalidade != '1' && obj.modalidade != '2' && obj.modalidade != '3') {
@@ -306,10 +310,10 @@ module.exports = function (app) {
                 return;
             }
         }
-        else{
+        else {
             // CAMPO = localDeAtendimento
             // 11, 12 e 13 Utilizado apenas na Ficha de Atendimento Domiciliar
-            if (obj.localDeAtendimento && (obj.localDeAtendimento == '11' || obj.localDeAtendimento == '12' || obj.localDeAtendimento == '13' )) {
+            if (obj.localDeAtendimento && (obj.localDeAtendimento == '11' || obj.localDeAtendimento == '12' || obj.localDeAtendimento == '13')) {
                 errors = util.customError(errors, "header", "Esse local de atendimento só é permitido para Ficha de atendimento domiciliar", "");
                 res.status(400).send(errors);
                 return;
@@ -572,7 +576,7 @@ module.exports = function (app) {
         if (obj.tipoFicha == '9') {
             // CAMPO = atencaoDomiciliarModalidade
             // Não pode ser preenchido se o campo tipoAtendimento = 9 - Visita domiciliar pós-óbito
-            if ( obj.tipoAtendimento && obj.tipoAtendimento == 9 && obj.modalidade && obj.modalidade > 0) {
+            if (obj.tipoAtendimento && obj.tipoAtendimento == 9 && obj.modalidade && obj.modalidade > 0) {
                 errors = util.customError(errors, "header", "Modalidade não pode ser preenchida para esse tipo de atendimento Visita domiciliar pós-óbito", "");
                 res.status(400).send(errors);
                 return;
@@ -710,6 +714,7 @@ module.exports = function (app) {
             obj.modalidade == '' ? obj.modalidade = 0 : obj.modalidade;
             obj.tipoAtendimento == '' ? obj.tipoAtendimento = 0 : obj.tipoAtendimento;
             obj.vacinasEmDia == '' ? obj.vacinasEmDia = 0 : obj.vacinasEmDia;
+            obj.condicaoAvaliada == '' ? obj.condicaoAvaliada = 0 : obj.condicaoAvaliada;
 
             delete obj.abandonouGrupo;
             delete obj.avaliacaoAlterada;
@@ -746,6 +751,7 @@ module.exports = function (app) {
             objHistorico.modalidade == '' ? objHistorico.modalidade = 0 : objHistorico.modalidade;
             objHistorico.tipoAtendimento == '' ? objHistorico.tipoAtendimento = 0 : objHistorico.tipoAtendimento;
             objHistorico.vacinasEmDia == '' ? objHistorico.vacinasEmDia = 0 : objHistorico.vacinasEmDia;
+            objHistorico.condicaoAvaliada == '' ? objHistorico.condicaoAvaliada = 0 : objHistorico.condicaoAvaliada;
 
             delete objHistorico.abandonouGrupo;
             delete objHistorico.avaliacaoAlterada;

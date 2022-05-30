@@ -171,7 +171,7 @@
                   </select>
                 </div>
                 <label *ngIf="localAtendimento > 1" class="col-xl-2 col-form-label text-left">
-                  Modalidade
+                  Modalidade <span *ngIf="object.tipoFicha == 9" class="text-danger font-weight-bold"> *</span>
                 </label>
                 <div *ngIf="localAtendimento > 1" class="col-xl-4">
                   <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.modalidade"
@@ -677,6 +677,23 @@
               </div>
             </div>
 
+            <div *ngIf="object.tipoAtendimento != 9" class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Condição Avaliada
+                  </label>
+                  <div class="col-xl-4">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.condicaoAvaliada"
+                      formControlName="condicaoAvaliada">
+                      <option [value]="null">Selecione...</option>
+                      <option *ngFor="let item of domains[0]?.condicaoAvaliada" [value]="item.id">{{item.nome}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -773,11 +790,11 @@
             </div>
           </div>
         </div>
-        
-        <!-- Condição Avaliada -->
+
+        <!-- Avaliação/Classificação CIAP2 -->
         <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8">
           <div class="card-header text-left">
-            Condição Avaliada
+            Avaliação/Classificação CIAP2
           </div>
           <div class="card-body text-left">
 
@@ -3678,7 +3695,7 @@
 
 <ng-template #contentCondicaoAvaliada>
   <div class="modal-header">
-    <h4 class="modal-title">Condição Avaliada</h4>
+    <h4 class="modal-title">Avaliação/Classificação CIAP2</h4>
     <button type="button" class="close" aria-label="Close" (click)="close()">
       <span aria-hidden="true">&times;</span>
     </button>

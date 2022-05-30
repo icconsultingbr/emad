@@ -58,6 +58,7 @@ export class Atendimento {
     @Input() modalidade: number;
     @Input() tipoAtendimento: number;
     @Input() vacinasEmDia: number;
+    @Input() condicaoAvaliada: number;
 
 }
 
@@ -116,6 +117,7 @@ export class AtendimentoHistorico {
     @Input() modalidade: number;
     @Input() tipoAtendimento: number;
     @Input() vacinasEmDia: number;
+    @Input() condicaoAvaliada: number;
 
 }
 

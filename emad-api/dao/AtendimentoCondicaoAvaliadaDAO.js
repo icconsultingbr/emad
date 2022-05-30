@@ -14,7 +14,7 @@ AtendimentoCondicaoAvaliadaDAO.prototype.salva = async function (obj) {
 
 AtendimentoCondicaoAvaliadaDAO.prototype.buscarPorAtendimentoId = async function (idAtendimento) {
     let atendimento = await this._connection.query(`select phd.id, hd.ciap2, hd.descricaoAB, hd.codigoAB, hd.sexo  from ${this._table} phd 
-    INNER JOIN tb_condicao_avaliada hd ON(phd.idCondicaoAvaliada = hd.id)     
+    INNER JOIN tb_condicao_avaliada_ciap2 hd ON(phd.idCondicaoAvaliada = hd.id)     
     WHERE phd.idAtendimento = ?` , idAtendimento);
     return atendimento;
 }

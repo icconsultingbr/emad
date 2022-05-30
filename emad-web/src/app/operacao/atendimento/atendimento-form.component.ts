@@ -244,7 +244,8 @@ export class AtendimentoFormComponent implements OnInit {
       localDeAtendimento: new FormControl({ value: '1', disabled: false }),
       modalidade: ['', ''],
       tipoAtendimento: ['', ''],
-      vacinasEmDia: ['', '']
+      vacinasEmDia: ['', ''],
+      condicaoAvaliada: ['', '']
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -304,6 +305,7 @@ export class AtendimentoFormComponent implements OnInit {
       modalidade: new FormControl({ value: '', disabled: true }),
       tipoAtendimento: new FormControl({ value: '', disabled: true }),
       vacinasEmDia: new FormControl({ value: '', disabled: true }),
+      condicaoAvaliada: new FormControl({ value: '', disabled: true }),
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -512,7 +514,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.allItemsPesquisaCondicaoAvaliada = [];
     this.pacienteCondicaoAvaliada = new PacienteCondicaoAvaliada();
     this.condicaoAvaliada = new CondicaoAvaliada();
-    
+
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
       keyboard: false,
@@ -1037,6 +1039,7 @@ export class AtendimentoFormComponent implements OnInit {
                             this.service.listDomains('local-atendimento').subscribe(localDeAtendimento => {
                               this.service.listDomains('modalidade').subscribe(modalidade => {
                                 this.service.listDomains('tipo-atendimento').subscribe(tipoAtendimento => {
+                                  this.service.listDomains('condicao-avaliada').subscribe(condicaoAvaliada => {
                                   this.domains.push({
                                     especialidades: especialidades,
                                     tipoFichas: tipoFichas,
@@ -1053,6 +1056,7 @@ export class AtendimentoFormComponent implements OnInit {
                                     localDeAtendimento: localDeAtendimento,
                                     modalidade: modalidade,
                                     tipoAtendimento: tipoAtendimento,
+                                    condicaoAvaliada: condicaoAvaliada,
                                     tipoHistoriaClinica: [
                                       { id: 1, nome: "Anamnese" },
                                       { id: 2, nome: "Evolução" },
@@ -1072,6 +1076,7 @@ export class AtendimentoFormComponent implements OnInit {
                               });
                             });
                           });
+                        });
                         });
                       });
                     });
@@ -1538,6 +1543,7 @@ export class AtendimentoFormComponent implements OnInit {
   change(event) {
     this.tipoFichaSelecionada = event.target.value;
     this.carregarCondutaEncaminhamento(event.target.value)
+    console.log(event.target.value)
   }
   openAtividadeColetivaParticipante(content: any) {
 
