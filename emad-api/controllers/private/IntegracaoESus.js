@@ -1046,8 +1046,8 @@ module.exports = function (app) {
                 let procedimentosOdontologico = preencherProcedimentoOdonto(listProcedimentoOdontologico, atendimento.idAtendimento)
 
                 let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('atendimentosOdontologicos')
-                    .ele('numeroProntuario').txt(atendimento.idAtendimento).up()
                     .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : undefined).up()
+                    .ele('numeroProntuario').txt(atendimento.idAtendimento).up()
                     .ele('dtNascimento').txt(new Date(atendimento.dataNascimento).getTime()).up()
                     .ele('localAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
                     .ele('gestante').txt(atendimento.gestante == 1 ? true : false).up()
