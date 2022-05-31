@@ -36,6 +36,7 @@ export class ESusComponent implements OnInit {
       tipoFicha: [
         { id: '0', nome: "Todas" },
         { id: '4', nome: "Ficha de Atendimento Individual" },
+        { id: '9', nome: "Ficha de Atendimento Domiciliar" },
         { id: '16', nome: "Ficha de Atendimento Odontologico Individual" },
         { id: '15', nome: "Ficha de Atividade Coletiva" },
         { id: '2', nome: "Ficha de Cadastro Individual" },

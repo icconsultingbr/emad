@@ -42,11 +42,11 @@ IntegracaoESusDAO.prototype.listaProcedimentos = async function (filtro) {
    listaProcedimentos.atendimentos = await this._connection.query(`SELECT * FROM vw_atendimento_individual_sus vw WHERE ${this.campoData} BETWEEN ? AND ? `, [filtro.periodoExtracao[0], filtro.periodoExtracao[1]]);
    listaProcedimentos.procedimentos = await this._connection.query(`SELECT tap.idAtendimento, tp.co_procedimento, tap.qtd, tap.situacao FROM tb_atendimento_procedimento tap
                                                                   INNER JOIN tb_procedimento tp ON (tap.idProcedimento = tp.id)`);
-   listaProcedimentos.numTotalAfericaoPa = await this._connection.query(`SELECT count(1) qtd, idProfissional FROM vw_atendimento_afericoes_sus vw WHERE pressaoArterial is not null and pressaoArterial <> '' and ${this.campoData} BETWEEN ? AND ? group by idProfissional`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1]]);                                                                  
-   listaProcedimentos.numTotalAfericaoTemperatura = await this._connection.query(`SELECT count(1) qtd, idProfissional FROM vw_atendimento_afericoes_sus vw WHERE temperatura is not null and temperatura <> '' and ${this.campoData} BETWEEN ? AND ? group by idProfissional`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1]]);                                                                  
-   listaProcedimentos.numTotalMedicaoAltura = await this._connection.query(`SELECT count(1) qtd, idProfissional FROM vw_atendimento_afericoes_sus vw WHERE altura is not null and altura <> '' and ${this.campoData} BETWEEN ? AND ? group by idProfissional`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1]]);                                                                  
-   listaProcedimentos.numTotalMedicaoPeso = await this._connection.query(`SELECT count(1) qtd,idProfissional  FROM vw_atendimento_afericoes_sus vw WHERE peso is not null and peso <> '' and ${this.campoData} BETWEEN ? AND ? group by idProfissional`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1]]);                                                                  
-                                                               
+   listaProcedimentos.numTotalAfericaoPa = await this._connection.query(`SELECT count(1) qtd, idProfissional FROM vw_atendimento_afericoes_sus vw WHERE pressaoArterial is not null and pressaoArterial <> '' and ${this.campoData} BETWEEN ? AND ? group by idProfissional`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1]]);
+   listaProcedimentos.numTotalAfericaoTemperatura = await this._connection.query(`SELECT count(1) qtd, idProfissional FROM vw_atendimento_afericoes_sus vw WHERE temperatura is not null and temperatura <> '' and ${this.campoData} BETWEEN ? AND ? group by idProfissional`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1]]);
+   listaProcedimentos.numTotalMedicaoAltura = await this._connection.query(`SELECT count(1) qtd, idProfissional FROM vw_atendimento_afericoes_sus vw WHERE altura is not null and altura <> '' and ${this.campoData} BETWEEN ? AND ? group by idProfissional`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1]]);
+   listaProcedimentos.numTotalMedicaoPeso = await this._connection.query(`SELECT count(1) qtd,idProfissional  FROM vw_atendimento_afericoes_sus vw WHERE peso is not null and peso <> '' and ${this.campoData} BETWEEN ? AND ? group by idProfissional`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1]]);
+
    return listaProcedimentos;
 }
 
@@ -66,6 +66,12 @@ IntegracaoESusDAO.prototype.listAtendimentoTipoVigilanciaOdonto = async function
    let listaTipoVigilancia = {};
    listaTipoVigilancia = await this._connection.query(`SELECT * FROM vw_atendimento_tipo_vigilancia_odonto vw WHERE idEstabelecimento=?`, [idEstabelecimento]);
    return listaTipoVigilancia;
+}
+
+IntegracaoESusDAO.prototype.listaAtendimentoDomiciliar = async function (filtro) {
+   let listaAtendimentoDomiciliar = {};
+   listaAtendimentoDomiciliar.atendimentos = await this._connection.query(`SELECT * FROM vw_atendimento_domiciliar_sus vw WHERE ${this.campoData} BETWEEN ? AND ?  AND idEstabelecimento = ?`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1], filtro.idEstabelecimento]);
+   return listaAtendimentoDomiciliar;
 }
 
 module.exports = function () {

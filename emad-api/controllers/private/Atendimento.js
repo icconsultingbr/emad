@@ -380,6 +380,7 @@ module.exports = function (app) {
             obj.modalidade == '' ? obj.modalidade = 0 : obj.modalidade;
             obj.tipoAtendimento == '' ? obj.tipoAtendimento = 0 : obj.tipoAtendimento;
             obj.vacinasEmDia == '' ? obj.vacinasEmDia = 0 : obj.vacinasEmDia;
+            obj.condicaoAvaliada == '' ? obj.condicaoAvaliada = 0 : obj.condicaoAvaliada;
 
             delete obj.abandonouGrupo;
             delete obj.avaliacaoAlterada;
@@ -409,6 +410,8 @@ module.exports = function (app) {
             objHistorico.modalidade == '' ? objHistorico.modalidade = 0 : objHistorico.modalidade;
             objHistorico.tipoAtendimento == '' ? objHistorico.tipoAtendimento = 0 : objHistorico.tipoAtendimento;
             objHistorico.vacinasEmDia == '' ? objHistorico.vacinasEmDia = 0 : objHistorico.vacinasEmDia;
+            objHistorico.condicaoAvaliada == '' ? objHistorico.condicaoAvaliada = 0 : objHistorico.condicaoAvaliada;
+
 
             objHistorico.gestante == '' ? objHistorico.gestante = 0 : objHistorico.gestante;
             objHistorico.possuiNecessidadesEspeciais == '' ? objHistorico.possuiNecessidadesEspeciais = 0 : objHistorico.possuiNecessidadesEspeciais;
@@ -573,6 +576,7 @@ module.exports = function (app) {
 
         }
 
+        //ATENDIMENTO DOMICILIAR
         if (obj.tipoFicha == '9') {
             // CAMPO = atencaoDomiciliarModalidade
             // Não pode ser preenchido se o campo tipoAtendimento = 9 - Visita domiciliar pós-óbito

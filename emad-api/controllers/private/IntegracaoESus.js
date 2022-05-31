@@ -48,6 +48,11 @@ module.exports = function (app) {
                         proc = await listaProcedimentos(filtro);
                         retorno = generateZipFiles(proc, 'ficha-procedimentos')
                         break;
+                    case '9':
+                        configTipoFicha(10)
+                        proc = await listaAtendimentoDomiciliar(filtro);
+                        retorno = generateZipFiles(proc, 'ficha-atendimento-domiciliar')
+                        break;
                     case '14':
                         configTipoFicha(1)
                         vac = await listaFichaVacinacao(filtro);
@@ -396,9 +401,8 @@ module.exports = function (app) {
                 const listCondutas = list.condutaSus.filter(x => x.idAtendimento == atendimento.idAtendimento);
                 const listCondicoesCiaps = list.condicaoCiaps.filter(x => x.idAtendimento == atendimento.idAtendimento);
 
-                if (!listCondutas.some((o) => o.idAtendimento == atendimento.idAtendimento) || 
-                        (!listAvaliacao.some((o) => o.idAtendimento == atendimento.idAtendimento) && !listCondicoesCiaps.some((o) => o.idAtendimento == atendimento.idAtendimento))) 
-                {
+                if (!listCondutas.some((o) => o.idAtendimento == atendimento.idAtendimento) ||
+                    (!listAvaliacao.some((o) => o.idAtendimento == atendimento.idAtendimento) && !listCondicoesCiaps.some((o) => o.idAtendimento == atendimento.idAtendimento))) {
                     qtdAtendimentosValidos--;
                     return;
                 }
@@ -413,7 +417,7 @@ module.exports = function (app) {
                     .ele('localDeAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
                     .ele('sexo').txt(atendimento.sexo).up()
                     .ele('alturaAcompanhamentoNutricional').txt(atendimento.altura ? atendimento.altura : undefined).up()
-                    .ele('pesoAcompanhamentoNutricional').txt(atendimento.peso ? atendimento.peso: undefined).up()
+                    .ele('pesoAcompanhamentoNutricional').txt(atendimento.peso ? atendimento.peso : undefined).up()
                     .ele('turno').txt(atendimento.turno).up()
                     .ele('tipoAtendimento').txt(atendimento.tipoAtendimentoSus ? atendimento.tipoAtendimentoSus : undefined).up()
                     .import(avaliacao);
@@ -426,7 +430,7 @@ module.exports = function (app) {
 
                 doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoIndividualMasterTransport', true, true).import(atend);
 
-                let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento', 'tipoAtendimento', 'alturaAcompanhamentoNutricional', 'pesoAcompanhamentoNutricional' ];
+                let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento', 'tipoAtendimento', 'alturaAcompanhamentoNutricional', 'pesoAcompanhamentoNutricional'];
 
                 fieldToValidate.forEach(field => {
                     doc.each(x => {
@@ -457,19 +461,18 @@ module.exports = function (app) {
 
         listaCiapsAtendimento.forEach(ciaps => {
             const codigoAB = fragment().ele('ciaps').txt(ciaps.codigoAB).up();
-            avaliacao.import(codigoAB);    
+            avaliacao.import(codigoAB);
         });
 
-        if(listaAvaliacaoAtendimento && listaAvaliacaoAtendimento.length > 0)
-        {
+        if (listaAvaliacaoAtendimento && listaAvaliacaoAtendimento.length > 0) {
             const cid10 = fragment().ele('cid10').txt(listaAvaliacaoAtendimento[0].cid_10).up();
             avaliacao.import(cid10);
-    
+
             if (listaAvaliacaoAtendimento.length > 1) {
                 const cid10_2 = fragment().ele('cid10_2').txt(listaAvaliacaoAtendimento[1].cid_10).up();
                 avaliacao.import(cid10_2);
             }
-        }        
+        }
 
         return avaliacao.up();
     }
@@ -688,7 +691,7 @@ module.exports = function (app) {
             const numTotalAfericaoTemperatura = list.numTotalAfericaoTemperatura.filter(x => x.idProfissional == profissional.id);
             const numTotalMedicaoAltura = list.numTotalMedicaoAltura.filter(x => x.idProfissional == profissional.id);
             const numTotalMedicaoPeso = list.numTotalMedicaoPeso.filter(x => x.idProfissional == profissional.id);
-            
+
             var uuidFicha = uuidv4();
 
             if (listProcedimento.length == 0) { return; } //|| (!profissional.profissionalCNS || !profissional.codigoCBO)
@@ -763,20 +766,20 @@ module.exports = function (app) {
             })
 
             let afericoes = doc.find(x => x.node.nodeName == 'ns4:fichaProcedimentoMasterTransport', true, true)
-            .ele('uuidFicha').txt(uuidFicha).up();
+                .ele('uuidFicha').txt(uuidFicha).up();
 
             afericoes.ele('tpCdsOrigem').txt('3').up();
 
-            if(numTotalAfericaoPa && numTotalAfericaoPa.length > 0)
+            if (numTotalAfericaoPa && numTotalAfericaoPa.length > 0)
                 afericoes.ele('numTotalAfericaoPa').txt(numTotalAfericaoPa[0].qtd).up();
-               
-            if(numTotalAfericaoTemperatura && numTotalAfericaoTemperatura.length > 0)
+
+            if (numTotalAfericaoTemperatura && numTotalAfericaoTemperatura.length > 0)
                 afericoes.ele('numTotalAfericaoTemperatura').txt(numTotalAfericaoTemperatura[0].qtd).up();
 
-            if(numTotalMedicaoAltura && numTotalMedicaoAltura.length > 0)
+            if (numTotalMedicaoAltura && numTotalMedicaoAltura.length > 0)
                 afericoes.ele('numTotalMedicaoAltura').txt(numTotalMedicaoAltura[0].qtd).up();
-            
-            if(numTotalMedicaoPeso && numTotalMedicaoPeso.length > 0 )
+
+            if (numTotalMedicaoPeso && numTotalMedicaoPeso.length > 0)
                 afericoes.ele('numTotalMedicaoPeso').txt(numTotalMedicaoPeso[0].qtd).up();
 
             xmls.push(doc.doc().end({ prettyPrint: true }));
@@ -1004,8 +1007,8 @@ module.exports = function (app) {
                 .ele('tipoDadoSerializado').txt('5').up()
                 .ele('codIbge').txt(estabelecimento.codigo).up()
                 .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up();
-                profissional.ine ? doc.ele('ineDadoSerializado').txt(profissional.ine).up() : '';                
-                doc.ele('numLote').txt(Math.floor(Date.now()/1000)).up()
+            profissional.ine ? doc.ele('ineDadoSerializado').txt(profissional.ine).up() : '';
+            doc.ele('numLote').txt(Math.floor(Date.now() / 1000)).up()
                 .ele('ns4:fichaAtendimentoOdontologicoMasterTransport')
                 .ele('uuidFicha').txt(uuidFicha).up()
                 .ele('tpCdsOrigem').txt('1').up()
@@ -1095,5 +1098,127 @@ module.exports = function (app) {
 
         return xmls;
     }
+
+    async function listaAtendimentoDomiciliar(filtro) {
+        let tipoCampoData;
+
+        if (filtro.idTipoPeriodo == 1) {
+            tipoCampoData = 'dataCriacao'
+        } else {
+            tipoCampoData = 'dataFinalizacao'
+        }
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const integracaoESusDAO = new app.dao.IntegracaoESusDAO(connection, tipoCampoData);
+        const estabelecimentoDAO = new app.dao.EstabelecimentoDAO(connection);
+        const profissionalDAO = new app.dao.ProfissionalDAO(connection);
+
+        let list = [];
+        let estabelecimento = {};
+        let profissionais = [];
+
+        try {
+            profissionais = await profissionalDAO.buscarProfissionalPorEstabelecimentoEsus(filtro.idEstabelecimento)
+            estabelecimento = await estabelecimentoDAO.buscaEstabelecimentoESus(filtro.idEstabelecimento);
+            list = await integracaoESusDAO.listaAtendimentoDomiciliar(filtro);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            await connection.close();
+        }
+
+        return preencheXMLAtendimentoDomiciliar(list, estabelecimento, profissionais);
+    }
+
+    function preencheXMLAtendimentoDomiciliar(list, estabelecimento, profissionais) {
+        const { create, fragment } = require('xmlbuilder2');
+        const { v4: uuidv4 } = require('uuid');
+
+        let xmls = [];
+
+        profissionais.forEach(profissional => {
+            const listAtendimentos = list.atendimentos.filter(x => x.idProfissional == profissional.id);
+            var uuidFicha = uuidv4();
+
+            if (listAtendimentos.length == 0) { return; }
+
+            let doc = create({ version: '1.0', encoding: 'UTF-8', keepNullNodes: false, keepNullAttributes: false })
+                .ele('ns3:dadoTransporteTransportXml', { 'xmlns:ns2': 'http://esus.ufsc.br/dadoinstalacao', 'xmlns:ns3': 'http://esus.ufsc.br/dadotransporte', 'xmlns:ns4': 'http://esus.ufsc.br/fichaatendimentodomiciliarmaster' })
+                .ele('uuidDadoSerializado').txt(uuidFicha).up()
+                .ele('tipoDadoSerializado').txt('10').up()
+                .ele('codIbge').txt(estabelecimento.codigo).up()
+                .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up()
+                .ele('ns4:fichaAtendimentoDomiciliarMasterTransport')
+                .ele('uuidFicha').txt(uuidFicha).up()
+                .ele('tpCdsOrigem').txt('3').up()
+                .ele('headerTransport')
+                .ele('lotacaoFormPrincipal')
+                .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
+                .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
+                .ele('cnes').txt(estabelecimento.cnes).up()
+                .up()
+                .ele('dataAtendimento').txt(new Date(listAtendimentos[0].dataCriacao).getTime()).up()
+                .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
+                .up()
+                .up()
+                .ele('ns2:remetente')
+                .ele('contraChave').txt('E-ATENDE-VERSAO').up()
+                .ele('uuidInstalacao').txt(uuidInstalacao).up()
+                .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
+                .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
+                .ele('versaoSistema').txt(versao).up()
+                .ele('nomeBancoDados').txt('MySQL').up()
+                .up()
+                .ele('ns2:originadora')
+                .ele('contraChave').txt('E-ATENDE-VERSAO').up()
+                .ele('uuidInstalacao').txt(uuidInstalacao).up()
+                .ele('cpfOuCnpj').txt(estabelecimento.cnpj.replace(/[^0-9]+/g, '')).up()
+                .ele('nomeOuRazaoSocial').txt(estabelecimento.nomeFantasia).up()
+                .ele('versaoSistema').txt(versao).up()
+                .ele('nomeBancoDados').txt('MySQL').up()
+                .up()
+                .ele('versao', { major: major, minor: minor, revision: revision })
+                .doc();
+
+            var qtdAtendimentosValidos = listAtendimentos.length;
+
+            listAtendimentos.forEach(atendimento => {
+
+                let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('atendimentosDomiciliares')
+                    .ele('turno').txt(atendimento.turno).up()
+                    .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : undefined).up()
+                    .ele('dataNascimento').txt(new Date(atendimento.dataNascimento).getTime()).up()
+                    .ele('sexo').txt(atendimento.sexo).up()
+                    .ele('localDeAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
+                    .ele('atencaoDomiciliarModalidade').txt(atendimento.modalidade).up()
+                    .ele('tipoAtendimento').txt(atendimento.tipoAtendimentoSus ? atendimento.tipoAtendimentoSus : undefined).up()
+                    .ele('condicoesAvaliadas').txt(atendimento.condicaoAvaliada).up()
+
+                doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoDomiciliarMasterTransport', true, true).import(atend);
+
+                let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento', 'tipoAtendimento', 'alturaAcompanhamentoNutricional', 'pesoAcompanhamentoNutricional'];
+
+                fieldToValidate.forEach(field => {
+                    doc.each(x => {
+                        if (x.node.nodeName == field && !x.node._firstChild._data) {
+                            x.node.removeChild(x.node._firstChild);
+                            x.remove();
+                        }
+                    }, true, true)
+                })
+            })
+
+            if (qtdAtendimentosValidos == 0) { return; }
+
+            doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoDomiciliarMasterTransport', true, true).up();
+
+            xmls.push(doc.doc().end({ prettyPrint: true, allowEmptyTags: false }));
+        })
+
+        return xmls;
+    }
+
+
+
 
 }
