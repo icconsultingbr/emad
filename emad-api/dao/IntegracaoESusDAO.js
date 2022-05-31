@@ -71,6 +71,10 @@ IntegracaoESusDAO.prototype.listAtendimentoTipoVigilanciaOdonto = async function
 IntegracaoESusDAO.prototype.listaAtendimentoDomiciliar = async function (filtro) {
    let listaAtendimentoDomiciliar = {};
    listaAtendimentoDomiciliar.atendimentos = await this._connection.query(`SELECT * FROM vw_atendimento_domiciliar_sus vw WHERE ${this.campoData} BETWEEN ? AND ?  AND idEstabelecimento = ?`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1], filtro.idEstabelecimento]);
+   listaAtendimentoDomiciliar.procedimentos = await this._connection.query(`SELECT tap.idAtendimento, tp.co_procedimento, tap.qtd, tap.situacao FROM tb_atendimento_procedimento tap
+                                                                            INNER JOIN tb_procedimento tp ON (tap.idProcedimento = tp.id)`);
+   listaAtendimentoDomiciliar.condicaoAvaliacao = await this._connection.query(`SELECT * FROM vw_problema_condicao_avaliacao_sus vw`);
+   listaAtendimentoDomiciliar.condicaoCiaps = await this._connection.query(`SELECT * FROM vw_ciaps_sus vw`);                                                                            
    return listaAtendimentoDomiciliar;
 }
 

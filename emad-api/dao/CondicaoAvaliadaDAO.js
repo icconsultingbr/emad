@@ -10,7 +10,7 @@ CondicaoAvaliadaDAO.prototype.lista = async function (queryFilter) {
     let where = "";
     let join = "";
 
-    if (queryFilter.codigoAB || queryFilter.descricaoAB) {
+    if (queryFilter.codigoAB || queryFilter.descricaoAB || queryFilter.ciap2) {
 
         where += "WHERE 1 = 1"
 
@@ -20,6 +20,10 @@ CondicaoAvaliadaDAO.prototype.lista = async function (queryFilter) {
 
         if (queryFilter.descricaoAB && queryFilter.descricaoAB != 'null' && queryFilter.descricaoAB != 'undefined') {
             where += ` AND UPPER(descricaoAB) LIKE '%${queryFilter.descricaoAB.toUpperCase()}%'`;
+        }
+
+        if (queryFilter.ciap2 && queryFilter.ciap2 != 'null' && queryFilter.ciap2 != 'undefined') {
+            where += ` AND UPPER(ciap2) LIKE '%${queryFilter.ciap2.toUpperCase()}%'`;
         }
     }
 

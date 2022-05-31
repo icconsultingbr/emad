@@ -1817,7 +1817,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
 
-    var params = "?descricaoAB=" + this.condicaoAvaliada.descricaoAB + "&codigoAB=" + this.condicaoAvaliada.codigoAB;
+    var params = "?descricaoAB=" + this.condicaoAvaliada.descricaoAB + "&codigoAB=" + this.condicaoAvaliada.codigoAB + "&ciap2=" + this.condicaoAvaliada.ciap2;
 
     if (this.paging.offset != null && this.paging.limit != null) {
       params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
@@ -1867,8 +1867,8 @@ export class AtendimentoFormComponent implements OnInit {
     this.allItemsPesquisaCondicaoAvaliada = [];
     this.errors = [];
 
-    if (Util.isEmpty(this.condicaoAvaliada.codigoAB) && Util.isEmpty(this.condicaoAvaliada.descricaoAB)) {
-      this.errors = [{ message: "Informe o código ou nome da Condição Avaliada" }];
+    if (Util.isEmpty(this.condicaoAvaliada.codigoAB) && Util.isEmpty(this.condicaoAvaliada.descricaoAB) && Util.isEmpty(this.condicaoAvaliada.ciap2)) {
+      this.errors = [{ message: "Informe o Código AB, ou a Descrição ou o CIAP2" }];
       this.loading = false;
       return;
     }
