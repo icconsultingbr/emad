@@ -411,6 +411,7 @@ module.exports = function (app) {
                 let condutas = preencheCondutasAtendimentoIndividual(listCondutas, atendimento.idAtendimento);
 
                 let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('atendimentosIndividuais')
+                    .ele('numeroProntuario').txt(atendimento.idAtendimento).up()
                     .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : undefined).up()
                     .ele('cpfCidadao').txt(atendimento.cartaoSus ? undefined : atendimento.cpfCidadao ? atendimento.cpfCidadao : undefined).up()
                     .ele('dataNascimento').txt(new Date(atendimento.dataNascimento).getTime()).up()
@@ -1045,6 +1046,7 @@ module.exports = function (app) {
                 let procedimentosOdontologico = preencherProcedimentoOdonto(listProcedimentoOdontologico, atendimento.idAtendimento)
 
                 let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('atendimentosOdontologicos')
+                    .ele('numeroProntuario').txt(atendimento.idAtendimento).up()
                     .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : undefined).up()
                     .ele('dtNascimento').txt(new Date(atendimento.dataNascimento).getTime()).up()
                     .ele('localAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
