@@ -411,7 +411,7 @@ module.exports = function (app) {
                 let condutas = preencheCondutasAtendimentoIndividual(listCondutas, atendimento.idAtendimento);
 
                 let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('atendimentosIndividuais')
-                    .ele('numeroProntuario').txt(atendimento.idAtendimento).up()    
+                    .ele('numeroProntuario').txt(atendimento.idAtendimento).up()
                     .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : undefined).up()
                     .ele('cpfCidadao').txt(atendimento.cartaoSus ? undefined : atendimento.cpfCidadao ? atendimento.cpfCidadao : undefined).up()
                     .ele('dataNascimento').txt(new Date(atendimento.dataNascimento).getTime()).up()
@@ -426,8 +426,8 @@ module.exports = function (app) {
                 condutas.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosIndividuais', true, true).import(x));
 
                 atend.ele('vacinaEmDia').txt(atendimento.vacinaEmDia ? atendimento.vacinaEmDia == 1 ? true : false : false).up()
-                     .ele('ficouEmObservacao').txt(atendimento.ficouEmObservacao ? atendimento.ficouEmObservacao == 1 ? true : false  : false).up()
-                
+                    .ele('ficouEmObservacao').txt(atendimento.ficouEmObservacao ? atendimento.ficouEmObservacao == 1 ? true : false : false).up()
+
                 atend.ele('dataHoraInicialAtendimento').txt(new Date(atendimento.dataCriacao).getTime()).up()
                     .ele('dataHoraFinalAtendimento').txt(new Date(atendimento.dataFinalizacao).getTime()).up()
                     .up();
@@ -740,7 +740,7 @@ module.exports = function (app) {
                 if (listProcedimentoChild.length == 0) { return; }
 
                 let proc = fragment().ele('atendProcedimentos')
-                    .ele('numProntuario').txt(atendimento.idAtendimento).up()    
+                    .ele('numProntuario').txt(atendimento.idAtendimento).up()
                     .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : '').up()
                     .ele('cpfCidadao').txt(atendimento.cartaoSus ? '' : atendimento.cpfCidadao ? atendimento.cpfCidadao : '').up()
                     .ele('dtNascimento').txt(new Date(atendimento.dataNascimento).getTime()).up()
@@ -1144,7 +1144,7 @@ module.exports = function (app) {
 
         profissionais.forEach(profissional => {
             const listAtendimentos = list.atendimentos.filter(x => x.idProfissional == profissional.id);
-            
+
             var uuidFicha = uuidv4();
 
             if (listAtendimentos.length == 0) { return; }
@@ -1199,18 +1199,18 @@ module.exports = function (app) {
                     .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : undefined).up()
                     .ele('dataNascimento').txt(new Date(atendimento.dataNascimento).getTime()).up()
                     .ele('sexo').txt(atendimento.sexo).up()
-                    .ele('localDeAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
+                    .ele('localAtendimento').txt(atendimento.localDeAtendimentoSus ? atendimento.localDeAtendimentoSus : '').up()
                     .ele('atencaoDomiciliarModalidade').txt(atendimento.modalidade).up()
                     .ele('tipoAtendimento').txt(atendimento.tipoAtendimentoSus ? atendimento.tipoAtendimentoSus : undefined).up()
                     .ele('condicoesAvaliadas').txt(atendimento.condicaoAvaliada ? atendimento.condicaoAvaliada > 0 ? atendimento.condicaoAvaliada : undefined : undefined).up()
 
-                if(listCid10.length > 0){
+                if (listCid10.length > 0) {
                     atend.ele('cid').txt(listCid10[0].cid_10).up()
-                } 
+                }
 
-                if(listCiap2.length > 0){
+                if (listCiap2.length > 0) {
                     atend.ele('ciap').txt(listCiap2[0].ciap2).up()
-                }    
+                }
 
                 let child = preencheProcedimentos(listProcedimentoChild);
                 child.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosDomiciliares', true, true).import(x));
@@ -1219,7 +1219,7 @@ module.exports = function (app) {
 
                 doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoDomiciliarMasterTransport', true, true).import(atend);
 
-                let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento', 'tipoAtendimento', 'alturaAcompanhamentoNutricional', 'pesoAcompanhamentoNutricional', 'condicoesAvaliadas'];
+                let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento', 'tipoAtendimento', 'alturaAcompanhamentoNutricional', 'pesoAcompanhamentoNutricional', 'condicoesAvaliadas', 'condutaDesfecho'];
 
                 fieldToValidate.forEach(field => {
                     doc.each(x => {
