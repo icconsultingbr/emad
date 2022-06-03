@@ -195,7 +195,7 @@
                   <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.tipoAtendimento"
                     formControlName="tipoAtendimento">
                     <option [value]="null">Selecione...</option>
-                    <option *ngFor="let item of domains[0]?.tipoAtendimento" [value]="item.id">{{item.nome}}</option>
+                    <option *ngFor="let item of listTipoAtendimento" [value]="item.id">{{item.nome}}</option>
                   </select>
                 </div>
               </div>

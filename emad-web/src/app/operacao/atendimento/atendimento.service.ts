@@ -425,4 +425,7 @@ export class AtendimentoService extends GenericsService {
         return this.http.get("tipo-vigilancia-odonto/" + id);
     }
 
+    carregaTipoAtendimentoPorTipoFicha(id: any): Observable<any> {
+        return this.http.get("tipo-atendimento/tipo-ficha/" + id);
+      }
 }

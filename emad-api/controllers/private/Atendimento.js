@@ -297,8 +297,10 @@ module.exports = function (app) {
 
 
         }
-        //else if (obj.tipoFicha == '9') { //Ficha de Atendimento Domiciliar
+        //else if (obj.tipoFicha == '9' || obj.tipoFicha == '8') { //Ficha de Atendimento Domiciliar E Ficha de Atendimento Odontologico Individual
 
+          //  req.assert("tipoAtendimento").notEmpty().withMessage("Preencha o campo tipo de atendimento");
+            
             //if (obj.modalidade == null) {
                 //req.assert("modalidade").notEmpty().withMessage("Modalidade é um campo obrigatório;");
             //}
@@ -579,6 +581,13 @@ module.exports = function (app) {
 
         //ATENDIMENTO DOMICILIAR
         if (obj.tipoFicha == '9') {
+            req.assert("tipoAtendimento").notEmpty().withMessage("Preencha o campo tipo de atendimento");
+
+            if(obj.modalidade == undefined)
+                obj.modalidade  = '';
+             
+            req.assert("modalidade").notEmpty().withMessage("Preencha o campo modalidade");
+
             // CAMPO = atencaoDomiciliarModalidade
             // Não pode ser preenchido se o campo tipoAtendimento = 9 - Visita domiciliar pós-óbito
             if (obj.tipoAtendimento && obj.tipoAtendimento == 9 && obj.modalidade && obj.modalidade > 0) {
@@ -586,8 +595,22 @@ module.exports = function (app) {
                 res.status(400).send(errors);
                 return;
             }
+
+            // CAMPO = atencaoDomiciliarModalidade
+            // Não pode ser preenchido se o campo tipoAtendimento = 9 - Visita domiciliar pós-óbito
+            if (obj.modalidade && obj.modalidade > 3) {
+                errors = util.customError(errors, "header", "Na Ficha de Atendimento Domiciliar só são permitidas as modalidades AD1, AD2 e AD3.", "");
+                res.status(400).send(errors);
+                return;
+            }
         }
 
+        //ATENDIMENTO ODONTOLOGICO
+        if (obj.tipoFicha == '8') {
+            req.assert("tipoAtendimento").notEmpty().withMessage("Preencha o campo tipo de atendimento");          
+        }
+
+        
         errors = req.validationErrors();
 
         if (errors) {

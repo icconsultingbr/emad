@@ -80,6 +80,7 @@ export class AtendimentoFormComponent implements OnInit {
   qtdProcedimento: number;
 
   ListcondutaEncaminhamento: any[];
+  listTipoAtendimento: any[];
 
   medicamentoSelecionado: any = null;
   hipoteseDiagnosticaSelecionada: any = null;
@@ -735,6 +736,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.findtiposVigilanciaOdontoPorAtendimento();
       this.buscaProfissionais();
       this.carregarCondutaEncaminhamento(this.tipoFicha);
+      this.carregaTipoAtendimento(this.tipoFicha);
       this.findCondicaoAvaliadaPorAtendimento();
 
     }, error => {
@@ -780,6 +782,7 @@ export class AtendimentoFormComponent implements OnInit {
         this.findtiposFornecimentoOdontoPorAtendimento();
         this.findtiposVigilanciaOdontoPorAtendimento();
         this.carregarCondutaEncaminhamento(this.tipoFicha);
+        this.carregaTipoAtendimento(this.tipoFicha);
         this.findCondicaoAvaliadaPorAtendimento();
 
       }, error => {
@@ -918,7 +921,6 @@ export class AtendimentoFormComponent implements OnInit {
 
     if (!this.object.id) {
       this.object.localDeAtendimento = 1;
-      this.object.tipoAtendimento = 5;
     }
 
     this.errors.push({
@@ -1037,8 +1039,7 @@ export class AtendimentoFormComponent implements OnInit {
                         this.service.listDomains('odonto-fornecimento').subscribe(tiposFornecimOdonto => {
                           this.service.listDomains('odonto-vigilancia').subscribe(tiposVigilanciaSaudeBucal => {
                             this.service.listDomains('local-atendimento').subscribe(localDeAtendimento => {
-                              this.service.listDomains('modalidade').subscribe(modalidade => {
-                                this.service.listDomains('tipo-atendimento').subscribe(tipoAtendimento => {
+                              this.service.listDomains('modalidade').subscribe(modalidade => {                                
                                   this.service.listDomains('condicao-avaliada').subscribe(condicaoAvaliada => {
                                   this.domains.push({
                                     especialidades: especialidades,
@@ -1055,7 +1056,6 @@ export class AtendimentoFormComponent implements OnInit {
                                     tiposVigilanciaSaudeBucal: tiposVigilanciaSaudeBucal,
                                     localDeAtendimento: localDeAtendimento,
                                     modalidade: modalidade,
-                                    tipoAtendimento: tipoAtendimento,
                                     condicaoAvaliada: condicaoAvaliada,
                                     tipoHistoriaClinica: [
                                       { id: 1, nome: "Anamnese" },
@@ -1076,8 +1076,7 @@ export class AtendimentoFormComponent implements OnInit {
                               });
                             });
                           });
-                        });
-                        });
+                        });                        
                       });
                     });
                   });
@@ -1542,7 +1541,8 @@ export class AtendimentoFormComponent implements OnInit {
   }
   change(event) {
     this.tipoFichaSelecionada = event.target.value;
-    this.carregarCondutaEncaminhamento(event.target.value)
+    this.carregarCondutaEncaminhamento(event.target.value);
+    this.carregaTipoAtendimento(event.target.value);
     console.log(event.target.value)
   }
   openAtividadeColetivaParticipante(content: any) {
@@ -1896,5 +1896,14 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
+  carregaTipoAtendimento(id) {
+    this.loading = true;
+    this.service.carregaTipoAtendimentoPorTipoFicha(id).subscribe(result => {
+      this.listTipoAtendimento = result;
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+    });
+  }
 }
 
