@@ -362,8 +362,9 @@ module.exports = function (app) {
                 .ele('uuidDadoSerializado').txt(uuidFicha).up()
                 .ele('tipoDadoSerializado').txt('4').up()
                 .ele('codIbge').txt(estabelecimento.codigo).up()
-                .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up()
-                .ele('ns4:fichaAtendimentoIndividualMasterTransport')
+                .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up();
+                profissional.ine ? doc.ele('ineDadoSerializado').txt(profissional.ine).up() : '';
+                doc.ele('ns4:fichaAtendimentoIndividualMasterTransport')
                 .ele('headerTransport')
                 .ele('lotacaoFormPrincipal')
                 .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
@@ -589,8 +590,9 @@ module.exports = function (app) {
                 .ele('uuidDadoSerializado').txt(uuidFicha).up()
                 .ele('tipoDadoSerializado').txt('14').up()
                 .ele('codIbge').txt(estabelecimento.codigo).up()
-                .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up()
-                .ele('ns4:fichaVacinacaoMasterTransport')
+                .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up();
+                profissional.ine ? doc.ele('ineDadoSerializado').txt(profissional.ine).up() : '';
+                doc.ele('ns4:fichaVacinacaoMasterTransport')
                 .ele('headerTransport')
                 .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
                 .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
@@ -705,8 +707,9 @@ module.exports = function (app) {
                 .ele('uuidDadoSerializado').txt(uuidFicha).up()
                 .ele('tipoDadoSerializado').txt('7').up()
                 .ele('codIbge').txt(estabelecimento.codigo).up()
-                .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up()
-                .ele('ns4:fichaProcedimentoMasterTransport')
+                .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up();
+                profissional.ine ? doc.ele('ineDadoSerializado').txt(profissional.ine).up() : '';
+                doc.ele('ns4:fichaProcedimentoMasterTransport')
                 .ele('headerTransport')
                 .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
                 .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
@@ -814,6 +817,7 @@ module.exports = function (app) {
                 .ele('tipoDadoSerializado').txt('6').up()
                 .ele('codIbge').txt(estabelecimento.codigo).up()
                 .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up()
+                .ele('ineDadoSerializado').txt(atendimento.profissionalIne).up()
                 .ele('ns4:fichaAtividadeColetivaTransport')
                 .ele('uuidFicha').txt(uuidFicha).up()
                 .ele('inep').txt(atendimento.inep).up()
@@ -891,6 +895,10 @@ module.exports = function (app) {
             // Não pode ser preenchido se atividadeTipo for 1, 2, 3, 4, 7
             if (atendimento.atividadeTipo == 1 || atendimento.atividadeTipo == 2 || atendimento.atividadeTipo == 3 || atendimento.atividadeTipo == 4 || atendimento.atividadeTipo == 7) {
                 removeNode(doc.doc(), ['praticasEmSaude'])
+            }
+
+            if (!atendimento.profissionalIne) {
+                removeNode(doc.doc(), ['ineDadoSerializado'])
             }
 
             let fieldToValidate = ['peso', 'altura', 'procedimento'];
@@ -1154,8 +1162,9 @@ module.exports = function (app) {
                 .ele('uuidDadoSerializado').txt(uuidFicha).up()
                 .ele('tipoDadoSerializado').txt('10').up()
                 .ele('codIbge').txt(estabelecimento.codigo).up()
-                .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up()
-                .ele('ns4:fichaAtendimentoDomiciliarMasterTransport')
+                .ele('cnesDadoSerializado').txt(estabelecimento.cnes).up();
+                profissional.ine ? doc.ele('ineDadoSerializado').txt(profissional.ine).up() : '';
+                doc.ele('ns4:fichaAtendimentoDomiciliarMasterTransport')
                 .ele('uuidFicha').txt(uuidFicha).up()
                 .ele('tpCdsOrigem').txt('3').up()
                 .ele('headerTransport')

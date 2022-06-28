@@ -20,37 +20,18 @@ export class EquipeService extends GenericsService {
       form: true,
       required: false,
       validator: ['', '']
-    },
+    },    
     {
-      field: "equipe",
+      field: "tipo",
       type: "select",
-      label: "Equipe",
-      toggleFields: [
-        {
-          value: "EMAP",
-          hide: ['cnes', 'nome', 'tipo', 'idEstabelecimento'],
-          show: ['idEquipeEmad', 'profissionais', 'situacao']
-        },
-        {
-          value: "EMAD",
-          show: ['cnes', 'nome', 'tipo', 'idEstabelecimento', 'profissionais', 'situacao'],
-          hide: ['idEquipeEmad']
-        },
-        {
-          value: undefined,
-          hide: ['cnes', 'nome', 'tipo', 'idEstabelecimento', 'idEquipeEmad', 'profissionais', 'situacao']
-        }
-      ],
+      label: "Tipo",
       grid: true,
       form: true,
       required: true,
-      validator: ['', Validators.required],
-      filter: {
-        type: "select",
-        changeMethod: 'profissional/equipe',
-        changeTarget: 'profissionais'
-      },
-      autoFocus: true
+      translate: { "8": "08 - EMSI", "22": "22 - EMAD", "23": "23 - EMAP", "46": "46 - EMAD", "47": "47 - EAD"
+                 , "70": "70 - eSF", "71": "71 - eSB", "72": "72 - eNASF-AP", "73": "73 - eCR", "74": "74 - eAPP"
+                 , "75": "75 - eMAESM", "76": "76 - eAP" },
+      validator: ['', ''],
     },
     {
       field: "ine",
@@ -61,7 +42,6 @@ export class EquipeService extends GenericsService {
       required: false,
       validator: ['', ''],
     },
-
     {
       field: "nome",
       type: "text",
@@ -70,39 +50,24 @@ export class EquipeService extends GenericsService {
       form: true,
       required: false,
       validator: ['', ''],
-    },
-    {
-      field: "tipo",
-      type: "select",
-      label: "Tipo",
-      grid: false,
-      form: true,
-      required: true,
-      validator: ['', ''],
-    },
+    },    
     {
       field: "idEstabelecimento",
       type: "select",
       label: "Estabelecimento",
-      grid: true,
+      grid: false,
       form: true,
-      required: true,
-      validator: ['', Validators.required],
-      filter: {
-        type: "select",
-        changeMethod: 'profissional/estabelecimento',
-        changeTarget: 'profissionais',
-        grid: true
-      }
+      required: false,
+      validator: ['', ''],
     },
     {
-      field: "idEquipeEmad",
-      type: "select",
-      label: "Equipe EMAD",
+      field: "nomeEstabelecimento",
+      type: "text",
+      label: "Estabelecimento",
       grid: true,
-      form: true,
-      required: true,
-      validator: ['', Validators.required]
+      form: false,
+      required: false,
+      validator: ['', ''],
     },
     {
       field: "profissionais",

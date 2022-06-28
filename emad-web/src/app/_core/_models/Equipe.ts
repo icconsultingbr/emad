@@ -7,7 +7,7 @@ export class Equipe {
     @Input() nome: string;
     @Input() tipo: string;
     @Input() situacao: Boolean;
-    @Input() idEstabelecimento: Number;
+    @Input() idEstabelecimento: Number = +JSON.parse(localStorage.getItem("est"))[0].id;
     @Input() idEquipeEmap: Number;
     @Input() profissionais : any[];
 }

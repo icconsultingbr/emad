@@ -444,14 +444,15 @@ ProfissionalDAO.prototype.carregaProfissionalPorMedicamento = async function (ad
 }
 
 ProfissionalDAO.prototype.buscarProfissionalPorEstabelecimentoEsus = async function (id) {
-    return await this._connection.query(`
-        SELECT tp.id, tp.profissionalCNS, te.codigoCBO, te2.ine
+    return await this._connection.query(`        
+        SELECT tp.id, tp.profissionalCNS, te.codigoCBO,    
+        (select te2.ine from tb_profissional_equipe tpeInterno
+        inner JOIN tb_equipe te2 ON te2.id = tpeInterno.idEquipe 
+        where  tpeInterno.idProfissional = tp.id AND te2.idEstabelecimento = ep.idEstabelecimento limit 1) ine
         FROM ${this._table} tp 
         INNER JOIN tb_estabelecimento_usuario as ep ON (tp.idUsuario = ep.idUsuario) 
         INNER JOIN tb_especialidade te ON (tp.idEspecialidade = te.id)
-        LEFT JOIN tb_profissional_equipe tpe ON tpe.idProfissional = tp.id
-        LEFT JOIN tb_equipe te2 ON te2.id = tpe.idEquipe AND te2.idEstabelecimento = ep.idEstabelecimento
-        WHERE ep.idEstabelecimento = ? AND tp.situacao = 1`, id);
+        WHERE ep.idEstabelecimento = ? AND tp.situacao = 1 `, id);
 }
 
 ProfissionalDAO.prototype.buscarProfissionalPorEstabelecimentoAtividadeColetiva = async function (id) {

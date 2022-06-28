@@ -4,8 +4,9 @@ module.exports = function (app) {
         let usuario = req.usuario;
         let util = new app.util.Util();
         let errors = [];
+        let queryFilter = req.query;
 
-        lista(res).then(function (resposne) {
+        listaPorEstabelecimento(queryFilter.idEstabelecimento, res).then(function (resposne) {
             res.status(200).json(resposne);
             return;
         });
@@ -51,15 +52,11 @@ module.exports = function (app) {
         let profissionais = obj.profissionais;
         let arrProfissionais = [];
 
-        if (obj.equipe == "EMAD") {
-            req.assert("equipe").notEmpty().withMessage("Equipe é um campo obrigatório;");
-            req.assert("tipo").notEmpty().withMessage("Tipo é um campo obrigatório;");
-            req.assert("situacao").notEmpty().withMessage("Situacao é um campo obrigatório;");
-            req.assert("idEstabelecimento").notEmpty().withMessage("Estabelecimento é um campo obrigatório;");
-        } else {
-            req.assert("equipe").notEmpty().withMessage("Equipe é um campo obrigatório;");
-            req.assert("idEquipeEmad").notEmpty().withMessage("Equipe EMAD é um campo obrigatório;");
-        }
+        req.assert("tipo").notEmpty().withMessage("Tipo é um campo obrigatório;");
+        req.assert("situacao").notEmpty().withMessage("Situacao é um campo obrigatório;");
+        req.assert("idEstabelecimento").notEmpty().withMessage("Estabelecimento é um campo obrigatório;");
+        req.assert("ine").notEmpty().withMessage("INE é um campo obrigatório;");
+        req.assert("ine").isLength({ min: 10, max: 10 }).withMessage("O campo INE deve ter 10 caracteres");
 
         var errors = req.validationErrors();
 
@@ -106,15 +103,12 @@ module.exports = function (app) {
         let profissionais = obj.profissionais;
         let arrProfissionais = [];
 
-        if (obj.equipe == "EMAD") {
-            req.assert("equipe").notEmpty().withMessage("Equipe é um campo obrigatório;");
-            req.assert("tipo").notEmpty().withMessage("Tipo é um campo obrigatório;");
-            req.assert("situacao").notEmpty().withMessage("Situacao é um campo obrigatório;");
-            req.assert("idEstabelecimento").notEmpty().withMessage("Estabelecimento é um campo obrigatório;");
-        } else {
-            req.assert("equipe").notEmpty().withMessage("Equipe é um campo obrigatório;");
-            req.assert("idEquipeEmap").notEmpty().withMessage("Equipe EMAP é um campo obrigatório;");
-        }
+        req.assert("tipo").notEmpty().withMessage("Tipo é um campo obrigatório;");
+        req.assert("situacao").notEmpty().withMessage("Situacao é um campo obrigatório;");
+        req.assert("idEstabelecimento").notEmpty().withMessage("Estabelecimento é um campo obrigatório;");
+        req.assert("ine").notEmpty().withMessage("INE é um campo obrigatório;");
+        req.assert("ine").isLength({ min: 10, max: 10 }).withMessage("O campo INE deve ter 10 caracteres");
+        
         errors = req.validationErrors();
 
         if (errors) {
@@ -166,7 +160,7 @@ module.exports = function (app) {
         });
     });
 
-    function listaPorEstabelecimento(estabelecimento, addFilter, res) {
+    function listaPorEstabelecimento(estabelecimento, res) {
         var q = require('q');
         var d = q.defer();
         var util = new app.util.Util();
@@ -175,7 +169,7 @@ module.exports = function (app) {
 
         var errors = [];
 
-        objDAO.listaPorEstabelecimento(estabelecimento, addFilter, function (exception, result) {
+        objDAO.listaPorEstabelecimento(estabelecimento, function (exception, result) {
             if (exception) {
                 d.reject(exception);
                 console.log(exception);
