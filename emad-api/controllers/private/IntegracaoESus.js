@@ -370,6 +370,7 @@ module.exports = function (app) {
                 .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
                 .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
                 .ele('cnes').txt(estabelecimento.cnes).up()
+                .ele('ine').txt(profissional.ine).up()
                 .up()
                 .ele('dataAtendimento').txt(new Date(listAtendimentos[0].dataCriacao).getTime()).up()
                 .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
@@ -423,11 +424,11 @@ module.exports = function (app) {
                     .ele('turno').txt(atendimento.turno).up()
                     .ele('tipoAtendimento').txt(atendimento.tipoAtendimentoSus ? atendimento.tipoAtendimentoSus : undefined).up()
                     .import(avaliacao);
+                   
+                atend.ele('vacinaEmDia').txt(atendimento.vacinaEmDia ? atendimento.vacinaEmDia == 1 ? true : false : false).up()
+                .ele('ficouEmObservacao').txt(atendimento.ficouEmObservacao ? atendimento.ficouEmObservacao == 1 ? true : false : false).up()
 
                 condutas.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosIndividuais', true, true).import(x));
-
-                atend.ele('vacinaEmDia').txt(atendimento.vacinaEmDia ? atendimento.vacinaEmDia == 1 ? true : false : false).up()
-                    .ele('ficouEmObservacao').txt(atendimento.ficouEmObservacao ? atendimento.ficouEmObservacao == 1 ? true : false : false).up()
 
                 atend.ele('dataHoraInicialAtendimento').txt(new Date(atendimento.dataCriacao).getTime()).up()
                     .ele('dataHoraFinalAtendimento').txt(new Date(atendimento.dataFinalizacao).getTime()).up()
@@ -435,7 +436,7 @@ module.exports = function (app) {
 
                 doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoIndividualMasterTransport', true, true).import(atend);
 
-                let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento', 'tipoAtendimento', 'alturaAcompanhamentoNutricional', 'pesoAcompanhamentoNutricional'];
+                let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento', 'tipoAtendimento', 'alturaAcompanhamentoNutricional', 'pesoAcompanhamentoNutricional', 'ine'];
 
                 fieldToValidate.forEach(field => {
                     doc.each(x => {
@@ -597,6 +598,7 @@ module.exports = function (app) {
                 .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
                 .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
                 .ele('cnes').txt(estabelecimento.cnes).up()
+                .ele('ine').txt(profissional.ine).up()
                 .ele('dataAtendimento').txt(new Date(listVacinas[0].dataCriacao).getTime()).up()
                 .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
                 .up()
@@ -647,7 +649,7 @@ module.exports = function (app) {
 
                 doc.find(x => x.node.nodeName == 'ns4:fichaVacinacaoMasterTransport', true, true).import(vac);
 
-                let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento'];
+                let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento', 'ine'];
 
                 fieldToValidate.forEach(field => {
                     doc.each(x => {
@@ -714,6 +716,7 @@ module.exports = function (app) {
                 .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
                 .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
                 .ele('cnes').txt(estabelecimento.cnes).up()
+                .ele('ine').txt(profissional.ine).up()
                 .ele('dataAtendimento').txt(new Date(listProcedimento[0].dataCriacao).getTime()).up()
                 .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
                 .up()
@@ -736,6 +739,17 @@ module.exports = function (app) {
                 .up()
                 .ele('versao', { major: major, minor: minor, revision: revision })
                 .doc();
+
+             let fieldToValidate = ['ine'];
+
+                fieldToValidate.forEach(field => {
+                    doc.each(x => {
+                        if (x.node.nodeName == field && !x.node._firstChild._data) {
+                            x.node.removeChild(x.node._firstChild);
+                            x.remove();
+                        }
+                    }, true, true)
+                })
 
             listProcedimento.forEach(atendimento => {
                 const listProcedimentoChild = list.procedimentos.filter(x => x.idAtendimento == atendimento.idAtendimento);
@@ -841,6 +855,7 @@ module.exports = function (app) {
                 .ele('profissionalCNS').txt(estabelecimento.cnsProfissionaleSus ? estabelecimento.cnsProfissionaleSus : '3').up()
                 .ele('cboCodigo_2002').txt(estabelecimento.codigoCBO ? estabelecimento.codigoCBO : '3').up()
                 .ele('cnes').txt(estabelecimento.cnes).up()
+                .ele('ine').txt(atendimento.profissionalIne).up()
                 .ele('dataAtendimento').txt(new Date(atendimento.dataCriacao).getTime()).up()
                 .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
                 .up()
@@ -898,7 +913,7 @@ module.exports = function (app) {
             }
 
             if (!atendimento.profissionalIne) {
-                removeNode(doc.doc(), ['ineDadoSerializado'])
+                removeNode(doc.doc(), ['ineDadoSerializado', 'ine'])
             }
 
             let fieldToValidate = ['peso', 'altura', 'procedimento'];
@@ -1101,11 +1116,23 @@ module.exports = function (app) {
                 .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
                 .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
                 .ele('cnes').txt(estabelecimento.cnes).up()
+                .ele('ine').txt(profissional.ine).up()
                 .up()
                 .ele('dataAtendimento').txt(new Date(listAtendimentos[0].dataCriacao).getTime()).up()
                 .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
                 .up()
             doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoOdontologicoMasterTransport', true, true).import(header);
+
+            let fieldToValidate = ['ine'];
+
+                fieldToValidate.forEach(field => {
+                    doc.each(x => {
+                        if (x.node.nodeName == field && !x.node._firstChild._data) {
+                            x.node.removeChild(x.node._firstChild);
+                            x.remove();
+                        }
+                    }, true, true)
+                })
 
             xmls.push(doc.doc().end({ prettyPrint: true, allowEmptyTags: false }));
         })
@@ -1172,6 +1199,7 @@ module.exports = function (app) {
                 .ele('profissionalCNS').txt(profissional.profissionalCNS ? profissional.profissionalCNS : '3').up()
                 .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
                 .ele('cnes').txt(estabelecimento.cnes).up()
+                .ele('ine').txt(profissional.ine).up()
                 .up()
                 .ele('dataAtendimento').txt(new Date(listAtendimentos[0].dataCriacao).getTime()).up()
                 .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
@@ -1228,7 +1256,7 @@ module.exports = function (app) {
 
                 doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoDomiciliarMasterTransport', true, true).import(atend);
 
-                let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento', 'tipoAtendimento', 'alturaAcompanhamentoNutricional', 'pesoAcompanhamentoNutricional', 'condicoesAvaliadas', 'condutaDesfecho'];
+                let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento', 'tipoAtendimento', 'alturaAcompanhamentoNutricional', 'pesoAcompanhamentoNutricional', 'condicoesAvaliadas', 'condutaDesfecho', 'ine'];
 
                 fieldToValidate.forEach(field => {
                     doc.each(x => {
