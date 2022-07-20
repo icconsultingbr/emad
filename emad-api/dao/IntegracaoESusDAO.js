@@ -39,7 +39,12 @@ IntegracaoESusDAO.prototype.listaVacinas = async function (filtro) {
 
 IntegracaoESusDAO.prototype.listaProcedimentos = async function (filtro) {
    let listaProcedimentos = {};
-   listaProcedimentos.atendimentos = await this._connection.query(`SELECT * FROM vw_atendimento_individual_sus vw WHERE ${this.campoData} BETWEEN ? AND ? AND exists (select 1 from tb_atendimento_procedimento tap where tap.idAtendimento = vw.idAtendimento) ORDER BY dataCriacao asc`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1]] );
+   listaProcedimentos.atendimentos = await this._connection.query(`SELECT * FROM vw_atendimento_individual_sus vw WHERE ${this.campoData} BETWEEN ? AND ? AND ((exists (select 1 from tb_atendimento_procedimento tap where tap.idAtendimento = vw.idAtendimento)) 
+   or (exists (select 1 from vw_atendimento_afericoes_sus afer where afer.idAtendimento = vw.idAtendimento and 
+   (
+   (pressaoArterial is not null and pressaoArterial <> '') or (temperatura is not null and temperatura <> '') or (altura is not null and altura <> '') or (peso is not null and peso <> '')
+   )
+   ))) ORDER BY dataCriacao asc`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1]] );
    listaProcedimentos.procedimentos = await this._connection.query(`SELECT tap.idAtendimento, tp.co_procedimento, tap.qtd, tap.situacao FROM tb_atendimento_procedimento tap
                                                                   INNER JOIN tb_procedimento tp ON (tap.idProcedimento = tp.id)`);
    listaProcedimentos.numTotalAfericaoPa = await this._connection.query(`SELECT count(1) qtd, idProfissional FROM vw_atendimento_afericoes_sus vw WHERE pressaoArterial is not null and pressaoArterial <> '' and ${this.campoData} BETWEEN ? AND ? group by idProfissional`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1]]);

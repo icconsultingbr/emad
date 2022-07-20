@@ -708,7 +708,12 @@ module.exports = function (app) {
 
             var uuidFicha = uuidv4();
 
-            if (listProcedimento.length == 0) { return; } //|| (!profissional.profissionalCNS || !profissional.codigoCBO)
+            if (listProcedimento.length == 0 
+                && (numTotalAfericaoPa && numTotalAfericaoPa == 0) 
+                && (numTotalAfericaoTemperatura && numTotalAfericaoTemperatura == 0) 
+                && (numTotalMedicaoAltura && numTotalMedicaoAltura == 0) 
+                && (numTotalMedicaoPeso && numTotalMedicaoPeso == 0) 
+                ) { return; } //|| (!profissional.profissionalCNS || !profissional.codigoCBO)
 
             let doc = create({ version: '1.0', encoding: 'UTF-8', standalone: 'yes' })
                 .ele('ns3:dadoTransporteTransportXml', { 'xmlns:ns2': 'http://esus.ufsc.br/dadoinstalacao', 'xmlns:ns3': 'http://esus.ufsc.br/dadotransporte', 'xmlns:ns4': 'http://esus.ufsc.br/fichaprocedimentomaster' })
