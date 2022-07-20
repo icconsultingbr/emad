@@ -466,8 +466,14 @@ module.exports = function (app) {
         const listaCiapsAtendimento = listCiaps.filter(x => x.idAtendimento == idAtendimento);
 
         listaCiapsAtendimento.forEach(ciaps => {
-            const codigoAB = fragment().ele('ciaps').txt(ciaps.codigoAB).up();
-            avaliacao.import(codigoAB);
+            if(ciaps.codigoAB && ciaps.codigoAB.length > 1){
+                const codigoAB = fragment().ele('ciaps').txt(ciaps.codigoAB).up();
+                avaliacao.import(codigoAB);
+            }
+            else{
+                const outroCiap1 = fragment().ele('outroCiap1').txt(ciaps.ciap2).up();
+                avaliacao.import(outroCiap1);
+            }            
         });
 
         if (listaAvaliacaoAtendimento && listaAvaliacaoAtendimento.length > 0) {
