@@ -27,7 +27,7 @@
     "express": "^4.16.2",
     "express-session": "^1.15.6",
     "express-validator": "^4.3.0",
-    "file-type": "^7.6.0",
+    "file-type": "^16.5.4",
     "forEachAsync": "^3.0.0",
     "form-data": "^3.0.0",
     "jsonwebtoken": "^8.1.1",
