@@ -188,7 +188,7 @@ module.exports = function (app) {
         let objDAO = new app.dao.AtendimentoEncaminhamentoDAO(connection, _table);
         let errors = [];
 
-        objDAO.buscaEncaminhamentoPorPacienteId(id, function (exception, result) {
+        objDAO.buscaEncaminhamentoPorPacienteId(id,0,0, function (exception, result) {
             if (exception) {
                 d.reject(exception);
                 console.log(exception);

@@ -177,7 +177,7 @@ module.exports = function (app) {
         const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
 
         try {
-            var response = await atendimentoRepository.buscaPorPacienteIdProntuario(id, tipo);
+            var response = await atendimentoRepository.buscaPorPacienteIdProntuario(id, tipo, 0, 0);
             var atendimentos = response;
             if (atendimentos) {
                 for (const itemAtendimento of atendimentos) {
@@ -207,7 +207,7 @@ module.exports = function (app) {
         const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
 
         try {
-            var response = await atendimentoRepository.buscaSinaisVitaisPorPacienteId(id, tipo);
+            var response = await atendimentoRepository.buscaSinaisVitaisPorPacienteId(id, tipo, 0, 0);
             res.status(200).json(response);
         }
         catch (exception) {

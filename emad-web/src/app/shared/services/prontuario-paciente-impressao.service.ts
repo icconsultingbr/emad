@@ -136,9 +136,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
         return resultFilter
     }
 
-    imprimir(idPaciente: number, dataInicial: string, dataFinal: string, target: string = '_blank') {
+    imprimir(idPaciente: number, dataInicial: string, dataFinal: string, tipoFicha: number, profissional: number, target: string = '_blank') {
     
-        this.pacienteService.obterProntuarioPacienteRelatorio(idPaciente)
+        this.pacienteService.obterProntuarioPacienteRelatorio(idPaciente, tipoFicha, profissional)
             .subscribe((result) => {
                 let sinaisVitais = '';
                 let atendimentos = '';

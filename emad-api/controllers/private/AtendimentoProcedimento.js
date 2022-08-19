@@ -111,7 +111,7 @@ module.exports = function (app) {
 
         try {
             const atendimentoProcedimentoRepository = new app.dao.AtendimentoProcedimentoDAO(connection);
-            const response = await atendimentoProcedimentoRepository.listarPorPaciente(id);
+            const response = await atendimentoProcedimentoRepository.listarPorPaciente(id,0,0);
             res.status(200).json(response);
         }
         catch (exception) {

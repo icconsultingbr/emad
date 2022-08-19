@@ -81,6 +81,8 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
   dataInicial: Date;
   dataFinal: Date;
+  tipoFichaFiltro: number;
+  profissionalFiltro: number;
 
   @ViewChild('addresstext') addresstext: ElementRef;
 
@@ -154,66 +156,69 @@ export class ProntuarioPacienteFormComponent implements OnInit {
               this.service.listDomains('hipotese-diagnostica').subscribe(hipoteseDiagnostica => {
                 this.service.listDomains('atencao-continuada').subscribe(atencaoContinuada => {
                   this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {
-                    this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {
-                      this.service.listDomains('tipo-exame').subscribe(tipoExame => {
-                        this.domains.push({
-                          idUf: ufs,
-                          idNacionalidade: paises,
-                          idNaturalidade: [],
-                          idMunicipio: [],
-                          hipoteses: hipoteseDiagnostica,
-                          idEstabelecimentoCadastro: estabelecimentos,
-                          tipoFichas: tipoFichas,
-                          classificacaoRiscos: classificacaoRiscos,
-                          tipoHistoriaClinica: [
-                            { id: 1, nome: "Anamnese" },
-                            { id: 2, nome: "Evolução" }],
-                          escolaridade: [
-                            { id: 1, nome: "Educação infantil" },
-                            { id: 2, nome: "Fundamental" },
-                            { id: 3, nome: "Médio" },
-                            { id: 4, nome: "Superior (Graduação)" },
-                            { id: 5, nome: "Pós-graduação" },
-                            { id: 6, nome: "Mestrado" },
-                            { id: 7, nome: "Doutorado" },
-                            { id: 8, nome: "Escola" },
-                            { id: 9, nome: "Analfabeto" },
-                            { id: 10, nome: "Não informado" }
-                          ],
-                          idModalidade: modalidades,
-                          sexo: [
-                            { id: "1", nome: "Masculino" },
-                            { id: "2", nome: "Feminino" },
-                            { id: "3", nome: "Ambos" },
-                            { id: "4", nome: "Não informado" }
-                          ],
-                          idTipoSanguineo: [
-                            { id: "1", nome: "A_POSITIVO" },
-                            { id: "2", nome: "A_NEGATIVO" },
-                            { id: "3", nome: "B_POSITIVO" },
-                            { id: "4", nome: "B_NEGATIVO" },
-                            { id: "5", nome: "AB_POSITIVO" },
-                            { id: "6", nome: "AB_NEGATIVO" },
-                            { id: "7", nome: "O_POSITIVO" },
-                            { id: "8", nome: "O_NEGATIVO" },
-                          ],
-                          idRaca: racas,
-                          idAtencaoContinuada: atencaoContinuada,
-                          gruposAtencaoContinuada: atencaoContinuada,
-                          idTipoExame: tipoExame,
-                          resultadoFinal: [
-                            { id: 1, nome: "Amostra não reagente" },
-                            { id: 2, nome: "Amostra reagente" },
-                            { id: 3, nome: "Não realizado" }
-                          ],
-                        });
-                        if (!Util.isEmpty(this.id)) {
-                          this.encontraPaciente();
-                        }
-                        else {
-                          this.loading = false;
-                          this.loadPhoto = true;
-                        }
+                      this.service.list('profissional/estabelecimento/' + JSON.parse(localStorage.getItem("est"))[0].id).subscribe(profissionais => {
+                        this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {
+                          this.service.listDomains('tipo-exame').subscribe(tipoExame => {
+                            this.domains.push({
+                              idUf: ufs,
+                              idNacionalidade: paises,
+                              idNaturalidade: [],
+                              idMunicipio: [],
+                              hipoteses: hipoteseDiagnostica,
+                              idEstabelecimentoCadastro: estabelecimentos,
+                              tipoFichas: tipoFichas,
+                              profissionais: profissionais,
+                              classificacaoRiscos: classificacaoRiscos,
+                              tipoHistoriaClinica: [
+                                { id: 1, nome: "Anamnese" },
+                                { id: 2, nome: "Evolução" }],
+                              escolaridade: [
+                                { id: 1, nome: "Educação infantil" },
+                                { id: 2, nome: "Fundamental" },
+                                { id: 3, nome: "Médio" },
+                                { id: 4, nome: "Superior (Graduação)" },
+                                { id: 5, nome: "Pós-graduação" },
+                                { id: 6, nome: "Mestrado" },
+                                { id: 7, nome: "Doutorado" },
+                                { id: 8, nome: "Escola" },
+                                { id: 9, nome: "Analfabeto" },
+                                { id: 10, nome: "Não informado" }
+                              ],
+                              idModalidade: modalidades,
+                              sexo: [
+                                { id: "1", nome: "Masculino" },
+                                { id: "2", nome: "Feminino" },
+                                { id: "3", nome: "Ambos" },
+                                { id: "4", nome: "Não informado" }
+                              ],
+                              idTipoSanguineo: [
+                                { id: "1", nome: "A_POSITIVO" },
+                                { id: "2", nome: "A_NEGATIVO" },
+                                { id: "3", nome: "B_POSITIVO" },
+                                { id: "4", nome: "B_NEGATIVO" },
+                                { id: "5", nome: "AB_POSITIVO" },
+                                { id: "6", nome: "AB_NEGATIVO" },
+                                { id: "7", nome: "O_POSITIVO" },
+                                { id: "8", nome: "O_NEGATIVO" },
+                              ],
+                              idRaca: racas,
+                              idAtencaoContinuada: atencaoContinuada,
+                              gruposAtencaoContinuada: atencaoContinuada,
+                              idTipoExame: tipoExame,
+                              resultadoFinal: [
+                                { id: 1, nome: "Amostra não reagente" },
+                                { id: 2, nome: "Amostra reagente" },
+                                { id: 3, nome: "Não realizado" }
+                              ],
+                            });
+                            if (!Util.isEmpty(this.id)) {
+                              this.encontraPaciente();
+                            }
+                            else {
+                              this.loading = false;
+                              this.loadPhoto = true;
+                            }
+                          });
                       });
                     });
                   });
@@ -331,6 +336,8 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       stGravidezPlanejada: new FormControl({ value: '', disabled: true }),
       nuGestasPrevias: ['', ''],
       nuPartos: ['', ''],
+      tipoFichaFiltro: ['', ''],
+      profissionalFiltro: ['', ''],
     });
   }
 
@@ -642,7 +649,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       dataFinalConvertida = this.dataFinal.toISOString()
     }
 
-    this.prontuarioPacienteImpressao.imprimir(this.id, dataInicialConvertida, dataFinalConvertida);
+    this.prontuarioPacienteImpressao.imprimir(this.id, dataInicialConvertida, dataFinalConvertida, this.tipoFichaFiltro, this.profissionalFiltro);
   }
 
   abreReciboExame(exameId: number) {

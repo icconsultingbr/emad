@@ -46,7 +46,7 @@ TipoFichaDAO.prototype.buscarPorIdEstabelecimento = async function (idEstabeleci
                                                INNER JOIN 
                                                    tb_tipo_ficha ttf ON ttf.id = tef.idTipoFicha  
                                                WHERE 
-                                                   ttf.situacao = 1
+                                                   ttf.situacao = 1 and
                                                    tef.idEstabelecimento =?`, [idEstabelecimento] + " ORDER BY ttf.id ASC");
 
     return result ? result[0] : null;

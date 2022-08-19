@@ -10,10 +10,21 @@ AtendimentoHipoteseDiagnosticaDAO.prototype.buscarPorAtendimentoId = async funct
     return atendimento;
 }
 
-AtendimentoHipoteseDiagnosticaDAO.prototype.listarPorPaciente = async function (id) {
-    let atendimento =  await this._connection.query(`select phd.id, hd.codigo, hd.nome, phd.idAtendimento, phd.dataCriacao, hd.cid_10, phd.idExame from ${this._table} phd 
-            INNER JOIN tb_hipotese_diagnostica hd ON(phd.idHipoteseDiagnostica = hd.id)     
-            WHERE phd.situacao = 1 AND phd.idPaciente = ?`,id); 
+AtendimentoHipoteseDiagnosticaDAO.prototype.listarPorPaciente = async function (id, tipoFicha, profissional) {
+    var where = "";
+
+    if(tipoFicha > 0)
+        where += " and a.tipoFicha = " + tipoFicha;
+
+    if(profissional > 0)
+        where += " and tp.id = " + profissional;
+
+    let atendimento =  await this._connection.query(`select phd.id, hd.codigo, hd.nome, phd.idAtendimento, phd.dataCriacao, hd.cid_10, phd.idExame 
+            from ${this._table} phd 
+            INNER JOIN tb_hipotese_diagnostica hd ON(phd.idHipoteseDiagnostica = hd.id)  
+            inner join tb_atendimento a ON (phd.idAtendimento = a.id)
+            left join tb_profissional tp on tp.idUsuario = a.idUsuario     
+            WHERE phd.situacao = 1 AND phd.idPaciente = ? ${where} `,id); 
     return atendimento;
 }
 

@@ -238,7 +238,7 @@ module.exports = function (app) {
         const exameRepository = new app.dao.ExameDAO(connection);
 
         try {
-            var response = await exameRepository.buscaPorPacienteId(id);
+            var response = await exameRepository.buscaPorPacienteId(id,0);
             res.status(200).json(response);
         }
         catch (exception) {
@@ -260,7 +260,7 @@ module.exports = function (app) {
         const receitaRepository = new app.dao.ReceitaDAO(connection);
 
         try {
-            var response = await receitaRepository.buscaPorPacienteIdProntuarioVacinacao(id);
+            var response = await receitaRepository.buscaPorPacienteIdProntuarioVacinacao(id,0);
             res.status(200).json(response);
         }
         catch (exception) {

@@ -470,8 +470,10 @@ module.exports = function (app) {
         }
     });
 
-    app.get('/paciente/prontuario/report/:idPaciente', async function (req, res) {
-        let idPaciente = req.params.idPaciente;
+    app.get('/paciente/prontuario/report', async function (req, res) {
+        let idPaciente = req.query.idPaciente;
+        let tipoFicha = req.query.tipoFicha == 'undefined' || req.query.tipoFicha == 'null' ? 0 : req.query.tipoFicha;
+        let profissional = req.query.profissional == 'undefined' || req.query.profissional == 'null'  ? 0 : req.query.profissional;
 
         const connection = await app.dao.connections.EatendConnection.connection();
         const pacienteRepository = new app.dao.PacienteDAO(connection);
@@ -491,7 +493,7 @@ module.exports = function (app) {
             let paciente = await pacienteRepository.buscaPorIdSync(idPaciente);
             let gruposAtencaoContinuada = await atencaoContinuadaPacienteRepository.buscaPorPacienteSync(idPaciente);
             paciente[0].gruposAtencaoContinuada = gruposAtencaoContinuada;
-            const sinaisVitais = await atendimentoRepository.buscaSinaisVitaisPorPacienteId(idPaciente, '');
+            const sinaisVitais = await atendimentoRepository.buscaSinaisVitaisPorPacienteId(idPaciente, '', tipoFicha, profissional);
             const nacionalidade = await nacionalidadeRepository.buscaPorIdSync(paciente[0].idNacionalidade);
             const naturalidade = await ufRepository.buscaPorIdSync(paciente[0].idNaturalidade);
 
@@ -508,7 +510,7 @@ module.exports = function (app) {
                 paciente[0].escolaridadeNome = escolaridade.find(x => x.id == paciente[0].escolaridade).nome;
             }
 
-            let atendimentos = await atendimentoRepository.buscaPorPacienteIdProntuario(idPaciente, 1);
+            let atendimentos = await atendimentoRepository.buscaPorPacienteIdProntuario(idPaciente, 1, tipoFicha, profissional);
             if (atendimentos) {
                 for (let atendimento of atendimentos) {
                     let historicos = await atendimentoRepository.buscaHistoricoPorAtendimento(atendimento.id);
@@ -516,7 +518,7 @@ module.exports = function (app) {
                 }
             }
 
-            let encaminhamentos = await atendimentoEncaminhamentoRepository.buscaEncaminhamentoPorPacienteId(idPaciente, function (exception, result) {
+            let encaminhamentos = await atendimentoEncaminhamentoRepository.buscaEncaminhamentoPorPacienteId(idPaciente, tipoFicha, profissional, function (exception, result) {
                 if (exception) {
                     d.reject(exception);
                     console.log(exception);
@@ -528,7 +530,7 @@ module.exports = function (app) {
                 }
             });
 
-            let receitas = await receitaRepository.buscaPorPacienteIdProntuario(idPaciente);
+            let receitas = await receitaRepository.buscaPorPacienteIdProntuario(idPaciente, profissional);
             if (receitas) {
                 for (let receita of receitas) {
                     let itens = await itemReceitaRepository.buscarPorReceita(receita.id);
@@ -536,12 +538,12 @@ module.exports = function (app) {
                 }
             }
 
-            const fichasAtendimento = await atendimentoRepository.buscaPorPacienteIdProntuario(idPaciente, 2);
-            const exames = await exameRepository.buscaPorPacienteId(idPaciente);
-            const hipoteseDiagnostica = await atendimentoHipoteseRepository.listarPorPaciente(idPaciente);
-            const vacinas = await receitaRepository.buscaPorPacienteIdProntuarioVacinacao(idPaciente);
+            const fichasAtendimento = await atendimentoRepository.buscaPorPacienteIdProntuario(idPaciente, 2, tipoFicha, profissional);
+            const exames = await exameRepository.buscaPorPacienteId(idPaciente, profissional);
+            const hipoteseDiagnostica = await atendimentoHipoteseRepository.listarPorPaciente(idPaciente, tipoFicha, profissional);
+            const vacinas = await receitaRepository.buscaPorPacienteIdProntuarioVacinacao(idPaciente,profissional);
             const estabelecimento = await estabelecimentoRepository.carregaPorId(paciente[0].idEstabelecimentoCadastro);
-            const procedimentos = await atendimentoProcedimentoRepository.listarPorPaciente(idPaciente);
+            const procedimentos = await atendimentoProcedimentoRepository.listarPorPaciente(idPaciente, tipoFicha, profissional);
 
 
             let response = { paciente, estabelecimento, sinaisVitais, atendimentos, receitas, fichasAtendimento, exames, hipoteseDiagnostica, vacinas, procedimentos, encaminhamentos };

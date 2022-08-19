@@ -296,13 +296,19 @@ AtendimentoDAO.prototype.buscaPorPacienteId = function (idPaciente, usuario, idE
     this._connection.query("select * from " + this._table + " WHERE idPaciente = ? AND dataFinalizacao IS NULL AND dataCancelamento IS NULL AND idEstabelecimento = ? AND idUsuario = ?", [idPaciente, idEstabelecimento, usuario.id], callback);
 }
 
-AtendimentoDAO.prototype.buscaPorPacienteIdProntuario = async function (idPaciente, tipo) {
+AtendimentoDAO.prototype.buscaPorPacienteIdProntuario = async function (idPaciente, tipo, tipoFicha, profissional) {
     var where = "";
 
     if (tipo == 2)
         where = " and ficha.tipo in (1, 2) ";
     else if (tipo == 3)
         where = " and ficha.tipo = 3 ";
+
+    if(tipoFicha > 0)
+        where += " and a.tipoFicha = " + tipoFicha;
+
+    if(profissional > 0)
+        where += " and tp.id = " + profissional;
 
     const response = await this._connection.query(`select a.*, 
                                 CASE  
@@ -329,11 +335,12 @@ AtendimentoDAO.prototype.buscaPorPacienteIdProntuario = async function (idPacien
     inner join tb_estabelecimento estabelecimento on a.idEstabelecimento = estabelecimento.id
     inner join tb_usuario usuario on usuario.id = a.idUsuario
     INNER JOIN tb_cor_classificacao_risco cor on cor.id = clas.idCorClassificacaoRisco
+    left join tb_profissional tp on tp.idUsuario = a.idUsuario  
     WHERE a.idPaciente = ? ${where} order by a.id desc`, idPaciente);
     return response;
 }
 
-AtendimentoDAO.prototype.buscaSinaisVitaisPorPacienteId = async function (idPaciente, tipo) {
+AtendimentoDAO.prototype.buscaSinaisVitaisPorPacienteId = async function (idPaciente, tipo, tipoFicha, profissional) {
     var where = "";
 
     if (tipo == 'pressaoArterial')
@@ -349,9 +356,16 @@ AtendimentoDAO.prototype.buscaSinaisVitaisPorPacienteId = async function (idPaci
     else if (tipo == 'glicemia')
         where = " and a.glicemia is not null and a.glicemia <> ''  ";
 
+    if(tipoFicha > 0)
+        where += " and a.tipoFicha = " + tipoFicha;
+
+    if(profissional > 0)
+        where += " and tp.id = " + profissional;
+
     const response = await this._connection.query(`select a.id, a.pressaoArterial, a.pulso, a.saturacao, a.temperatura, a.peso, a.glicemia, a.dataCriacao,
     DATE_FORMAT(a.dataCriacao,'%d/%m/%Y') as label
-    from tb_atendimento a     
+    from tb_atendimento a       
+    left join tb_profissional tp on tp.idUsuario = a.idUsuario  
     WHERE a.idPaciente = ? ${where} order by a.dataCriacao asc`, idPaciente);
     return response;
 }

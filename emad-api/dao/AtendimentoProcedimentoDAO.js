@@ -10,7 +10,15 @@ AtendimentoProcedimentoDAO.prototype.buscarPorAtendimentoId = async function (id
     return atendimento;
 }
 
-AtendimentoProcedimentoDAO.prototype.listarPorPaciente = async function (id) {
+AtendimentoProcedimentoDAO.prototype.listarPorPaciente = async function (id, tipoFicha, profissional) {
+    var where = "";
+
+    if(tipoFicha > 0)
+        where += " and ta.tipoFicha = " + tipoFicha;
+
+    if(profissional > 0)
+        where += " and tp.id = " + profissional;
+
     let atendimento = await this._connection.query(`select phd.id, hd.co_procedimento, hd.no_procedimento, phd.idAtendimento, phd.dataCriacao,
             te.id, te.nomeFantasia, tp.id, tp.nome 
             from ${this._table} phd 
@@ -18,7 +26,7 @@ AtendimentoProcedimentoDAO.prototype.listarPorPaciente = async function (id) {
             INNER JOIN tb_atendimento ta ON(phd.idAtendimento = ta.id)
             INNER JOIN tb_estabelecimento te ON(ta.idEstabelecimento = te.id)
             INNER JOIN tb_profissional tp ON(ta.idUsuario = tp.idUsuario)     
-            WHERE phd.situacao = 1 AND phd.idPaciente = ?`, id);
+            WHERE phd.situacao = 1 AND phd.idPaciente = ? ${where} `, id);
     return atendimento;
 }
 

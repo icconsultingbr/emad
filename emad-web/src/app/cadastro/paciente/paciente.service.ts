@@ -527,12 +527,13 @@ export class PacienteService extends GenericsService {
       + JSON.parse(localStorage.getItem("est"))[0].id);
   }
 
-  obterProntuarioPacienteRelatorio(idPaciente: number): Observable<any> {
-    return this.http.get('paciente/prontuario/report/' + idPaciente);
+  obterProntuarioPacienteRelatorio(idPaciente: number, tipoFicha: number, profissional: number): Observable<any> {
+    return this.http.get('paciente/prontuario/report?idPaciente=' + idPaciente 
+    + "&tipoFicha=" + tipoFicha
+    + "&profissional=" + profissional);
   }
 
   obterCamposEstabelecimento(idEstabelecimento: number): Observable<any> {
     return this.http.get('paciente/campos-estabelecimento/' + idEstabelecimento);
   }
-
 }

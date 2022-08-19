@@ -23,7 +23,12 @@ ExameDAO.prototype.atualizaStatus = async function(obj){
     return [response];
 }
 
-ExameDAO.prototype.buscaPorPacienteId = async function (idPaciente) {    
+ExameDAO.prototype.buscaPorPacienteId = async function (idPaciente, profissional) {   
+    var where = "";
+
+    if(profissional > 0)
+        where += " and pro.id = " + profissional;
+    
     const response =  await  this._connection.query(`select 
                                                         a.id, 
                                                         a.idPaciente, 
@@ -58,7 +63,7 @@ ExameDAO.prototype.buscaPorPacienteId = async function (idPaciente) {
                                                         INNER JOIN tb_profissional pro on pro.idUsuario = u.id
                                                         INNER JOIN tb_tipo_exame tipoExame on tipoExame.id = a.idTipoExame
                                                         LEFT JOIN tb_hipotese_diagnostica hipotese on hipotese.id = a.idHipoteseDiagnostica 
-                                                        WHERE a.idPaciente = ? AND a.situacao = 2` ,[idPaciente]); 
+                                                        WHERE a.idPaciente = ? AND a.situacao = 2 ${where} ` ,[idPaciente]); 
 
     return response;
 }

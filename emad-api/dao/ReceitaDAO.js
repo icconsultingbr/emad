@@ -123,7 +123,12 @@ ReceitaDAO.prototype.buscaReciboReceita = async function (ano, idEstabelecimento
     return receita;
 }
 
-ReceitaDAO.prototype.buscaPorPacienteIdProntuario = async function (idPaciente) {    
+ReceitaDAO.prototype.buscaPorPacienteIdProntuario = async function (idPaciente, profissional) {   
+    var where = "";
+    
+    if(profissional > 0)
+        where += " and profissional.id = " + profissional;
+
     const response =  await this._connection.query(`select 
                                 a.id
                                 ,a.idEstabelecimento
@@ -144,7 +149,7 @@ ReceitaDAO.prototype.buscaPorPacienteIdProntuario = async function (idPaciente) 
     INNER JOIN tb_material material ON (tir.idMaterial = material.id)
     LEFT JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
     INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
-    WHERE a.idPaciente = ? order by a.id desc`, idPaciente); 
+    WHERE a.idPaciente = ? ${where} order by a.id desc`, idPaciente); 
     return response;
 }
 
@@ -200,7 +205,12 @@ ReceitaDAO.prototype.lista = function(addFilter, callback) {
                             WHERE 1=1 ${where}
                             ORDER BY a.id desc`, callback);
 }
-ReceitaDAO.prototype.buscaPorPacienteIdProntuarioVacinacao = async function (idPaciente) {    
+ReceitaDAO.prototype.buscaPorPacienteIdProntuarioVacinacao = async function (idPaciente, profissional) {  
+    var where = "";
+    
+    if(profissional > 0)
+        where += " and profissional.id = " + profissional;
+
     const response =  await this._connection.query(`SELECT 
         a.id
         ,a.idEstabelecimento
@@ -217,7 +227,7 @@ ReceitaDAO.prototype.buscaPorPacienteIdProntuarioVacinacao = async function (idP
     INNER JOIN tb_material material ON (tir.idMaterial = material.id)
     LEFT JOIN tb_profissional profissional ON (a.idProfissional = profissional.id)
     INNER JOIN tb_estabelecimento estabelecimento ON (a.idEstabelecimento = estabelecimento.id)
-    WHERE a.idPaciente = ? AND material.vacina = 1 order by a.id desc`, idPaciente); 
+    WHERE a.idPaciente = ? AND material.vacina = 1 ${where} order by a.id desc`, idPaciente); 
     return response;
 }
 ReceitaDAO.prototype.buscaCarteiraVacinacaoPorPaciente = async function (idPaciente) {    
