@@ -8,8 +8,8 @@ Mail.prototype.sendMail = function (usuario, urlEmail, urlSenha, _subject, _html
     const nodemailer = require('nodemailer');
     const fs = require('fs');
 
-    var config = require('config');
-    const SERVER_URL = config.get('urlApi');
+    var config = require('../config/config');
+    const SERVER_URL = config.urlApi;
 
     const transporter = nodemailer.createTransport({
         host: "smtp.icconsulting.com.br",
@@ -56,8 +56,8 @@ Mail.prototype.enviaEmailFicha = function (obj, urlEmail, urlSenha, _subject, _h
         const nodemailer = require('nodemailer');
         const fs = require('fs');
     
-        var config = require('config');
-        const SERVER_URL = config.get('urlApi');
+        var config = require('../config/config');
+        const SERVER_URL = config.urlApi;
     
         const transporter = nodemailer.createTransport({
             host: "smtp.icconsulting.com.br",
