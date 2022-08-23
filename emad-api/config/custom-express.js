@@ -5,7 +5,7 @@ var expressValidator = require('express-validator');
 var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var cors = require('cors');
-var config = require('config');
+const config = require('./config');
 
 module.exports = function () {
     var app = express(); 

@@ -1,9 +1,9 @@
 var app = require('./config/custom-express')();
-var config = require("config");
+var config = require("./config/config");
 var jwt = require('jsonwebtoken');
 
-var server = app.listen(config.get('apiPort'), function(){
-    console.log('Server listen at '+config.get('apiPort'));
+var server = app.listen(config.apiPort, function(){
+    console.log('Server listen at '+config.apiPort);
 
     setTimeout(() => {
         const connection = app.dao.ConnectionFactory();
@@ -33,52 +33,3 @@ io.use(function(socket, next){
       next(new Error('Authentication error'));
   }    
 });
-
-
-
-
-//io.on('connection', function(socket){
-    //console.log('>> Usuário conectou');
-    //socket.on('disconnect', function(){
-        //console.log('<< Usuário desconectou');
-    //});
-    
-    /*setInterval(()=>{
-        socket.emit(
-            'message',
-            { apelido: 'HHHHAAAAAAAA', time: Date.now() }
-        );
-        socket.emit(
-            'notificationss',
-            { apelido: 'VAI', time: Date.now() }
-        );
-    },5000);
-
-    setInterval(()=>{
-        socket.emit(
-            'notification',
-            { apelido: 'VAI', time: Date.now() }
-        );
-    },4000);*/
-    
-//});
-
-
-/*const CronJob = require('cron').CronJob;
-let servico = new app.cron.Cron();
-
-console.log('Before job instantiation');
-const job = new CronJob('0 * 17 * * *', function() {
-	
-    servico.geraFatura(function (response) {
-        console.log(response);
-        const d = new Date();
-        console.log('onTick:', d);
-    });
-    
-
-
-
-});
-console.log('After job instantiation');
-job.start();*/

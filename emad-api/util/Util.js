@@ -3,12 +3,12 @@
 function Util() { }
 
 
-var config = require('config');
+var config = require('../config/config');
 
-Util.prototype.URL_SERVER = config.get('urlApi');
-Util.prototype.SUPER_ADMIN = config.get('superAdmin');
-Util.prototype.ADMIN = config.get('admin');
-Util.prototype.CONSULTA = config.get('consulta');
+Util.prototype.URL_SERVER = config.urlApi;
+Util.prototype.SUPER_ADMIN = config.superAdmin;
+Util.prototype.ADMIN = config.admin;
+Util.prototype.CONSULTA = config.consulta;
 
 Util.prototype.dateToISO = function (str) {
     var newData = str.split("/");

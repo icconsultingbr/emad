@@ -1,5 +1,6 @@
 let mysql = require('mysql');
-let config = require('config');
+let config = require('../config/config');
+
 let connection;
 
 function createDBConnection() {
