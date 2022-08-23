@@ -83,6 +83,25 @@ MaterialDAO.prototype.listaPorDescricao = function(addFilter, callback) {
                             ORDER BY a.id DESC`, callback);
 }
 
+MaterialDAO.prototype.listaPorDescricaoVacina = function(addFilter, callback) {      
+    let where = "";
+
+    if(addFilter != null){   
+        if (addFilter.descricao) {
+            where+=" AND UPPER(a.descricao) LIKE '%"+addFilter.descricao.toUpperCase()+"%'";
+        }
+    }
+
+    this._connection.query(`SELECT
+                             a.id
+                            ,a.codigoVacinaSus codigo
+                            ,a.descricao
+                            ,a.sigla
+                            FROM tb_vacina a
+                            WHERE a.situacao = 1 ${where} 
+                            ORDER BY a.descricao ASC`, callback);
+}
+
 MaterialDAO.prototype.listaPorDescricaoProfissionalEspecialidade = function(addFilter, idProfissional, callback) {      
     let where = "";
 

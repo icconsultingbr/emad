@@ -554,6 +554,39 @@ module.exports = function (app) {
         });
     });
 
+    app.get('/dominios/estrategia-vacinacao', function (req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_estrategia_vacinacao");
+
+        listaDominios(dao, "Estratégia vacinação", res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
+    app.get('/dominios/grupo-atendimento-vacinacao', function (req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GrupoAtendimentoVacinacaoDAO(connection);
+
+        listaDominios(dao, "Grupo atendimento vacinação", res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
+    app.get('/dominios/dose-vacina-sus', function (req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.DoseVacinaDAO(connection);
+
+        listaDominios(dao, "Dose vacina", res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
     function listaDominios(dao, dom, res) {
         var q = require('q');
         var d = q.defer();

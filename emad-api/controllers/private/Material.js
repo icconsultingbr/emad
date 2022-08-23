@@ -115,6 +115,15 @@ module.exports = function (app) {
         });
     });
 
+    app.get('/material/vacina', function (req, res) {
+        let addFilter = req.query; 
+
+        listaPorDescricaoVacina(addFilter, res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
+    });
+
     app.get('/material/especialidade/:id', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
@@ -443,6 +452,29 @@ module.exports = function (app) {
         });
         return d.promise;
     }     
+
+    function listaPorDescricaoVacina(addFilter, res) {
+        let q = require('q');
+        let d = q.defer();
+        let util = new app.util.Util();
+        let connection = app.dao.ConnectionFactory();
+        let objDAO = new app.dao.MaterialDAO(connection);
+
+        let errors = [];
+
+        objDAO.listaPorDescricaoVacina(addFilter, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    } 
  
     function buscarPorId(id,  res) {
         let q = require('q');

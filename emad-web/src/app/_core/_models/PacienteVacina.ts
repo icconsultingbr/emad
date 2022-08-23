@@ -12,4 +12,8 @@ export class PacienteVacina {
     @Input() idPaciente: Number = null;
     @Input() dose: Number = 1;
     @Input() dataCriacao: Date = null;
+    @Input() codigoVacinaSus: string;
+    @Input() codigoEstrategiaVacinacaoSus: Number = null;
+    @Input() codigoGrupoAtendimentoVacinacaoSus: Number = null;
+    @Input() codigoDoseVacinaSus: Number = null;
 }

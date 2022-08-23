@@ -3057,6 +3057,7 @@
     </button>
   </div>
   <div class="modal-body">
+    
     <div *ngIf="errors.length" class="alert alert-danger">
       <div *ngFor="let error of errors" class="row">
         <div class="col-12 text-left">
@@ -3064,6 +3065,77 @@
         </div>
       </div>
     </div>
+
+    <div class="form-group row">
+      <label class="col-xl-4 col-sm-12 col-form-label text-left">
+        Pesquisar pela descrição:
+      </label>
+      <div class="col-xl-7 col-sm-12">
+        <input type="text" class="form-control has-error" [(ngModel)]="medicamento.descricao">
+      </div>
+      <div class="col-xl-1 col-sm-12">
+        <button [routerLink]="" class="btn btn-primary float-right" (click)="buscaVacina()">
+          <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin text-left">
+            <i class="fa fa-spinner"></i>
+          </i>
+          <i *ngIf="!loading" class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group row">
+
+    </div>
+
+    <div class="form-group row">
+      <div class="col-12 table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr class="text-left">
+              <th></th>
+              <th>Código eSUS</th>
+              <th>Descrição</th>
+              <th>Sigla</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let item of allMedicamentos let index=index; let odd='odd'; let even='even';">
+            <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
+              <td class="text-secondary">
+                <div class="custom-control custom-radio float-left">
+                  <input type="radio" (change)="selecionaVacina(item)" class="custom-control-input"
+                    id="{{ item.id }}" name="radio-item">
+                  <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
+                </div>
+              </td>
+              <td class="text-secondary">{{item.codigo}}</td>
+              <td class="text-secondary" title="{{item.descricao}}">{{item.descricao}}</td>
+              <td class="text-secondary">{{item.sigla}}</td>
+            </tr>
+          </tbody>
+
+          <tbody *ngIf="!allMedicamentos || allMedicamentos.length==0">
+            <tr class="text-left">
+              <td colspan="99" class="text-secondary">
+                <i>Não há resultados...</i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="row mb-2">
+      <div *ngIf="pager.pages && pager.pages.length" class="text text-secondary col-md-12 pr-0 mx-auto">
+        <i>
+          Exibindo
+          {{pager.currentPage === pager.totalPages?allMedicamentos.length:pager.currentPage*pagedItems.length}}
+          de
+          {{allMedicamentos.length}}
+          resultado(s).
+        </i>
+      </div>
+    </div>
+
     <div class="form-group row">
       <label class="col-xl-4 col-sm-12 col-form-label text-left">
         Nome do Profissional:
@@ -3077,7 +3149,7 @@
         Nome da vacina:
       </label>
       <div class="col-xl-8 col-sm-12">
-        <input type="text" class="form-control has-error" [(ngModel)]="pacienteVacina.nome">
+        <input type="text" class="form-control has-error" readonly [(ngModel)]="pacienteVacina.nome">
       </div>
     </div>
     <div class="form-group row">
@@ -3099,6 +3171,30 @@
     </div>
     <div class="form-group row">
       <label class="col-xl-4 col-sm-12 col-form-label text-left">
+        Estratégia:
+      </label>
+      <div class="col-xl-8 col-sm-12">
+        <select (change)="change($event)" *ngIf="domainsVacinacao" class="custom-select d-block w-100" 
+          [(ngModel)]="pacienteVacina.codigoEstrategiaVacinacaoSus">
+          <option [value]="null">Selecione...</option>
+          <option *ngFor="let item of domainsVacinacao[0]?.estrategiaVacinacao" [value]="item.id">{{item.nome}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-xl-4 col-sm-12 col-form-label text-left">
+        Dose:
+      </label>
+      <div class="col-xl-8 col-sm-12">
+        <select (change)="change($event)" *ngIf="domainsVacinacao" class="custom-select d-block w-100" 
+          [(ngModel)]="pacienteVacina.codigoDoseVacinaSus">
+          <option [value]="null">Selecione...</option>
+          <option *ngFor="let item of domainsVacinacao[0]?.doseVacina" [value]="item.id">{{item.nome}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-xl-4 col-sm-12 col-form-label text-left">
         Lote:
       </label>
       <div class="col-xl-8 col-sm-12">
@@ -3107,12 +3203,18 @@
     </div>
     <div class="form-group row">
       <label class="col-xl-4 col-sm-12 col-form-label text-left">
-        Dose:
+        Grupo atendimento:
       </label>
       <div class="col-xl-8 col-sm-12">
-        <input type="number" min='1' max="10" class="form-control has-error" [(ngModel)]="pacienteVacina.dose">
+        <select (change)="change($event)" *ngIf="domainsVacinacao" class="custom-select d-block w-100" 
+          [(ngModel)]="pacienteVacina.codigoGrupoAtendimentoVacinacaoSus">
+          <option [value]="null">Selecione...</option>
+          <option *ngFor="let item of domainsVacinacao[0]?.grupoAtendimentoVacinacao" [value]="item.id">{{item.nome}}</option>
+        </select>
       </div>
     </div>
+    
+    
     <div class=" form-group row text-right">
       <div class="col-12">
         <button class="btn btn-primary  mr-2" type="button" [disabled]="disableVacinaButton()" (click)="saveVacina()">

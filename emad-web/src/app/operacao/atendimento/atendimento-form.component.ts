@@ -85,6 +85,7 @@ export class AtendimentoFormComponent implements OnInit {
   medicamentoSelecionado: any = null;
   hipoteseDiagnosticaSelecionada: any = null;
   domains: any[] = [];
+  domainsVacinacao: any[] = [];
   allItemsEntidadeCampo: any[] = null;
   allItemsPesquisaHipoteseDiagnostica: any[] = null;
   pacienteProcedimento: PacienteProcedimento = new PacienteProcedimento();
@@ -163,6 +164,9 @@ export class AtendimentoFormComponent implements OnInit {
   nomeVacina: string;
   validadeVacina: string;
   loteVacina: string;
+  estrategiaVacinacao: number;
+  doseVacina: number;
+  grupoAtendimentoVacinacao: number;
 
   constructor(
     private service: AtendimentoService,
@@ -411,7 +415,32 @@ export class AtendimentoFormComponent implements OnInit {
       this.loading = false;
       this.errors = Util.customHTTPResponse(erro);
     });
+  }
 
+  buscaVacina() {
+    this.loading = true;
+    this.loadDomainsVacinacao();
+    let params = "";
+    this.allMedicamentos = [];
+    this.pacienteVacina = new PacienteVacina();
+
+    if (Util.isEmpty(this.medicamento.descricao) || this.medicamento.descricao.length < 3) {
+      this.errors = [{ message: "Informe a descrição da vacina, ao menos 3 caracteres" }];
+      this.loading = false;
+      return;
+    }
+
+    params = "?descricao=" + this.medicamento.descricao;
+
+    this.service.list('material/vacina' + params).subscribe(result => {
+      this.allMedicamentos = result;
+      this.setPage(1);
+      this.loading = false;
+      this.errors = [];
+    }, erro => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(erro);
+    });
   }
 
   buscaExames(offset: Number = null, limit: Number = null) {
@@ -674,6 +703,11 @@ export class AtendimentoFormComponent implements OnInit {
 
   selecionaMedicamento(item) {
     this.medicamentoSelecionado = item;
+  }
+
+  selecionaVacina(item) {
+    this.pacienteVacina.nome = item.descricao;
+    this.pacienteVacina.codigoVacinaSus = item.codigo;
   }
 
   confirmaPaciente() {
@@ -1039,7 +1073,7 @@ export class AtendimentoFormComponent implements OnInit {
                         this.service.listDomains('odonto-fornecimento').subscribe(tiposFornecimOdonto => {
                           this.service.listDomains('odonto-vigilancia').subscribe(tiposVigilanciaSaudeBucal => {
                             this.service.listDomains('local-atendimento').subscribe(localDeAtendimento => {
-                              this.service.listDomains('modalidade').subscribe(modalidade => {                                
+                              this.service.listDomains('modalidade').subscribe(modalidade => {        
                                   this.service.listDomains('condicao-avaliada').subscribe(condicaoAvaliada => {
                                   this.domains.push({
                                     especialidades: especialidades,
@@ -1086,6 +1120,26 @@ export class AtendimentoFormComponent implements OnInit {
           });
         });
       });
+    });
+  }
+
+  loadDomainsVacinacao() {
+    this.service.listDomains('grupo-atendimento-vacinacao').subscribe(grupoAtendimentoVacinacao => {   
+      this.service.listDomains('dose-vacina-sus').subscribe(doseVacina => { 
+        this.domainsVacinacao.push({
+                          estrategiaVacinacao: [
+                            { id: 1, nome: "Rotina" },
+                            { id: 2, nome: "Especial" },
+                            { id: 3, nome: "Bloqueio" },
+                            { id: 4, nome: "Intensificação" },
+                            { id: 5, nome: "Campanha indiscriminada" },
+                            { id: 7, nome: "Soroterapia" },
+                            { id: 11, nome: "Pesquisa" },
+                            ],
+                          grupoAtendimentoVacinacao: grupoAtendimentoVacinacao,
+                          doseVacina: doseVacina
+                      });
+        });
     });
 
   }
@@ -1180,6 +1234,7 @@ export class AtendimentoFormComponent implements OnInit {
 
     this.service.saveVacina(this.pacienteVacina).subscribe(result => {
       this.message = "Vacina inserida com sucesso!"
+      this.pacienteVacina = new PacienteVacina();
       this.modalRef.close();
       this.loading = false;
       this.findVacinaPorAtendimento();
