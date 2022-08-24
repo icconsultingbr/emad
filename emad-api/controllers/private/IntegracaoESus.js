@@ -171,7 +171,7 @@ module.exports = function (app) {
         if (filtro.idTipoPeriodo == 1) {
             tipoCampoData = 'dataCriacao'
         } else {
-            tipoCampoData = 'dataUltimaDispensacao'
+            tipoCampoData = 'dataFinalizacao'
         }
 
         const connection = await app.dao.connections.EatendConnection.connection();
@@ -631,12 +631,13 @@ module.exports = function (app) {
                 .doc();
 
             listVacinas.forEach(vacina => {
-                const listVacinaChild = list.vacinaChild.filter(x => x.idReceita == vacina.idReceita);
+                const listVacinaChild = list.vacinaChild.filter(x => x.idAtendimento == vacina.idAtendimento);
 
                 if (listVacinaChild.length == 0) { return; }
 
                 let vac = fragment().ele('vacinacoes')
                     .ele('turno').txt(vacina.turno).up()
+                    .ele('numProntuario').txt(vacina.idAtendimento).up()
                     .ele('cnsCidadao').txt(vacina.cartaoSus ? vacina.cartaoSus : '').up()
                     .ele('cpfCidadao').txt(vacina.cartaoSus ? '' : vacina.cpfCidadao ? vacina.cpfCidadao : '').up()
                     .ele('dtNascimento').txt(new Date(vacina.dataNascimento).getTime()).up()
@@ -646,11 +647,11 @@ module.exports = function (app) {
                     .ele('gestante').txt(vacina.gestante).up()
                     .ele('puerpera').txt(vacina.puerpera).up();
 
-                let child = preencheVacinasChild(listVacinaChild, vacina.idReceita);
+                let child = preencheVacinasChild(listVacinaChild, vacina.idAtendimento);
                 child.forEach(x => vac.import(x));
 
                 vac.ele('dataHoraInicialAtendimento').txt(new Date(vacina.dataCriacao).getTime()).up()
-                    .ele('dataHoraFinalAtendimento').txt(new Date(vacina.dataUltimaDispensacao).getTime()).up()
+                    .ele('dataHoraFinalAtendimento').txt(new Date(vacina.dataFinalizacao).getTime()).up()
                     .up();
 
                 doc.find(x => x.node.nodeName == 'ns4:fichaVacinacaoMasterTransport', true, true).import(vac);
@@ -673,19 +674,41 @@ module.exports = function (app) {
         return xmls
     }
 
-    function preencheVacinasChild(vacina, idReceita) {
+    function preencheVacinasChild(vacina, idAtendimento) {
         const { fragment } = require('xmlbuilder2');
         let vac = []
 
         vacina.forEach(x => {
-            if (x.idReceita == idReceita) {
+            if (x.idAtendimento == idAtendimento) {
                 let frag = fragment().ele('vacinas')
                     .ele('imunobiologico').txt(x.codigoVacinaSus).up()
-                    .ele('estrategiaVacinacao').txt(x.estrategiaVacinacao).up()
-                    .ele('dose').txt(x.qtdPrescrita).up()
-                    .ele('lote').txt(x.lote).up()
-                    .ele('fabricante').txt(x.nome).up()
+                    .ele('estrategiaVacinacao').txt(x.estrategiaVacinacao ? x.estrategiaVacinacao : '').up()
+                    .ele('dose').txt(x.dose ? x.dose : '').up()
+                    .ele('lote').txt(x.lote ? x.lote : '').up()
+                    .ele('fabricante').txt(x.fornecedor ? x.fornecedor : '').up()
+                    .ele('grupoAtendimento').txt(x.grupoAtendimento ? x.grupoAtendimento : '').up()
+                    .ele('stRegistroAnterior').txt(x.stRegistroAnterior == 1 ? true : false).up()
+                    .ele('dataRegistroAnterior').txt(x.dataRegistroAnterior ? new Date(x.dataRegistroAnterior).getTime() : '').up()
                     .up()
+
+                    //CAMPO = grupoAtendimento
+                    // Só pode ser preenchido se o campo estrategiaVacinacao = 5 (Campanha indiscriminada). Neste caso o preenchimento é obrigatório;
+                    //Não pode ser preenchido se o campo stRegistroAnterior = true;    
+                    if (x.stRegistroAnterior == 1 || x.estrategiaVacinacao != '5') {
+                        removeNode(frag.doc(), ['grupoAtendimento']);
+                    }
+
+                    let fieldToValidate = ['estrategiaVacinacao','grupoAtendimento','dose','dataRegistroAnterior', 'fabricante'];
+
+                    fieldToValidate.forEach(field => {
+                        frag.each(x => {
+                            if (x.node.nodeName == field && !x.node._firstChild._data) {
+                                x.node.removeChild(x.node._firstChild);
+                                x.remove();
+                            }
+                        }, true, true)
+                    })
+
                 vac.push(frag);
             }
         })

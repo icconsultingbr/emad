@@ -38,7 +38,7 @@ IntegracaoESusDAO.prototype.listaAtividadeColetivaParticipantes = async function
 
 IntegracaoESusDAO.prototype.listaVacinas = async function (filtro) {
    let listaVacinas = {};
-   listaVacinas.vacinas = await this._connection.query(`SELECT * FROM vw_vacina_sus WHERE dataUltimaDispensacao IS NOT NULL AND ${this.campoData} BETWEEN ? AND ? AND idEstabelecimento = ?`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1], filtro.idEstabelecimento]);
+   listaVacinas.vacinas = await this._connection.query(`SELECT * FROM vw_vacina_sus WHERE dataFinalizacao IS NOT NULL AND ${this.campoData} BETWEEN ? AND ? AND idEstabelecimento = ?`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1], filtro.idEstabelecimento]);
    listaVacinas.vacinaChild = await this._connection.query(`SELECT * FROM vw_vacina_child_sus`);
    return listaVacinas;
 }
