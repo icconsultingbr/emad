@@ -1,8 +1,6 @@
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
-const path = require('path')
-var config = require('config');
-const { stringify } = require("querystring");
+const config = require('../config/config');
 
 function DocumentoService() { }
 
