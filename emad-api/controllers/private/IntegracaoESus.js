@@ -461,6 +461,7 @@ module.exports = function (app) {
     function preencheAvaliacaoAtendimentoIndividual(listAvaliacao, listCiaps, idAtendimento) {
         const { fragment } = require('xmlbuilder2');
         let avaliacao = fragment().ele('problemaCondicaoAvaliada');
+        let existeCiap1 = false;
 
         const listaAvaliacaoAtendimento = listAvaliacao.filter(x => x.idAtendimento == idAtendimento);
         const listaCiapsAtendimento = listCiaps.filter(x => x.idAtendimento == idAtendimento);
@@ -471,8 +472,15 @@ module.exports = function (app) {
                 avaliacao.import(codigoAB);
             }
             else{
-                const outroCiap1 = fragment().ele('outroCiap1').txt(ciaps.ciap2).up();
-                avaliacao.import(outroCiap1);
+                if(existeCiap1){
+                    const outroCiap2 = fragment().ele('outroCiap2').txt(ciaps.ciap2).up();
+                    avaliacao.import(outroCiap2);
+                }
+                else{                                        
+                    const outroCiap1 = fragment().ele('outroCiap1').txt(ciaps.ciap2).up();
+                    avaliacao.import(outroCiap1);
+                    existeCiap1 = true;
+                }
             }            
         });
 
