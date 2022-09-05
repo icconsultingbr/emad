@@ -27,6 +27,14 @@ DoseVacinaDAO.prototype.dominio = function(callback) {
     this._connection.query("select codigoSus id, descricao nome FROM "+this._table+" WHERE situacao = 1 ORDER BY codigoSus ASC",callback);
 }
 
+DoseVacinaDAO.prototype.dominioPorIdAvo = function(codigoVacinaSus, codigoEstrategiaVacinacaoSus, callback) {
+    this._connection.query("select distinct a.codigoSus id, a.descricao nome FROM "
+    +this._table+ " a inner join tb_regras_vacina regra on regra.codigoVacinaSus=" + codigoVacinaSus 
+    + " and regra.codigoEstrategiaVacinacaoSus = " + codigoEstrategiaVacinacaoSus 
+    + " and regra.codigoDoseVacinaSus = a.id  " +
+    " WHERE a.situacao = 1 ORDER BY a.codigoSus ASC ",callback);
+}
+
 DoseVacinaDAO.prototype.deletaPorId = function (id,callback) {
     this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
 }

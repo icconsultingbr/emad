@@ -3174,10 +3174,10 @@
         Estratégia:
       </label>
       <div class="col-xl-8 col-sm-12">
-        <select (change)="change($event)" *ngIf="domainsVacinacao" class="custom-select d-block w-100" 
+        <select (change)="estrategiaSelecionada($event)" *ngIf="domainsEstrategiaVacinacao" class="custom-select d-block w-100" 
           [(ngModel)]="pacienteVacina.codigoEstrategiaVacinacaoSus">
           <option [value]="null">Selecione...</option>
-          <option *ngFor="let item of domainsVacinacao[0]?.estrategiaVacinacao" [value]="item.id">{{item.nome}}</option>
+          <option *ngFor="let item of domainsEstrategiaVacinacao[0]?.estrategiaVacinacao" [value]="item.id">{{item.nome}}</option>
         </select>
       </div>
     </div>
@@ -3186,10 +3186,10 @@
         Dose:
       </label>
       <div class="col-xl-8 col-sm-12">
-        <select (change)="change($event)" *ngIf="domainsVacinacao" class="custom-select d-block w-100" 
+        <select (change)="change($event)" *ngIf="domainsDose" class="custom-select d-block w-100" 
           [(ngModel)]="pacienteVacina.codigoDoseVacinaSus">
           <option [value]="null">Selecione...</option>
-          <option *ngFor="let item of domainsVacinacao[0]?.doseVacina" [value]="item.id">{{item.nome}}</option>
+          <option *ngFor="let item of domainsDose[0]?.doseVacina" [value]="item.id">{{item.nome}}</option>
         </select>
       </div>
     </div>

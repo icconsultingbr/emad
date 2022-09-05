@@ -635,7 +635,7 @@ module.exports = function (app) {
                 .ele('versaoSistema').txt(versao).up()
                 .ele('nomeBancoDados').txt('MySQL').up()
                 .up()
-                .ele('versao', { major: major, minor: minor, revision: revision })
+                .ele('versao', { major: '', minor: '3', revision: '5' })
                 .doc();
 
             listVacinas.forEach(vacina => {
@@ -652,8 +652,8 @@ module.exports = function (app) {
                     .ele('sexo').txt(vacina.sexo).up()
                     .ele('localAtendimento').txt(vacina.localDeAtendimentoSus ? vacina.localDeAtendimentoSus : '').up()
                     .ele('viajante').txt(vacina.viajante == 1 ? true : false).up()
-                    .ele('gestante').txt(vacina.sexo == '0' ? '' : vacina.gestante == 1 ? true : false).up()
-                    //.ele('puerpera').txt(vacina.sexo == '0' ? '' : vacina.puerpera == 1 ? true : false).up();
+                    .ele('gestante').txt(vacina.sexo == '0' ? false : true).up()
+                    .ele('puerpera').txt(vacina.sexo == '0' ? false : true).up();
 
                 let child = preencheVacinasChild(listVacinaChild, vacina.idAtendimento);
                 child.forEach(x => vac.import(x));
@@ -664,7 +664,7 @@ module.exports = function (app) {
 
                 doc.find(x => x.node.nodeName == 'ns4:fichaVacinacaoMasterTransport', true, true).import(vac);
 
-                let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento', 'ine', 'gestante', 'puerpera'];
+                let fieldToValidate = ['cpfCidadao', 'cnsCidadao', 'localDeAtendimento', 'ine'];
 
                 fieldToValidate.forEach(field => {
                     doc.each(x => {

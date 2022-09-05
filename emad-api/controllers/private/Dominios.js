@@ -554,12 +554,13 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/dominios/estrategia-vacinacao', function (req, res) {
+    app.get('/dominios/estrategia-vacinacao/:id', function (req, res) {
 
         var connection = app.dao.ConnectionFactory();
-        var dao = new app.dao.GenericDAO(connection, "tb_estrategia_vacinacao");
+        var dao = new app.dao.EstrategiaVacinacaoDAO(connection);
+        let codigoVacinaSus = req.params.id;
 
-        listaDominios(dao, "Estratégia vacinação", res).then(function (response) {
+        listaDominiosPorIdPai(codigoVacinaSus, dao, "Estratégia vacinação", res).then(function (response) {
             res.status(200).json(response);
             return;
         });
@@ -576,12 +577,14 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/dominios/dose-vacina-sus', function (req, res) {
+    app.get('/dominios/dose-vacina-sus/:id', function (req, res) {
 
         var connection = app.dao.ConnectionFactory();
         var dao = new app.dao.DoseVacinaDAO(connection);
+        let codigoVacinaSus = req.params.id;
+        let addFilter = req.query;
 
-        listaDominios(dao, "Dose vacina", res).then(function (response) {
+        listaDominiosPorIdAvo(codigoVacinaSus, addFilter.codigoEstrategiaVacinacaoSus, dao, "Dose vacina", res).then(function (response) {
             res.status(200).json(response);
             return;
         });
@@ -595,6 +598,46 @@ module.exports = function (app) {
         var errors = [];
 
         dao.dominio(function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", dom);
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }
+
+    function listaDominiosPorIdPai(id, objDAO, res) {
+        let q = require('q');
+        let d = q.defer();
+       
+        var util = new app.util.Util();
+        var errors = [];
+     
+        objDAO.dominioPorId(id, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", dom);
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }
+
+    function listaDominiosPorIdAvo(idAvo, idPai, objDAO, res) {
+        let q = require('q');
+        let d = q.defer();
+       
+        var util = new app.util.Util();
+        var errors = [];
+     
+        objDAO.dominioPorIdAvo(idAvo, idPai, function (exception, result) {
             if (exception) {
                 d.reject(exception);
                 errors = util.customError(errors, "data", "Erro ao acessar os dados", dom);

@@ -428,4 +428,14 @@ export class AtendimentoService extends GenericsService {
     carregaTipoAtendimentoPorTipoFicha(id: any): Observable<any> {
         return this.http.get("tipo-atendimento/tipo-ficha/" + id);
       }
+
+    findByEstrategiaPorVacina(codigoVacinaSus: any): Observable<any> {
+        return this.http.get("dominios/estrategia-vacinacao/" + codigoVacinaSus);
+    }
+
+    findByDosePorEstrategiaVacina(codigoVacinaSus: any, codigoEstrategiaVacinacaoSus: any): Observable<any> {
+        return this.http.get("dominios/dose-vacina-sus/" + codigoVacinaSus + "?codigoEstrategiaVacinacaoSus=" + codigoEstrategiaVacinacaoSus);
+    }
 }
+
+

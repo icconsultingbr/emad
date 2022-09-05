@@ -40,14 +40,17 @@ export class MaterialFormComponent implements OnInit {
       this.service.listDomains('lista-controle-especial').subscribe(listaControleEspecial => {
         this.service.listDomains('grupo-material').subscribe(grupoMaterial => {
           this.service.listDomains('tipo-material').subscribe(tipoMaterial => {
-            this.domains.push({
-              idUnidadeMaterial: unidadeMaterial,
-              idListaControleEspecial: listaControleEspecial,
-              idGrupoMaterial: grupoMaterial,
-              idSubGrupoMaterial: [],
-              idFamiliaMaterial: [],
-              idTipoMaterial: tipoMaterial,
-             });
+            this.service.listDomains('fabricante-material').subscribe(fabricante => {
+              this.domains.push({
+                idUnidadeMaterial: unidadeMaterial,
+                idListaControleEspecial: listaControleEspecial,
+                idGrupoMaterial: grupoMaterial,
+                idSubGrupoMaterial: [],
+                idFamiliaMaterial: [],
+                idTipoMaterial: tipoMaterial,
+                idFabricanteMaterial: fabricante,
+              });
+            });
           });
         });
       });

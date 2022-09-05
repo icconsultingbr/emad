@@ -178,6 +178,15 @@ export class MaterialService extends GenericsService {
       validator: ['', '']
     },
     {
+      field: "idFabricanteMaterial",
+      type: "select",
+      label: "Fabricante",
+      grid: false,
+      form: true,
+      required: false,
+      validator: ['', '']
+    },
+    {
       field: "situacao",
       type: "checkbox",
       label: "Situação",

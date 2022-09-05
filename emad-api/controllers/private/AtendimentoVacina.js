@@ -9,6 +9,22 @@ module.exports = function (app) {
         const connection = await app.dao.connections.EatendConnection.connection();
 
         const atendimentoVacinaRepository = new app.dao.AtendimentoVacinaDAO(connection);
+        
+        //CAMPO = grupoAtendimento
+        // Só pode ser preenchido se o campo estrategiaVacinacao = 5 (Campanha indiscriminada). Neste caso o preenchimento é obrigatório;
+        //Não pode ser preenchido se o campo stRegistroAnterior = true;    
+        if (obj.codigoEstrategiaVacinacaoSus == '5' && (obj.codigoGrupoAtendimentoVacinacaoSus == null || obj.codigoGrupoAtendimentoVacinacaoSus == 'null' || obj.codigoGrupoAtendimentoVacinacaoSus == '')) {
+            errors = util.customError(errors, "header", "É obrigatório o preenchimento do campo Grupo de atendimento para esta estratégia de vacinação", "");
+            res.status(400).send(errors);
+            return;
+        }
+
+        errors = req.validationErrors();
+
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
 
         try {
             await connection.beginTransaction();

@@ -86,6 +86,8 @@ export class AtendimentoFormComponent implements OnInit {
   hipoteseDiagnosticaSelecionada: any = null;
   domains: any[] = [];
   domainsVacinacao: any[] = [];
+  domainsEstrategiaVacinacao: any[] = [];
+  domainsDose: any[] = [];
   allItemsEntidadeCampo: any[] = null;
   allItemsPesquisaHipoteseDiagnostica: any[] = null;
   pacienteProcedimento: PacienteProcedimento = new PacienteProcedimento();
@@ -420,6 +422,8 @@ export class AtendimentoFormComponent implements OnInit {
   buscaVacina() {
     this.loading = true;
     this.loadDomainsVacinacao();
+    this.domainsEstrategiaVacinacao = [];
+    this.domainsDose = [];
     let params = "";
     this.allMedicamentos = [];
     this.pacienteVacina = new PacienteVacina();
@@ -706,9 +710,27 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   selecionaVacina(item) {
+    this.domainsEstrategiaVacinacao = [];
+    this.domainsDose = [];
+
     this.pacienteVacina.nome = item.descricao;
     this.pacienteVacina.codigoVacinaSus = item.codigo;
+  
+      this.service.findByEstrategiaPorVacina(item.codigo).subscribe(estrategiasPorVacina => { 
+        this.domainsEstrategiaVacinacao.push({
+                          estrategiaVacinacao: estrategiasPorVacina
+                      });
+        });   
+
   }
+
+  estrategiaSelecionada(event) {  
+      this.service.findByDosePorEstrategiaVacina(this.pacienteVacina.codigoVacinaSus, event.target.value).subscribe(doses => { 
+        this.domainsDose.push({
+                        doseVacina: doses
+                      });
+        });   
+  }  
 
   confirmaPaciente() {
 
@@ -1125,21 +1147,9 @@ export class AtendimentoFormComponent implements OnInit {
 
   loadDomainsVacinacao() {
     this.service.listDomains('grupo-atendimento-vacinacao').subscribe(grupoAtendimentoVacinacao => {   
-      this.service.listDomains('dose-vacina-sus').subscribe(doseVacina => { 
         this.domainsVacinacao.push({
-                          estrategiaVacinacao: [
-                            { id: 1, nome: "Rotina" },
-                            { id: 2, nome: "Especial" },
-                            { id: 3, nome: "Bloqueio" },
-                            { id: 4, nome: "Intensificação" },
-                            { id: 5, nome: "Campanha indiscriminada" },
-                            { id: 7, nome: "Soroterapia" },
-                            { id: 11, nome: "Pesquisa" },
-                            ],
-                          grupoAtendimentoVacinacao: grupoAtendimentoVacinacao,
-                          doseVacina: doseVacina
+                          grupoAtendimentoVacinacao: grupoAtendimentoVacinacao
                       });
-        });
     });
 
   }
