@@ -1,0 +1,40 @@
+<h4 class="mb-5 text-left">Reabertura de atendimento(s)</h4>
+
+<app-loader [loading]="loading"></app-loader>
+
+<p *ngIf="message.length" class="alert alert-info">{{message}}</p>
+<div *ngIf="errors.length" class="alert alert-danger">
+    <div *ngFor="let error of errors" class="row">
+        <div class="col-12 text-left">
+            {{error.message}}
+        </div>
+    </div>
+</div>
+
+<form [formGroup]="form">   
+    <div class="card mb-4" >
+        <div class="card-header text-left">
+            Informe o(s) número(s) do(s) atendimento(s) para reabertura
+        </div>
+        <div class="card-body text-left">    
+            <span style="color:red"><b>Para reabrir mais de um atendimento, separe os números por vírgula.</b></span>
+            <div class="row">    
+                <div class="col-12 mb-3">
+                    <div class="form-group row">                        
+                        <div class="col-xl-12">                            
+                            <textarea rows="5" class="form-control has-error" formControlName="numero"></textarea>
+                        </div>                            
+                    </div>   
+                </div>                
+            </div>            
+            <div class="form-group text-right">
+                <button class="btn btn-primary " type="button" (click)="reabreAtendimento()">
+                <i class="fa fa-save"></i> Reabrir
+                </button> 
+            </div>
+        </div>
+    </div>
+
+</form>
+
+

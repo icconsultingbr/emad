@@ -895,6 +895,54 @@ module.exports = function (app) {
         }
     });
 
+    app.put('/atendimento/reabertura', async function (req, res) {
+        let obj = req.body;
+        let util = new app.util.Util();
+        let errors = [];        
+
+        req.assert("numero").notEmpty().withMessage("Preencha o campo com o(s) número(s) para reabertura");
+        errors = req.validationErrors();
+
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
+
+        var ids = Object.assign([], obj.numero.split(","));
+        delete obj.numero;
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
+        
+        try {
+
+            await connection.beginTransaction();
+
+            for (const idAtendimento of ids) {
+
+                var buscaAtendimento = await atendimentoRepository.buscaPorIdSync(idAtendimento);
+                if (buscaAtendimento) {                    
+                    obj.situacao = 'C'; //Em aberto
+                    obj.dataFinalizacao = null;
+                    obj.dataCancelamento = null;
+
+                    var atualizaAtendimento = await atendimentoRepository.atualizaPorIdSync(obj, idAtendimento);    
+                }         
+            }
+
+            res.status(201).send(obj);
+
+            await connection.commit();
+        }
+        catch (exception) {
+            console.log("Erro ao salvar o atendimento (" + ids + "), exception: " + exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+            await connection.rollback();
+        }
+        finally {
+            await connection.close();
+        }
+    });
+
     app.delete('/atendimento/:id', function (req, res) {
         var util = new app.util.Util();
         let usuario = req.usuario;

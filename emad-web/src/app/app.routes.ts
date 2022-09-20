@@ -26,6 +26,7 @@ const appRoutes: Routes = [
     { path: 'escalas-profissionais', canActivate: [AuthGuard], loadChildren: './operacao/escala-profissional/escala-profissional.module#EscalaProfissionalModule' },
     { path: 'planos-terapeuticos', canActivate: [AuthGuard], loadChildren: './operacao/plano-terapeutico/plano-terapeutico.module#PlanoTerapeuticoModule' },
     { path: 'agendas', canActivate: [AuthGuard], loadChildren: './operacao/agenda/agenda.module#AgendaModule' },
+    { path: 'reaberturas', canActivate: [AuthGuard], loadChildren: './operacao/reabertura-atendimento/reabertura-atendimento.module#ReaberturaAtendimentoModule' },
     { path: 'estabelecimentos', canActivate: [AuthGuard], loadChildren: './seguranca/estabelecimento/estabelecimento.module#EstabelecimentoModule' },
     { path: 'menus', canActivate: [AuthGuard], loadChildren: './seguranca/menu/menu.module#MenuModule' },
     { path: 'parametros-segurancas', canActivate: [AuthGuard], loadChildren: './seguranca/parametro-seguranca/parametro-seguranca.module#ParametroSegurancaModule' },

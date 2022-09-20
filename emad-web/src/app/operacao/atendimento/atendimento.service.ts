@@ -436,6 +436,10 @@ export class AtendimentoService extends GenericsService {
     findByDosePorEstrategiaVacina(codigoVacinaSus: any, codigoEstrategiaVacinacaoSus: any): Observable<any> {
         return this.http.get("dominios/dose-vacina-sus/" + codigoVacinaSus + "?codigoEstrategiaVacinacaoSus=" + codigoEstrategiaVacinacaoSus);
     }
+
+    reabreAtendimento(obj: any) {
+        return this.http.put('atendimento/reabertura', JSON.stringify(obj));
+    }
 }
 
 
