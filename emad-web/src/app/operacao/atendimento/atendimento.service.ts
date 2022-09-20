@@ -101,6 +101,33 @@ export class AtendimentoService extends GenericsService {
             required: true,
             isDateTime: true,
             validator: ['', ''],
+            sortable: true
+        },
+        {
+            field: "dataCriacaoInicial",
+            type: "text",
+            label: "Data do atendimento inicial",
+            grid: false,
+            form: false,
+            required: false,
+            isDateTime: true,
+            validator: ['', ''],
+            filter: {
+                type: 'date',
+                placeHolder: '99/99/9999',
+                grid: true
+            },
+            sortable: true
+        },
+        {
+            field: "dataCriacaoFinal",
+            type: "text",
+            label: "Data do atendimento final",
+            grid: false,
+            form: false,
+            required: false,
+            isDateTime: true,
+            validator: ['', ''],
             filter: {
                 type: 'date',
                 placeHolder: '99/99/9999',

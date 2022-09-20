@@ -24,9 +24,11 @@ AtendimentoDAO.prototype.listarAsync = async function (addFilter) {
             where += " AND p.nome LIKE '%" + addFilter.nomePaciente + "%'";
         }
 
-        if (addFilter.dataCriacao) {
-
-            where += " AND a.dataCriacao >= '" + addFilter.dataCriacao + " 00:00:00' AND a.dataCriacao <= '" + addFilter.dataCriacao + " 23:59:59'";
+        if (addFilter.dataCriacaoInicial) {
+            if(addFilter.dataCriacaoFinal)
+                where += " AND a.dataCriacao >= '" + addFilter.dataCriacaoInicial + " 00:00:00' AND a.dataCriacao <= '" + addFilter.dataCriacaoFinal + " 23:59:59'";
+            else
+                where += " AND a.dataCriacao >= '" + addFilter.dataCriacaoInicial + " 00:00:00' AND a.dataCriacao <= '" + addFilter.dataCriacaoInicial + " 23:59:59'";
         }
 
         if (addFilter.idEstabelecimento) {
