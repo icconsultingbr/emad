@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter, ElementRef } from '@angular/core';
-import { Atendimento } from '../../_core/_models/Atendimento';
+import { Atendimento, AtendimentoFiltro } from '../../_core/_models/Atendimento';
 import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.service';
 import { AtendimentoService } from './atendimento.service';
 import { ActivatedRoute } from '@angular/router';
@@ -11,6 +11,7 @@ import { Util } from '../../_core/_util/Util';
 import { Translation } from '../../_core/_locale/Translation';
 import { isDate } from 'util';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-atendimento',
@@ -63,9 +64,12 @@ export class AtendimentoComponent implements OnInit {
   fields = [];
   fieldsSearch = [];
   object: Atendimento = new Atendimento();
+  objectFiltro: AtendimentoFiltro = new AtendimentoFiltro();
   idPaciente: 0;
+  armazenaPesquisa: false;
   virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
-
+  form: FormGroup;
+  
   actualPage: Number = 0;
   @Input() methodXls: string = this.method;
   dropdownSettings: any = {
@@ -85,6 +89,7 @@ export class AtendimentoComponent implements OnInit {
     private service: AtendimentoService,
     private route: ActivatedRoute,
     pagerService: PagerService,
+    private fb: FormBuilder,
     private modalService: NgbModal,
     private router: Router) {
 
@@ -105,11 +110,31 @@ export class AtendimentoComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       this.idPaciente = params['idPaciente'];
+      this.armazenaPesquisa = params['armazenaPesquisa'];
     });
 
     if (this.idPaciente>0) {
       this.object.idPaciente = this.idPaciente;      
     }
+
+    if(!this.armazenaPesquisa)
+      sessionStorage.setItem("pesquisa_atendimento","");
+
+    this.createGroup();    
+    this.preencheFiltro();
+  }
+
+  createGroup() {
+    this.form = this.fb.group({
+      textoProcurado: [''],
+      cartaoSus:[''],
+      cpf:[''],
+      nomePaciente:[''],
+      dataCriacaoInicial:[''],
+      dataCriacaoFinal:[''],
+      situacao:[''],
+      idSap:['']
+    });
   }
 
   loadDomains() {      
@@ -133,6 +158,59 @@ export class AtendimentoComponent implements OnInit {
     });        
   }
 
+  preencheFiltro(){
+    let addFilter = sessionStorage.getItem("pesquisa_atendimento").split("&");
+    
+    addFilter.forEach(filtro => {      
+      if(filtro.indexOf("cartaoSus") !== -1){
+        var cartaoSus = filtro.split("=");
+        this.objectFiltro.cartaoSus = cartaoSus[1];
+        this.isFilterCollapse = true;
+      }
+
+      if(filtro.indexOf("cpf") !== -1){
+        var cpf = filtro.split("=");
+        this.objectFiltro.cpf = cpf[1];
+        this.isFilterCollapse = true;
+      }
+
+      if(filtro.indexOf("nomePaciente") !== -1){
+        var nomePaciente = filtro.split("=");
+        this.objectFiltro.nomePaciente = nomePaciente[1];
+        this.isFilterCollapse = true;
+      }
+
+      if(filtro.indexOf("dataCriacaoInicial") !== -1){
+        var dataCriacaoInicial = filtro.split("=");
+        this.objectFiltro.dataCriacaoInicial = new Date(dataCriacaoInicial[1]);
+        this.isFilterCollapse = true;
+      }
+
+      if(filtro.indexOf("dataCriacaoFinal") !== -1){
+        var dataCriacaoFinal = filtro.split("=");
+        this.objectFiltro.dataCriacaoFinal = new Date(dataCriacaoFinal[1]);
+        this.isFilterCollapse = true;
+      }
+
+      if(filtro.indexOf("situacao") !== -1){
+        var situacao = filtro.split("=");
+        this.objectFiltro.situacao = situacao[1];
+        this.isFilterCollapse = true;
+      }
+
+      if(filtro.indexOf("idSap") !== -1){
+        var idSap = filtro.split("=");
+        this.objectFiltro.idSap = idSap[1];
+        this.isFilterCollapse = true;
+      }
+
+      if(filtro.indexOf("pesquisaCentral") !== -1){
+        var pesquisaCentral = filtro.split("=");
+        this.objectFiltro.pesquisaCentral = pesquisaCentral[1];
+      }
+    });
+  }
+
   setPagePagined(offset: number, limit: Number) {
     this.paging.offset = offset !== undefined ? offset : 0;
     this.paging.limit = limit ? limit : this.paging.limit;
@@ -149,49 +227,55 @@ export class AtendimentoComponent implements OnInit {
      setTimeout(() => this.loading = true, 300);
     }
 
-    let params = "";
+    let sessao = sessionStorage.getItem("pesquisa_atendimento");
+    let params = sessao;
     this.errors = [];
+    sessionStorage.setItem("pesquisa_atendimento","");
 
-    if (this.object !== null) {
-      if (Object.keys(this.object).length) {
-        for (let key of Object.keys(this.object)) {
-          if (this.object[key] != "" && this.object[key] != 0 && this.object[key] != null) {
-            if (typeof this.object[key] !== "undefined") {
-              if (typeof this.object[key] == 'object') {
-                if (isDate(this.object[key])) {
-                  params += key + "=" + Util.dateFormat(this.object[key], "yyyy-MM-dd") + "&";
-                } else {
-                  let p: string = "";
+    if(params.length == 0){
+      if (this.objectFiltro !== null) {
+        if (Object.keys(this.objectFiltro).length) {
+          for (let key of Object.keys(this.objectFiltro)) {
+            if (this.objectFiltro[key] != "" && this.objectFiltro[key] != 0 && this.objectFiltro[key] != null) {
+              if (typeof this.objectFiltro[key] !== "undefined") {
+                if (typeof this.objectFiltro[key] == 'object') {
+                  if (isDate(this.objectFiltro[key])) {
+                    params += key + "=" + Util.dateFormat(this.objectFiltro[key], "yyyy-MM-dd") + "&";
+                  } else {
+                    let p: string = "";
 
-                  for (let k of this.object[key]) {
-                    p += k.id + ",";
+                    for (let k of this.objectFiltro[key]) {
+                      p += k.id + ",";
+                    }
+                    params += key + "=" + p.substring(0, p.length - 1) + "&";
                   }
-                  params += key + "=" + p.substring(0, p.length - 1) + "&";
-                }
-              } else {
-                if (this.object[key].toString().indexOf('/') >= 0) {
-                  params += key + "=" + Util.dateFormat(this.object[key], "yyyy-MM-dd") + "&";
                 } else {
-                  params += key + "=" + this.object[key] + "&";
+                  if (this.objectFiltro[key].toString().indexOf('/') >= 0) {
+                    params += key + "=" + Util.dateFormat(this.objectFiltro[key], "yyyy-MM-dd") + "&";
+                  } else {
+                    params += key + "=" + this.objectFiltro[key] + "&";
+                  }
                 }
               }
             }
           }
-        }
 
-        if (params != "") {
-          params = "?" + params;
+          if (params != "") {
+            params = "?" + params;
+          }
         }
+      }
+
+      if (this.paging.offset != null && this.paging.limit != null) {
+        params += (params == "" ? "?" : "") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+      }
+
+      if(this.sortColumn) {
+        params += (params == "" ? "?" : "&") +  `sortColumn=${this.sortColumn}&sortOrder=${this.sortOrder}`;
       }
     }
 
-    if (this.paging.offset != null && this.paging.limit != null) {
-      params += (params == "" ? "?" : "") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
-    }
-
-    if(this.sortColumn) {
-      params += (params == "" ? "?" : "&") +  `sortColumn=${this.sortColumn}&sortOrder=${this.sortOrder}`;
-    }
+    sessionStorage.setItem("pesquisa_atendimento",params);
 
     this.service.list(this.method + params).subscribe(result => {
       this.warning = "";
@@ -208,7 +292,8 @@ export class AtendimentoComponent implements OnInit {
   }  
 
   pesquisaCentral(){    
-    this.object.pesquisaCentral = this.textoProcurado.nativeElement.value;
+    sessionStorage.setItem("pesquisa_atendimento","");
+    this.objectFiltro.pesquisaCentral = this.textoProcurado.nativeElement.value;
     this.getListPaged();
   }
 
@@ -250,16 +335,19 @@ export class AtendimentoComponent implements OnInit {
 
   searchFilter() {
     this.mensagem = "";
+    sessionStorage.setItem("pesquisa_atendimento","");
     this.getListPaged();
   }
 
   clear() {
-    if (this.object != null) {
+    sessionStorage.setItem("pesquisa_atendimento","");
 
-      if (Object.keys(this.object).length) {
-        for (let key of Object.keys(this.object)) {
+    if (this.objectFiltro != null) {
 
-          if (this.object[key] != "" && this.object[key] != 0) {
+      if (Object.keys(this.objectFiltro).length) {
+        for (let key of Object.keys(this.objectFiltro)) {
+
+          if (this.objectFiltro[key] != "" && this.objectFiltro[key] != 0) {
 
             let fields2 = this.fieldsSearch.filter(item => item.field == key);
 
@@ -268,9 +356,9 @@ export class AtendimentoComponent implements OnInit {
                 if (fields2[0].filter.changeTarget){
                   this.domains[0][fields2[0].filter.changeTarget] = [];
                 }
-                this.object[key] = undefined;
+                this.objectFiltro[key] = undefined;
               } else {
-                this.object[key] = null;
+                this.objectFiltro[key] = null;
               }
             }
           }
@@ -280,7 +368,6 @@ export class AtendimentoComponent implements OnInit {
       this.allItems = [];
       this.textoProcurado.nativeElement.value = "";
     }
-
   }
 
   loadQuantityPerPagePagination(event) {

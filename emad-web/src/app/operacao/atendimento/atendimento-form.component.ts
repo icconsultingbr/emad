@@ -252,7 +252,8 @@ export class AtendimentoFormComponent implements OnInit {
       modalidade: ['', ''],
       tipoAtendimento: ['', ''],
       vacinasEmDia: ['', ''],
-      condicaoAvaliada: ['', '']
+      condicaoAvaliada: ['', ''],
+      dataCriacao: ['', ''],
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -770,6 +771,8 @@ export class AtendimentoFormComponent implements OnInit {
       this.object.pacienteNome = result.nome;
       this.object.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
       this.localAtendimento = result.localDeAtendimento;
+      this.object.dataCriacao = new Date(this.object.dataCriacao);
+      
       this.loading = false;
 
       this.tipoFicha = result.tipoFicha;
@@ -1592,7 +1595,7 @@ export class AtendimentoFormComponent implements OnInit {
 
   //ATIVIDADE COLETIVA
   back() {
-    const route = "atendimentos";
+    const route = "atendimentos/pesquisa/true";
     this.router.navigate([route]);
   }
   changeFn(event) {

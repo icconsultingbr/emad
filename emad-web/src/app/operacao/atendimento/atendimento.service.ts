@@ -93,6 +93,20 @@ export class AtendimentoService extends GenericsService {
             sortable: true
         },
         {
+            field: "pesquisaCentral",
+            type: "text",
+            label: "Pesquisa central",
+            grid: false,
+            form: false,
+            required: false,
+            validator: ['', ''],
+            filter: {
+                type: 'text',
+                grid: true
+            },
+            sortable: false
+        },
+        {
             field: "dataCriacao",
             type: "text",
             label: "Data do atendimento",

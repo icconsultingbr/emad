@@ -21,11 +21,15 @@ export const atendimentoRoutes: Routes = [
     {
         path: 'cadastro',
         component: AtendimentoFormComponent,        
-    },
+    }, 
     {
         path: 'cadastro/:id',
         component: AtendimentoFormComponent,        
-    },       
+    }, 
+    {
+        path: 'pesquisa/:armazenaPesquisa',
+        component: AtendimentoComponent,        
+    },     
     {
         path: 'sala-espera-criar',
         component: AtendimentoSalaEsperaFormComponent,        

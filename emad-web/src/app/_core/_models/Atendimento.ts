@@ -18,6 +18,7 @@ export class Atendimento {
     @Input() observacoesGerais: string = null;
     @Input() situacao: string = null;
     @Input() motivoCancelamento: string = null;
+    @Input() dataCriacao: Date = new Date();
     @Input() dataFinalizacao: string = null;
     @Input() dataCancelamento: string = null;
     @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem("est"))[0].id;
@@ -119,5 +120,17 @@ export class AtendimentoHistorico {
     @Input() vacinasEmDia: number;
     @Input() condicaoAvaliada: number;
 
+}
+
+export class AtendimentoFiltro {
+    @Input() cartaoSus: string;
+    @Input() cpf: string;
+    @Input() nomePaciente: string;
+    @Input() dataCriacaoInicial: Date;
+    @Input() dataCriacaoFinal: Date;
+    @Input() situacao: string;
+    @Input() idSap: string;
+    @Input() pesquisaCentral: string;
+    @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem("est"))[0].id;
 }
 

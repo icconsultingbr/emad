@@ -393,6 +393,8 @@ module.exports = function (app) {
             delete obj.tiposVigilanciaSaudeBucal;
             delete obj.condutaEncaminhamento;
 
+            obj.dataCriacao = new Date(obj.dataCriacao);
+
             var responseAtendimento = await atendimentoRepository.salvaSync(obj);
 
             obj.id = responseAtendimento[0].insertId;
@@ -428,6 +430,8 @@ module.exports = function (app) {
             delete objHistorico.tiposConsultaOdonto;
             delete objHistorico.tiposVigilanciaSaudeBucal;
             delete objHistorico.condutaEncaminhamento;
+
+            objHistorico.dataCriacao = new Date(objHistorico.dataCriacao);
 
             var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
 
@@ -523,6 +527,7 @@ module.exports = function (app) {
         delete obj.id;
         delete obj.pacienteNome;
         delete obj.pesquisaCentral;
+        delete obj.dataCriacao;
         obj.idUsuarioAlteracao = usuario.id;
         delete obj.idUsuario;
         obj.historiaProgressa = obj.pacienteHistoriaProgressa;
