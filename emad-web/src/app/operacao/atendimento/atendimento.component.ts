@@ -182,13 +182,13 @@ export class AtendimentoComponent implements OnInit {
 
       if(filtro.indexOf("dataCriacaoInicial") !== -1){
         var dataCriacaoInicial = filtro.split("=");
-        this.objectFiltro.dataCriacaoInicial = new Date(dataCriacaoInicial[1]);
+        this.objectFiltro.dataCriacaoInicial = new Date(dataCriacaoInicial[1] + " 04:00:00");
         this.isFilterCollapse = true;
       }
 
       if(filtro.indexOf("dataCriacaoFinal") !== -1){
         var dataCriacaoFinal = filtro.split("=");
-        this.objectFiltro.dataCriacaoFinal = new Date(dataCriacaoFinal[1]);
+        this.objectFiltro.dataCriacaoFinal = new Date(dataCriacaoFinal[1] + " 23:59:00");
         this.isFilterCollapse = true;
       }
 
