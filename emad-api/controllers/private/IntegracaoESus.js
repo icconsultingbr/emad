@@ -635,7 +635,7 @@ module.exports = function (app) {
                 .ele('versaoSistema').txt(versao).up()
                 .ele('nomeBancoDados').txt('MySQL').up()
                 .up()
-                .ele('versao', { major: '', minor: '3', revision: '5' })
+                .ele('versao', { major: '4', minor: '3', revision: '5' })
                 .doc();
 
             listVacinas.forEach(vacina => {
@@ -693,7 +693,7 @@ module.exports = function (app) {
                     .ele('estrategiaVacinacao').txt(x.estrategiaVacinacao ? x.estrategiaVacinacao : '').up()
                     .ele('dose').txt(x.dose ? x.dose : '').up()
                     .ele('lote').txt(x.lote ? x.lote : '').up()
-                    .ele('fabricante').txt(x.fornecedor ? x.fornecedor : '').up()
+                    .ele('fabricante').txt(x.fornecedor ? x.fornecedor : 'NÃO INFORMADO').up()
                     .ele('grupoAtendimento').txt(x.grupoAtendimento ? x.grupoAtendimento : '').up()
                     .ele('stRegistroAnterior').txt(x.stRegistroAnterior == 1 ? true : false).up()
                     .ele('dataRegistroAnterior').txt(x.dataRegistroAnterior ? new Date(x.dataRegistroAnterior).getTime() : '').up()
@@ -704,6 +704,12 @@ module.exports = function (app) {
                     //Não pode ser preenchido se o campo stRegistroAnterior = true;    
                     if (x.stRegistroAnterior == 1 || x.estrategiaVacinacao != '5') {
                         removeNode(frag.doc(), ['grupoAtendimento']);
+                    }
+
+                    //CAMPO = estrategiaVacinacao                    
+                    //Não pode ser preenchido se o campo stRegistroAnterior = true;    
+                    if (x.stRegistroAnterior == 1) {
+                        removeNode(frag.doc(), ['estrategiaVacinacao']);
                     }
 
                     let fieldToValidate = ['estrategiaVacinacao','grupoAtendimento','dose','dataRegistroAnterior', 'fabricante'];
