@@ -212,6 +212,7 @@ export class AtendimentoComponent implements OnInit {
   }
 
   setPagePagined(offset: number, limit: Number) {
+    sessionStorage.setItem("pesquisa_atendimento","");
     this.paging.offset = offset !== undefined ? offset : 0;
     this.paging.limit = limit ? limit : this.paging.limit;
     this.getListPaged(this.paging.offset, this.paging.limit);
