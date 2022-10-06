@@ -334,7 +334,7 @@ export class PacienteComponent implements OnInit {
   
 
   visualizaAtendimentos(id : any) : void {
-    let url = this.router.url.replace('paciente','') + this.virtualDirectory + "#/atendimentos/idPaciente/" + id;
+    let url = this.router.url.replace('pacientes','') + this.virtualDirectory + "#/atendimentos/idPaciente/" + id;
     this.service.file('atendimento/consulta-por-paciente', url).subscribe(result=>{
       this.loading = false;
       window.open(
@@ -384,7 +384,7 @@ export class PacienteComponent implements OnInit {
   } 
 
   visualizaProntuarioPaciente(idPaciente: any): void {
-    let url = this.router.url.replace('paciente', '') + this.virtualDirectory + "#/pacientes/prontuario/" + idPaciente + "?hideMenu=true";
+    let url = this.router.url.replace('pacientes', '') + this.virtualDirectory + "#/pacientes/prontuario/" + idPaciente + "?hideMenu=true";
     this.service.file('atendimento/consulta-por-paciente', url).subscribe(result => {
       this.loading = false;
       window.open(
