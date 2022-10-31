@@ -36,6 +36,10 @@ FROM nginx:latest
 
 COPY nginx/default.conf /etc/nginx/conf.d/
 
+COPY /scripts/startup.sh startup.sh
+RUN chmod +x /startup.sh
+RUN sed -i -e 's/\r$//' /startup.sh
+
 ## Remove default nginx website
 
 RUN rm -rf /usr/share/nginx/html/*
@@ -44,4 +48,4 @@ RUN rm -rf /usr/share/nginx/html/*
 
 COPY --from=builder /ng-app/dist /usr/share/nginx/html
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD [ "/startup.sh" ]
