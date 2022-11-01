@@ -258,6 +258,11 @@ module.exports = function (app) {
         req.assert("tipoFicha").notEmpty().withMessage("Tipo de ficha é um campo obrigatório;");
         req.assert("idClassificacaoRisco").notEmpty().withMessage("Classificação de risco é um campo obrigatório;");
 
+        if (obj.tipoFicha != 1 && obj.tipoFicha != 8){
+            delete obj.idProfissionalCompartilhado;
+            delete objHistorico.idProfissionalCompartilhado;
+        }
+
         //ATIVIDADE COLETIVA
         if (obj.tipoFicha == '7') {
 
@@ -551,6 +556,10 @@ module.exports = function (app) {
         if (obj.situacao == "X")
             req.assert("motivoCancelamento").notEmpty().withMessage("Motivo do cancelamento é obrigatório;");
 
+        if (obj.tipoFicha != 1 && obj.tipoFicha != 8){
+            delete obj.idProfissionalCompartilhado;
+            delete objHistorico.idProfissionalCompartilhado;
+        }
 
         //ATIVIDADE COLETIVA
         if (obj.tipoFicha == 7) {
