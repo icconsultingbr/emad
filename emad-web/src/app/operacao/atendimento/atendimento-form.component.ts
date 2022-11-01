@@ -254,6 +254,7 @@ export class AtendimentoFormComponent implements OnInit {
       vacinasEmDia: ['', ''],
       condicaoAvaliada: ['', ''],
       dataCriacao: ['', ''],
+      idProfissionalCompartilhado: ['', '']
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -1100,37 +1101,41 @@ export class AtendimentoFormComponent implements OnInit {
                             this.service.listDomains('local-atendimento').subscribe(localDeAtendimento => {
                               this.service.listDomains('modalidade').subscribe(modalidade => {        
                                   this.service.listDomains('condicao-avaliada').subscribe(condicaoAvaliada => {
-                                  this.domains.push({
-                                    especialidades: especialidades,
-                                    tipoFichas: tipoFichas,
-                                    classificacaoRiscos: classificacaoRiscos,
-                                    idGrupoMaterial: gruposMateriais,
-                                    atividadeProcedimento: atividadeProcedimento,
-                                    atividadeTipo: atividadeTipo,
-                                    atividadeTemas: atividadeTemas,
-                                    atividadePublico: atividadePublico,
-                                    atividadePraticasSaude: atividadePraticasSaude,
-                                    atividadeTemasSaude: atividadeTemasSaude,
-                                    tiposFornecimOdonto: tiposFornecimOdonto,
-                                    tiposVigilanciaSaudeBucal: tiposVigilanciaSaudeBucal,
-                                    localDeAtendimento: localDeAtendimento,
-                                    modalidade: modalidade,
-                                    condicaoAvaliada: condicaoAvaliada,
-                                    tipoHistoriaClinica: [
-                                      { id: 1, nome: "Anamnese" },
-                                      { id: 2, nome: "Evolução" },
-                                    ],
-                                    tiposConsultaOdonto: [
-                                      { id: 1, nome: "Primeira consulta odontológica programática" },
-                                      { id: 2, nome: "Consulta de retorno em odontologia" },
-                                      { id: 4, nome: "Consulta de manutenção em odontologia" },
-                                    ]
+                                    this.service.list('profissional/estabelecimento/' + this.paciente.idEstabelecimento).subscribe(profissionais => {
+                                      this.domains.push({
+                                        especialidades: especialidades,
+                                        tipoFichas: tipoFichas,
+                                        classificacaoRiscos: classificacaoRiscos,
+                                        idGrupoMaterial: gruposMateriais,
+                                        atividadeProcedimento: atividadeProcedimento,
+                                        atividadeTipo: atividadeTipo,
+                                        atividadeTemas: atividadeTemas,
+                                        atividadePublico: atividadePublico,
+                                        atividadePraticasSaude: atividadePraticasSaude,
+                                        atividadeTemasSaude: atividadeTemasSaude,
+                                        tiposFornecimOdonto: tiposFornecimOdonto,
+                                        tiposVigilanciaSaudeBucal: tiposVigilanciaSaudeBucal,
+                                        localDeAtendimento: localDeAtendimento,
+                                        modalidade: modalidade,
+                                        condicaoAvaliada: condicaoAvaliada,
+                                        idProfissionalCompartilhado: profissionais,
+                                        tipoHistoriaClinica: [
+                                          { id: 1, nome: "Anamnese" },
+                                          { id: 2, nome: "Evolução" },
+                                        ],
+                                        tiposConsultaOdonto: [
+                                          { id: 1, nome: "Primeira consulta odontológica programática" },
+                                          { id: 2, nome: "Consulta de retorno em odontologia" },
+                                          { id: 4, nome: "Consulta de manutenção em odontologia" },
+                                        ]
+                                      });
+                                      if (!Util.isEmpty(this.id)) {
+                                        this.encontraAtendimento();
+                                      }
+                                      else
+                                        this.loading = false;
+                                    });
                                   });
-                                  if (!Util.isEmpty(this.id)) {
-                                    this.encontraAtendimento();
-                                  }
-                                  else
-                                    this.loading = false;
                                 });
                               });
                             });
@@ -1144,8 +1149,7 @@ export class AtendimentoFormComponent implements OnInit {
             });
           });
         });
-      });
-    });
+      });    
   }
 
   loadDomainsVacinacao() {

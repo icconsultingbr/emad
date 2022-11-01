@@ -539,7 +539,14 @@ module.exports = function (app) {
         req.assert("idPaciente").notEmpty().withMessage("Paciente um campo obrigatório;");
         req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
         req.assert("tipoFicha").notEmpty().withMessage("Tipo de ficha é um campo obrigatório;");
-        req.assert("idClassificacaoRisco").notEmpty().withMessage("Classificação de risco é um campo obrigatório;");
+        req.assert("idClassificacaoRisco").notEmpty().withMessage("Classificação de risco é um campo obrigatório;");        
+        req.assert("tipoAtendimento").notEmpty().withMessage("Tipo de atendimento é um campo obrigatório;");
+
+        if (obj.tipoAtendimento && obj.tipoAtendimento == 0) {
+            errors = util.customError(errors, "header", "Informe o Tipo de atendimento.", "");
+            res.status(400).send(errors);
+            return;
+        }
 
         if (obj.situacao == "X")
             req.assert("motivoCancelamento").notEmpty().withMessage("Motivo do cancelamento é obrigatório;");
@@ -839,6 +846,7 @@ module.exports = function (app) {
         req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
         req.assert("tipoFicha").notEmpty().withMessage("Tipo de ficha é um campo obrigatório;");
         req.assert("idClassificacaoRisco").notEmpty().withMessage("Classificação de risco é um campo obrigatório;");
+        req.assert("tipoAtendimento").notEmpty().withMessage("Tipo de atendimento é um campo obrigatório;");
 
         if (obj.situacao == "X")
             req.assert("motivoCancelamento").notEmpty().withMessage("Motivo do cancelamento é obrigatório;");

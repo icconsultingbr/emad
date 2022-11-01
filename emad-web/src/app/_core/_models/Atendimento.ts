@@ -60,6 +60,7 @@ export class Atendimento {
     @Input() tipoAtendimento: number;
     @Input() vacinasEmDia: number;
     @Input() condicaoAvaliada: number;
+    @Input() idProfissionalCompartilhado: number;
 
 }
 
@@ -119,7 +120,7 @@ export class AtendimentoHistorico {
     @Input() tipoAtendimento: number;
     @Input() vacinasEmDia: number;
     @Input() condicaoAvaliada: number;
-
+    @Input() idProfissionalCompartilhado: number;
 }
 
 export class AtendimentoFiltro {
