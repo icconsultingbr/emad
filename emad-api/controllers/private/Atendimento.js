@@ -651,7 +651,8 @@ module.exports = function (app) {
         const pacienteRepository = new app.dao.PacienteDAO(connection);
         const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
         const atendimentoMedicamentoRepository = new app.dao.AtendimentoMedicamentoDAO(connection);
-
+        const atendimentoCondicaoAvaliadaRepository = new app.dao.AtendimentoCondicaoAvaliadaDAO(connection);
+        
         try {
 
             await connection.beginTransaction();
@@ -665,6 +666,16 @@ module.exports = function (app) {
 
             if (!buscaProfissional) {
                 errors = util.customError(errors, "header", "O seu usuário não possui profissional vinculado, não é permitido criar/alterar atendimentos", "");
+                res.status(400).send(errors);
+                await connection.rollback();
+                return;
+            }
+            
+            var buscaCondicaoAvaliadaAtendimento = await atendimentoCondicaoAvaliadaRepository.buscarPorAtendimentoId(id);
+
+            //SE O USUARIO É ENFERMEIRO E NAO ENVIOU UM CONDICAO AVALIADA OBRIGAR O MESMO A SELECIONAR
+            if ((usuario.idTipoUsuario == 8 || buscaProfissional.idEspecialidade == 22) && buscaCondicaoAvaliadaAtendimento.length == 0) {
+                errors = util.customError(errors, "header", "É necessário informar a Avaliação/Classificação CIAP 2", "");
                 res.status(400).send(errors);
                 await connection.rollback();
                 return;
