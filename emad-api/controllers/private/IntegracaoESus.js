@@ -402,6 +402,7 @@ module.exports = function (app) {
                 const listAvaliacao = list.condicaoAvaliacao.filter(x => x.idAtendimento == atendimento.idAtendimento);
                 const listCondutas = list.condutaSus.filter(x => x.idAtendimento == atendimento.idAtendimento);
                 const listCondicoesCiaps = list.condicaoCiaps.filter(x => x.idAtendimento == atendimento.idAtendimento);
+                const listExamesSolicitados = list.solicitacoesExames.filter(x => x.idPaciente == atendimento.idPaciente);
 
                 if (!listCondutas.some((o) => o.idAtendimento == atendimento.idAtendimento) ||
                     (!listAvaliacao.some((o) => o.idAtendimento == atendimento.idAtendimento) && !listCondicoesCiaps.some((o) => o.idAtendimento == atendimento.idAtendimento))) {
@@ -411,6 +412,7 @@ module.exports = function (app) {
 
                 let avaliacao = preencheAvaliacaoAtendimentoIndividual(listAvaliacao, listCondicoesCiaps, atendimento.idAtendimento);
                 let condutas = preencheCondutasAtendimentoIndividual(listCondutas, atendimento.idAtendimento);
+                let examesSolicitados = preencheExamesSolicitadosAtendimentoIndividual(listExamesSolicitados, atendimento.idPaciente);
 
                 let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('atendimentosIndividuais')
                     .ele('numeroProntuario').txt(atendimento.idAtendimento).up()
@@ -429,6 +431,8 @@ module.exports = function (app) {
                 .ele('ficouEmObservacao').txt(atendimento.ficouEmObservacao ? atendimento.ficouEmObservacao == 1 ? true : false : false).up()
 
                 condutas.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosIndividuais', true, true).import(x));
+
+                examesSolicitados.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosIndividuais', true, true).import(x));
 
                 atend.ele('dataHoraInicialAtendimento').txt(new Date(atendimento.dataCriacao).getTime()).up()
                     .ele('dataHoraFinalAtendimento').txt(new Date(atendimento.dataFinalizacao).getTime()).up()
@@ -586,6 +590,20 @@ module.exports = function (app) {
             }
         })
         return conduta
+    }
+
+    function preencheExamesSolicitadosAtendimentoIndividual(listExames, idPaciente) {
+        const { fragment } = require('xmlbuilder2');
+        let exames = []
+        listExames.forEach(x => {
+            if (x.idPaciente == idPaciente) {
+                let frag = fragment().ele('exame')
+                    .ele('codigoExame').txt(x.codigoExame).up()
+                    .ele('solicitadoAvaliado').txt(x.solicitadoAvaliado).up()
+                exames.push(frag);
+            }
+        })
+        return exames
     }
 
     function preencheXMLFichaVacinacao(list, estabelecimento, profissionais) {

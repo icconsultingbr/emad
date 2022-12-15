@@ -20,6 +20,11 @@ IntegracaoESusDAO.prototype.listaAtendimentoIndividual = async function (filtro)
    listaAtendimentoIndividual.condutaSus = await this._connection.query(`SELECT vw.* FROM vw_condutas_sus vw 
                                                                                  INNER JOIN tb_atendimento ta ON (ta.id = vw.idAtendimento)
                                                                                  WHERE vw.condutas IS NOT NULL and ta.idEstabelecimento = ?`, [filtro.idEstabelecimento]);
+
+   listaAtendimentoIndividual.solicitacoesExames = await this._connection.query(`SELECT vw.* FROM vw_exames_sus vw 
+                                                                                 WHERE ${this.campoData} BETWEEN ? AND ?  AND idEstabelecimento = ?`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1], filtro.idEstabelecimento]);
+
+
    return listaAtendimentoIndividual;
 }
 
