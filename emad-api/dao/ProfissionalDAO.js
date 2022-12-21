@@ -315,7 +315,7 @@ ProfissionalDAO.prototype.buscaProfissionalPorUsuario = function (idUsuario, cal
 }
 
 ProfissionalDAO.prototype.buscaProfissionalPorUsuarioSync = async function (idUsuario) {
-    let profissional = await this._connection.query(`SELECT * FROM tb_profissional as p WHERE p.idUsuario = ? AND p.situacao = 1`, [idUsuario]);
+    let profissional = await this._connection.query(`SELECT p.*, te.codigoCBO FROM tb_profissional as p left join tb_especialidade te on te.id = p.idEspecialidade WHERE p.idUsuario = ? AND p.situacao = 1`, [idUsuario]);
 
     return profissional[0];
 }

@@ -674,7 +674,7 @@ module.exports = function (app) {
             var buscaCondicaoAvaliadaAtendimento = await atendimentoCondicaoAvaliadaRepository.buscarPorAtendimentoId(id);
 
             //SE O USUARIO É ENFERMEIRO E NAO ENVIOU UM CONDICAO AVALIADA OBRIGAR O MESMO A SELECIONAR
-            if ((usuario.idTipoUsuario == 8 || buscaProfissional.idEspecialidade == 22) && buscaCondicaoAvaliadaAtendimento.length == 0) {
+            if ((usuario.idTipoUsuario == 9 || buscaProfissional.codigoCBO == '223505') && buscaCondicaoAvaliadaAtendimento.length == 0) {
                 errors = util.customError(errors, "header", "É necessário informar a Avaliação/Classificação CIAP 2", "");
                 res.status(400).send(errors);
                 await connection.rollback();
