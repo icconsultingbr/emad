@@ -10,7 +10,7 @@ IntegracaoESusDAO.prototype.listaCadastroIndividual = async function (filtro) {
 
 IntegracaoESusDAO.prototype.listaAtendimentoIndividual = async function (filtro) {
    let listaAtendimentoIndividual = {};
-   listaAtendimentoIndividual.atendimentos = await this._connection.query(`SELECT * FROM vw_atendimento_individual_sus vw WHERE ${this.campoData} BETWEEN ? AND ?  AND idEstabelecimento = ?`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1], filtro.idEstabelecimento]);
+   listaAtendimentoIndividual.atendimentos = await this._connection.query(`SELECT vw.* FROM vw_atendimento_individual_sus vw WHERE ${this.campoData} BETWEEN ? AND ?  AND idEstabelecimento = ?`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1], filtro.idEstabelecimento]);
    listaAtendimentoIndividual.condicaoAvaliacao = await this._connection.query(`SELECT vw.* FROM vw_problema_condicao_avaliacao_sus vw
                                                                                  INNER JOIN tb_atendimento ta ON (ta.id = vw.idAtendimento)
                                                                                  WHERE ta.idEstabelecimento = ?`, [filtro.idEstabelecimento]);
@@ -24,6 +24,8 @@ IntegracaoESusDAO.prototype.listaAtendimentoIndividual = async function (filtro)
    listaAtendimentoIndividual.solicitacoesExames = await this._connection.query(`SELECT vw.* FROM vw_exames_sus vw 
                                                                                  WHERE ${this.campoData} BETWEEN ? AND ?  AND idEstabelecimento = ?`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1], filtro.idEstabelecimento]);
 
+   listaAtendimentoIndividual.medicamentos = await this._connection.query(`SELECT vw.* FROM vw_medicamentos_sus vw 
+                                                                                 WHERE ${this.campoData} BETWEEN ? AND ?  AND idEstabelecimento = ?`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1], filtro.idEstabelecimento]);
 
    return listaAtendimentoIndividual;
 }

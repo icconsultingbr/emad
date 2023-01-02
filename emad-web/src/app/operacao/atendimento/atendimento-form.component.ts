@@ -265,7 +265,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.formMedicamento = this.fbMedicamento.group({
       idPaciente: [Validators.required],
       uso: [Validators.required],
-      tipoVia: [Validators.required],
+      idTipoViaMaterial: [''],
       quantidade: [Validators.required],
       apresentacao: [Validators.required],
       posologia: [Validators.required],
@@ -325,7 +325,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.formMedicamento = this.fbMedicamento.group({
       idPaciente: [Validators.required],
       uso: [Validators.required],
-      tipoVia: [Validators.required],
+      idTipoViaMaterial: [''],
       quantidade: [Validators.required],
       apresentacao: [Validators.required],
       posologia: [Validators.required],
@@ -1100,6 +1100,7 @@ export class AtendimentoFormComponent implements OnInit {
                           this.service.listDomains('odonto-vigilancia').subscribe(tiposVigilanciaSaudeBucal => {
                             this.service.listDomains('local-atendimento').subscribe(localDeAtendimento => {
                               this.service.listDomains('modalidade').subscribe(modalidade => {        
+                                this.service.listDomains('tipo-via-material').subscribe(tipoViaMaterial => {        
                                   this.service.listDomains('condicao-avaliada').subscribe(condicaoAvaliada => {
                                     this.service.list('profissional/estabelecimento/' + this.paciente.idEstabelecimento).subscribe(profissionais => {
                                       this.domains.push({
@@ -1117,6 +1118,7 @@ export class AtendimentoFormComponent implements OnInit {
                                         tiposVigilanciaSaudeBucal: tiposVigilanciaSaudeBucal,
                                         localDeAtendimento: localDeAtendimento,
                                         modalidade: modalidade,
+                                        idTipoViaMaterial: tipoViaMaterial,
                                         condicaoAvaliada: condicaoAvaliada,
                                         idProfissionalCompartilhado: profissionais,
                                         tipoHistoriaClinica: [
@@ -1136,6 +1138,7 @@ export class AtendimentoFormComponent implements OnInit {
                                         this.loading = false;
                                     });
                                   });
+                                });
                                 });
                               });
                             });
@@ -1212,7 +1215,7 @@ export class AtendimentoFormComponent implements OnInit {
     return Util.isEmpty(this.atendimentoMedicamento.idPaciente) ||
       Util.isEmpty(this.medicamentoSelecionado) ||
       Util.isEmpty(this.atendimentoMedicamento.uso) ||
-      Util.isEmpty(this.atendimentoMedicamento.tipoVia) ||
+      Util.isEmpty(this.atendimentoMedicamento.idTipoViaMaterial) ||
       Util.isEmpty(this.atendimentoMedicamento.quantidade) ||
       Util.isEmpty(this.atendimentoMedicamento.apresentacao) ||
       Util.isEmpty(this.atendimentoMedicamento.posologia) ||

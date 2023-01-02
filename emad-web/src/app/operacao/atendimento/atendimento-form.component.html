@@ -2914,8 +2914,11 @@
       <label class="col-xl-4 col-form-label text-left">
         Tipo via<span class="text-danger font-weight-bold"> *</span>
       </label>
-      <div class="col-xl-8">
-        <input type="text" class="form-control has-error" [(ngModel)]="atendimentoMedicamento.tipoVia" />
+      <div class="col-xl-8">        
+        <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="atendimentoMedicamento.idTipoViaMaterial">
+          <option [value]="null">Selecione...</option>
+          <option *ngFor="let item of domains[0]?.idTipoViaMaterial" [value]="item.id">{{item.nome}}</option>
+        </select>
       </div>
     </div>
 

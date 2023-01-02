@@ -9,7 +9,7 @@ AtendimentoMedicamentoDAO.prototype.buscaPorAtendimentoId = function (idAtendime
         am.idMaterial,
         material.descricao descricaoMaterial, 
         am.uso, 
-        am.tipoVia,
+        tvm.nome as tipoVia,
         am.quantidade,
         am.apresentacao, 
         am.posologia, 
@@ -19,6 +19,7 @@ AtendimentoMedicamentoDAO.prototype.buscaPorAtendimentoId = function (idAtendime
     
     from ${this._table} am   
     INNER JOIN tb_material material ON (material.id = am.idMaterial) 
+    LEFT JOIN tb_tipo_via_material tvm ON (tvm.id = am.idTipoViaMaterial) 
     WHERE am.situacao = 1 AND am.idAtendimento = ?` ,idAtendimento,callback); 
 }
 

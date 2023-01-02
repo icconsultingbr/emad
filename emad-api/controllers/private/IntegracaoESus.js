@@ -403,6 +403,7 @@ module.exports = function (app) {
                 const listCondutas = list.condutaSus.filter(x => x.idAtendimento == atendimento.idAtendimento);
                 const listCondicoesCiaps = list.condicaoCiaps.filter(x => x.idAtendimento == atendimento.idAtendimento);
                 const listExamesSolicitados = list.solicitacoesExames.filter(x => x.idPaciente == atendimento.idPaciente);
+                const listMedicamentos = list.medicamentos.filter(x => x.idAtendimento == atendimento.idAtendimento);
 
                 if (!listCondutas.some((o) => o.idAtendimento == atendimento.idAtendimento) ||
                     (!listAvaliacao.some((o) => o.idAtendimento == atendimento.idAtendimento) && !listCondicoesCiaps.some((o) => o.idAtendimento == atendimento.idAtendimento))) {
@@ -413,6 +414,7 @@ module.exports = function (app) {
                 let avaliacao = preencheAvaliacaoAtendimentoIndividual(listAvaliacao, listCondicoesCiaps, atendimento.idAtendimento);
                 let condutas = preencheCondutasAtendimentoIndividual(listCondutas, atendimento.idAtendimento);
                 let examesSolicitados = preencheExamesSolicitadosAtendimentoIndividual(listExamesSolicitados, atendimento.idPaciente);
+                let medicamentos = preencheMedicamentosAtendimentoIndividual(listMedicamentos, atendimento.idAtendimento);
 
                 let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('atendimentosIndividuais')
                     .ele('numeroProntuario').txt(atendimento.idAtendimento).up()
@@ -433,6 +435,8 @@ module.exports = function (app) {
                 condutas.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosIndividuais', true, true).import(x));
 
                 examesSolicitados.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosIndividuais', true, true).import(x));
+
+                medicamentos.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosIndividuais', true, true).import(x));
 
                 atend.ele('dataHoraInicialAtendimento').txt(new Date(atendimento.dataCriacao).getTime()).up()
                     .ele('dataHoraFinalAtendimento').txt(new Date(atendimento.dataFinalizacao).getTime()).up()
@@ -604,6 +608,45 @@ module.exports = function (app) {
             }
         })
         return exames
+    }
+
+    function preencheMedicamentosAtendimentoIndividual(listMedicamentos, idAtendimento) {
+        const { fragment } = require('xmlbuilder2');
+        let medicamentos = []
+        listMedicamentos.forEach(x => {
+            if (x.idAtendimento == idAtendimento) {
+                //dose única
+                if(x.quantidadeReceitada == 1){
+                    let frag = fragment().ele('medicamentos')
+                    .ele('codigoCatmat').txt(x.codigoCatmat).up()
+                    .ele('viaAdministracao').txt(x.viaAdministracao).up()
+                    .ele('dose').txt(x.dose).up()
+                    .ele('doseUnica').txt(true).up()
+                    .ele('usoContinuo').txt(false).up()
+                    .ele('dtInicioTratamento').txt(new Date(x.dtInicioTratamento).getTime()).up()                                
+                    .ele('quantidadeReceitada').txt(x.quantidadeReceitada).up()
+                    medicamentos.push(frag);
+                }
+                else{
+                    let frag = fragment().ele('medicamentos')
+                    .ele('codigoCatmat').txt(x.codigoCatmat).up()
+                    .ele('viaAdministracao').txt(x.viaAdministracao).up()
+                    .ele('dose').txt(x.dose).up()
+                    .ele('doseUnica').txt(false).up()
+                    .ele('usoContinuo').txt(false).up()
+                    .ele('doseFrequenciaTipo').txt(x.doseFrequenciaTipo).up()
+                    .ele('doseFrequencia').txt(x.doseFrequencia).up()
+                    .ele('doseFrequenciaQuantidade').txt(x.doseFrequenciaQuantidade).up()                    
+                    .ele('doseFrequenciaUnidadeMedida').txt(x.doseFrequenciaUnidadeMedida).up()
+                    .ele('dtInicioTratamento').txt(new Date(x.dtInicioTratamento).getTime()).up()
+                    .ele('duracaoTratamento').txt(x.duracaoTratamento).up()
+                    .ele('duracaoTratamentoMedida').txt(x.duracaoTratamentoMedida).up()
+                    .ele('quantidadeReceitada').txt(x.quantidadeReceitada).up()
+                    medicamentos.push(frag);
+                }
+            }           
+        })
+        return medicamentos
     }
 
     function preencheXMLFichaVacinacao(list, estabelecimento, profissionais) {

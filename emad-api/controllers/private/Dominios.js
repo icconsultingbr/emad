@@ -590,6 +590,17 @@ module.exports = function (app) {
         });
     });
 
+    app.get('/dominios/tipo-via-material', function (req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_tipo_via_material");
+
+        listaDominios(dao, "Tipo de via do medicamento", res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
     function listaDominios(dao, dom, res) {
         var q = require('q');
         var d = q.defer();
