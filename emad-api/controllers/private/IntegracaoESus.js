@@ -470,6 +470,7 @@ module.exports = function (app) {
         const { fragment } = require('xmlbuilder2');
         let avaliacao = fragment().ele('problemaCondicaoAvaliada');
         let existeCiap1 = false;
+        let existeCiap2 = false;
 
         const listaAvaliacaoAtendimento = listAvaliacao.filter(x => x.idAtendimento == idAtendimento);
         const listaCiapsAtendimento = listCiaps.filter(x => x.idAtendimento == idAtendimento);
@@ -480,11 +481,12 @@ module.exports = function (app) {
                 avaliacao.import(codigoAB);
             }
             else{
-                if(existeCiap1){
+                if(existeCiap1 && !existeCiap2){
                     const outroCiap2 = fragment().ele('outroCiap2').txt(ciaps.ciap2).up();
                     avaliacao.import(outroCiap2);
+                    existeCiap2 = true;
                 }
-                else{                                        
+                else if(!existeCiap2){                                        
                     const outroCiap1 = fragment().ele('outroCiap1').txt(ciaps.ciap2).up();
                     avaliacao.import(outroCiap1);
                     existeCiap1 = true;
