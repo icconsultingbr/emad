@@ -10,9 +10,7 @@ module.exports = function (app) {
 
         obj.periodoDispensavel = (!obj.periodoDispensavel) ?  0: obj.periodoDispensavel;
         obj.estoqueMinimo = (!obj.estoqueMinimo) ?  0: obj.estoqueMinimo;   
-
-        req.assert("codigo").notEmpty().withMessage("O campo Código é um campo obrigatório").matches(/^[0-9]+$/).withMessage("O campo Código deve conter somente números");
-        req.assert("codigo").isLength({ min: 0, max: 9 }).withMessage("O campo Código deve ter no máximo 9 dígitos");
+        
         req.assert("descricao").notEmpty().withMessage("O campo Descrição é um campo obrigatório");
         req.assert("descricao").isLength({ min: 0, max: 60 }).withMessage("O campo Descrição deve ter no máximo 60 caractere(s)");
         req.assert("idUnidadeMaterial").notEmpty().withMessage("O campo Unidade dispensada é um campo obrigatório");
@@ -20,8 +18,7 @@ module.exports = function (app) {
         req.assert("periodoDispensavel").isLength({ min: 0, max: 5 }).withMessage("O campo Período dispensável deve ter no máximo 5 dígitos");
         req.assert("estoqueMinimo").matches(/^[0-9]+$/).withMessage("O campo Estoque mínimo deve conter somente números");
         req.assert("estoqueMinimo").isLength({ min: 0, max: 10 }).withMessage("O campo Estoque mínimo deve ter no máximo 10 dígitos");
-        req.assert("codigoVacinaSus").isNumeric().withMessage("O campo código vacina e-SUS permite apenas números");
-
+        
         errors = req.validationErrors();
         
         if(errors){
@@ -47,8 +44,6 @@ module.exports = function (app) {
         obj.periodoDispensavel = (!obj.periodoDispensavel) ?  0: obj.periodoDispensavel;
         obj.estoqueMinimo = (!obj.estoqueMinimo) ?  0: obj.estoqueMinimo;        
 
-        req.assert("codigo").notEmpty().withMessage("O campo Código é um campo obrigatório").matches(/^[0-9]+$/).withMessage("O campo Código deve conter somente números");
-        req.assert("codigo").isLength({ min: 0, max: 9 }).withMessage("O campo Código deve ter no máximo 9 dígitos");
         req.assert("descricao").notEmpty().withMessage("O campo Descrição é um campo obrigatório");
         req.assert("descricao").isLength({ min: 0, max: 60 }).withMessage("O campo Descrição deve ter no máximo 60 caractere(s)");
         req.assert("idUnidadeMaterial").notEmpty().withMessage("O campo Unidade dispensada é um campo obrigatório");
@@ -56,7 +51,6 @@ module.exports = function (app) {
         req.assert("periodoDispensavel").isLength({ min: 0, max: 5 }).withMessage("O campo Período dispensável deve ter no máximo 5 dígitos");
         req.assert("estoqueMinimo").matches(/^[0-9]+$/).withMessage("O campo Estoque mínimo deve conter somente números");
         req.assert("estoqueMinimo").isLength({ min: 0, max: 10 }).withMessage("O campo Estoque mínimo deve ter no máximo 10 dígitos");
-        req.assert("codigoVacinaSus").isNumeric().withMessage("O campo código vacina e-SUS permite apenas números");
 
         errors = req.validationErrors();
         

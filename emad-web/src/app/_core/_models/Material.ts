@@ -2,7 +2,7 @@ import { Input } from "@angular/core";
 
 export class Material {
     id: Number;
-    @Input() codigo: number;
+    @Input() codigo: string;
     @Input() descricao: string;
     @Input() idUnidadeMaterial: number;
     @Input() dispensavel: boolean;
