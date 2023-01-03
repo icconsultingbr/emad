@@ -22,6 +22,7 @@ export class ExameFormularioComponent implements OnInit {
   @ViewChild('contentConfirmacao') contentConfirmacao: ElementRef;
   @ViewChild('contentRecibo') contentRecibo: ElementRef;
   @Input() public pacienteId: number;
+  @Input() public atendimentoId: number;
   @Input() public exameId: number;
   @Input() public exibeHeader: boolean;
   @Output() formularioChange: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -63,6 +64,7 @@ export class ExameFormularioComponent implements OnInit {
     }
 
     this.object.idPaciente = this.pacienteId;
+    this.object.idAtendimento  = this.atendimentoId
     this.header = this.exibeHeader;
     this.loadDomains();
     this.createGroup();

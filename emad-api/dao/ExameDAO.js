@@ -5,10 +5,10 @@ function ExameDAO(connection) {
     this._table = `tb_exame`;
 }
 
-ExameDAO.prototype.salva = async function(exame) {
-    const response = await this._connection.query(`INSERT INTO tb_exame (idEstabelecimento, idPaciente, idTipoExame, situacao, idUsuarioCriacao, dataCriacao)
-                                                          VALUES (?, ?, ?, ?, ?, ?)`, 
-                                                          [exame.idEstabelecimento, exame.idPaciente,  exame.idTipoExame, exame.situacao, exame.idUsuarioCriacao, exame.dataCriacao]);
+ExameDAO.prototype.salva = async function (exame) {
+    const response = await this._connection.query(`INSERT INTO tb_exame (idEstabelecimento, idPaciente, idTipoExame, situacao, idUsuarioCriacao, dataCriacao, idAtendimento)
+                                                          VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [exame.idEstabelecimento, exame.idPaciente, exame.idTipoExame, exame.situacao, exame.idUsuarioCriacao, exame.dataCriacao, exame.idAtendimento]);
     return [response];
 }
 

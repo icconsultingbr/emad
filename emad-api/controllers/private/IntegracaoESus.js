@@ -402,7 +402,7 @@ module.exports = function (app) {
                 const listAvaliacao = list.condicaoAvaliacao.filter(x => x.idAtendimento == atendimento.idAtendimento);
                 const listCondutas = list.condutaSus.filter(x => x.idAtendimento == atendimento.idAtendimento);
                 const listCondicoesCiaps = list.condicaoCiaps.filter(x => x.idAtendimento == atendimento.idAtendimento);
-                const listExamesSolicitados = list.solicitacoesExames.filter(x => x.idPaciente == atendimento.idPaciente);
+                const listExamesSolicitados = list.solicitacoesExames.filter(x => x.idAtendimento == atendimento.idAtendimento);
                 const listMedicamentos = list.medicamentos.filter(x => x.idAtendimento == atendimento.idAtendimento);
 
                 if (!listCondutas.some((o) => o.idAtendimento == atendimento.idAtendimento) ||
@@ -413,7 +413,7 @@ module.exports = function (app) {
 
                 let avaliacao = preencheAvaliacaoAtendimentoIndividual(listAvaliacao, listCondicoesCiaps, atendimento.idAtendimento);
                 let condutas = preencheCondutasAtendimentoIndividual(listCondutas, atendimento.idAtendimento);
-                let examesSolicitados = preencheExamesSolicitadosAtendimentoIndividual(listExamesSolicitados, atendimento.idPaciente);
+                let examesSolicitados = preencheExamesSolicitadosAtendimentoIndividual(listExamesSolicitados, atendimento.idAtendimento);
                 let medicamentos = preencheMedicamentosAtendimentoIndividual(listMedicamentos, atendimento.idAtendimento);
 
                 let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('atendimentosIndividuais')
@@ -596,11 +596,11 @@ module.exports = function (app) {
         return conduta
     }
 
-    function preencheExamesSolicitadosAtendimentoIndividual(listExames, idPaciente) {
+    function preencheExamesSolicitadosAtendimentoIndividual(listExames, idAtendimento) {
         const { fragment } = require('xmlbuilder2');
         let exames = []
         listExames.forEach(x => {
-            if (x.idPaciente == idPaciente) {
+            if (x.idAtendimento == idAtendimento) {
                 let frag = fragment().ele('exame')
                     .ele('codigoExame').txt(x.codigoExame).up()
                     .ele('solicitadoAvaliado').txt(x.solicitadoAvaliado).up()

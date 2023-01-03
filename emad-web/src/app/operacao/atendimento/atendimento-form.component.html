@@ -3093,8 +3093,8 @@
     </button>
   </div>
   <div class="modal-body">
-    <app-exame-formulario [pacienteId]="object.idPaciente" [exibeHeader]="true" [exameId]="exameId"
-      (formularioChange)="formularioSalvoChange($event)"></app-exame-formulario>
+    <app-exame-formulario [atendimentoId]="object.id" [pacienteId]=" object.idPaciente" [exibeHeader]="true"
+      [exameId]="exameId" (formularioChange)="formularioSalvoChange($event)"></app-exame-formulario>
   </div>
 </ng-template>
 
