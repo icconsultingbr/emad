@@ -1,4 +1,5 @@
 const { async } = require('q');
+const moment = require('moment');
 
 let versao = "";
 let uuidInstalacao = "";
@@ -356,6 +357,8 @@ module.exports = function (app) {
             var uuidFicha = uuidv4();
 
             if (listAtendimentos.length == 0) { return; }
+           
+            const dataCriacao = new moment(listAtendimentos[0].dataCriacao).startOf('day').toDate();
 
             let doc = create({ version: '1.0', encoding: 'UTF-8', keepNullNodes: false, keepNullAttributes: false })
                 .ele('ns3:dadoTransporteTransportXml', { 'xmlns:ns2': 'http://esus.ufsc.br/dadoinstalacao', 'xmlns:ns3': 'http://esus.ufsc.br/dadotransporte', 'xmlns:ns4': 'http://esus.ufsc.br/fichaatendimentoindividualmaster' })
@@ -372,7 +375,7 @@ module.exports = function (app) {
                 .ele('cnes').txt(estabelecimento.cnes).up()
                 .ele('ine').txt(profissional.ine).up()
                 .up()
-                .ele('dataAtendimento').txt(new Date(listAtendimentos[0].dataCriacao).getTime()).up()
+                .ele('dataAtendimento').txt(new Date(dataCriacao).getTime()).up()
                 .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
                 .up()
                 .up()
@@ -416,6 +419,9 @@ module.exports = function (app) {
                 let examesSolicitados = preencheExamesSolicitadosAtendimentoIndividual(listExamesSolicitados, atendimento.idAtendimento);
                 let medicamentos = preencheMedicamentosAtendimentoIndividual(listMedicamentos, atendimento.idAtendimento);
 
+                const dataHoraInicialAtendimento = atendimento.dataCriacao > atendimento.dataFinalizacao ? atendimento.dataFinalizacao : atendimento.dataCriacao;
+                const dataHoraFinalAtendimento = atendimento.dataFinalizacao > atendimento.dataCriacao ? atendimento.dataFinalizacao : atendimento.dataCriacao;
+
                 let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('atendimentosIndividuais')
                     .ele('numeroProntuario').txt(atendimento.idAtendimento).up()
                     .ele('cnsCidadao').txt(atendimento.cartaoSus ? atendimento.cartaoSus : undefined).up()
@@ -438,8 +444,8 @@ module.exports = function (app) {
 
                 medicamentos.forEach(x => atend.find(x => x.node.nodeName == 'atendimentosIndividuais', true, true).import(x));
 
-                atend.ele('dataHoraInicialAtendimento').txt(new Date(atendimento.dataCriacao).getTime()).up()
-                    .ele('dataHoraFinalAtendimento').txt(new Date(atendimento.dataFinalizacao).getTime()).up()
+                atend.ele('dataHoraInicialAtendimento').txt(new Date(dataHoraInicialAtendimento).getTime()).up()
+                    .ele('dataHoraFinalAtendimento').txt(new Date(dataHoraFinalAtendimento).getTime()).up()
                     .up();
 
                 doc.find(x => x.node.nodeName == 'ns4:fichaAtendimentoIndividualMasterTransport', true, true).import(atend);
