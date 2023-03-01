@@ -124,6 +124,7 @@ export class EstabelecimentoFormComponent implements OnInit {
     this.object.obrigaCpfNovoPaciente = true;
     this.object.obrigaCartaoSusNovoPaciente = true;
     this.object.obrigaValidarPacienteAtendimento = true;
+    this.object.enviaMedicamentoSus = false;
     this.object.celularDefaultNovoPaciente = null;
     this.object.idUnidadeCorrespondenteDim = 1;
     this.object.idUnidadePesquisaMedicamentoDim = 2;
@@ -222,6 +223,7 @@ export class EstabelecimentoFormComponent implements OnInit {
       obrigaCpfNovoPaciente: ['', ''],
       obrigaCartaoSusNovoPaciente: ['', ''],
       obrigaValidarPacienteAtendimento: ['', ''],
+      enviaMedicamentoSus: ['', ''],
       celularDefaultNovoPaciente: ['', ''],
       cnsProfissionaleSus: ['', Validators.required],
       cboProfissionalEsus: ['', Validators.required],

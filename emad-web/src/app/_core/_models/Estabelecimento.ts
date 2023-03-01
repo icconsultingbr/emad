@@ -26,8 +26,9 @@ export class Estabelecimento {
     @Input() longitude: number = 0;
     @Input() distancia: number;
     @Input() obrigaCpfNovoPaciente: Boolean;
-@Input() obrigaCartaoSusNovoPaciente: Boolean;
+    @Input() obrigaCartaoSusNovoPaciente: Boolean;
     @Input() obrigaValidarPacienteAtendimento: Boolean;
+    @Input() enviaMedicamentoSus: Boolean;
     @Input() celularDefaultNovoPaciente: string;
     @Input() idUnidadeCorrespondenteDim: Number = null;
     @Input() idUnidadePesquisaMedicamentoDim: Number = null;

@@ -318,6 +318,15 @@ export class EstabelecimentoService extends GenericsService {
       form: true,
       required: true,
       validator: ['', '']
+    },    
+    {
+      field: "enviaMedicamentoSus",
+      type: "checkbox",
+      label: "Envia medicamentos para o eSUS",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', '']
     },
     {
       field: "dataCriacao",

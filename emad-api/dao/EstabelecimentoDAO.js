@@ -46,6 +46,7 @@ EstabelecimentoDAO.prototype.listaPorUsuario = function (id) {
         e.cnsProfissionaleSus, 
         e.obrigaCpfNovoPaciente,
         e.obrigaCartaoSusNovoPaciente,
+        e.enviaMedicamentoSus,
         e.obrigaValidarPacienteAtendimento,
         e.celularDefaultNovoPaciente
     FROM 
@@ -130,7 +131,8 @@ EstabelecimentoDAO.prototype.lista = async function (addFilter) {
         e.idEstabelecimentoNivelSuperior,
         e.cnsProfissionaleSus, 
         e.obrigaCpfNovoPaciente,
-        e.obrigaCartaoSusNovoPaciente
+        e.obrigaCartaoSusNovoPaciente,
+        e.enviaMedicamentoSus
     FROM 
         tb_estabelecimento AS e 
     INNER JOIN 
@@ -179,6 +181,7 @@ EstabelecimentoDAO.prototype.buscaPorId = async function (id, callback) {
             e.cnsProfissionaleSus, 
             e.obrigaCpfNovoPaciente,
             e.obrigaCartaoSusNovoPaciente,
+            e.enviaMedicamentoSus,
             e.obrigaValidarPacienteAtendimento,
             e.celularDefaultNovoPaciente
         FROM 
