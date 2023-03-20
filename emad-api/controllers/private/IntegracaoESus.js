@@ -358,7 +358,8 @@ module.exports = function (app) {
 
             if (listAtendimentos.length == 0) { return; }
            
-            const dataCriacao = new moment(listAtendimentos[0].dataCriacao).hours(3).minutes(0).seconds(0).toDate();
+            const dataReal = new moment(listAtendimentos[0].dataCriacao).subtract({ hours: 3}); 
+            const dataCriacao = new moment(dataReal).hours(3).minutes(0).seconds(0).toDate();
 
             let doc = create({ version: '1.0', encoding: 'UTF-8', keepNullNodes: false, keepNullAttributes: false })
                 .ele('ns3:dadoTransporteTransportXml', { 'xmlns:ns2': 'http://esus.ufsc.br/dadoinstalacao', 'xmlns:ns3': 'http://esus.ufsc.br/dadotransporte', 'xmlns:ns4': 'http://esus.ufsc.br/fichaatendimentoindividualmaster' })
