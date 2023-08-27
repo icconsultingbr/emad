@@ -39,6 +39,11 @@
   </button>
 
   <button type="button" (click)="forgotPassword($event)" class="btn btn-link text-white mt-2">Esqueceu seu usuário ou senha?</button>
+
+  <div style="margin-top: 50px;" *ngIf="url_logo">
+    <img class="mb-4" [src]="url_logo" alt="" height="180" >
+  </div>
+  
 </form>
 
 <form *ngIf="forgotP" method="POST" [formGroup]="forgotForm" class="form-signin" (submit)="solicitarSenha($event)"
@@ -73,5 +78,8 @@
     Solicitar Senha
   </button>
   <button type="button" (click)="forgotPassword($event)" class="btn btn-link text-white">Voltar</button>
-
+  <div style="margin-top: 50px;" *ngIf="url_logo">
+    <img class="mb-4" [src]="url_logo" alt="" height="180" >
+  </div>
+  
 </form>
