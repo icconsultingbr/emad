@@ -481,6 +481,10 @@ export class AtendimentoService extends GenericsService {
     reabreAtendimento(obj: any) {
         return this.http.put('atendimento/reabertura', JSON.stringify(obj));
     }
+
+    findConfiguracaoAtendimentoFormulario(idTipoFicha: any, idEstabelecimento: any, idUsuario: any): Observable<any> {
+        return this.http.get("configuracao-atendimento/" + idTipoFicha + "/" + idEstabelecimento + "/" + idUsuario);
+    }
 }
 
 

@@ -1,0 +1,294 @@
+{
+    "atendimentoMap": {
+        "listaPerguntas": [
+            {
+                "formControl": "idClassificacaoRisco",
+                "pergunta": "Classificação de risco",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "localDeAtendimento",
+                "pergunta": "Local de atendimento",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "modalidade",
+                "pergunta": "Modalidade",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "tipoAtendimento",
+                "pergunta": "Tipo de Atendimento",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "tipoConsultaOdonto",
+                "pergunta": "Tipo de Consulta Odonto",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "motivoQueixa",
+                "pergunta": "Motivo da queixa",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "ficouEmObservacao",
+                "pergunta": "Ficou em Observação",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "dataCriacao",
+                "pergunta": "Data abertura",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "idProfissionalCompartilhado",
+                "pergunta": "Compartilhado com",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "gestante",
+                "pergunta": "Gestante",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "possuiNecessidadesEspeciais",
+                "pergunta": "Possui Necessidades Especiais",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "inep",
+                "pergunta": "Inep",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "numParticipantes",
+                "pergunta": "Núm de participantes",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "atividadeTipo",
+                "pergunta": "Tipo de Atv.",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "temasParaReuniao",
+                "pergunta": "Temas da Atv.",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "praticasEmSaude",
+                "pergunta": "Práticas em Saude",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "publicoAlvo",
+                "pergunta": "Público Alvo",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "temasParaSaude",
+                "pergunta": "Temas para Saude",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "procedimento",
+                "pergunta": "Procedimentos SIGTAP",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "pseSaude",
+                "pergunta": "PSE Saúde",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "pseEducacao",
+                "pergunta": "PSE Educação",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "pressaoArterial",
+                "pergunta": "Pressão arterial",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "pulso",
+                "pergunta": "Pulso",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "saturacao",
+                "pergunta": "Saturação 02",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "temperatura",
+                "pergunta": "Temperatura",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "altura",
+                "pergunta": "Altura",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "peso",
+                "pergunta": "Peso",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "glicemia",
+                "pergunta": "Glicemia",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "vacinasEmDia",
+                "pergunta": "Vacinas em dia",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "condicaoAvaliada",
+                "pergunta": "Condição Avaliada",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "exameFisico",
+                "pergunta": "Exame físico",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "observacoesGerais",
+                "pergunta": "Observações gerais",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "pacienteHistoriaProgressa",
+                "pergunta": "História progressa/familiar",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "tipoHistoriaClinica",
+                "pergunta": "Tipo",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "historicoClinico",
+                "pergunta": "Descrição",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "avalicaoClassificacaoCiap",
+                "pergunta": "Avaliação/Classificação CIAP 2",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "hipoteseDiagnostica",
+                "pergunta": "Hipótese diagnostica",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "procedimentos",
+                "pergunta": "Procedimentos",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "prescricaoMedicamentos",
+                "pergunta": "Prescrição Medicamentos",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "vacinas",
+                "pergunta": "Vacinas",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "encaminhamento",
+                "pergunta": "Encaminhamento Especialidade",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "atividadeColetivaParticipante",
+                "pergunta": "Participantes da Atividade Coletiva",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "atividadeColetivaProfissional",
+                "pergunta": "Profissionais da Atividade Coletiva",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "situacao",
+                "pergunta": "Situação",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "motivoCancelamento",
+                "pergunta": "Motivo cancelamento",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "condutaEncaminhamento",
+                "pergunta": "Conduta encaminhamento",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "tiposFornecimentoOdonto",
+                "pergunta": "Tipos Fornecimento Odonto",
+                "visivel": false,
+                "obrigatorio": false
+            },
+            {
+                "formControl": "tiposVigilanciaSaudeBucal",
+                "pergunta": "Tipos Vigilância Saúde Bucal",
+                "visivel": false,
+                "obrigatorio": false
+            }
+        ]
+    }
+}

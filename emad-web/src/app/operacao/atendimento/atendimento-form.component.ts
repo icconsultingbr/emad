@@ -170,6 +170,8 @@ export class AtendimentoFormComponent implements OnInit {
   doseVacina: number;
   grupoAtendimentoVacinacao: number;
 
+  parametroAtendimentoCampos: any[] = [];
+
   constructor(
     private service: AtendimentoService,
     private pagerService: PagerService,
@@ -254,7 +256,8 @@ export class AtendimentoFormComponent implements OnInit {
       vacinasEmDia: ['', ''],
       condicaoAvaliada: ['', ''],
       dataCriacao: ['', ''],
-      idProfissionalCompartilhado: ['', '']
+      idProfissionalCompartilhado: ['', ''],
+      idUsuario: ['', ''],
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -717,22 +720,22 @@ export class AtendimentoFormComponent implements OnInit {
 
     this.pacienteVacina.nome = item.descricao;
     this.pacienteVacina.codigoVacinaSus = item.codigo;
-  
-      this.service.findByEstrategiaPorVacina(item.codigo).subscribe(estrategiasPorVacina => { 
-        this.domainsEstrategiaVacinacao.push({
-                          estrategiaVacinacao: estrategiasPorVacina
-                      });
-        });   
+
+    this.service.findByEstrategiaPorVacina(item.codigo).subscribe(estrategiasPorVacina => {
+      this.domainsEstrategiaVacinacao.push({
+        estrategiaVacinacao: estrategiasPorVacina
+      });
+    });
 
   }
 
-  estrategiaSelecionada(event) {  
-      this.service.findByDosePorEstrategiaVacina(this.pacienteVacina.codigoVacinaSus, event.target.value).subscribe(doses => { 
-        this.domainsDose.push({
-                        doseVacina: doses
-                      });
-        });   
-  }  
+  estrategiaSelecionada(event) {
+    this.service.findByDosePorEstrategiaVacina(this.pacienteVacina.codigoVacinaSus, event.target.value).subscribe(doses => {
+      this.domainsDose.push({
+        doseVacina: doses
+      });
+    });
+  }
 
   confirmaPaciente() {
 
@@ -773,7 +776,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.object.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
       this.localAtendimento = result.localDeAtendimento;
       this.object.dataCriacao = new Date(this.object.dataCriacao);
-      
+
       this.loading = false;
 
       this.tipoFicha = result.tipoFicha;
@@ -784,6 +787,7 @@ export class AtendimentoFormComponent implements OnInit {
         this.isVisible = true
       }
 
+      this.findAtendimentoConfiguracao(this.tipoFicha, this.object.idEstabelecimento, this.object.idUsuario);
       this.findHipotesePorAtendimento();
       this.findEncaminhamentoPorAtendimento();
       this.findMedicamentoPorAtendimento();
@@ -813,6 +817,20 @@ export class AtendimentoFormComponent implements OnInit {
       this.errors.push({
         message: "Atendimento não encontrado"
       });
+    });
+  }
+
+  findAtendimentoConfiguracao(tipoFicha: number, idEstabelecimento: number, idUsuario: number) {
+    this.message = "";
+    this.errors = [];
+    this.loading = true;
+    this.service.findConfiguracaoAtendimentoFormulario(tipoFicha, idEstabelecimento, idUsuario).subscribe(result => {
+      this.parametroAtendimentoCampos = result.perguntas;
+      this.setValidators();
+      this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
     });
   }
 
@@ -1099,8 +1117,8 @@ export class AtendimentoFormComponent implements OnInit {
                         this.service.listDomains('odonto-fornecimento').subscribe(tiposFornecimOdonto => {
                           this.service.listDomains('odonto-vigilancia').subscribe(tiposVigilanciaSaudeBucal => {
                             this.service.listDomains('local-atendimento').subscribe(localDeAtendimento => {
-                              this.service.listDomains('modalidade').subscribe(modalidade => {        
-                                this.service.listDomains('tipo-via-material').subscribe(tipoViaMaterial => {        
+                              this.service.listDomains('modalidade').subscribe(modalidade => {
+                                this.service.listDomains('tipo-via-material').subscribe(tipoViaMaterial => {
                                   this.service.listDomains('condicao-avaliada').subscribe(condicaoAvaliada => {
                                     this.service.list('profissional/estabelecimento/' + this.paciente.idEstabelecimento).subscribe(profissionais => {
                                       this.domains.push({
@@ -1139,11 +1157,10 @@ export class AtendimentoFormComponent implements OnInit {
                                     });
                                   });
                                 });
-                                });
                               });
                             });
                           });
-                        });                        
+                        });
                       });
                     });
                   });
@@ -1152,14 +1169,15 @@ export class AtendimentoFormComponent implements OnInit {
             });
           });
         });
-      });    
+      });
+    });
   }
 
   loadDomainsVacinacao() {
-    this.service.listDomains('grupo-atendimento-vacinacao').subscribe(grupoAtendimentoVacinacao => {   
-        this.domainsVacinacao.push({
-                          grupoAtendimentoVacinacao: grupoAtendimentoVacinacao
-                      });
+    this.service.listDomains('grupo-atendimento-vacinacao').subscribe(grupoAtendimentoVacinacao => {
+      this.domainsVacinacao.push({
+        grupoAtendimentoVacinacao: grupoAtendimentoVacinacao
+      });
     });
 
   }
@@ -1470,11 +1488,11 @@ export class AtendimentoFormComponent implements OnInit {
   visualizaProntuarioPaciente(idPaciente: any): void {
     let url = "";
 
-    if(this.id)
+    if (this.id)
       url = this.router.url.replace('atendimentos/cadastro/' + this.id, '') + this.virtualDirectory + "#/pacientes/prontuario/" + idPaciente + "?hideMenu=true";
     else
       url = this.router.url.replace('atendimentos/cadastro', '') + this.virtualDirectory + "#/pacientes/prontuario/" + idPaciente + "?hideMenu=true";
-    
+
     this.service.file('atendimento/consulta-por-paciente', url).subscribe(result => {
       this.loading = false;
       window.open(
@@ -1620,12 +1638,15 @@ export class AtendimentoFormComponent implements OnInit {
       this.isVisible = true
     }
   }
+
   change(event) {
     this.tipoFichaSelecionada = event.target.value;
     this.carregarCondutaEncaminhamento(event.target.value);
     this.carregaTipoAtendimento(event.target.value);
+    this.findAtendimentoConfiguracao(event.target.value, this.object.idEstabelecimento, this.object.idUsuario)
     console.log(event.target.value)
   }
+
   openAtividadeColetivaParticipante(content: any) {
 
     this.clear();
@@ -1985,6 +2006,33 @@ export class AtendimentoFormComponent implements OnInit {
     }, error => {
       this.loading = false;
     });
+  }
+
+  visible(name: string) {
+    if (!this.parametroAtendimentoCampos || !this.parametroAtendimentoCampos.filter(x => x.formControl == name)[0]) {
+      return false;
+    }
+    return this.parametroAtendimentoCampos.filter(x => x.formControl == name)[0].visivel;
+  }
+
+  setValidators() {
+    const parametros = this.parametroAtendimentoCampos;
+
+    for (let index = 0; index < parametros.length; index++) {
+      const item = parametros[index];
+
+      if (item && item.obrigatorio) {
+        if (!this.form.get(item.formControl)) {
+          continue;
+        }
+        if (typeof this.form.get(item.formControl).value == 'boolean') {
+          this.form.get(item.formControl).setValidators(Validators.requiredTrue);
+        } else {
+          this.form.get(item.formControl).setValidators(Validators.required);
+        }
+        this.form.get(item.formControl).updateValueAndValidity();
+      }
+    }
   }
 }
 

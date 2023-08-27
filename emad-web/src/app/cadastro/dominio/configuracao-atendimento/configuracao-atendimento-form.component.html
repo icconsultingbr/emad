@@ -1,0 +1,109 @@
+<h4 class="mb-5 text-left">{{id!=null?'Editar '+label:'Adicionar '+label}}</h4>
+
+<app-loader [loading]="loading"></app-loader>
+
+<p *ngIf="message.length" class="alert alert-info">{{message}}</p>
+<div *ngIf="errors.length" class="alert alert-danger">
+  <div *ngFor="let error of errors" class="row">
+    <div class="col-12 text-left">
+      {{error.message}}
+    </div>
+  </div>
+</div>
+
+<form [formGroup]="form" (submit)="sendForm($event)">
+  <div class="form-group row">
+    <label class="col-xl-2 col-form-label text-left">
+      Especialidade<span class="text-danger font-weight-bold"></span>
+    </label>
+    <div class="col-xl-10">
+      <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idEspecialidade"
+        formControlName="idEspecialidade">
+        <option [value]="null">Selecione...</option>
+        <option *ngFor="let domain of domains[0]?.idEspecialidade" value="{{domain.id}}">{{domain.nome}}
+        </option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-xl-2 col-form-label text-left">
+      Estabelecimento<span class="text-danger font-weight-bold"></span>
+    </label>
+    <div class="col-xl-10">
+      <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idEstabelecimento"
+        formControlName="idEstabelecimento">
+        <option [value]="null">Selecione...</option>
+        <option *ngFor="let domain of domains[0]?.idEstabelecimento" value="{{domain.id}}">{{domain.nome}}
+        </option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-xl-2 col-form-label text-left">
+      Tipo de Ficha<span class="text-danger font-weight-bold"></span>
+    </label>
+    <div class="col-xl-10">
+      <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idTipoFicha"
+        formControlName="idTipoFicha">
+        <option [value]="null">Selecione...</option>
+        <option *ngFor="let domain of domains[0]?.tipoFichas" value="{{domain.id}}">{{domain.nome}}
+        </option>
+      </select>
+    </div>
+  </div>
+  <div class="card mb-4">
+    <div class="card-header text-left">
+      Perguntas
+    </div>
+    <div class="card-body text-left">
+      <div class="row">
+        <div class="col-12 table-responsive">
+          <table class="table table-striped" formArrayName="perguntas">
+            <thead>
+              <tr>
+                <th>Pergunta</th>
+                <th></th>
+                <th>Visível</th>
+                <th>Obrigatório</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="text-left">
+                <td colspan="40" class="text-secondary" *ngIf="!domains[0]?.perguntas.length">
+                  <i>{{'Não há resultados...'}}</i>
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="domains[0]?.perguntas.length">
+              <tr class="text-left" *ngFor="let item of domains[0]?.perguntas; let i = index; let l=last" [formGroupName]="i">
+                <td class="text-secondary">{{item.pergunta}}</td>
+                <td class="text-secondary"></td>
+                <td class="text-secondary text-center">
+                  <div class="custom-control custom-checkbox" style="width: 25px">
+                    <input type="checkbox" id="{{i + '-visivel'}}" class="custom-control-input" (change)="marcarCampoVisivel(item, $event)" formControlName="visivel">
+                    <label class="custom-control-label" for="{{i + '-visivel'}}"></label>
+                  </div>
+                </td>
+                <td class="text-secondary text-center">
+                  <div class="custom-control custom-checkbox" style="width: 25px">
+                    <input type="checkbox" id="{{i + '-obrigatorio'}}" class="custom-control-input" (change)="marcarCampoObrigatorio(item, $event)" formControlName="obrigatorio">
+                    <label class="custom-control-label" for="{{i + '-obrigatorio'}}"></label>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group text-right">
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
+      <i class="fa fa-save"></i> {{ !object.id ? 'Criar configuracao' : 'Salvar'}}
+    </button>
+    <button (click)="back()" class="btn btn-default" type="button">
+      <i class="fa fa-arrow-left"></i> Retornar
+    </button>
+  </div>
+
+</form>

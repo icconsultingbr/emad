@@ -118,6 +118,31 @@
         </div>
       </div>
 
+
+      <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+        <div class="card-header text-left">
+          Tipo de ficha
+        </div>
+        <div class="card-body text-left">
+          <div class="row">
+            <div class="col-12 mb-3">
+              <div>
+                <label class="col-xl-2 col-form-label text-left">
+                  Tipo de ficha<span class="text-danger font-weight-bold">*</span>
+                </label>
+                <div class="col-xl-4">
+                  <select (change)="change($event)" *ngIf="domains" class="custom-select d-block w-100"
+                    [(ngModel)]="object.tipoFicha" formControlName="tipoFicha">
+                    <option [value]="null">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.tipoFichas" [value]="item.id">{{item.nome}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Dados da abertura do atendimento -->
       <div class="card mb-4" *ngIf="object.idPaciente">
 
@@ -131,26 +156,30 @@
           <div class="row">
             <div class="col-xl-12">
               <div class="form-group row">
-                <label class="col-xl-2 col-form-label text-left">
-                  Tipo de ficha<span class="text-danger font-weight-bold">*</span>
-                </label>
-                <div class="col-xl-4">
-                  <select (change)="change($event)" *ngIf="domains" class="custom-select d-block w-100"
-                    [(ngModel)]="object.tipoFicha" formControlName="tipoFicha">
-                    <option [value]="null">Selecione...</option>
-                    <option *ngFor="let item of domains[0]?.tipoFichas" [value]="item.id">{{item.nome}}</option>
-                  </select>
+                <div *ngIf="visible('tipoFicha')">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Tipo de ficha<span class="text-danger font-weight-bold">*</span>
+                  </label>
+                  <div class="col-xl-4">
+                    <select (change)="change($event)" *ngIf="domains" class="custom-select d-block w-100"
+                      [(ngModel)]="object.tipoFicha" formControlName="tipoFicha">
+                      <option [value]="null">Selecione...</option>
+                      <option *ngFor="let item of domains[0]?.tipoFichas" [value]="item.id">{{item.nome}}</option>
+                    </select>
+                  </div>
                 </div>
-                <label class="col-xl-2 col-form-label text-left">
-                  Classificação de risco<span class="text-danger font-weight-bold"> *</span>
-                </label>
-                <div class="col-xl-4">
-                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idClassificacaoRisco"
-                    formControlName="idClassificacaoRisco">
-                    <option [value]="null">Selecione...</option>
-                    <option *ngFor="let item of domains[0]?.classificacaoRiscos" [value]="item.id">{{item.nome}}
-                    </option>
-                  </select>
+                <div class="col-xl-12" *ngIf="visible('idClassificacaoRisco')">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Classificação de risco<span class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div class="col-xl-4">
+                    <select *ngIf="domains" class="custom-select d-block w-100"
+                      [(ngModel)]="object.idClassificacaoRisco" formControlName="idClassificacaoRisco">
+                      <option [value]="null">Selecione...</option>
+                      <option *ngFor="let item of domains[0]?.classificacaoRiscos" [value]="item.id">{{item.nome}}
+                      </option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
@@ -159,26 +188,31 @@
           <div class="row">
             <div class="col-xl-12">
               <div class="form-group row">
-                <label class="col-xl-2 col-form-label text-left">
-                  Local de atendimento
-                </label>
-                <div class="col-xl-4">
-                  <select (change)="changeLocal($event)" *ngIf="domains" class="custom-select d-block w-100"
-                    [(ngModel)]="object.localDeAtendimento" formControlName="localDeAtendimento">
-                    <option [value]="null">Selecione...</option>
-                    <option *ngFor="let item of domains[0]?.localDeAtendimento" [value]="item.id">{{item.nome}}</option>
-                  </select>
+                <div class="col-xl-12" *ngIf="visible('localDeAtendimento')">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Local de atendimento
+                  </label>
+                  <div class="col-xl-4">
+                    <select (change)="changeLocal($event)" *ngIf="domains" class="custom-select d-block w-100"
+                      [(ngModel)]="object.localDeAtendimento" formControlName="localDeAtendimento">
+                      <option [value]="null">Selecione...</option>
+                      <option *ngFor="let item of domains[0]?.localDeAtendimento" [value]="item.id">{{item.nome}}
+                      </option>
+                    </select>
+                  </div>
                 </div>
-                <label *ngIf="localAtendimento > 1" class="col-xl-2 col-form-label text-left">
-                  Modalidade <span *ngIf="object.tipoFicha == 9" class="text-danger font-weight-bold"> *</span>
-                </label>
-                <div *ngIf="localAtendimento > 1" class="col-xl-4">
-                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.modalidade"
-                    formControlName="modalidade">
-                    <option [value]="null">Selecione...</option>
-                    <option *ngFor="let item of domains[0]?.modalidade" [value]="item.id">{{item.nome}}
-                    </option>
-                  </select>
+                <div *ngIf="visible('modalidade')">
+                  <label *ngIf="localAtendimento > 1" class="col-xl-2 col-form-label text-left">
+                    Modalidade <span *ngIf="object.tipoFicha == 9" class="text-danger font-weight-bold"> *</span>
+                  </label>
+                  <div *ngIf="localAtendimento > 1" class="col-xl-4">
+                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.modalidade"
+                      formControlName="modalidade">
+                      <option [value]="null">Selecione...</option>
+                      <option *ngFor="let item of domains[0]?.modalidade" [value]="item.id">{{item.nome}}
+                      </option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
@@ -186,7 +220,7 @@
 
           <div *ngIf="object.idPaciente && object.id" class="row">
             <div class="col-xl-12">
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="visible('tipoAtendimento')">
                 <label class="col-xl-2 col-form-label text-left">
                   Tipo de Atendimento<span class="text-danger font-weight-bold">*</span>
                 </label>
@@ -203,7 +237,7 @@
 
           <div *ngIf="object.tipoFicha == 8" class="row">
             <div class="col-xl-12">
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="visible('tipoConsultaOdonto')">
                 <label class="col-xl-2 col-form-label text-left">
                   Tipo de Consulta Odonto<span class="text-danger font-weight-bold">*</span>
                 </label>
@@ -221,7 +255,7 @@
 
           <div *ngIf="object.tipoFicha != 7" class="row">
             <div class="col-xl-12">
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="visible('motivoQueixa')">
                 <label class="col-xl-2 col-form-label text-left">
                   Motivo da queixa
                 </label>
@@ -235,7 +269,7 @@
 
           <div *ngIf="object.tipoFicha != 7" class="row">
             <div class="col-xl-12">
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="visible('ficouEmObservacao')">
                 <label class="col-xl-2 col-form-label text-left">
                   Ficou em Observação
                 </label>
@@ -249,39 +283,46 @@
               </div>
             </div>
           </div>
-          
-          <div  class="row">
+
+          <div class="row">
             <div class="col-xl-12">
               <div class="form-group row">
-                <label class="col-xl-2 col-form-label text-left">
-                  Data abertura
-                </label>
-                <div class="col-xl-2">
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <div class="input-group-text btn">
-                        <i class="fa fa-calendar-alt"></i>
+                <div class="col-xl-12" *ngIf="visible('dataCriacao')">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Data abertura
+                  </label>
+                  <div class="col-xl-2">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text btn">
+                          <i class="fa fa-calendar-alt"></i>
+                        </div>
                       </div>
+                      <input type="text" [(ngModel)]="object.dataCriacao" formControlName="dataCriacao"
+                        placeholder="dd/mm/aaaa" bsDatepicker [readonly]="object.id"
+                        [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}"
+                        class="form-control" autocomplete="off">
                     </div>
-                    <input type="text" [(ngModel)]="object.dataCriacao" formControlName="dataCriacao"
-                      placeholder="dd/mm/aaaa" bsDatepicker [readonly]="object.id"
-                      [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control"
-                      autocomplete="off">
                   </div>
                 </div>
+
                 <div class="col-xl-2" *ngIf="object.tipoFicha == 1 || object.tipoFicha == 8">
                   &nbsp;
-                 </div>
-                 <label class="col-xl-2 col-form-label text-left" *ngIf="object.tipoFicha == 1 || object.tipoFicha == 8">
-                   Compartilhado com
-                 </label>
-                 <div class="col-xl-4" *ngIf="object.tipoFicha == 1 || object.tipoFicha == 8">
-                   <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idProfissionalCompartilhado"
-                     formControlName="idProfissionalCompartilhado">
-                     <option [value]="null">Selecione...</option>
-                     <option *ngFor="let item of domains[0]?.idProfissionalCompartilhado" [value]="item.id">{{item.nome}}</option>
-                   </select>
-                 </div>
+                </div>
+                <div class="col-xl-12" *ngIf="visible('idProfissionalCompartilhado')">
+                  <label class="col-xl-2 col-form-label text-left"
+                    *ngIf="object.tipoFicha == 1 || object.tipoFicha == 8">
+                    Compartilhado com
+                  </label>
+                  <div class="col-xl-4" *ngIf="object.tipoFicha == 1 || object.tipoFicha == 8">
+                    <select *ngIf="domains" class="custom-select d-block w-100"
+                      [(ngModel)]="object.idProfissionalCompartilhado" formControlName="idProfissionalCompartilhado">
+                      <option [value]="null">Selecione...</option>
+                      <option *ngFor="let item of domains[0]?.idProfissionalCompartilhado" [value]="item.id">
+                        {{item.nome}}</option>
+                    </select>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -289,7 +330,7 @@
           <div class="row">
             <div class="col-xl-12">
               <div class="form-group row">
-                
+
               </div>
             </div>
           </div>
@@ -297,7 +338,7 @@
           <div *ngIf="object.tipoFicha == 8">
             <div *ngIf="object.sexo == '2'" class=" row">
               <div class="col-xl-12">
-                <div class="form-group row">
+                <div class="form-group row" *ngIf="visible('gestante')">
                   <label class="col-xl-2 col-form-label text-left">
                     Gestante
                   </label>
@@ -314,7 +355,7 @@
 
             <div *ngIf="object.tipoFicha == 8" class="row">
               <div class="col-xl-12">
-                <div class="form-group row">
+                <div class="form-group row" *ngIf="visible('possuiNecessidadesEspeciais')">
                   <label class="col-xl-2 col-form-label text-left">
                     Possui Necessidades Especiais
                   </label>
@@ -342,7 +383,7 @@
         <div class="card-body text-left">
           <div class="row">
             <div class="col-xl-6">
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="visible('inep')">
                 <label class="col-xl-4 col-form-label text-left">
                   Inep
                 </label>
@@ -352,7 +393,7 @@
               </div>
             </div>
             <div class="col-xl-6">
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="visible('numParticipantes')">
                 <label class="col-xl-4 col-form-label text-left">
                   Núm de participantes
                 </label>
@@ -366,7 +407,7 @@
 
           <div class="row">
             <div class="col-xl-6">
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="visible('atividadeTipo')">
                 <label class="col-xl-4 col-form-label text-left">
                   Tipo de Atv.
                 </label>
@@ -381,7 +422,7 @@
               </div>
             </div>
             <div class="col-xl-6">
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="visible('temasParaReuniao')">
                 <label class="col-xl-4 col-form-label text-left">
                   Temas da Atv.
                 </label>
@@ -399,7 +440,7 @@
 
           <div class="row">
             <div class="col-xl-6">
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="visible('praticasEmSaude')">
                 <label class="col-xl-4 col-form-label text-left">
                   Práticas em Saude
                 </label>
@@ -414,7 +455,7 @@
               </div>
             </div>
             <div *ngIf="isVisible == true" class="col-xl-6">
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="visible('publicoAlvo')">
                 <label class="col-xl-4 col-form-label text-left">
                   Público Alvo
                 </label>
@@ -432,7 +473,7 @@
 
           <div class="row">
             <div class="col-xl-6">
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="visible('temasParaSaude')">
                 <label class="col-xl-4 col-form-label text-left">
                   Temas para Saude
                 </label>
@@ -447,7 +488,7 @@
               </div>
             </div>
             <div class="col-xl-6">
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="visible('procedimento')">
                 <label class="col-xl-4 col-form-label text-left">
                   Procedimentos SIGTAP
                 </label>
@@ -465,7 +506,7 @@
 
           <div class="row" style="margin-top: 10px;">
             <div class="col-xl-6">
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="visible('pseSaude')">
                 <label class="col-xl-4 col-form-label text-left">
                   PSE Saúde
                 </label>
@@ -480,7 +521,7 @@
             </div>
 
             <div class="col-xl-6">
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="visible('pseEducacao')">
                 <label class="col-xl-4 col-form-label text-left">
                   PSE Educação
                 </label>
@@ -499,9 +540,9 @@
         </div>
       </div>
 
-      <!-- Ficha Dados Ondotologia -->
+      <!-- Ficha Dados Ondotologia *-->
       <div *ngIf="object.tipoFicha == 8">
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id && visible('tiposFornecimentoOdonto')">
           <div class="card-header text-left">
             Tipos Fornecimento Odonto
           </div>
@@ -551,7 +592,7 @@
             </div>
           </div>
         </div>
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id">
+        <div class="card mb-4" *ngIf="object.idPaciente && object.id && visible('tiposVigilanciaSaudeBucal')">
           <div class="card-header text-left">
             Tipos Vigilância Saúde Bucal
           </div>
@@ -613,7 +654,7 @@
           <div class="card-body text-left">
             <div class="row">
               <div class="col-xl-6">
-                <div class="form-group row">
+                <div class="form-group row" *ngIf="visible('pressaoArterial')">
                   <label class="col-xl-4 col-form-label text-left">
                     Pressão arterial
                   </label>
@@ -624,7 +665,7 @@
                 </div>
               </div>
               <div class="col-xl-6">
-                <div class="form-group row">
+                <div class="form-group row" *ngIf="visible('pulso')">
                   <label class="col-xl-4 col-form-label text-left">
                     Pulso
                   </label>
@@ -638,7 +679,7 @@
             </div>
             <div class="row">
               <div class="col-xl-6">
-                <div class="form-group row">
+                <div class="form-group row" *ngIf="visible('saturacao')">
                   <label class="col-xl-4 col-form-label text-left">
                     Saturação 02
                   </label>
@@ -650,7 +691,7 @@
                 </div>
               </div>
               <div class="col-xl-6">
-                <div class="form-group row">
+                <div class="form-group row" *ngIf="visible('temperatura')">
                   <label class="col-xl-4 col-form-label text-left">
                     Temperatura
                   </label>
@@ -664,7 +705,7 @@
             </div>
             <div class="row">
               <div class="col-xl-6">
-                <div class="form-group row">
+                <div class="form-group row" *ngIf="visible('altura')">
                   <label class="col-xl-4 col-form-label text-left">
                     Altura
                   </label>
@@ -676,7 +717,7 @@
                 </div>
               </div>
               <div class="col-xl-6">
-                <div class="form-group row">
+                <div class="form-group row" *ngIf="visible('peso')">
                   <label class="col-xl-4 col-form-label text-left">
                     Peso
                   </label>
@@ -690,7 +731,7 @@
             </div>
             <div class="row">
               <div class="col-xl-6">
-                <div class="form-group row">
+                <div class="form-group row" *ngIf="visible('glicemia')">
                   <label class="col-xl-4 col-form-label text-left">
                     Glicemia
                   </label>
@@ -705,9 +746,9 @@
 
             <div class="row">
               <div class="col-xl-12">
-                <div class="form-group row">
+                <div class="form-group row" *ngIf="visible('vacinasEmDia')">
                   <label class="col-xl-2 col-form-label text-left">
-                    Vacinas Em dia
+                    Vacinas em dia
                   </label>
                   <div class="col-xl-10">
                     <div class="custom-control custom-checkbox" style="width: 25px">
@@ -722,7 +763,7 @@
 
             <div *ngIf="object.tipoAtendimento != 9" class="row">
               <div class="col-xl-12">
-                <div class="form-group row">
+                <div class="form-group row" *ngIf="visible('condicaoAvaliada')">
                   <label class="col-xl-2 col-form-label text-left">
                     Condição Avaliada
                   </label>
@@ -736,10 +777,6 @@
                 </div>
               </div>
             </div>
-
-            
-            
-
           </div>
         </div>
 
@@ -751,7 +788,7 @@
           <div class="card-body text-left">
             <div class="row">
               <div class="col-xl-6">
-                <div class="form-group row">
+                <div class="form-group row" *ngIf="visible('exameFisico')">
                   <label class="col-xl-4 col-form-label text-left">
                     Exame físico
                   </label>
@@ -762,7 +799,7 @@
                 </div>
               </div>
               <div class="col-xl-6">
-                <div class="form-group row">
+                <div class="form-group row" *ngIf="visible('observacoesGerais')">
                   <label class="col-xl-4 col-form-label text-left">
                     Observações gerais
                   </label>
@@ -784,7 +821,7 @@
           <div class="card-body text-left">
             <div class="row">
               <div class="col-xl-12">
-                <div class="form-group row">
+                <div class="form-group row" *ngIf="visible('pacienteHistoriaProgressa')">
                   <label class="col-xl-2 col-form-label text-left">
                     História progressa/familiar
                   </label>
@@ -806,7 +843,7 @@
           <div class="card-body text-left">
             <div class="row">
               <div class="col-xl-12">
-                <div class="form-group row">
+                <div class="form-group row" *ngIf="visible('tipoHistoriaClinica')">
                   <label class="col-xl-2 col-form-label text-left">
                     Tipo<span class="text-danger font-weight-bold"> *</span>
                   </label>
@@ -823,7 +860,7 @@
             </div>
             <div class="row">
               <div class="col-xl-12">
-                <div class="form-group row">
+                <div class="form-group row" *ngIf="visible('historicoClinico')">
                   <label class="col-xl-2 col-form-label text-left">
                     Descrição<span class="text-danger font-weight-bold"> *</span>
                   </label>
@@ -837,8 +874,9 @@
           </div>
         </div>
 
-        <!-- Avaliação/Classificação CIAP2 -->
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8">
+        <!-- Avaliação/Classificação CIAP2 * -->
+        <div class="card mb-4"
+          *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8 && visible('avalicaoClassificacaoCiap')">
           <div class="card-header text-left">
             Avaliação/Classificação CIAP 2
           </div>
@@ -895,8 +933,9 @@
           </div>
         </div>
 
-        <!-- Hipótese diagnostica -->
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8">
+        <!-- Hipótese diagnostica * -->
+        <div class="card mb-4"
+          *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8 && visible('hipoteseDiagnostica')">
           <div class="card-header text-left">
             Hipótese diagnostica
           </div>
@@ -947,8 +986,9 @@
           </div>
         </div>
 
-        <!-- Procedimentos -->
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7">
+        <!-- Procedimentos * -->
+        <div class="card mb-4"
+          *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && visible('procedimentos')">
           <div class="card-header text-left">
             Procedimentos
           </div>
@@ -1003,7 +1043,8 @@
         </div>
 
         <!-- Prescrição Medicamentos -->
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7">
+        <div class="card mb-4"
+          *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && visible('prescricaoMedicamentos')">
           <div class="card-header text-left">
             Prescrição Medicamentos
           </div>
@@ -1064,7 +1105,8 @@
         </div>
 
         <!-- Vacinas -->
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8">
+        <div class="card mb-4"
+          *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8 && visible('vacinas')">
           <div class="card-header text-left">
             Vacinas
           </div>
@@ -1121,7 +1163,8 @@
         </div>
 
         <!-- Encaminhamento -->
-        <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8">
+        <div class="card mb-4"
+          *ngIf="object.idPaciente && object.id && object.tipoFicha != 7 && object.tipoFicha != 8 && visible('encaminhamento')">
           <div class="card-header text-left">
             Encaminhamento Especialidade
           </div>
@@ -1176,11 +1219,11 @@
           </div>
         </div>
 
-
       </div>
 
       <!-- Participantes da Atividade Coletiva -->
-      <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha == 7">
+      <div class="card mb-4"
+        *ngIf="object.idPaciente && object.id && object.tipoFicha == 7 && visible('atividadeColetivaParticipante')">
         <div class="card-header text-left">
           Participantes da Atividade Coletiva
         </div>
@@ -1263,7 +1306,8 @@
       </div>
 
       <!-- Profissionais da Atividade Coletiva -->
-      <div class="card mb-4" *ngIf="object.idPaciente && object.id && object.tipoFicha == 7">
+      <div class="card mb-4"
+        *ngIf="object.idPaciente && object.id && object.tipoFicha == 7 && visible('atividadeColetivaProfissional')">
         <div class="card-header text-left">
           Profissionais da Atividade Coletiva
         </div>
@@ -1323,7 +1367,7 @@
         <div class="card-body text-left">
           <div class="row">
             <div class="col-xl-5">
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="visible('situacao')">
                 <label class="col-xl-4 col-form-label text-left">
                   Situação<span class="text-danger font-weight-bold"> *</span>
                 </label>
@@ -1363,7 +1407,7 @@
               </div>
             </div>
             <div class="col-xl-6" *ngIf="object.situacao == 'X'">
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="visible('motivoCancelamento')">
                 <label class="col-xl-4 col-form-label text-left">
                   Motivo cancelamento
                 </label>
@@ -1374,7 +1418,7 @@
               </div>
             </div>
             <div class="col-xl-6" *ngIf="object.situacao != 'X'">
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="visible('condutaEncaminhamento')">
                 <label class="col-xl-4 col-form-label text-left">
                   Conduta encaminhamento
                 </label>
@@ -2914,8 +2958,9 @@
       <label class="col-xl-4 col-form-label text-left">
         Tipo via<span class="text-danger font-weight-bold"> *</span>
       </label>
-      <div class="col-xl-8">        
-        <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="atendimentoMedicamento.idTipoViaMaterial">
+      <div class="col-xl-8">
+        <select *ngIf="domains" class="custom-select d-block w-100"
+          [(ngModel)]="atendimentoMedicamento.idTipoViaMaterial">
           <option [value]="null">Selecione...</option>
           <option *ngFor="let item of domains[0]?.idTipoViaMaterial" [value]="item.id">{{item.nome}}</option>
         </select>
@@ -3106,7 +3151,7 @@
     </button>
   </div>
   <div class="modal-body">
-    
+
     <div *ngIf="errors.length" class="alert alert-danger">
       <div *ngFor="let error of errors" class="row">
         <div class="col-12 text-left">
@@ -3151,8 +3196,8 @@
             <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
               <td class="text-secondary">
                 <div class="custom-control custom-radio float-left">
-                  <input type="radio" (change)="selecionaVacina(item)" class="custom-control-input"
-                    id="{{ item.id }}" name="radio-item">
+                  <input type="radio" (change)="selecionaVacina(item)" class="custom-control-input" id="{{ item.id }}"
+                    name="radio-item">
                   <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
                 </div>
               </td>
@@ -3223,10 +3268,11 @@
         Estratégia:
       </label>
       <div class="col-xl-8 col-sm-12">
-        <select (change)="estrategiaSelecionada($event)" *ngIf="domainsEstrategiaVacinacao" class="custom-select d-block w-100" 
-          [(ngModel)]="pacienteVacina.codigoEstrategiaVacinacaoSus">
+        <select (change)="estrategiaSelecionada($event)" *ngIf="domainsEstrategiaVacinacao"
+          class="custom-select d-block w-100" [(ngModel)]="pacienteVacina.codigoEstrategiaVacinacaoSus">
           <option [value]="null">Selecione...</option>
-          <option *ngFor="let item of domainsEstrategiaVacinacao[0]?.estrategiaVacinacao" [value]="item.id">{{item.nome}}</option>
+          <option *ngFor="let item of domainsEstrategiaVacinacao[0]?.estrategiaVacinacao" [value]="item.id">
+            {{item.nome}}</option>
         </select>
       </div>
     </div>
@@ -3235,7 +3281,7 @@
         Dose:
       </label>
       <div class="col-xl-8 col-sm-12">
-        <select (change)="change($event)" *ngIf="domainsDose" class="custom-select d-block w-100" 
+        <select (change)="change($event)" *ngIf="domainsDose" class="custom-select d-block w-100"
           [(ngModel)]="pacienteVacina.codigoDoseVacinaSus">
           <option [value]="null">Selecione...</option>
           <option *ngFor="let item of domainsDose[0]?.doseVacina" [value]="item.id">{{item.nome}}</option>
@@ -3255,15 +3301,16 @@
         Grupo atendimento:
       </label>
       <div class="col-xl-8 col-sm-12">
-        <select (change)="change($event)" *ngIf="domainsVacinacao" class="custom-select d-block w-100" 
+        <select (change)="change($event)" *ngIf="domainsVacinacao" class="custom-select d-block w-100"
           [(ngModel)]="pacienteVacina.codigoGrupoAtendimentoVacinacaoSus">
           <option [value]="null">Selecione...</option>
-          <option *ngFor="let item of domainsVacinacao[0]?.grupoAtendimentoVacinacao" [value]="item.id">{{item.nome}}</option>
+          <option *ngFor="let item of domainsVacinacao[0]?.grupoAtendimentoVacinacao" [value]="item.id">{{item.nome}}
+          </option>
         </select>
       </div>
     </div>
-    
-    
+
+
     <div class=" form-group row text-right">
       <div class="col-12">
         <button class="btn btn-primary  mr-2" type="button" [disabled]="disableVacinaButton()" (click)="saveVacina()">

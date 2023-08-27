@@ -1,3 +1,5 @@
+const atendimentoConfig = require('./../../infrastructure/constants/atendimento-formulario-configuration.json');
+
 module.exports = function (app) {
 
     app.get('/dominios/uf', function (req, res) {
@@ -599,6 +601,18 @@ module.exports = function (app) {
             res.status(200).json(response);
             return;
         });
+    });
+
+    app.get('/dominios/configuracao-atendimento/configuracao', async function (req, res) {
+        let util = new app.util.Util();
+        let errors = [];
+        let perguntas = atendimentoConfig;
+
+        try {
+            res.status(200).json(atendimentoConfig.atendimentoMap.listaPerguntas);
+        } catch (error) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+        } 
     });
 
     function listaDominios(dao, dom, res) {

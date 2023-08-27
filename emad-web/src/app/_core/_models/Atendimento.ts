@@ -61,7 +61,7 @@ export class Atendimento {
     @Input() vacinasEmDia: number;
     @Input() condicaoAvaliada: number;
     @Input() idProfissionalCompartilhado: number;
-
+    idUsuario: number;
 }
 
 export class AtendimentoHistorico {

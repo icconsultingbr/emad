@@ -87,6 +87,7 @@ const appRoutes: Routes = [
     { path: 'metodos-exames', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/metodo-exame/metodo-exame.module#MetodoExameModule' },
     { path: 'procedimento', canActivate: [AuthGuard], loadChildren: './cadastro/procedimento/procedimento.module#ProcedimentoModule' },
     { path: 'comorbidades-estabelecimento', canActivate: [AuthGuard], loadChildren: './analise/relatorios/comorbidade-estabelecimento/comorbidade-estabelecimento.module#ComorbidadeEstabelecimentoModule' },
+    { path: 'configuracao-atendimentos', canActivate: [AuthGuard], loadChildren: './cadastro/dominio/configuracao-atendimento/configuracao-atendimento.module#ConfiguracaoAtendimentoModule' },
 
     { path: 'not-found', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent },
