@@ -26,10 +26,10 @@ export class LoginComponent implements OnInit {
   url_logo = window.location.href.includes('e-atende-al') ? "assets/imgs/logotipo-e-atende-al.png" : "assets/imgs/logotipo-e-atende.jpg";
   domains: any[] = [];
   estabelecimentosCompleto: any[] = [];
-  estabelecimentoLogin: "0"; 
+  estabelecimentoLogin: "0";  
 
   sucesso: string = "";
-  isSucesso: Boolean = false;
+  isSucesso: Boolean = false; 
 
   ano: number = new Date().getFullYear();
 
