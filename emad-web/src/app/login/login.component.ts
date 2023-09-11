@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
   erro: string = "";
   isErro: Boolean = false;
   logo: string = Util.urlapi + "/logos/logo_" + window.location.hostname + ".png";
-  url_logo = window.location.href.includes('e-atende-al') ? "assets/imgs/logotipo-e-atende-al.png" : "assets/imgs/logotipo-e-atende.jpg";
+  url_logo = "assets/imgs/logotipo-e-atende.png";
   domains: any[] = [];
   estabelecimentosCompleto: any[] = [];
   estabelecimentoLogin: "0";  
