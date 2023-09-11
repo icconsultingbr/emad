@@ -155,8 +155,7 @@ export class GeorreferenciamentoComponent implements OnInit {
           <p>
             NOME: <b>${this.pacienteSelecionado.nome}</b><br>
             SEXO: <b>${this.pacienteSelecionado.sexo === 'M' ? 'Masculino' : 'Feminino'}</b><br>
-            DATA NASC.: <b>${this.pacienteSelecionado.dataNascimento}</b><br>
-            IDADE: <b>${this.pacienteSelecionado.idade} ano(s)</b><br>
+            DATA NASC.: <b>${this.pacienteSelecionado.dataNascimento}</b><br>            
             CARTÃO SUS: <b>${this.pacienteSelecionado.cartaoSus}</b><br>
           </p>
           <p>
@@ -443,8 +442,7 @@ export class GeorreferenciamentoComponent implements OnInit {
           <p>
             NOME: <b>${paciente.nome}</b><br>
             SEXO: <b>${paciente.sexo === 'M' ? 'Masculino' : 'Feminino'}</b><br>
-            DATA NASC.: <b>${paciente.dataNascimento}</b><br>
-            IDADE: <b>${paciente.idade} ano(s)</b><br>
+            DATA NASC.: <b>${paciente.dataNascimento}</b><br>            
             CARTÃO SUS: <b>${paciente.cartaoSus}</b><br>
           </p>
           <p>

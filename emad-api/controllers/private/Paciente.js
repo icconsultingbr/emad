@@ -404,7 +404,7 @@ module.exports = function (app) {
         }
     });
 
-    app.delete('/paciente/:id', function (req, res) {
+    app.delete('/paciente/:id', async function (req, res) {
         var util = new app.util.Util();
         let usuario = req.usuario;
         let errors = [];
@@ -412,10 +412,28 @@ module.exports = function (app) {
         let obj = {};
         obj.id = id;
 
-        deletaPorId(id, res).then(function (response) {
-            res.status(200).json(obj);
-            return;
-        });
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const pacienteRepository = new app.dao.PacienteDAO(connection);
+
+        try {
+
+            await connection.beginTransaction();
+
+            await pacienteRepository.deletaPorId(id, res).then(function (response) {
+                res.status(200).json(obj);
+                return;
+            });
+
+            await connection.commit();
+        }
+        catch (exception) {
+            console.log("Erro ao deletar o paciente exception: " + exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+            await connection.rollback();
+        }
+        finally {
+            await connection.close();
+        }
     });
 
     app.get('/paciente/estabelecimentos/:id/:raio/:idTipoUnidade', function (req, res) {
@@ -636,30 +654,6 @@ module.exports = function (app) {
                 d.reject(exception);
                 console.log(exception);
                 errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
-                res.status(500).send(errors);
-                return;
-            } else {
-
-                d.resolve(result[0]);
-            }
-        });
-        return d.promise;
-    }
-
-    function deletaPorId(id, res) {
-        var q = require('q');
-        var d = q.defer();
-        var util = new app.util.Util();
-
-        var connection = app.dao.ConnectionFactory();
-        var connectionDim = app.dao.ConnectionFactoryDim();
-        var objDAO = new app.dao.PacienteDAO(connection, connectionDim);
-        var errors = [];
-
-        objDAO.deletaPorId(id, function (exception, result) {
-            if (exception) {
-                d.reject(exception);
-                errors = util.customError(errors, "data", "Erro ao remover os dados", "paciente");
                 res.status(500).send(errors);
                 return;
             } else {

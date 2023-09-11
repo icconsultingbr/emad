@@ -34,7 +34,6 @@ export class Paciente {
     @Input() latitude: number;
     @Input() longitude: number;
     @Input() distancia: number;
-    @Input() idade: number = null;
     @Input() idSap: number = null;
     @Input() idTipoSanguineo: string = null;
     @Input() idRaca: number = null;

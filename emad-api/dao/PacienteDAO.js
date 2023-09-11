@@ -647,59 +647,7 @@ PacienteDAO.prototype.buscaDominio = function (callback) {
 }
 
 PacienteDAO.prototype.deletaPorId = function (id, callback) {
-    const conn = this._connection;
-    const connDim = this._connectionDim;
-    const table = this._table;
-
-    let novoprod = {};
-
-    conn.beginTransaction(function (err) {
-        if (err) { throw err; }
-        conn.query(`UPDATE ${table} SET situacao = 0 WHERE id = ?`, id,
-
-            function (error, results) {
-                if (error) { return conn.rollback(function () { throw error; }); }
-
-                novoprod = results;
-                console.log('Update no e-atend do ID ' + id);
-                conn.query(`SELECT 
-                        CASE WHEN tp.situacao = 1 THEN 1 ELSE 2 END as id_status_paciente,
-                        CASE WHEN tp.situacao = 1 THEN 'A' ELSE 'I' END as status_2,
-                        6 usua_alt, 
-                        now() as data_alt, 
-                        idPacienteCorrespondenteDim
-                    from tb_paciente tp where tp.id = ?`, id,
-
-                    function (error, dadosPaciente) {
-                        if (error) { return conn.rollback(function () { console.log('Erro' + error); throw error; }); }
-
-                        console.log('Select ' + JSON.stringify(dadosPaciente));
-                        connDim.query(`UPDATE paciente SET id_status_paciente=?, status_2=?, usua_alt=?,
-                    data_alt=? WHERE id_paciente=?`,
-                            [dadosPaciente[0].id_status_paciente,
-                            dadosPaciente[0].status_2,
-                            dadosPaciente[0].usua_alt,
-                            dadosPaciente[0].data_alt,
-                            dadosPaciente[0].idPacienteCorrespondenteDim],
-
-                            function (error, novoPaciente) {
-                                if (error) { return conn.rollback(function () { console.log('Erro no update ' + error); throw error; }); }
-
-                                console.log('Atualizou no dim o ID ' + dadosPaciente[0].idPacienteCorrespondenteDim);
-                                console.log('Ultimo ' + JSON.stringify(novoPaciente));
-
-                                conn.commit(
-
-                                    function (err) {
-                                        if (err) { return conn.rollback(function () { throw err; }); }
-
-                                        console.log('Sucesso!');
-                                        return callback(null, novoprod);
-                                    });
-                            });
-                    });
-            });
-    });
+    return this._connection.query(`UPDATE ${this._table} SET situacao = 0 WHERE id=?`, id, callback);
 }
 
 PacienteDAO.prototype.buscarEstabelecimentos = function (id, raio, idTipoUnidade, callback) {
