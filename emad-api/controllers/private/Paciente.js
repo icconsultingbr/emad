@@ -54,6 +54,36 @@ module.exports = function (app) {
 
     });
 
+    app.get('/paciente/:tipo/:valor', async function (req, res) {
+        let usuario = req.usuario;
+        let tipo = req.params.tipo;
+        let valor = req.params.valor;
+        let util = new app.util.Util();
+        let errors = [];
+    
+        const connection = await app.dao.connections.EatendConnection.connection();
+    
+        const pacienteRepository = new app.dao.PacienteDAO(connection, null);
+        const atencaoContinuadaPacienteRepository = new app.dao.AtencaoContinuadaPacienteDAO(connection);
+    
+        try {
+            var response = await pacienteRepository.consultaPaciente(tipo, valor);
+    
+            if (response.length > 0) {
+                var gruposAtencaoContinuada = await atencaoContinuadaPacienteRepository.buscaPorPacienteSync(response[0].id);
+                response[0].gruposAtencaoContinuada = gruposAtencaoContinuada;
+    
+                res.status(201).send(response[0]);
+            } else {
+                res.status(404).send(util.customError(errors, "header", "Registro não encontrado", ""));
+            }
+        } catch (exception) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+        } finally {
+            await connection.close();
+        }
+    });
+
     app.post('/paciente', async function (req, res) {
         var obj = req.body;
         var usuario = req.usuario;

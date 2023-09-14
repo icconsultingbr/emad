@@ -573,6 +573,87 @@ PacienteDAO.prototype.buscaPorIdSync = async function (id) {
     return responsePaciente;
 }
 
+
+
+PacienteDAO.prototype.consultaPaciente = async function (tipo, valor) {
+    const camposDeConsulta = {
+        1 : 'pac.id',
+        2 : 'pac.cpf',
+        3 : 'pac.cartaoSus',
+        4 : 'pac.idSap'
+    };
+
+    if (!camposDeConsulta[tipo]) {
+        throw new Error('Tipo de consulta inválido');
+    }
+
+    const responsePaciente = await this._connection.query(`SELECT
+        pac.id,
+        pac.cartaoSus,
+        pac.nome, 
+        pac.nomeSocial, 
+        pac.nomeMae, 
+        pac.nomePai, 
+        DATE_FORMAT(pac.dataNascimento,'%d/%m/%Y') as dataNascimento,
+        pac.sexo, 
+        pac.idNacionalidade, 
+        pac.idNaturalidade, 
+        pac.ocupacao, 
+        pac.cpf, 
+        pac.rg, 
+        DATE_FORMAT(pac.dataEmissao,'%d/%m/%Y') as dataEmissao,
+        pac.orgaoEmissor, 
+        pac.escolaridade, 
+        pac.cep, 
+        pac.logradouro, 
+        pac.numero, 
+        pac.complemento, 
+        pac.bairro, 
+        pac.idMunicipio, 
+        pac.idUf, 
+        pac.foneResidencial, 
+        pac.foneCelular, 
+        pac.foneContato, 
+        pac.contato, 
+        pac.email, 
+        pac.situacao, 
+        pac.idModalidade, 
+        DATE_FORMAT(pac.dataCriacao,'%d/%m/%Y') as dataCriacao,
+        pac.latitude,
+        pac.longitude,
+        pac.idSap,
+        pac.idPacienteCorrespondenteDim,
+        pac.idTipoSanguineo,
+        pac.idRaca,
+        pac.numeroProntuario,
+        pac.numeroProntuarioCnes,
+        pac.falecido,
+        pac.idAtencaoContinuada,
+        pac.idEstabelecimentoCadastro,
+        pac.apelido,
+        pac.observacao, 
+        pac.historiaProgressaFamiliar,
+        pac.foto,
+        pac.necessidadeEspeciais,
+        pac.gestante,
+        pac.aleitamentoMaterno,
+        DATE_FORMAT(pac.dumDaGestante,'%d/%m/%Y') as dumDaGestante,
+        pac.idadeGestacional,
+        pac.stGravidezPlanejada,
+        pac.nuGestasPrevias,
+        pac.nuPartos,
+        YEAR(CURRENT_TIMESTAMP) - YEAR(pac.dataNascimento) - (RIGHT(CURRENT_TIMESTAMP, 5) < RIGHT(pac.dataNascimento, 5)) as pacienteIdade,
+        est.obrigaCpfNovoPaciente,
+        est.obrigaCartaoSusNovoPaciente,
+        est.obrigaValidarPacienteAtendimento 
+        FROM ${this._table} pac
+        left join tb_estabelecimento est on est.id = pac.idEstabelecimentoCadastro
+        WHERE ${camposDeConsulta[tipo]} = ?`, valor);
+
+    return responsePaciente;
+}
+
+
 PacienteDAO.prototype.buscaPorIdFicha = function (id, callback) {
     this._connection.query(`SELECT 
     p.id,
