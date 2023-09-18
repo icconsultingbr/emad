@@ -1,12 +1,11 @@
-import { Injectable } from '@angular/core';
-import { GenericsService } from '../../_core/_services/generics.service';
-import { Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { GenericsService } from "../../_core/_services/generics.service";
+import { Validators } from "@angular/forms";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class EstabelecimentoService extends GenericsService {
-
   constructor(public http: HttpClient) {
     super(http);
   }
@@ -19,7 +18,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ["", ""],
     },
     {
       field: "cnes",
@@ -28,8 +27,8 @@ export class EstabelecimentoService extends GenericsService {
       grid: true,
       form: true,
       required: true,
-      validator: ['', Validators.required],
-      autoFocus: true
+      validator: ["", Validators.required],
+      autoFocus: true,
     },
     {
       field: "cnpj",
@@ -40,7 +39,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: true,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ["", Validators.required],
     },
     {
       field: "razaoSocial",
@@ -49,7 +48,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: true,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ["", Validators.required],
     },
     {
       field: "nomeFantasia",
@@ -58,7 +57,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: true,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ["", Validators.required],
     },
     {
       field: "logradouro",
@@ -67,7 +66,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ["", Validators.required],
     },
     {
       field: "numero",
@@ -76,7 +75,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ["", Validators.required],
     },
     {
       field: "latitude",
@@ -86,7 +85,7 @@ export class EstabelecimentoService extends GenericsService {
       form: true,
       required: false,
       readonly: true,
-      validator: ['', '']
+      validator: ["", ""],
     },
     {
       field: "longitude",
@@ -96,7 +95,7 @@ export class EstabelecimentoService extends GenericsService {
       form: true,
       required: false,
       readonly: true,
-      validator: ['', '']
+      validator: ["", ""],
     },
     {
       field: "complemento",
@@ -105,7 +104,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ["", ""],
     },
     {
       field: "bairro",
@@ -114,7 +113,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ["", Validators.required],
     },
     {
       field: "idUf",
@@ -123,11 +122,11 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', Validators.required],
+      validator: ["", Validators.required],
       filter: {
         type: "select",
-        changeMethod: 'municipio/uf',
-        changeTarget: 'idMunicipio'
+        changeMethod: "municipio/uf",
+        changeTarget: "idMunicipio",
       },
     },
     {
@@ -137,7 +136,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ["", Validators.required],
     },
     {
       field: "cep",
@@ -146,7 +145,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', Validators.required],
+      validator: ["", Validators.required],
       mask: "99999-999",
       placeholder: "00000-000",
     },
@@ -157,7 +156,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ["", ""],
     },
     {
       field: "telefone2",
@@ -166,7 +165,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ["", ""],
     },
     {
       field: "email",
@@ -175,7 +174,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ["", ""],
     },
     {
       field: "cnpjMantedora",
@@ -186,7 +185,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ["", ""],
     },
     {
       field: "grauDependencia",
@@ -195,7 +194,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ["", Validators.required],
     },
     {
       field: "terceiros",
@@ -204,7 +203,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ["", Validators.required],
     },
     {
       field: "idTipoUnidade",
@@ -213,7 +212,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ["", Validators.required],
     },
     {
       field: "esferaAdministradora",
@@ -222,7 +221,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ["", Validators.required],
     },
     {
       field: "idUnidadeCorrespondenteDim",
@@ -231,7 +230,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ["", Validators.required],
     },
     {
       field: "idUnidadePesquisaMedicamentoDim",
@@ -240,7 +239,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ["", Validators.required],
     },
     {
       field: "idUnidadeRegistroReceitaDim",
@@ -249,7 +248,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ["", Validators.required],
     },
     {
       field: "nivelSuperior",
@@ -259,7 +258,7 @@ export class EstabelecimentoService extends GenericsService {
       form: true,
       required: false,
       translate: { 1: "Sim", 0: "Não" },
-      validator: ['', '']
+      validator: ["", ""],
     },
     {
       field: "idEstabelecimentoNivelSuperior",
@@ -268,7 +267,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ["", ""],
     },
     {
       field: "cnsProfissionaleSus",
@@ -277,8 +276,8 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', [Validators.required]],
-      autoFocus: true
+      validator: ["", [Validators.required]],
+      autoFocus: true,
     },
     {
       field: "cboProfissionalEsus",
@@ -299,7 +298,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', Validators.required]
+      validator: ["", Validators.required],
     },
     {
       field: "obrigaCartaoSusNovoPaciente",
@@ -308,7 +307,16 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', '']
+      validator: ["", ""],
+    },
+    {
+      field: "obrigaIdSAP",
+      type: "checkbox",
+      label: "Obriga  ID SAP",
+      grid: false,
+      form: true,
+      required: true,
+      validator: ["", ""],
     },
     {
       field: "obrigaCpfNovoPaciente",
@@ -317,8 +325,8 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', '']
-    },    
+      validator: ["", ""],
+    },
     {
       field: "enviaMedicamentoSus",
       type: "checkbox",
@@ -326,7 +334,7 @@ export class EstabelecimentoService extends GenericsService {
       grid: false,
       form: true,
       required: true,
-      validator: ['', '']
+      validator: ["", ""],
     },
     {
       field: "dataCriacao",
@@ -335,13 +343,11 @@ export class EstabelecimentoService extends GenericsService {
       grid: true,
       form: false,
       required: false,
-      validator: ['', ''],
-      isDateTime: true
-    }
-
+      validator: ["", ""],
+      isDateTime: true,
+    },
   ];
   findTipoFichaEstabelecimento(id: any): Observable<any> {
     return this.http.get("atendimento-procedimento/tipo-ficha/" + id);
   }
-
 }
