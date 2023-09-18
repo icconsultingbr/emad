@@ -395,7 +395,7 @@ module.exports = function (app) {
             delete obj.parouFumar;
             delete obj.tiposFornecimOdonto;
             delete obj.tiposConsultaOdonto;
-            delete obj.tiposVigilanciaSaudeBucal;
+            delete obj.tiposVigilanciaSaudeBucal; 
             delete obj.condutaEncaminhamento;
 
             obj.dataCriacao = new Date(obj.dataCriacao);
@@ -768,6 +768,7 @@ module.exports = function (app) {
             obj.temasParaReuniao == '' ? obj.temasParaReuniao = 0 : obj.temasParaReuniao;
             obj.tipoHistoriaClinica == '' ? obj.tipoHistoriaClinica = 0 : obj.tipoHistoriaClinica;
             obj.ficouEmObservacao == '' ? obj.ficouEmObservacao = 0 : obj.ficouEmObservacao;
+            obj.integracaoPEC == '' ? obj.integracaoPEC = 0 : obj.integracaoPEC;
             obj.gestante == '' ? obj.gestante = 0 : obj.gestante;
             obj.possuiNecessidadesEspeciais == '' ? obj.possuiNecessidadesEspeciais = 0 : obj.possuiNecessidadesEspeciais;
             obj.tipoConsultaOdonto == '' ? obj.tipoConsultaOdonto = 0 : obj.tipoConsultaOdonto;
@@ -805,6 +806,7 @@ module.exports = function (app) {
             objHistorico.temasParaReuniao == '' ? objHistorico.temasParaReuniao = 0 : objHistorico.temasParaReuniao;
             objHistorico.tipoHistoriaClinica == '' ? objHistorico.tipoHistoriaClinica = 0 : objHistorico.tipoHistoriaClinica;
             objHistorico.ficouEmObservacao == '' ? objHistorico.ficouEmObservacao = 0 : objHistorico.ficouEmObservacao;
+            objHistorico.integracaoPEC == '' ? objHistorico.integracaoPEC = 0 : objHistorico.integracaoPEC;
             objHistorico.gestante == '' ? objHistorico.gestante = 0 : objHistorico.gestante;
             objHistorico.possuiNecessidadesEspeciais == '' ? objHistorico.possuiNecessidadesEspeciais = 0 : objHistorico.possuiNecessidadesEspeciais;
             objHistorico.tipoConsultaOdonto == '' ? objHistorico.tipoConsultaOdonto = 0 : objHistorico.tipoConsultaOdonto;
