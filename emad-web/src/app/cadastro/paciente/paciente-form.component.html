@@ -1,10 +1,12 @@
-<h4 class="mb-5 text-left">{{id!=null?'Editar '+label:'Adicionar '+label}}</h4>
+<h4 class="mb-5 text-left">
+  {{ id != null ? "Editar " + label : "Adicionar " + label }}
+</h4>
 <app-loader [loading]="loading"></app-loader>
-<p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
+<p *ngIf="message.length" class="alert alert-info sticky-top">{{ message }}</p>
 <div *ngIf="errors.length" class="alert alert-danger sticky-top">
   <div *ngFor="let error of errors" class="row">
     <div class="col-12 text-left">
-      {{error.message}}
+      {{ error.message }}
     </div>
   </div>
 </div>
@@ -20,8 +22,12 @@
           <div class="card-body text-left">
             <div class="row">
               <div class="col-sm-3 text-center">
-                <app-image-cropper-upload *ngIf="loadPhoto" [size]="150" [id]="object.foto"
-                  (saved)="photoSaved($event)">
+                <app-image-cropper-upload
+                  *ngIf="loadPhoto"
+                  [size]="150"
+                  [id]="object.foto"
+                  (saved)="photoSaved($event)"
+                >
                 </app-image-cropper-upload>
               </div>
               <div class="col-sm-9">
@@ -29,19 +35,36 @@
                   <div class="col-xl-12">
                     <div class="form-group row">
                       <label class="col-xl-2 col-form-label text-left">
-                        Cartão SUS<span *ngIf="susObrigatorio" class="text-danger font-weight-bold"> *</span>
+                        Cartão SUS<span
+                          *ngIf="susObrigatorio"
+                          class="text-danger font-weight-bold"
+                        >
+                          *</span
+                        >
                       </label>
                       <div class="col-xl-4">
-                        <input type="text" class="form-control has-error" [(ngModel)]="object.cartaoSus"
-                          formControlName="cartaoSus" />
-                        <input type="hidden" [(ngModel)]="object.id" formControlName="id">
+                        <input
+                          type="text"
+                          class="form-control has-error"
+                          [(ngModel)]="object.cartaoSus"
+                          formControlName="cartaoSus"
+                        />
+                        <input
+                          type="hidden"
+                          [(ngModel)]="object.id"
+                          formControlName="id"
+                        />
                       </div>
                       <label class="col-xl-2 col-form-label text-left">
                         ID SAP
                       </label>
                       <div class="col-xl-4">
-                        <input type="text" class="form-control has-error" [(ngModel)]="object.idSap"
-                          formControlName="idSap" />
+                        <input
+                          type="text"
+                          class="form-control has-error"
+                          [(ngModel)]="object.idSap"
+                          formControlName="idSap"
+                        />
                       </div>
                     </div>
                   </div>
@@ -53,8 +76,12 @@
                         Nome<span class="text-danger font-weight-bold"> *</span>
                       </label>
                       <div class="col-xl-10">
-                        <input type="text" class="form-control has-error" [(ngModel)]="object.nome"
-                          formControlName="nome" />
+                        <input
+                          type="text"
+                          class="form-control has-error"
+                          [(ngModel)]="object.nome"
+                          formControlName="nome"
+                        />
                       </div>
                     </div>
                   </div>
@@ -66,15 +93,23 @@
                         Nome social
                       </label>
                       <div class="col-xl-4">
-                        <input type="text" class="form-control has-error" [(ngModel)]="object.nomeSocial"
-                          formControlName="nomeSocial" />
+                        <input
+                          type="text"
+                          class="form-control has-error"
+                          [(ngModel)]="object.nomeSocial"
+                          formControlName="nomeSocial"
+                        />
                       </div>
                       <label class="col-xl-2 col-form-label text-left">
                         Apelido
                       </label>
                       <div class="col-xl-4">
-                        <input type="text" class="form-control has-error" [(ngModel)]="object.apelido"
-                          formControlName="apelido" />
+                        <input
+                          type="text"
+                          class="form-control has-error"
+                          [(ngModel)]="object.apelido"
+                          formControlName="apelido"
+                        />
                       </div>
                     </div>
                   </div>
@@ -83,18 +118,28 @@
                   <div class="col-xl-12">
                     <div class="form-group row">
                       <label class="col-xl-2 col-form-label text-left">
-                        Nome da mãe<span class="text-danger font-weight-bold"> *</span>
+                        Nome da mãe<span class="text-danger font-weight-bold">
+                          *</span
+                        >
                       </label>
                       <div class="col-xl-4">
-                        <input type="text" class="form-control has-error" [(ngModel)]="object.nomeMae"
-                          formControlName="nomeMae" />
+                        <input
+                          type="text"
+                          class="form-control has-error"
+                          [(ngModel)]="object.nomeMae"
+                          formControlName="nomeMae"
+                        />
                       </div>
                       <label class="col-xl-2 col-form-label text-left">
                         Nome do pai
                       </label>
                       <div class="col-xl-4">
-                        <input type="text" class="form-control has-error" [(ngModel)]="object.nomePai"
-                          formControlName="nomePai" />
+                        <input
+                          type="text"
+                          class="form-control has-error"
+                          [(ngModel)]="object.nomePai"
+                          formControlName="nomePai"
+                        />
                       </div>
                     </div>
                   </div>
@@ -105,7 +150,11 @@
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                    Data de nascimento<span class="text-danger font-weight-bold"> *</span>
+                    Data de nascimento<span
+                      class="text-danger font-weight-bold"
+                    >
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
                     <div class="input-group">
@@ -114,20 +163,38 @@
                           <i class="fa fa-calendar-alt"></i>
                         </div>
                       </div>
-                      <input type="text" [(ngModel)]="object.dataNascimento" formControlName="dataNascimento"
-                        placeholder="dd/mm/aaaa" bsDatepicker
-                        [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}"
-                        class="form-control" autocomplete="off">
+                      <input
+                        type="text"
+                        [(ngModel)]="object.dataNascimento"
+                        formControlName="dataNascimento"
+                        placeholder="dd/mm/aaaa"
+                        bsDatepicker
+                        [bsConfig]="{
+                          containerClass: 'theme-dark-blue',
+                          dateInputFormat: 'DD/MM/YYYY'
+                        }"
+                        class="form-control"
+                        autocomplete="off"
+                      />
                     </div>
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Sexo<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.sexo"
-                      formControlName="sexo">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.sexo"
+                      formControlName="sexo"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.sexo" [value]="item.id">{{item.nome}}</option>
+                      <option
+                        *ngFor="let item of domains[0]?.sexo"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -137,23 +204,46 @@
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                    Nacionalidade<span class="text-danger font-weight-bold"> *</span>
+                    Nacionalidade<span class="text-danger font-weight-bold">
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idNacionalidade"
-                      formControlName="idNacionalidade" (change)="carregaNaturalidade()">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.idNacionalidade"
+                      formControlName="idNacionalidade"
+                      (change)="carregaNaturalidade()"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idNacionalidade" [value]="item.id">{{item.nome}}</option>
+                      <option
+                        *ngFor="let item of domains[0]?.idNacionalidade"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
                     </select>
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
-                    Naturalidade<span class="text-danger font-weight-bold"> *</span>
+                    Naturalidade<span class="text-danger font-weight-bold">
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idNaturalidade"
-                      formControlName="idNaturalidade">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.idNaturalidade"
+                      formControlName="idNaturalidade"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idNaturalidade" [value]="item.id">{{item.nome}}</option>
+                      <option
+                        *ngFor="let item of domains[0]?.idNaturalidade"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -163,19 +253,32 @@
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                    CPF<span *ngIf="cpfObrigatorio" class="text-danger font-weight-bold">
-                      *</span>
+                    CPF<span
+                      *ngIf="cpfObrigatorio"
+                      class="text-danger font-weight-bold"
+                    >
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" mask="999.999.999-99" class="form-control has-error" [(ngModel)]="object.cpf"
-                      formControlName="cpf" />
+                    <input
+                      type="text"
+                      mask="999.999.999-99"
+                      class="form-control has-error"
+                      [(ngModel)]="object.cpf"
+                      formControlName="cpf"
+                    />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Ocupação
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.ocupacao"
-                      formControlName="ocupacao" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.ocupacao"
+                      formControlName="ocupacao"
+                    />
                   </div>
                 </div>
               </div>
@@ -184,41 +287,70 @@
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                    Escolaridade<span class="text-danger font-weight-bold"> *</span>
+                    Escolaridade<span class="text-danger font-weight-bold">
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.escolaridade"
-                      formControlName="escolaridade">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.escolaridade"
+                      formControlName="escolaridade"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.escolaridade" [value]="item.id">{{item.nome}}</option>
-                    </select>
-                  </div>
-                  <label class="col-xl-2 col-form-label text-left">
-                    Estabelecimento<span class="text-danger font-weight-bold"> *</span>
-                  </label>
-                  <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100"
-                      [(ngModel)]="object.idEstabelecimentoCadastro"
-                      (change)="onChangeEstabelecimento($event.target.value)"
-                      formControlName="idEstabelecimentoCadastro">
-                      <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idEstabelecimentoCadastro" [value]="item.id">{{item.nome}}
+                      <option
+                        *ngFor="let item of escolaridade"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
                       </option>
                     </select>
                   </div>
-
+                  <label class="col-xl-2 col-form-label text-left">
+                    Estabelecimento<span class="text-danger font-weight-bold">
+                      *</span
+                    >
+                  </label>
+                  <div class="col-xl-4">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.idEstabelecimentoCadastro"
+                      (change)="onChangeEstabelecimento($event.target.value)"
+                      formControlName="idEstabelecimentoCadastro"
+                    >
+                      <option [value]="">Selecione...</option>
+                      <option
+                        *ngFor="
+                          let item of domains[0]?.idEstabelecimentoCadastro
+                        "
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
+                    </select>
+                  </div>
                 </div>
-
 
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
                     Raça/Cor<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idRaca"
-                      formControlName="idRaca">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.idRaca"
+                      formControlName="idRaca"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idRaca" [value]="item.id">{{item.nome}}</option>
+                      <option
+                        *ngFor="let item of domains[0]?.idRaca"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -231,8 +363,12 @@
                     Observações
                   </label>
                   <div class="col-xl-10">
-                    <textarea rows="4" class="form-control has-error" [(ngModel)]="object.observacao"
-                      formControlName="observacao"></textarea>
+                    <textarea
+                      rows="4"
+                      class="form-control has-error"
+                      [(ngModel)]="object.observacao"
+                      formControlName="observacao"
+                    ></textarea>
                   </div>
                 </div>
               </div>
@@ -244,10 +380,21 @@
                     Reeducando
                   </label>
                   <div class="col-xl-10">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="reeducando" [(ngModel)]="object.reeducando"
-                        formControlName="reeducando" class="custom-control-input">
-                      <label class="custom-control-label" for="reeducando"></label>
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="reeducando"
+                        [(ngModel)]="object.reeducando"
+                        formControlName="reeducando"
+                        class="custom-control-input"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="reeducando"
+                      ></label>
                     </div>
                   </div>
                 </div>
@@ -260,10 +407,21 @@
                     Falecido
                   </label>
                   <div class="col-xl-10">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="falecido" [(ngModel)]="object.falecido" formControlName="falecido"
-                        class="custom-control-input">
-                      <label class="custom-control-label" for="falecido"></label>
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="falecido"
+                        [(ngModel)]="object.falecido"
+                        formControlName="falecido"
+                        class="custom-control-input"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="falecido"
+                      ></label>
                     </div>
                   </div>
                 </div>
@@ -276,10 +434,21 @@
                     Situação<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-10">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao"
-                        class="custom-control-input">
-                      <label class="custom-control-label" for="situacao"></label>
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="situacao"
+                        [(ngModel)]="object.situacao"
+                        formControlName="situacao"
+                        class="custom-control-input"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="situacao"
+                      ></label>
                     </div>
                   </div>
                 </div>
@@ -292,10 +461,21 @@
                     Possui necessidades especiais
                   </label>
                   <div class="col-xl-10">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="necessidadeEspeciais" [(ngModel)]="object.necessidadeEspeciais"
-                        formControlName="necessidadeEspeciais" class="custom-control-input">
-                      <label class="custom-control-label" for="necessidadeEspeciais"></label>
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="necessidadeEspeciais"
+                        [(ngModel)]="object.necessidadeEspeciais"
+                        formControlName="necessidadeEspeciais"
+                        class="custom-control-input"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="necessidadeEspeciais"
+                      ></label>
                     </div>
                   </div>
                 </div>
@@ -309,10 +489,21 @@
                     Gestante
                   </label>
                   <div class="col-xl-10">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="gestante" [(ngModel)]="object.gestante" formControlName="gestante"
-                        class="custom-control-input">
-                      <label class="custom-control-label" for="gestante"></label>
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="gestante"
+                        [(ngModel)]="object.gestante"
+                        formControlName="gestante"
+                        class="custom-control-input"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="gestante"
+                      ></label>
                     </div>
                   </div>
                 </div>
@@ -321,30 +512,44 @@
             <div *ngIf="object.gestante == true" class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
-
                   <div class="col-xl-12">
                     <div class="card mb-4">
-                      <div class="card-header text-left">
-                        Dados da Gestação
-                      </div>
+                      <div class="card-header text-left">Dados da Gestação</div>
                       <div class="card-body text-left">
-
                         <div class="row">
                           <div class="col-xl-12">
                             <div class="form-group row">
                               <label class="col-xl-2 col-form-label text-left">
-                                Cód aleita. materno<span class="text-danger font-weight-bold"> *</span>
+                                Cód aleita. materno<span
+                                  class="text-danger font-weight-bold"
+                                >
+                                  *</span
+                                >
                               </label>
                               <div class="col-xl-4">
-                                <select *ngIf="domains" class="custom-select d-block w-100"
-                                  [(ngModel)]="object.aleitamentoMaterno" formControlName="aleitamentoMaterno">
+                                <select
+                                  *ngIf="domains"
+                                  class="custom-select d-block w-100"
+                                  [(ngModel)]="object.aleitamentoMaterno"
+                                  formControlName="aleitamentoMaterno"
+                                >
                                   <option [value]="">Selecione...</option>
-                                  <option *ngFor="let item of domains[0]?.aleitamentoMaterno" [value]="item.id">
-                                    {{item.nome}}</option>
+                                  <option
+                                    *ngFor="
+                                      let item of domains[0]?.aleitamentoMaterno
+                                    "
+                                    [value]="item.id"
+                                  >
+                                    {{ item.nome }}
+                                  </option>
                                 </select>
                               </div>
                               <label class="col-xl-2 col-form-label text-left">
-                                Dt. Ult. Menstruação<span class="text-danger font-weight-bold"> *</span>
+                                Dt. Ult. Menstruação<span
+                                  class="text-danger font-weight-bold"
+                                >
+                                  *</span
+                                >
                               </label>
                               <div class="col-xl-4">
                                 <div class="input-group">
@@ -353,10 +558,19 @@
                                       <i class="fa fa-calendar-alt"></i>
                                     </div>
                                   </div>
-                                  <input type="text" [(ngModel)]="object.dumDaGestante" formControlName="dumDaGestante"
-                                    placeholder="dd/mm/aaaa" bsDatepicker
-                                    [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}"
-                                    class="form-control" autocomplete="off">
+                                  <input
+                                    type="text"
+                                    [(ngModel)]="object.dumDaGestante"
+                                    formControlName="dumDaGestante"
+                                    placeholder="dd/mm/aaaa"
+                                    bsDatepicker
+                                    [bsConfig]="{
+                                      containerClass: 'theme-dark-blue',
+                                      dateInputFormat: 'DD/MM/YYYY'
+                                    }"
+                                    class="form-control"
+                                    autocomplete="off"
+                                  />
                                 </div>
                               </div>
                             </div>
@@ -367,21 +581,46 @@
                           <div class="col-xl-12">
                             <div class="form-group row">
                               <label class="col-xl-2 col-form-label text-left">
-                                Idade Gest. em semanas<span class="text-danger font-weight-bold"> *</span>
+                                Idade Gest. em semanas<span
+                                  class="text-danger font-weight-bold"
+                                >
+                                  *</span
+                                >
                               </label>
                               <div class="col-xl-4">
-                                <input type="number" onKeyDown="" min='1' max="42" class="form-control has-error"
-                                  [(ngModel)]="object.idadeGestacional" formControlName="idadeGestacional">
+                                <input
+                                  type="number"
+                                  onKeyDown=""
+                                  min="1"
+                                  max="42"
+                                  class="form-control has-error"
+                                  [(ngModel)]="object.idadeGestacional"
+                                  formControlName="idadeGestacional"
+                                />
                               </div>
                               <label class="col-xl-2 col-form-label text-left">
-                                Gravidez Planejada<span class="text-danger font-weight-bold"> *</span>
+                                Gravidez Planejada<span
+                                  class="text-danger font-weight-bold"
+                                >
+                                  *</span
+                                >
                               </label>
                               <div class="col-xl-4">
-                                <div class="custom-control custom-checkbox" style="width: 25px">
-                                  <input type="checkbox" id="stGravidezPlanejada"
-                                    [(ngModel)]="object.stGravidezPlanejada" formControlName="stGravidezPlanejada"
-                                    class="custom-control-input">
-                                  <label class="custom-control-label" for="stGravidezPlanejada"></label>
+                                <div
+                                  class="custom-control custom-checkbox"
+                                  style="width: 25px"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    id="stGravidezPlanejada"
+                                    [(ngModel)]="object.stGravidezPlanejada"
+                                    formControlName="stGravidezPlanejada"
+                                    class="custom-control-input"
+                                  />
+                                  <label
+                                    class="custom-control-label"
+                                    for="stGravidezPlanejada"
+                                  ></label>
                                 </div>
                               </div>
                             </div>
@@ -392,23 +631,44 @@
                           <div class="col-xl-12">
                             <div class="form-group row">
                               <label class="col-xl-2 col-form-label text-left">
-                                Núm. de gestações<span class="text-danger font-weight-bold"> *</span>
+                                Núm. de gestações<span
+                                  class="text-danger font-weight-bold"
+                                >
+                                  *</span
+                                >
                               </label>
                               <div class="col-xl-4">
-                                <input type="number" onKeyDown="" min='1' max="999" class="form-control has-error"
-                                  [(ngModel)]="object.nuGestasPrevias" formControlName="nuGestasPrevias">
+                                <input
+                                  type="number"
+                                  onKeyDown=""
+                                  min="1"
+                                  max="999"
+                                  class="form-control has-error"
+                                  [(ngModel)]="object.nuGestasPrevias"
+                                  formControlName="nuGestasPrevias"
+                                />
                               </div>
                               <label class="col-xl-2 col-form-label text-left">
-                                Núm. de Partos<span class="text-danger font-weight-bold"> *</span>
+                                Núm. de Partos<span
+                                  class="text-danger font-weight-bold"
+                                >
+                                  *</span
+                                >
                               </label>
                               <div class="col-xl-4">
-                                <input type="number" onKeyDown="" min='1' max="999" class="form-control has-error"
-                                  [(ngModel)]="object.nuPartos" formControlName="nuPartos">
+                                <input
+                                  type="number"
+                                  onKeyDown=""
+                                  min="1"
+                                  max="999"
+                                  class="form-control has-error"
+                                  [(ngModel)]="object.nuPartos"
+                                  formControlName="nuPartos"
+                                />
                               </div>
                             </div>
                           </div>
                         </div>
-
                       </div>
                     </div>
                   </div>
@@ -427,11 +687,14 @@
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
-                  <label class="col-xl-2 col-form-label text-left">
-                    RG
-                  </label>
+                  <label class="col-xl-2 col-form-label text-left"> RG </label>
                   <div class="col-xl-10">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.rg" formControlName="rg" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.rg"
+                      formControlName="rg"
+                    />
                   </div>
                 </div>
               </div>
@@ -449,18 +712,31 @@
                           <i class="fa fa-calendar-alt"></i>
                         </div>
                       </div>
-                      <input type="text" [(ngModel)]="object.dataEmissao" formControlName="dataEmissao"
-                        placeholder="dd/mm/aaaa" bsDatepicker
-                        [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}"
-                        class="form-control" autocomplete="off">
+                      <input
+                        type="text"
+                        [(ngModel)]="object.dataEmissao"
+                        formControlName="dataEmissao"
+                        placeholder="dd/mm/aaaa"
+                        bsDatepicker
+                        [bsConfig]="{
+                          containerClass: 'theme-dark-blue',
+                          dateInputFormat: 'DD/MM/YYYY'
+                        }"
+                        class="form-control"
+                        autocomplete="off"
+                      />
                     </div>
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Orgão emissor
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.orgaoEmissor"
-                      formControlName="orgaoEmissor" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.orgaoEmissor"
+                      formControlName="orgaoEmissor"
+                    />
                   </div>
                 </div>
               </div>
@@ -472,17 +748,28 @@
                     Endereço
                   </label>
                   <div class="col-xl-6">
-                    <input type="text" id="logradouro" name="logradouro" clearIfNotMatch="true"
-                      formControlName="logradouro" [(ngModel)]="object.logradouro" class="form-control has-error"
-                      autocomplete="off" #addresstext>
-
+                    <input
+                      type="text"
+                      id="logradouro"
+                      name="logradouro"
+                      clearIfNotMatch="true"
+                      formControlName="logradouro"
+                      [(ngModel)]="object.logradouro"
+                      class="form-control has-error"
+                      autocomplete="off"
+                      #addresstext
+                    />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Número
                   </label>
                   <div class="col-xl-2">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.numero"
-                      formControlName="numero" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.numero"
+                      formControlName="numero"
+                    />
                   </div>
                 </div>
               </div>
@@ -494,15 +781,25 @@
                     Latitude
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.latitude"
-                      formControlName="latitude" readonly />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.latitude"
+                      formControlName="latitude"
+                      readonly
+                    />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Longitude
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.longitude"
-                      formControlName="longitude" readonly />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.longitude"
+                      formControlName="longitude"
+                      readonly
+                    />
                   </div>
                 </div>
               </div>
@@ -514,15 +811,23 @@
                     Complemento
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.complemento"
-                      formControlName="complemento" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.complemento"
+                      formControlName="complemento"
+                    />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Bairro
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.bairro"
-                      formControlName="bairro" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.bairro"
+                      formControlName="bairro"
+                    />
                   </div>
                 </div>
               </div>
@@ -534,20 +839,41 @@
                     Estado<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idUf"
-                      formControlName="idUf" (change)="carregaMunicipios()">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.idUf"
+                      formControlName="idUf"
+                      (change)="carregaMunicipios()"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idUf" [value]="item.id">{{item.nome}}</option>
+                      <option
+                        *ngFor="let item of domains[0]?.idUf"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
                     </select>
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
-                    Município<span class="text-danger font-weight-bold"> *</span>
+                    Município<span class="text-danger font-weight-bold">
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idMunicipio"
-                      formControlName="idMunicipio">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.idMunicipio"
+                      formControlName="idMunicipio"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idMunicipio" [value]="item.id">{{item.nome}}</option>
+                      <option
+                        *ngFor="let item of domains[0]?.idMunicipio"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -556,12 +882,15 @@
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
-                  <label class="col-xl-2 col-form-label text-left">
-                    CEP
-                  </label>
+                  <label class="col-xl-2 col-form-label text-left"> CEP </label>
                   <div class="col-xl-10">
-                    <input type="text" mask="99999-999" class="form-control has-error" [(ngModel)]="object.cep"
-                      formControlName="cep" />
+                    <input
+                      type="text"
+                      mask="99999-999"
+                      class="form-control has-error"
+                      [(ngModel)]="object.cep"
+                      formControlName="cep"
+                    />
                   </div>
                 </div>
               </div>
@@ -573,15 +902,25 @@
                     Telefone residencial
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" mask="(99) 9999-9999" class="form-control has-error"
-                      [(ngModel)]="object.foneResidencial" formControlName="foneResidencial" />
+                    <input
+                      type="text"
+                      mask="(99) 9999-9999"
+                      class="form-control has-error"
+                      [(ngModel)]="object.foneResidencial"
+                      formControlName="foneResidencial"
+                    />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Telefone celular
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" mask="(99) 99999-9999" class="form-control has-error"
-                      [(ngModel)]="object.foneCelular" formControlName="foneCelular" />
+                    <input
+                      type="text"
+                      mask="(99) 99999-9999"
+                      class="form-control has-error"
+                      [(ngModel)]="object.foneCelular"
+                      formControlName="foneCelular"
+                    />
                   </div>
                 </div>
               </div>
@@ -593,15 +932,24 @@
                     Telefone de contato
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" mask="(99) 99999-9999" class="form-control has-error"
-                      [(ngModel)]="object.foneContato" formControlName="foneContato" />
+                    <input
+                      type="text"
+                      mask="(99) 99999-9999"
+                      class="form-control has-error"
+                      [(ngModel)]="object.foneContato"
+                      formControlName="foneContato"
+                    />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Contato
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.contato"
-                      formControlName="contato" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.contato"
+                      formControlName="contato"
+                    />
                   </div>
                 </div>
               </div>
@@ -613,8 +961,12 @@
                     E-mail
                   </label>
                   <div class="col-xl-10">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.email"
-                      formControlName="email" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.email"
+                      formControlName="email"
+                    />
                   </div>
                 </div>
               </div>
@@ -635,10 +987,19 @@
                     Modalidade
                   </label>
                   <div class="col-xl-10">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idModalidade"
-                      formControlName="idModalidade">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.idModalidade"
+                      formControlName="idModalidade"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idModalidade" [value]="item.id">{{item.nome}}</option>
+                      <option
+                        *ngFor="let item of domains[0]?.idModalidade"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -651,13 +1012,21 @@
                     Tipo sanguíneo
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idTipoSanguineo"
-                      formControlName="idTipoSanguineo">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.idTipoSanguineo"
+                      formControlName="idTipoSanguineo"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idTipoSanguineo" [value]="item.id">{{item.nome}}</option>
+                      <option
+                        *ngFor="let item of domains[0]?.idTipoSanguineo"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
                     </select>
                   </div>
-
                 </div>
               </div>
             </div>
@@ -668,15 +1037,23 @@
                     Número prontuário
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.numeroProntuario"
-                      formControlName="numeroProntuario" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.numeroProntuario"
+                      formControlName="numeroProntuario"
+                    />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Número prontuário Cnes
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.numeroProntuarioCnes"
-                      formControlName="numeroProntuarioCnes" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.numeroProntuarioCnes"
+                      formControlName="numeroProntuarioCnes"
+                    />
                   </div>
                 </div>
               </div>
@@ -688,10 +1065,19 @@
                     Grupo de atenção continuada
                   </label>
                   <div class="col-xl-10">
-                    <ng-multiselect-dropdown *ngIf="domains && domains.length" formControlName="gruposAtencaoContinuada"
-                      style="border-color: #ced4da; background: #FFF; width: 100%;" [placeholder]="'Selecionar itens'"
-                      [data]="domains[0].gruposAtencaoContinuada" [(ngModel)]="object.gruposAtencaoContinuada"
-                      [settings]="dropdownSettings">
+                    <ng-multiselect-dropdown
+                      *ngIf="domains && domains.length"
+                      formControlName="gruposAtencaoContinuada"
+                      style="
+                        border-color: #ced4da;
+                        background: #fff;
+                        width: 100%;
+                      "
+                      [placeholder]="'Selecionar itens'"
+                      [data]="domains[0].gruposAtencaoContinuada"
+                      [(ngModel)]="object.gruposAtencaoContinuada"
+                      [settings]="dropdownSettings"
+                    >
                     </ng-multiselect-dropdown>
                   </div>
                 </div>
@@ -713,8 +1099,12 @@
                     História progressa/familiar
                   </label>
                   <div class="col-xl-10">
-                    <textarea rows="7" class="form-control has-error" [(ngModel)]="object.historiaProgressaFamiliar"
-                      formControlName="historiaProgressaFamiliar"></textarea>
+                    <textarea
+                      rows="7"
+                      class="form-control has-error"
+                      [(ngModel)]="object.historiaProgressaFamiliar"
+                      formControlName="historiaProgressaFamiliar"
+                    ></textarea>
                   </div>
                 </div>
               </div>
@@ -723,16 +1113,22 @@
         </div>
 
         <div class="card mb-4">
-          <div class="card-header text-left">
-            Hipótese diagnosticada
-          </div>
+          <div class="card-header text-left">Hipótese diagnosticada</div>
           <div class="card-body text-left">
             <div class="row">
               <div class="col-12 mb-3">
-                <button type="button" class="btn btn-primary float-left mr-2" (click)="openHipotese(contentHipotese)">
+                <button
+                  type="button"
+                  class="btn btn-primary float-left mr-2"
+                  (click)="openHipotese(contentHipotese)"
+                >
                   <i class="fa fa-plus-circle"></i>
                 </button>
-                <button type="button" class="btn btn-default float-left" (click)="findHipotesePorPaciente()">
+                <button
+                  type="button"
+                  class="btn btn-default float-left"
+                  (click)="findHipotesePorPaciente()"
+                >
                   <i class="fa fa-sync-alt"></i>
                 </button>
               </div>
@@ -757,18 +1153,29 @@
                   </tbody>
                   <tbody *ngIf="allItemsHipotese.length">
                     <tr class="text-left" *ngFor="let item of allItemsHipotese">
-                      <td class="text-secondary">{{item.codigo}}</td>
-                      <td class="text-secondary">{{item.nome}}</td>
-                      <td class="text-secondary">{{item.cid_10}}</td>
-                      <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                      <td class="text-secondary">{{ item.codigo }}</td>
+                      <td class="text-secondary">{{ item.nome }}</td>
+                      <td class="text-secondary">{{ item.cid_10 }}</td>
                       <td class="text-secondary">
-                        <a class="btn btn-link" *ngIf="item.idAtendimento" [routerLink]=""
-                          (click)="visualizaAtendimentos(item.idAtendimento)">
-                          <i class="fa fa-file-medical-alt"></i> Visualizar atendimento
+                        {{ item.dataCriacao | date : "dd/MM/yyyy HH:mm:ss" }}
+                      </td>
+                      <td class="text-secondary">
+                        <a
+                          class="btn btn-link"
+                          *ngIf="item.idAtendimento"
+                          [routerLink]=""
+                          (click)="visualizaAtendimentos(item.idAtendimento)"
+                        >
+                          <i class="fa fa-file-medical-alt"></i> Visualizar
+                          atendimento
                         </a>
                       </td>
                       <td class="text-secondary text-right">
-                        <a class="btn btn-link" [routerLink]="" (click)="removeHipotese(item)">
+                        <a
+                          class="btn btn-link"
+                          [routerLink]=""
+                          (click)="removeHipotese(item)"
+                        >
                           <i class="fa fa-trash-alt"></i> Remover
                         </a>
                       </td>
@@ -786,8 +1193,7 @@
         </ng-template>
         <div class="card mb-4">
           <div class="card-body text-left">
-            <div class="row">
-            </div>
+            <div class="row"></div>
           </div>
         </div>
       </tab>
@@ -798,7 +1204,7 @@
       <i class="fa fa-arrow-left"></i> Retornar
     </button>
     <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
-      <i class="fa fa-save"></i> {{ !object.id ? 'Salvar' : 'Atualizar'}}
+      <i class="fa fa-save"></i> {{ !object.id ? "Salvar" : "Atualizar" }}
     </button>
   </div>
 </form>
@@ -814,7 +1220,7 @@
     <div *ngIf="errors.length" class="alert alert-danger">
       <div *ngFor="let error of errors" class="row">
         <div class="col-12 text-left">
-          {{error.message}}
+          {{ error.message }}
         </div>
       </div>
     </div>
@@ -823,7 +1229,11 @@
         Nome da hipótese:
       </label>
       <div class="col-xl-8 col-sm-12">
-        <input type="text" class="form-control has-error" [(ngModel)]="hipoteseDiagnostica.nome">
+        <input
+          type="text"
+          class="form-control has-error"
+          [(ngModel)]="hipoteseDiagnostica.nome"
+        />
       </div>
     </div>
     <div class="form-group row">
@@ -831,12 +1241,20 @@
         CID 10:
       </label>
       <div class="col-xl-8 col-sm-12">
-        <input type="text" class="form-control has-error" [(ngModel)]="hipoteseDiagnostica.cid_10">
+        <input
+          type="text"
+          class="form-control has-error"
+          [(ngModel)]="hipoteseDiagnostica.cid_10"
+        />
       </div>
     </div>
     <div class="form-group row">
       <div class="col-12">
-        <button [routerLink]="" class="btn btn-primary float-right" (click)="pesquisaHipoteseDiagnostica()">
+        <button
+          [routerLink]=""
+          class="btn btn-primary float-right"
+          (click)="pesquisaHipoteseDiagnostica()"
+        >
           <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin text-left">
             <i class="fa fa-spinner"></i>
           </i>
@@ -856,20 +1274,38 @@
             </tr>
           </thead>
           <tbody
-            *ngFor="let item of allItemsPesquisaHipoteseDiagnostica let index=index; let odd='odd'; let even='even';">
+            *ngFor="
+              let item of allItemsPesquisaHipoteseDiagnostica;
+              let index = index;
+              let odd = odd;
+              let even = even
+            "
+          >
             <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
               <td class="text-secondary">
                 <div class="custom-control custom-radio float-left">
-                  <input type="radio" (change)="selecionaHipoteseDiagnostica(item)" class="custom-control-input"
-                    id="{{ item.id }}" name="radio-item">
-                  <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
+                  <input
+                    type="radio"
+                    (change)="selecionaHipoteseDiagnostica(item)"
+                    class="custom-control-input"
+                    id="{{ item.id }}"
+                    name="radio-item"
+                  />
+                  <label class="custom-control-label" for="{{ item.id }}"
+                    >&nbsp;</label
+                  >
                 </div>
               </td>
-              <td class="text-secondary">{{item.cid_10}}</td>
-              <td class="text-secondary">{{item.nome}}</td>
+              <td class="text-secondary">{{ item.cid_10 }}</td>
+              <td class="text-secondary">{{ item.nome }}</td>
             </tr>
           </tbody>
-          <tbody *ngIf="!allItemsPesquisaHipoteseDiagnostica || allItemsPesquisaHipoteseDiagnostica.length==0">
+          <tbody
+            *ngIf="
+              !allItemsPesquisaHipoteseDiagnostica ||
+              allItemsPesquisaHipoteseDiagnostica.length == 0
+            "
+          >
             <tr class="text-left">
               <td colspan="99" class="text-secondary">
                 <i>Não há resultados...</i>
@@ -880,44 +1316,74 @@
       </div>
     </div>
     <div class="row mb-4">
-      <div *ngIf="allItemsPesquisaHipoteseDiagnostica && allItemsPesquisaHipoteseDiagnostica.length"
-        class="text text-secondary col-md-12 pr-0 mx-auto">
+      <div
+        *ngIf="
+          allItemsPesquisaHipoteseDiagnostica &&
+          allItemsPesquisaHipoteseDiagnostica.length
+        "
+        class="text text-secondary col-md-12 pr-0 mx-auto"
+      >
         <i>
-          Exibindo {{paging.offset === (totalPages-1)?paging.total:(paging.offset+1)*paging.limit}} de
-          {{paging.total}}
+          Exibindo
+          {{
+            paging.offset === totalPages - 1
+              ? paging.total
+              : (paging.offset + 1) * paging.limit
+          }}
+          de
+          {{ paging.total }}
           resultado(s).
         </i>
       </div>
     </div>
     <div class="row mb-2 mt-4">
-      <ul *ngIf="allItemsPesquisaHipoteseDiagnostica && allItemsPesquisaHipoteseDiagnostica.length"
-        class="pagination mx-auto">
-        <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
+      <ul
+        *ngIf="
+          allItemsPesquisaHipoteseDiagnostica &&
+          allItemsPesquisaHipoteseDiagnostica.length
+        "
+        class="pagination mx-auto"
+      >
+        <li class="page-item" [ngClass]="{ disabled: paging.offset === 0 }">
           <a class="page-link" (click)="setPagePaginedHipotese(0)">
             <i class="fas fa-angle-double-left"></i>
           </a>
         </li>
-        <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
-          <a class="page-link" (click)="setPagePaginedHipotese(paging.offset - 1)">
+        <li class="page-item" [ngClass]="{ disabled: paging.offset === 0 }">
+          <a
+            class="page-link"
+            (click)="setPagePaginedHipotese(paging.offset - 1)"
+          >
             <i class="fas fa-angle-left"></i>
           </a>
         </li>
         <li>
-          <select (change)="loadQuantityPerPagePaginationHipotese($event, 'hipotese')"
-            class="custom-select d-block w-100" style="border: 1px solid #dee2e6">
-
+          <select
+            (change)="loadQuantityPerPagePaginationHipotese($event, 'hipotese')"
+            class="custom-select d-block w-100"
+            style="border: 1px solid #dee2e6"
+          >
             <option [ngValue]="10">10</option>
             <option [ngValue]="25">25</option>
             <option [ngValue]="50">50</option>
           </select>
         </li>
-        <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
-          <a class="page-link" (click)="setPagePaginedHipotese(paging.offset + 1)">
+        <li
+          class="page-item"
+          [ngClass]="{ disabled: paging.offset === totalPages - 1 }"
+        >
+          <a
+            class="page-link"
+            (click)="setPagePaginedHipotese(paging.offset + 1)"
+          >
             <i class="fas fa-angle-right"></i>
           </a>
         </li>
-        <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
-          <a class="page-link" (click)="setPagePaginedHipotese(totalPages-1)">
+        <li
+          class="page-item"
+          [ngClass]="{ disabled: paging.offset === totalPages - 1 }"
+        >
+          <a class="page-link" (click)="setPagePaginedHipotese(totalPages - 1)">
             <i class="fas fa-angle-double-right"></i>
           </a>
         </li>
@@ -926,8 +1392,12 @@
 
     <div class="form-group row text-right">
       <div class="col-12">
-        <button class="btn btn-primary  mr-2" type="button" [disabled]="disableHipoteseButton()"
-          (click)="saveHipotese()">
+        <button
+          class="btn btn-primary mr-2"
+          type="button"
+          [disabled]="disableHipoteseButton()"
+          (click)="saveHipotese()"
+        >
           <i class="fa fa-plus-circle"></i> Adicionar
         </button>
         <button class="btn btn-default" (click)="close()" type="button">

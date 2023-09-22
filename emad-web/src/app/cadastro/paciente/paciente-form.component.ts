@@ -129,58 +129,63 @@ export class PacienteFormComponent implements OnInit {
                     this.service
                       .listDomains("atencao-continuada")
                       .subscribe((atencaoContinuada) => {
-                        this.domains.push({
-                          idUf: ufs,
-                          idNacionalidade: paises,
-                          idNaturalidade: [],
-                          idMunicipio: [],
-                          hipoteses: hipoteseDiagnostica,
-                          idEstabelecimentoCadastro: estabelecimentos,
-                          escolaridade: [
-                            { id: 1, nome: "Educação infantil" },
-                            { id: 2, nome: "Fundamental" },
-                            { id: 3, nome: "Médio" },
-                            { id: 4, nome: "Superior (Graduação)" },
-                            { id: 5, nome: "Pós-graduação" },
-                            { id: 6, nome: "Mestrado" },
-                            { id: 7, nome: "Doutorado" },
-                            { id: 8, nome: "Escola" },
-                            { id: 9, nome: "Analfabeto" },
-                            { id: 10, nome: "Não informado" },
-                          ],
-                          idModalidade: modalidades,
-                          sexo: [
-                            { id: "1", nome: "Masculino" },
-                            { id: "2", nome: "Feminino" },
-                            { id: "3", nome: "Ambos" },
-                            { id: "4", nome: "Não informado" },
-                          ],
-                          idTipoSanguineo: [
-                            { id: "1", nome: "A_POSITIVO" },
-                            { id: "2", nome: "A_NEGATIVO" },
-                            { id: "3", nome: "B_POSITIVO" },
-                            { id: "4", nome: "B_NEGATIVO" },
-                            { id: "5", nome: "AB_POSITIVO" },
-                            { id: "6", nome: "AB_NEGATIVO" },
-                            { id: "7", nome: "O_POSITIVO" },
-                            { id: "8", nome: "O_NEGATIVO" },
-                          ],
-                          aleitamentoMaterno: [
-                            { id: "1", nome: "Exclusivo" },
-                            { id: "2", nome: "Predominante" },
-                            { id: "3", nome: "Complementado" },
-                            { id: "4", nome: "Inexistente" },
-                          ],
-                          idRaca: racas,
-                          idAtencaoContinuada: atencaoContinuada,
-                          gruposAtencaoContinuada: atencaoContinuada,
-                        });
-                        if (!Util.isEmpty(this.id)) {
-                          this.encontraPaciente();
-                        } else {
-                          this.loading = false;
-                          this.loadPhoto = true;
-                        }
+                        this.service
+                          .listDomains("escolaridade")
+                          .subscribe((escolaridade) => {
+                            this.domains.push({
+                              idUf: ufs,
+                              idNacionalidade: paises,
+                              idNaturalidade: [],
+                              idMunicipio: [],
+                              hipoteses: hipoteseDiagnostica,
+                              idEstabelecimentoCadastro: estabelecimentos,
+                              // escolaridade: [
+                              //   { id: 1, nome: "Educação infantil" },
+                              //   { id: 2, nome: "Fundamental" },
+                              //   { id: 3, nome: "Médio" },
+                              //   { id: 4, nome: "Superior (Graduação)" },
+                              //   { id: 5, nome: "Pós-graduação" },
+                              //   { id: 6, nome: "Mestrado" },
+                              //   { id: 7, nome: "Doutorado" },
+                              //   { id: 8, nome: "Escola" },
+                              //   { id: 9, nome: "Analfabeto" },
+                              //   { id: 10, nome: "Não informado" },
+                              // ],
+                              idModalidade: modalidades,
+                              sexo: [
+                                { id: "1", nome: "Masculino" },
+                                { id: "2", nome: "Feminino" },
+                                { id: "3", nome: "Ambos" },
+                                { id: "4", nome: "Não informado" },
+                              ],
+                              idTipoSanguineo: [
+                                { id: "1", nome: "A_POSITIVO" },
+                                { id: "2", nome: "A_NEGATIVO" },
+                                { id: "3", nome: "B_POSITIVO" },
+                                { id: "4", nome: "B_NEGATIVO" },
+                                { id: "5", nome: "AB_POSITIVO" },
+                                { id: "6", nome: "AB_NEGATIVO" },
+                                { id: "7", nome: "O_POSITIVO" },
+                                { id: "8", nome: "O_NEGATIVO" },
+                              ],
+                              aleitamentoMaterno: [
+                                { id: "1", nome: "Exclusivo" },
+                                { id: "2", nome: "Predominante" },
+                                { id: "3", nome: "Complementado" },
+                                { id: "4", nome: "Inexistente" },
+                              ],
+                              idRaca: racas,
+                              idAtencaoContinuada: atencaoContinuada,
+                              gruposAtencaoContinuada: atencaoContinuada,
+                              escolaridade: escolaridade,
+                            });
+                            if (!Util.isEmpty(this.id)) {
+                              this.encontraPaciente();
+                            } else {
+                              this.loading = false;
+                              this.loadPhoto = true;
+                            }
+                          });
                       });
                   });
               });
