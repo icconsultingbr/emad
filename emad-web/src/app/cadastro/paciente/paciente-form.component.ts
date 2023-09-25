@@ -84,7 +84,7 @@ export class PacienteFormComponent implements OnInit {
     private fb: FormBuilder,
     private ref: ChangeDetectorRef,
     private modalService: NgbModal,
-    private router: Router
+    private router: Router,
   ) {
     this.fields = service.fields;
   }
@@ -139,18 +139,7 @@ export class PacienteFormComponent implements OnInit {
                               idMunicipio: [],
                               hipoteses: hipoteseDiagnostica,
                               idEstabelecimentoCadastro: estabelecimentos,
-                              // escolaridade: [
-                              //   { id: 1, nome: "Educação infantil" },
-                              //   { id: 2, nome: "Fundamental" },
-                              //   { id: 3, nome: "Médio" },
-                              //   { id: 4, nome: "Superior (Graduação)" },
-                              //   { id: 5, nome: "Pós-graduação" },
-                              //   { id: 6, nome: "Mestrado" },
-                              //   { id: 7, nome: "Doutorado" },
-                              //   { id: 8, nome: "Escola" },
-                              //   { id: 9, nome: "Analfabeto" },
-                              //   { id: 10, nome: "Não informado" },
-                              // ],
+                              escolaridade: escolaridade,
                               idModalidade: modalidades,
                               sexo: [
                                 { id: "1", nome: "Masculino" },
@@ -177,7 +166,6 @@ export class PacienteFormComponent implements OnInit {
                               idRaca: racas,
                               idAtencaoContinuada: atencaoContinuada,
                               gruposAtencaoContinuada: atencaoContinuada,
-                              escolaridade: escolaridade,
                             });
                             if (!Util.isEmpty(this.id)) {
                               this.encontraPaciente();
@@ -220,7 +208,7 @@ export class PacienteFormComponent implements OnInit {
         this.errors.push({
           message: "Paciente não encontrado",
         });
-      }
+      },
     );
   }
 
@@ -235,7 +223,7 @@ export class PacienteFormComponent implements OnInit {
         },
         (error) => {
           this.loading = false;
-        }
+        },
       );
   }
 
@@ -291,7 +279,7 @@ export class PacienteFormComponent implements OnInit {
           value: "",
           disabled: this.id > 0 || this.object.id > 0 ? true : false,
         },
-        Validators.required
+        Validators.required,
       ),
       gruposAtencaoContinuada: ["", ""],
       falecido: ["", ""],
@@ -353,7 +341,7 @@ export class PacienteFormComponent implements OnInit {
         this.loading = false;
         setTimeout(() => (this.loading = false), 300);
         this.errors = Util.customHTTPResponse(erro);
-      }
+      },
     );
   }
 
@@ -363,7 +351,7 @@ export class PacienteFormComponent implements OnInit {
       {
         componentRestrictions: { country: "BR" },
         types: ["geocode"], // 'establishment' / 'address' / 'geocode'
-      }
+      },
     );
 
     // Set the data fields to return when the user selects a place.
@@ -402,7 +390,7 @@ export class PacienteFormComponent implements OnInit {
           if (address_component.types[0] === "postal_code") {
             cep = address_component.long_name;
           }
-        }
+        },
       );
 
       if (geometry) {
@@ -418,7 +406,7 @@ export class PacienteFormComponent implements OnInit {
       this.object.cep = cep;
 
       let ufs = this.domains[0].idUf.filter(
-        (uf) => uf.nome.toUpperCase() == estado.toUpperCase()
+        (uf) => uf.nome.toUpperCase() == estado.toUpperCase(),
       );
 
       if (ufs.length > 0) {
@@ -430,7 +418,7 @@ export class PacienteFormComponent implements OnInit {
             this.domains[0].idMunicipio = municipios;
             let ufMunicipios = municipios.filter(
               (uf) =>
-                uf.nome.toUpperCase() == municipio.toString().toUpperCase()
+                uf.nome.toUpperCase() == municipio.toString().toUpperCase(),
             );
             if (ufMunicipios.length > 0) {
               this.object.idMunicipio = ufMunicipios[0].id;
@@ -451,7 +439,7 @@ export class PacienteFormComponent implements OnInit {
         this.domains[0].idMunicipio = municipios;
         let listaMunicipios = municipios.filter(
           (municipio) =>
-            municipio.nome.toUpperCase() == municipio.toString().toUpperCase()
+            municipio.nome.toUpperCase() == municipio.toString().toUpperCase(),
         );
         if (listaMunicipios.length > 0) {
           this.object.idMunicipio = listaMunicipios[0].id;
@@ -460,7 +448,7 @@ export class PacienteFormComponent implements OnInit {
       (error) => {
         this.loading = false;
         this.errors = Util.customHTTPResponse(error);
-      }
+      },
     );
   }
 
@@ -476,7 +464,7 @@ export class PacienteFormComponent implements OnInit {
       (error) => {
         this.loading = false;
         this.errors = Util.customHTTPResponse(error);
-      }
+      },
     );
   }
 
@@ -579,7 +567,7 @@ export class PacienteFormComponent implements OnInit {
       (erro) => {
         setTimeout(() => (this.loading = false), 300);
         this.errors = Util.customHTTPResponse(erro);
-      }
+      },
     );
   }
 
@@ -615,7 +603,7 @@ export class PacienteFormComponent implements OnInit {
       (error) => {
         this.loading = false;
         this.errors = Util.customHTTPResponse(error);
-      }
+      },
     );
   }
 
@@ -681,7 +669,7 @@ export class PacienteFormComponent implements OnInit {
           this.errors.push({
             message: "Estabelecimento não encontrado",
           });
-        }
+        },
       );
   }
 }

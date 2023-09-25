@@ -151,7 +151,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     private reciboReceitaService: ReciboReceitaImpressaoService,
     private router: Router,
     private reciboExameService: ReciboExameImpressaoService,
-    private prontuarioPacienteImpressao: ProntuarioPacienteImpressaoService
+    private prontuarioPacienteImpressao: ProntuarioPacienteImpressaoService,
   ) {
     this.fields = service.fields;
   }
@@ -173,7 +173,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
             .listDomains("estabelecimento")
             .subscribe((estabelecimentos) => {
               this.service
-                .listDomains("tipo-escolaridade")
+                .listDomains("escolaridade")
                 .subscribe((escolaridade) => {
                   this.service.listDomains("raca").subscribe((racas) => {
                     this.service
@@ -189,7 +189,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                                   .list(
                                     "profissional/estabelecimento/" +
                                       JSON.parse(localStorage.getItem("est"))[0]
-                                        .id
+                                        .id,
                                   )
                                   .subscribe((profissionais) => {
                                     this.service
@@ -199,6 +199,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                                           .listDomains("tipo-exame")
                                           .subscribe((tipoExame) => {
                                             this.domains.push({
+                                              escolaridade: escolaridade,
                                               idUf: ufs,
                                               idNacionalidade: paises,
                                               idNaturalidade: [],
@@ -214,30 +215,6 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                                                 { id: 1, nome: "Anamnese" },
                                                 { id: 2, nome: "Evolução" },
                                               ],
-                                              // escolaridade: [
-                                              //   {
-                                              //     id: 1,
-                                              //     nome: "Educação infantil",
-                                              //   },
-                                              //   { id: 2, nome: "Fundamental" },
-                                              //   { id: 3, nome: "Médio" },
-                                              //   {
-                                              //     id: 4,
-                                              //     nome: "Superior (Graduação)",
-                                              //   },
-                                              //   {
-                                              //     id: 5,
-                                              //     nome: "Pós-graduação",
-                                              //   },
-                                              //   { id: 6, nome: "Mestrado" },
-                                              //   { id: 7, nome: "Doutorado" },
-                                              //   { id: 8, nome: "Escola" },
-                                              //   { id: 9, nome: "Analfabeto" },
-                                              //   {
-                                              //     id: 10,
-                                              //     nome: "Não informado",
-                                              //   },
-                                              // ],
                                               idModalidade: modalidades,
                                               sexo: [
                                                 { id: "1", nome: "Masculino" },
@@ -326,7 +303,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
         this.errors.push({
           message: "Paciente não encontrado",
         });
-      }
+      },
     );
   }
 
@@ -353,7 +330,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
         },
         (error) => {
           this.loading = false;
-        }
+        },
       );
   }
 
@@ -409,7 +386,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
           value: "",
           disabled: this.id > 0 || this.object.id > 0 ? true : false,
         },
-        Validators.required
+        Validators.required,
       ),
       gruposAtencaoContinuada: ["", ""],
       falecido: new FormControl({ value: "", disabled: true }),
@@ -454,13 +431,13 @@ export class ProntuarioPacienteFormComponent implements OnInit {
           (error) => {
             this.loading = false;
             this.errors = Util.customHTTPResponse(error);
-          }
+          },
         );
       },
       (error) => {
         this.loading = false;
         this.errors = Util.customHTTPResponse(error);
-      }
+      },
     );
   }
 
@@ -476,7 +453,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       (error) => {
         this.loading = false;
         this.errors = Util.customHTTPResponse(error);
-      }
+      },
     );
   }
 
@@ -546,7 +523,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                       this.service
                         .findSinaisVitaisByPaciente(
                           this.object.id,
-                          "temperatura"
+                          "temperatura",
                         )
                         .subscribe(
                           (result) => {
@@ -567,7 +544,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                             this.service
                               .findSinaisVitaisByPaciente(
                                 this.object.id,
-                                "peso"
+                                "peso",
                               )
                               .subscribe(
                                 (result) => {
@@ -588,7 +565,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                                   this.service
                                     .findSinaisVitaisByPaciente(
                                       this.object.id,
-                                      "glicemia"
+                                      "glicemia",
                                     )
                                     .subscribe(
                                       (result) => {
@@ -612,37 +589,37 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                                         this.loading = false;
                                         this.errors =
                                           Util.customHTTPResponse(error);
-                                      }
+                                      },
                                     );
                                 },
                                 (error) => {
                                   this.loading = false;
                                   this.errors = Util.customHTTPResponse(error);
-                                }
+                                },
                               );
                           },
                           (error) => {
                             this.loading = false;
                             this.errors = Util.customHTTPResponse(error);
-                          }
+                          },
                         );
                     },
                     (error) => {
                       this.loading = false;
                       this.errors = Util.customHTTPResponse(error);
-                    }
+                    },
                   );
               },
               (error) => {
                 this.loading = false;
                 this.errors = Util.customHTTPResponse(error);
-              }
+              },
             );
         },
         (error) => {
           this.loading = false;
           this.errors = Util.customHTTPResponse(error);
-        }
+        },
       );
   }
 
@@ -658,7 +635,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       (error) => {
         this.loading = false;
         this.errors = Util.customHTTPResponse(error);
-      }
+      },
     );
   }
 
@@ -674,7 +651,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       (error) => {
         this.loading = false;
         this.errors = Util.customHTTPResponse(error);
-      }
+      },
     );
   }
 
@@ -690,7 +667,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       (error) => {
         this.loading = false;
         this.errors = Util.customHTTPResponse(error);
-      }
+      },
     );
   }
 
@@ -706,7 +683,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       (error) => {
         this.loading = false;
         this.errors = Util.customHTTPResponse(error);
-      }
+      },
     );
   }
 
@@ -722,7 +699,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       (error) => {
         this.loading = false;
         this.errors = Util.customHTTPResponse(error);
-      }
+      },
     );
   }
 
@@ -740,7 +717,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
         (error) => {
           this.loading = false;
           this.errors = Util.customHTTPResponse(error);
-        }
+        },
       );
   }
 
@@ -777,7 +754,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       (erro) => {
         this.loading = false;
         this.errors = Util.customHTTPResponse(erro);
-      }
+      },
     );
   }
 
@@ -788,13 +765,13 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   abreReceitaMedica(
     ano_receita: number,
     numero_receita: number,
-    unidade_receita: number
+    unidade_receita: number,
   ) {
     this.reciboReceitaService.imprimir(
       ano_receita,
       unidade_receita,
       numero_receita,
-      true
+      true,
     );
   }
 
@@ -823,7 +800,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       dataInicialConvertida,
       dataFinalConvertida,
       this.tipoFichaFiltro,
-      this.profissionalFiltro
+      this.profissionalFiltro,
     );
   }
 
@@ -870,7 +847,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
         this.errors.push({
           message: "Exame não encontrado",
         });
-      }
+      },
     );
   }
 
@@ -915,7 +892,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
           this.errors.push({
             message: "Atendimento não encontrado",
           });
-        }
+        },
       );
     } else {
       this.loading = true;
@@ -945,7 +922,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
           this.errors.push({
             message: "Atendimento histórico não encontrado",
           });
-        }
+        },
       );
     }
   }
@@ -977,7 +954,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       (error) => {
         this.loading = false;
         this.errors = Util.customHTTPResponse(error);
-      }
+      },
     );
   }
 
@@ -995,7 +972,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
         (error) => {
           this.loading = false;
           this.errors = Util.customHTTPResponse(error);
-        }
+        },
       );
   }
 
@@ -1011,7 +988,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       (error) => {
         this.loading = false;
         this.errors = Util.customHTTPResponse(error);
-      }
+      },
     );
   }
 
@@ -1029,7 +1006,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
         (error) => {
           this.loading = false;
           this.errors = Util.customHTTPResponse(error);
-        }
+        },
       );
   }
 
@@ -1047,7 +1024,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
         (error) => {
           this.loading = false;
           this.errors = Util.customHTTPResponse(error);
-        }
+        },
       );
   }
 
@@ -1127,7 +1104,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     "rgba(255,255,255,1)",
     "#fff",
     "#B4B4B4",
-    "rgba(255,255,255,0.8)"
+    "rgba(255,255,255,0.8)",
   );
   public lineChartColors2: Array<any> = this.renderBgChart(
     "rgba(0, 0, 0, 0)",
@@ -1135,7 +1112,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     "rgba(219,219,219,1)",
     "#00929c",
     "rgb(77, 111, 160,1)",
-    "rgba(46,79,143,0.8)"
+    "rgba(46,79,143,0.8)",
   );
   public pieChartType = "pie";
 
@@ -1154,7 +1131,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     pointBg,
     pointBorder,
     pointHoverBg,
-    pointHoverBorder
+    pointHoverBorder,
   ) {
     let lineChartColors: Array<any> = [
       {
@@ -1176,7 +1153,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   abreAtendimentoFichaDigital(id: Number) {
     this.errors = [];
     let url = JSON.parse(localStorage.getItem("parametro_seguranca")).filter(
-      (url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO"
+      (url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO",
     )
       ? JSON.parse(localStorage.getItem("parametro_seguranca"))
           .filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")[0]
@@ -1191,7 +1168,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       (error) => {
         this.loading = false;
         this.errors = Util.customHTTPResponse(error);
-      }
+      },
     );
   }
 }

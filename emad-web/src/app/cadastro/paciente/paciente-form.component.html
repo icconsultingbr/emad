@@ -300,7 +300,7 @@
                     >
                       <option [value]="">Selecione...</option>
                       <option
-                        *ngFor="let item of escolaridade"
+                        *ngFor="let item of domains[0]?.escolaridade"
                         [value]="item.id"
                       >
                         {{ item.nome }}
@@ -1157,7 +1157,7 @@
                       <td class="text-secondary">{{ item.nome }}</td>
                       <td class="text-secondary">{{ item.cid_10 }}</td>
                       <td class="text-secondary">
-                        {{ item.dataCriacao | date : "dd/MM/yyyy HH:mm:ss" }}
+                        {{ item.dataCriacao | date: "dd/MM/yyyy HH:mm:ss" }}
                       </td>
                       <td class="text-secondary">
                         <a
