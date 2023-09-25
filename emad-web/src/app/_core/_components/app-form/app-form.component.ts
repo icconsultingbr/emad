@@ -33,16 +33,16 @@ export class AppFormComponent implements OnInit, AfterViewInit {
   type: string;
   route: ActivatedRoute;
   router: Router;
-  message: string = '';
-  warning: string = '';
+  message = '';
+  warning = '';
   situacao: Number = 0;
-  saveLabel: string = "Salvar";
+  saveLabel = 'Salvar';
   debounce: Subject<string> = new Subject<string>();
   id: any;
   errors: any[] = [];
 
   @Output() onTyping = new EventEmitter<string>();
-  @Input() value: string = '';
+  @Input() value = '';
 
   @ViewChild('focus') focusElement: ElementRef;
   @ViewChild('searchField') searchField: ElementRef;
@@ -84,8 +84,7 @@ export class AppFormComponent implements OnInit, AfterViewInit {
     if (this.domains.length) {
       this.loadContent();
 
-    }
-    else {
+    } else {
       setTimeout(() => {
         this.checkDomains();
       }, 1000);
@@ -102,7 +101,7 @@ export class AppFormComponent implements OnInit, AfterViewInit {
 
             this.object = result;
 
-            for (let field of this.fields) {
+            for (const field of this.fields) {
               if (field.filter && field.filter.changeTarget) {
 
                 if (typeof field.filter.changeTarget === 'object') {
@@ -110,8 +109,7 @@ export class AppFormComponent implements OnInit, AfterViewInit {
                   for (let i = 0; i < field.filter.changeTarget.length; i++) {
                     this.listDomain(field.filter.changeMethod, this.object[field.field], field.filter.changeTarget[i][i].toString());
                   }
-                }
-                else if (typeof field.filter.changeTarget === 'string') {
+                } else if (typeof field.filter.changeTarget === 'string') {
                   if (field.filter && field.filter.changeTarget) {
                     this.listDomain(
                       field.filter.changeMethod, this.object[field.field], field.filter.changeTarget);
@@ -125,7 +123,7 @@ export class AppFormComponent implements OnInit, AfterViewInit {
             }, 300);
           }, (erro) => {
             setTimeout(() => this.loading = false, 300);
-            this.warning = Translation.t("SERVICE_UNAVAILABLE");
+            this.warning = Translation.t('SERVICE_UNAVAILABLE');
           });
       } else {
         setTimeout(() => this.loading = false, 300);
@@ -159,9 +157,9 @@ export class AppFormComponent implements OnInit, AfterViewInit {
   }
 
   loadConfigs() {
-    for (let field of this.fields) {
+    for (const field of this.fields) {
 
-      let id = this.object[field.field];
+      const id = this.object[field.field];
 
       this.fieldValidator(field, id);
 
@@ -182,13 +180,13 @@ export class AppFormComponent implements OnInit, AfterViewInit {
                 this.form.controls[h].setValidators(null);
                 this.form.controls[h].updateValueAndValidity();
                 this.object[h] = undefined;
-                $("#fg-" + h).hide();
+                $('#fg-' + h).hide();
               });
             }
             if (e.show && e.show.length) {
               e.show.forEach(s => {
                 //this.form.controls[s].enable();
-                $("#fg-" + s).show();
+                $('#fg-' + s).show();
 
                 this.fields.forEach(ff => {
                   if (ff.field == s) {
@@ -205,7 +203,7 @@ export class AppFormComponent implements OnInit, AfterViewInit {
             if (e.hide && e.hide.length) {
               e.hide.forEach(h => {
                 //this.form.controls[h].enable();
-                $("#fg-" + h).show();
+                $('#fg-' + h).show();
 
                 this.fields.forEach(ff => {
                   if (ff.field == h) {
@@ -220,7 +218,7 @@ export class AppFormComponent implements OnInit, AfterViewInit {
 
             if (e.show && e.show.length) {
               e.show.forEach(h => {
-                $("#fg-" + h).hide();
+                $('#fg-' + h).hide();
                 //this.form.controls[h].disable();
                 this.object[h] = undefined;
                 this.form.controls[h].setValidators(null);
@@ -247,7 +245,7 @@ export class AppFormComponent implements OnInit, AfterViewInit {
                 this.form.controls[h].updateValueAndValidity();
 
                 setTimeout(() => {
-                  $("#fg-" + h).hide();
+                  $('#fg-' + h).hide();
 
                 }, 100);
 
@@ -256,7 +254,7 @@ export class AppFormComponent implements OnInit, AfterViewInit {
             if (e.show && e.show.length) {
               e.show.forEach(s => {
                 //this.form.controls[s].enable();
-                $("#fg-" + s).show();
+                $('#fg-' + s).show();
 
                 this.fields.forEach(ff => {
                   if (ff.field == s) {
@@ -294,14 +292,13 @@ export class AppFormComponent implements OnInit, AfterViewInit {
 
       this.id = params['id'];
 
-      for (let field of this.fields) {
+      for (const field of this.fields) {
         if (field.form) {
           if (this.id) {
             if (!field.onlyCreate) {
               this.groupForm[field.field] = field.validator;
             }
-          }
-          else {
+          } else {
             this.groupForm[field.field] = field.validator;
           }
         }
@@ -312,12 +309,12 @@ export class AppFormComponent implements OnInit, AfterViewInit {
         .pipe(debounceTime(300))
         .subscribe(filter => {
           this.loading = true;
-          let parts = filter.split("||");
+          const parts = filter.split('||');
 
           this.form.patchValue(JSON.parse(`{"${parts[2]}":""}`));
 
           this.service.findByName(parts[1], parts[0]).subscribe(res => {
-            for (let field of this.fields) {
+            for (const field of this.fields) {
               if (field.field == parts[2]) {
                 this.form.patchValue(JSON.parse(`{"${parts[2]}":"${res[Object.keys(res)[0]]}"}`));
                 setTimeout(() => this.loading = false, 1000);
@@ -340,10 +337,10 @@ export class AppFormComponent implements OnInit, AfterViewInit {
       .inserir(this.form.value, this.method)
       .subscribe(res => {
         if (this.form.value.id) {
-          this.message = "Alteração efetuada com sucesso!";
+          this.message = 'Alteração efetuada com sucesso!';
         }
-        this.message = this.message ? this.message : "Cadastro efetuado com sucesso!";
-        this.warning = "";
+        this.message = this.message ? this.message : 'Cadastro efetuado com sucesso!';
+        this.warning = '';
 
         this.form.reset();
 
@@ -351,11 +348,11 @@ export class AppFormComponent implements OnInit, AfterViewInit {
         setTimeout(() => {
           this.loading = false;
 
-          const route = this.redirectAfterInsert 
-                ? this.redirectAfterInsert 
+          const route = this.redirectAfterInsert
+                ? this.redirectAfterInsert
                 : this.method;
 
-          this.router.navigate([route])
+          this.router.navigate([route]);
         }, 1000);
 
       }, erro => {
@@ -366,20 +363,20 @@ export class AppFormComponent implements OnInit, AfterViewInit {
   }
 
   back() {
-    const route = this.redirectAfterInsert 
-                ? this.redirectAfterInsert 
+    const route = this.redirectAfterInsert
+                ? this.redirectAfterInsert
                 : this.method;
-                
+
     this.router.navigate([route]);
   }
 
   loadDomain(field: any, $event) {
-    let id = $event.target.value;
+    const id = $event.target.value;
 
     if (field.filter) {
       if (field.filter.changeMethod) {
-        let route = field.filter.changeMethod;
-        let object = field.filter.changeTarget;
+        const route = field.filter.changeMethod;
+        const object = field.filter.changeTarget;
         this.listDomain(route, id, object);
       }
     }
@@ -393,15 +390,14 @@ export class AppFormComponent implements OnInit, AfterViewInit {
   listDomain(route, id, object) {
     if (id != null) {
       this.loading = true;
-      this.service.list(route + "/" + id).subscribe(result => {
+      this.service.list(route + '/' + id).subscribe(result => {
         this.loading = false;
-        for (let field of this.fields) {
+        for (const field of this.fields) {
           if (field.field == object) {
 
             if (result[field.returnedObject]) {
               this.domains[0][object] = result[field.returnedObject];
-            }
-            else {
+            } else {
               this.domains[0][object] = result;
             }
 
@@ -422,7 +418,7 @@ export class AppFormComponent implements OnInit, AfterViewInit {
   blurMethod(value, field) {
     this.errors = [];
 
-    if (value !== 'undefined' && value != "") {
+    if (value !== 'undefined' && value != '') {
 
       this.loading = true;
 
@@ -432,7 +428,7 @@ export class AppFormComponent implements OnInit, AfterViewInit {
           field.onBlur.targets.forEach(item => {
             this.object[item['field']] = result[item['field']];
 
-            for (let f of this.fields) {
+            for (const f of this.fields) {
               if (f.field == item['field']) {
                 if (f.filter) {
                   if (f.filter['changeMethod']) {
@@ -473,7 +469,7 @@ export class AppFormComponent implements OnInit, AfterViewInit {
   }
 
   filterMultiSelectMethod(field, value) {
-    if (typeof field !== "undefined" && typeof value !== "undefined" && field !== null && value !== null) {
+    if (typeof field !== 'undefined' && typeof value !== 'undefined' && field !== null && value !== null) {
       this.emitFilterMultiSelectMethod.emit({ field: field, value: value });
     }
   }
@@ -491,35 +487,35 @@ export class AppFormComponent implements OnInit, AfterViewInit {
     autocomplete.setFields(['address_components', 'geometry', 'icon', 'name']);
 
     google.maps.event.addListener(autocomplete, 'place_changed', () => {
-      let place: PlaceResult = autocomplete.getPlace();
-      let geometry: PlaceGeometry = place.geometry;
+      const place: PlaceResult = autocomplete.getPlace();
+      const geometry: PlaceGeometry = place.geometry;
 
-      let rua: string = "";
-      let numero: string = "";
-      let bairro: string = "";
-      let municipio: string = "";
-      let estado: string = "";
-      let latitude: number = 0;
-      let longitude: number = 0;
-      let cep: string = "";
+      let rua = '';
+      let numero = '';
+      let bairro = '';
+      let municipio = '';
+      let estado = '';
+      let latitude = 0;
+      let longitude = 0;
+      let cep = '';
 
       place.address_components.forEach((address_component: GeocoderAddressComponent) => {
-        if (address_component.types[0] === "route") {
+        if (address_component.types[0] === 'route') {
           rua = address_component.long_name;
         }
-        if (address_component.types[0] === "street_number") {
+        if (address_component.types[0] === 'street_number') {
           numero = address_component.long_name;
         }
-        if (address_component.types[0] === "sublocality_level_1") {
+        if (address_component.types[0] === 'sublocality_level_1') {
           bairro = address_component.long_name;
         }
-        if (address_component.types[0] === "administrative_area_level_2") {
+        if (address_component.types[0] === 'administrative_area_level_2') {
           municipio = address_component.long_name;
         }
-        if (address_component.types[0] === "administrative_area_level_1") {
+        if (address_component.types[0] === 'administrative_area_level_1') {
           estado = address_component.long_name;
         }
-        if (address_component.types[0] === "postal_code") {
+        if (address_component.types[0] === 'postal_code') {
           cep = address_component.long_name;
         }
       });
@@ -529,7 +525,7 @@ export class AppFormComponent implements OnInit, AfterViewInit {
         longitude = geometry.location.lng();
       }
 
-      let address: any = {
+      const address: any = {
         rua: rua,
         numero: numero,
         bairro: bairro,

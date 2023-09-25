@@ -1,5 +1,5 @@
 /// <reference types="@types/googlemaps" />
-import * as MarkerClusterer from "@google/markerclusterer"
+import * as MarkerClusterer from '@google/markerclusterer';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PagerService } from '../../_core/_services';
@@ -21,7 +21,7 @@ export class GeorreferenciamentoComponent implements OnInit {
 
   //MESSAGES
   loading: Boolean = false;
-  message: string = "";
+  message = '';
   errors: any[] = [];
 
   modalRef: NgbModalRef = null;
@@ -30,7 +30,7 @@ export class GeorreferenciamentoComponent implements OnInit {
   allItems: any[];
   pager: any = {};
   pagedItems: any[];
-  pageLimit: number = 5;
+  pageLimit = 5;
   fields: any[] = [];
   domains: any[] = [];
 
@@ -48,22 +48,22 @@ export class GeorreferenciamentoComponent implements OnInit {
   markers: google.maps.Marker[] = [];
   circle: google.maps.Circle;
   markerCluster: MarkerClusterer;
-  count: number = 0;
+  count = 0;
   raio: string;
-  showMessage: boolean = false;
+  showMessage = false;
   legendIconSrc: string;
   legendIconClass: string;
 
   // FILTERS
   idTipoUnidade: number;
   idModalidade: number;
-  sexo: string = "";
+  sexo = '';
   idadeDe: number;
   idadeAte: number;
 
   entries: any[] = [
-    { id: 1, description: "Localizar Estabelecimentos próximos a um Paciente" },
-    { id: 2, description: "Localizar Pacientes próximos a um Estabelecimento" },
+    { id: 1, description: 'Localizar Estabelecimentos próximos a um Paciente' },
+    { id: 2, description: 'Localizar Pacientes próximos a um Estabelecimento' },
   ];
   selectedEntry = this.entries[0];
 
@@ -94,8 +94,8 @@ export class GeorreferenciamentoComponent implements OnInit {
 
     this.infowindow = new google.maps.InfoWindow();
 
-    let self = this;
-    
+    const self = this;
+
     this.marker.addListener('click', () => {
       if (self.object !== null) {
         self.openInfoWindow();
@@ -112,7 +112,7 @@ export class GeorreferenciamentoComponent implements OnInit {
 
   showVisibleMarkers() {
     this.count = 0;
-    let bounds: google.maps.LatLngBounds = this.map.getBounds();
+    const bounds: google.maps.LatLngBounds = this.map.getBounds();
 
     this.markers.forEach(marker => {
       if (bounds.contains(marker.getPosition())) {
@@ -139,8 +139,8 @@ export class GeorreferenciamentoComponent implements OnInit {
           idTipoUnidade: tipos,
           idModalidade: modalidades,
           sexo: [
-            { id: "F", nome: "Feminino" },
-            { id: "M", nome: "Masculino" }
+            { id: 'F', nome: 'Feminino' },
+            { id: 'M', nome: 'Masculino' }
           ]
         });
       });
@@ -148,14 +148,14 @@ export class GeorreferenciamentoComponent implements OnInit {
   }
 
   openInfoWindow() {
-    let content = "";
+    let content = '';
     if (this.selectedEntry && this.selectedEntry.id === 1 && typeof this.pacienteSelecionado !== 'undefined') {
       content = `
         <div style="text-align: left;">
           <p>
             NOME: <b>${this.pacienteSelecionado.nome}</b><br>
             SEXO: <b>${this.pacienteSelecionado.sexo === 'M' ? 'Masculino' : 'Feminino'}</b><br>
-            DATA NASC.: <b>${this.pacienteSelecionado.dataNascimento}</b><br>            
+            DATA NASC.: <b>${this.pacienteSelecionado.dataNascimento}</b><br>
             CARTÃO SUS: <b>${this.pacienteSelecionado.cartaoSus}</b><br>
           </p>
           <p>
@@ -182,14 +182,14 @@ export class GeorreferenciamentoComponent implements OnInit {
           </p>
         </div>`;
     }
-    if (content !== "") {
+    if (content !== '') {
       this.infowindow.setContent(content);
       this.infowindow.open(this.map, this.marker);
     }
   }
 
   updateMarkerPosition(latitude: number, longitude: number) {
-    let latLng: google.maps.LatLng = new google.maps.LatLng(latitude, longitude);
+    const latLng: google.maps.LatLng = new google.maps.LatLng(latitude, longitude);
     this.map.setCenter(latLng);
     this.map.setZoom(17);
     this.marker.setPosition(latLng);
@@ -207,23 +207,23 @@ export class GeorreferenciamentoComponent implements OnInit {
   }
 
   open(content: any, step: Number) {
-    this.clear()
+    this.clear();
 
     if (step === 1) {
       this.selectedEntry = this.entries[0];
-    
+
     } else {
       this.fields = [];
 
       if (this.selectedEntry.id === 1) {
-        for (let field of this.service.fields1) {
+        for (const field of this.service.fields1) {
           if (field.grid) {
             this.fields.push(field);
           }
         }
       }
       if (this.selectedEntry.id === 2) {
-        for (let field of this.service.fields2) {
+        for (const field of this.service.fields2) {
           if (field.grid) {
             this.fields.push(field);
           }
@@ -254,7 +254,7 @@ export class GeorreferenciamentoComponent implements OnInit {
     this.idadeAte = null;
     this.raio = null;
     this.showMessage = false;
-    this.message = "";
+    this.message = '';
     if (this.markerCluster) {
       this.markerCluster.clearMarkers();
     }
@@ -284,33 +284,33 @@ export class GeorreferenciamentoComponent implements OnInit {
 
   search() {
     this.loading = true;
-    let params = "";
-    let method: string = "";
-    let object: any = "";
+    let params = '';
+    let method = '';
+    let object: any = '';
 
     if (this.selectedEntry.id === 1) {
-      method = "paciente";
+      method = 'paciente';
       object = this.paciente;
     }
 
     if (this.selectedEntry.id === 2) {
-      method = "estabelecimento";
+      method = 'estabelecimento';
       object = this.estabelecimento;
     }
 
     if (!Util.isEmpty(object)) {
       if (Object.keys(object).length) {
-        for (let key of Object.keys(object)) {
+        for (const key of Object.keys(object)) {
           if (!Util.isEmpty(object[key])) {
-            params += key + "=" + object[key] + "&";
+            params += key + '=' + object[key] + '&';
           }
         }
-        if (params != "") {
-          params = "?" + params;
+        if (params != '') {
+          params = '?' + params;
         }
       }
     }
-    
+
     this.service.list(method + params).subscribe(result => {
       this.allItems = result;
       this.setPage(1);
@@ -327,7 +327,7 @@ export class GeorreferenciamentoComponent implements OnInit {
   }
 
   loadQuantityPerPage(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.pageLimit = id;
     this.setPage(1);
   }
@@ -354,8 +354,8 @@ export class GeorreferenciamentoComponent implements OnInit {
 
   buscaPontos(id: Number, raio: string) {
     this.loading = true;
-    this.message = "";
-    let method = "";
+    this.message = '';
+    let method = '';
 
     if (this.selectedEntry && this.selectedEntry.id === 1) {
       this.legendIconSrc = 'http://maps.google.com/mapfiles/ms/icons/hospitals.png';
@@ -368,35 +368,35 @@ export class GeorreferenciamentoComponent implements OnInit {
       this.legendIconSrc = 'http://maps.google.com/mapfiles/ms/icons/toilets.png';
       this.legendIconClass = 'legend-icon-paciente';
 
-      let idadeDe = this.idadeDe ? this.idadeDe : -1;
-      let idadeAte = this.idadeAte ? this.idadeAte : -1;
-      
+      const idadeDe = this.idadeDe ? this.idadeDe : -1;
+      const idadeAte = this.idadeAte ? this.idadeAte : -1;
+
       if (idadeDe > idadeAte) {
-        this.message = "A idade inicial não pode ser superior a idade final."
+        this.message = 'A idade inicial não pode ser superior a idade final.';
       }
 
       method = `estabelecimento/pacientes/${id}/${raio}/${this.idModalidade}/${this.sexo}/${idadeDe}/${idadeAte}`;
     }
 
     this.service.list(method).subscribe(result => {
-      let objects: any[] = result;
+      const objects: any[] = result;
       this.deleteMarkers();
       if (objects.length > 0) {
         objects.forEach(object => {
-          let marker: google.maps.Marker = this.addMarker(object.latitude, object.longitude, object);
+          const marker: google.maps.Marker = this.addMarker(object.latitude, object.longitude, object);
           this.addInfowindow(marker, this.createInfoWindowContent(object));
         });
       } else {
-        this.showMessage = true;        
+        this.showMessage = true;
       }
       this.updateMarkerPosition(this.object.latitude, this.object.longitude);
       this.addCircle();
       this.mapFitBounds();
       setTimeout(() => {
         this.markerCluster = new MarkerClusterer(
-          this.map, 
+          this.map,
           this.markers,
-          { 
+          {
             maxZoom: 15,
             gridSize: 50,
             imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
@@ -411,10 +411,10 @@ export class GeorreferenciamentoComponent implements OnInit {
   }
 
   createInfoWindowContent(object: any) {
-    let content: string = "";
-    
+    let content = '';
+
     if (this.selectedEntry && this.selectedEntry.id === 1) {
-      let estabelecimento: Estabelecimento = object;
+      const estabelecimento: Estabelecimento = object;
       content = `
         <div style="text-align: left;">
           <p>
@@ -436,13 +436,13 @@ export class GeorreferenciamentoComponent implements OnInit {
     }
 
     if (this.selectedEntry && this.selectedEntry.id === 2) {
-      let paciente: Paciente = object;
+      const paciente: Paciente = object;
       content = `
         <div style="text-align: left;">
           <p>
             NOME: <b>${paciente.nome}</b><br>
             SEXO: <b>${paciente.sexo === 'M' ? 'Masculino' : 'Feminino'}</b><br>
-            DATA NASC.: <b>${paciente.dataNascimento}</b><br>            
+            DATA NASC.: <b>${paciente.dataNascimento}</b><br>
             CARTÃO SUS: <b>${paciente.cartaoSus}</b><br>
           </p>
           <p>
@@ -462,7 +462,7 @@ export class GeorreferenciamentoComponent implements OnInit {
   }
 
   addMarker(latitude: number, longitude: number, object: any) {
-    let latLng: google.maps.LatLng = new google.maps.LatLng(latitude, longitude);
+    const latLng: google.maps.LatLng = new google.maps.LatLng(latitude, longitude);
     let image = '';
 
     if (this.selectedEntry && this.selectedEntry.id === 1) {
@@ -470,15 +470,15 @@ export class GeorreferenciamentoComponent implements OnInit {
     }
 
     if (this.selectedEntry && this.selectedEntry.id === 2) {
-      let paciente: Paciente = object; 
+      const paciente: Paciente = object;
       if (paciente.sexo === 'M') {
         image = 'http://maps.google.com/mapfiles/ms/micons/man.png';
       } else {
         image = 'http://maps.google.com/mapfiles/ms/micons/woman.png';
       }
     }
-    
-    let marker = new google.maps.Marker({
+
+    const marker = new google.maps.Marker({
       position: latLng,
       map: this.map,
       icon: image,
@@ -489,10 +489,10 @@ export class GeorreferenciamentoComponent implements OnInit {
   }
 
   addInfowindow(marker: google.maps.Marker, content: string) {
-    let infowindow = new google.maps.InfoWindow({
+    const infowindow = new google.maps.InfoWindow({
       content: content
     });
-    let self = this;
+    const self = this;
     marker.addListener('click', () => {
       infowindow.open(self.map, marker);
     });
@@ -507,7 +507,7 @@ export class GeorreferenciamentoComponent implements OnInit {
   }
 
   mapFitBounds() {
-    let bounds = new google.maps.LatLngBounds();
+    const bounds = new google.maps.LatLngBounds();
     this.markers.forEach(marker => {
       bounds.extend(marker.getPosition());
     });
@@ -554,7 +554,7 @@ export class GeorreferenciamentoComponent implements OnInit {
   }
 
   disableLocalizar() {
-    let disable: Boolean = Util.isEmpty(this.raio) || this.raio === "0";
+    let disable: Boolean = Util.isEmpty(this.raio) || this.raio === '0';
     if (this.selectedEntry && this.selectedEntry === 1) {
       disable = disable || this.pacienteSelecionado === null || this.idTipoUnidade === null || this.idTipoUnidade === 0;
     }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Headers } from '@angular/http';
 import { AuthGuard } from './_core/_guards';
-import { Observable, Subject } from "rxjs";
+import { Observable, Subject } from 'rxjs';
 import { Menu } from './_core/_models/Menu';
 import { ParametroSeguranca } from './_core/_models/ParametroSeguranca';
 import { HttpClient } from '@angular/common/http';
@@ -11,9 +11,9 @@ import { Especialidade } from './_core/_models/Especialidade';
 export class AppService {
   http: HttpClient;
   headers: Headers;
-  url: string = 'menu/tipo-usuario';
-  urlParametroSeguranca: string = 'parametro-seguranca/urls';
-  urlEspecialidade: string = 'especialidade/profissional';
+  url = 'menu/tipo-usuario';
+  urlParametroSeguranca = 'parametro-seguranca/urls';
+  urlEspecialidade = 'especialidade/profissional';
   public menus: any[];
 
   extrato: Subject<any>;

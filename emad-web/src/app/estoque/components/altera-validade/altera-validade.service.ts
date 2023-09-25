@@ -9,11 +9,11 @@ export class AlteraValidadeService extends GenericsService {
     super(http);
   }
 
-  public fields: any[] = [    
+  public fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: false,
       form: true,
       required: false,
@@ -21,7 +21,7 @@ export class AlteraValidadeService extends GenericsService {
     }
   ];
 
-  alterarValidade(obj: any){ 
-    return this.http.put("estoque/alterar-validade-lote", JSON.stringify(obj));
-  }  
+  alterarValidade(obj: any) {
+    return this.http.put('estoque/alterar-validade-lote', JSON.stringify(obj));
+  }
 }

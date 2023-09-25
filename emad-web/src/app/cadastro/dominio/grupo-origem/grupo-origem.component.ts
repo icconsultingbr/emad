@@ -12,7 +12,7 @@ import { GrupoOrigem } from '../../../_core/_models/GrupoOrigem';
 
 export class GrupoOrigemComponent implements OnInit {
 
-  method: String = "grupo-origem";
+  method: String = 'grupo-origem';
   object: GrupoOrigem = new GrupoOrigem();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class GrupoOrigemComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: GrupoOrigemService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

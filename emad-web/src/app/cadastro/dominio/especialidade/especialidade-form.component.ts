@@ -12,9 +12,9 @@ import { FormBuilder } from '@angular/forms';
 export class EspecialidadeFormComponent implements OnInit {
 
   object: Especialidade = new Especialidade();
-  method: string = "especialidade";
+  method = 'especialidade';
   fields: any[] = [];
-  label: string = "Especialidade";
+  label = 'Especialidade';
   id: Number = null;
 
   constructor(

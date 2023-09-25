@@ -11,7 +11,7 @@ import { CanetaService } from './caneta.service';
 })
 export class CanetaComponent implements OnInit {
 
-  method: string = "caneta";
+  method = 'caneta';
   domains: any[] = [];
   fields = [];
   object: Caneta = new Caneta();
@@ -20,10 +20,10 @@ export class CanetaComponent implements OnInit {
     public nav: AppNavbarService,
     private service: CanetaService) {
 
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
-      }      
+      }
     }
     this.loadDomains();
   }
@@ -36,7 +36,7 @@ export class CanetaComponent implements OnInit {
     this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
       this.domains.push({
         idEstabelecimento: estabelecimentos
-      })
+      });
     });
   }
 }

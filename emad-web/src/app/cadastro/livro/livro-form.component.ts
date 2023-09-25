@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class LivroFormComponent implements OnInit {
 
   object: Livro = new Livro();
-  method: string = "livro";
+  method = 'livro';
   fields: any[] = [];
-  label: string = "Livros";
+  label = 'Livros';
   id: Number = null;
   domains: any[] = [];
 

@@ -12,7 +12,7 @@ import { Estoque } from '../../../_core/_models/Estoque';
 
 export class BloqueioLoteComponent implements OnInit {
 
-  method: String = "estoque-bloqueados";
+  method: String = 'estoque-bloqueados';
   object: Estoque = new Estoque();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class BloqueioLoteComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: BloqueioLoteService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

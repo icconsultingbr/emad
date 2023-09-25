@@ -12,7 +12,7 @@ import { GrupoMaterial } from '../../../_core/_models/GrupoMaterial';
 
 export class GrupoMaterialComponent implements OnInit {
 
-  method: string = "grupo-material";
+  method = 'grupo-material';
   object: GrupoMaterial = new GrupoMaterial();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class GrupoMaterialComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: GrupoMaterialService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

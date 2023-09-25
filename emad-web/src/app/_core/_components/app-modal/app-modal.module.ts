@@ -1,8 +1,8 @@
-import { NgModule } from "@angular/core";
-import { CommonModule } from '@angular/common';  
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule } from "@angular/router";
-import { AppModalComponent } from "./app-modal.component";
+import { RouterModule } from '@angular/router';
+import { AppModalComponent } from './app-modal.component';
 
 
 @NgModule({
@@ -11,6 +11,6 @@ import { AppModalComponent } from "./app-modal.component";
     exports : [AppModalComponent]
 })
 
-export class AppModalModule{}
+export class AppModalModule {}
 
 

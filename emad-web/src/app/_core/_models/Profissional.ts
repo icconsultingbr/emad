@@ -1,4 +1,4 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
 export class Profissional {
     id: Number;
@@ -31,12 +31,12 @@ export class Profissional {
     @Input() cargaHorariaSemanal: string;
     @Input() cargoProfissional: string;
     @Input() situacao: Boolean;
-    @Input() estabelecimentos : any[];
+    @Input() estabelecimentos: any[];
     @Input() latitude: number;
     @Input() longitude: number;
-    @Input() idEstabelecimento : Number = +JSON.parse(localStorage.getItem("est"))[0].id;
+    @Input() idEstabelecimento: Number = +JSON.parse(localStorage.getItem('est'))[0].id;
     @Input() idTipoUsuario: number;
-    @Input() senha : string;
-    @Input() confirmaSenha : string;
-    @Input() profissionalCNS : Number;
+    @Input() senha: string;
+    @Input() confirmaSenha: string;
+    @Input() profissionalCNS: Number;
 }

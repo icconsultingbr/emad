@@ -10,74 +10,74 @@ export class TipoMovimentoService extends GenericsService {
   constructor(public http: HttpClient) {
     super(http);
   }
-  
-  public fields: any[] = [    
+
+  public fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: true,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "nome",
-      type: "text",
-      label: "Nome",
+      field: 'nome',
+      type: 'text',
+      label: 'Nome',
       grid: true,
       form: true,
       required: true,
       validator: ['', Validators.required]
     },
     {
-      field: "operacao",
-      type: "select",
-      label: "Operação",
+      field: 'operacao',
+      type: 'select',
+      label: 'Operação',
       grid: true,
       form: true,
-      translate: {1: "Entrada", 2: "Saída", 3: "Perda"},
+      translate: {1: 'Entrada', 2: 'Saída', 3: 'Perda'},
       required: true,
       validator: ['', Validators.required]
     },
     {
-      field: "movimentoAdministrativo",
-      type: "checkbox",
-      label: "Movimento administrativo",
+      field: 'movimentoAdministrativo',
+      type: 'checkbox',
+      label: 'Movimento administrativo',
       grid: false,
       form: true,
       required: true,
       validator: ['', '']
     },
     {
-      field: "loteBloqueado",
-      type: "select",
-      label: "Lote bloqueado",
+      field: 'loteBloqueado',
+      type: 'select',
+      label: 'Lote bloqueado',
       grid: false,
       form: true,
-      translate: {1: "", 2: "Sim", 3: "Não"},
+      translate: {1: '', 2: 'Sim', 3: 'Não'},
       required: false,
       validator: ['', '']
     },
     {
-      field: "loteVencido",
-      type: "select",
-      label: "Lote vencido",
+      field: 'loteVencido',
+      type: 'select',
+      label: 'Lote vencido',
       grid: false,
       form: true,
-      translate: {1: "", 2: "Sim", 3: "Não"},
+      translate: {1: '', 2: 'Sim', 3: 'Não'},
       required: false,
       validator: ['', '']
     },
     {
-      field: "situacao",
-      type: "checkbox",
-      label: "Situação",
+      field: 'situacao',
+      type: 'checkbox',
+      label: 'Situação',
       grid: true,
       form: true,
-      translate: {1: "Ativo", 0: "Inativo"},
+      translate: {1: 'Ativo', 0: 'Inativo'},
       required: true,
-      validator:['', Validators.required]
+      validator: ['', Validators.required]
     }
   ];
 }

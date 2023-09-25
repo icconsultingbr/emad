@@ -12,9 +12,9 @@ export class MedicamentoVencidoVencerService extends GenericsService {
 
   fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: false,
       form: true,
       required: false,
@@ -22,7 +22,7 @@ export class MedicamentoVencidoVencerService extends GenericsService {
     }
   ];
 
-  carregaMedicamentoVencidoVencer(idProfissional: string, params: any): Observable<any> {    
-    return this.http.get("material/vencido-vencer/filtros"  + params);
+  carregaMedicamentoVencidoVencer(idProfissional: string, params: any): Observable<any> {
+    return this.http.get('material/vencido-vencer/filtros'  + params);
   }
 }

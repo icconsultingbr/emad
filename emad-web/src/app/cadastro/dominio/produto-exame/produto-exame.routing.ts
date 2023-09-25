@@ -1,18 +1,18 @@
-import { Routes } from "@angular/router";
-import { ProdutoExameFormComponent } from "./produto-exame-form.component";
-import { ProdutoExameComponent } from "./produto-exame.component";
+import { Routes } from '@angular/router';
+import { ProdutoExameFormComponent } from './produto-exame-form.component';
+import { ProdutoExameComponent } from './produto-exame.component';
 
 export const produtoExameRoutes: Routes = [
     {
         path: '',
-        component: ProdutoExameComponent,        
+        component: ProdutoExameComponent,
     },
     {
         path: 'cadastro',
-        component: ProdutoExameFormComponent,        
+        component: ProdutoExameFormComponent,
     },
     {
         path: 'cadastro/:id',
-        component: ProdutoExameFormComponent,        
+        component: ProdutoExameFormComponent,
     }
 ];

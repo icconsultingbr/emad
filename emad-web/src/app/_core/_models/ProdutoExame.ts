@@ -1,4 +1,4 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
 export class ProdutoExame {
     id: Number;

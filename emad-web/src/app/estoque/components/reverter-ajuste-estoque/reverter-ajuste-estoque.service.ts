@@ -9,8 +9,8 @@ export class ReverterAjusteEstoqueService extends GenericsService {
   constructor(public http: HttpClient) {
     super(http);
   }
-  
-  inserirMaterialEstoque(obj: any, metodo: string){ 
+
+  inserirMaterialEstoque(obj: any, metodo: string) {
     return this.http.post(metodo, JSON.stringify(obj));
   }
 }

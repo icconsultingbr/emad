@@ -11,7 +11,7 @@ import { TipoUsuario } from '../../_core/_models/TipoUsuario';
 })
 export class TipoUsuarioComponent implements OnInit {
 
-  method: string = "tipo-usuario";
+  method = 'tipo-usuario';
 
   fields = [];
   fieldsSearch = [];
@@ -21,7 +21,7 @@ export class TipoUsuarioComponent implements OnInit {
     public nav: AppNavbarService,
     private service: TipoUsuarioService) {
 
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }
@@ -34,5 +34,5 @@ export class TipoUsuarioComponent implements OnInit {
   ngOnInit() {
     this.nav.show();
   }
-} 
-   
+}
+

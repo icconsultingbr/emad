@@ -1,18 +1,18 @@
-import { Routes } from "@angular/router";
-import { TipoNotificacaoFormComponent } from "./tipo-notificacao-form.component";
-import { TipoNotificacaoComponent } from "./tipo-notificacao.component";
+import { Routes } from '@angular/router';
+import { TipoNotificacaoFormComponent } from './tipo-notificacao-form.component';
+import { TipoNotificacaoComponent } from './tipo-notificacao.component';
 
 export const tipoNotificacaoRoutes: Routes = [
     {
         path: '',
-        component: TipoNotificacaoComponent,        
+        component: TipoNotificacaoComponent,
     },
     {
         path: 'cadastro',
-        component: TipoNotificacaoFormComponent,        
+        component: TipoNotificacaoFormComponent,
     },
     {
         path: 'cadastro/:id',
-        component: TipoNotificacaoFormComponent,        
+        component: TipoNotificacaoFormComponent,
     }
 ];

@@ -15,13 +15,13 @@ import { each } from 'jquery';
 export class EstabelecimentoFormComponent implements OnInit {
 
   object: Estabelecimento = new Estabelecimento();
-  method: string = 'estabelecimento';
+  method = 'estabelecimento';
   fields = [];
-  label: string = "Estabelecimento";
+  label = 'Estabelecimento';
   id: Number = null;
   domains: any[] = [];
   loading: Boolean = false;
-  message: string = "";
+  message = '';
   errors: any[] = [];
   form: FormGroup;
 
@@ -71,21 +71,20 @@ export class EstabelecimentoFormComponent implements OnInit {
                 cboProfissionalEsus: cboProfEsus,
                 idTipoUnidade: tipos,
                 grauDependencia: [
-                  { id: "I", nome: "Individual" },
-                  { id: "M", nome: "Mantida" }
+                  { id: 'I', nome: 'Individual' },
+                  { id: 'M', nome: 'Mantida' }
                 ],
                 esferaAdministradora: [
-                  { id: "E", nome: "Estadual" },
-                  { id: "F", nome: "Federal" },
-                  { id: "M", nome: "Municipal" }
+                  { id: 'E', nome: 'Estadual' },
+                  { id: 'F', nome: 'Federal' },
+                  { id: 'M', nome: 'Municipal' }
                 ],
                 idEstabelecimentoNivelSuperior: estabelecimentos,
                 tipoFichas: tipoFichas
               });
               if (!Util.isEmpty(this.id)) {
                 this.encontraEstabelecimento();
-              }
-              else {
+              } else {
                 this.loading = false;
               }
             });
@@ -98,25 +97,25 @@ export class EstabelecimentoFormComponent implements OnInit {
 
   preencher() {
 
-    this.object.cnes = "1231312313123";
-    this.object.cnpj = "132123123123123";
-    this.object.razaoSocial = "teste1";
-    this.object.nomeFantasia = "teste2";
-    this.object.cep = "04890100";
-    this.object.logradouro = "teste3";
-    this.object.numero = "12345";
-    this.object.complemento = "123";
-    this.object.bairro = "teste4";
+    this.object.cnes = '1231312313123';
+    this.object.cnpj = '132123123123123';
+    this.object.razaoSocial = 'teste1';
+    this.object.nomeFantasia = 'teste2';
+    this.object.cep = '04890100';
+    this.object.logradouro = 'teste3';
+    this.object.numero = '12345';
+    this.object.complemento = '123';
+    this.object.bairro = 'teste4';
     this.object.idMunicipio = 1;
     this.object.idUf = 1;
-    this.object.telefone1 = "1159213799";
-    this.object.telefone2 = "11983614417";
-    this.object.email = "teste@teste.com";
-    this.object.cnpjMantedora = "";
-    this.object.grauDependencia = "M";
+    this.object.telefone1 = '1159213799';
+    this.object.telefone2 = '11983614417';
+    this.object.email = 'teste@teste.com';
+    this.object.cnpjMantedora = '';
+    this.object.grauDependencia = 'M';
     this.object.terceiros = false;
     this.object.idTipoUnidade = 1;
-    this.object.esferaAdministradora = "E";
+    this.object.esferaAdministradora = 'E';
     this.object.situacao = true;
     this.object.latitude = null;
     this.object.longitude = null;
@@ -135,7 +134,7 @@ export class EstabelecimentoFormComponent implements OnInit {
 
   ngAfterViewInit() {
     this.service.findTipoFichaEstabelecimento(this.id).subscribe(tipoFichas => {
-      this.selectedItems = tipoFichas
+      this.selectedItems = tipoFichas;
       this.loading = true;
     });
   }
@@ -143,7 +142,7 @@ export class EstabelecimentoFormComponent implements OnInit {
   sendForm(event) {
 
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
     event.preventDefault();
     this.service.save(this.object, this.method).subscribe((res: any) => {
@@ -152,14 +151,14 @@ export class EstabelecimentoFormComponent implements OnInit {
       this.object.id = res.id;
 
       if (this.form.value.id) {
-        this.idEstabelecimento = this.form.value.id
-        this.message = "Alteração efetuada com sucesso!";
+        this.idEstabelecimento = this.form.value.id;
+        this.message = 'Alteração efetuada com sucesso!';
       } else {
-        this.idEstabelecimento = res.id
-        this.message = "Cadastro efetuado com sucesso!";
+        this.idEstabelecimento = res.id;
+        this.message = 'Cadastro efetuado com sucesso!';
       }
 
-      this.createListaFicha(this.idEstabelecimento)
+      this.createListaFicha(this.idEstabelecimento);
       this.back();
       return;
 
@@ -174,18 +173,18 @@ export class EstabelecimentoFormComponent implements OnInit {
 
     this.serviceFicha.deleteFichaEstabelecimento(idEstabelecimento).subscribe((res: any) => {
       if (res) {
-        let valor = [];
-        for (let field of this.selectedItems) {
+        const valor = [];
+        for (const field of this.selectedItems) {
           valor.push({
             idTipoFicha: field.id,
             idEstabelecimento: idEstabelecimento
-          })
+          });
         }
         this.serviceFicha.saveFichaEstabelecimento(valor).subscribe((res: any) => {
           this.loading = false;
-        })
+        });
       }
-    })
+    });
   }
 
   createGroup() {
@@ -232,18 +231,18 @@ export class EstabelecimentoFormComponent implements OnInit {
   }
 
   back() {
-    const route = "estabelecimentos";
+    const route = 'estabelecimentos';
     this.router.navigate([route]);
   }
 
   carregaMunicipios() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
     this.service.list(`municipio/uf/${this.object.idUf}`).subscribe(municipios => {
       this.domains[0].idMunicipio = municipios;
-      let listaMunicipios = municipios.filter((municipio) => municipio.nome.toUpperCase() == municipio.toString().toUpperCase());
+      const listaMunicipios = municipios.filter((municipio) => municipio.nome.toUpperCase() == municipio.toString().toUpperCase());
       if (listaMunicipios.length > 0) {
         this.object.idMunicipio = listaMunicipios[0].id;
       }
@@ -256,7 +255,7 @@ export class EstabelecimentoFormComponent implements OnInit {
   encontraEstabelecimento() {
     this.object.id = this.id;
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
 
     this.service.findById(this.id, this.method).subscribe(result => {
@@ -268,7 +267,7 @@ export class EstabelecimentoFormComponent implements OnInit {
       this.object = new Estabelecimento();
       this.loading = false;
       this.errors.push({
-        message: "Estabelecimento não encontrado"
+        message: 'Estabelecimento não encontrado'
       });
     });
   }
@@ -276,8 +275,8 @@ export class EstabelecimentoFormComponent implements OnInit {
   listTipoFicha() {
     this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {
       this.dropdownList = tipoFichas;
-    })
-  };
+    });
+  }
 
   onItemSelect(item: any) {
     this.object.tipoFichas = this.selectedItems;

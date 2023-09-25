@@ -12,17 +12,17 @@ export class VisualizacaoPowerBiService extends GenericsService {
 
   fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: false,
       form: true,
       required: false,
       validator: ['', '']
     }
   ];
-  
+
   buscaPorChaveId(chave: string): Observable<any> {
-    return this.http.get("parametro-seguranca/busca-chave/" + chave);
+    return this.http.get('parametro-seguranca/busca-chave/' + chave);
   }
 }

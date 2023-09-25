@@ -8,9 +8,9 @@ export const environment = {
   apiUrl: 'http://localhost:4000',
   superAdmin: 3,
   avancado : 2,
-  admin: 1, 
-  socketUrl:'http://localhost:4000',
+  admin: 1,
+  socketUrl: 'http://localhost:4000',
   utc : 0,
-  virtualDirectory: "",
+  virtualDirectory: '',
   socketPath: '',
 };

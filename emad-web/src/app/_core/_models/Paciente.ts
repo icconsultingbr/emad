@@ -1,4 +1,4 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
 export class Paciente {
     id: number = null;
@@ -41,15 +41,15 @@ export class Paciente {
     @Input() numeroProntuarioCnes: string = null;
     @Input() falecido: Boolean = null;
     @Input() idAtencaoContinuada: string = null;
-    @Input() idEstabelecimentoCadastro: number = +JSON.parse(localStorage.getItem("est"))[0].id;
-    @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem("est"))[0].id;
+    @Input() idEstabelecimentoCadastro: number = +JSON.parse(localStorage.getItem('est'))[0].id;
+    @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem('est'))[0].id;
     @Input() gruposAtencaoContinuada: any[];
     @Input() apelido: string = null;
     @Input() observacao: string = null;
     @Input() historiaProgressaFamiliar: string = null;
     @Input() pesquisaCentral: string = null;
     @Input() foto: string;
-    @Input() pacienteOutroEstabelecimento: string = "2";
+    @Input() pacienteOutroEstabelecimento = '2';
     @Input() necessidadeEspeciais: Boolean = null;
     @Input() gestante: Boolean = null;
     @Input() aleitamentoMaterno: string = null;

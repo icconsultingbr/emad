@@ -11,7 +11,7 @@ import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.
 })
 export class ParametroSegurancaComponent implements OnInit {
 
-  method: string = "parametro-seguranca";
+  method = 'parametro-seguranca';
   object: ParametroSeguranca = new ParametroSeguranca();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -19,12 +19,12 @@ export class ParametroSegurancaComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: ParametroSegurancaService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }
       if (field.filter) {
-        this.fieldsSearch.push(field)
+        this.fieldsSearch.push(field);
       }
 
     }

@@ -11,11 +11,11 @@ export class SocketService {
   private socket;
   private usuarioID: number;
   private idEmpresa: number;
-  token: string = "";
-  private isConnected: boolean = false;
+  token = '';
+  private isConnected = false;
 
   constructor(auth: AuthGuard) {
-    let user = localStorage.getItem('currentUser');
+    const user = localStorage.getItem('currentUser');
     if (user) {
       this.usuarioID = JSON.parse(user).id;
       this.idEmpresa = JSON.parse(user).idEmpresa;
@@ -34,32 +34,32 @@ export class SocketService {
         path: environment.socketPath + '/socket.io'
       });
 
-      this.socket.on('disconnect', function(){
+      this.socket.on('disconnect', function() {
         this.isConnected = false;
       });
-      
+
       this.socket.on('connect', function () {
         console.log('connected!');
         this.isConnected = true;
       });
 
 
-      let observable = new Observable(observer => {
+      const observable = new Observable(observer => {
         this.socket.on('notification' + this.usuarioID, (data) => {
-          console.log("Received notification from Websocket Server");
+          console.log('Received notification from Websocket Server');
           observer.next(data);
-        })
+        });
 
         this.socket.on('extrato' + this.idEmpresa, (data) => {
           observer.next(data);
-        })
+        });
 
         return () => {
           this.socket.disconnect();
-        }
+        };
       });
 
-      let observer = {
+      const observer = {
         next: (data: Object) => {
           this.socket.emit('message', JSON.stringify(data));
         },

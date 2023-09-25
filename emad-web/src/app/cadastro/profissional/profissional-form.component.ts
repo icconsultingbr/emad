@@ -14,9 +14,9 @@ import { Util } from '../../_core/_util/Util';
 export class ProfissionalFormComponent implements OnInit {
 
   object: Profissional = new Profissional();
-  method: string = 'profissional';
+  method = 'profissional';
   fields = [];
-  label: string = "Profissional";
+  label = 'Profissional';
   id: Number = null;
   domains: any[] = [];
   loading: Boolean = false;
@@ -51,43 +51,43 @@ export class ProfissionalFormComponent implements OnInit {
                     idNaturalidade: [],
                     idMunicipio: [],
                     profissionalSus: [
-                      { id: "N", nome: "Não" },
-                      { id: "S", nome: "Sim" },
+                      { id: 'N', nome: 'Não' },
+                      { id: 'S', nome: 'Sim' },
                     ],
                     escolaridade: [
-                      { id: 1, nome: "Educação infantil" },
-                      { id: 2, nome: "Fundamental" },
-                      { id: 3, nome: "Médio" },
-                      { id: 4, nome: "Superior (Graduação)" },
-                      { id: 5, nome: "Pós-graduação" },
-                      { id: 6, nome: "Mestrado" },
-                      { id: 7, nome: "Doutorado" },
-                      { id: 8, nome: "Escola" }
+                      { id: 1, nome: 'Educação infantil' },
+                      { id: 2, nome: 'Fundamental' },
+                      { id: 3, nome: 'Médio' },
+                      { id: 4, nome: 'Superior (Graduação)' },
+                      { id: 5, nome: 'Pós-graduação' },
+                      { id: 6, nome: 'Mestrado' },
+                      { id: 7, nome: 'Doutorado' },
+                      { id: 8, nome: 'Escola' }
                     ],
                     idEspecialidade: especialidades,
                     vinculo: [
-                      { id: "A", nome: "Autônomo" },
-                      { id: "E", nome: "Empregatício" }
+                      { id: 'A', nome: 'Autônomo' },
+                      { id: 'E', nome: 'Empregatício' }
                     ],
                     sexo: [
-                      { id: "F", nome: "Feminino" },
-                      { id: "M", nome: "Masculino" }
+                      { id: 'F', nome: 'Feminino' },
+                      { id: 'M', nome: 'Masculino' }
                     ],
                     idConselho: [
-                      { id: 1, nome: "Conselho Regional de Assistência Social (CRAS)" },
-                      { id: 2, nome: "Conselho Regional de Enfermagem (COREN)" },
-                      { id: 3, nome: "Conselho Regional de Farmácia (CRF)" },
-                      { id: 4, nome: "Conselho Regional de Fonoaudiologia (CRFA)" },
-                      { id: 5, nome: "Conselho Regional de Medicina (CRM)" },
-                      { id: 6, nome: "Conselho Regional de Nutrição (CRN)" },
-                      { id: 7, nome: "Conselho Regional de Odontologia (CRO)" },
-                      { id: 8, nome: "Conselho Regional de Psicologia (CRP)" },
-                      { id: 9, nome: "Outros Conselhos" }
+                      { id: 1, nome: 'Conselho Regional de Assistência Social (CRAS)' },
+                      { id: 2, nome: 'Conselho Regional de Enfermagem (COREN)' },
+                      { id: 3, nome: 'Conselho Regional de Farmácia (CRF)' },
+                      { id: 4, nome: 'Conselho Regional de Fonoaudiologia (CRFA)' },
+                      { id: 5, nome: 'Conselho Regional de Medicina (CRM)' },
+                      { id: 6, nome: 'Conselho Regional de Nutrição (CRN)' },
+                      { id: 7, nome: 'Conselho Regional de Odontologia (CRO)' },
+                      { id: 8, nome: 'Conselho Regional de Psicologia (CRP)' },
+                      { id: 9, nome: 'Outros Conselhos' }
                     ],
                     idUsuario: [], //usuarios,
                     idTipoUsuario: tiposUsuario,
                     estabelecimentos: estabelecimentos,
-                });            
+                });
                 this.buscaUsuariosSemProfissional();
               //});
           });
@@ -99,7 +99,7 @@ export class ProfissionalFormComponent implements OnInit {
 
   buscaUsuariosSemProfissional() {
     this.loading = true;
-       this.service.list('usuario/usuario-sem-profissional?id=' + (this.id ? this.id : 0) + '&idEstabelecimento=' +  JSON.parse(localStorage.getItem("est"))[0].id  ).subscribe(result => {
+       this.service.list('usuario/usuario-sem-profissional?id=' + (this.id ? this.id : 0) + '&idEstabelecimento=' +  JSON.parse(localStorage.getItem('est'))[0].id  ).subscribe(result => {
         this.domains[0].idUsuario = result;
         this.loading = false;
       }, error => {
@@ -109,8 +109,8 @@ export class ProfissionalFormComponent implements OnInit {
   }
 
   getGeocodeAddress(event) {
-    let address: any = event.address;
-    let object: Profissional = event.object;
+    const address: any = event.address;
+    const object: Profissional = event.object;
 
     object.logradouro = address.rua;
     object.numero = address.numero;
@@ -119,14 +119,14 @@ export class ProfissionalFormComponent implements OnInit {
     object.longitude = address.longitude;
     object.cep = address.cep;
 
-    let ufs = this.domains[0].idUf.filter((uf) => uf.nome.toUpperCase() == address.estado.toUpperCase());
+    const ufs = this.domains[0].idUf.filter((uf) => uf.nome.toUpperCase() == address.estado.toUpperCase());
 
     if (ufs.length > 0) {
       object.idUf = ufs[0].id;
-      
+
       this.service.list(`municipio/uf/${object.idUf}`).subscribe(municipios => {
         this.domains[0].idMunicipio = municipios;
-        let ufMunicipios = municipios.filter((uf) => uf.nome.toUpperCase() == address.municipio.toString().toUpperCase());
+        const ufMunicipios = municipios.filter((uf) => uf.nome.toUpperCase() == address.municipio.toString().toUpperCase());
         if (ufMunicipios.length > 0) {
           object.idMunicipio = ufMunicipios[0].id;
         }
@@ -135,7 +135,7 @@ export class ProfissionalFormComponent implements OnInit {
     }
 
     this.object = object;
-    this.ref.detectChanges();    
+    this.ref.detectChanges();
   }
 
 }

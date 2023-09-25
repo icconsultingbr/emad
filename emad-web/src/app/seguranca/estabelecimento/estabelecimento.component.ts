@@ -10,7 +10,7 @@ import { Estabelecimento } from '../../_core/_models/Estabelecimento';
 })
 export class EstabelecimentoComponent implements OnInit {
 
-  method: string = "estabelecimento";
+  method = 'estabelecimento';
 
   fields = [];
   fieldsSearch = [];
@@ -20,7 +20,7 @@ export class EstabelecimentoComponent implements OnInit {
     public nav: AppNavbarService,
     private service: EstabelecimentoService) {
 
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

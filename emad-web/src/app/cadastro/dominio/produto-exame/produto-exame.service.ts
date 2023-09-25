@@ -10,52 +10,52 @@ export class ProdutoExameService extends GenericsService {
     super(http);
   }
 
-  public fields: any[] = [    
+  public fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: true,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "idTipoExame",
-      type: "select",
-      label: "Tipo de exame",
+      field: 'idTipoExame',
+      type: 'select',
+      label: 'Tipo de exame',
       grid: false,
       form: true,
       required: true,
       validator: ['', Validators.required]
     },
     {
-      field: "nomeTipoExame",
-      type: "text",
-      label: "Tipo de exame",
+      field: 'nomeTipoExame',
+      type: 'text',
+      label: 'Tipo de exame',
       grid: true,
       form: false,
       required: false,
       validator: ['', '']
     },
     {
-      field: "nome",
-      type: "text",
-      label: "Nome",
+      field: 'nome',
+      type: 'text',
+      label: 'Nome',
       grid: true,
       form: true,
       required: true,
       validator: ['', Validators.required]
     },
     {
-      field: "situacao",
-      type: "checkbox",
-      label: "Situação",
+      field: 'situacao',
+      type: 'checkbox',
+      label: 'Situação',
       grid: true,
       form: true,
-      translate: {1: "Ativo", 0: "Inativo"},
+      translate: {1: 'Ativo', 0: 'Inativo'},
       required: true,
-      validator:['', Validators.required]
+      validator: ['', Validators.required]
     }
   ];
 }

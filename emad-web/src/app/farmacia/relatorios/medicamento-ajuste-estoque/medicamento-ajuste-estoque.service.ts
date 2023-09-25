@@ -12,9 +12,9 @@ export class MedicamentoAjusteEstoqueService extends GenericsService {
 
   fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: false,
       form: true,
       required: false,
@@ -22,7 +22,7 @@ export class MedicamentoAjusteEstoqueService extends GenericsService {
     }
   ];
 
-  carregaMovimentoAjusteEstoque(idTipoMovimento: string, params: any): Observable<any> {    
-    return this.http.get("material/ajuste-estoque/" + idTipoMovimento + "/filtros"  + params);
+  carregaMovimentoAjusteEstoque(idTipoMovimento: string, params: any): Observable<any> {
+    return this.http.get('material/ajuste-estoque/' + idTipoMovimento + '/filtros'  + params);
   }
 }

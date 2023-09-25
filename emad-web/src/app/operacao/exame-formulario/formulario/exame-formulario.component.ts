@@ -29,18 +29,18 @@ export class ExameFormularioComponent implements OnInit {
 
   object: Exame = new Exame();
   itemExame: ItemExame = new ItemExame();
-  method: string = "exames";
+  method = 'exames';
   fields: any[] = [];
-  label: string = "Novo exame";
+  label = 'Novo exame';
   id: number = null;
   domains: any[] = [];
   loading: Boolean = false;
   form: FormGroup;
   groupForm: any = {};
   type: string;
-  message: string = '';
-  warning: string = '';
-  saveLabel: string = "Salvar";
+  message = '';
+  warning = '';
+  saveLabel = 'Salvar';
   errors: any[] = [];
   modalRef: NgbModalRef = null;
   listaItensExame: any[] = [];
@@ -58,13 +58,13 @@ export class ExameFormularioComponent implements OnInit {
   }
 
   ngOnInit() {
-    debugger
-    if(this.exameId > 0){
+    debugger;
+    if (this.exameId > 0) {
       this.id = this.exameId;
     }
 
     this.object.idPaciente = this.pacienteId;
-    this.object.idAtendimento  = this.atendimentoId
+    this.object.idAtendimento  = this.atendimentoId;
     this.header = this.exibeHeader;
     this.loadDomains();
     this.createGroup();
@@ -80,14 +80,14 @@ export class ExameFormularioComponent implements OnInit {
           idProdutoExame: [],
           idPaciente: [],
           resultado: [
-            { id: 1, nome: "Amostra não reagente" },
-            { id: 2, nome: "Amostra reagente" },
-            { id: 3, nome: "Não realizado" }
+            { id: 1, nome: 'Amostra não reagente' },
+            { id: 2, nome: 'Amostra reagente' },
+            { id: 3, nome: 'Não realizado' }
           ],
           resultadoFinal: [
-            { id: 1, nome: "Amostra não reagente" },
-            { id: 2, nome: "Amostra reagente" },
-            { id: 3, nome: "Não realizado" }
+            { id: 1, nome: 'Amostra não reagente' },
+            { id: 2, nome: 'Amostra reagente' },
+            { id: 3, nome: 'Não realizado' }
           ],
 
         });
@@ -99,11 +99,13 @@ export class ExameFormularioComponent implements OnInit {
   }
 
   close(retornaGrid: boolean) {
-    if (this.modalRef)
+    if (this.modalRef) {
       this.modalRef.close();
+    }
 
-    if (retornaGrid)
+    if (retornaGrid) {
       this.formularioChange.emit(retornaGrid);
+    }
   }
 
   back() {
@@ -119,16 +121,16 @@ export class ExameFormularioComponent implements OnInit {
     this.close(false);
 
     this.service
-      .inserir(this.object, "exame")
+      .inserir(this.object, 'exame')
       .subscribe((res: any) => {
         if (this.object.id) {
-          if (acao == 'F')
+          if (acao == 'F') {
             this.openConfirmacao(this.contentRecibo);
-          else
+          } else {
             this.close(true);
-        }
-        else {
-          this.message = "Exame " + res.id + " criada com sucesso!";
+          }
+        } else {
+          this.message = 'Exame ' + res.id + ' criada com sucesso!';
           this.object.id = res.id;
           this.object.situacao = res.situacao;
           this.service.list(`produto-exame/tipo-exame/${this.object.idTipoExame}`).subscribe(produtoExame => {
@@ -137,7 +139,7 @@ export class ExameFormularioComponent implements OnInit {
           });
         }
 
-        this.warning = "";
+        this.warning = '';
       }, erro => {
         this.errors = Util.customHTTPResponse(erro);
       });
@@ -146,9 +148,9 @@ export class ExameFormularioComponent implements OnInit {
   carregaExame() {
     this.object.id = this.id;
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
-    this.service.findById(this.id, "exame").subscribe(result => {
+    this.service.findById(this.id, 'exame').subscribe(result => {
       this.object = result;
       this.label = this.object.situacao == '1' ? 'Editar exame' : 'Visualizar exame (Situação: Finalizado)';
 
@@ -161,7 +163,7 @@ export class ExameFormularioComponent implements OnInit {
     }, error => {
       this.object = new Exame();
       this.errors.push({
-        message: "Exame não encontrado"
+        message: 'Exame não encontrado'
       });
     });
   }
@@ -181,7 +183,7 @@ export class ExameFormularioComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
 
@@ -215,8 +217,9 @@ export class ExameFormularioComponent implements OnInit {
   }
 
   confirmaItem() {
-    if (!this.object.itensExame)
+    if (!this.object.itensExame) {
       this.object.itensExame = [];
+    }
 
     this.itemExame.nomeProdutoExame = this.domains[0].idProdutoExame.filter(item => item.id == this.itemExame.idProdutoExame)[0].nome;
     this.itemExame.nomeMetodoExame = this.domains[0].idMetodoExame.filter(item => item.id == this.itemExame.idMetodoExame)[0].nome;

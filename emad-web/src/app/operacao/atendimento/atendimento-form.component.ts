@@ -40,7 +40,7 @@ export class AtendimentoFormComponent implements OnInit {
   @ViewChild('contentConfirmacao') contentConfirmacao: any;
 
   loading: Boolean = false;
-  message: string = "";
+  message = '';
   errors: any[] = [];
   modalRef: NgbModalRef = null;
   modalLocalizacaoPacienteRef: NgbModalRef = null;
@@ -52,30 +52,30 @@ export class AtendimentoFormComponent implements OnInit {
   formHipotese: FormGroup;
   formMedicamento: FormGroup;
 
-  method: string = "atendimento";
-  url: string = "atendimentos";
+  method = 'atendimento';
+  url = 'atendimentos';
   object: Atendimento = new Atendimento();
   objectHistorico: AtendimentoHistorico = new AtendimentoHistorico();
-  pacienteVacina: PacienteVacina = new PacienteVacina()
-  editParticipanteAtividadeColetiva: ParticipanteAtividadeColetiva = new ParticipanteAtividadeColetiva()
-  participanteAtividadeColetiva: ParticipanteAtividadeColetiva = new ParticipanteAtividadeColetiva()
-  profissionalAtividadeColetiva: ProfissionalAtividadeColetiva = new ProfissionalAtividadeColetiva()
+  pacienteVacina: PacienteVacina = new PacienteVacina();
+  editParticipanteAtividadeColetiva: ParticipanteAtividadeColetiva = new ParticipanteAtividadeColetiva();
+  participanteAtividadeColetiva: ParticipanteAtividadeColetiva = new ParticipanteAtividadeColetiva();
+  profissionalAtividadeColetiva: ProfissionalAtividadeColetiva = new ProfissionalAtividadeColetiva();
   paciente: Paciente = new Paciente();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
   hipoteseDiagnostica: HipoteseDiagnostica = new HipoteseDiagnostica();
   encaminhamento: Encaminhamento = new Encaminhamento();
   atendimentoMedicamento: AtendimentoMedicamento = new AtendimentoMedicamento();
   medicamento: Material = new Material();
-  virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
+  virtualDirectory: string = environment.virtualDirectory != '' ? environment.virtualDirectory + '/' : '';
   atendimentoHistorico: AtendimentoHistorico = new AtendimentoHistorico();
-  mostraFormulario: boolean = false;
+  mostraFormulario = false;
   pacienteSelecionado: any = null;
   participanteSelecionadoAtividadeColetiva: any = null;
   participanteEditSelecionadoAtividadeColetiva: any = null;
   profissionalSelecionadoAtividadeColetiva: any = null;
 
-  FornecimOdontoSelecionado: tiposFornecimOdonto = new tiposFornecimOdonto()
-  VigilanciaSaudeBucalSelecionado: VigilanciaSaudeBucal = new VigilanciaSaudeBucal()
+  FornecimOdontoSelecionado: tiposFornecimOdonto = new tiposFornecimOdonto();
+  VigilanciaSaudeBucalSelecionado: VigilanciaSaudeBucal = new VigilanciaSaudeBucal();
 
   qtdProcedimento: number;
 
@@ -105,7 +105,7 @@ export class AtendimentoFormComponent implements OnInit {
   allItems: any[] = [];
   pager: any = {};
   pagedItems: any[];
-  pageLimit: number = 10;
+  pageLimit = 10;
   fieldsPacientes: any[] = [];
   fieldsExames: any[] = [];
 
@@ -152,7 +152,7 @@ export class AtendimentoFormComponent implements OnInit {
     sortColumn: '',
     sortOrder: ''
   };
-  warning: string = "";
+  warning = '';
   totalPages: number;
 
   id: number;
@@ -161,7 +161,7 @@ export class AtendimentoFormComponent implements OnInit {
   nomeProfissional: string;
   nomeTipoHistorico: string;
   urlForm: string;
-  exameId: number = 0;
+  exameId = 0;
 
   nomeVacina: string;
   validadeVacina: string;
@@ -183,13 +183,13 @@ export class AtendimentoFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router) {
 
-    for (let field of this.pacienteService.fields) {
+    for (const field of this.pacienteService.fields) {
       if (field.grid) {
         this.fieldsPacientes.push(field);
       }
     }
 
-    for (let field of this.exameService.fields) {
+    for (const field of this.exameService.fields) {
       if (field.grid) {
         this.fieldsExames.push(field);
       }
@@ -335,27 +335,27 @@ export class AtendimentoFormComponent implements OnInit {
   buscaPaciente(offset: Number = null, limit: Number = null) {
 
     this.loading = true;
-    let params = "pesquisa=1&";
+    let params = 'pesquisa=1&';
 
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
 
     if (!Util.isEmpty(this.paciente)) {
       if (Object.keys(this.paciente).length) {
-        for (let key of Object.keys(this.paciente)) {
+        for (const key of Object.keys(this.paciente)) {
           if (!Util.isEmpty(this.paciente[key])) {
-            params += key + "=" + this.paciente[key] + "&";
+            params += key + '=' + this.paciente[key] + '&';
           }
         }
 
-        if (params != "") {
-          params = "?" + params;
+        if (params != '') {
+          params = '?' + params;
         }
       }
     }
 
     if (this.paging.offset != null && this.paging.limit != null) {
-      params += (params == "" ? "?" : "") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+      params += (params == '' ? '?' : '') + 'offset=' + this.paging.offset + '&limit=' + this.paging.limit;
     }
 
     this.service.list('paciente' + params).subscribe(result => {
@@ -377,14 +377,14 @@ export class AtendimentoFormComponent implements OnInit {
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
 
-    var params = "?nome=" + this.hipoteseDiagnostica.nome + "&cid=" + this.hipoteseDiagnostica.cid_10;
+    let params = '?nome=' + this.hipoteseDiagnostica.nome + '&cid=' + this.hipoteseDiagnostica.cid_10;
 
     if (this.paging.offset != null && this.paging.limit != null) {
-      params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+      params += (params == '' ? '?' : '&') + 'offset=' + this.paging.offset + '&limit=' + this.paging.limit;
     }
 
     this.service.list('hipotese-diagnostica' + params).subscribe(result => {
-      this.warning = "";
+      this.warning = '';
       this.paging.total = result.total;
       this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
       this.allItemsPesquisaHipoteseDiagnostica = result.items;
@@ -399,16 +399,16 @@ export class AtendimentoFormComponent implements OnInit {
 
   buscaMedicamento() {
     this.loading = true;
-    let params = "";
+    let params = '';
     this.allMedicamentos = [];
 
     if (Util.isEmpty(this.medicamento.descricao) || this.medicamento.descricao.length < 3) {
-      this.errors = [{ message: "Informe a descrição do medicamento, ao menos 3 caracteres" }];
+      this.errors = [{ message: 'Informe a descrição do medicamento, ao menos 3 caracteres' }];
       this.loading = false;
       return;
     }
 
-    params = "?descricao=" + this.medicamento.descricao + "&idGrupoMaterial=" + this.medicamento.idGrupoMaterial;
+    params = '?descricao=' + this.medicamento.descricao + '&idGrupoMaterial=' + this.medicamento.idGrupoMaterial;
 
     this.service.list('material/especialidade-usuario' + params).subscribe(result => {
       this.allMedicamentos = result;
@@ -426,17 +426,17 @@ export class AtendimentoFormComponent implements OnInit {
     this.loadDomainsVacinacao();
     this.domainsEstrategiaVacinacao = [];
     this.domainsDose = [];
-    let params = "";
+    let params = '';
     this.allMedicamentos = [];
     this.pacienteVacina = new PacienteVacina();
 
     if (Util.isEmpty(this.medicamento.descricao) || this.medicamento.descricao.length < 3) {
-      this.errors = [{ message: "Informe a descrição da vacina, ao menos 3 caracteres" }];
+      this.errors = [{ message: 'Informe a descrição da vacina, ao menos 3 caracteres' }];
       this.loading = false;
       return;
     }
 
-    params = "?descricao=" + this.medicamento.descricao;
+    params = '?descricao=' + this.medicamento.descricao;
 
     this.service.list('material/vacina' + params).subscribe(result => {
       this.allMedicamentos = result;
@@ -451,14 +451,14 @@ export class AtendimentoFormComponent implements OnInit {
 
   buscaExames(offset: Number = null, limit: Number = null) {
     this.loading = true;
-    let params = "pesquisa=1&";
+    let params = 'pesquisa=1&';
 
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
     this.paging.sortColumn = 'dataCriacao';
     this.paging.sortOrder = 'desc';
 
-    let exame = new Exame();
+    const exame = new Exame();
 
     exame.nomePaciente = this.object.pacienteNome;
     exame.idPaciente = this.object.idPaciente;
@@ -466,24 +466,24 @@ export class AtendimentoFormComponent implements OnInit {
 
     if (!Util.isEmpty(exame)) {
       if (Object.keys(exame).length) {
-        for (let key of Object.keys(exame)) {
+        for (const key of Object.keys(exame)) {
           if (!Util.isEmpty(exame[key])) {
-            params += key + "=" + exame[key] + "&";
+            params += key + '=' + exame[key] + '&';
           }
         }
 
-        if (params != "") {
-          params = "?" + params;
+        if (params != '') {
+          params = '?' + params;
         }
       }
     }
 
     if (this.paging.offset != null && this.paging.limit != null) {
-      params += (params == "" ? "?" : "") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+      params += (params == '' ? '?' : '') + 'offset=' + this.paging.offset + '&limit=' + this.paging.limit;
     }
 
     if (this.paging.sortColumn) {
-      params += (params == "" ? "?" : "&") + `sortColumn=${this.paging.sortColumn}&sortOrder=${this.paging.sortOrder}`;
+      params += (params == '' ? '?' : '&') + `sortColumn=${this.paging.sortColumn}&sortOrder=${this.paging.sortOrder}`;
     }
 
     this.service.list('exame' + params).subscribe(result => {
@@ -516,7 +516,7 @@ export class AtendimentoFormComponent implements OnInit {
 
   openHipotese(content: any) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.allItemsPesquisaHipoteseDiagnostica = [];
     this.pacienteHipotese = new PacienteHipotese();
     this.hipoteseDiagnostica = new HipoteseDiagnostica();
@@ -525,13 +525,13 @@ export class AtendimentoFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
 
   openEncaminhamento(content: any) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.encaminhamento = new Encaminhamento();
     this.encaminhamento.idPaciente = this.object.idPaciente;
     this.encaminhamento.idAtendimento = this.object.id;
@@ -540,13 +540,13 @@ export class AtendimentoFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
 
   openCondicaoAvaliada(content: any) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.allItemsPesquisaCondicaoAvaliada = [];
     this.pacienteCondicaoAvaliada = new PacienteCondicaoAvaliada();
     this.condicaoAvaliada = new CondicaoAvaliada();
@@ -555,17 +555,17 @@ export class AtendimentoFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
 
   openMedicamento(content: any) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.atendimentoMedicamento = new AtendimentoMedicamento();
     this.atendimentoMedicamento.idPaciente = this.object.idPaciente;
     this.atendimentoMedicamento.idAtendimento = this.object.id;
-    this.medicamento.descricao = "";
+    this.medicamento.descricao = '';
     this.medicamentoSelecionado = null;
     this.allMedicamentos = [];
 
@@ -579,7 +579,7 @@ export class AtendimentoFormComponent implements OnInit {
 
   openVacinas(content: any) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.atendimentoMedicamento.idPaciente = this.object.idPaciente;
     this.atendimentoMedicamento.idAtendimento = this.object.id;
 
@@ -631,7 +631,7 @@ export class AtendimentoFormComponent implements OnInit {
 
   openProcedimento(content: any) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.allItemsPesquisaProcedimento = [];
     this.pacienteProcedimento = new PacienteProcedimento();
     this.procedimento = new Procedimento();
@@ -640,7 +640,7 @@ export class AtendimentoFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
 
@@ -678,14 +678,14 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   loadQuantityPerPage(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.pageLimit = id;
     this.setPage(1);
   }
 
   clear() {
     this.paciente = new Paciente();
-    this.paciente.cartaoSus = "";
+    this.paciente.cartaoSus = '';
     this.allItems = [];
   }
 
@@ -694,7 +694,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   selecionaPaciente(item) {
-    if (this.tipoFichaSelecionada === "7" || this.tipoFicha === 7) {
+    if (this.tipoFichaSelecionada === '7' || this.tipoFicha === 7) {
       this.participanteSelecionadoAtividadeColetiva = item;
     } else {
       this.pacienteSelecionado = item;
@@ -717,26 +717,26 @@ export class AtendimentoFormComponent implements OnInit {
 
     this.pacienteVacina.nome = item.descricao;
     this.pacienteVacina.codigoVacinaSus = item.codigo;
-  
-      this.service.findByEstrategiaPorVacina(item.codigo).subscribe(estrategiasPorVacina => { 
+
+      this.service.findByEstrategiaPorVacina(item.codigo).subscribe(estrategiasPorVacina => {
         this.domainsEstrategiaVacinacao.push({
                           estrategiaVacinacao: estrategiasPorVacina
                       });
-        });   
+        });
 
   }
 
-  estrategiaSelecionada(event) {  
-      this.service.findByDosePorEstrategiaVacina(this.pacienteVacina.codigoVacinaSus, event.target.value).subscribe(doses => { 
+  estrategiaSelecionada(event) {
+      this.service.findByDosePorEstrategiaVacina(this.pacienteVacina.codigoVacinaSus, event.target.value).subscribe(doses => {
         this.domainsDose.push({
                         doseVacina: doses
                       });
-        });   
-  }  
+        });
+  }
 
   confirmaPaciente() {
 
-    if (this.tipoFichaSelecionada === "7" || this.tipoFicha === 7) {
+    if (this.tipoFichaSelecionada === '7' || this.tipoFicha === 7) {
 
       this.participanteAtividadeColetiva.idAtendimento = this.object.id;
       this.participanteAtividadeColetiva.idPaciente = this.participanteSelecionadoAtividadeColetiva.id;
@@ -744,7 +744,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.participanteAtividadeColetiva.sexo = this.participanteSelecionadoAtividadeColetiva.sexo;
       this.participanteAtividadeColetiva.cartaoSus = this.participanteSelecionadoAtividadeColetiva.cartaoSus;
       this.participanteAtividadeColetiva.dataNascimento = this.participanteSelecionadoAtividadeColetiva.dataNascimento;
-      this.participanteAtividadeColetiva.sexo == 1 ? this.sexoPaciente = 'Masculino' : this.sexoPaciente = 'Feminino'
+      this.participanteAtividadeColetiva.sexo == 1 ? this.sexoPaciente = 'Masculino' : this.sexoPaciente = 'Feminino';
 
     } else {
 
@@ -764,7 +764,7 @@ export class AtendimentoFormComponent implements OnInit {
 
     this.object.id = this.id;
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
 
     this.service.findById(this.id, this.method).subscribe(result => {
@@ -773,15 +773,15 @@ export class AtendimentoFormComponent implements OnInit {
       this.object.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
       this.localAtendimento = result.localDeAtendimento;
       this.object.dataCriacao = new Date(this.object.dataCriacao);
-      
+
       this.loading = false;
 
       this.tipoFicha = result.tipoFicha;
 
       if (result.atividadeTipo === 1 || result.atividadeTipo === 2 || result.atividadeTipo === 3) {
-        this.isVisible = false
+        this.isVisible = false;
       } else {
-        this.isVisible = true
+        this.isVisible = true;
       }
 
       this.findHipotesePorAtendimento();
@@ -811,7 +811,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.allItemsMedicamento = [];
 
       this.errors.push({
-        message: "Atendimento não encontrado"
+        message: 'Atendimento não encontrado'
       });
     });
   }
@@ -819,7 +819,7 @@ export class AtendimentoFormComponent implements OnInit {
   encontraAtendimentoHistorico(idHistorico: number) {
     this.object.id = this.id;
     this.errors = [];
-    this.message = "";
+    this.message = '';
 
     if (idHistorico) {
       this.loading = true;
@@ -849,7 +849,7 @@ export class AtendimentoFormComponent implements OnInit {
         this.loading = false;
         this.close();
         this.errors.push({
-          message: "Atendimento histórico não encontrado"
+          message: 'Atendimento histórico não encontrado'
         });
       });
     }
@@ -857,7 +857,7 @@ export class AtendimentoFormComponent implements OnInit {
 
   sendForm(event) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
     event.preventDefault();
 
@@ -866,33 +866,38 @@ export class AtendimentoFormComponent implements OnInit {
       .subscribe((res: any) => {
         this.object.id = res.id;
         this.findHistoricoPorAtendimento();
-        if (res.ano_receita)
+        if (res.ano_receita) {
           this.object.ano_receita = res.ano_receita;
+        }
 
-        if (res.numeroReceita)
+        if (res.numeroReceita) {
           this.object.numero_receita = res.numeroReceita;
+        }
 
-        if (res.idEstabelecimento)
+        if (res.idEstabelecimento) {
           this.object.unidade_receita = res.idEstabelecimento;
+        }
 
-        if (res.dadosFicha)
+        if (res.dadosFicha) {
           this.object.dadosFicha = res.dadosFicha;
+        }
 
         if (this.form.value.id) {
-          this.message = "Atendimento alterado com sucesso";
+          this.message = 'Atendimento alterado com sucesso';
 
-          if (!Util.isEmpty(this.object.ano_receita) && !Util.isEmpty(this.object.numero_receita) && !Util.isEmpty(this.object.unidade_receita))
+          if (!Util.isEmpty(this.object.ano_receita) && !Util.isEmpty(this.object.numero_receita) && !Util.isEmpty(this.object.unidade_receita)) {
             this.abreReceitaMedica(this.object.ano_receita, this.object.numero_receita, this.object.unidade_receita);
+          }
         } else {
           this.abreFichaDigital(this.object.id, false);
         }
 
         if (!this.message) {
-          this.message = "Cadastro efetuado com sucesso!";
+          this.message = 'Cadastro efetuado com sucesso!';
           this.openConfirmacao(this.contentConfirmacao);
         }
 
-        if (this.tipoFicha == 7 || this.tipoFichaSelecionada === "7" || this.isVisible === true) {
+        if (this.tipoFicha == 7 || this.tipoFichaSelecionada === '7' || this.isVisible === true) {
           this.findParticipanteAtividadeColetivaPorAtendimento();
           this.findProfissionaisAtividadeColetivaPorAtendimento();
         }
@@ -904,13 +909,12 @@ export class AtendimentoFormComponent implements OnInit {
 
         if (this.object.situacao) {
           if (this.object.situacao == 'X') {
-            this.message = "Atendimento cancelado com sucesso";
+            this.message = 'Atendimento cancelado com sucesso';
             this.object = new Atendimento();
-          }
-          else if (this.object.situacao == 'C' || this.object.situacao == '0')
-            this.message = "Atendimento alterado com sucesso"
-          else {
-            this.message = "Atendimento finalizado com sucesso"
+          } else if (this.object.situacao == 'C' || this.object.situacao == '0') {
+            this.message = 'Atendimento alterado com sucesso';
+               } else {
+            this.message = 'Atendimento finalizado com sucesso';
             this.object = new Atendimento();
           }
         }
@@ -923,15 +927,15 @@ export class AtendimentoFormComponent implements OnInit {
 
   findPacienteData(idPaciente) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
     this.service.findByIdPaciente(idPaciente, this.object.idEstabelecimento, this.method).subscribe(result => {
 
       if (result) {
 
-        console.log(result)
+        console.log(result);
 
-        if (this.tipoFicha == 7 || this.tipoFichaSelecionada === "7") {
+        if (this.tipoFicha == 7 || this.tipoFichaSelecionada === '7') {
           this.object = result;
           this.object.pacienteNome = this.pacienteSelecionado.nome;
           this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
@@ -955,9 +959,9 @@ export class AtendimentoFormComponent implements OnInit {
 
         }
 
-      }
-      else
+      } else {
         this.limpaAtendimento();
+      }
     }, error => {
       this.limpaAtendimento();
     });
@@ -984,12 +988,12 @@ export class AtendimentoFormComponent implements OnInit {
     }
 
     this.errors.push({
-      message: "Atendimento não encontrado"
+      message: 'Atendimento não encontrado'
     });
   }
 
   findHipotesePorAtendimento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findHipoteseByAtendimento(this.object.id).subscribe(result => {
@@ -1002,7 +1006,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   findVacinaPorAtendimento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findVacinaByAtendimento(this.object.id).subscribe(result => {
@@ -1015,7 +1019,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   findEncaminhamentoPorAtendimento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findEncaminhamentoByAtendimento(this.object.id).subscribe(result => {
@@ -1028,7 +1032,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   findMedicamentoPorAtendimento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findMedicamentoByAtendimento(this.object.id).subscribe(result => {
@@ -1041,7 +1045,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   findHistoricoPorAtendimento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findHistoricoByAtendimento(this.object.id).subscribe(result => {
@@ -1054,7 +1058,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   findProcedimentoPorAtendimento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findProcedimentoByAtendimento(this.object.id).subscribe(result => {
@@ -1067,18 +1071,21 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   close() {
-    if (this.modalRef)
+    if (this.modalRef) {
       this.modalRef.close();
+    }
   }
 
   closeLocalizacaoPaciente() {
-    if (this.modalLocalizacaoPacienteRef)
+    if (this.modalLocalizacaoPacienteRef) {
       this.modalLocalizacaoPacienteRef.close();
+    }
   }
 
   closeExameFormulario() {
-    if (this.modalFormularioRef)
+    if (this.modalFormularioRef) {
       this.modalFormularioRef.close();
+    }
   }
 
   loadDomains() {
@@ -1099,8 +1106,8 @@ export class AtendimentoFormComponent implements OnInit {
                         this.service.listDomains('odonto-fornecimento').subscribe(tiposFornecimOdonto => {
                           this.service.listDomains('odonto-vigilancia').subscribe(tiposVigilanciaSaudeBucal => {
                             this.service.listDomains('local-atendimento').subscribe(localDeAtendimento => {
-                              this.service.listDomains('modalidade').subscribe(modalidade => {        
-                                this.service.listDomains('tipo-via-material').subscribe(tipoViaMaterial => {        
+                              this.service.listDomains('modalidade').subscribe(modalidade => {
+                                this.service.listDomains('tipo-via-material').subscribe(tipoViaMaterial => {
                                   this.service.listDomains('condicao-avaliada').subscribe(condicaoAvaliada => {
                                     this.service.list('profissional/estabelecimento/' + this.paciente.idEstabelecimento).subscribe(profissionais => {
                                       this.domains.push({
@@ -1122,20 +1129,20 @@ export class AtendimentoFormComponent implements OnInit {
                                         condicaoAvaliada: condicaoAvaliada,
                                         idProfissionalCompartilhado: profissionais,
                                         tipoHistoriaClinica: [
-                                          { id: 1, nome: "Anamnese" },
-                                          { id: 2, nome: "Evolução" },
+                                          { id: 1, nome: 'Anamnese' },
+                                          { id: 2, nome: 'Evolução' },
                                         ],
                                         tiposConsultaOdonto: [
-                                          { id: 1, nome: "Primeira consulta odontológica programática" },
-                                          { id: 2, nome: "Consulta de retorno em odontologia" },
-                                          { id: 4, nome: "Consulta de manutenção em odontologia" },
+                                          { id: 1, nome: 'Primeira consulta odontológica programática' },
+                                          { id: 2, nome: 'Consulta de retorno em odontologia' },
+                                          { id: 4, nome: 'Consulta de manutenção em odontologia' },
                                         ]
                                       });
                                       if (!Util.isEmpty(this.id)) {
                                         this.encontraAtendimento();
-                                      }
-                                      else
+                                      } else {
                                         this.loading = false;
+                                      }
                                     });
                                   });
                                 });
@@ -1143,7 +1150,7 @@ export class AtendimentoFormComponent implements OnInit {
                               });
                             });
                           });
-                        });                        
+                        });
                       });
                     });
                   });
@@ -1152,11 +1159,11 @@ export class AtendimentoFormComponent implements OnInit {
             });
           });
         });
-      });    
+      });
   }
 
   loadDomainsVacinacao() {
-    this.service.listDomains('grupo-atendimento-vacinacao').subscribe(grupoAtendimentoVacinacao => {   
+    this.service.listDomains('grupo-atendimento-vacinacao').subscribe(grupoAtendimentoVacinacao => {
         this.domainsVacinacao.push({
                           grupoAtendimentoVacinacao: grupoAtendimentoVacinacao
                       });
@@ -1170,19 +1177,19 @@ export class AtendimentoFormComponent implements OnInit {
 
   pesquisaHipoteseDiagnostica() {
     this.loading = true;
-    let params = "";
+    const params = '';
     this.allItemsPesquisaHipoteseDiagnostica = [];
     this.errors = [];
 
     if (Util.isEmpty(this.hipoteseDiagnostica.nome) && Util.isEmpty(this.hipoteseDiagnostica.cid_10)) {
-      this.errors = [{ message: "Informe o nome ou código CID 10" }];
+      this.errors = [{ message: 'Informe o nome ou código CID 10' }];
       this.loading = false;
       return;
     }
 
     if (!Util.isEmpty(this.hipoteseDiagnostica.nome)) {
       if (this.hipoteseDiagnostica.nome.length < 3) {
-        this.errors = [{ message: "Informe o nome, ao menos 3 caracteres" }];
+        this.errors = [{ message: 'Informe o nome, ao menos 3 caracteres' }];
         this.loading = false;
         return;
       }
@@ -1190,7 +1197,7 @@ export class AtendimentoFormComponent implements OnInit {
 
     if (!Util.isEmpty(this.hipoteseDiagnostica.cid_10)) {
       if (this.hipoteseDiagnostica.cid_10.length < 2) {
-        this.errors = [{ message: "Informe o código CID 10, ao menos 2 caracteres" }];
+        this.errors = [{ message: 'Informe o código CID 10, ao menos 2 caracteres' }];
         this.loading = false;
         return;
       }
@@ -1223,7 +1230,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   saveHipotese() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
@@ -1233,7 +1240,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.paciente.idEstabelecimento = this.object.idEstabelecimento;
 
     this.service.saveHipotese(this.pacienteHipotese).subscribe(result => {
-      this.message = "Hipótese diagnóstica inserida com sucesso!"
+      this.message = 'Hipótese diagnóstica inserida com sucesso!';
       this.modalRef.close();
       this.loading = false;
       this.findHipotesePorAtendimento();
@@ -1244,7 +1251,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   saveVacina() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
@@ -1253,7 +1260,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.pacienteVacina.validade = moment(this.pacienteVacina.validade).format('YYYY/MM/DD hh:mm:ss');
 
     this.service.saveVacina(this.pacienteVacina).subscribe(result => {
-      this.message = "Vacina inserida com sucesso!"
+      this.message = 'Vacina inserida com sucesso!';
       this.pacienteVacina = new PacienteVacina();
       this.modalRef.close();
       this.loading = false;
@@ -1265,12 +1272,12 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   saveEncaminhamento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
     this.service.saveEncaminhamento(this.encaminhamento).subscribe(result => {
-      this.message = "Encaminhamento inserido com sucesso!"
+      this.message = 'Encaminhamento inserido com sucesso!';
       this.modalRef.close();
       this.loading = false;
       this.findEncaminhamentoPorAtendimento();
@@ -1281,14 +1288,14 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   saveMedicamento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
     this.atendimentoMedicamento.idMaterial = this.medicamentoSelecionado.id;
 
     this.service.saveMedicamento(this.atendimentoMedicamento).subscribe(result => {
-      this.message = "Medicamento inserido com sucesso!"
+      this.message = 'Medicamento inserido com sucesso!';
       this.modalRef.close();
       this.loading = false;
       this.findMedicamentoPorAtendimento();
@@ -1300,7 +1307,7 @@ export class AtendimentoFormComponent implements OnInit {
 
   removeHipotese(item) {
     this.service.removeHipotese(item.id).subscribe(result => {
-      this.message = "Hipótese diagnóstica removida com sucesso!"
+      this.message = 'Hipótese diagnóstica removida com sucesso!';
       this.close();
       this.loading = false;
       this.findHipotesePorAtendimento();
@@ -1309,7 +1316,7 @@ export class AtendimentoFormComponent implements OnInit {
 
   removeVacina(item) {
     this.service.removeVacina(item.id).subscribe(result => {
-      this.message = "Vacina removida com sucesso!"
+      this.message = 'Vacina removida com sucesso!';
       this.close();
       this.loading = false;
       this.findVacinaPorAtendimento();
@@ -1318,7 +1325,7 @@ export class AtendimentoFormComponent implements OnInit {
 
   removeEncaminhamento(item) {
     this.service.removeEncaminhamento(item.id).subscribe(result => {
-      this.message = "Encaminhamento removido com sucesso!"
+      this.message = 'Encaminhamento removido com sucesso!';
       this.close();
       this.loading = false;
       this.findEncaminhamentoPorAtendimento();
@@ -1327,7 +1334,7 @@ export class AtendimentoFormComponent implements OnInit {
 
   removeMedicamento(item) {
     this.service.removeMedicamento(item.id).subscribe(result => {
-      this.message = "Medicamento removido com sucesso!"
+      this.message = 'Medicamento removido com sucesso!';
       this.close();
       this.loading = false;
       this.findMedicamentoPorAtendimento();
@@ -1336,7 +1343,7 @@ export class AtendimentoFormComponent implements OnInit {
 
   removeProcedimento(item) {
     this.service.removeProcedimento(item.id).subscribe(result => {
-      this.message = "Hipótese diagnóstica removida com sucesso!"
+      this.message = 'Hipótese diagnóstica removida com sucesso!';
       this.close();
       this.loading = false;
       this.findProcedimentoPorAtendimento();
@@ -1356,10 +1363,11 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   abreHistorico(id: Number) {
-    if (!id)
+    if (!id) {
       return;
+    }
 
-    let url = this.router.url.replace('atendimentos/cadastro/' + this.id, '') + this.virtualDirectory + "#/atendimentos/historico/" + id;
+    const url = this.router.url.replace('atendimentos/cadastro/' + this.id, '') + this.virtualDirectory + '#/atendimentos/historico/' + id;
 
     this.loading = true;
     this.service.printDocument(url).subscribe(result => {
@@ -1375,15 +1383,16 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   abreFichaDigital(id: Number, grid: boolean) {
-    if ((!this.object.dadosFicha || this.object.dadosFicha.length == 0) && !grid)
+    if ((!this.object.dadosFicha || this.object.dadosFicha.length == 0) && !grid) {
       return;
+    }
 
     this.errors = [];
-    let url =
-      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")
+    const url =
+      JSON.parse(localStorage.getItem('parametro_seguranca')).filter((url) => url.nome == 'URL_FICHA_MEDICA_IMPRESSAO')
         ?
-        JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")[0].valor.replace('{id}', id)
-        : "";
+        JSON.parse(localStorage.getItem('parametro_seguranca')).filter((url) => url.nome == 'URL_FICHA_MEDICA_IMPRESSAO')[0].valor.replace('{id}', id)
+        : '';
     this.loading = true;
     this.service.printDocument(url).subscribe(result => {
       this.loading = false;
@@ -1403,11 +1412,11 @@ export class AtendimentoFormComponent implements OnInit {
 
   abreAtendimentoFichaDigital(id: Number) {
     this.errors = [];
-    let url =
-      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")
+    const url =
+      JSON.parse(localStorage.getItem('parametro_seguranca')).filter((url) => url.nome == 'URL_FICHA_MEDICA_VISUALIZACAO')
         ?
-        JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")[0].valor.replace('{id}', id)
-        : "";
+        JSON.parse(localStorage.getItem('parametro_seguranca')).filter((url) => url.nome == 'URL_FICHA_MEDICA_VISUALIZACAO')[0].valor.replace('{id}', id)
+        : '';
     this.loading = true;
     this.service.openDocument(url).subscribe(result => {
       this.loading = false;
@@ -1422,14 +1431,14 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   loadQuantityPerPagePagination(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.paging.limit = id;
 
     this.setPagePagined(this.pager.offset, this.paging.limit);
   }
 
   loadQuantityPerPagePaginationHipotese(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.paging.limit = id;
 
     this.setPagePaginedHipotese(this.pager.offset, this.paging.limit);
@@ -1468,13 +1477,14 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   visualizaProntuarioPaciente(idPaciente: any): void {
-    let url = "";
+    let url = '';
 
-    if(this.id)
-      url = this.router.url.replace('atendimentos/cadastro/' + this.id, '') + this.virtualDirectory + "#/pacientes/prontuario/" + idPaciente + "?hideMenu=true";
-    else
-      url = this.router.url.replace('atendimentos/cadastro', '') + this.virtualDirectory + "#/pacientes/prontuario/" + idPaciente + "?hideMenu=true";
-    
+    if (this.id) {
+      url = this.router.url.replace('atendimentos/cadastro/' + this.id, '') + this.virtualDirectory + '#/pacientes/prontuario/' + idPaciente + '?hideMenu=true';
+    } else {
+      url = this.router.url.replace('atendimentos/cadastro', '') + this.virtualDirectory + '#/pacientes/prontuario/' + idPaciente + '?hideMenu=true';
+    }
+
     this.service.file('atendimento/consulta-por-paciente', url).subscribe(result => {
       this.loading = false;
       window.open(
@@ -1486,19 +1496,19 @@ export class AtendimentoFormComponent implements OnInit {
 
   pesquisaProcedimento() {
     this.loading = true;
-    let params = "";
+    const params = '';
     this.allItemsPesquisaProcedimento = [];
     this.errors = [];
 
     if (Util.isEmpty(this.procedimento.co_procedimento) && Util.isEmpty(this.procedimento.no_procedimento)) {
-      this.errors = [{ message: "Informe o código ou nome do procedimento" }];
+      this.errors = [{ message: 'Informe o código ou nome do procedimento' }];
       this.loading = false;
       return;
     }
 
     if (!Util.isEmpty(this.procedimento.no_procedimento)) {
       if (this.procedimento.no_procedimento.length < 3) {
-        this.errors = [{ message: "Informe o nome, ao menos 3 caracteres" }];
+        this.errors = [{ message: 'Informe o nome, ao menos 3 caracteres' }];
         this.loading = false;
         return;
       }
@@ -1506,7 +1516,7 @@ export class AtendimentoFormComponent implements OnInit {
 
     if (!Util.isEmpty(this.procedimento.co_procedimento)) {
       if (this.procedimento.co_procedimento.length < 2) {
-        this.errors = [{ message: "Informe o código, ao menos 2 caracteres" }];
+        this.errors = [{ message: 'Informe o código, ao menos 2 caracteres' }];
         this.loading = false;
         return;
       }
@@ -1521,14 +1531,14 @@ export class AtendimentoFormComponent implements OnInit {
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
 
-    var params = "?codigo=" + this.procedimento.co_procedimento + "&nome=" + this.procedimento.no_procedimento + "&tipoFicha=" + (this.tipoFichaSelecionada ? this.tipoFichaSelecionada : this.tipoFicha);
+    let params = '?codigo=' + this.procedimento.co_procedimento + '&nome=' + this.procedimento.no_procedimento + '&tipoFicha=' + (this.tipoFichaSelecionada ? this.tipoFichaSelecionada : this.tipoFicha);
 
     if (this.paging.offset != null && this.paging.limit != null) {
-      params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+      params += (params == '' ? '?' : '&') + 'offset=' + this.paging.offset + '&limit=' + this.paging.limit;
     }
 
     this.service.list('procedimento' + params).subscribe(result => {
-      this.warning = "";
+      this.warning = '';
       this.paging.total = result.total;
       this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
       this.allItemsPesquisaProcedimento = result.items;
@@ -1546,7 +1556,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   saveProcedimento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.pacienteProcedimento.idProcedimento = this.procedimento.id;
     this.pacienteProcedimento.idPaciente = this.object.idPaciente;
@@ -1554,7 +1564,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.pacienteProcedimento.qtd = this.qtdProcedimento;
 
     this.service.saveProcedimento(this.pacienteProcedimento).subscribe(result => {
-      this.message = "Procedimento inserido com sucesso!"
+      this.message = 'Procedimento inserido com sucesso!';
       this.modalRef.close();
       this.loading = false;
       this.findProcedimentoPorAtendimento();
@@ -1567,7 +1577,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   loadQuantityPerPagePaginationProcedimento(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.paging.limit = id;
 
     this.setPagePaginedProcedimento(this.pager.offset, this.paging.limit);
@@ -1587,14 +1597,13 @@ export class AtendimentoFormComponent implements OnInit {
   translate(term, obj) {
     if (typeof (obj) == 'object') {
       return obj[term];
-    }
-    else {
+    } else {
       return Translation.t(term);
     }
   }
 
   viewer(id: number, content: any) {
-    if (!id) return;
+    if (!id) { return; }
 
     this.exameId = id;
 
@@ -1608,23 +1617,23 @@ export class AtendimentoFormComponent implements OnInit {
 
   //ATIVIDADE COLETIVA
   back() {
-    const route = "atendimentos/pesquisa/true";
+    const route = 'atendimentos/pesquisa/true';
     this.router.navigate([route]);
   }
   changeFn(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
 
     if (id === 1 || id === 2 || id === 3) {
-      this.isVisible = false
+      this.isVisible = false;
     } else {
-      this.isVisible = true
+      this.isVisible = true;
     }
   }
   change(event) {
     this.tipoFichaSelecionada = event.target.value;
     this.carregarCondutaEncaminhamento(event.target.value);
     this.carregaTipoAtendimento(event.target.value);
-    console.log(event.target.value)
+    console.log(event.target.value);
   }
   openAtividadeColetivaParticipante(content: any) {
 
@@ -1645,7 +1654,7 @@ export class AtendimentoFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
   openAtividadeColetivaProfissional(content: any) {
@@ -1653,16 +1662,16 @@ export class AtendimentoFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
   saveParticipanteAtividadeColetiva() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
     this.service.saveParticipanteAtividadeColetiva(this.participanteAtividadeColetiva).subscribe(result => {
-      this.message = "Profissional inserido com sucesso!"
+      this.message = 'Profissional inserido com sucesso!';
       this.close();
       this.loading = false;
       this.findParticipanteAtividadeColetivaPorAtendimento();
@@ -1673,12 +1682,12 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
   saveEditParticipanteAtividadeColetiva() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
     this.service.saveParticipanteAtividadeColetiva(this.editParticipanteAtividadeColetiva).subscribe(result => {
-      this.message = "Profissional atualizado com sucesso!"
+      this.message = 'Profissional atualizado com sucesso!';
       this.close();
       this.loading = false;
       this.findParticipanteAtividadeColetivaPorAtendimento();
@@ -1689,7 +1698,7 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
   findParticipanteAtividadeColetivaPorAtendimento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findParticipanteAtividadeColetivaByAtendimento(this.object.id).subscribe(result => {
@@ -1698,9 +1707,9 @@ export class AtendimentoFormComponent implements OnInit {
       this.totalParticipantes = result.length;
 
       if (result.length < this.object.numParticipantes) {
-        this.isVisibleParticipante = true
+        this.isVisibleParticipante = true;
       } else {
-        this.isVisibleParticipante = false
+        this.isVisibleParticipante = false;
       }
 
     }, error => {
@@ -1710,7 +1719,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
   removeParticipanteAtividadeColetivaPorAtendimento(item) {
     this.service.removeParticipante(item.id).subscribe(result => {
-      this.message = "Participante removido com sucesso!"
+      this.message = 'Participante removido com sucesso!';
       this.loading = false;
       this.findParticipanteAtividadeColetivaPorAtendimento();
     });
@@ -1734,12 +1743,12 @@ export class AtendimentoFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
 
   }
   findProfissionaisAtividadeColetivaPorAtendimento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findProfissionalAtividadeColetivaByAtendimento(this.object.id).subscribe(result => {
@@ -1751,12 +1760,12 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
   saveProfissionalAtividadeColetiva() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
     this.service.saveProfissionalAtividadeColetiva(this.profissionalAtividadeColetiva).subscribe(result => {
-      this.message = "Profissional inserido com sucesso!"
+      this.message = 'Profissional inserido com sucesso!';
       this.close();
       this.loading = false;
       this.findProfissionaisAtividadeColetivaPorAtendimento();
@@ -1768,14 +1777,14 @@ export class AtendimentoFormComponent implements OnInit {
   }
   removeProfissionalAtividadeColetivaPorAtendimento(item) {
     this.service.removeProfissional(item.id).subscribe(result => {
-      this.message = "Profissional removido com sucesso!"
+      this.message = 'Profissional removido com sucesso!';
       this.loading = false;
       this.findProfissionaisAtividadeColetivaPorAtendimento();
     });
   }
   buscaProfissionais() {
     this.loading = true;
-    this.service.list('profissional/estabelecimento/' + JSON.parse(localStorage.getItem("est"))[0].id).subscribe(result => {
+    this.service.list('profissional/estabelecimento/' + JSON.parse(localStorage.getItem('est'))[0].id).subscribe(result => {
       this.profissionaisLista = result;
       this.loading = false;
     }, error => {
@@ -1796,12 +1805,12 @@ export class AtendimentoFormComponent implements OnInit {
     this.VigilanciaSaudeBucalSelecionado.idVigilancia = item.id;
   }
   savetiposFornecimOdonto() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
     this.service.savetiposFornecimOdonto(this.FornecimOdontoSelecionado).subscribe(result => {
-      this.message = "Registro adicionado com sucesso!"
+      this.message = 'Registro adicionado com sucesso!';
       this.close();
       this.loading = false;
       this.findtiposFornecimentoOdontoPorAtendimento();
@@ -1811,12 +1820,12 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
   savetiposVigilanciaSaudeBucal() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
     this.service.savetiposVigilanciaSaudeBucal(this.VigilanciaSaudeBucalSelecionado).subscribe(result => {
-      this.message = "Registro adicionado com sucesso!"
+      this.message = 'Registro adicionado com sucesso!';
       this.close();
       this.loading = false;
       this.findtiposVigilanciaOdontoPorAtendimento();
@@ -1826,7 +1835,7 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
   findtiposFornecimentoOdontoPorAtendimento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findtiposFornecimentoOdontoPorAtendimento(this.object.id).subscribe(result => {
@@ -1838,7 +1847,7 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
   findtiposVigilanciaOdontoPorAtendimento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findtiposVigilanciaOdontoPorAtendimento(this.object.id).subscribe(result => {
@@ -1851,14 +1860,14 @@ export class AtendimentoFormComponent implements OnInit {
   }
   removetiposVigilanciaOdontoPorAtendimento(item) {
     this.service.removetiposVigilanciaOdontoPorAtendimento(item.id).subscribe(result => {
-      this.message = "Item removido com sucesso!"
+      this.message = 'Item removido com sucesso!';
       this.loading = false;
       this.findtiposVigilanciaOdontoPorAtendimento();
     });
   }
   removetiposFornecimentoOdontoPorAtendimento(item) {
     this.service.removetiposFornecimentoOdontoPorAtendimento(item.id).subscribe(result => {
-      this.message = "Item removido com sucesso!"
+      this.message = 'Item removido com sucesso!';
       this.loading = false;
       this.findtiposFornecimentoOdontoPorAtendimento();
     });
@@ -1867,7 +1876,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.loading = true;
     this.service.list('conduta-encaminhamento/' + id).subscribe(result => {
       this.ListcondutaEncaminhamento = result;
-      console.log(result)
+      console.log(result);
       this.loading = false;
     }, error => {
       this.loading = false;
@@ -1875,11 +1884,11 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
   changeLocal(event) {
-    this.localAtendimento = event.target.value
+    this.localAtendimento = event.target.value;
   }
 
   loadQuantityPerPagePaginationCondicaoAvaliada(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.paging.limit = id;
 
     this.setPagePaginedCondicaoAvaliada(this.pager.offset, this.paging.limit);
@@ -1898,14 +1907,14 @@ export class AtendimentoFormComponent implements OnInit {
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
 
-    var params = "?descricaoAB=" + this.condicaoAvaliada.descricaoAB + "&codigoAB=" + this.condicaoAvaliada.codigoAB + "&ciap2=" + this.condicaoAvaliada.ciap2;
+    let params = '?descricaoAB=' + this.condicaoAvaliada.descricaoAB + '&codigoAB=' + this.condicaoAvaliada.codigoAB + '&ciap2=' + this.condicaoAvaliada.ciap2;
 
     if (this.paging.offset != null && this.paging.limit != null) {
-      params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+      params += (params == '' ? '?' : '&') + 'offset=' + this.paging.offset + '&limit=' + this.paging.limit;
     }
 
     this.service.list('condicaoAvaliada' + params).subscribe(result => {
-      this.warning = "";
+      this.warning = '';
       this.paging.total = result.total;
       this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
       this.allItemsPesquisaCondicaoAvaliada = result.items;
@@ -1921,14 +1930,14 @@ export class AtendimentoFormComponent implements OnInit {
     return Util.isEmpty(this.condicaoAvaliada.id);
   }
   saveCondicaoAvaliada() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.pacienteCondicaoAvaliada.idCondicaoAvaliada = this.condicaoAvaliada.id;
     this.pacienteCondicaoAvaliada.idPaciente = this.object.idPaciente;
     this.pacienteCondicaoAvaliada.idAtendimento = this.object.id;
 
     this.service.saveAtendimentoCodicaoAvaliada(this.pacienteCondicaoAvaliada).subscribe(result => {
-      this.message = "Condição Avaliada inserida com sucesso!"
+      this.message = 'Condição Avaliada inserida com sucesso!';
       this.modalRef.close();
       this.loading = false;
       this.findCondicaoAvaliadaPorAtendimento();
@@ -1944,12 +1953,12 @@ export class AtendimentoFormComponent implements OnInit {
   }
   pesquisaCondicaoAvaliada() {
     this.loading = true;
-    let params = "";
+    const params = '';
     this.allItemsPesquisaCondicaoAvaliada = [];
     this.errors = [];
 
     if (Util.isEmpty(this.condicaoAvaliada.codigoAB) && Util.isEmpty(this.condicaoAvaliada.descricaoAB) && Util.isEmpty(this.condicaoAvaliada.ciap2)) {
-      this.errors = [{ message: "Informe o Código AB, ou a Descrição ou o CIAP2" }];
+      this.errors = [{ message: 'Informe o Código AB, ou a Descrição ou o CIAP2' }];
       this.loading = false;
       return;
     }
@@ -1957,7 +1966,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.buscaCondicaoAvaliada();
   }
   findCondicaoAvaliadaPorAtendimento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findCondicaoAvaliadaByAtendimento(this.object.id).subscribe(result => {
@@ -1970,7 +1979,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
   removeCondicaoAvaliadaAtendimento(item) {
     this.service.removeCondicaoAvaliada(item.id).subscribe(result => {
-      this.message = "Condição Avaliada removida com sucesso!"
+      this.message = 'Condição Avaliada removida com sucesso!';
       this.close();
       this.loading = false;
       this.findCondicaoAvaliadaPorAtendimento();

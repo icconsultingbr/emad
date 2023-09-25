@@ -14,9 +14,9 @@ import { AtendimentoService } from '../atendimento/atendimento.service';
 export class ReaberturaAtendimentoComponent implements OnInit {
 
   loading: Boolean = false;
-  message: string = "";
+  message = '';
   errors: any[] = [];
-  form: FormGroup; 
+  form: FormGroup;
   fields: any[] = [];
 
   constructor(
@@ -25,7 +25,7 @@ export class ReaberturaAtendimentoComponent implements OnInit {
     private router: Router) {
   }
 
-  ngOnInit() {    
+  ngOnInit() {
     this.createGroup();
   }
 
@@ -36,17 +36,17 @@ export class ReaberturaAtendimentoComponent implements OnInit {
   }
 
   reabreAtendimento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
     this.service.reabreAtendimento(this.form.value).subscribe(result => {
-      this.loading = false; 
-      this.message = "Atendimento(s) reaberto(s) com sucesso!"
+      this.loading = false;
+      this.message = 'Atendimento(s) reaberto(s) com sucesso!';
     }, error => {
       this.loading = false;
       this.errors = Util.customHTTPResponse(error);
-    });    
+    });
   }
 
 }

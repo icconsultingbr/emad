@@ -1,6 +1,6 @@
-import { environment } from "../../../environments/environment";
-import { DatePipe } from "@angular/common";
-import { Translation } from "../_locale/Translation";
+import { environment } from '../../../environments/environment';
+import { DatePipe } from '@angular/common';
+import { Translation } from '../_locale/Translation';
 
 export class Util {
     static urlapi: string = environment.apiUrl;
@@ -8,16 +8,16 @@ export class Util {
 
 
     static convertTimezone(data, utc) {
-        var b = data.split(/\D/);
-        let pipe = new DatePipe('en-US'); // Use your own locale
-        let now = new Date(b[0], b[1], b[2], Number(b[3]) + Number(utc), b[4], b[5]);
-        let myFormattedDate = pipe.transform(now, 'dd/MM/yyyy HH:mm');
+        const b = data.split(/\D/);
+        const pipe = new DatePipe('en-US'); // Use your own locale
+        const now = new Date(b[0], b[1], b[2], Number(b[3]) + Number(utc), b[4], b[5]);
+        const myFormattedDate = pipe.transform(now, 'dd/MM/yyyy HH:mm');
         return myFormattedDate;
     }
 
     static convertDateToString(date: Date, format: string) {
-        let pipe = new DatePipe('en-US'); // Use your own locale
-        let myFormattedDate = pipe.transform(date, format);
+        const pipe = new DatePipe('en-US'); // Use your own locale
+        const myFormattedDate = pipe.transform(date, format);
         return myFormattedDate;
     }
 
@@ -26,14 +26,13 @@ export class Util {
         const result = [];
 
         if (errors) {
-            for (let error of errors) {
+            for (const error of errors) {
                 result.push({ message: error.msg });
             }
-        }
-        else {
+        } else {
             result.push({
-                field: "",
-                message: Translation.t("SERVICE_UNAVAILABLE")
+                field: '',
+                message: Translation.t('SERVICE_UNAVAILABLE')
             });
         }
 
@@ -45,18 +44,17 @@ export class Util {
             let parts2;
 
             if (val.toString().indexOf('/') >= 0) {
-                let parts = val.split(" ");
-                parts2 = parts[0].split("/");
+                const parts = val.split(' ');
+                parts2 = parts[0].split('/');
 
                 if (parts.length > 1) {
-                    val = parts2[1] + "/" + parts2[0] + "/" + parts2[2] + " " + parts;
-                }
-                else {
-                    val = parts2[1] + "/" + parts2[0] + "/" + parts2[2];
+                    val = parts2[1] + '/' + parts2[0] + '/' + parts2[2] + ' ' + parts;
+                } else {
+                    val = parts2[1] + '/' + parts2[0] + '/' + parts2[2];
                 }
             }
 
-            let pipe = new DatePipe('en-GB');
+            const pipe = new DatePipe('en-GB');
             return pipe.transform(val, pattern);
         }
         return null;
@@ -64,12 +62,12 @@ export class Util {
 
 
     static convertToCurrency(number) {
-        if (number != "" && number != null) {
-            let nbr = "";
-            number = number.replace(",", ".");
-            let first = number.substring(0, number.length - 3);
-            let last = number.substr(number.length - 2);
-            nbr = first + "," + last;
+        if (number != '' && number != null) {
+            let nbr = '';
+            number = number.replace(',', '.');
+            const first = number.substring(0, number.length - 3);
+            const last = number.substr(number.length - 2);
+            nbr = first + ',' + last;
 
             return nbr;
         } else {
@@ -96,24 +94,20 @@ export class Util {
     static getPageState(param) {
         if (param == 'object') {
             return localStorage.getItem('object');
-        }
-        else if (param == 'page') {
+        } else if (param == 'page') {
             return localStorage.getItem('page');
-        }
-        else if (param == 'route') {
+        } else if (param == 'route') {
             return localStorage.getItem('route');
-        }
-        else if (param == 'domains') {
+        } else if (param == 'domains') {
             return localStorage.getItem('domains');
-        }
-        else if (param == 'textoProcurado') {
+        } else if (param == 'textoProcurado') {
             return localStorage.getItem('textoProcurado');
         }
     }
 
     static maskDocument(doc, type = null) {
         let size = 0;
-        let result = "";
+        let result = '';
 
         if (type != null) {
             if (type == 'CPF') {
@@ -125,9 +119,9 @@ export class Util {
         }
 
         if (doc.length == 11) {
-            result = doc.substring(0, 3) + "." + doc.substring(3, 6) + "." + doc.substring(6, 9) + "-" + doc.substring(9, 11);
+            result = doc.substring(0, 3) + '.' + doc.substring(3, 6) + '.' + doc.substring(6, 9) + '-' + doc.substring(9, 11);
         } else if (doc.length == 14) {
-            result = doc.substring(0, 2) + "." + doc.substring(2, 5) + "." + doc.substring(5, 8) + "/" + doc.substring(8, 12) + "-" + doc.substring(12, 14);
+            result = doc.substring(0, 2) + '.' + doc.substring(2, 5) + '.' + doc.substring(5, 8) + '/' + doc.substring(8, 12) + '-' + doc.substring(12, 14);
         }
 
         return result;
@@ -135,8 +129,8 @@ export class Util {
 
 
     static pad(num, size) {
-        let s = num + "";
-        while (s.length < size) s = "0" + s;
+        let s = num + '';
+        while (s.length < size) { s = '0' + s; }
         return s;
 
     }
@@ -152,22 +146,22 @@ export class Util {
 
         if (cnpj.length == 18 && cnpj != '00.000.000/0000-00') {
 
-            var valida = new Array(6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2);
-            var dig1 = 0;
-            var dig2 = 0;
+            const valida = new Array(6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2);
+            let dig1 = 0;
+            let dig2 = 0;
 
             cnpj = cnpj.replace(/[.//-]/g, '').toString();
 
-            var digito = cnpj[12] + "" + cnpj[13];
+            const digito = cnpj[12] + '' + cnpj[13];
 
-            for (var i = 0; i < valida.length; i++) {
+            for (let i = 0; i < valida.length; i++) {
                 dig1 += (i > 0 ? (cnpj.charAt(i - 1) * valida[i]) : 0);
                 dig2 += cnpj.charAt(i) * valida[i];
             }
             dig1 = (((dig1 % 11) < 2) ? 0 : (11 - (dig1 % 11)));
             dig2 = (((dig2 % 11) < 2) ? 0 : (11 - (dig2 % 11)));
 
-            if ((dig1 + "" + dig2) != digito) {
+            if ((dig1 + '' + dig2) != digito) {
                 return valid;
             }
             valid = true;
@@ -182,14 +176,14 @@ export class Util {
         if (cpf.length == 14 && cpf != '000.000.000-00' && cpf != '111.111.111-11' && cpf != '222.222.222-22'
             && cpf != '333.333.333-33' && cpf != '444.444.444-44' && cpf != '555.555.555-55' && cpf != '666.666.666-66'
             && cpf != '777.777.777-77' && cpf != '888.888.888-88' && cpf != '999.999.999-99') {
-            var dig1 = 0;
-            var dig2 = 0;
-            var vlr = 11;
+            let dig1 = 0;
+            let dig2 = 0;
+            let vlr = 11;
 
             cpf = cpf.replace(/[.//-]/g, '');
-            var digito = cpf[9] + "" + cpf[10];
+            const digito = cpf[9] + '' + cpf[10];
 
-            for (var i = 0; i < 9; i++) {
+            for (let i = 0; i < 9; i++) {
                 dig1 += (cpf.charAt(i) * (vlr - 1));
                 dig2 += (cpf.charAt(i) * vlr);
                 vlr--;
@@ -197,7 +191,7 @@ export class Util {
             dig1 = (((dig1 * 10) % 11) == 10 ? 0 : ((dig1 * 10) % 11));
             dig2 = (((dig2 + (2 * dig1)) * 10) % 11);
 
-            var digitoVerificado = dig1 + "" + dig2;
+            const digitoVerificado = dig1 + '' + dig2;
             if (digitoVerificado != digito) {
                 return valid;
             }
@@ -211,17 +205,17 @@ export class Util {
         // With Date object we can compare dates them using the >, <, <= or >=.
         // The ==, !=, ===, and !== operators require to use date.getTime(),
         // so we need to create a new instance of Date with 'new Date()'
-        let d1 = new Date(date1); let d2 = new Date(date2);
+        const d1 = new Date(date1); const d2 = new Date(date2);
 
         // Check if the dates are equal
-        let same = d1.getTime() === d2.getTime();
-        if (same) return 0;
+        const same = d1.getTime() === d2.getTime();
+        if (same) { return 0; }
 
         // Check if the first is greater than second
-        if (d1 > d2) return 1;
+        if (d1 > d2) { return 1; }
 
         // Check if the first is less than second
-        if (d1 < d2) return -1;
+        if (d1 < d2) { return -1; }
     }
 
     static setPageState(param, object) {
@@ -240,11 +234,11 @@ export class Util {
         } else if (q == undefined) {
             return true;
 
-        } else if (q == "") {
+        } else if (q == '') {
             return true;
-        } else if (q == "null") {
+        } else if (q == 'null') {
             return true;
-        } else if (q == "nundefined") {
+        } else if (q == 'nundefined') {
             return true;
         } else {
             return false;
@@ -254,48 +248,48 @@ export class Util {
 
     static formatarData(str) {
 
-        var meses = [
-            "Janeiro",
-            "Fevereiro",
-            "Março",
-            "Abril",
-            "Maio",
-            "Junho",
-            "Julho",
-            "Agosto",
-            "Setembro",
-            "Outubro",
-            "Novembro",
-            "Dezembro"
+        const meses = [
+            'Janeiro',
+            'Fevereiro',
+            'Março',
+            'Abril',
+            'Maio',
+            'Junho',
+            'Julho',
+            'Agosto',
+            'Setembro',
+            'Outubro',
+            'Novembro',
+            'Dezembro'
         ];
-        var dias = ["domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"]
+        const dias = ['domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
 
-        var partes = str.split('/');
-        var data = new Date(parseInt('20' + partes[2]), partes[1] - 1, partes[0]);
-        var diaSemana = dias[data.getDay() % 7];
-        var mes = meses[data.getMonth()];
+        const partes = str.split('/');
+        const data = new Date(parseInt('20' + partes[2]), partes[1] - 1, partes[0]);
+        const diaSemana = dias[data.getDay() % 7];
+        const mes = meses[data.getMonth()];
         return [data.getDate(), mes.slice(0, 3).toLowerCase(), '(' + diaSemana.slice(0, 3) + ') - ' + data.getFullYear().toString().slice(2, 6)].join(' ');
     }
 
     static cCalendar(hoje, weekDayIn, weekDayOut) {
 
-        let dt = new Date(hoje);
+        const dt = new Date(hoje);
 
         if (weekDayIn == weekDayOut) {
-            return Util.formatarData(Util.dateFormat(dt.setDate(hoje.getDate()).toString(), "dd/MM/yyyy"));
+            return Util.formatarData(Util.dateFormat(dt.setDate(hoje.getDate()).toString(), 'dd/MM/yyyy'));
         } else if (weekDayOut == 0) {
-            return Util.formatarData(Util.dateFormat(dt.setDate((hoje.getDate() - weekDayIn)).toString(), "dd/MM/yyyy"));
+            return Util.formatarData(Util.dateFormat(dt.setDate((hoje.getDate() - weekDayIn)).toString(), 'dd/MM/yyyy'));
         } else {
             if (weekDayOut > weekDayIn) {
-                return Util.formatarData(Util.dateFormat(dt.setDate((hoje.getDate() + (weekDayOut - weekDayIn))).toString(), "dd/MM/yyyy"));
+                return Util.formatarData(Util.dateFormat(dt.setDate((hoje.getDate() + (weekDayOut - weekDayIn))).toString(), 'dd/MM/yyyy'));
             } else {
-                return Util.formatarData(Util.dateFormat(dt.setDate((hoje.getDate() - (weekDayIn - weekDayOut))).toString(), "dd/MM/yyyy"));
+                return Util.formatarData(Util.dateFormat(dt.setDate((hoje.getDate() - (weekDayIn - weekDayOut))).toString(), 'dd/MM/yyyy'));
             }
         }
     }
 
     static cdCalendar(hoje, weekDayIn, weekDayOut) {
-        let dt = new Date(hoje);
+        const dt = new Date(hoje);
 
         if (weekDayIn == weekDayOut) {
             return dt.setDate(hoje.getDate());
@@ -310,8 +304,8 @@ export class Util {
         }
     }
 
-    static getInitialsOfName(str : string) {
-        let matches = str.match(/\b(\w)/g); 
+    static getInitialsOfName(str: string) {
+        const matches = str.match(/\b(\w)/g);
 
         return matches.join('').toUpperCase();
     }

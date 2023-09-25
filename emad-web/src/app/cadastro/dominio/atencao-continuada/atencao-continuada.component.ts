@@ -12,7 +12,7 @@ import { AtencaoContinuada } from '../../../_core/_models/AtencaoContinuada';
 
 export class AtencaoContinuadaComponent implements OnInit {
 
-  method: string = "atencao-continuada";
+  method = 'atencao-continuada';
   object: AtencaoContinuada = new AtencaoContinuada();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class AtencaoContinuadaComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: AtencaoContinuadaService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

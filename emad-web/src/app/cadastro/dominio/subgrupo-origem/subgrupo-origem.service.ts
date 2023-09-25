@@ -10,62 +10,62 @@ export class SubgrupoOrigemService extends GenericsService {
     super(http);
   }
 
-  public fields: any[] = [    
+  public fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: true,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "idGrupoOrigem",
-      type: "select",
-      label: "Grupo de origem",
+      field: 'idGrupoOrigem',
+      type: 'select',
+      label: 'Grupo de origem',
       grid: false,
       form: true,
       required: true,
       validator: ['', Validators.required]
     },
     {
-      field: "nomeGrupoOrigem",
-      type: "text",
-      label: "Grupo de origem",
+      field: 'nomeGrupoOrigem',
+      type: 'text',
+      label: 'Grupo de origem',
       grid: true,
       form: false,
       required: false,
       validator: ['', '']
     },
     {
-      field: "nome",
-      type: "text",
-      label: "Nome",
+      field: 'nome',
+      type: 'text',
+      label: 'Nome',
       grid: true,
       form: true,
       required: true,
       validator: ['', Validators.required]
     },
     {
-      field: "exibirCidade",
-      type: "checkbox",
-      label: "Exibir cidade",
+      field: 'exibirCidade',
+      type: 'checkbox',
+      label: 'Exibir cidade',
       grid: true,
       form: true,
-      translate: {1: "Sim", 0: "Não"},
+      translate: {1: 'Sim', 0: 'Não'},
       required: false,
       validator: ['', '']
     },
     {
-      field: "situacao",
-      type: "checkbox",
-      label: "Situação",
+      field: 'situacao',
+      type: 'checkbox',
+      label: 'Situação',
       grid: true,
       form: true,
-      translate: {1: "Ativo", 0: "Inativo"},
+      translate: {1: 'Ativo', 0: 'Inativo'},
       required: true,
-      validator:['', Validators.required]
+      validator: ['', Validators.required]
     }
   ];
 }

@@ -1,7 +1,7 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
 export class ItemExame {
-    id: Number;    
+    id: Number;
     @Input() idExame: number;
     @Input() nomeExame: string;
     @Input() idProdutoExame: number;
@@ -10,5 +10,5 @@ export class ItemExame {
     @Input() nomeMetodoExame: string;
     @Input() resultado: number;
     @Input() nomeResultado: string;
-    @Input() situacao: number; 
+    @Input() situacao: number;
 }

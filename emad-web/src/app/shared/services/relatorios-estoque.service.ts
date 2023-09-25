@@ -10,8 +10,8 @@ export class RelatoriosEstoqueService extends GenericsService {
     super(http);
   }
 
-  obterRelatorioEntradaMaterial(idMovimentoGeral: number): Observable<any>{ 
-    return this.http.get("estoque" + "/movimento-geral/" + idMovimentoGeral + "/relatorio");
-  }  
+  obterRelatorioEntradaMaterial(idMovimentoGeral: number): Observable<any> {
+    return this.http.get('estoque' + '/movimento-geral/' + idMovimentoGeral + '/relatorio');
+  }
 }
 

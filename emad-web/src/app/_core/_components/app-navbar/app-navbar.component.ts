@@ -17,25 +17,25 @@ import { Notificacao } from '../../_models/Notificacao';
   styleUrls: ['./app-navbar.component.css']
 })
 export class AppNavbarComponent implements OnInit {
-  
 
-  route: string = "";
+
+  route = '';
   app: AppComponent;
   @Input() classe: string;
   menus: any[];
   service: AppNavbarService;
-  logo: string = 'assets/imgs/logo.png';
+  logo = 'assets/imgs/logo.png';
   idEstabelecimento: Number = null;
   modalRef: NgbModalRef;
-  estabelecimentos : any[] = [];
-  badge: boolean = false;
+  estabelecimentos: any[] = [];
+  badge = false;
   mensagens: any[] = [];
   mensagem: Notificacao = new Notificacao();
-  hideMenu: boolean = false;
+  hideMenu = false;
 
   @ViewChild('content') content: ElementRef;
   @ViewChild('contentMensagem') contentMensagem: ElementRef;
-  allowCancelButton : Boolean = false;
+  allowCancelButton: Boolean = false;
 
   public isCollapsed = true;
 
@@ -65,21 +65,20 @@ export class AppNavbarComponent implements OnInit {
 
     if (localStorage.getItem('menu')) {
       this.menus = JSON.parse(localStorage.getItem('menu'));
-    }
-    else {
+    } else {
       this.getMenuLista();
     }
 
     this.getLogo();
 
-    this.routeNew.queryParamMap.subscribe((queryParam: ParamMap)=>{        
+    this.routeNew.queryParamMap.subscribe((queryParam: ParamMap) => {
       this.hideMenu = queryParam.get('hideMenu') == 'true';
-        if(this.hideMenu){
+        if (this.hideMenu) {
           this.app.fecha();
         }
     });
 
-    
+
   }
 
   sair() {
@@ -99,10 +98,10 @@ export class AppNavbarComponent implements OnInit {
   }
 
   getLogo() {
-    let user = this.auth.getUser();
+    const user = this.auth.getUser();
     if (user) {
-      if (user.logo != "") {
-        this.logo = "assets/imgs/logo.png";
+      if (user.logo != '') {
+        this.logo = 'assets/imgs/logo.png';
       }
 
     }
@@ -110,9 +109,9 @@ export class AppNavbarComponent implements OnInit {
 
   open() {
 
-    this.idEstabelecimento = !Util.isEmpty(JSON.parse(localStorage.getItem("est"))) ? +JSON.parse(localStorage.getItem("est"))[0].id : null;
+    this.idEstabelecimento = !Util.isEmpty(JSON.parse(localStorage.getItem('est'))) ? +JSON.parse(localStorage.getItem('est'))[0].id : null;
 
-    this.service.list("estabelecimento").subscribe(result =>{
+    this.service.list('estabelecimento').subscribe(result => {
       this.estabelecimentos = result;
 
       this.modalRef = this.modalService.open(this.content, {
@@ -120,34 +119,33 @@ export class AppNavbarComponent implements OnInit {
         centered: true,
         keyboard: false
       });
-      
-    }, error =>{
-      console.log("Erro ao resgatar estabelecimentos!");
+
+    }, error => {
+      console.log('Erro ao resgatar estabelecimentos!');
     });
-    
+
   }
-  
-  ngOnInit(): void {  
-    
+
+  ngOnInit(): void {
+
     if (localStorage.getItem('est')) {
       this.allowCancelButton = true;
-    }
-    else {
-      this.open();    
+    } else {
+      this.open();
       this.allowCancelButton = false;
     }
 
     this.socketService.connect()
     .subscribe(result => {
       console.log(`notificação sistema ${result}`);
-      this.badge=true;
+      this.badge = true;
     }, (error) => {
-    });  
-    
+    });
+
     this.verificaMensagens();
   }
 
-  populateEstabelecimento(){
+  populateEstabelecimento() {
     let estabelecimento = {};
 
     estabelecimento = this.estabelecimentos.filter((estabelecimento) => estabelecimento.id == this.idEstabelecimento);
@@ -155,46 +153,46 @@ export class AppNavbarComponent implements OnInit {
     this.allowCancelButton = true;
     localStorage.setItem('est', JSON.stringify(estabelecimento));
     this.modalRef.close();
-    window.location.href = "";
+    window.location.href = '';
 
   }
 
-  carregaMensagens(){
+  carregaMensagens() {
     this.mensagens = [];
     this.badge = false;
-    this.service.list("notificacao/usuario").subscribe(result =>{
-      this.mensagens = result;      
-    }, error =>{
-      console.log("Erro ao carregar notificações");
+    this.service.list('notificacao/usuario').subscribe(result => {
+      this.mensagens = result;
+    }, error => {
+      console.log('Erro ao carregar notificações');
     });
   }
 
-  verificaMensagens(){
-    this.service.get("notificacao/usuario/contador").subscribe(result =>{      
+  verificaMensagens() {
+    this.service.get('notificacao/usuario/contador').subscribe(result => {
       this.badge = result.total > 0 ? true : false;
-    }, error =>{
-      console.log("Erro ao carregar notificações");
+    }, error => {
+      console.log('Erro ao carregar notificações');
     });
   }
 
-  openMensagem(item){
-    this.service.findById(item.id, "notificacao/usuario").subscribe(result =>{
-      if(result){
+  openMensagem(item) {
+    this.service.findById(item.id, 'notificacao/usuario').subscribe(result => {
+      if (result) {
         this.mensagem = result[0];
         this.modalRef = this.modalService.open(this.contentMensagem, {
           backdrop: 'static',
           centered: true,
           keyboard: false,
-          size: "lg"
+          size: 'lg'
         });
-        this.service.notificacaoVisualizada(result[0]).subscribe(result => {          
+        this.service.notificacaoVisualizada(result[0]).subscribe(result => {
         }, error => {
-          console.log("Erro ao gravar notificações!");
+          console.log('Erro ao gravar notificações!');
         });
 
-      }     
-    }, error =>{
-      console.log("Erro ao carregar notificações!");
+      }
+    }, error => {
+      console.log('Erro ao carregar notificações!');
     });
   }
 }

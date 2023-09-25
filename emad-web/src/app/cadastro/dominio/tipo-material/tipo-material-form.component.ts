@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class TipoMaterialFormComponent implements OnInit {
 
   object: TipoMaterial = new TipoMaterial();
-  method: string = "tipo-material";
+  method = 'tipo-material';
   fields: any[] = [];
-  label: string = "Tipo de material";
+  label = 'Tipo de material';
   id: Number = null;
   domains: any[] = [];
 

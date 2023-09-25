@@ -19,15 +19,15 @@ import { PagerService } from '../../_core/_services/pager.service';
 export class EspecialidadeEntidadeCampoFormComponent implements OnInit {
   //MESSAGES
   loading: Boolean = false;
-  message: string = "";
+  message = '';
   errors: any[] = [];
   modalRef: NgbModalRef = null;
   modalRemoveRef: NgbModalRef = null;
   form: FormGroup;
-  method: string = "especialidade-material";
+  method = 'especialidade-material';
   ausenciaProfissional: AusenciaProfissional = new AusenciaProfissional();
   fields: any[] = [];
-  object: EspecialidadeEntidadeCampo = new EspecialidadeEntidadeCampo();  
+  object: EspecialidadeEntidadeCampo = new EspecialidadeEntidadeCampo();
   domains: any[] = [];
   allItemsEntidadeCampo: any[] = [];
   allItemsPesquisaMaterial: any[] = [];
@@ -40,7 +40,7 @@ export class EspecialidadeEntidadeCampoFormComponent implements OnInit {
   allItems: any[] = [];
   pager: any = {};
   pagedItems: any[];
-  pageLimit: number = 10;
+  pageLimit = 10;
   fieldsPacientes: any[] = [];
 
   constructor(
@@ -50,7 +50,7 @@ export class EspecialidadeEntidadeCampoFormComponent implements OnInit {
     private modalService: NgbModal,
     private route: ActivatedRoute,
     private router: Router) {
-      for (let field of this.service.fields) {
+      for (const field of this.service.fields) {
         if (field.grid) {
           this.fields.push(field);
         }
@@ -61,9 +61,9 @@ export class EspecialidadeEntidadeCampoFormComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.idEspecialidade = params['id'];
 
-      this.domains.push({            
+      this.domains.push({
         idEspecialidade: []
-      }); 
+      });
 
       this.buscaEspecialidades();
       this.createGroup();
@@ -74,7 +74,7 @@ export class EspecialidadeEntidadeCampoFormComponent implements OnInit {
       }
     });
   }
-  
+
   buscaEspecialidades() {
     this.loading = true;
        this.service.list('especialidade').subscribe(result => {
@@ -94,46 +94,43 @@ export class EspecialidadeEntidadeCampoFormComponent implements OnInit {
   }
 
   salvaMedicamento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
-    if (!this.materialSelecionado.id)
-    {
-      this.errors = [{message:"Selecione o material"}];
+    if (!this.materialSelecionado.id) {
+      this.errors = [{message: 'Selecione o material'}];
       this.loading = false;
       return;
     }
 
-    if (!this.object.idEspecialidade)
-    {
-      this.errors = [{message:"Selecione o material"}];
+    if (!this.object.idEspecialidade) {
+      this.errors = [{message: 'Selecione o material'}];
       this.loading = false;
       return;
     }
-    
+
     this.object.idEntidadeCampo = this.materialSelecionado.id;
 
     this.service.salvaEntidadeCampo(this.object).subscribe(result => {
-      this.message = "Material vinculado com sucesso!"
-      this.loading = false;      
+      this.message = 'Material vinculado com sucesso!';
+      this.loading = false;
       this.modalRef.close();
-      this.carregaEntidadeCampoPorEspecialidade();      
+      this.carregaEntidadeCampoPorEspecialidade();
     }, error => {
       this.loading = false;
       this.errors = Util.customHTTPResponse(error);
-    });    
+    });
     this.ausenciaProfissional.periodoInicial = null;
     this.ausenciaProfissional.periodoFinal = null;
     this.ausenciaProfissional.idTipoAusencia = 0;
   }
 
-  carregaDadosDoProfissional()
-  {
+  carregaDadosDoProfissional() {
     this.carregaEntidadeCampoPorEspecialidade();
   }
-  
-  carregaEntidadeCampoPorEspecialidade() {    
+
+  carregaEntidadeCampoPorEspecialidade() {
     this.loading = true;
     this.allItemsEntidadeCampo = [];
     this.service.carregaEntidadeCampoPorEspecialidade(this.object.idEspecialidade).subscribe(result => {
@@ -147,17 +144,16 @@ export class EspecialidadeEntidadeCampoFormComponent implements OnInit {
 
   buscaMaterial() {
     this.loading = true;
-    let params = "";
+    let params = '';
     this.allItemsPesquisaMaterial = [];
 
-    if (Util.isEmpty(this.material.descricao) || this.material.descricao.length<3)
-    {
-      this.errors = [{message:"Informe a descrição do material, ao menos 3 caracteres"}];
+    if (Util.isEmpty(this.material.descricao) || this.material.descricao.length < 3) {
+      this.errors = [{message: 'Informe a descrição do material, ao menos 3 caracteres'}];
       this.loading = false;
       return;
     }
-    
-    params = "?descricao=" + this.material.descricao;
+
+    params = '?descricao=' + this.material.descricao;
 
     this.service.list('material' + params).subscribe(result => {
       this.allItemsPesquisaMaterial = result;
@@ -177,16 +173,16 @@ export class EspecialidadeEntidadeCampoFormComponent implements OnInit {
 
   openEntidadeCampo(content: any) {
     this.errors = [];
-    this.message = "";
-    this.material.descricao = "";
-    //this.materialSelecionado = null;    
+    this.message = '';
+    this.material.descricao = '';
+    //this.materialSelecionado = null;
     this.allItemsPesquisaMaterial = [];
 
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
 
@@ -204,23 +200,25 @@ export class EspecialidadeEntidadeCampoFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
 
   removeEntidadeCampo() {
     this.service.removeEntidadeCampo(this.idEspecialidadeEntidadeCampoExclusao).subscribe(result => {
-      this.message = "Campo removido com sucesso!"
+      this.message = 'Campo removido com sucesso!';
       this.loading = false;
       this.carregaEntidadeCampoPorEspecialidade();
-      if(this.modalRef)
+      if (this.modalRef) {
       this.modalRef.close();
+      }
     });
   }
 
   close() {
     this.idEspecialidadeEntidadeCampoExclusao = null;
-    if(this.modalRef)
+    if (this.modalRef) {
       this.modalRef.close();
+    }
   }
 }

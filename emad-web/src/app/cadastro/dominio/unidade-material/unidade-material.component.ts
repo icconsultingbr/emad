@@ -12,7 +12,7 @@ import { UnidadeMaterial } from '../../../_core/_models/UnidadeMaterial';
 
 export class UnidadeMaterialComponent implements OnInit {
 
-  method: string = "unidade-material";
+  method = 'unidade-material';
   object: UnidadeMaterial = new UnidadeMaterial();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class UnidadeMaterialComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: UnidadeMaterialService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

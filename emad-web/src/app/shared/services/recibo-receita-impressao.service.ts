@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
-import { RelatorioService } from "./relatorio.service";
+import { Injectable } from '@angular/core';
+import { RelatorioService } from './relatorio.service';
 import * as _moment from 'moment';
-import { ReceitaService } from "./receita.service";
+import { ReceitaService } from './receita.service';
 
 @Injectable()
-export class ReciboReceitaImpressaoService extends RelatorioService{
-    constructor(private receitaService: ReceitaService){
+export class ReciboReceitaImpressaoService extends RelatorioService {
+    constructor(private receitaService: ReceitaService) {
         super();
 
         this.style = `<style type="text/css">
@@ -20,7 +20,7 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
             /*Oculta os rodapes de impressão*/
             display: none;
         }
-    
+
         @media print {
             html, body {
                 min-height: 100%;
@@ -32,12 +32,12 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
             .hidden-button{
                 display: none;
             }
-    
+
             footer {
                 /*some com o rodapé original*/
                 display: none;
             }
-    
+
             div.page div.print-footer {
                 /*exibe os rodapés de impressão (que no caso são divs)*/
                 display: block;
@@ -46,7 +46,7 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
                 margin-top: -2%;
                 height: 2%; /*quando ajustar a altura deves ajustar margin-top e o top*/
             }
-    
+
             div.content {
                 /*Ajuda a trabalhar o conteudo com o .print-footer*/
                 position: relative;
@@ -54,7 +54,7 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
                 top: 0;
                 left: 0;
             }
-    
+
             div.page {
                 /*Força sempre quebrar a página no final*/
                 page-break-after: always;
@@ -87,37 +87,37 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
             margin-left: 30px;
             margin-right: 30px;
         }
-        
+
         .collapsible-body{
             display: block !important;
         }
-        
+
         .input-field{
             margin-top: unset !important;
         }
-        
-        .cor_topo {            
+
+        .cor_topo {
             color: #000000;
         }
-    </style>`
-        
+    </style>`;
+
         this.script = `<script>
             $(document).ready(function(){
             $('.date').mask('00/00/0000');
             $('.cpf').mask('000.000.000-00');
             $('.cnpj').mask('00.000.000/0000-00');
             });
-        </script>`
+        </script>`;
     }
 
-    imprimir(ano: number, idEstabelecimento: number, numero: number, farmacia: boolean, target: string = '_blank'){
+    imprimir(ano: number, idEstabelecimento: number, numero: number, farmacia: boolean, target: string = '_blank') {
         this.receitaService.obterRelatorio(ano, idEstabelecimento, numero)
-        .subscribe((result) => { 
-        let cabecalhoMedicamento = '';        
-        let dadosEstoque = '';
-        let dadosAssinatura = '';        
-        
-        for (const itemReceita of result.itensReceita) {      
+        .subscribe((result) => {
+        let cabecalhoMedicamento = '';
+        const dadosEstoque = '';
+        let dadosAssinatura = '';
+
+        for (const itemReceita of result.itensReceita) {
             cabecalhoMedicamento += (`<div class="col s6" style="text-align: left;">
                                       <span style="font-weight:bold"> Material/Medicamento: </span><span>${itemReceita.codigoMaterial} - ${itemReceita.nomeMaterial}</span>
                                    </div>
@@ -137,15 +137,15 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
                                      <th style="width:35%">Fabricante</th>
                                      <th style="width:10%">Validade</th>
                                      <th style="width:10%">Qtde. dispensada</th>
-                                     <th style="width:15%">Dispensado por</th>   
-                                     <th style="width:10%">Data da dispensação</th>   
+                                     <th style="width:15%">Dispensado por</th>
+                                     <th style="width:10%">Data da dispensação</th>
                                    </tr>
                                  </thead>
-                                 `);   
-                                 
+                                 `);
+
                 cabecalhoMedicamento += (itemReceita.itensEstoque.length > 0 ? `<tbody>` : ``);
 
-            for (const itemEstoque of itemReceita.itensEstoque) {    
+            for (const itemEstoque of itemReceita.itensEstoque) {
 
                 cabecalhoMedicamento += (`
                 <tr class="text-left">
@@ -154,14 +154,14 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
                     <td class="text-secondary">${itemEstoque.validade ? _moment(itemEstoque.validade).format('DD/MM/YYYY') : '' }</td>
                     <td class="text-secondary">${itemEstoque.quantidade}</td>
                     <td class="text-secondary">${itemEstoque.nomeUsuario}</td>
-                    <td class="text-secondary">${itemEstoque.dataUltDis ? _moment(itemEstoque.dataUltDis).format('DD/MM/YYYY HH:mm') : '' }</td>                    
+                    <td class="text-secondary">${itemEstoque.dataUltDis ? _moment(itemEstoque.dataUltDis).format('DD/MM/YYYY HH:mm') : '' }</td>
                 </tr>`);
             }
 
             cabecalhoMedicamento += (itemReceita.itensEstoque.length > 0 ? `</tbody></table>` : `</table>`);
         }
 
-        if(farmacia){
+        if (farmacia) {
             dadosAssinatura = `<br/>
                                <br/>
                                <div class="row">
@@ -170,7 +170,7 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
                                     </div>
                                     <div class="col s6">
                                         <span>__________________________________________________________</span>
-                                    </div>                                    
+                                    </div>
                                </div>`;
         }
 
@@ -184,56 +184,56 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
                     <div class="row">
                         <div class="col s4" style="margin-top:20px;">
                             <img style="width:60%; float:left; margin-left:10px;" src="${window.location.origin}${window.location.pathname}/assets/imgs/logo_relatorio.png">
-                        </div>                    
+                        </div>
                         <div class="col s8" style="margin-top:40px;text-align: right; color: #7d0000; font-weight:bold">
-                            Unidade: ${result.nomeEstabelecimento}               
-                        </div>           
-                        <div class="col s8" style="text-align: right; color: #7d0000; font-weight:bold">                
+                            Unidade: ${result.nomeEstabelecimento}
+                        </div>
+                        <div class="col s8" style="text-align: right; color: #7d0000; font-weight:bold">
                             Recibo da receita
-                        </div>           
+                        </div>
                     </div>
                     <hr size = 7>
                     <div class="row">
                         <div class="col" style="text-align: center;width: 100%;">
                             <span style="font-family: Arial; font-size: 18px; font-weight:bold"> Número da receita: ${result.ano}-${result.idEstabelecimento}-${result.numero}</span>
-                        </div>    
+                        </div>
                     </div>
                     <br/>
                     <div class="row">
                         <div class="col s3">
                             <span> Paciente: ${result.nomePaciente}</span>
-                        </div>  
+                        </div>
                         <div class="col s3">
                             <span> Cartão SUS: ${result.cartaoSusPaciente}</span>
-                        </div>    
+                        </div>
                         <div class="col s3">
                             <span> Data de nascimento: ${result.dataNascimento ? _moment(result.dataNascimento).format('DD/MM/YYYY') : ' ' } (${result.pacienteIdade} anos)</span>
-                        </div>    
+                        </div>
                         <div class="col s3">
                             <span> Id SAP: ${result.idSap}</span>
-                        </div>    
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col s3">
                             <span> Prescritor: ${result.nomeProfissional ? result.nomeProfissional : result.nomeProfissionalExterno}</span>
-                        </div> 
+                        </div>
                         <div class="col s3">
                             <span> Data da prescrição: ${result.dataEmissao ? _moment(result.dataEmissao).format('DD/MM/YYYY') : ' ' }</span>
-                        </div>    
+                        </div>
                     </div>
                     <hr size = 7>
                     <div class="row">
-                        ${cabecalhoMedicamento}   
-                    </div>     
+                        ${cabecalhoMedicamento}
+                    </div>
                     <div class="row">
-                        ${dadosEstoque}   
+                        ${dadosEstoque}
                     </div>
                     ${dadosAssinatura}
-                </form>    
+                </form>
             </div>
-        </div>`
+        </div>`;
 
-    if(farmacia){
+    if (farmacia) {
         tela += `
         <div class="page">
             <div class="content">
@@ -241,54 +241,54 @@ export class ReciboReceitaImpressaoService extends RelatorioService{
                 <div class="row">
                     <div class="col s4" style="margin-top:20px;">
                         <img style="width:60%; float:left; margin-left:10px;" src="${window.location.origin}${window.location.pathname}/assets/imgs/logo_relatorio.png">
-                    </div>                    
+                    </div>
                     <div class="col s8" style="margin-top:40px;text-align: right; color: #7d0000; font-weight:bold">
-                        Unidade: ${result.nomeEstabelecimento}               
-                    </div>           
-                    <div class="col s8" style="text-align: right; color: #7d0000; font-weight:bold">                
+                        Unidade: ${result.nomeEstabelecimento}
+                    </div>
+                    <div class="col s8" style="text-align: right; color: #7d0000; font-weight:bold">
                         Recibo da receita
-                    </div>           
+                    </div>
                 </div>
                 <hr size = 7>
                 <div class="row">
                     <div class="col" style="text-align: center;width: 100%;">
                         <span style="font-family: Arial; font-size: 18px; font-weight:bold"> Número da receita: ${result.ano}-${result.idEstabelecimento}-${result.numero}</span>
-                    </div>    
+                    </div>
                 </div>
                 <br/>
                 <div class="row">
                     <div class="col s3">
                         <span> Paciente: ${result.nomePaciente}</span>
-                    </div>  
+                    </div>
                     <div class="col s3">
                         <span> Cartão SUS: ${result.cartaoSusPaciente}</span>
-                    </div>    
+                    </div>
                     <div class="col s3">
                         <span> Data de nascimento: ${result.dataNascimento ? _moment(result.dataNascimento).format('DD/MM/YYYY') : ' ' } (${result.pacienteIdade} anos)</span>
-                    </div>    
+                    </div>
                     <div class="col s3">
                         <span> Id SAP: ${result.idSap}</span>
-                    </div>    
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col s3">
                         <span> Prescritor: ${result.nomeProfissional ? result.nomeProfissional : result.nomeProfissionalExterno}</span>
-                    </div> 
+                    </div>
                     <div class="col s3">
                         <span> Data da prescrição: ${result.dataEmissao ? _moment(result.dataEmissao).format('DD/MM/YYYY') : ' ' }</span>
-                    </div>    
+                    </div>
                 </div>
                 <hr size = 7>
                 <div class="row">
-                    ${cabecalhoMedicamento}   
-                </div>    
+                    ${cabecalhoMedicamento}
+                </div>
                 <div class="row">
-                    ${dadosEstoque}   
+                    ${dadosEstoque}
                 </div>
                 ${dadosAssinatura}
-            </form>       
-        </div>        
-    </div>`
+            </form>
+        </div>
+    </div>`;
     }
 
         this.print(tela, target, ano, idEstabelecimento, numero);

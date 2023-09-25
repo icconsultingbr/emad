@@ -17,9 +17,9 @@ export class TipoUsuarioFormComponent implements OnInit {
   tipoUsuarioForm: FormGroup;
   route: ActivatedRoute;
   router: Router;
-  mensagem: string = "";
-  warning: string = "";
-  tipoUsuario: TipoUsuario = new TipoUsuario(); 
+  mensagem = '';
+  warning = '';
+  tipoUsuario: TipoUsuario = new TipoUsuario();
 
   dropdownList = [];
   selectedItems = [];
@@ -48,7 +48,7 @@ export class TipoUsuarioFormComponent implements OnInit {
     this.list();
 
     this.route.params.subscribe(params => {
-      let id = params['id'];
+      const id = params['id'];
 
       if (id) {
         this.service.buscaPorId(id).subscribe(
@@ -97,15 +97,15 @@ export class TipoUsuarioFormComponent implements OnInit {
         if (this.tipoUsuarioForm.value.id) {
           this.router.navigate(['tipos-usuarios']);
         }
-        this.mensagem = "Cadastro efetuado com sucesso!";
-        this.warning = "";
+        this.mensagem = 'Cadastro efetuado com sucesso!';
+        this.warning = '';
         this.tipoUsuarioForm.reset();
       }, erro => {
-        let json = erro; 
-        this.warning = "";
+        const json = erro;
+        this.warning = '';
 
-        for (var key in json) {
-          this.warning += "-" + json[key].msg + '\n';
+        for (const key in json) {
+          this.warning += '-' + json[key].msg + '\n';
         }
       });
   }

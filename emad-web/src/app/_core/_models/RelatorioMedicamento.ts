@@ -1,9 +1,9 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
-export class RelatorioMedicamento {    
-    @Input() idMaterial: number;    
-    @Input() nomeMaterial: string = "";
-    @Input() ordenadoPor: string = "mvg.dataMovimento";
+export class RelatorioMedicamento {
+    @Input() idMaterial: number;
+    @Input() nomeMaterial = '';
+    @Input() ordenadoPor = 'mvg.dataMovimento';
     @Input() idPaciente: string;
     @Input() nomePaciente: string;
     @Input() dataInicial: Date;
@@ -18,11 +18,11 @@ export class RelatorioMedicamento {
     @Input() idFabricanteMaterial: number;
     @Input() nomeFabricanteMaterial: string;
     @Input() idProfissional: number;
-    @Input() nomeProfissional: string;    
+    @Input() nomeProfissional: string;
     @Input() idTipoMovimento: number;
-    @Input() nomeTipoMovimento: string;    
+    @Input() nomeTipoMovimento: string;
     @Input() idOperacao: number;
-    @Input() nomeOperacao: string;    
+    @Input() nomeOperacao: string;
     @Input() idLivro: number;
-    @Input() nomeLivro: string;  
+    @Input() nomeLivro: string;
 }

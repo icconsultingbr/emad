@@ -12,7 +12,7 @@ import { FabricanteMaterial } from '../../_core/_models/FabricanteMaterial';
 
 export class FabricanteMaterialComponent implements OnInit {
 
-  method: string = "fabricante-material";
+  method = 'fabricante-material';
   object: FabricanteMaterial = new FabricanteMaterial();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class FabricanteMaterialComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: FabricanteMaterialService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

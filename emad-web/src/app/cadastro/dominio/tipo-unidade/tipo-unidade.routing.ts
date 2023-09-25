@@ -1,18 +1,18 @@
-import { Routes } from "@angular/router";
-import { TipoUnidadeFormComponent } from "./tipo-unidade-form.component";
-import { TipoUnidadeComponent } from "./tipo-unidade.component";
+import { Routes } from '@angular/router';
+import { TipoUnidadeFormComponent } from './tipo-unidade-form.component';
+import { TipoUnidadeComponent } from './tipo-unidade.component';
 
 export const tipoUnidadeRoutes: Routes = [
     {
         path: '',
-        component: TipoUnidadeComponent,        
+        component: TipoUnidadeComponent,
     },
     {
         path: 'cadastro',
-        component: TipoUnidadeFormComponent,        
+        component: TipoUnidadeFormComponent,
     },
     {
         path: 'cadastro/:id',
-        component: TipoUnidadeFormComponent,        
+        component: TipoUnidadeFormComponent,
     }
 ];

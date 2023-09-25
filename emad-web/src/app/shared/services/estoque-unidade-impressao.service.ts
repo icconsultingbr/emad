@@ -1,12 +1,12 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import * as _moment from 'moment';
-import { RelatorioEstoqueService } from "./relatorio-estoque.service";
-import { EstoqueUnidadeService } from "../../estoque/relatorios/estoque-unidade/estoque-unidade.service";
+import { RelatorioEstoqueService } from './relatorio-estoque.service';
+import { EstoqueUnidadeService } from '../../estoque/relatorios/estoque-unidade/estoque-unidade.service';
 
 
 @Injectable()
-export class EstoqueUnidadeImpressaoService extends RelatorioEstoqueService{
-    constructor(private estoqueUnidadeService: EstoqueUnidadeService){
+export class EstoqueUnidadeImpressaoService extends RelatorioEstoqueService {
+    constructor(private estoqueUnidadeService: EstoqueUnidadeService) {
         super();
 
         this.style = `<style type="text/css">
@@ -21,7 +21,7 @@ export class EstoqueUnidadeImpressaoService extends RelatorioEstoqueService{
             /*Oculta os rodapes de impressão*/
             display: none;
         }
-    
+
         @media print {
             html, body {
                 min-height: 100%;
@@ -33,12 +33,12 @@ export class EstoqueUnidadeImpressaoService extends RelatorioEstoqueService{
             .hidden-button{
                 display: none;
             }
-    
+
             footer {
                 /*some com o rodapé original*/
                 display: none;
             }
-    
+
             div.page div.print-footer {
                 /*exibe os rodapés de impressão (que no caso são divs)*/
                 display: block;
@@ -47,7 +47,7 @@ export class EstoqueUnidadeImpressaoService extends RelatorioEstoqueService{
                 margin-top: -2%;
                 height: 2%; /*quando ajustar a altura deves ajustar margin-top e o top*/
             }
-    
+
             div.content {
                 /*Ajuda a trabalhar o conteudo com o .print-footer*/
                 position: relative;
@@ -55,7 +55,7 @@ export class EstoqueUnidadeImpressaoService extends RelatorioEstoqueService{
                 top: 0;
                 left: 0;
             }
-    
+
             div.page {
                 /*Força sempre quebrar a página no final*/
                 page-break-after: always;
@@ -88,35 +88,35 @@ export class EstoqueUnidadeImpressaoService extends RelatorioEstoqueService{
             margin-left: 30px;
             margin-right: 30px;
         }
-        
+
         .collapsible-body{
             display: block !important;
         }
-        
+
         .input-field{
             margin-top: unset !important;
         }
-        
-        .cor_topo {            
+
+        .cor_topo {
             color: #000000;
         }
-    </style>`
-        
+    </style>`;
+
         this.script = `<script>
             $(document).ready(function(){
             $('.date').mask('00/00/0000');
             $('.cpf').mask('000.000.000-00');
             $('.cnpj').mask('00.000.000/0000-00');
             });
-        </script>`
+        </script>`;
     }
 
-    imprimir(idEstabelecimento: number, nomeEstabelecimento: string, nomeMaterial: string, nomeLote: string, target: string = '_blank'){
-        
-        this.estoqueUnidadeService.carregaEstoquePorEstabelecimento("relatorio", idEstabelecimento, "")
-        .subscribe((result) => { 
-        let gridMedicamentos = '';       
-        
+    imprimir(idEstabelecimento: number, nomeEstabelecimento: string, nomeMaterial: string, nomeLote: string, target: string = '_blank') {
+
+        this.estoqueUnidadeService.carregaEstoquePorEstabelecimento('relatorio', idEstabelecimento, '')
+        .subscribe((result) => {
+        let gridMedicamentos = '';
+
         gridMedicamentos += (`<table class="table table-striped">
                             <thead>
                                 <tr style="text-align: center;">
@@ -124,17 +124,17 @@ export class EstoqueUnidadeImpressaoService extends RelatorioEstoqueService{
                                     <th style="width:35%">Medicamento</th>
                                     <th style="width:8%">Validade</th>
                                     <th style="width:10%">Lote</th>
-                                    <th style="width:29%">Fornecedor/Fabricante</th>   
-                                    <th style="width:5%">Genérico</th>   
-                                    <th style="width:5%">Estoque</th>   
+                                    <th style="width:29%">Fornecedor/Fabricante</th>
+                                    <th style="width:5%">Genérico</th>
+                                    <th style="width:5%">Estoque</th>
                                 </tr>
                             </thead>
-                                 `);  
-                                 
+                                 `);
+
         gridMedicamentos += (result.length > 0 ? `<tbody>` : ``);
 
-        for (const medicamentos of result) {      
-            for (const itemEstoque of medicamentos.itensEstoque) {    
+        for (const medicamentos of result) {
+            for (const itemEstoque of medicamentos.itensEstoque) {
                 gridMedicamentos += (`
                 <tr class="text-left">
                     <td class="text-secondary">${itemEstoque.codigoMaterial}</td>
@@ -143,18 +143,18 @@ export class EstoqueUnidadeImpressaoService extends RelatorioEstoqueService{
                     <td class="text-secondary">${itemEstoque.lote}</td>
                     <td class="text-secondary">${itemEstoque.nomeFabricanteMaterial}</td>
                     <td class="text-secondary">${itemEstoque.generico ? 'Sim' : 'Não'}</td>
-                    <td class="text-secondary">${itemEstoque.estoque}</td>                    
+                    <td class="text-secondary">${itemEstoque.estoque}</td>
                 </tr>`);
             }
             gridMedicamentos += (`
                 <tr">
-                    <td class="text-secondary" colspan="7" style="text-align: right;"> Total: ${medicamentos.estoque}</td>                   
-                </tr>`);         
-        }       
+                    <td class="text-secondary" colspan="7" style="text-align: right;"> Total: ${medicamentos.estoque}</td>
+                </tr>`);
+        }
 
         gridMedicamentos += (result.length > 0 ? `</tbody></table>` : `</table>`);
 
-        let tela = `
+        const tela = `
         <div class="page">
             <div class="content">
                 <form class="container" id="form" style="font-size: 12px;">
@@ -164,23 +164,23 @@ export class EstoqueUnidadeImpressaoService extends RelatorioEstoqueService{
                     <div class="row">
                         <div class="col s4" style="margin-top:20px;">
                             <img style="width:60%; float:left; margin-left:10px;" src="${window.location.origin}${window.location.pathname}/assets/imgs/logo_relatorio.png">
-                        </div>                    
+                        </div>
                         <div class="col s8" style="margin-top:40px;text-align: right; color: #7d0000; font-weight:bold">
-                            Unidade: ${nomeEstabelecimento}               
-                        </div>           
-                        <div class="col s8" style="text-align: right; color: #7d0000; font-weight:bold">                
+                            Unidade: ${nomeEstabelecimento}
+                        </div>
+                        <div class="col s8" style="text-align: right; color: #7d0000; font-weight:bold">
                             Estoque por unidade
-                        </div>           
+                        </div>
                     </div>
                     <hr size = 7>
-                    <br/>                    
-                    <div class="row"> 
-                        ${gridMedicamentos}   
-                    </div>     
-                </form>    
+                    <br/>
+                    <div class="row">
+                        ${gridMedicamentos}
+                    </div>
+                </form>
             </div>
-        </div>`
-            
+        </div>`;
+
         this.print(tela, nomeEstabelecimento, target);
         });
     }

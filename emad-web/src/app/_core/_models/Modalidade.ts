@@ -1,7 +1,7 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
 export class Modalidade {
-    id: Number;  
+    id: Number;
     @Input() nome: string;
-    @Input() situacao : Boolean;
+    @Input() situacao: Boolean;
 }

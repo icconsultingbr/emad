@@ -1,4 +1,4 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 import * as moment from 'moment';
 
 
@@ -7,7 +7,7 @@ export class PacienteVacina {
     @Input() nome: string;
     @Input() validade: string;
     @Input() lote: string;
-    @Input() nomeProfissional: string = JSON.parse(localStorage.getItem("currentUser")).nome;
+    @Input() nomeProfissional: string = JSON.parse(localStorage.getItem('currentUser')).nome;
     @Input() idAtendimento: Number = null;
     @Input() idPaciente: Number = null;
     @Input() dose: Number = 1;

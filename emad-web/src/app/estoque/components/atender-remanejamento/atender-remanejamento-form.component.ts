@@ -17,74 +17,74 @@ import { SolicitacaoRemanejamentoService } from '../solicitacao-remanejamento/so
 })
 
 export class AtenderRemanejamentoFormComponent implements OnInit {
-    
+
   fields: any[] = [];
-  label: String = "solicitação de remanejamento";
+  label: String = 'solicitação de remanejamento';
   solicitacaoRemanejamento: SolicitacaoRemanejamento = new SolicitacaoRemanejamento();
-  itemSolicitacaoRemanejamento: ItemSolicitacaoRemanejamento = new ItemSolicitacaoRemanejamento();  
+  itemSolicitacaoRemanejamento: ItemSolicitacaoRemanejamento = new ItemSolicitacaoRemanejamento();
   listaMaterialLoteDispensado: any[] = [];
   id: number = null;
   domains: any[] = [];
   form: FormGroup;
   loading: Boolean = false;
-  message: string = '';
-  errors: any[] = [];    
-  listaMaterialLote: any[] = [];  
-  warning: string = '';
+  message = '';
+  errors: any[] = [];
+  listaMaterialLote: any[] = [];
+  warning = '';
   objectMaterial: Material = new Material();
   listaMaterialAguardandoAtendimento: any[] = [];
 
-  constructor(    
+  constructor(
     private fb: FormBuilder,
     private service: SolicitacaoRemanejamentoService,
-    private ref: ChangeDetectorRef,    
+    private ref: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router) {
-      
+
     }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.id = params['id'];
-      if(!Util.isEmpty(this.id))
+      if (!Util.isEmpty(this.id)) {
         this.carregaSolicitacaoRemanejamento();
+      }
     });
 
     this.createGroup();
     this.loadDomains();
   }
 
-  loadDomains() {    
+  loadDomains() {
     this.service.listDomains('estabelecimento').subscribe(estabelecimentoSolicitada => {
       this.service.listDomains('estabelecimento').subscribe(estabelecimentoSolicitante => {
-        this.domains.push({            
+        this.domains.push({
           idEstabelecimentoSolicitada: estabelecimentoSolicitada,
           idEstabelecimentoSolicitante: estabelecimentoSolicitante
-        });                      
+        });
       });
     });
   }
 
   createGroup() {
     this.form = this.fb.group({
-      id: [''], 
+      id: [''],
       idEstabelecimentoSolicitante: ['', ''],
       idEstabelecimentoSolicitada: [{ value: '', disabled: true }, ''],
       nomeEstabelecimentoSolicitante: ['', ''],
       qtdSolicitada: ['', ''],
-      qtdAtendida: ['', ''],   
-      qtdDispensarLote: ['', '']   
+      qtdAtendida: ['', ''],
+      qtdDispensarLote: ['', '']
     });
   }
 
   atenderSolicitacao(event) {
-    this.errors = [];    
+    this.errors = [];
     event.preventDefault();
-    
-    if(this.listaMaterialLoteDispensado.length == 0)
-    {
+
+    if (this.listaMaterialLoteDispensado.length == 0) {
       this.errors.push({
-        message: "Solicitação não pôde ser atendida, pois nenhum Lote/Fabricante foi selecionado."
+        message: 'Solicitação não pôde ser atendida, pois nenhum Lote/Fabricante foi selecionado.'
       });
       return;
     }
@@ -96,22 +96,22 @@ export class AtenderRemanejamentoFormComponent implements OnInit {
       .atender(this.solicitacaoRemanejamento)
       .subscribe((res: any) => {
         this.back();
-      }, erro => {        
+      }, erro => {
         this.solicitacaoRemanejamento.situacao = 2;
         this.errors = Util.customHTTPResponse(erro);
       });
   }
 
   naoAtenderSolicitacao() {
-    this.errors = [];    
-    
+    this.errors = [];
+
     this.solicitacaoRemanejamento.situacao = 5;
 
     this.service
       .inserir(this.solicitacaoRemanejamento)
       .subscribe((res: any) => {
         this.back();
-      }, erro => {        
+      }, erro => {
         this.errors = Util.customHTTPResponse(erro);
       });
   }
@@ -119,58 +119,57 @@ export class AtenderRemanejamentoFormComponent implements OnInit {
   carregaSolicitacaoRemanejamento() {
     this.solicitacaoRemanejamento.id = this.id;
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
-    this.service.findById(this.id, "solicitacao-remanejamento").subscribe(result => {
-      this.solicitacaoRemanejamento = result;  
-      this.listaMaterialAguardandoAtendimento = this.solicitacaoRemanejamento.itensSolicitacaoRemanejamento;         
+    this.service.findById(this.id, 'solicitacao-remanejamento').subscribe(result => {
+      this.solicitacaoRemanejamento = result;
+      this.listaMaterialAguardandoAtendimento = this.solicitacaoRemanejamento.itensSolicitacaoRemanejamento;
       this.itemSolicitacaoRemanejamento.idSolicitacaoRemanejamento = result.id;
       this.loading = false;
     }, error => {
-      this.solicitacaoRemanejamento = new SolicitacaoRemanejamento();      
+      this.solicitacaoRemanejamento = new SolicitacaoRemanejamento();
       this.errors.push({
-        message: "Solicitação de remanejamento não encontrada"
+        message: 'Solicitação de remanejamento não encontrada'
       });
     });
   }
 
-  back() {   
-    const route = "atendimentos-remanejamentos";
+  back() {
+    const route = 'atendimentos-remanejamentos';
     this.router.navigate([route]);
   }
 
-  carregaLotePorMaterial(idMaterial: number, item: any){
+  carregaLotePorMaterial(idMaterial: number, item: any) {
     this.errors = [];
-    if(item)
-    {
-      if(!item.qtdAtendida || item.qtdAtendida == 0){
+    if (item) {
+      if (!item.qtdAtendida || item.qtdAtendida == 0) {
         this.errors.push({
-          message: "Informe a quantidade a ser atendida"
+          message: 'Informe a quantidade a ser atendida'
         });
         return;
       }
 
-      if(item.qtdAtendida > item.qtdSolicitada){
+      if (item.qtdAtendida > item.qtdSolicitada) {
         this.errors.push({
-          message: "Quantidade atendida é maior que a quantidade solicitada"
+          message: 'Quantidade atendida é maior que a quantidade solicitada'
         });
         return;
       }
 
-      this.itemSolicitacaoRemanejamento.idMaterial = item.idMaterial;      
+      this.itemSolicitacaoRemanejamento.idMaterial = item.idMaterial;
       this.itemSolicitacaoRemanejamento.qtdAtendida = item.qtdAtendida;
 
-      this.listaMaterialAguardandoAtendimento.forEach(itemEstoque => {            
+      this.listaMaterialAguardandoAtendimento.forEach(itemEstoque => {
         itemEstoque.expandir = (itemEstoque.id == item.id && itemEstoque.expandir == true) ? true : false;
       });
 
       item.expandir = !item.expandir;
-    }      
+    }
 
-    this.loading = true;    
-    var params = "?idMaterial=" + idMaterial + "&idEstabelecimento=" + JSON.parse(localStorage.getItem("est"))[0].id;;
+    this.loading = true;
+    const params = '?idMaterial=' + idMaterial + '&idEstabelecimento=' + JSON.parse(localStorage.getItem('est'))[0].id;
     this.service.list(`estoque${params}`).subscribe(estoque => {
-      this.listaMaterialLote = estoque;                  
+      this.listaMaterialLote = estoque;
       this.loading = false;
     }, erro => {
       this.loading = false;
@@ -178,73 +177,71 @@ export class AtenderRemanejamentoFormComponent implements OnInit {
     });
   }
 
-  confirmaItemSolicitacaoRemanejamento(item: any){    
-    if(this.estoqueContemDivergencias())
+  confirmaItemSolicitacaoRemanejamento(item: any) {
+    if (this.estoqueContemDivergencias()) {
       return;
+    }
 
     this.listaMaterialLote.forEach(novoItemEstoque => {
-      if(novoItemEstoque.qtdDispensar > 0){
-        this.itemSolicitacaoRemanejamento.itensEstoque.push(novoItemEstoque);  
+      if (novoItemEstoque.qtdDispensar > 0) {
+        this.itemSolicitacaoRemanejamento.itensEstoque.push(novoItemEstoque);
         this.listaMaterialLoteDispensado.push(novoItemEstoque);
-      }        
+      }
     });
 
     this.solicitacaoRemanejamento.itensSolicitacaoRemanejamento.forEach(itemReceitaExistente => {
-      if (itemReceitaExistente.idMaterial == item.idMaterial){
+      if (itemReceitaExistente.idMaterial == item.idMaterial) {
         itemReceitaExistente.qtdAtendida = this.itemSolicitacaoRemanejamento.qtdAtendida;
         itemReceitaExistente.itensEstoque = this.itemSolicitacaoRemanejamento.itensEstoque;
-      }      
-    });    
+      }
+    });
     this.itemSolicitacaoRemanejamento = new ItemSolicitacaoRemanejamento();
     this.listaMaterialLote = [];
-    this.listaMaterialAguardandoAtendimento = this.listaMaterialAguardandoAtendimento.filter(itemExistente=> itemExistente.idMaterial != item.idMaterial);
-  } 
+    this.listaMaterialAguardandoAtendimento = this.listaMaterialAguardandoAtendimento.filter(itemExistente => itemExistente.idMaterial != item.idMaterial);
+  }
 
-  estoqueContemDivergencias()
-  {
-    this.errors = [];   
-    var erroQtd = false;
-    let somaDispensar: number = 0;
+  estoqueContemDivergencias() {
+    this.errors = [];
+    let erroQtd = false;
+    let somaDispensar = 0;
     let listaMaterialLoteExistente = [];
     listaMaterialLoteExistente =  Object.assign([], this.listaMaterialLoteDispensado);
 
     this.listaMaterialLote.forEach(item => {
-      if(item.qtdDispensar > 0 && item.qtdDispensar != "undefined"){
-        if(item.qtdDispensar > item.quantidade){
+      if (item.qtdDispensar > 0 && item.qtdDispensar != 'undefined') {
+        if (item.qtdDispensar > item.quantidade) {
           this.errors.push({
-            message: "Quantidade a dispensar por lote é maior que a quantidade existente no lote (" + item.lote + ")"
+            message: 'Quantidade a dispensar por lote é maior que a quantidade existente no lote (' + item.lote + ')'
           });
-          erroQtd = true;                
+          erroQtd = true;
         }
         somaDispensar = somaDispensar + Number(item.qtdDispensar);
 
-        let medicamentoExistenteComLote = listaMaterialLoteExistente.filter(itemAdicionado => itemAdicionado.idMaterial == this.itemSolicitacaoRemanejamento.idMaterial 
+        const medicamentoExistenteComLote = listaMaterialLoteExistente.filter(itemAdicionado => itemAdicionado.idMaterial == this.itemSolicitacaoRemanejamento.idMaterial
                                                                       && itemAdicionado.lote == item.lote && itemAdicionado.idFabricanteMaterial == item.idFabricanteMaterial);
 
-        if(medicamentoExistenteComLote.length > 0)
-        {
+        if (medicamentoExistenteComLote.length > 0) {
           this.errors.push({
-            message: "O material "+ this.itemSolicitacaoRemanejamento.nomeMaterial +" já foi adicionado com o lote (" + item.lote + "). Para alterar a quantidade remova o item e insira novamente."
+            message: 'O material ' + this.itemSolicitacaoRemanejamento.nomeMaterial + ' já foi adicionado com o lote (' + item.lote + '). Para alterar a quantidade remova o item e insira novamente.'
           });
-          erroQtd = true;  
+          erroQtd = true;
         }
-      }        
+      }
     });
 
-    let medicamentoExistenteSemLote = listaMaterialLoteExistente.filter(itemAdicionado => itemAdicionado.idMaterial == this.itemSolicitacaoRemanejamento.idMaterial && !itemAdicionado.lote && !itemAdicionado.idFabricanteMaterial); 
+    const medicamentoExistenteSemLote = listaMaterialLoteExistente.filter(itemAdicionado => itemAdicionado.idMaterial == this.itemSolicitacaoRemanejamento.idMaterial && !itemAdicionado.lote && !itemAdicionado.idFabricanteMaterial);
 
-    if(medicamentoExistenteSemLote.length > 0)
-    {
+    if (medicamentoExistenteSemLote.length > 0) {
       this.errors.push({
-        message: "O material "+ this.itemSolicitacaoRemanejamento.nomeMaterial +" já foi adicionado. Para alterar a quantidade remova o item e insira novamente."
+        message: 'O material ' + this.itemSolicitacaoRemanejamento.nomeMaterial + ' já foi adicionado. Para alterar a quantidade remova o item e insira novamente.'
       });
-      erroQtd = true;        
+      erroQtd = true;
     }
 
-    if(somaDispensar != this.itemSolicitacaoRemanejamento.qtdAtendida && (somaDispensar > 0 || this.itemSolicitacaoRemanejamento.qtdAtendida > 0)){
-      erroQtd = true;        
+    if (somaDispensar != this.itemSolicitacaoRemanejamento.qtdAtendida && (somaDispensar > 0 || this.itemSolicitacaoRemanejamento.qtdAtendida > 0)) {
+      erroQtd = true;
       this.errors.push({
-        message: "A soma dos lotes é diferente da quantidade escolhida para dispensar!"
+        message: 'A soma dos lotes é diferente da quantidade escolhida para dispensar!'
       });
     }
     return erroQtd;

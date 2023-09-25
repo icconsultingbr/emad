@@ -1,4 +1,4 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
 export class AtendimentoMedicamento {
     id: Number = null;
@@ -9,7 +9,7 @@ export class AtendimentoMedicamento {
     @Input() quantidade: string = null;
     @Input() apresentacao: string = null;
     @Input() posologia: string = null;
-    @Input() idAtendimento: Number = null;  
+    @Input() idAtendimento: Number = null;
 }
 
 

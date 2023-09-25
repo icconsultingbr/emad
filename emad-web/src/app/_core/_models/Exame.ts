@@ -1,11 +1,11 @@
-import { Input } from "@angular/core";
-import { Guid } from "guid-typescript";
-import { ItemExame } from "./ItemExame";
+import { Input } from '@angular/core';
+import { Guid } from 'guid-typescript';
+import { ItemExame } from './ItemExame';
 
 export class Exame {
     id: Number;
-    @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem("est"))[0].id;
-    @Input() nomeProfissional: string = JSON.parse(localStorage.getItem("currentUser"));
+    @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem('est'))[0].id;
+    @Input() nomeProfissional: string = JSON.parse(localStorage.getItem('currentUser'));
     @Input() idAtendimento: number;
     @Input() idPaciente: number;
     @Input() nomePaciente: string;

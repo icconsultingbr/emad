@@ -1,9 +1,9 @@
-import { Routes } from "@angular/router";
-import { ProfissionalMedicamentoComponent } from "./profissional-medicamento.component";
+import { Routes } from '@angular/router';
+import { ProfissionalMedicamentoComponent } from './profissional-medicamento.component';
 
-export const profissionalMedicamentoRoutes: Routes = [    
+export const profissionalMedicamentoRoutes: Routes = [
     {
         path: '',
-        component: ProfissionalMedicamentoComponent,        
+        component: ProfissionalMedicamentoComponent,
     }
 ];

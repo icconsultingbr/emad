@@ -1,4 +1,4 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
 export class Atendimento {
     @Input() id: number = null;
@@ -21,7 +21,7 @@ export class Atendimento {
     @Input() dataCriacao: Date = new Date();
     @Input() dataFinalizacao: string = null;
     @Input() dataCancelamento: string = null;
-    @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem("est"))[0].id;
+    @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem('est'))[0].id;
     @Input() idProfissional: number = null;
     @Input() ano_receita: number = null;
     @Input() numero_receita: number = null;
@@ -86,7 +86,7 @@ export class AtendimentoHistorico {
     @Input() motivoCancelamento: string = null;
     @Input() dataFinalizacao: string = null;
     @Input() dataCancelamento: string = null;
-    @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem("est"))[0].id;
+    @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem('est'))[0].id;
     @Input() idProfissional: number = null;
     @Input() ano_receita: number = null;
     @Input() numero_receita: number = null;
@@ -132,6 +132,6 @@ export class AtendimentoFiltro {
     @Input() situacao: string;
     @Input() idSap: string;
     @Input() pesquisaCentral: string;
-    @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem("est"))[0].id;
+    @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem('est'))[0].id;
 }
 

@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class ProdutoExameFormComponent implements OnInit {
 
   object: ProdutoExame = new ProdutoExame();
-  method: String = "produto-exame";
+  method: String = 'produto-exame';
   fields: any[] = [];
-  label: String = "Produtos de exame";
+  label: String = 'Produtos de exame';
   id: Number = null;
   domains: any[] = [];
 
@@ -35,11 +35,11 @@ export class ProdutoExameFormComponent implements OnInit {
     this.loadDomains();
   }
 
-  loadDomains() {    
+  loadDomains() {
     this.service.listDomains('tipo-exame').subscribe(tipoExame => {
-      this.domains.push({            
+      this.domains.push({
         idTipoExame: tipoExame
-      });                      
+      });
     });
   }
 }

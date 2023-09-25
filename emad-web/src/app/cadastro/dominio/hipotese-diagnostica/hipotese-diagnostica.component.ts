@@ -11,7 +11,7 @@ import { HipoteseDiagnostica } from '../../../_core/_models/HipoteseDiagnostica'
 })
 export class HipoteseDiagnosticaComponent implements OnInit {
 
-  method: string = "hipotese-diagnostica";
+  method = 'hipotese-diagnostica';
   object: HipoteseDiagnostica = new HipoteseDiagnostica();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -19,7 +19,7 @@ export class HipoteseDiagnosticaComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: HipoteseDiagnosticaService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

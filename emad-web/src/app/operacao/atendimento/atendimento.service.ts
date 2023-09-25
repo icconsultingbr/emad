@@ -10,21 +10,21 @@ export class AtendimentoService extends GenericsService {
     }
     fields: any[] = [
         {
-            field: "corIconeGrid",
-            type: "icone",
-            label: "",
-            icon: "fa-square",
+            field: 'corIconeGrid',
+            type: 'icone',
+            label: '',
+            icon: 'fa-square',
             grid: true,
-            colunaDescricao: "tooltipIconeGrid",
+            colunaDescricao: 'tooltipIconeGrid',
             form: false,
             required: false,
             validator: ['', ''],
             sortable: false
         },
         {
-            field: "id",
-            type: "hidden",
-            label: "Código",
+            field: 'id',
+            type: 'hidden',
+            label: 'Código',
             grid: true,
             form: false,
             required: false,
@@ -32,39 +32,39 @@ export class AtendimentoService extends GenericsService {
             sortable: true
         },
         {
-            field: "cartaoSus",
-            type: "text",
-            label: "Cartão SUS",
+            field: 'cartaoSus',
+            type: 'text',
+            label: 'Cartão SUS',
             grid: true,
             form: false,
-            mask: "9999",
+            mask: '9999',
             required: true,
             validator: ['', ''],
             filter: {
-                type: "text",
+                type: 'text',
                 grid: true
             },
             sortable: true
         },
         {
-            field: "idSap",
-            type: "text",
-            label: "Número Sap",
+            field: 'idSap',
+            type: 'text',
+            label: 'Número Sap',
             grid: true,
             form: false,
             required: true,
             validator: ['', ''],
             autoFocus: true,
             filter: {
-                type: "text",
+                type: 'text',
                 grid: true
             },
             sortable: true
         },
         {
-            field: "cpf",
-            type: "text",
-            label: "CPF",
+            field: 'cpf',
+            type: 'text',
+            label: 'CPF',
             mask: '999.999.999-99',
             placeHolder: '999.999.999-99',
             grid: false,
@@ -79,9 +79,9 @@ export class AtendimentoService extends GenericsService {
             }
         },
         {
-            field: "nomePaciente",
-            type: "text",
-            label: "Nome do paciente",
+            field: 'nomePaciente',
+            type: 'text',
+            label: 'Nome do paciente',
             grid: true,
             form: false,
             required: true,
@@ -93,9 +93,9 @@ export class AtendimentoService extends GenericsService {
             sortable: true
         },
         {
-            field: "pesquisaCentral",
-            type: "text",
-            label: "Pesquisa central",
+            field: 'pesquisaCentral',
+            type: 'text',
+            label: 'Pesquisa central',
             grid: false,
             form: false,
             required: false,
@@ -107,9 +107,9 @@ export class AtendimentoService extends GenericsService {
             sortable: false
         },
         {
-            field: "dataCriacao",
-            type: "text",
-            label: "Data do atendimento",
+            field: 'dataCriacao',
+            type: 'text',
+            label: 'Data do atendimento',
             grid: true,
             form: false,
             required: true,
@@ -118,9 +118,9 @@ export class AtendimentoService extends GenericsService {
             sortable: true
         },
         {
-            field: "dataCriacaoInicial",
-            type: "text",
-            label: "Data do atendimento inicial",
+            field: 'dataCriacaoInicial',
+            type: 'text',
+            label: 'Data do atendimento inicial',
             grid: false,
             form: false,
             required: false,
@@ -134,9 +134,9 @@ export class AtendimentoService extends GenericsService {
             sortable: true
         },
         {
-            field: "dataCriacaoFinal",
-            type: "text",
-            label: "Data do atendimento final",
+            field: 'dataCriacaoFinal',
+            type: 'text',
+            label: 'Data do atendimento final',
             grid: false,
             form: false,
             required: false,
@@ -150,21 +150,21 @@ export class AtendimentoService extends GenericsService {
             sortable: true
         },
         {
-            field: "idEstabelecimento",
-            type: "text",
-            label: "Id do estabelecimento",
+            field: 'idEstabelecimento',
+            type: 'text',
+            label: 'Id do estabelecimento',
             grid: false,
             form: false,
             required: true,
             validator: ['', ''],
             filter: {
-                type: "select"
+                type: 'select'
             }
         },
         {
-            field: "tipoFichaNome",
-            type: "text",
-            label: "Tipo de atendimento",
+            field: 'tipoFichaNome',
+            type: 'text',
+            label: 'Tipo de atendimento',
             grid: true,
             form: false,
             required: true,
@@ -173,18 +173,18 @@ export class AtendimentoService extends GenericsService {
             sortable: true
         },
         {
-            field: "idUsuario",
-            type: "text",
-            label: "ID do profissional",
+            field: 'idUsuario',
+            type: 'text',
+            label: 'ID do profissional',
             grid: false,
             form: false,
             required: true,
             validator: ['', '']
         },
         {
-            field: "nome",
-            type: "text",
-            label: "Nome do profissional",
+            field: 'nome',
+            type: 'text',
+            label: 'Nome do profissional',
             grid: true,
             form: false,
             required: true,
@@ -192,28 +192,28 @@ export class AtendimentoService extends GenericsService {
             sortable: true
         },
         {
-            field: "situacao",
-            type: "text",
-            label: "Situação",
+            field: 'situacao',
+            type: 'text',
+            label: 'Situação',
             grid: true,
             form: false,
             translate: {
-                "0": "Sala de espera",
-                "C": "Em aberto",
-                "2": "Concluído",
-                "A": "Alta",
-                "E": "Evasão",
-                "5": "Transferência hospitalar/ambulatório",
-                "6": "Transferência unidade prisional",
-                "7": "Desinternação",
-                "8": "Álvara de soltura",
-                "O": "Óbito",
-                "X": "Cancelado"
+                '0': 'Sala de espera',
+                'C': 'Em aberto',
+                '2': 'Concluído',
+                'A': 'Alta',
+                'E': 'Evasão',
+                '5': 'Transferência hospitalar/ambulatório',
+                '6': 'Transferência unidade prisional',
+                '7': 'Desinternação',
+                '8': 'Álvara de soltura',
+                'O': 'Óbito',
+                'X': 'Cancelado'
             },
             required: true,
             validator: ['', ''],
             filter: {
-                type: "select",
+                type: 'select',
                 grid: true
             },
             sortable: true
@@ -221,62 +221,61 @@ export class AtendimentoService extends GenericsService {
     ];
 
     findByIdPaciente(id: any, idEstabelecimento: Number, method: string): Observable<any> {
-        return this.http.get(method + "/paciente/" + id + "/" + idEstabelecimento);
+        return this.http.get(method + '/paciente/' + id + '/' + idEstabelecimento);
     }
 
     findHipoteseByAtendimento(id: any): Observable<any> {
-        return this.http.get("atendimento-hipotese/atendimento/" + id);
+        return this.http.get('atendimento-hipotese/atendimento/' + id);
     }
 
     findVacinaByAtendimento(id: any): Observable<any> {
-        return this.http.get("atendimento-vacina/atendimento/" + id);
+        return this.http.get('atendimento-vacina/atendimento/' + id);
     }
 
     printDocument(url: string): Observable<any> {
-        let object: any = {};
+        const object: any = {};
         object.url = url;
-        return this.http.post("atendimento/print-document", JSON.stringify(object));
+        return this.http.post('atendimento/print-document', JSON.stringify(object));
 
     }
 
     openDocument(url: string): Observable<any> {
-        let object: any = {};
+        const object: any = {};
         object.url = url;
-        return this.http.post("atendimento/open-document", JSON.stringify(object));
+        return this.http.post('atendimento/open-document', JSON.stringify(object));
     }
 
     findEncaminhamentoByAtendimento(id: any): Observable<any> {
-        return this.http.get("atendimento-encaminhamento/atendimento/" + id);
+        return this.http.get('atendimento-encaminhamento/atendimento/' + id);
     }
 
     findCondicaoAvaliadaByAtendimento(id: any): Observable<any> {
-        return this.http.get("atendimento-condicao-avaliada/atendimento/" + id);
+        return this.http.get('atendimento-condicao-avaliada/atendimento/' + id);
     }
 
 
     findEncaminhamentoByPaciente(id: any): Observable<any> {
-        return this.http.get("atendimento-encaminhamento/usuario/" + id);
+        return this.http.get('atendimento-encaminhamento/usuario/' + id);
     }
 
 
     findMedicamentoByAtendimento(id: any): Observable<any> {
-        return this.http.get("atendimento-medicamento/atendimento/" + id);
+        return this.http.get('atendimento-medicamento/atendimento/' + id);
     }
 
     findHistoricoByAtendimento(id: any): Observable<any> {
-        return this.http.get("atendimento-historico/" + id);
+        return this.http.get('atendimento-historico/' + id);
     }
 
     findByHistoricoId(id: any): Observable<any> {
-        return this.http.get("atendimento/historico/" + id);
+        return this.http.get('atendimento/historico/' + id);
     }
 
     saveHipotese(obj: any) {
         if (obj.id) {
             return this.http
                 .put('atendimento-hipotese', JSON.stringify(obj));
-        }
-        else {
+        } else {
             return this.http
                 .post('atendimento-hipotese', JSON.stringify(obj));
         }
@@ -286,8 +285,7 @@ export class AtendimentoService extends GenericsService {
         if (obj.id) {
             return this.http
                 .put('atendimento-vacina', JSON.stringify(obj));
-        }
-        else {
+        } else {
             return this.http
                 .post('atendimento-vacina', JSON.stringify(obj));
         }
@@ -302,8 +300,7 @@ export class AtendimentoService extends GenericsService {
         if (obj.id) {
             return this.http
                 .put('atendimento-encaminhamento', JSON.stringify(obj));
-        }
-        else {
+        } else {
             return this.http
                 .post('atendimento-encaminhamento', JSON.stringify(obj));
         }
@@ -313,8 +310,7 @@ export class AtendimentoService extends GenericsService {
         if (obj.id) {
             return this.http
                 .put('participante-atividade-coletiva', JSON.stringify(obj));
-        }
-        else {
+        } else {
             return this.http
                 .post('participante-atividade-coletiva', JSON.stringify(obj));
         }
@@ -324,8 +320,7 @@ export class AtendimentoService extends GenericsService {
         if (obj.id) {
             return this.http
                 .put('tipo-odonto-atendimento', JSON.stringify(obj));
-        }
-        else {
+        } else {
             return this.http
                 .post('tipo-odonto-atendimento', JSON.stringify(obj));
         }
@@ -335,8 +330,7 @@ export class AtendimentoService extends GenericsService {
         if (obj.id) {
             return this.http
                 .put('tipo-vigilancia-odonto', JSON.stringify(obj));
-        }
-        else {
+        } else {
             return this.http
                 .post('tipo-vigilancia-odonto', JSON.stringify(obj));
         }
@@ -346,8 +340,7 @@ export class AtendimentoService extends GenericsService {
         if (obj.id) {
             return this.http
                 .put('profissional-atividade-coletiva', JSON.stringify(obj));
-        }
-        else {
+        } else {
             return this.http
                 .post('profissional-atividade-coletiva', JSON.stringify(obj));
         }
@@ -357,8 +350,7 @@ export class AtendimentoService extends GenericsService {
         if (obj.id) {
             return this.http
                 .put('atendimento-medicamento', JSON.stringify(obj));
-        }
-        else {
+        } else {
             return this.http
                 .post('atendimento-medicamento', JSON.stringify(obj));
         }
@@ -409,19 +401,18 @@ export class AtendimentoService extends GenericsService {
     }
 
     carregaEntidadeCampoPorEspecialidade(): Observable<any> {
-        return this.http.get("especialidade-entidade-campo/especialidade");
+        return this.http.get('especialidade-entidade-campo/especialidade');
     }
 
     findHipoteseByPaciente(id: any): Observable<any> {
-        return this.http.get("atendimento-hipotese/paciente/" + id);
+        return this.http.get('atendimento-hipotese/paciente/' + id);
     }
 
     saveProcedimento(obj: any) {
         if (obj.id) {
             return this.http
                 .put('atendimento-procedimento', JSON.stringify(obj));
-        }
-        else {
+        } else {
             return this.http
                 .post('atendimento-procedimento', JSON.stringify(obj));
         }
@@ -431,19 +422,18 @@ export class AtendimentoService extends GenericsService {
         if (obj.id) {
             return this.http
                 .put('atendimento-condicao-avaliada', JSON.stringify(obj));
-        }
-        else {
+        } else {
             return this.http
                 .post('atendimento-condicao-avaliada', JSON.stringify(obj));
         }
     }
 
     findProcedimentoByAtendimento(id: any): Observable<any> {
-        return this.http.get("atendimento-procedimento/atendimento/" + id);
+        return this.http.get('atendimento-procedimento/atendimento/' + id);
     }
 
     findTipoFichaEstabelecimento(id: any): Observable<any> {
-        return this.http.get("atendimento-procedimento/tipo-ficha/" + id);
+        return this.http.get('atendimento-procedimento/tipo-ficha/' + id);
     }
 
     removeProcedimento(params: any) {
@@ -451,31 +441,31 @@ export class AtendimentoService extends GenericsService {
     }
 
     findParticipanteAtividadeColetivaByAtendimento(id: any): Observable<any> {
-        return this.http.get("participante-atividade-coletiva/atendimento/" + id);
+        return this.http.get('participante-atividade-coletiva/atendimento/' + id);
     }
 
     findProfissionalAtividadeColetivaByAtendimento(id: any): Observable<any> {
-        return this.http.get("profissional-atividade-coletiva/atendimento/" + id);
+        return this.http.get('profissional-atividade-coletiva/atendimento/' + id);
     }
 
     findtiposFornecimentoOdontoPorAtendimento(id: any): Observable<any> {
-        return this.http.get("tipo-odonto-atendimento/" + id);
+        return this.http.get('tipo-odonto-atendimento/' + id);
     }
 
     findtiposVigilanciaOdontoPorAtendimento(id: any): Observable<any> {
-        return this.http.get("tipo-vigilancia-odonto/" + id);
+        return this.http.get('tipo-vigilancia-odonto/' + id);
     }
 
     carregaTipoAtendimentoPorTipoFicha(id: any): Observable<any> {
-        return this.http.get("tipo-atendimento/tipo-ficha/" + id);
+        return this.http.get('tipo-atendimento/tipo-ficha/' + id);
       }
 
     findByEstrategiaPorVacina(codigoVacinaSus: any): Observable<any> {
-        return this.http.get("dominios/estrategia-vacinacao/" + codigoVacinaSus);
+        return this.http.get('dominios/estrategia-vacinacao/' + codigoVacinaSus);
     }
 
     findByDosePorEstrategiaVacina(codigoVacinaSus: any, codigoEstrategiaVacinacaoSus: any): Observable<any> {
-        return this.http.get("dominios/dose-vacina-sus/" + codigoVacinaSus + "?codigoEstrategiaVacinacaoSus=" + codigoEstrategiaVacinacaoSus);
+        return this.http.get('dominios/dose-vacina-sus/' + codigoVacinaSus + '?codigoEstrategiaVacinacaoSus=' + codigoEstrategiaVacinacaoSus);
     }
 
     reabreAtendimento(obj: any) {

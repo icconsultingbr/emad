@@ -12,9 +12,9 @@ export class MedicamentoMovimentoService extends GenericsService {
 
   fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: false,
       form: true,
       required: false,
@@ -22,11 +22,11 @@ export class MedicamentoMovimentoService extends GenericsService {
     }
   ];
 
-  carregaMedicamentoMovimentacao(idTipoMovimento: string, params: any): Observable<any> {    
-    return this.http.get("material/movimentacao/" + idTipoMovimento + "/filtros"  + params);
+  carregaMedicamentoMovimentacao(idTipoMovimento: string, params: any): Observable<any> {
+    return this.http.get('material/movimentacao/' + idTipoMovimento + '/filtros'  + params);
   }
 
   carregaTipoMovimentoPorOperacao(id: any): Observable<any> {
-    return this.http.get("tipo-movimento/operacao/" + id);
+    return this.http.get('tipo-movimento/operacao/' + id);
 }
 }

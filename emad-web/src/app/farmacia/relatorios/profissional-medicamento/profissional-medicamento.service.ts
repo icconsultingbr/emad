@@ -12,9 +12,9 @@ export class ProfissionalMedicamentoService extends GenericsService {
 
   fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: false,
       form: true,
       required: false,
@@ -22,7 +22,7 @@ export class ProfissionalMedicamentoService extends GenericsService {
     }
   ];
 
-  carregaProfissionalPorMedicamento(params: any): Observable<any> {    
-    return this.http.get("profissional/material/filtros" + params);
+  carregaProfissionalPorMedicamento(params: any): Observable<any> {
+    return this.http.get('profissional/material/filtros' + params);
   }
 }

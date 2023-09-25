@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from "rxjs";
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { GenericsService } from '../../_core/_services/generics.service';
 
@@ -10,7 +10,7 @@ export class PesquisaMedicamentoService extends GenericsService {
     super(http);
   }
 
-  list(method : string) : Observable<any[]>{
+  list(method: string): Observable<any[]> {
     return this.http.get<any[]>(method);
   }
 }

@@ -1,4 +1,4 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
 export class Estabelecimento {
     id: Number;
@@ -22,8 +22,8 @@ export class Estabelecimento {
     @Input() idTipoUnidade: Number;
     @Input() esferaAdministradora: string;
     @Input() situacao: Boolean;
-    @Input() latitude: number = 0;
-    @Input() longitude: number = 0;
+    @Input() latitude = 0;
+    @Input() longitude = 0;
     @Input() distancia: number;
     @Input() obrigaCpfNovoPaciente: Boolean;
     @Input() obrigaCartaoSusNovoPaciente: Boolean;

@@ -1,13 +1,13 @@
-import { Routes } from "@angular/router";
-import { EscalaProfissionalFormComponent } from "./escala-profissional-form.component";
+import { Routes } from '@angular/router';
+import { EscalaProfissionalFormComponent } from './escala-profissional-form.component';
 
-export const escalaProfissionalRoutes: Routes = [    
+export const escalaProfissionalRoutes: Routes = [
     {
         path: '',
-        component: EscalaProfissionalFormComponent,        
+        component: EscalaProfissionalFormComponent,
     },
     {
         path: 'id/:id',
-        component: EscalaProfissionalFormComponent,        
+        component: EscalaProfissionalFormComponent,
     }
 ];

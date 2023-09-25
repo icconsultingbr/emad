@@ -15,18 +15,18 @@ export class TipoUsuarioService extends GenericsService {
 
   fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: false,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "nome",
-      type: "text",
-      label: "Nome",
+      field: 'nome',
+      type: 'text',
+      label: 'Nome',
       grid: true,
       form: true,
       required: true,
@@ -34,9 +34,9 @@ export class TipoUsuarioService extends GenericsService {
       autoFocus: true
     },
     {
-      field: "periodoSenha",
-      type: "text",
-      label: "Período de troca da senha (dias)",
+      field: 'periodoSenha',
+      type: 'text',
+      label: 'Período de troca da senha (dias)',
       grid: true,
       form: true,
       required: true,
@@ -46,15 +46,14 @@ export class TipoUsuarioService extends GenericsService {
   ];
 
   buscaPorId(id: string): Observable<TipoUsuario> {
-    return this.http.get<TipoUsuario>("tipo-usuario/" + id);
+    return this.http.get<TipoUsuario>('tipo-usuario/' + id);
   }
 
   cadastra(tipoUsuario: TipoUsuario) {
     if (tipoUsuario.id) {
       return this.http
         .put('tipo-usuario', JSON.stringify(tipoUsuario));
-    }
-    else {
+    } else {
       return this.http
         .post('tipo-usuario', JSON.stringify(tipoUsuario));
     }

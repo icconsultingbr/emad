@@ -12,7 +12,7 @@ export class IntegracaoEsus extends GenericsService {
     super(http);
   }
   obterXmlsPorTipoFicha(filtroXmls: IntegracaoEsusModel): Observable <ArrayBuffer> {
-    return this.http.post('integracao-e-sus', filtroXmls, {​​ responseType: 'arraybuffer'}​​)
+    return this.http.post('integracao-e-sus', filtroXmls, {​​ responseType: 'arraybuffer'}​​);
   }
 }
 

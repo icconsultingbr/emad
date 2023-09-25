@@ -13,60 +13,60 @@ export class AtribuicaoCanetaService extends GenericsService {
 
   fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: true,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "idCaneta",
-      type: "select",
-      label: "Caneta",
+      field: 'idCaneta',
+      type: 'select',
+      label: 'Caneta',
       grid: false,
       form: false,
       required: false,
       validator: ['', ''],
       filter: {
-        type: "select"
+        type: 'select'
       }
     },
     {
-      field: "nomeCaneta",
-      type: "text",
-      label: "Caneta",
+      field: 'nomeCaneta',
+      type: 'text',
+      label: 'Caneta',
       grid: true,
       form: false,
       required: true,
       validator: ['', ''],
     },
     {
-      field: "idProfissional",
-      type: "select",
-      label: "Profissional",
+      field: 'idProfissional',
+      type: 'select',
+      label: 'Profissional',
       grid: false,
       form: false,
       required: false,
       validator: ['', ''],
       filter: {
-        type: "select"
+        type: 'select'
       }
     },
     {
-      field: "nomeProfissional",
-      type: "text",
-      label: "Nome do profissional",
+      field: 'nomeProfissional',
+      type: 'text',
+      label: 'Nome do profissional',
       grid: true,
       form: false,
       required: false,
       validator: ['', ''],
     },
     {
-      field: "periodoInicial",
-      type: "text",
-      label: "Data de atribuição inicial",
+      field: 'periodoInicial',
+      type: 'text',
+      label: 'Data de atribuição inicial',
       grid: true,
       form: false,
       required: false,
@@ -77,18 +77,18 @@ export class AtribuicaoCanetaService extends GenericsService {
       }
     },
     {
-      field: "periodoFinal",
-      type: "text",
-      label: "Data de atribuição final",
+      field: 'periodoFinal',
+      type: 'text',
+      label: 'Data de atribuição final',
       grid: true,
       form: false,
       required: false,
       validator: ['', ''],
     },
     {
-      field: "situacao",
-      type: "text",
-      label: "Situação",
+      field: 'situacao',
+      type: 'text',
+      label: 'Situação',
       grid: true,
       form: true,
       required: true,
@@ -97,7 +97,7 @@ export class AtribuicaoCanetaService extends GenericsService {
   ];
 
   findHistoricoAtribuicaoByProfissional(id: any, dateInicial: string, horaInicial: string, dateFinal: string, horaFinal: string): Observable<any> {
-    return this.http.get("atribuicao-caneta/profissional/" + id
+    return this.http.get('atribuicao-caneta/profissional/' + id
       + '?dataInicial=' + dateInicial
       + '&horaInicial=' + horaInicial
       + '&dataFinal=' + dateFinal
@@ -108,8 +108,7 @@ export class AtribuicaoCanetaService extends GenericsService {
     if (obj.id) {
       return this.http
         .put('atribuicao-caneta', JSON.stringify(obj));
-    }
-    else {
+    } else {
       return this.http
         .post('atribuicao-caneta', JSON.stringify(obj));
     }

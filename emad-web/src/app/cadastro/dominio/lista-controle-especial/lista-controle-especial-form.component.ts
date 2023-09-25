@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class ListaControleEspecialFormComponent implements OnInit {
 
   object: ListaControleEspecial = new ListaControleEspecial();
-  method: string = "lista-controle-especial";
+  method = 'lista-controle-especial';
   fields: any[] = [];
-  label: string = "Lista de controle especial";
+  label = 'Lista de controle especial';
   id: Number = null;
   domains: any[] = [];
 
@@ -35,11 +35,11 @@ export class ListaControleEspecialFormComponent implements OnInit {
     this.loadDomains();
   }
 
-  loadDomains() {    
+  loadDomains() {
     this.service.listDomains('livro').subscribe(livro => {
-      this.domains.push({            
+      this.domains.push({
         idLivro: livro
-      });                      
+      });
     });
   }
 

@@ -11,8 +11,8 @@ import { Procedimento } from '../../_core/_models/Procedimento';
   providers: [ProcedimentoService]
 })
 
-export class ProcedimentoComponent implements OnInit {  
-  method: string = "procedimento";
+export class ProcedimentoComponent implements OnInit {
+  method = 'procedimento';
   domains: any[] = [];
   fields = [];
   fieldsSearch = [];
@@ -23,7 +23,7 @@ export class ProcedimentoComponent implements OnInit {
     private service: ProcedimentoService,
     private router: Router) {
 
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }
