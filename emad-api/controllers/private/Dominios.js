@@ -38,7 +38,7 @@ module.exports = function (app) {
     app.get('/dominios/escolaridade', function (req, res) {
 
         var connection = app.dao.ConnectionFactory();
-        var dao = new app.dao.TipoUnidadeDAO(connection);
+        var dao = new app.dao.GenericDAO(connection, "tb_escolaridade");
 
         listaDominios(dao, "escolaridade", res).then(function (response) {
             res.status(200).json(response);
