@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class SubgrupoOrigemFormComponent implements OnInit {
 
   object: SubgrupoOrigem = new SubgrupoOrigem();
-  method: String = "subgrupo-origem";
+  method: String = 'subgrupo-origem';
   fields: any[] = [];
-  label: String = "Sub grupo de origem";
+  label: String = 'Sub grupo de origem';
   id: Number = null;
   domains: any[] = [];
 
@@ -35,11 +35,11 @@ export class SubgrupoOrigemFormComponent implements OnInit {
     this.loadDomains();
   }
 
-  loadDomains() {    
+  loadDomains() {
     this.service.listDomains('grupo-origem').subscribe(grupoOrigem => {
-      this.domains.push({            
+      this.domains.push({
         idGrupoOrigem: grupoOrigem
-      });                      
+      });
     });
   }
 

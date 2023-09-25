@@ -1,13 +1,13 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
 export class RelatorioEstoque {
     id: Number;
     @Input() idFabricanteMaterial: number;
     @Input() idMaterial: number;
-    @Input() nomeMaterial: string = "";
-    @Input() nomeLote: string = "";
-    @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem("est"))[0].id;
-    @Input() nomeEstabelecimento: string = JSON.parse(localStorage.getItem("est"))[0].nomeFantasia;
+    @Input() nomeMaterial = '';
+    @Input() nomeLote = '';
+    @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem('est'))[0].id;
+    @Input() nomeEstabelecimento: string = JSON.parse(localStorage.getItem('est'))[0].nomeFantasia;
     @Input() lote: string;
     @Input() validade: Date;
     @Input() quantidade: number;
@@ -16,5 +16,5 @@ export class RelatorioEstoque {
     @Input() dataBloqueio: Date;
     @Input() idUsuarioBloqueio: number;
     @Input() situacao: Boolean;
-    @Input() estoqueAbaixoMinimo: string = "N";
+    @Input() estoqueAbaixoMinimo = 'N';
 }

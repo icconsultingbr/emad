@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class TipoFichaFormComponent implements OnInit {
 
   object: TipoFicha = new TipoFicha();
-  method: string = "tipo-ficha";
+  method = 'tipo-ficha';
   fields: any[] = [];
-  label: string = "Tipo de ficha";
+  label = 'Tipo de ficha';
   id: Number = null;
   domains: any[] = [];
 
@@ -35,16 +35,16 @@ export class TipoFichaFormComponent implements OnInit {
   }
 
   loadDomains() {
-    this.domains.push({                    
+    this.domains.push({
       tipo: [
-        { id: '1', nome: "Atendimento" },
-        { id: '2', nome: "Avaliação" },
-        { id: '3', nome: "Exame" }],
+        { id: '1', nome: 'Atendimento' },
+        { id: '2', nome: 'Avaliação' },
+        { id: '3', nome: 'Exame' }],
       tipoAtendimentoSus: [
-        { id: '4', nome: "Ficha de atendimento individual" },
-        { id: '5', nome: "Ficha de atendimento odontológico" },
-        { id: '6', nome: "Ficha de atividade coletiva" },
-        { id: '10', nome: "Ficha de atendimento domiciliar" }]
+        { id: '4', nome: 'Ficha de atendimento individual' },
+        { id: '5', nome: 'Ficha de atendimento odontológico' },
+        { id: '6', nome: 'Ficha de atividade coletiva' },
+        { id: '10', nome: 'Ficha de atendimento domiciliar' }]
     });
   }
 }

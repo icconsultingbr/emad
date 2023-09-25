@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class GrupoOrigemFormComponent implements OnInit {
 
   object: GrupoOrigem = new GrupoOrigem();
-  method: String = "grupo-origem";
+  method: String = 'grupo-origem';
   fields: any[] = [];
-  label: String = "Grupos de origem";
+  label: String = 'Grupos de origem';
   id: Number = null;
   domains: any[] = [];
 

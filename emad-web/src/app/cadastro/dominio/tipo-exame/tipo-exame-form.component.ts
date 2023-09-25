@@ -18,18 +18,18 @@ import { Procedimento } from '../../../_core/_models/Procedimento';
 export class TipoExameFormComponent implements OnInit {
   loading: Boolean = false;
   object: TipoExame = new TipoExame();
-  method: String = "tipo-exame";
+  method: String = 'tipo-exame';
   fields: any[] = [];
-  label: String = "Tipo de exame";
+  label: String = 'Tipo de exame';
   id: number = null;
   domains: any[] = [];
   tipoExameForm: FormGroup;
   groupForm: any = {};
-  mensagem: string = "";
-  warning: string = "";
+  mensagem = '';
+  warning = '';
   tipoExame: TipoExame = new TipoExame();
   modalRef: NgbModalRef = null;
-  message: string = "";
+  message = '';
   errors: any[] = [];
   hipoteseDiagnostica: HipoteseDiagnostica = new HipoteseDiagnostica();
   procedimento: Procedimento = new Procedimento();
@@ -40,7 +40,7 @@ export class TipoExameFormComponent implements OnInit {
   //PAGINATION
   pager: any = {};
   pagedItems: any[];
-  pageLimit: number = 10;
+  pageLimit = 10;
   paging: any = {
     offset: 0,
     limit: 10,
@@ -68,10 +68,10 @@ export class TipoExameFormComponent implements OnInit {
             this.loading = false;
           }, erro => {
             this.loading = false;
-            let json = erro;
-            this.warning = "";
-            for (var key in json) {
-              this.warning += "-" + json[key].msg + '\n';
+            const json = erro;
+            this.warning = '';
+            for (const key in json) {
+              this.warning += '-' + json[key].msg + '\n';
             }
           }
         );
@@ -88,14 +88,14 @@ export class TipoExameFormComponent implements OnInit {
         if (res.id) {
           this.router.navigate(['tipos-exames']);
         }
-        this.mensagem = "Cadastro efetuado com sucesso!";
-        this.warning = "";
+        this.mensagem = 'Cadastro efetuado com sucesso!';
+        this.warning = '';
         this.tipoExameForm.reset();
       }, erro => {
-        let json = erro;
-        this.warning = "";
-        for (var key in json) {
-          this.warning += "-" + json[key].msg + '\n';
+        const json = erro;
+        this.warning = '';
+        for (const key in json) {
+          this.warning += '-' + json[key].msg + '\n';
         }
       }
       );
@@ -117,7 +117,7 @@ export class TipoExameFormComponent implements OnInit {
 
   openHipotese(content: any) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.hipoteseDiagnostica = new HipoteseDiagnostica();
     this.allItemsPesquisaHipoteseDiagnostica = [];
 
@@ -125,13 +125,13 @@ export class TipoExameFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
 
   openProcedimento(content: any) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.procedimento = new Procedimento();
     this.allItemsPesquisaProcedimento = [];
 
@@ -139,25 +139,25 @@ export class TipoExameFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
 
   pesquisaHipoteseDiagnostica() {
     this.loading = true;
-    let params = "";
+    const params = '';
     this.allItemsPesquisaHipoteseDiagnostica = [];
     this.errors = [];
 
     if (Util.isEmpty(this.hipoteseDiagnostica.nome) && Util.isEmpty(this.hipoteseDiagnostica.cid_10)) {
-      this.errors = [{ message: "Informe o nome ou código CID 10" }];
+      this.errors = [{ message: 'Informe o nome ou código CID 10' }];
       this.loading = false;
       return;
     }
 
     if (!Util.isEmpty(this.hipoteseDiagnostica.nome)) {
       if (this.hipoteseDiagnostica.nome.length < 3) {
-        this.errors = [{ message: "Informe o nome, ao menos 3 caracteres" }];
+        this.errors = [{ message: 'Informe o nome, ao menos 3 caracteres' }];
         this.loading = false;
         return;
       }
@@ -165,7 +165,7 @@ export class TipoExameFormComponent implements OnInit {
 
     if (!Util.isEmpty(this.hipoteseDiagnostica.cid_10)) {
       if (this.hipoteseDiagnostica.cid_10.length < 2) {
-        this.errors = [{ message: "Informe o código CID 10, ao menos 2 caracteres" }];
+        this.errors = [{ message: 'Informe o código CID 10, ao menos 2 caracteres' }];
         this.loading = false;
         return;
       }
@@ -176,19 +176,19 @@ export class TipoExameFormComponent implements OnInit {
 
   pesquisaProcedimento() {
     this.loading = true;
-    let params = "";
+    const params = '';
     this.allItemsPesquisaProcedimento = [];
     this.errors = [];
 
     if (Util.isEmpty(this.procedimento.co_procedimento) && Util.isEmpty(this.procedimento.no_procedimento)) {
-      this.errors = [{ message: "Informe o código ou nome do procedimento" }];
+      this.errors = [{ message: 'Informe o código ou nome do procedimento' }];
       this.loading = false;
       return;
     }
 
     if (!Util.isEmpty(this.procedimento.no_procedimento)) {
       if (this.procedimento.no_procedimento.length < 3) {
-        this.errors = [{ message: "Informe o nome, ao menos 3 caracteres" }];
+        this.errors = [{ message: 'Informe o nome, ao menos 3 caracteres' }];
         this.loading = false;
         return;
       }
@@ -196,7 +196,7 @@ export class TipoExameFormComponent implements OnInit {
 
     if (!Util.isEmpty(this.procedimento.co_procedimento)) {
       if (this.procedimento.co_procedimento.length < 2) {
-        this.errors = [{ message: "Informe o código, ao menos 2 caracteres" }];
+        this.errors = [{ message: 'Informe o código, ao menos 2 caracteres' }];
         this.loading = false;
         return;
       }
@@ -211,14 +211,14 @@ export class TipoExameFormComponent implements OnInit {
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
 
-    var params = "?nome=" + this.hipoteseDiagnostica.nome + "&cid=" + this.hipoteseDiagnostica.cid_10;
+    let params = '?nome=' + this.hipoteseDiagnostica.nome + '&cid=' + this.hipoteseDiagnostica.cid_10;
 
     if (this.paging.offset != null && this.paging.limit != null) {
-      params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+      params += (params == '' ? '?' : '&') + 'offset=' + this.paging.offset + '&limit=' + this.paging.limit;
     }
 
     this.service.list('hipotese-diagnostica' + params).subscribe(result => {
-      this.warning = "";
+      this.warning = '';
       this.paging.total = result.total;
       this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
       this.allItemsPesquisaHipoteseDiagnostica = result.items;
@@ -237,14 +237,14 @@ export class TipoExameFormComponent implements OnInit {
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
 
-    var params = "?codigo=" + this.procedimento.co_procedimento + "&nome=" + this.procedimento.no_procedimento;
+    let params = '?codigo=' + this.procedimento.co_procedimento + '&nome=' + this.procedimento.no_procedimento;
 
     if (this.paging.offset != null && this.paging.limit != null) {
-      params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+      params += (params == '' ? '?' : '&') + 'offset=' + this.paging.offset + '&limit=' + this.paging.limit;
     }
 
     this.service.list('procedimento' + params).subscribe(result => {
-      this.warning = "";
+      this.warning = '';
       this.paging.total = result.total;
       this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
       this.allItemsPesquisaProcedimento = result.items;
@@ -266,8 +266,9 @@ export class TipoExameFormComponent implements OnInit {
   }
 
   close() {
-    if (this.modalRef)
+    if (this.modalRef) {
       this.modalRef.close();
+    }
   }
 
   disableHipoteseButton() {
@@ -279,31 +280,31 @@ export class TipoExameFormComponent implements OnInit {
   }
 
   saveHipotese() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
-    this.tipoExame.nomeHipoteseDiagnostica = this.hipoteseDiagnostica.cid_10 + ' - ' + this.hipoteseDiagnostica.nome
+    this.tipoExame.nomeHipoteseDiagnostica = this.hipoteseDiagnostica.cid_10 + ' - ' + this.hipoteseDiagnostica.nome;
     this.tipoExame.idHipoteseDiagnostica = this.hipoteseDiagnostica.id;
     this.close();
   }
 
   saveProcedimento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
-    this.tipoExame.nomeProcedimento = this.procedimento.co_procedimento + ' - ' + this.procedimento.no_procedimento
+    this.tipoExame.nomeProcedimento = this.procedimento.co_procedimento + ' - ' + this.procedimento.no_procedimento;
     this.tipoExame.idProcedimento = this.procedimento.id;
     this.close();
   }
 
 
   loadQuantityPerPagePaginationHipotese(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.paging.limit = id;
 
     this.setPagePaginedHipotese(this.pager.offset, this.paging.limit);
   }
 
   loadQuantityPerPagePaginationProcedimento(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.paging.limit = id;
 
     this.setPagePaginedHipotese(this.pager.offset, this.paging.limit);

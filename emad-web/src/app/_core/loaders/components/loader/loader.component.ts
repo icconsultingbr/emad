@@ -8,7 +8,7 @@ import { LoaderService } from '../../services/loader.service';
 })
 export class LoaderComponent implements OnInit {
 
-  private _loading: boolean = false;
+  private _loading = false;
 
   public get loading(): boolean {
     return this._loading;

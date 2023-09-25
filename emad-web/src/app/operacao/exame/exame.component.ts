@@ -12,7 +12,7 @@ import { Exame } from '../../_core/_models/Exame';
 
 export class ExameComponent implements OnInit {
 
-  method: String = "exame";
+  method: String = 'exame';
   object: Exame = new Exame();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class ExameComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: ExameService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

@@ -16,10 +16,10 @@ export class ESusComponent implements OnInit {
 
   object: IntegracaoEsusModel = new IntegracaoEsusModel();
   domains: any[] = [];
-  periodoCriacao: boolean = false;
-  periodoAlteracao: boolean = false;
+  periodoCriacao = false;
+  periodoAlteracao = false;
   errors: any[] = [];
-  loading: boolean = false;
+  loading = false;
 
   constructor(
     public nav: AppNavbarService,
@@ -34,17 +34,17 @@ export class ESusComponent implements OnInit {
   loadDomain() {
     this.domains.push({
       tipoFicha: [
-        { id: '0', nome: "Todas" },
-        { id: '4', nome: "Ficha de Atendimento Individual" },
-        { id: '9', nome: "Ficha de Atendimento Domiciliar" },
-        { id: '16', nome: "Ficha de Atendimento Odontologico Individual" },
-        { id: '15', nome: "Ficha de Atividade Coletiva" },
-        { id: '2', nome: "Ficha de Cadastro Individual" },
-        { id: '7', nome: "Ficha de Procedimentos" },
-        { id: '14', nome: "Ficha de Vacinação" }],
+        { id: '0', nome: 'Todas' },
+        { id: '4', nome: 'Ficha de Atendimento Individual' },
+        { id: '9', nome: 'Ficha de Atendimento Domiciliar' },
+        { id: '16', nome: 'Ficha de Atendimento Odontologico Individual' },
+        { id: '15', nome: 'Ficha de Atividade Coletiva' },
+        { id: '2', nome: 'Ficha de Cadastro Individual' },
+        { id: '7', nome: 'Ficha de Procedimentos' },
+        { id: '14', nome: 'Ficha de Vacinação' }],
       tipoPeriodo: [
-        { id: '1', nome: "Criação" },
-        { id: '2', nome: "Alteração" }]
+        { id: '1', nome: 'Criação' },
+        { id: '2', nome: 'Alteração' }]
     });
   }
 
@@ -61,26 +61,26 @@ export class ESusComponent implements OnInit {
   gerarXMLsPorTipoFicha() {
 
 
-    let dataInicialConvertida
-    let dataFinalConvertida
+    let dataInicialConvertida;
+    let dataFinalConvertida;
 
     if (this.object.periodoExtracao[0]) {
-      this.object.periodoExtracao[0].setHours(0, 0, 0, 0)
-      dataInicialConvertida = this.object.periodoExtracao[0].toISOString()
+      this.object.periodoExtracao[0].setHours(0, 0, 0, 0);
+      dataInicialConvertida = this.object.periodoExtracao[0].toISOString();
     }
 
     if (this.object.periodoExtracao[1]) {
-      this.object.periodoExtracao[1].setHours(23, 59, 0, 0)
-      dataFinalConvertida = this.object.periodoExtracao[1].toISOString()
+      this.object.periodoExtracao[1].setHours(23, 59, 0, 0);
+      dataFinalConvertida = this.object.periodoExtracao[1].toISOString();
     }
 
-    this.object.periodoExtracao[0] = dataInicialConvertida
-    this.object.periodoExtracao[1] = dataFinalConvertida
+    this.object.periodoExtracao[0] = dataInicialConvertida;
+    this.object.periodoExtracao[1] = dataFinalConvertida;
 
     this.service.obterXmlsPorTipoFicha(this.object).subscribe((result: ArrayBuffer) => {
       const blob = new Blob([result], { type: 'application/zip;' });
       const url = window.URL.createObjectURL(blob);
-      let link = document.createElement('a');
+      const link = document.createElement('a');
       link.href = url;
 
       switch (this.object.idFichaEsus) {
@@ -109,11 +109,11 @@ export class ESusComponent implements OnInit {
 
       link.click();
 
-      this.object.periodoExtracao = []
+      this.object.periodoExtracao = [];
 
     }, erro => {
-      let encoded = String.fromCharCode.apply(null, new Uint8Array(erro) as any);
-      let err = JSON.parse(decodeURIComponent(escape(encoded)));
+      const encoded = String.fromCharCode.apply(null, new Uint8Array(erro) as any);
+      const err = JSON.parse(decodeURIComponent(escape(encoded)));
       this.errors = Util.customHTTPResponse(err);
     });
   }

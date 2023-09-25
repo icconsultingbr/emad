@@ -14,21 +14,21 @@ import { UserInfoService } from '../../_core/_services/user-info.service';
 })
 export class UsuarioFormComponent implements OnInit {
 
-  method: string = 'usuario';
-  label: string = "Usuário";
+  method = 'usuario';
+  label = 'Usuário';
   fields = [];
   domains = [];
   id: Number = null;
 
-  loadPhoto: boolean = false;
+  loadPhoto = false;
 
   service: UsuarioService;
   usuarioForm: FormGroup;
   groupForm: any = {};
   route: ActivatedRoute;
   router: Router;
-  mensagem: string = "";
-  warning: string = "";
+  mensagem = '';
+  warning = '';
   usuario: Usuario = new Usuario();
   dropdownSettings: any;
 
@@ -46,20 +46,20 @@ export class UsuarioFormComponent implements OnInit {
     this.service = service;
 
 
-    this.service.list("tipo-usuario").subscribe(tiposUsuario => {
+    this.service.list('tipo-usuario').subscribe(tiposUsuario => {
       this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
         this.domains.push({
 
           estabelecimentos: estabelecimentos,
           idTipoUsuario: tiposUsuario,
-          sexo: [{ id: "M", nome: "Masculino" }, { id: "F", nome: "Feminino" }]
+          sexo: [{ id: 'M', nome: 'Masculino' }, { id: 'F', nome: 'Feminino' }]
         });
       });
     });
 
 
     this.route.params.subscribe(params => {
-      let id = params['id'];
+      const id = params['id'];
 
       if (id) {
         this.service.buscaPorId(id).subscribe(
@@ -69,8 +69,7 @@ export class UsuarioFormComponent implements OnInit {
             this.loadPhoto = true;
           }
         );
-      }
-      else {
+      } else {
         this.loadPhoto = true;
       }
     });
@@ -85,24 +84,24 @@ export class UsuarioFormComponent implements OnInit {
       .subscribe(res => {
         if (this.usuarioForm.value.id) {
 
-          if (this.usuarioForm.value.id == this.userInfoService.getUserId()){
+          if (this.usuarioForm.value.id == this.userInfoService.getUserId()) {
             this.userInfoService.changePhotoUser(this.usuarioForm.value.foto);
           }
 
           this.router.navigate(['usuarios']);
         }
 
-        this.mensagem = "Cadastro efetuado com sucesso!";
-        this.warning = "";
+        this.mensagem = 'Cadastro efetuado com sucesso!';
+        this.warning = '';
         this.usuarioForm.reset();
 
 
       }, erro => {
-        let json = erro;
-        this.warning = "";
+        const json = erro;
+        this.warning = '';
 
-        for (var key in json) {
-          this.warning += "-" + json[key].msg + '\n';
+        for (const key in json) {
+          this.warning += '-' + json[key].msg + '\n';
         }
       }
       );
@@ -131,13 +130,12 @@ export class UsuarioFormComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.id = params['id'];
 
-      for (let field of this.fields) {
+      for (const field of this.fields) {
         if (this.id) {
           if (!field.onlyCreate) {
             this.groupForm[field.field] = field.validator;
           }
-        }
-        else {
+        } else {
           this.groupForm[field.field] = field.validator;
         }
       }

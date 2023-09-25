@@ -1,11 +1,11 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
 export class Estoque {
     id: Number;
     @Input() idFabricanteMaterial: number;
     @Input() idMaterial: number;
     @Input() nomeMaterial: string;
-    @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem("est"))[0].id;
+    @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem('est'))[0].id;
     @Input() lote: string;
     @Input() validade: Date;
     @Input() quantidade: number;

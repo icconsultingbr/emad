@@ -19,60 +19,60 @@ export class EstoqueConsumoComponent implements OnInit {
 
   //MESSAGES
   loading: Boolean = false;
-  message: string = "";
+  message = '';
   errors: any[] = [];
   modalRef: NgbModalRef = null;
   modalRemoveRef: NgbModalRef = null;
   form: FormGroup;
-  method: string = "agenda";
+  method = 'agenda';
 
   //PAGINATION
   allItems: any[];
   pager: any = {};
   pagedItems: any[];
-  pageLimit: number = 10;
+  pageLimit = 10;
   fields: any[] = [];
 
   //MODELS (OBJECTS)
   object: RelatorioEstoque = new RelatorioEstoque();
   estoquePorUnidade: any[] = [];
-  listaEstoqueUnidadeDetalhe: any[] = [];  
+  listaEstoqueUnidadeDetalhe: any[] = [];
   domains: any[] = [];
   objectMaterial: Material = new Material();
-  
+
   constructor(
     private pagerService: PagerService,
     private fb: FormBuilder,
     private service: EstoqueConsumoService,
-    private estoqueConsumoImpressaoService: EstoqueConsumoImpressaoService,     
+    private estoqueConsumoImpressaoService: EstoqueConsumoImpressaoService,
     private ref: ChangeDetectorRef) {
 
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }
     }
   }
 
-  medicamentoSelecionado(material: any){
+  medicamentoSelecionado(material: any) {
     this.object.idMaterial = material.id;
-    this.object.nomeMaterial = material.descricao;    
-  } 
+    this.object.nomeMaterial = material.descricao;
+  }
 
   ngOnInit() {
     this.loadDomains();
   }
 
-  clear(){    
-    this.object.nomeMaterial = "";
-    this.object.nomeLote = "";
+  clear() {
+    this.object.nomeMaterial = '';
+    this.object.nomeLote = '';
     this.estoquePorUnidade = [];
     this.objectMaterial = new Material();
     this.object = new RelatorioEstoque();
     this.ref.detectChanges();
   }
 
-  abreRelatorioEstoqueConsumo(idMaterial: number,  idEstabelecimento: number, estoqueAbaixoMinimo: string, nomeEstabelecimento: string, nomeMaterial: string) {    
+  abreRelatorioEstoqueConsumo(idMaterial: number,  idEstabelecimento: number, estoqueAbaixoMinimo: string, nomeEstabelecimento: string, nomeMaterial: string) {
     this.estoqueConsumoImpressaoService.imprimir(idMaterial, idEstabelecimento, estoqueAbaixoMinimo, nomeEstabelecimento, nomeMaterial);
   }
 
@@ -82,7 +82,7 @@ export class EstoqueConsumoComponent implements OnInit {
   }
 
   loadQuantityPerPage(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.pageLimit = id;
     this.setPage(1);
   }
@@ -90,9 +90,9 @@ export class EstoqueConsumoComponent implements OnInit {
   loadDomains() {
     this.domains.push({
       estoqueAbaixoMinimo: [
-        { id: "N", nome: "Não" },
-        { id: "S", nome: "Sim" },
+        { id: 'N', nome: 'Não' },
+        { id: 'S', nome: 'Sim' },
       ]
-    });            
+    });
   }
 }

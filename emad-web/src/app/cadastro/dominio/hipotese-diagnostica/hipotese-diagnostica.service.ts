@@ -10,51 +10,51 @@ export class HipoteseDiagnosticaService extends GenericsService {
   constructor(public http: HttpClient) {
     super(http);
   }
-  
+
   public fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: true,
       form: true,
       required: false,
-      validator: ['','']
+      validator: ['', '']
     },
     {
-      field: "nome",
-      type: "text",
-      label: "Nome",
+      field: 'nome',
+      type: 'text',
+      label: 'Nome',
       grid: true,
       form: true,
       required: true,
       validator: ['', Validators.required]
     },
     {
-      field: "codigo",
-      type: "text",
-      label: "Código",
+      field: 'codigo',
+      type: 'text',
+      label: 'Código',
       grid: true,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "cid_10",
-      type: "text",
-      label: "CID 10",
+      field: 'cid_10',
+      type: 'text',
+      label: 'CID 10',
       grid: true,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "situacao",
-      type: "checkbox",
-      label: "Situação",
+      field: 'situacao',
+      type: 'checkbox',
+      label: 'Situação',
       grid: true,
       form: true,
-      translate: {1: "Ativo", 0: "Inativo"},
+      translate: {1: 'Ativo', 0: 'Inativo'},
       required: true,
       validator: ['', Validators.required]
     }

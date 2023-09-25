@@ -28,17 +28,17 @@ import { Especialidade } from './_core/_models/Especialidade';
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'app';
   teste: number = (window.innerHeight);
-  urlFoto: string = Util.urlapi + "/profile/";
+  urlFoto: string = Util.urlapi + '/profile/';
   usuario: Usuario = new Usuario();
   auth: AuthGuard;
-  route: string = "";
+  route = '';
   menus: Menu[];
   parametrosSeguranca: ParametroSeguranca[];
   parametrosEspecialidade: Especialidade;
 
   image$: Observable<string>;
 
-  teste2: string = "";
+  teste2 = '';
 
   pathFiles = `${environment.apiUrl}/fotos`;
 
@@ -110,7 +110,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   getParametroProfissional() {
-    this.service.listEspecialidade().subscribe(parametros => {      
+    this.service.listEspecialidade().subscribe(parametros => {
       this.parametrosEspecialidade = parametros;
       localStorage.setItem('especialidade', JSON.stringify(parametros));
     }, erro => {
@@ -121,7 +121,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     });
   }
-  
+
   abre() {
     this.showMenu = !this.showMenu;
   }
@@ -158,16 +158,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (location.pathname != "/login") {
+    if (location.pathname != '/login') {
 
       //console.log('login');
       //this.elementRef.nativeElement.ownerDocument.body.style.background = "url(../../assets/imgs/bglogin4.jpg)";
-      this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = "#FFFFFF";
+      this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = '#FFFFFF';
 
     }
 
-    if (localStorage.getItem("est")) {
-      this.estabelecimentoNome = JSON.parse(localStorage.getItem("est"))[0].nomeFantasia;
+    if (localStorage.getItem('est')) {
+      this.estabelecimentoNome = JSON.parse(localStorage.getItem('est'))[0].nomeFantasia;
 
     }
   }
@@ -177,6 +177,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   sideNavAlert(): void {
-    alert("sublist item clicked");
+    alert('sublist item clicked');
   }
 }

@@ -1,9 +1,9 @@
-import { Injectable } from "@angular/core";
-import { PacienteService } from "../../cadastro/paciente/paciente.service";
+import { Injectable } from '@angular/core';
+import { PacienteService } from '../../cadastro/paciente/paciente.service';
 import * as _moment from 'moment';
-import { environment } from "../../../environments/environment";
-import { RelatorioProntuarioPacienteService } from "./prontuario-paciente.service";
-import { data } from "jquery";
+import { environment } from '../../../environments/environment';
+import { RelatorioProntuarioPacienteService } from './prontuario-paciente.service';
+import { data } from 'jquery';
 
 @Injectable()
 export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacienteService {
@@ -11,9 +11,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
     pathFiles = `${environment.apiUrl}/fotos/`;
 
     tipoHistoriaClinica = [
-        { id: 1, nome: "Anamnese" },
-        { id: 2, nome: "Evolução" },
-    ]
+        { id: 1, nome: 'Anamnese' },
+        { id: 2, nome: 'Evolução' },
+    ];
 
     constructor(private pacienteService: PacienteService) {
         super();
@@ -32,7 +32,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
             /*Oculta os rodapes de impressão*/
             display: none;
         }
-    
+
         @media print {
             html, body {
                 min-height: 100%;
@@ -44,12 +44,12 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
             .hidden-button{
                 display: none;
             }
-    
+
             footer {
                 /*some com o rodapé original*/
                 display: none;
             }
-    
+
             div.page div.print-footer {
                 /*exibe os rodapés de impressão (que no caso são divs)*/
                 display: block;
@@ -58,7 +58,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                 margin-top: -2%;
                 height: 2%; /*quando ajustar a altura deves ajustar margin-top e o top*/
             }
-    
+
             div.content {
                 /*Ajuda a trabalhar o conteudo com o .print-footer*/
                 position: relative;
@@ -66,7 +66,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                 top: 0;
                 left: 0;
             }
-    
+
             div.page {
                 /*Força sempre quebrar a página no final*/
                 page-break-after: always;
@@ -103,16 +103,16 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
             margin-left: 30px;
             margin-right: 30px;
         }
-        
+
         .collapsible-body{
             display: block !important;
         }
-        
+
         .input-field{
             margin-top: unset !important;
         }
-        
-        .cor_topo {            
+
+        .cor_topo {
             color: #000000;
         }
 
@@ -120,7 +120,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
             height: unset !important;
             width: unset !important;
         }
-        </style>`
+        </style>`;
 
         this.script = `<script>
             $(document).ready(function(){
@@ -128,16 +128,16 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
             $('.cpf').mask('000.000.000-00');
             $('.cnpj').mask('00.000.000/0000-00');
             });
-        </script>`
+        </script>`;
     }
 
     filter(result: any, dataInicial: string, dataFinal: string, nomeData: any) {
-        const resultFilter = dataInicial != undefined && dataFinal != undefined ? result.filter(m => (m[nomeData] >= dataInicial && m[nomeData] <= dataFinal)) : result
-        return resultFilter
+        const resultFilter = dataInicial != undefined && dataFinal != undefined ? result.filter(m => (m[nomeData] >= dataInicial && m[nomeData] <= dataFinal)) : result;
+        return resultFilter;
     }
 
     imprimir(idPaciente: number, dataInicial: string, dataFinal: string, tipoFicha: number, profissional: number, target: string = '_blank') {
-    
+
         this.pacienteService.obterProntuarioPacienteRelatorio(idPaciente, tipoFicha, profissional)
             .subscribe((result) => {
                 let sinaisVitais = '';
@@ -150,15 +150,15 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                 let procedimentos = '';
                 let encaminhamentos = '';
 
-                const sinaisVitaisFilter = this.filter(result.sinaisVitais, dataInicial, dataFinal, "dataCriacao")
-                const atendimentosFilter = this.filter(result.atendimentos, dataInicial, dataFinal, "dataCriacao")
-                const receitasFilter = this.filter(result.receitas, dataInicial, dataFinal, "dataEmissao")
-                const fichasAtendimentoFilter = this.filter(result.vacinas, dataInicial, dataFinal, "dataCriacao")
-                const examesFilter = this.filter(result.exames, dataInicial, dataFinal, "dataCriacao")
-                const hipoteseDiagnosticaFilter = this.filter(result.hipoteseDiagnostica, dataInicial, dataFinal, "dataCriacao")
-                const vacinasFilter = this.filter(result.vacinas, dataInicial, dataFinal, "dataUltDisp")
-                const procedimentosFilter = this.filter(result.procedimentos, dataInicial, dataFinal, "dataCriacao")
-                const encaminhamentosFilter = this.filter(result.encaminhamentos, dataInicial, dataFinal, "dataCriacao")
+                const sinaisVitaisFilter = this.filter(result.sinaisVitais, dataInicial, dataFinal, 'dataCriacao');
+                const atendimentosFilter = this.filter(result.atendimentos, dataInicial, dataFinal, 'dataCriacao');
+                const receitasFilter = this.filter(result.receitas, dataInicial, dataFinal, 'dataEmissao');
+                const fichasAtendimentoFilter = this.filter(result.vacinas, dataInicial, dataFinal, 'dataCriacao');
+                const examesFilter = this.filter(result.exames, dataInicial, dataFinal, 'dataCriacao');
+                const hipoteseDiagnosticaFilter = this.filter(result.hipoteseDiagnostica, dataInicial, dataFinal, 'dataCriacao');
+                const vacinasFilter = this.filter(result.vacinas, dataInicial, dataFinal, 'dataUltDisp');
+                const procedimentosFilter = this.filter(result.procedimentos, dataInicial, dataFinal, 'dataCriacao');
+                const encaminhamentosFilter = this.filter(result.encaminhamentos, dataInicial, dataFinal, 'dataCriacao');
 
 
                 if (sinaisVitaisFilter) {
@@ -172,9 +172,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 <th style="width:14%">Temperatura</th>
                                                 <th style="width:14%">Peso</th>
                                                 <th style="width:14%">Glicemia</th>
-                                                <th style="width:15%">Data</th>   
+                                                <th style="width:15%">Data</th>
                                                 </tr>
-                                            </thead>`
+                                            </thead>`;
 
                     sinaisVitais += (sinaisVitaisFilter.length > 0 ? `<tbody>` : ``);
 
@@ -188,7 +188,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                         <td class="text-secondary">${sinais.peso ? sinais.peso : ''}</td>
                                         <td class="text-secondary">${sinais.glicemia ? sinais.glicemia : ''}</td>
                                         <td class="text-secondary">${sinais.label ? sinais.label : ''}</td>
-                                    </tr>`
+                                    </tr>`;
 
 
                     });
@@ -198,17 +198,17 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
 
                 if (atendimentosFilter) {
                     atendimentosFilter.forEach(atendimento => {
-                        var tpHistoriaClinica = this.tipoHistoriaClinica.find(x => x.id == atendimento.tipoHistoriaClinica);
-                        let atividadesAtendimento = ""
+                        const tpHistoriaClinica = this.tipoHistoriaClinica.find(x => x.id == atendimento.tipoHistoriaClinica);
+                        let atividadesAtendimento = '';
 
                         atividadesAtendimento += `<div class="col s12">
                                             <table class="table table-striped">
                                                 <thead>
                                                 <tr>
                                                 <th style="width:50%">Data</th>
-                                                <th style="width:50%">Atividade</th>   
+                                                <th style="width:50%">Atividade</th>
                                                 </tr>
-                                            </thead>`
+                                            </thead>`;
 
                         atividadesAtendimento += (atendimento.historicos.length > 0 ? `<tbody>` : ``);
 
@@ -216,7 +216,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                             atividadesAtendimento += `<tr class="text-left">
                                                         <td class="text-secondary">${atividade.dataHistorico}</td>
                                                         <td class="text-secondary"> Profissional: ${atividade.nomeProfissional} executou ${atividade.nomeTipoHistorico}</td>
-                                                      </tr>`
+                                                      </tr>`;
                         });
 
                         atividadesAtendimento += (atendimento.historicos.length > 0 ? `</tbody></table></div>` : `</table></div>`);
@@ -230,14 +230,14 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                             <span> <b>Tipo</b>: ${atendimento.tipoHistoriaClinica ? tpHistoriaClinica.nome : ''}</span>
                                             <span> <b>Descrição</b>: ${atendimento.historicoClinico ? atendimento.historicoClinico : ''}</span>
                                             ${atividadesAtendimento}
-                                        </div>`
+                                        </div>`;
                     });
                 }
 
                 if (receitasFilter) {
 
                     receitasFilter.forEach(receita => {
-                        let itensReceita = "";
+                        let itensReceita = '';
 
                         itensReceita += `<div class="col s12">
                                             <table class="table table-striped">
@@ -246,12 +246,12 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 <th style="width:13%">Código do material</th>
                                                 <th style="width:21%">Descrição do material</th>
                                                 <th style="width:12%">Qtd. prescrita</th>
-                                                <th style="width:12%">Tempo tratamento</th> 
+                                                <th style="width:12%">Tempo tratamento</th>
                                                 <th style="width:12%">Qtd. dispensada</th>
-                                                <th style="width:14%">Data últ. dispensação</th> 
-                                                <th style="width:14%">Observação</th>    
+                                                <th style="width:14%">Data últ. dispensação</th>
+                                                <th style="width:14%">Observação</th>
                                                 </tr>
-                                            </thead>`
+                                            </thead>`;
 
                         itensReceita += (receita.itensReceita.length > 0 ? `<tbody>` : ``);
 
@@ -265,7 +265,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 <td class="text-secondary">${itens.qtdDispAnterior}</td>
                                                 <td class="text-secondary">${itens.dataUltDisp ? _moment(itens.dataUltDisp).format('DD/MM/YYYY HH:mm') : ''}</td>
                                                 <td class="text-secondary">${itens.observacao ? itens.observacao : ''}</td>
-                                            </tr>`
+                                            </tr>`;
                         });
 
                         itensReceita += (receita.itensReceita.length > 0 ? `</tbody></table></div>` : `</table></div>`);
@@ -278,7 +278,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                         <span> <b>Situação</b>: ${receita.situacaoNome}</span>
                                         <span> <b>Data emissão</b>: ${receita.dataEmissao ? _moment(receita.dataEmissao).format('DD/MM/YYYY HH:mm') : ''}</span>
                                         ${itensReceita}
-                                </div>`
+                                </div>`;
                     });
 
                 }
@@ -294,9 +294,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 <th style="width:14%">Queixa</th>
                                                 <th style="width:14%">Situação</th>
                                                 <th style="width:14%">Data</th>
-                                                <th style="width:14%">Estabelecimento</th>   
+                                                <th style="width:14%">Estabelecimento</th>
                                                 </tr>
-                                            </thead>`
+                                            </thead>`;
 
                     fichasAtendimento += (fichasAtendimentoFilter.length > 0 ? `<tbody>` : ``);
 
@@ -309,7 +309,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 <td class="text-secondary">${ficha.situacaoNome}</td>
                                                 <td class="text-secondary">${ficha.dataCriacao ? _moment(ficha.dataCriacao).format('DD/MM/YYYY HH:mm') : ''}</td>
                                                 <td class="text-secondary">${ficha.estabelecimentoNome}</td>
-                                            </tr>`
+                                            </tr>`;
                     });
 
                     fichasAtendimento += (fichasAtendimentoFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
@@ -326,9 +326,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                     <th style="width:16%">Situação</th>
                                     <th style="width:16%">Resultado</th>
                                     <th style="width:16%">Data</th>
-                                    <th style="width:16%">Estabelecimento</th>   
+                                    <th style="width:16%">Estabelecimento</th>
                                     </tr>
-                                </thead>`
+                                </thead>`;
 
                     exames += (examesFilter.length > 0 ? `<tbody>` : ``);
 
@@ -341,7 +341,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                         <td class="text-secondary">${exame.resultadoNome}</td>
                                         <td class="text-secondary">${exame.dataCriacao ? _moment(exame.dataCriacao).format('DD/MM/YYYY HH:mm') : ''}</td>
                                         <td class="text-secondary">${exame.estabelecimentoNome}</td>
-                                    </tr>`
+                                    </tr>`;
                     });
 
                     exames += (examesFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
@@ -356,9 +356,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 <th style="width:25%">Código</th>
                                                 <th style="width:25%">Diagnóstico</th>
                                                 <th style="width:25%">CID 10</th>
-                                                <th style="width:25%">Data</th>   
+                                                <th style="width:25%">Data</th>
                                                 </tr>
-                                            </thead>`
+                                            </thead>`;
 
                     hipoteseDiagnostica += (hipoteseDiagnosticaFilter.length > 0 ? `<tbody>` : ``);
 
@@ -368,7 +368,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                     <td class="text-secondary">${hipotese.nome}</td>
                                                     <td class="text-secondary">${hipotese.cid_10}</td>
                                                     <td class="text-secondary">${hipotese.dataCriacao ? _moment(hipotese.dataCriacao).format('DD/MM/YYYY HH:mm') : ''}</td>
-                                                </tr>`
+                                                </tr>`;
                     });
 
                     hipoteseDiagnostica += (hipoteseDiagnosticaFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
@@ -383,11 +383,11 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                     <th style="width:15%">Profissional</th>
                                     <th style="width:10%">Código material</th>
                                     <th style="width:25%">Descrição do material</th>
-                                    <th style="width:8%">Qtd. prescrita</th>   
-                                    <th style="width:8%">Qtd. dispensada</th>   
-                                    <th style="width:35%">Data últ. dispensação</th>   
+                                    <th style="width:8%">Qtd. prescrita</th>
+                                    <th style="width:8%">Qtd. dispensada</th>
+                                    <th style="width:35%">Data últ. dispensação</th>
                                     </tr>
-                                </thead>`
+                                </thead>`;
 
                     vacinas += (vacinasFilter.length > 0 ? `<tbody>` : ``);
 
@@ -400,7 +400,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                         <td class="text-secondary">${vacina.qtdPrescrita}</td>
                                         <td class="text-secondary">${vacina.qtdDispAnterior}</td>
                                         <td class="text-secondary">${vacina.dataUltDisp ? _moment(vacina.dataUltDisp).format('DD/MM/YYYY HH:mm') : ''}</td>
-                                    </tr>`
+                                    </tr>`;
                     });
 
                     vacinas += (vacinasFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
@@ -418,7 +418,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 <th style="width:20%">Nome</th>
                                                 <th style="width:20%">Data emissão</th>
                                                 </tr>
-                                            </thead>`
+                                            </thead>`;
 
                     procedimentos += (procedimentosFilter.length > 0 ? `<tbody>` : ``);
 
@@ -429,7 +429,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 <td class="text-secondary">${procedimento.co_procedimento}</td>
                                                 <td class="text-secondary">${procedimento.no_procedimento}</td>
                                                 <td class="text-secondary">${procedimento.dataCriacao ? _moment(procedimento.dataCriacao).format('DD/MM/YYYY HH:mm') : ''}</td>
-                                            </tr>`
+                                            </tr>`;
                     });
 
                     procedimentos += (procedimentosFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
@@ -444,7 +444,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 <th style="width:35%">Motivo</th>
                                                 <th style="width:30%">Data do Encaminhamento</th>
                                                 </tr>
-                                            </thead>`
+                                            </thead>`;
 
                     encaminhamentos += (encaminhamentosFilter.length > 0 ? `<tbody>` : ``);
 
@@ -453,13 +453,13 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 <td class="text-secondary">${encaminhamento.nome}</td>
                                                 <td class="text-secondary">${encaminhamento.motivo}</td>
                                                 <td class="text-secondary">${encaminhamento.dataCriacao ? _moment(encaminhamento.dataCriacao).format('DD/MM/YYYY HH:mm') : ''}</td>
-                                            </tr>`
+                                            </tr>`;
                     });
 
                     encaminhamentos += (encaminhamentosFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
                 }
 
-                let conteudo = `
+                const conteudo = `
                     <div class="page">
                         <div class="content">
                             <form class="container" id="form" style="font-size: 12px;">
@@ -471,7 +471,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                         <img style="width:60%; float:left; margin-left:10px;" src="${window.location.origin}${window.location.pathname}/assets/imgs/logo_relatorio.png">
                                     </div>
                                     <div class="col s8" style="margin-top:40px;text-align: right; color: #7d0000; font-weight:bold">
-                                    Unidade: ${result.estabelecimento.nomeFantasia}               
+                                    Unidade: ${result.estabelecimento.nomeFantasia}
                                     </div>
                                 </div>
                                 <hr size = 7>
@@ -611,7 +611,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                             </div>
                             </form>
                         </div>
-                    </div>`
+                    </div>`;
 
                 this.print(conteudo, target, result.paciente[0].nome);
             });

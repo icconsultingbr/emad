@@ -12,7 +12,7 @@ import { TipoExame } from '../../../_core/_models/TipoExame';
 
 export class TipoExameComponent implements OnInit {
 
-  method: String = "tipo-exame";
+  method: String = 'tipo-exame';
   object: TipoExame = new TipoExame();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class TipoExameComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: TipoExameService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

@@ -1,18 +1,18 @@
-import { Routes } from "@angular/router";
-import { ProfissionalFormComponent } from "./profissional-form.component";
-import { ProfissionalComponent } from "./profissional.component";
+import { Routes } from '@angular/router';
+import { ProfissionalFormComponent } from './profissional-form.component';
+import { ProfissionalComponent } from './profissional.component';
 
 export const profissionalRoutes: Routes = [
     {
         path: '',
-        component: ProfissionalComponent,        
+        component: ProfissionalComponent,
     },
     {
         path: 'cadastro',
-        component: ProfissionalFormComponent,        
+        component: ProfissionalFormComponent,
     },
     {
         path: 'cadastro/:id',
-        component: ProfissionalFormComponent,        
+        component: ProfissionalFormComponent,
     }
 ];

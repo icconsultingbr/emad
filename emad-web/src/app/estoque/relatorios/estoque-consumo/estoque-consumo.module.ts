@@ -1,22 +1,22 @@
-import { NgModule } from "@angular/core";
-import { CoreModule } from "../../../_core/core.module";
-import { RouterModule } from "@angular/router";
-import { CommonModule } from "@angular/common";
-import { AppGridViewModule } from "../../../_core/_components/app-grid-view/app-grid-view.module";
-import { AppFormModule } from "../../../_core/_components/app-form/app-form.module";
-import { EstoqueConsumoComponent } from "./estoque-consumo.component";
-import { EstoqueConsumoService } from "./estoque-consumo.service";
-import { estoqueConsumoRoutes } from "./estoque-consumo.routing";
+import { NgModule } from '@angular/core';
+import { CoreModule } from '../../../_core/core.module';
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { AppGridViewModule } from '../../../_core/_components/app-grid-view/app-grid-view.module';
+import { AppFormModule } from '../../../_core/_components/app-form/app-form.module';
+import { EstoqueConsumoComponent } from './estoque-consumo.component';
+import { EstoqueConsumoService } from './estoque-consumo.service';
+import { estoqueConsumoRoutes } from './estoque-consumo.routing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { NgbModule, NgbCollapseModule, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { AgGridModule } from 'ag-grid-angular';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { AppModalModule } from "../../../_core/_components/app-modal/app-modal.module";
+import { AppModalModule } from '../../../_core/_components/app-modal/app-modal.module';
 import 'rxjs/add/operator/map';
-import { PesquisaMedicamentoModule } from "../../../components/pesquisa-medicamentos/pesquisa-medicamento.module";
-import { SharedServiceModule } from "../../../shared/services/shared-service.module";
+import { PesquisaMedicamentoModule } from '../../../components/pesquisa-medicamentos/pesquisa-medicamento.module';
+import { SharedServiceModule } from '../../../shared/services/shared-service.module';
 
 @NgModule({
     imports: [
@@ -35,7 +35,7 @@ import { SharedServiceModule } from "../../../shared/services/shared-service.mod
         BsDropdownModule,
         AppModalModule,
         RouterModule.forChild(estoqueConsumoRoutes),
-        PesquisaMedicamentoModule,        
+        PesquisaMedicamentoModule,
         SharedServiceModule
     ],
     declarations: [
@@ -44,7 +44,7 @@ import { SharedServiceModule } from "../../../shared/services/shared-service.mod
     providers: [
         EstoqueConsumoService
     ],
-    exports:[
+    exports: [
         EstoqueConsumoComponent
     ]
 })

@@ -1,6 +1,6 @@
-import { Routes } from "@angular/router";
-import { HipoteseDiagnosticaFormComponent } from "./hipotese-diagnostica-form.component";
-import { HipoteseDiagnosticaComponent } from "./hipotese-diagnostica.component";
+import { Routes } from '@angular/router';
+import { HipoteseDiagnosticaFormComponent } from './hipotese-diagnostica-form.component';
+import { HipoteseDiagnosticaComponent } from './hipotese-diagnostica.component';
 
 export const hipoteseDiagnosticaRoutes: Routes = [
     {

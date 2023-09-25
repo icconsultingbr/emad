@@ -1,5 +1,18 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, Output, ElementRef, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  ViewChild,
+  Output,
+  ElementRef,
+  EventEmitter,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormControl,
+} from '@angular/forms';
 import { PacienteService } from './paciente.service';
 import { Paciente } from '../../_core/_models/Paciente';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,47 +31,50 @@ import { EstabelecimentoService } from '../../seguranca/estabelecimento/estabele
   selector: 'app-paciente-form',
   templateUrl: './paciente-form.component.html',
   styleUrls: ['./paciente-form.component.css'],
-  providers: [PacienteService]
+  providers: [PacienteService],
 })
 export class PacienteFormComponent implements OnInit {
   object: Paciente = new Paciente();
   objectEstabelecimento: Estabelecimento = new Estabelecimento();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
-  method: string = 'paciente';
+  method = 'paciente';
   fields = [];
-  label: string = "Paciente";
+  label = 'Paciente';
   id: number = null;
   domains: any[] = [];
   form: FormGroup;
   loading: Boolean = false;
-  message: string = "";
+  message = '';
   errors: any[] = [];
   dropdownList = [];
   selectedItems = [];
   dropdownSettings = {};
   allItemsHipotese: any[] = [];
-  virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
+  virtualDirectory: string =
+    environment.virtualDirectory != ''
+      ? environment.virtualDirectory + '/'
+      : '';
   modalRef: NgbModalRef = null;
-  loadPhoto: boolean = false;
+  loadPhoto = false;
   allItemsPesquisaHipoteseDiagnostica: any[] = null;
   hipoteseDiagnostica: HipoteseDiagnostica = new HipoteseDiagnostica();
 
-  cpfObrigatorio: boolean = false;
-  susObrigatorio: boolean = false;
-  telefoneDefault: string = "";
+  cpfObrigatorio = false;
+  susObrigatorio = false;
+  telefoneDefault = '';
 
   @ViewChild('addresstext') addresstext: ElementRef;
 
   //PAGINATION
   pager: any = {};
   pagedItems: any[];
-  pageLimit: number = 10;
+  pageLimit = 10;
   paging: any = {
     offset: 0,
     limit: 10,
-    total: 0
+    total: 0,
   };
-  warning: string = "";
+  warning = '';
   totalPages: Number;
 
   constructor(
@@ -68,12 +84,12 @@ export class PacienteFormComponent implements OnInit {
     private fb: FormBuilder,
     private ref: ChangeDetectorRef,
     private modalService: NgbModal,
-    private router: Router) {
+    private router: Router,
+  ) {
     this.fields = service.fields;
   }
 
   ngOnInit() {
-
     this.dropdownSettings = {
       singleSelection: false,
       idField: 'id',
@@ -83,9 +99,9 @@ export class PacienteFormComponent implements OnInit {
       searchPlaceholderText: 'Procurar',
       noDataAvailablePlaceholderText: 'Sem dados disponíveis',
       itemsShowLimit: 5,
-      allowSearchFilter: true
+      allowSearchFilter: true,
     };
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.id = params['id'];
     });
     this.createGroup();
@@ -100,70 +116,75 @@ export class PacienteFormComponent implements OnInit {
 
   loadDomains() {
     this.loading = true;
-    this.service.listDomains('uf').subscribe(ufs => {
-      this.service.listDomains('nacionalidade').subscribe(paises => {
-        this.service.listDomains('modalidade').subscribe(modalidades => {
-          this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
-            this.service.listDomains('raca').subscribe(racas => {
-              this.service.listDomains('hipotese-diagnostica').subscribe(hipoteseDiagnostica => {
-                this.service.listDomains('atencao-continuada').subscribe(atencaoContinuada => {
-                  this.domains.push({
-                    idUf: ufs,
-                    idNacionalidade: paises,
-                    idNaturalidade: [],
-                    idMunicipio: [],
-                    hipoteses: hipoteseDiagnostica,
-                    idEstabelecimentoCadastro: estabelecimentos,
-                    escolaridade: [
-                      { id: 1, nome: "Educação infantil" },
-                      { id: 2, nome: "Fundamental" },
-                      { id: 3, nome: "Médio" },
-                      { id: 4, nome: "Superior (Graduação)" },
-                      { id: 5, nome: "Pós-graduação" },
-                      { id: 6, nome: "Mestrado" },
-                      { id: 7, nome: "Doutorado" },
-                      { id: 8, nome: "Escola" },
-                      { id: 9, nome: "Analfabeto" },
-                      { id: 10, nome: "Não informado" }
-                    ],
-                    idModalidade: modalidades,
-                    sexo: [
-                      { id: "1", nome: "Masculino" },
-                      { id: "2", nome: "Feminino" },
-                      { id: "3", nome: "Ambos" },
-                      { id: "4", nome: "Não informado" }
-                    ],
-                    idTipoSanguineo: [
-                      { id: "1", nome: "A_POSITIVO" },
-                      { id: "2", nome: "A_NEGATIVO" },
-                      { id: "3", nome: "B_POSITIVO" },
-                      { id: "4", nome: "B_NEGATIVO" },
-                      { id: "5", nome: "AB_POSITIVO" },
-                      { id: "6", nome: "AB_NEGATIVO" },
-                      { id: "7", nome: "O_POSITIVO" },
-                      { id: "8", nome: "O_NEGATIVO" },
-                    ],
-                    aleitamentoMaterno: [
-                      { id: "1", nome: "Exclusivo" },
-                      { id: "2", nome: "Predominante" },
-                      { id: "3", nome: "Complementado" },
-                      { id: "4", nome: "Inexistente" },
-                    ],
-                    idRaca: racas,
-                    idAtencaoContinuada: atencaoContinuada,
-                    gruposAtencaoContinuada: atencaoContinuada,
+    this.service.listDomains('uf').subscribe((ufs) => {
+      this.service.listDomains('nacionalidade').subscribe((paises) => {
+        this.service.listDomains('modalidade').subscribe((modalidades) => {
+          this.service
+            .listDomains('estabelecimento')
+            .subscribe((estabelecimentos) => {
+              this.service.listDomains('raca').subscribe((racas) => {
+                this.service
+                  .listDomains('hipotese-diagnostica')
+                  .subscribe((hipoteseDiagnostica) => {
+                    this.service
+                      .listDomains('atencao-continuada')
+                      .subscribe((atencaoContinuada) => {
+                        this.domains.push({
+                          idUf: ufs,
+                          idNacionalidade: paises,
+                          idNaturalidade: [],
+                          idMunicipio: [],
+                          hipoteses: hipoteseDiagnostica,
+                          idEstabelecimentoCadastro: estabelecimentos,
+                          escolaridade: [
+                            { id: 1, nome: 'Educação infantil' },
+                            { id: 2, nome: 'Fundamental' },
+                            { id: 3, nome: 'Médio' },
+                            { id: 4, nome: 'Superior (Graduação)' },
+                            { id: 5, nome: 'Pós-graduação' },
+                            { id: 6, nome: 'Mestrado' },
+                            { id: 7, nome: 'Doutorado' },
+                            { id: 8, nome: 'Escola' },
+                            { id: 9, nome: 'Analfabeto' },
+                            { id: 10, nome: 'Não informado' },
+                          ],
+                          idModalidade: modalidades,
+                          sexo: [
+                            { id: '1', nome: 'Masculino' },
+                            { id: '2', nome: 'Feminino' },
+                            { id: '3', nome: 'Ambos' },
+                            { id: '4', nome: 'Não informado' },
+                          ],
+                          idTipoSanguineo: [
+                            { id: '1', nome: 'A_POSITIVO' },
+                            { id: '2', nome: 'A_NEGATIVO' },
+                            { id: '3', nome: 'B_POSITIVO' },
+                            { id: '4', nome: 'B_NEGATIVO' },
+                            { id: '5', nome: 'AB_POSITIVO' },
+                            { id: '6', nome: 'AB_NEGATIVO' },
+                            { id: '7', nome: 'O_POSITIVO' },
+                            { id: '8', nome: 'O_NEGATIVO' },
+                          ],
+                          aleitamentoMaterno: [
+                            { id: '1', nome: 'Exclusivo' },
+                            { id: '2', nome: 'Predominante' },
+                            { id: '3', nome: 'Complementado' },
+                            { id: '4', nome: 'Inexistente' },
+                          ],
+                          idRaca: racas,
+                          idAtencaoContinuada: atencaoContinuada,
+                          gruposAtencaoContinuada: atencaoContinuada,
+                        });
+                        if (!Util.isEmpty(this.id)) {
+                          this.encontraPaciente();
+                        } else {
+                          this.loading = false;
+                          this.loadPhoto = true;
+                        }
+                      });
                   });
-                  if (!Util.isEmpty(this.id)) {
-                    this.encontraPaciente();
-                  }
-                  else {
-                    this.loading = false;
-                    this.loadPhoto = true;
-                  }                 
-                });
               });
             });
-          });
         });
       });
     });
@@ -172,41 +193,49 @@ export class PacienteFormComponent implements OnInit {
   encontraPaciente() {
     this.object.id = this.id;
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
 
-    this.service.findById(this.id, this.method).subscribe(result => {
-      this.object = result;
-      this.loading = false;
-      this.loadPhoto = true;
-      this.carregaNaturalidade();
-      this.carregaMunicipios();
-      this.findHipotesePorPaciente();
-    }, error => {
-      this.object = new Paciente();
-      this.loading = false;
-      this.loadPhoto = true;
-      //this.allItemsEncaminhamento = [];
-      this.allItemsHipotese = [];
-      //this.allItemsMedicamento = [];
-      this.errors.push({
-        message: "Paciente não encontrado"
-      });
-    });
+    this.service.findById(this.id, this.method).subscribe(
+      (result) => {
+        this.object = result;
+        this.loading = false;
+        this.loadPhoto = true;
+        this.carregaNaturalidade();
+        this.carregaMunicipios();
+        this.findHipotesePorPaciente();
+      },
+      (error) => {
+        this.object = new Paciente();
+        this.loading = false;
+        this.loadPhoto = true;
+        //this.allItemsEncaminhamento = [];
+        this.allItemsHipotese = [];
+        //this.allItemsMedicamento = [];
+        this.errors.push({
+          message: 'Paciente não encontrado',
+        });
+      },
+    );
   }
 
   carregaNaturalidade() {
     this.loading = true;
-    this.service.carregaNaturalidadePorNacionalidade(this.object.idNacionalidade).subscribe(result => {
-      this.domains[0].idNaturalidade = result;
-      this.loading = false;
-    }, error => {
-      this.loading = false;
-    });
+    this.service
+      .carregaNaturalidadePorNacionalidade(this.object.idNacionalidade)
+      .subscribe(
+        (result) => {
+          this.domains[0].idNaturalidade = result;
+          this.loading = false;
+        },
+        (error) => {
+          this.loading = false;
+        },
+      );
   }
 
   back() {
-    const route = "pacientes";
+    const route = 'pacientes';
     this.router.navigate([route]);
   }
 
@@ -252,7 +281,13 @@ export class PacienteFormComponent implements OnInit {
       idAtencaoContinuada: ['', ''],
       historiaProgressaFamiliar: ['', ''],
       observacao: ['', ''],
-      idEstabelecimentoCadastro: new FormControl({ value: '', disabled: (this.id > 0 || this.object.id > 0) ? true : false }, Validators.required),
+      idEstabelecimentoCadastro: new FormControl(
+        {
+          value: '',
+          disabled: this.id > 0 || this.object.id > 0 ? true : false,
+        },
+        Validators.required,
+      ),
       gruposAtencaoContinuada: ['', ''],
       falecido: ['', ''],
       necessidadeEspeciais: ['', ''],
@@ -264,30 +299,27 @@ export class PacienteFormComponent implements OnInit {
       nuGestasPrevias: ['', ''],
       nuPartos: ['', ''],
       situacao: ['', Validators.required],
-      foto: ['']
+      foto: [''],
     });
   }
 
   sendForm(event) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
     event.preventDefault();
 
-    this.service
-      .save(this.object, this.method)
-      .subscribe((res: any) => {
+    this.service.save(this.object, this.method).subscribe(
+      (res: any) => {
         this.loading = false;
         this.object.id = res.id;
-        if (this.form.value.id)
-          this.message = "Alteração efetuada com sucesso!";
-        else
-          this.message = "Cadastro efetuado com sucesso!";
+        if (this.form.value.id) {
+          this.message = 'Alteração efetuada com sucesso!';
+        }
+        else { this.message = 'Cadastro efetuado com sucesso!'; }
 
         this.back();
         return;
-
-
 
         // if(res.ano_receita)
         //   this.object.ano_receita = res.ano_receita;
@@ -301,26 +333,23 @@ export class PacienteFormComponent implements OnInit {
         // if(res.dadosFicha)
         //   this.object.dadosFicha = res.dadosFicha;
 
-
-
         //   if(!Util.isEmpty(this.object.ano_receita) && !Util.isEmpty(this.object.numero_receita) && !Util.isEmpty(this.object.unidade_receita))
         //     this.abreReceitaMedica(this.object.ano_receita, this.object.numero_receita, this.object.unidade_receita);
         // } else {
         //   this.abreFichaDigital(this.object.id, false);
         // }
 
-
-
         // if(this.object.situacao && this.object.situacao != "E" && this.object.situacao != "O" && this.object.situacao != "X" && this.object.situacao != "C"){
         //   this.stopProcess(this.object.situacao);
         //   return;
         // }
-
-      }, erro => {
+      },
+      (erro) => {
         this.loading = false;
-        setTimeout(() => this.loading = false, 300);
+        setTimeout(() => (this.loading = false), 300);
         this.errors = Util.customHTTPResponse(erro);
-      });
+      },
+    );
   }
 
   private getPlaceAutocomplete() {
@@ -328,46 +357,48 @@ export class PacienteFormComponent implements OnInit {
       this.addresstext.nativeElement,
       {
         componentRestrictions: { country: 'BR' },
-        types: ['geocode']  // 'establishment' / 'address' / 'geocode'
-      }
+        types: ['geocode'], // 'establishment' / 'address' / 'geocode'
+      },
     );
 
     // Set the data fields to return when the user selects a place.
     autocomplete.setFields(['address_components', 'geometry', 'icon', 'name']);
 
     google.maps.event.addListener(autocomplete, 'place_changed', () => {
-      let place: PlaceResult = autocomplete.getPlace();
-      let geometry: PlaceGeometry = place.geometry;
+      const place: PlaceResult = autocomplete.getPlace();
+      const geometry: PlaceGeometry = place.geometry;
 
-      let rua: string = "";
-      let numero: string = "";
-      let bairro: string = "";
-      let municipio: string = "";
-      let estado: string = "";
-      let latitude: number = 0;
-      let longitude: number = 0;
-      let cep: string = "";
+      let rua = '';
+      let numero = '';
+      let bairro = '';
+      let municipio = '';
+      let estado = '';
+      let latitude = 0;
+      let longitude = 0;
+      let cep = '';
 
-      place.address_components.forEach((address_component: GeocoderAddressComponent) => {
-        if (address_component.types[0] === "route") {
-          rua = address_component.long_name;
-        }
-        if (address_component.types[0] === "street_number") {
-          numero = address_component.long_name;
-        }
-        if (address_component.types[0] === "sublocality_level_1") {
-          bairro = address_component.long_name;
-        }
-        if (address_component.types[0] === "administrative_area_level_2") {
-          municipio = address_component.long_name;
-        }
-        if (address_component.types[0] === "administrative_area_level_1") {
-          estado = address_component.long_name;
-        }
-        if (address_component.types[0] === "postal_code") {
-          cep = address_component.long_name;
-        }
-      });
+      place.address_components.forEach(
+        (address_component: GeocoderAddressComponent) => {
+          if (address_component.types[0] === 'route') {
+            rua = address_component.long_name;
+          }
+          if (address_component.types[0] === 'street_number') {
+            numero = address_component.long_name;
+          }
+          if (address_component.types[0] === 'sublocality_level_1') {
+            bairro = address_component.long_name;
+          }
+          if (address_component.types[0] === 'administrative_area_level_2') {
+            municipio = address_component.long_name;
+          }
+          if (address_component.types[0] === 'administrative_area_level_1') {
+            estado = address_component.long_name;
+          }
+          if (address_component.types[0] === 'postal_code') {
+            cep = address_component.long_name;
+          }
+        },
+      );
 
       if (geometry) {
         latitude = geometry.location.lat();
@@ -381,67 +412,86 @@ export class PacienteFormComponent implements OnInit {
       this.object.longitude = longitude;
       this.object.cep = cep;
 
-      let ufs = this.domains[0].idUf.filter((uf) => uf.nome.toUpperCase() == estado.toUpperCase());
+      const ufs = this.domains[0].idUf.filter(
+        (uf) => uf.nome.toUpperCase() == estado.toUpperCase(),
+      );
 
       if (ufs.length > 0) {
         this.object.idUf = ufs[0].id;
 
-        this.service.list(`municipio/uf/${this.object.idUf}`).subscribe(municipios => {
-          this.domains[0].idMunicipio = municipios;
-          let ufMunicipios = municipios.filter((uf) => uf.nome.toUpperCase() == municipio.toString().toUpperCase());
-          if (ufMunicipios.length > 0) {
-            this.object.idMunicipio = ufMunicipios[0].id;
-          }
-          this.ref.detectChanges();
-        });
+        this.service
+          .list(`municipio/uf/${this.object.idUf}`)
+          .subscribe((municipios) => {
+            this.domains[0].idMunicipio = municipios;
+            const ufMunicipios = municipios.filter(
+              (uf) =>
+                uf.nome.toUpperCase() == municipio.toString().toUpperCase(),
+            );
+            if (ufMunicipios.length > 0) {
+              this.object.idMunicipio = ufMunicipios[0].id;
+            }
+            this.ref.detectChanges();
+          });
       }
     });
   }
 
   carregaMunicipios() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
-    this.service.list(`municipio/uf/${this.object.idUf}`).subscribe(municipios => {
-      this.domains[0].idMunicipio = municipios;
-      let listaMunicipios = municipios.filter((municipio) => municipio.nome.toUpperCase() == municipio.toString().toUpperCase());
-      if (listaMunicipios.length > 0) {
-        this.object.idMunicipio = listaMunicipios[0].id;
-      }
-    }, error => {
-      this.loading = false;
-      this.errors = Util.customHTTPResponse(error);
-    });
+    this.service.list(`municipio/uf/${this.object.idUf}`).subscribe(
+      (municipios) => {
+        this.domains[0].idMunicipio = municipios;
+        const listaMunicipios = municipios.filter(
+          (municipio) =>
+            municipio.nome.toUpperCase() == municipio.toString().toUpperCase(),
+        );
+        if (listaMunicipios.length > 0) {
+          this.object.idMunicipio = listaMunicipios[0].id;
+        }
+      },
+      (error) => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(error);
+      },
+    );
   }
 
   findHipotesePorPaciente() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
-    this.service.findHipoteseByPaciente(this.object.id).subscribe(result => {
-      this.allItemsHipotese = result;
-      this.loading = false;
-    }, error => {
-      this.loading = false;
-      this.errors = Util.customHTTPResponse(error);
-    });
+    this.service.findHipoteseByPaciente(this.object.id).subscribe(
+      (result) => {
+        this.allItemsHipotese = result;
+        this.loading = false;
+      },
+      (error) => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(error);
+      },
+    );
   }
 
   visualizaAtendimentos(id: any): void {
-    let url = this.router.url.replace('paciente', '') + this.virtualDirectory + "#/atendimentos/cadastro/" + id;
-    this.service.file('atendimento/consulta-por-paciente', url).subscribe(result => {
-      this.loading = false;
-      window.open(
-        url,
-        '_blank'
-      );
-    });
+    const url =
+      this.router.url.replace('paciente', '') +
+      this.virtualDirectory +
+      '#/atendimentos/cadastro/' +
+      id;
+    this.service
+      .file('atendimento/consulta-por-paciente', url)
+      .subscribe((result) => {
+        this.loading = false;
+        window.open(url, '_blank');
+      });
   }
 
   openHipotese(content: any) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.allItemsPesquisaHipoteseDiagnostica = [];
     this.pacienteHipotese = new PacienteHipotese();
     this.hipoteseDiagnostica = new HipoteseDiagnostica();
@@ -450,25 +500,28 @@ export class PacienteFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg',
     });
   }
 
   pesquisaHipoteseDiagnostica() {
     this.loading = true;
-    let params = "";
+    const params = '';
     this.allItemsPesquisaHipoteseDiagnostica = [];
     this.errors = [];
 
-    if (Util.isEmpty(this.hipoteseDiagnostica.nome) && Util.isEmpty(this.hipoteseDiagnostica.cid_10)) {
-      this.errors = [{ message: "Informe o nome ou código CID 10" }];
+    if (
+      Util.isEmpty(this.hipoteseDiagnostica.nome) &&
+      Util.isEmpty(this.hipoteseDiagnostica.cid_10)
+    ) {
+      this.errors = [{ message: 'Informe o nome ou código CID 10' }];
       this.loading = false;
       return;
     }
 
     if (!Util.isEmpty(this.hipoteseDiagnostica.nome)) {
       if (this.hipoteseDiagnostica.nome.length < 3) {
-        this.errors = [{ message: "Informe o nome, ao menos 3 caracteres" }];
+        this.errors = [{ message: 'Informe o nome, ao menos 3 caracteres' }];
         this.loading = false;
         return;
       }
@@ -476,7 +529,9 @@ export class PacienteFormComponent implements OnInit {
 
     if (!Util.isEmpty(this.hipoteseDiagnostica.cid_10)) {
       if (this.hipoteseDiagnostica.cid_10.length < 2) {
-        this.errors = [{ message: "Informe o código CID 10, ao menos 2 caracteres" }];
+        this.errors = [
+          { message: 'Informe o código CID 10, ao menos 2 caracteres' },
+        ];
         this.loading = false;
         return;
       }
@@ -491,24 +546,36 @@ export class PacienteFormComponent implements OnInit {
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
 
-    var params = "?nome=" + this.hipoteseDiagnostica.nome + "&cid=" + this.hipoteseDiagnostica.cid_10;
+    let params =
+      '?nome=' +
+      this.hipoteseDiagnostica.nome +
+      '&cid=' +
+      this.hipoteseDiagnostica.cid_10;
 
     if (this.paging.offset != null && this.paging.limit != null) {
-      params += (params == "" ? "?" : "&") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+      params +=
+        (params == '' ? '?' : '&') +
+        'offset=' +
+        this.paging.offset +
+        '&limit=' +
+        this.paging.limit;
     }
 
-    this.service.list('hipotese-diagnostica' + params).subscribe(result => {
-      this.warning = "";
-      this.paging.total = result.total;
-      this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
-      this.allItemsPesquisaHipoteseDiagnostica = result.items;
-      setTimeout(() => {
-        this.loading = false;
-      }, 300);
-    }, erro => {
-      setTimeout(() => this.loading = false, 300);
-      this.errors = Util.customHTTPResponse(erro);
-    });
+    this.service.list('hipotese-diagnostica' + params).subscribe(
+      (result) => {
+        this.warning = '';
+        this.paging.total = result.total;
+        this.totalPages = Math.ceil(this.paging.total / this.paging.limit);
+        this.allItemsPesquisaHipoteseDiagnostica = result.items;
+        setTimeout(() => {
+          this.loading = false;
+        }, 300);
+      },
+      (erro) => {
+        setTimeout(() => (this.loading = false), 300);
+        this.errors = Util.customHTTPResponse(erro);
+      },
+    );
   }
 
   selecionaHipoteseDiagnostica(item) {
@@ -516,8 +583,7 @@ export class PacienteFormComponent implements OnInit {
   }
 
   close() {
-    if (this.modalRef)
-      this.modalRef.close();
+    if (this.modalRef) { this.modalRef.close(); }
   }
 
   disableHipoteseButton() {
@@ -525,28 +591,32 @@ export class PacienteFormComponent implements OnInit {
   }
 
   saveHipotese() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.pacienteHipotese.idHipoteseDiagnostica = this.hipoteseDiagnostica.id;
     this.pacienteHipotese.idPaciente = this.id;
     this.pacienteHipotese.funcionalidade = 'PACIENTE';
-    this.pacienteHipotese.idEstabelecimento = this.object.idEstabelecimentoCadastro;
+    this.pacienteHipotese.idEstabelecimento =
+      this.object.idEstabelecimentoCadastro;
 
-    this.service.saveHipotese(this.pacienteHipotese).subscribe(result => {
-      this.message = "Hipótese diagnóstica inserida com sucesso!"
-      this.close();
-      this.loading = false;
-      this.findHipotesePorPaciente();
-    }, error => {
-      this.loading = false;
-      this.errors = Util.customHTTPResponse(error);
-    });
+    this.service.saveHipotese(this.pacienteHipotese).subscribe(
+      (result) => {
+        this.message = 'Hipótese diagnóstica inserida com sucesso!';
+        this.close();
+        this.loading = false;
+        this.findHipotesePorPaciente();
+      },
+      (error) => {
+        this.loading = false;
+        this.errors = Util.customHTTPResponse(error);
+      },
+    );
   }
 
   removeHipotese(item) {
-    this.service.removeHipotese(item.id).subscribe(result => {
-      this.message = "Hipótese diagnóstica removida com sucesso!"
+    this.service.removeHipotese(item.id).subscribe((result) => {
+      this.message = 'Hipótese diagnóstica removida com sucesso!';
       this.close();
       this.loading = false;
       this.findHipotesePorPaciente();
@@ -559,7 +629,7 @@ export class PacienteFormComponent implements OnInit {
   }
 
   loadQuantityPerPagePaginationHipotese(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.paging.limit = id;
 
     this.setPagePaginedHipotese(this.pager.offset, this.paging.limit);
@@ -574,31 +644,39 @@ export class PacienteFormComponent implements OnInit {
 
   onChangeEstabelecimento(idEstabelecimento) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
 
-    this.serviceEstabelecimento.findById(idEstabelecimento, 'estabelecimento').subscribe(result => {
-      this.objectEstabelecimento = result;
-      this.loading = false;
+    this.serviceEstabelecimento
+      .findById(idEstabelecimento, 'estabelecimento')
+      .subscribe(
+        (result) => {
+          this.objectEstabelecimento = result;
+          this.loading = false;
 
-      let estabelecimento = JSON.parse(JSON.stringify(result));
+          const estabelecimento = JSON.parse(JSON.stringify(result));
 
-      // VALIDACAO EM TELA
-      this.cpfObrigatorio = estabelecimento.obrigaCpfNovoPaciente == 1;
-      this.susObrigatorio = estabelecimento.obrigaCartaoSusNovoPaciente == 1;
-      this.telefoneDefault = estabelecimento.celularDefaultNovoPaciente;
+          // VALIDACAO EM TELA
+          this.cpfObrigatorio = estabelecimento.obrigaCpfNovoPaciente == 1;
+          this.susObrigatorio =
+            estabelecimento.obrigaCartaoSusNovoPaciente == 1;
+          this.telefoneDefault = estabelecimento.celularDefaultNovoPaciente;
 
-      //VALIDAR OS DADOS NA API
-      this.object.obrigaCpfNovoPaciente = estabelecimento.obrigaCpfNovoPaciente;
-      this.object.obrigaCartaoSusNovoPaciente = estabelecimento.obrigaCartaoSusNovoPaciente;
-      this.object.celularDefaultNovoPaciente = estabelecimento.celularDefaultNovoPaciente;
-
-    }, error => {
-      this.objectEstabelecimento = new Estabelecimento();
-      this.loading = false;
-      this.errors.push({
-        message: "Estabelecimento não encontrado"
-      });
-    });
+          //VALIDAR OS DADOS NA API
+          this.object.obrigaCpfNovoPaciente =
+            estabelecimento.obrigaCpfNovoPaciente;
+          this.object.obrigaCartaoSusNovoPaciente =
+            estabelecimento.obrigaCartaoSusNovoPaciente;
+          this.object.celularDefaultNovoPaciente =
+            estabelecimento.celularDefaultNovoPaciente;
+        },
+        (error) => {
+          this.objectEstabelecimento = new Estabelecimento();
+          this.loading = false;
+          this.errors.push({
+            message: 'Estabelecimento não encontrado',
+          });
+        },
+      );
   }
 }

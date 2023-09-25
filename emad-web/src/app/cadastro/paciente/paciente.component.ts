@@ -18,31 +18,31 @@ import { Translation } from '../../_core/_locale/Translation';
 })
 export class PacienteComponent implements OnInit {
 
-  method: string = "paciente";
+  method = 'paciente';
   domains: any[] = [];
   fields = [];
   fieldsSearch = [];
   object: Paciente = new Paciente();
-  virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
-  permiteVisualizarProntuario: boolean = JSON.parse(localStorage.getItem("especialidade")) 
-                                         ? JSON.parse(localStorage.getItem("especialidade")).visualizaProntuario 
+  virtualDirectory: string = environment.virtualDirectory != '' ? environment.virtualDirectory + '/' : '';
+  permiteVisualizarProntuario: boolean = JSON.parse(localStorage.getItem('especialidade'))
+                                         ? JSON.parse(localStorage.getItem('especialidade')).visualizaProntuario
                                          : false;
   allItems: any[];
   pager: any = {};
   pagedItems: any[];
-  
-  erroEstabelecimento: boolean = false;
-  mensagem: string = "";
-  mensagemModal: string = "";
-  isFilterCollapse: boolean = false;
-  pagerService: PagerService  
-  warning: string = "";  
-  pageLimit: number = 10;
+
+  erroEstabelecimento = false;
+  mensagem = '';
+  mensagemModal = '';
+  isFilterCollapse = false;
+  pagerService: PagerService;
+  warning = '';
+  pageLimit = 10;
   totalPages: Number;
   idPacienteExclusao: number;
   idPacienteTransferencia: number;
   estabelecimentoPacienteSelecionado: number;
-  modalRef: NgbModalRef = null;  
+  modalRef: NgbModalRef = null;
   paging: any = {
     offset: 0,
     limit: 10,
@@ -54,17 +54,17 @@ export class PacienteComponent implements OnInit {
 
   errors: any[] = [];
   showLabels: Boolean = false;
-  loading: boolean = false;
+  loading = false;
 
   //ACTION BUTTONS
-  @Input() create: Boolean = true;  
-  @Input() view: Boolean = true;  
-  @Input() urlForm: string = "pacientes/cadastro";
+  @Input() create: Boolean = true;
+  @Input() view: Boolean = true;
+  @Input() urlForm = 'pacientes/cadastro';
 
   @ViewChild('textoProcurado') textoProcurado: ElementRef;
   @Output() emitFilterMultiSelectMethod = new EventEmitter();
   @ViewChild('content') content: ElementRef;
-  
+
   actualPage: Number = 0;
   @Input() methodXls: string = this.method;
   dropdownSettings: any = {
@@ -87,7 +87,7 @@ export class PacienteComponent implements OnInit {
     private modalService: NgbModal,
     private router: Router) {
 
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }
@@ -96,9 +96,9 @@ export class PacienteComponent implements OnInit {
       }
     }
     this.loadDomains();
-    this.pagerService = pagerService;   
+    this.pagerService = pagerService;
   }
- 
+
   ngOnInit() {
     this.nav.show();
 
@@ -107,7 +107,7 @@ export class PacienteComponent implements OnInit {
     });
 
     // if (this.idPaciente>0) {
-    //   this.object.idPaciente = this.idPaciente;      
+    //   this.object.idPaciente = this.idPaciente;
     // }
 
     //if (typeof Util.getPageState('textoProcurado') != 'undefined') {
@@ -123,10 +123,10 @@ export class PacienteComponent implements OnInit {
           idEstabelecimentoCadastro: estabelecimentos,
           idEspecialidade : especialidades,
           pacienteOutroEstabelecimento: [
-            { id: "1", nome: "Sim" },
-            { id: "2", nome: "Não" }
+            { id: '1', nome: 'Sim' },
+            { id: '2', nome: 'Não' }
           ]
-        })
+        });
       });
     });
   }
@@ -139,56 +139,56 @@ export class PacienteComponent implements OnInit {
 
   getListPaged(offset: Number = null, limit: Number = null) {
 
-    this.mensagem = "";
+    this.mensagem = '';
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
-    
+
     if (this.loading != true) {
      setTimeout(() => this.loading = true, 300);
     }
 
-    let params = "";
+    let params = '';
     this.errors = [];
 
     if (this.object !== null) {
       if (Object.keys(this.object).length) {
-        for (let key of Object.keys(this.object)) {
-          if (this.object[key] != "" && this.object[key] != 0 && this.object[key] != null) {
-            if (typeof this.object[key] !== "undefined") {
+        for (const key of Object.keys(this.object)) {
+          if (this.object[key] != '' && this.object[key] != 0 && this.object[key] != null) {
+            if (typeof this.object[key] !== 'undefined') {
               if (typeof this.object[key] == 'object') {
                 if (isDate(this.object[key])) {
-                  params += key + "=" + Util.dateFormat(this.object[key], "yyyy-MM-dd") + "&";
+                  params += key + '=' + Util.dateFormat(this.object[key], 'yyyy-MM-dd') + '&';
                 } else {
-                  let p: string = "";
+                  let p = '';
 
-                  for (let k of this.object[key]) {
-                    p += k.id + ",";
+                  for (const k of this.object[key]) {
+                    p += k.id + ',';
                   }
-                  params += key + "=" + p.substring(0, p.length - 1) + "&";
+                  params += key + '=' + p.substring(0, p.length - 1) + '&';
                 }
               } else {
                 if (this.object[key].toString().indexOf('/') >= 0) {
-                  params += key + "=" + Util.dateFormat(this.object[key], "yyyy-MM-dd") + "&";
+                  params += key + '=' + Util.dateFormat(this.object[key], 'yyyy-MM-dd') + '&';
                 } else {
-                  params += key + "=" + this.object[key] + "&";
+                  params += key + '=' + this.object[key] + '&';
                 }
               }
             }
           }
         }
 
-        if (params != "") {
-          params = "?" + params;
+        if (params != '') {
+          params = '?' + params;
         }
       }
     }
 
     if (this.paging.offset != null && this.paging.limit != null) {
-      params += (params == "" ? "?" : "") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+      params += (params == '' ? '?' : '') + 'offset=' + this.paging.offset + '&limit=' + this.paging.limit;
     }
 
     this.service.list(this.method + params).subscribe(result => {
-      this.warning = "";
+      this.warning = '';
       this.paging.total = result.total;
       this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
       this.allItems = result.items;
@@ -201,7 +201,7 @@ export class PacienteComponent implements OnInit {
     });
   }
 
-  pesquisaCentral(){    
+  pesquisaCentral() {
     this.object.pesquisaCentral = this.textoProcurado.nativeElement.value;
     this.getListPaged();
   }
@@ -210,22 +210,22 @@ export class PacienteComponent implements OnInit {
     if (this.urlForm != undefined) {
       this.router.navigate(['/' + this.urlForm]);
     } else {
-      let route = this.method.split("/");
+      const route = this.method.split('/');
       this.router.navigate(['/' + route[0] + '-form']);
     }
   }
- 
+
   viewer(id) {
-    this.mensagem = "";
+    this.mensagem = '';
     if (this.urlForm != undefined) {
       this.router.navigate(['/' + this.urlForm + '/' + id]);
     } else {
-      let route = this.method.split("/");
+      const route = this.method.split('/');
       this.router.navigate(['/' + route[0] + '-view/' + id]);
     }
   }
 
-  ngAfterViewInit() {    
+  ngAfterViewInit() {
     this.getListPaged();
   }
 
@@ -239,7 +239,7 @@ export class PacienteComponent implements OnInit {
   }
 
   searchFilter() {
-    this.mensagem = "";
+    this.mensagem = '';
     this.getListPaged();
   }
 
@@ -247,15 +247,15 @@ export class PacienteComponent implements OnInit {
     if (this.object != null) {
 
       if (Object.keys(this.object).length) {
-        for (let key of Object.keys(this.object)) {
+        for (const key of Object.keys(this.object)) {
 
-          if (this.object[key] != "" && this.object[key] != 0) {
+          if (this.object[key] != '' && this.object[key] != 0) {
 
-            let fields2 = this.fieldsSearch.filter(item => item.field == key);
+            const fields2 = this.fieldsSearch.filter(item => item.field == key);
 
             if (typeof fields2[0] != 'undefined' && fields2[0] !== null) {
-              if (fields2[0].filter.type == "select") {
-                if (fields2[0].filter.changeTarget){
+              if (fields2[0].filter.type == 'select') {
+                if (fields2[0].filter.changeTarget) {
                   this.domains[0][fields2[0].filter.changeTarget] = [];
                 }
                 this.object[key] = undefined;
@@ -266,15 +266,15 @@ export class PacienteComponent implements OnInit {
           }
         }
       }
-      Util.savePageState(null, 0, null, null, "");
+      Util.savePageState(null, 0, null, null, '');
       this.allItems = [];
-      this.textoProcurado.nativeElement.value = "";
+      this.textoProcurado.nativeElement.value = '';
     }
 
   }
 
   loadQuantityPerPagePagination(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.paging.limit = id;
 
     this.setPagePagined(this.pager.offset, this.paging.limit);
@@ -283,8 +283,7 @@ export class PacienteComponent implements OnInit {
   translate(term, obj) {
     if (typeof (obj) == 'object') {
       return obj[term];
-    }
-    else {
+    } else {
       return Translation.t(term);
     }
   }
@@ -295,20 +294,21 @@ export class PacienteComponent implements OnInit {
 
   toCurrency(number, mask) {
     if (number == null) {
-      return "";
+      return '';
     }
 
     if (typeof (mask) == 'object') {
       return Util.convertToCurrency(number);
     } else {
-      return number.replace("R$ ", "").replace(".", ",");
+      return number.replace('R$ ', '').replace('.', ',');
     }
   }
 
   close() {
     this.idPacienteExclusao = null;
-    if(this.modalRef)
+    if (this.modalRef) {
       this.modalRef.close();
+    }
   }
 
   openConfirmacao(content: any, id: number) {
@@ -317,10 +317,10 @@ export class PacienteComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
-  
+
   openTransferencia(content: any, id: number, idEstabelecimentoCadastroSelecionado: number) {
     this.idPacienteTransferencia = id;
     this.estabelecimentoPacienteSelecionado = idEstabelecimentoCadastroSelecionado;
@@ -328,14 +328,14 @@ export class PacienteComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
-  
 
-  visualizaAtendimentos(id : any) : void {
-    let url = this.router.url.replace('pacientes','') + this.virtualDirectory + "#/atendimentos/idPaciente/" + id;
-    this.service.file('atendimento/consulta-por-paciente', url).subscribe(result=>{
+
+  visualizaAtendimentos(id: any): void {
+    const url = this.router.url.replace('pacientes', '') + this.virtualDirectory + '#/atendimentos/idPaciente/' + id;
+    this.service.file('atendimento/consulta-por-paciente', url).subscribe(result => {
       this.loading = false;
       window.open(
         url,
@@ -347,9 +347,9 @@ export class PacienteComponent implements OnInit {
   remover() {
     this.loading = true;
     this.service.remove(this.idPacienteExclusao, this.method).subscribe(() => {
-      this.mensagem = Translation.t("Registro removido com sucesso!");
+      this.mensagem = Translation.t('Registro removido com sucesso!');
       this.getListPaged();
-      this.modalRef.close();        
+      this.modalRef.close();
     },
       (erro) => {
         this.modalRef.close();
@@ -358,33 +358,33 @@ export class PacienteComponent implements OnInit {
       }
     );
   }
-  
+
   transferir() {
     this.erroEstabelecimento = false;
-    if(this.estabelecimentoPacienteSelecionado == 0){
-      this.erroEstabelecimento = true; 
+    if (this.estabelecimentoPacienteSelecionado == 0) {
+      this.erroEstabelecimento = true;
       return;
     }
     this.loading = true;
-    let pacienteSelecionado: any = {};
+    const pacienteSelecionado: any = {};
     pacienteSelecionado.id = this.idPacienteTransferencia;
     pacienteSelecionado.idEstabelecimentoCadastro = this.estabelecimentoPacienteSelecionado;
 
     this.service.transfereEstabelecimento(pacienteSelecionado).subscribe(() => {
-      this.mensagem = Translation.t("Paciente transferido com sucesso!");
+      this.mensagem = Translation.t('Paciente transferido com sucesso!');
       this.getListPaged();
-      this.modalRef.close();        
+      this.modalRef.close();
     },
       (erro) => {
-        this.modalRef.close(); 
+        this.modalRef.close();
         setTimeout(() => this.loading = false, 300);
         this.errors = Util.customHTTPResponse(erro);
       }
     );
-  } 
+  }
 
   visualizaProntuarioPaciente(idPaciente: any): void {
-    let url = this.router.url.replace('pacientes', '') + this.virtualDirectory + "#/pacientes/prontuario/" + idPaciente + "?hideMenu=true";
+    const url = this.router.url.replace('pacientes', '') + this.virtualDirectory + '#/pacientes/prontuario/' + idPaciente + '?hideMenu=true';
     this.service.file('atendimento/consulta-por-paciente', url).subscribe(result => {
       this.loading = false;
       window.open(
@@ -392,5 +392,5 @@ export class PacienteComponent implements OnInit {
         '_blank'
       );
     });
-  } 
+  }
 }

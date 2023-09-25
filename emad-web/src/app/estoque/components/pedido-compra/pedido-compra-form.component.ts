@@ -16,35 +16,36 @@ import { Material } from '../../../_core/_models/Material';
 })
 
 export class PedidoCompraFormComponent implements OnInit {
-    
+
   fields: any[] = [];
-  label: String = "pedido de compra";
+  label: String = 'pedido de compra';
   pedidoCompra: PedidoCompra = new PedidoCompra();
-  itemPedidoCompra: ItemPedidoCompra = new ItemPedidoCompra();  
+  itemPedidoCompra: ItemPedidoCompra = new ItemPedidoCompra();
   id: number = null;
   domains: any[] = [];
   form: FormGroup;
   loading: Boolean = false;
-  message: string = '';
-  errors: any[] = [];    
-  listaMaterialLote: any[] = [];  
-  warning: string = '';
+  message = '';
+  errors: any[] = [];
+  listaMaterialLote: any[] = [];
+  warning = '';
   objectMaterial: Material = new Material();
 
-  constructor(    
+  constructor(
     private fb: FormBuilder,
     private service: PedidoCompraService,
-    private ref: ChangeDetectorRef,    
+    private ref: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router) {
-      
+
     }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.id = params['id'];
-      if(!Util.isEmpty(this.id))
+      if (!Util.isEmpty(this.id)) {
         this.carregaPedidoCompra();
+      }
     });
 
     this.createGroup();
@@ -52,100 +53,100 @@ export class PedidoCompraFormComponent implements OnInit {
 
   createGroup() {
     this.form = this.fb.group({
-      id: [''], 
+      id: [''],
       numeroPedido: ['', ''],
       numeroEmpenho: ['', ''],
       dataPedido: ['', ''],
       dataEmpenho: ['', ''],
       dataPrevistaEntrega: ['', ''],
-      qtdCompra: ['', '']      
+      qtdCompra: ['', '']
     });
   }
 
-  togglePedido(){
-    return Util.isEmpty(this.pedidoCompra.numeroPedido)  
+  togglePedido() {
+    return Util.isEmpty(this.pedidoCompra.numeroPedido)
     || Util.isEmpty(this.pedidoCompra.dataPedido);
   }
 
-  toggleItemEntradaMaterial(){
-    return Util.isEmpty(this.itemPedidoCompra.idMaterial)     
+  toggleItemEntradaMaterial() {
+    return Util.isEmpty(this.itemPedidoCompra.idMaterial)
     || Util.isEmpty(this.itemPedidoCompra.idPedidoCompra)
     || Util.isEmpty(this.itemPedidoCompra.qtdCompra)
-    || Util.isEmpty(this.itemPedidoCompra.dataPrevistaEntrega);    
+    || Util.isEmpty(this.itemPedidoCompra.dataPrevistaEntrega);
   }
 
-  medicamentoSelecionado(material: any){
+  medicamentoSelecionado(material: any) {
     this.itemPedidoCompra.idMaterial = material.id;
     this.itemPedidoCompra.nomeMaterial = material.descricao;
-    this.itemPedidoCompra.codigoMaterial = material.codigo;    
-  } 
-  
-  confirmaItemEntradaMaterial(){    
-    if(this.movimentoContemDivergencias())
+    this.itemPedidoCompra.codigoMaterial = material.codigo;
+  }
+
+  confirmaItemEntradaMaterial() {
+    if (this.movimentoContemDivergencias()) {
     return;
+    }
 
     this.itemPedidoCompra.idFront = uuid.v4();
-    
-    if (!this.pedidoCompra.itensPedidoCompra)
-      this.pedidoCompra.itensPedidoCompra = [];
 
-    let existeItemDispensa = false;
+    if (!this.pedidoCompra.itensPedidoCompra) {
+      this.pedidoCompra.itensPedidoCompra = [];
+    }
+
+    const existeItemDispensa = false;
 
     this.pedidoCompra.itensPedidoCompra.push(this.itemPedidoCompra);
     this.itemPedidoCompra = new ItemPedidoCompra();
     this.itemPedidoCompra.idPedidoCompra = this.id;
     this.listaMaterialLote = [];
     this.objectMaterial = new Material();
-    this.ref.detectChanges();    
+    this.ref.detectChanges();
   }
 
-  removeItemPedidoCompra(item) {  
-    this.pedidoCompra.itensPedidoCompraExcluidos = [];  
+  removeItemPedidoCompra(item) {
+    this.pedidoCompra.itensPedidoCompraExcluidos = [];
     this.pedidoCompra.itensPedidoCompraExcluidos.push(item);
-    this.pedidoCompra.itensPedidoCompra = this.pedidoCompra.itensPedidoCompra.filter(itemExistente => itemExistente.idFront != item.idFront);    
+    this.pedidoCompra.itensPedidoCompra = this.pedidoCompra.itensPedidoCompra.filter(itemExistente => itemExistente.idFront != item.idFront);
   }
 
-  movimentoContemDivergencias()
-  {
-     this.errors = [];   
-     var erroQtd = false;     
-     let listaMaterialLoteExistente = [];     
+  movimentoContemDivergencias() {
+     this.errors = [];
+     let erroQtd = false;
+     let listaMaterialLoteExistente = [];
      listaMaterialLoteExistente =  Object.assign([], this.pedidoCompra.itensPedidoCompra);
 
      this.pedidoCompra.itensPedidoCompra.forEach(item => {
 
-     let materialExistente = listaMaterialLoteExistente.filter(itemAdicionado => itemAdicionado.idMaterial == this.itemPedidoCompra.idMaterial);
-     
-     if(materialExistente.length > 0){
+     const materialExistente = listaMaterialLoteExistente.filter(itemAdicionado => itemAdicionado.idMaterial == this.itemPedidoCompra.idMaterial);
+
+     if (materialExistente.length > 0) {
         this.errors.push({
-          message: "Material já adicionado."
+          message: 'Material já adicionado.'
         });
-        erroQtd = true;  
+        erroQtd = true;
        }
       });
      return erroQtd;
   }
 
   sendForm(event) {
-    this.errors = [];    
+    this.errors = [];
     event.preventDefault();
-    
+
     this.service
       .inserir(this.pedidoCompra)
       .subscribe((res: any) => {
-        if (this.pedidoCompra.id){
+        if (this.pedidoCompra.id) {
           this.back();
-        }          
-        else{
+        } else {
           this.pedidoCompra.id = res.id;
           this.itemPedidoCompra.idPedidoCompra = res.id;
-          this.message = "Pedido " + res.id + " criado com sucesso!";
+          this.message = 'Pedido ' + res.id + ' criado com sucesso!';
           this.pedidoCompra.situacao = res.situacao;
           this.pedidoCompra.status = res.status;
           this.id = res.id;
-          this.warning = "";
-        }        
-      }, erro => {        
+          this.warning = '';
+        }
+      }, erro => {
         this.errors = Util.customHTTPResponse(erro);
       });
   }
@@ -153,24 +154,24 @@ export class PedidoCompraFormComponent implements OnInit {
   carregaPedidoCompra() {
     this.pedidoCompra.id = this.id;
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
-    this.service.findById(this.id, "pedido-compra").subscribe(result => {
-      this.pedidoCompra = result;          
+    this.service.findById(this.id, 'pedido-compra').subscribe(result => {
+      this.pedidoCompra = result;
       this.itemPedidoCompra.idPedidoCompra = result.id;
       this.pedidoCompra.dataPedido = this.pedidoCompra.dataPedido ? new Date(this.pedidoCompra.dataPedido) : null;
-      this.pedidoCompra.dataEmpenho = this.pedidoCompra.dataEmpenho ?  new Date(this.pedidoCompra.dataEmpenho) : null;      
+      this.pedidoCompra.dataEmpenho = this.pedidoCompra.dataEmpenho ?  new Date(this.pedidoCompra.dataEmpenho) : null;
       this.loading = false;
     }, error => {
-      this.pedidoCompra = new PedidoCompra();      
+      this.pedidoCompra = new PedidoCompra();
       this.errors.push({
-        message: "Pedido de compra não encontrado"
+        message: 'Pedido de compra não encontrado'
       });
     });
   }
 
-  back() {   
-    const route = "pedidos-compras";
+  back() {
+    const route = 'pedidos-compras';
     this.router.navigate([route]);
   }
 }

@@ -13,30 +13,30 @@ export class FabricanteMaterialService extends GenericsService {
 
   public fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: true,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "nome",
-      type: "text",
-      label: "Nome",
+      field: 'nome',
+      type: 'text',
+      label: 'Nome',
       grid: true,
       form: true,
       required: true,
       validator: ['', Validators.required]
     },
     {
-      field: "situacao",
-      type: "checkbox",
-      label: "Situação",
+      field: 'situacao',
+      type: 'checkbox',
+      label: 'Situação',
       grid: true,
       form: true,
-      translate: { 1: "Ativo", 0: "Inativo" },
+      translate: { 1: 'Ativo', 0: 'Inativo' },
       required: true,
       validator: ['', Validators.required]
     }

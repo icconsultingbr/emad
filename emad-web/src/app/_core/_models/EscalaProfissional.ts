@@ -1,9 +1,9 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
 export class EscalaProfissional {
     id: Number;
-    @Input() idProfissional: Number;    
-    @Input() anoMes: Number;  
+    @Input() idProfissional: Number;
+    @Input() anoMes: Number;
     @Input() domingoHorarioInicial: string;
     @Input() domingoHorarioFinal: string;
     @Input() segundaHorarioInicial: string;
@@ -20,6 +20,6 @@ export class EscalaProfissional {
     @Input() sabadoHorarioFinal: string;
 }
 
-export class EscalaProfissionalAnoMes {  
-    @Input() idMesEscala: Number;  
+export class EscalaProfissionalAnoMes {
+    @Input() idMesEscala: Number;
 }

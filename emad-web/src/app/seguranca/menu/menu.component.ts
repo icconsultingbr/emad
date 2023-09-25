@@ -12,7 +12,7 @@ import { Menu } from '../../_core/_models/Menu';
 })
 export class MenuComponent implements OnInit {
 
-  method: string = "menu";
+  method = 'menu';
   service: MenuService;
   fields = [];
   object: Menu = new Menu();
@@ -22,7 +22,7 @@ export class MenuComponent implements OnInit {
     service: MenuService) {
 
     this.service = service;
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

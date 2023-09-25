@@ -11,7 +11,7 @@ export class ComorbidadeEstabelecimentoService extends GenericsService {
     }
 
     imprimir(idEstabelecimento: number): Observable<any> {
-        return this.http.get("comorbidade-estabelecimento/estabelecimento/" + idEstabelecimento);
+        return this.http.get('comorbidade-estabelecimento/estabelecimento/' + idEstabelecimento);
     }
 
 }

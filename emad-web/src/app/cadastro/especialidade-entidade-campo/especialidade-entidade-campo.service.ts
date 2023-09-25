@@ -11,75 +11,74 @@ export class EspecialidadeEntidadeCampoService extends GenericsService {
   constructor(public http: HttpClient) {
     super(http);
   }
-  
-  public fields: any[] = [    
+
+  public fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: true,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "idEspecialidade",
-      type: "select",
-      label: "Especialidade",
+      field: 'idEspecialidade',
+      type: 'select',
+      label: 'Especialidade',
       grid: true,
       form: true,
       required: true,
       validator: ['', Validators.required]
     },
     {
-      field: "nomeEspecialnomeade",
-      type: "text",
-      label: "Especialidade",
+      field: 'nomeEspecialnomeade',
+      type: 'text',
+      label: 'Especialidade',
       grid: true,
       form: false,
       required: false,
       validator: ['', '']
     },
     {
-      field: "idMaterial",
-      type: "select",
-      label: "Material",
+      field: 'idMaterial',
+      type: 'select',
+      label: 'Material',
       grid: true,
       form: true,
       required: true,
       validator: ['', Validators.required]
     },
     {
-      field: "nomeMaterial",
-      type: "text",
-      label: "Material",
+      field: 'nomeMaterial',
+      type: 'text',
+      label: 'Material',
       grid: true,
       form: false,
       required: false,
       validator: ['', '']
     },
     {
-      field: "situacao",
-      type: "checkbox",
-      label: "Situação",
+      field: 'situacao',
+      type: 'checkbox',
+      label: 'Situação',
       grid: true,
       form: true,
-      translate: {1: "Ativo", 0: "Inativo"},
+      translate: {1: 'Ativo', 0: 'Inativo'},
       required: true,
-      validator:['', Validators.required]
+      validator: ['', Validators.required]
     }
   ];
 
   carregaEntidadeCampoPorEspecialidade(id: any): Observable<any> {
-      return this.http.get("especialidade-entidade-campo/especialidade/" + id);
+      return this.http.get('especialidade-entidade-campo/especialidade/' + id);
   }
 
   salvaEntidadeCampo(obj: any) {
     if (obj.id) {
         return this.http
             .put('especialidade-entidade-campo', JSON.stringify(obj));
-    }
-    else {
+    } else {
         return this.http
             .post('especialidade-entidade-campo', JSON.stringify(obj));
     }

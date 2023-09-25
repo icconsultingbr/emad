@@ -11,7 +11,7 @@ import { ComorbidadeEstabelecimentoService } from './comorbidade-estabelecimento
 export class ComorbidadeEstabelecimentoComponent implements OnInit {
 
   loading: Boolean = false;
-  message: string = "";
+  message = '';
   errors: any[] = [];
 
   //MODELS (OBJECTS)

@@ -11,7 +11,7 @@ import { AppNavbarService } from '../../../_core/_components/app-navbar/app-navb
 })
 export class ModalidadeComponent implements OnInit {
 
-  method: string = "modalidade";
+  method = 'modalidade';
   object: Modalidade = new Modalidade();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class ModalidadeComponent implements OnInit {
     public nav: AppNavbarService,
     private service: ModalidadeService) {
 
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

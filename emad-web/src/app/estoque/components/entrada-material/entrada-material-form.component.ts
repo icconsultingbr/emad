@@ -22,31 +22,31 @@ const myId = uuid.v4();
 
 export class EntradaMaterialFormComponent implements OnInit {
   @ViewChild('contentRecibo') contentRecibo: ElementRef;
-  
-  method: String = "estoque";
+
+  method: String = 'estoque';
   fields: any[] = [];
-  label: String = "Entrada de material";
+  label: String = 'Entrada de material';
   movimento: MovimentoGeral = new MovimentoGeral();
-  itemMovimento: ItemMovimentoGeral = new ItemMovimentoGeral();  
+  itemMovimento: ItemMovimentoGeral = new ItemMovimentoGeral();
   id: Number = null;
   domains: any[] = [];
   form: FormGroup;
   loading: Boolean = false;
-  message: string = '';
-  errors: any[] = [];    
+  message = '';
+  errors: any[] = [];
   listaMaterialLote: any[] = [];
   objectMaterial: Material = new Material();
-  warning: string = '';
-  modalRef: NgbModalRef = null; 
-  
-  constructor(    
+  warning = '';
+  modalRef: NgbModalRef = null;
+
+  constructor(
     private fb: FormBuilder,
     private service: EntradaMaterialService,
     private ref: ChangeDetectorRef,
-    private modalService: NgbModal,  
+    private modalService: NgbModal,
     private estoqueImpressaoService: EstoqueImpressaoService,
     private route: ActivatedRoute) {
-      
+
     }
 
   ngOnInit() {
@@ -58,24 +58,24 @@ export class EntradaMaterialFormComponent implements OnInit {
     this.createGroup();
   }
 
-  loadDomains() {    
+  loadDomains() {
     this.service.listDomains('fabricante-material').subscribe(fabricanteMaterial => {
       this.service.listDomains('fabricante-material').subscribe(pedido => {
         this.service.listaEmpenhoPedidoCompra().subscribe(empenho => {
-          this.domains.push({            
-            idFabricante: fabricanteMaterial,            
+          this.domains.push({
+            idFabricante: fabricanteMaterial,
             idPedido: pedido,
             numeroEmpenho: empenho,
-          }); 
-        }); 
-      }); 
-    }); 
+          });
+        });
+      });
+    });
   }
 
   createGroup() {
     this.form = this.fb.group({
       id: [''],
-      idFabricante: ['', ''],      
+      idFabricante: ['', ''],
       idEstabelecimento: ['', ''],
       numeroEmpenho: ['', ''],
       validade: ['', ''],
@@ -85,65 +85,66 @@ export class EntradaMaterialFormComponent implements OnInit {
     });
   }
 
-  toggleItemEntradaMaterial(){
-    return Util.isEmpty(this.itemMovimento.idMaterial) 
+  toggleItemEntradaMaterial() {
+    return Util.isEmpty(this.itemMovimento.idMaterial)
     || Util.isEmpty(this.itemMovimento.idFabricante)
     || Util.isEmpty(this.itemMovimento.lote)
     || Util.isEmpty(this.itemMovimento.quantidade)
-    || Util.isEmpty(this.itemMovimento.validade);    
+    || Util.isEmpty(this.itemMovimento.validade);
   }
 
-  medicamentoSelecionado(material: any){
+  medicamentoSelecionado(material: any) {
     this.itemMovimento.idMaterial = material.id;
-    this.itemMovimento.nomeMaterial = material.descricao;    
-  } 
+    this.itemMovimento.nomeMaterial = material.descricao;
+  }
 
-  fornecedorSelecionado(fornecedor: any){
+  fornecedorSelecionado(fornecedor: any) {
     this.itemMovimento.idFabricante = fornecedor.target.value;
-    this.itemMovimento.nomeFabricante = fornecedor.target.options[fornecedor.target.options.selectedIndex].text;    
-  } 
-  
-  confirmaItemEntradaMaterial(){    
-    if(this.movimentoContemDivergencias())
+    this.itemMovimento.nomeFabricante = fornecedor.target.options[fornecedor.target.options.selectedIndex].text;
+  }
+
+  confirmaItemEntradaMaterial() {
+    if (this.movimentoContemDivergencias()) {
     return;
+    }
 
     this.itemMovimento.idFront = uuid.v4();
-    
-    if (!this.movimento.itensMovimento)
-      this.movimento.itensMovimento = [];
 
-    let existeItemDispensa = false;
+    if (!this.movimento.itensMovimento) {
+      this.movimento.itensMovimento = [];
+    }
+
+    const existeItemDispensa = false;
 
     this.movimento.itensMovimento.push(this.itemMovimento);
     this.itemMovimento = new ItemMovimentoGeral();
     this.listaMaterialLote = [];
     this.objectMaterial = new Material();
-    this.ref.detectChanges();    
+    this.ref.detectChanges();
   }
 
 
-  removeItemMovimento(item) {    
-    this.movimento.itensMovimento = this.movimento.itensMovimento.filter(itemExistente => itemExistente.idFront != item.idFront);      
+  removeItemMovimento(item) {
+    this.movimento.itensMovimento = this.movimento.itensMovimento.filter(itemExistente => itemExistente.idFront != item.idFront);
   }
 
-  movimentoContemDivergencias()
-  {
-     this.errors = [];   
-     var erroQtd = false;     
-     let listaMaterialLoteExistente = [];     
+  movimentoContemDivergencias() {
+     this.errors = [];
+     let erroQtd = false;
+     let listaMaterialLoteExistente = [];
      listaMaterialLoteExistente =  Object.assign([], this.movimento.itensMovimento);
 
      this.movimento.itensMovimento.forEach(item => {
 
-     let materialExistente = listaMaterialLoteExistente.filter(itemAdicionado => itemAdicionado.idMaterial == this.itemMovimento.idMaterial
+     const materialExistente = listaMaterialLoteExistente.filter(itemAdicionado => itemAdicionado.idMaterial == this.itemMovimento.idMaterial
                                                                                 && itemAdicionado.lote == this.itemMovimento.lote
                                                                                 && itemAdicionado.idFabricante == this.itemMovimento.idFabricante);
-     
-     if(materialExistente.length > 0){
+
+     if (materialExistente.length > 0) {
         this.errors.push({
-          message: "Material já adicionado com o lote "+ this.itemMovimento.lote +"."
+          message: 'Material já adicionado com o lote ' + this.itemMovimento.lote + '.'
         });
-        erroQtd = true;  
+        erroQtd = true;
       }
 
      });
@@ -152,19 +153,19 @@ export class EntradaMaterialFormComponent implements OnInit {
   }
 
   sendForm(event, acao) {
-    this.errors = [];    
+    this.errors = [];
     event.preventDefault();
 
     this.movimento.idTipoMovimento = 2;
-    
+
     this.service
-      .inserirMaterialEstoque(this.movimento, "entrada-material-estoque")
+      .inserirMaterialEstoque(this.movimento, 'entrada-material-estoque')
       .subscribe((res: any) => {
         this.movimento.id = res.id;
         this.movimento.dataMovimento = res.dataMovimento;
-        this.openConfirmacao(this.contentRecibo);        
-        this.warning = "";
-      }, erro => {        
+        this.openConfirmacao(this.contentRecibo);
+        this.warning = '';
+      }, erro => {
         this.errors = Util.customHTTPResponse(erro);
       });
   }
@@ -174,24 +175,25 @@ export class EntradaMaterialFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
 
   close() {
-    if(this.modalRef)
-      this.modalRef.close();  
-    
+    if (this.modalRef) {
+      this.modalRef.close();
+    }
+
     this.movimento = new MovimentoGeral();
-    this.itemMovimento = new ItemMovimentoGeral();    
+    this.itemMovimento = new ItemMovimentoGeral();
   }
 
-  abreRelatorio() {    
-    let dadosRelatorio: any = {};
+  abreRelatorio() {
+    const dadosRelatorio: any = {};
     dadosRelatorio.idMovimentoGeral = this.movimento.id;
     dadosRelatorio.numeroDocumento = this.movimento.numeroDocumento;
     dadosRelatorio.dataMovimentacao = this.movimento.dataMovimento;
-    this.estoqueImpressaoService.imprimir("ENTRADA_MATERIAL", "Entrada de material", this.movimento.nomeEstabelecimento, dadosRelatorio);
+    this.estoqueImpressaoService.imprimir('ENTRADA_MATERIAL', 'Entrada de material', this.movimento.nomeEstabelecimento, dadosRelatorio);
     this.close();
   }
 }

@@ -1,18 +1,18 @@
-import { Routes } from "@angular/router";
-import { SolicitacaoRemanejamentoFormComponent } from "./solicitacao-remanejamento-form.component";
-import { SolicitacaoRemanejamentoComponent } from "./solicitacao-remanejamento.component";
+import { Routes } from '@angular/router';
+import { SolicitacaoRemanejamentoFormComponent } from './solicitacao-remanejamento-form.component';
+import { SolicitacaoRemanejamentoComponent } from './solicitacao-remanejamento.component';
 
 export const solicitacaoRemanejamentoRoutes: Routes = [
     {
         path: '',
-        component: SolicitacaoRemanejamentoComponent,        
+        component: SolicitacaoRemanejamentoComponent,
     },
     {
         path: 'cadastro',
-        component: SolicitacaoRemanejamentoFormComponent,        
+        component: SolicitacaoRemanejamentoFormComponent,
     },
     {
         path: 'cadastro/:id',
-        component: SolicitacaoRemanejamentoFormComponent,        
+        component: SolicitacaoRemanejamentoFormComponent,
     }
 ];

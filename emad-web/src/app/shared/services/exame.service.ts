@@ -13,94 +13,94 @@ export class ExameService extends GenericsService {
 
   public fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: true,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "nomeTipoExame",
-      type: "text",
-      label: "Tipo exame",
+      field: 'nomeTipoExame',
+      type: 'text',
+      label: 'Tipo exame',
       grid: true,
       form: false,
       required: false,
       validator: ['', '']
     },
     {
-      field: "nomeProfissional",
-      type: "text",
-      label: "Profissional",
+      field: 'nomeProfissional',
+      type: 'text',
+      label: 'Profissional',
       grid: true,
       form: false,
       required: false,
       validator: ['', '']
     },
     {
-      field: "idPaciente",
-      type: "select",
-      label: "Paciente",
+      field: 'idPaciente',
+      type: 'select',
+      label: 'Paciente',
       grid: false,
       form: false,
       required: true,
       validator: ['', Validators.required]
     },
     {
-      field: "nomePaciente",
-      type: "text",
-      label: "Paciente",
+      field: 'nomePaciente',
+      type: 'text',
+      label: 'Paciente',
       grid: true,
       form: false,
       required: false,
       validator: ['', '']
     },
     {
-      field: "idEstabelecimento",
-      type: "text",
-      label: "Id do estabelecimento",
+      field: 'idEstabelecimento',
+      type: 'text',
+      label: 'Id do estabelecimento',
       grid: false,
       form: false,
       required: true,
       validator: ['', ''],
       filter: {
-        type: "select"
+        type: 'select'
       }
     },
     {
-      field: "resultado",
-      type: "text",
-      label: "Resultado",
+      field: 'resultado',
+      type: 'text',
+      label: 'Resultado',
       grid: true,
       form: false,
-      translate: { "1": "Amostra não reagente", "2": "Amostra reagente", "3": "Não realizado" },
+      translate: { '1': 'Amostra não reagente', '2': 'Amostra reagente', '3': 'Não realizado' },
       required: true,
       validator: ['', ''],
       filter: {
-        type: "select",
+        type: 'select',
         grid: true
       }
     },
     {
-      field: "situacao",
-      type: "text",
-      label: "Situação",
+      field: 'situacao',
+      type: 'text',
+      label: 'Situação',
       grid: true,
       form: false,
-      translate: { "1": "Aberto", "2": "Finalizado" },
+      translate: { '1': 'Aberto', '2': 'Finalizado' },
       required: true,
       validator: ['', ''],
       filter: {
-        type: "select",
+        type: 'select',
         grid: true
       }
     },
     {
-      field: "dataCriacao",
-      type: "text",
-      label: "Data criação",
+      field: 'dataCriacao',
+      type: 'text',
+      label: 'Data criação',
       grid: true,
       form: false,
       isDateTime: true,
@@ -118,23 +118,22 @@ export class ExameService extends GenericsService {
     if (obj.id) {
       return this.http
         .put(metodo, JSON.stringify(obj));
-    }
-    else {
+    } else {
       return this.http
         .post(metodo, JSON.stringify(obj));
     }
   }
 
   obterRelatorio(ano: number, idEstabelecimento: number, numero: number): Observable<any> {
-    return this.http.get("receita" + "/ano/" + ano + "/idEstabelecimento/" + idEstabelecimento + "/numero/" + numero);
+    return this.http.get('receita' + '/ano/' + ano + '/idEstabelecimento/' + idEstabelecimento + '/numero/' + numero);
   }
 
   obterMaterialDispensadoPorPaciente(idMaterial: number, idPaciente: number): Observable<any> {
-    return this.http.get("item-receita" + "/idMaterial/" + idMaterial + "/idPaciente/" + idPaciente);
+    return this.http.get('item-receita' + '/idMaterial/' + idMaterial + '/idPaciente/' + idPaciente);
   }
 
   obterRelatorioExame(exameId: number): Observable<any> {
-    return this.http.get("exame/relatorio/" + exameId);
+    return this.http.get('exame/relatorio/' + exameId);
   }
 
   removeArquivoExame(obj: any) {

@@ -1,18 +1,18 @@
-import { Routes } from "@angular/router";
-import { TipoMovimentoFormComponent } from "./tipo-movimento-form.component";
-import { TipoMovimentoComponent } from "./tipo-movimento.component";
+import { Routes } from '@angular/router';
+import { TipoMovimentoFormComponent } from './tipo-movimento-form.component';
+import { TipoMovimentoComponent } from './tipo-movimento.component';
 
 export const tipoMovimentoRoutes: Routes = [
     {
         path: '',
-        component: TipoMovimentoComponent,        
+        component: TipoMovimentoComponent,
     },
     {
         path: 'cadastro',
-        component: TipoMovimentoFormComponent,        
+        component: TipoMovimentoFormComponent,
     },
     {
         path: 'cadastro/:id',
-        component: TipoMovimentoFormComponent,        
+        component: TipoMovimentoFormComponent,
     }
 ];

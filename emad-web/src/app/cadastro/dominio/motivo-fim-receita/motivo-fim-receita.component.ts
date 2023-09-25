@@ -12,7 +12,7 @@ import { MotivoFimReceita } from '../../../_core/_models/MotivoFimReceita';
 
 export class MotivoFimReceitaComponent implements OnInit {
 
-  method: string = "motivo-fim-receita";
+  method = 'motivo-fim-receita';
   object: MotivoFimReceita = new MotivoFimReceita();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class MotivoFimReceitaComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: MotivoFimReceitaService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

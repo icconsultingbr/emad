@@ -22,11 +22,11 @@ import { environment } from '../../../../environments/environment';
   providers: [AtendimentoService, PlanoTerapeuticoService]
 })
 export class AtendimentoSalaEsperaFormComponent implements OnInit {
-  
+
   @ViewChild('contentConfirmacao') contentConfirmacao: any;
-  
+
   loading: Boolean = false;
-  message: string = "";
+  message = '';
   errors: any[] = [];
   modalRef: NgbModalRef = null;
 
@@ -36,18 +36,18 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
   formHipotese: FormGroup;
   formMedicamento: FormGroup;
 
-  method: string = "atendimento";
-  url: string = "atendimentos/sala-espera";
+  method = 'atendimento';
+  url = 'atendimentos/sala-espera';
   object: Atendimento = new Atendimento();
-  objectHistorico: AtendimentoHistorico = new AtendimentoHistorico(); 
+  objectHistorico: AtendimentoHistorico = new AtendimentoHistorico();
   paciente: Paciente = new Paciente();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
   encaminhamento: Encaminhamento = new Encaminhamento();
   atendimentoMedicamento: AtendimentoMedicamento = new AtendimentoMedicamento();
   medicamento: Material = new Material();
-  virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
-  atendimentoHistorico: AtendimentoHistorico = new AtendimentoHistorico(); 
-  mostraFormulario: boolean = false;
+  virtualDirectory: string = environment.virtualDirectory != '' ? environment.virtualDirectory + '/' : '';
+  atendimentoHistorico: AtendimentoHistorico = new AtendimentoHistorico();
+  mostraFormulario = false;
   pacienteSelecionado: any = null;
   medicamentoSelecionado: any = null;
   domains: any[] = [];
@@ -57,7 +57,7 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
   allItems: any[] = [];
   pager: any = {};
   pagedItems: any[];
-  pageLimit: number = 10;
+  pageLimit = 10;
   fieldsPacientes: any[] = [];
 
   allItemsHipotese: any[] = [];
@@ -70,8 +70,8 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
     offset: 0,
     limit: 10,
     total: 0
-  };  
-  warning: string = "";    
+  };
+  warning = '';
   totalPages: Number;
 
   id: number;
@@ -92,7 +92,7 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router) {
 
-    for (let field of this.pacienteService.fields) {
+    for (const field of this.pacienteService.fields) {
       if (field.grid) {
         this.fieldsPacientes.push(field);
       }
@@ -102,8 +102,8 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.id = params['id'];
-      this.idHistorico = params['idHistorico'];  
-      this.object.situacao = "0";
+      this.idHistorico = params['idHistorico'];
+      this.object.situacao = '0';
       this.carregaEntidadeCampoPorEspecialidade();
     });
   }
@@ -124,7 +124,7 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
       exameFisico: ['', ''],
       observacoesGerais: ['', ''],
       situacao: new FormControl({value: '0', disabled: true}),
-      motivoCancelamento: ['',''],
+      motivoCancelamento: ['', ''],
       idEstabelecimento: [Validators.required],
       tipoFicha: ['', Validators.required],
       idClassificacaoRisco: ['', Validators.required],
@@ -160,7 +160,7 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
       exameFisico: new FormControl({value: '', disabled: true}),
       observacoesGerais: new FormControl({value: '', disabled: true}),
       situacao: new FormControl({value: '', disabled: true}),
-      motivoCancelamento:  new FormControl({value: '', disabled: true}),      
+      motivoCancelamento:  new FormControl({value: '', disabled: true}),
       tipoFicha: new FormControl({value: '', disabled: true}),
       idClassificacaoRisco: new FormControl({value: '', disabled: true}),
       motivoQueixa: new FormControl({value: '', disabled: true}),
@@ -184,30 +184,30 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
 
   buscaPaciente(offset: Number = null, limit: Number = null) {
     this.loading = true;
-    let params = "pesquisa=1&";
-    
+    let params = 'pesquisa=1&';
+
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
 
     if (!Util.isEmpty(this.paciente)) {
       if (Object.keys(this.paciente).length) {
-        for (let key of Object.keys(this.paciente)) {
+        for (const key of Object.keys(this.paciente)) {
           if (!Util.isEmpty(this.paciente[key])) {
-            params += key + "=" + this.paciente[key] + "&";
+            params += key + '=' + this.paciente[key] + '&';
           }
         }
 
-        if (params != "") {
-          params = "?" + params;
+        if (params != '') {
+          params = '?' + params;
         }
       }
-    }   
-
-    if (this.paging.offset != null && this.paging.limit != null) {
-      params += (params == "" ? "?" : "") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
     }
 
-    this.service.list('paciente' + params).subscribe(result => {      
+    if (this.paging.offset != null && this.paging.limit != null) {
+      params += (params == '' ? '?' : '') + 'offset=' + this.paging.offset + '&limit=' + this.paging.limit;
+    }
+
+    this.service.list('paciente' + params).subscribe(result => {
       this.paging.total = result.total;
       this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
       this.allItems = result.items;
@@ -251,14 +251,14 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
   }
 
   loadQuantityPerPage(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.pageLimit = id;
     this.setPage(1);
   }
 
   clear() {
     this.paciente = new Paciente();
-    this.paciente.cartaoSus = "";
+    this.paciente.cartaoSus = '';
     this.allItems = [];
   }
 
@@ -282,7 +282,7 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
   encontraAtendimento() {
     this.object.id = this.id;
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
 
     this.service.findById(this.id, this.method).subscribe(result => {
@@ -294,7 +294,7 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
 
     }, error => {
       this.object = new Atendimento();
-      this.object.situacao = "0";
+      this.object.situacao = '0';
       this.object.idPaciente = this.pacienteSelecionado.id;
       this.object.pacienteNome = this.pacienteSelecionado.nome;
       this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
@@ -305,13 +305,13 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
       this.allItemsMedicamento = [];
 
       this.errors.push({
-        message: "Atendimento não encontrado"
+        message: 'Atendimento não encontrado'
       });
-    });    
+    });
   }
 
   findHistoricoPorAtendimento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findHistoricoByAtendimento(this.object.id).subscribe(result => {
@@ -326,9 +326,9 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
   encontraAtendimentoHistorico(idHistorico: number) {
     this.object.id = this.id;
     this.errors = [];
-    this.message = "";
-    
-    if(idHistorico){      
+    this.message = '';
+
+    if (idHistorico) {
     this.loading = true;
       this.service.findByHistoricoId(idHistorico).subscribe(result => {
         this.objectHistorico = result;
@@ -337,20 +337,20 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
         this.nomeTipoHistorico = result.nomeTipoHistorico;
         this.objectHistorico.pacienteHistoriaProgressa = result.pacienteHistoriaProgressa;
         this.loading = false;
-  
-      }, error => {  
+
+      }, error => {
         this.loading = false;
         this.close();
         this.errors.push({
-          message: "Atendimento histórico não encontrado"
+          message: 'Atendimento histórico não encontrado'
         });
       });
-    }       
+    }
   }
 
   sendForm(event) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
     event.preventDefault();
 
@@ -359,13 +359,14 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
       .subscribe((res: any) => {
         this.object.id = res.id;
 
-        if(res.dadosFicha)
+        if (res.dadosFicha) {
           this.object.dadosFicha = res.dadosFicha;
+        }
 
         this.abreFichaDigital(this.object.id, false);
-        this.message = "Cadastro efetuado com sucesso!";
+        this.message = 'Cadastro efetuado com sucesso!';
         this.back();
-        this.loading = false;        
+        this.loading = false;
       }, erro => {
         setTimeout(() => this.loading = false, 300);
         this.errors = Util.customHTTPResponse(erro);
@@ -374,46 +375,47 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
 
   atribuir() {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
 
     this.service
       .atribuirAtendimento(this.form.getRawValue())
       .subscribe((res: any) => {
         this.object.id = res.id;
-        if(res.dadosFicha)
+        if (res.dadosFicha) {
           this.object.dadosFicha = res.dadosFicha;
-        this.abreFichaDigital(this.object.id, false);        
+        }
+        this.abreFichaDigital(this.object.id, false);
         this.back();
-        this.loading = false;        
+        this.loading = false;
       }, erro => {
         setTimeout(() => this.loading = false, 300);
         this.errors = Util.customHTTPResponse(erro);
       });
-  }  
+  }
 
   findPacienteData(idPaciente) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
     this.service.findByIdPaciente(idPaciente, this.object.idEstabelecimento, this.method).subscribe(result => {
 
-      if(result){
+      if (result) {
         this.object = result;
         this.object.pacienteNome = this.pacienteSelecionado.nome;
         this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
         this.loading = false;
-      }
-      else
+      } else {
         this.limpaAtendimento();
+      }
     }, error => {
       this.limpaAtendimento();
     });
   }
 
-  limpaAtendimento(){
+  limpaAtendimento() {
     this.object = new Atendimento();
-    this.object.situacao = "0";
+    this.object.situacao = '0';
     this.object.idPaciente = this.pacienteSelecionado.id;
     this.object.pacienteNome = this.pacienteSelecionado.nome;
     this.object.pacienteHistoriaProgressa = this.pacienteSelecionado.historiaProgressaFamiliar;
@@ -424,45 +426,46 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
     this.allItemsMedicamento = [];
 
     this.errors.push({
-      message: "Atendimento não encontrado"
+      message: 'Atendimento não encontrado'
     });
   }
 
   close() {
-    if(this.modalRef)
+    if (this.modalRef) {
       this.modalRef.close();
+    }
   }
 
   loadDomains() {
     this.loading = true;
     this.service.listDomains('hipotese-diagnostica').subscribe(hipoteses => {
-      this.service.listDomains('especialidade').subscribe(especialidades => {            
-        this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {            
-          this.service.listDomains('grupo-material').subscribe(gruposMateriais => {  
-            this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {            
+      this.service.listDomains('especialidade').subscribe(especialidades => {
+        this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {
+          this.service.listDomains('grupo-material').subscribe(gruposMateriais => {
+            this.service.listDomains('classificacao-risco').subscribe(classificacaoRiscos => {
                 this.domains.push({
                   hipoteses: hipoteses,
                   especialidades: especialidades,
                   tipoFichas: tipoFichas,
-                  classificacaoRiscos:classificacaoRiscos,
+                  classificacaoRiscos: classificacaoRiscos,
                   idGrupoMaterial: gruposMateriais,
                   tipoHistoriaClinica: [
-                    { id: 1, nome: "Anamnese" },
-                    { id: 2, nome: "Evolução" },
+                    { id: 1, nome: 'Anamnese' },
+                    { id: 2, nome: 'Evolução' },
                   ],
               });
             if (!Util.isEmpty(this.id)) {
               this.encontraAtendimento();
-            }
-            else
+            } else {
               this.loading = false;
+            }
             });
           });
         });
       });
     });
   }
-  
+
   disableFields(): boolean {
     if (!this.object) {
       return true;
@@ -476,17 +479,19 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
   }
 
   back() {
-    if(this.modalRef)
+    if (this.modalRef) {
       this.modalRef.close();
+    }
 
-    this.router.navigate([this.url]);    
+    this.router.navigate([this.url]);
   }
 
   abreHistorico(id: Number) {
-    if(!id)
+    if (!id) {
       return;
+    }
 
-    let url = this.router.url.replace('atendimentos/cadastro/'+this.id,'') +  this.virtualDirectory + "#/atendimentos/historico/" + id;  
+    const url = this.router.url.replace('atendimentos/cadastro/' + this.id, '') +  this.virtualDirectory + '#/atendimentos/historico/' + id;
 
     this.loading = true;
     this.service.printDocument(url).subscribe(result => {
@@ -502,15 +507,16 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
   }
 
   abreFichaDigital(id: Number, grid: boolean) {
-    if((!this.object.dadosFicha || this.object.dadosFicha.length == 0) && !grid)
+    if ((!this.object.dadosFicha || this.object.dadosFicha.length == 0) && !grid) {
       return;
-      
+    }
+
     this.errors = [];
-    let url = 
-      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")
+    const url =
+      JSON.parse(localStorage.getItem('parametro_seguranca')).filter((url) => url.nome == 'URL_FICHA_MEDICA_IMPRESSAO')
       ?
-      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")[0].valor.replace('{id}', id)
-      :"";
+      JSON.parse(localStorage.getItem('parametro_seguranca')).filter((url) => url.nome == 'URL_FICHA_MEDICA_IMPRESSAO')[0].valor.replace('{id}', id)
+      : '';
     this.loading = true;
     this.service.printDocument(url).subscribe(result => {
       this.loading = false;
@@ -526,11 +532,11 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
 
   abreAtendimentoFichaDigital(id: Number) {
     this.errors = [];
-    let url = 
-      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")
+    const url =
+      JSON.parse(localStorage.getItem('parametro_seguranca')).filter((url) => url.nome == 'URL_FICHA_MEDICA_VISUALIZACAO')
       ?
-      JSON.parse(localStorage.getItem("parametro_seguranca")).filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")[0].valor.replace('{id}', id)
-      :"";
+      JSON.parse(localStorage.getItem('parametro_seguranca')).filter((url) => url.nome == 'URL_FICHA_MEDICA_VISUALIZACAO')[0].valor.replace('{id}', id)
+      : '';
     this.loading = true;
     this.service.openDocument(url).subscribe(result => {
       this.loading = false;
@@ -545,7 +551,7 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
   }
 
   loadQuantityPerPagePagination(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.paging.limit = id;
 
     this.setPagePagined(this.pager.offset, this.paging.limit);
@@ -553,16 +559,16 @@ export class AtendimentoSalaEsperaFormComponent implements OnInit {
 
   setPagePagined(offset: number, limit: Number) {
     this.paging.offset = offset !== undefined ? offset : 0;
-    this.paging.limit = limit ? limit : this.paging.limit;    
+    this.paging.limit = limit ? limit : this.paging.limit;
     this.buscaPaciente(this.paging.offset, this.paging.limit);
   }
 
-  carregaEntidadeCampoPorEspecialidade() {    
+  carregaEntidadeCampoPorEspecialidade() {
     this.loading = true;
     this.allItemsEntidadeCampo = [];
     this.service.carregaEntidadeCampoPorEspecialidade().subscribe(result => {
       this.mostraFormulario = true;
-      this.allItemsEntidadeCampo = result;         
+      this.allItemsEntidadeCampo = result;
       this.createGroup();
       this.loadDomains();
       this.loading = false;

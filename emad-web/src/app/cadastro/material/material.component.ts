@@ -12,7 +12,7 @@ import { Material } from '../../_core/_models/Material';
 
 export class MaterialComponent implements OnInit {
 
-  method: string = "material";
+  method = 'material';
   object: Material = new Material();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class MaterialComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: MaterialService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class TipoNotificacaoFormComponent implements OnInit {
 
   object: TipoNotificacao = new TipoNotificacao();
-  method: string = "tipo-notificacao";
+  method = 'tipo-notificacao';
   fields: any[] = [];
-  label: string = "Tipos de notificações";
+  label = 'Tipos de notificações';
   id: Number = null;
   domains: any[] = [];
 

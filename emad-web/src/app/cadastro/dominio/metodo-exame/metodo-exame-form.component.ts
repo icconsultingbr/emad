@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class MetodoExameFormComponent implements OnInit {
 
   object: MetodoExame = new MetodoExame();
-  method: String = "metodo-exame";
+  method: String = 'metodo-exame';
   fields: any[] = [];
-  label: String = "Métodos de exame";
+  label: String = 'Métodos de exame';
   id: Number = null;
   domains: any[] = [];
 

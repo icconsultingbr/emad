@@ -12,9 +12,9 @@ export class EstoqueMedicamentoService extends GenericsService {
 
   fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: false,
       form: true,
       required: false,
@@ -22,11 +22,11 @@ export class EstoqueMedicamentoService extends GenericsService {
     }
   ];
 
-  carregaEstoquePorMedicamento(tipoPesquisa: string, id: any): Observable<any> {    
-    return this.http.get("estoque/material/" + id + "/tipo-pesquisa/" + tipoPesquisa);
+  carregaEstoquePorMedicamento(tipoPesquisa: string, id: any): Observable<any> {
+    return this.http.get('estoque/material/' + id + '/tipo-pesquisa/' + tipoPesquisa);
   }
-  
+
   carregaEstoquePorEstabelecimentoDetalhado(idEstabelecimento: number, idMaterial: number): Observable<any> {
-    return this.http.get("estoque/unidade/" + idEstabelecimento + "/material/" + idMaterial);
+    return this.http.get('estoque/unidade/' + idEstabelecimento + '/material/' + idMaterial);
   }
 }

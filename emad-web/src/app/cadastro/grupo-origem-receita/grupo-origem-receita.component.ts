@@ -12,7 +12,7 @@ import { GrupoOrigemReceita } from '../../_core/_models/GrupoOrigemReceita';
 
 export class GrupoOrigemReceitaComponent implements OnInit {
 
-  method: string = "grupo-origem-receita";
+  method = 'grupo-origem-receita';
   object: GrupoOrigemReceita = new GrupoOrigemReceita();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class GrupoOrigemReceitaComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: GrupoOrigemReceitaService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

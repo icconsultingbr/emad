@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class ModeloCanetaFormComponent implements OnInit {
 
   object: ModeloCaneta = new ModeloCaneta();
-  method: string = "modelo-caneta";
+  method = 'modelo-caneta';
   fields: any[] = [];
-  label: string = "Modelo caneta";
+  label = 'Modelo caneta';
   id: Number = null;
 
   constructor(

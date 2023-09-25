@@ -16,14 +16,14 @@ import { Material } from '../../../_core/_models/Material';
 export class BloqueioLoteFormComponent implements OnInit {
 
   object: Estoque = new Estoque();
-  method: String = "estoque";
+  method: String = 'estoque';
   fields: any[] = [];
-  label: String = "Estoque";
+  label: String = 'Estoque';
   id: number = null;
   domains: any[] = [];
   loading: Boolean = false;
-  message: string = '';
-  errors: any[] = [];      
+  message = '';
+  errors: any[] = [];
   form: FormGroup;
   objectMaterial: Material = new Material();
 
@@ -48,17 +48,17 @@ export class BloqueioLoteFormComponent implements OnInit {
       }
     });
     this.createGroup();
-    this.domains.push({            
+    this.domains.push({
       idLoteAtual: []
-     }); 
+     });
   }
 
   createGroup() {
     this.form = this.fb.group({
       id: [''],
-      idTipoMovimento: ['', ''],      
-      nomeMaterial: ['', ''],      
-      idFabricante: ['', ''],      
+      idTipoMovimento: ['', ''],
+      nomeMaterial: ['', ''],
+      idFabricante: ['', ''],
       idEstabelecimento: ['', ''],
       numeroEmpenho: ['', ''],
       validade: ['', ''],
@@ -71,30 +71,30 @@ export class BloqueioLoteFormComponent implements OnInit {
     });
   }
 
-  back(){
-    this.router.navigate(["bloqueio-lote"]);
+  back() {
+    this.router.navigate(['bloqueio-lote']);
   }
 
-  toggleItemEntradaMaterial(){
-    return Util.isEmpty(this.object.idMaterial)     
+  toggleItemEntradaMaterial() {
+    return Util.isEmpty(this.object.idMaterial)
     || Util.isEmpty(this.object.lote)
-    || Util.isEmpty(this.object.quantidade);    
+    || Util.isEmpty(this.object.quantidade);
   }
 
-  medicamentoSelecionado(material: any){
+  medicamentoSelecionado(material: any) {
     this.object.idMaterial = material.id;
-    this.object.nomeMaterial = material.descricao;        
+    this.object.nomeMaterial = material.descricao;
     this.buscaLotes();
-  } 
+  }
 
   buscaLotes() {
     this.loading = true;
-       this.service.list('estoque/material-lote/' 
+       this.service.list('estoque/material-lote/'
        + this.object.idMaterial
-        + '/estabelecimento/' 
-        +  JSON.parse(localStorage.getItem("est"))[0].id 
-        + "?loteBloqueado=" + "0"        
-        + "&operacao="  + "2").subscribe(result => {
+        + '/estabelecimento/'
+        +  JSON.parse(localStorage.getItem('est'))[0].id
+        + '?loteBloqueado=' + '0'
+        + '&operacao='  + '2').subscribe(result => {
         this.domains[0].idLoteAtual = result;
         this.object.lote = null;
         this.loading = false;
@@ -104,30 +104,30 @@ export class BloqueioLoteFormComponent implements OnInit {
       });
   }
 
-  
-  loteSelecionado(lote: any){
-    var loteSelecionado: any = {};
-    loteSelecionado = this.domains[0].idLoteAtual[lote.target.options.selectedIndex-1];
+
+  loteSelecionado(lote: any) {
+    let loteSelecionado: any = {};
+    loteSelecionado = this.domains[0].idLoteAtual[lote.target.options.selectedIndex - 1];
     this.object.quantidade = loteSelecionado.quantidade;
     this.object.id = loteSelecionado.id;
-  }   
+  }
 
   sendForm(event) {
-    this.errors = [];    
+    this.errors = [];
     event.preventDefault();
-    
-    if(this.object.motivoBloqueio.length > 0 && !this.object.bloqueado){
+
+    if (this.object.motivoBloqueio.length > 0 && !this.object.bloqueado) {
       this.errors.push({
-        message: "Favor marcar a opção Bloqueado, ou limpe o campo Motivo bloqueio"
-      });      
+        message: 'Favor marcar a opção Bloqueado, ou limpe o campo Motivo bloqueio'
+      });
       return;
-    }   
+    }
 
     this.service
        .bloquearLote(this.object)
        .subscribe((res: any) => {
          this.back();
-       }, erro => {        
+       }, erro => {
          this.errors = Util.customHTTPResponse(erro);
        });
   }

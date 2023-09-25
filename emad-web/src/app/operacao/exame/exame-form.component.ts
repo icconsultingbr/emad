@@ -24,22 +24,22 @@ export class ExameFormComponent implements OnInit {
 
   object: Exame = new Exame();
   itemExame: ItemExame = new ItemExame();
-  method: string = "exames";
+  method = 'exames';
   fields: any[] = [];
-  label: string = "Novo exame";
+  label = 'Novo exame';
   id: number = null;
   domains: any[] = [];
   loading: Boolean = false;
   form: FormGroup;
   groupForm: any = {};
   type: string;
-  message: string = '';
-  warning: string = '';
-  saveLabel: string = "Salvar";
+  message = '';
+  warning = '';
+  saveLabel = 'Salvar';
   errors: any[] = [];
   modalRef: NgbModalRef = null;
   listaItensExame: any[] = [];
-  arquivosVisible: boolean = false;
+  arquivosVisible = false;
   listaArquivosUpload: any[] = [];
   nomeProfissional: string;
   thumbnail: any;
@@ -78,14 +78,14 @@ export class ExameFormComponent implements OnInit {
           idProdutoExame: [],
           idPaciente: [],
           resultado: [
-            { id: 1, nome: "Amostra não reagente" },
-            { id: 2, nome: "Amostra reagente" },
-            { id: 3, nome: "Não realizado" }
+            { id: 1, nome: 'Amostra não reagente' },
+            { id: 2, nome: 'Amostra reagente' },
+            { id: 3, nome: 'Não realizado' }
           ],
           resultadoFinal: [
-            { id: 1, nome: "Amostra não reagente" },
-            { id: 2, nome: "Amostra reagente" },
-            { id: 3, nome: "Não realizado" }
+            { id: 1, nome: 'Amostra não reagente' },
+            { id: 2, nome: 'Amostra reagente' },
+            { id: 3, nome: 'Não realizado' }
           ],
 
         });
@@ -97,11 +97,13 @@ export class ExameFormComponent implements OnInit {
   }
 
   close(retornaGrid: boolean) {
-    if (this.modalRef)
+    if (this.modalRef) {
       this.modalRef.close();
+    }
 
-    if (retornaGrid)
+    if (retornaGrid) {
       this.back();
+    }
   }
 
   back() {
@@ -117,19 +119,19 @@ export class ExameFormComponent implements OnInit {
     this.close(false);
 
     this.service
-      .inserir(this.object, "exame")
+      .inserir(this.object, 'exame')
       .subscribe((res: any) => {
         if (this.object.id) {
-          if (acao == 'F')
+          if (acao == 'F') {
             this.openConfirmacao(this.contentRecibo);
-          else
+          } else {
             this.close(true);
-        }
-        else {
-          this.message = "Exame " + res.id + " criada com sucesso!";
+          }
+        } else {
+          this.message = 'Exame ' + res.id + ' criada com sucesso!';
           this.object.id = res.id;
           this.object.situacao = res.situacao;
-          this.arquivosVisible = true
+          this.arquivosVisible = true;
           this.id = res.id;
           this.service.list(`produto-exame/tipo-exame/${this.object.idTipoExame}`).subscribe(produtoExame => {
             this.domains[0].idProdutoExame = produtoExame;
@@ -139,7 +141,7 @@ export class ExameFormComponent implements OnInit {
             this.listaArquivosUpload = arquivosExame;
           });
         }
-        this.warning = "";
+        this.warning = '';
       }, erro => {
         this.errors = Util.customHTTPResponse(erro);
       });
@@ -148,12 +150,12 @@ export class ExameFormComponent implements OnInit {
   carregaExame() {
     this.object.id = this.id;
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
-    this.service.findById(this.id, "exame").subscribe(result => {
+    this.service.findById(this.id, 'exame').subscribe(result => {
       this.object = result;
       this.label = this.object.situacao == '1' ? 'Editar exame' : 'Visualizar exame (Situação: Finalizado)';
-      this.arquivosVisible = true
+      this.arquivosVisible = true;
 
       this.service.list(`produto-exame/tipo-exame/${result.idTipoExame}`).subscribe(produtoExame => {
         this.domains[0].idProdutoExame = produtoExame;
@@ -166,7 +168,7 @@ export class ExameFormComponent implements OnInit {
     }, error => {
       this.object = new Exame();
       this.errors.push({
-        message: "Exame não encontrado"
+        message: 'Exame não encontrado'
       });
     });
   }
@@ -186,7 +188,7 @@ export class ExameFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
 
@@ -228,8 +230,9 @@ export class ExameFormComponent implements OnInit {
   }
 
   confirmaItem() {
-    if (!this.object.itensExame)
+    if (!this.object.itensExame) {
       this.object.itensExame = [];
+    }
 
     this.itemExame.nomeProdutoExame = this.domains[0].idProdutoExame.filter(item => item.id == this.itemExame.idProdutoExame)[0].nome;
     this.itemExame.nomeMetodoExame = this.domains[0].idMetodoExame.filter(item => item.id == this.itemExame.idMetodoExame)[0].nome;
@@ -246,7 +249,7 @@ export class ExameFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
 
@@ -257,9 +260,9 @@ export class ExameFormComponent implements OnInit {
     if (this.images.length > 0) {
       this.images.forEach(object => {
         {
-          let reader = new FileReader();
+          const reader = new FileReader();
           reader.onload = function () {
-            object.base64 = reader.result
+            object.base64 = reader.result;
           };
           reader.readAsDataURL(object);
         }
@@ -271,23 +274,24 @@ export class ExameFormComponent implements OnInit {
     this.fileUploadService.uploadListImage(this.images).subscribe((result) => {
       result.forEach(object => {
         object.idExame = this.id;
-        object.nomeProfissional = JSON.parse(localStorage.getItem("currentUser")).nome;
+        object.nomeProfissional = JSON.parse(localStorage.getItem('currentUser')).nome;
       });
 
       this.service.salvarArquivoExame(result).subscribe((result) => {
         if (result) {
-          this.recarregarDocumentos()
+          this.recarregarDocumentos();
         }
-        if (this.modalRef)
+        if (this.modalRef) {
           this.modalRef.close();
+        }
       });
     });
   }
 
   abrirDocumento(base: any) {
-    var image = new Image();
-    image.src = "data:image/" + base.tipo + ";base64," + base.base64;
-    var w = window.open("");
+    const image = new Image();
+    image.src = 'data:image/' + base.tipo + ';base64,' + base.base64;
+    const w = window.open('');
     w.document.write(image.outerHTML);
   }
 

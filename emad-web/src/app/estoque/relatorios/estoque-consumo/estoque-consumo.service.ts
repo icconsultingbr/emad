@@ -12,9 +12,9 @@ export class EstoqueConsumoService extends GenericsService {
 
   fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: false,
       form: true,
       required: false,
@@ -22,7 +22,7 @@ export class EstoqueConsumoService extends GenericsService {
     }
   ];
 
-  carregaEstoquePorConsumo(idMaterial: number, idEstabelecimento: number, estoqueAbaixoMinimo: string): Observable<any> {    
-    return this.http.get("estoque/material/" + idMaterial + "/estabelecimento/" + idEstabelecimento + "/consumo?estoqueAbaixoMinimo=" + estoqueAbaixoMinimo);
+  carregaEstoquePorConsumo(idMaterial: number, idEstabelecimento: number, estoqueAbaixoMinimo: string): Observable<any> {
+    return this.http.get('estoque/material/' + idMaterial + '/estabelecimento/' + idEstabelecimento + '/consumo?estoqueAbaixoMinimo=' + estoqueAbaixoMinimo);
   }
 }

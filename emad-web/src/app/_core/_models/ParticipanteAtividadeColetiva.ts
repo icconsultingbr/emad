@@ -1,4 +1,4 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 import * as moment from 'moment';
 
 export class ParticipanteAtividadeColetiva {

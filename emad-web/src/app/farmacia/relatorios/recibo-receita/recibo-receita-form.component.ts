@@ -16,69 +16,69 @@ const myId = uuid.v4();
     providers: [ReceitaService]
 })
 
-export class ReciboReceitaFormComponent implements OnInit {  
+export class ReciboReceitaFormComponent implements OnInit {
   object: Receita = new Receita();
-  itemReceita: ItemReceita = new ItemReceita();  
-  itemEstoque: Estoque = new Estoque();  
-  method: string = "receitas";
+  itemReceita: ItemReceita = new ItemReceita();
+  itemEstoque: Estoque = new Estoque();
+  method = 'receitas';
   fields: any[] = [];
-  label: string = "";
+  label = '';
   id: number = null;
-  domains: any[] = [];  
+  domains: any[] = [];
   loading: Boolean = false;
   form: FormGroup;
   groupForm: any = {};
   type: string;
-  message: string = '';
-  warning: string = '';     
-  errors: any[] = [];  
+  message = '';
+  warning = '';
+  errors: any[] = [];
 
   constructor(
     private fb: FormBuilder,
-    private service: ReceitaService,  
+    private service: ReceitaService,
     private reciboReceitaService: ReciboReceitaImpressaoService, ) {
       this.fields = service.fields;
     }
 
   ngOnInit() {
     this.createGroup();
-    this.loadDomains();   
+    this.loadDomains();
   }
 
-  loadDomains() {       
+  loadDomains() {
     this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
-      this.domains.push({            
+      this.domains.push({
         idEstabelecimento: estabelecimentos,
-      });                           
-    });                           
-  }      
-  
-  abreReceitaMedica() {        
+      });
+    });
+  }
+
+  abreReceitaMedica() {
     this.errors = [];
 
-    if(!this.object.ano || !this.object.idEstabelecimento || !this.object.numero){
+    if (!this.object.ano || !this.object.idEstabelecimento || !this.object.numero) {
       this.errors.push({
-        message: "Preencha os campos obrigatórios"
+        message: 'Preencha os campos obrigatórios'
       });
       return;
     }
-        
-    this.service.obterRelatorio(this.object.ano, this.object.idEstabelecimento, this.object.numero).subscribe(result => {            
-      if(!result){
+
+    this.service.obterRelatorio(this.object.ano, this.object.idEstabelecimento, this.object.numero).subscribe(result => {
+      if (!result) {
         this.errors.push({
-          message: "Receita não encontrada"
+          message: 'Receita não encontrada'
         });
         return;
-      }      
+      }
     }, error => {
       this.errors = Util.customHTTPResponse(error);
     });
-    
-    this.reciboReceitaService.imprimir(this.object.ano, this.object.idEstabelecimento, this.object.numero, true);    
+
+    this.reciboReceitaService.imprimir(this.object.ano, this.object.idEstabelecimento, this.object.numero, true);
   }
 
   createGroup() {
-    this.form = this.fb.group({      
+    this.form = this.fb.group({
       ano: ['', Validators.required],
       idEstabelecimento: ['', Validators.required],
       numero: [Validators.required],

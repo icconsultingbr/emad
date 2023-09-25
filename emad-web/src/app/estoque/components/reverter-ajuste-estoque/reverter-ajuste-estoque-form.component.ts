@@ -22,32 +22,32 @@ const myId = uuid.v4();
 
 export class ReverterAjusteEstoqueFormComponent implements OnInit {
   @ViewChild('contentRecibo') contentRecibo: ElementRef;
-  
-  method: String = "estoque";
+
+  method: String = 'estoque';
   fields: any[] = [];
-  label: String = "Reverter ajuste de estoque";
+  label: String = 'Reverter ajuste de estoque';
   movimento: MovimentoGeral = new MovimentoGeral();
-  itemMovimento: ItemMovimentoGeral = new ItemMovimentoGeral();  
+  itemMovimento: ItemMovimentoGeral = new ItemMovimentoGeral();
   id: Number = null;
   domains: any[] = [];
   form: FormGroup;
   loading: Boolean = false;
-  message: string = '';
-  errors: any[] = [];    
+  message = '';
+  errors: any[] = [];
   listaMaterialLote: any[] = [];
   objectMaterial: Material = new Material();
-  warning: string = '';
-  modalRef: NgbModalRef = null; 
+  warning = '';
+  modalRef: NgbModalRef = null;
   tipoMovimento: TipoMovimento = new TipoMovimento();
 
-  constructor(    
+  constructor(
     private fb: FormBuilder,
     private service: ReverterAjusteEstoqueService,
     private ref: ChangeDetectorRef,
-    private modalService: NgbModal,  
+    private modalService: NgbModal,
     private estoqueImpressaoService: EstoqueImpressaoService,
     private route: ActivatedRoute) {
-      
+
     }
 
   ngOnInit() {
@@ -59,23 +59,23 @@ export class ReverterAjusteEstoqueFormComponent implements OnInit {
     this.createGroup();
   }
 
-  loadDomains() {        
+  loadDomains() {
     this.service.list('tipo-movimento/administrativo').subscribe(tipoMovimento => {
       this.service.list('fabricante-material').subscribe(fabricante => {
-        this.domains.push({            
-          idTipoMovimento: tipoMovimento,                      
+        this.domains.push({
+          idTipoMovimento: tipoMovimento,
           idFabricante: fabricante
-        }); 
-      }); 
-    });     
+        });
+      });
+    });
   }
 
   createGroup() {
     this.form = this.fb.group({
       id: [''],
-      idTipoMovimento: ['', ''],      
-      motivo: ['', ''],      
-      idFabricante: ['', ''],      
+      idTipoMovimento: ['', ''],
+      motivo: ['', ''],
+      idFabricante: ['', ''],
       idEstabelecimento: ['', ''],
       numeroEmpenho: ['', ''],
       validade: ['', ''],
@@ -87,20 +87,21 @@ export class ReverterAjusteEstoqueFormComponent implements OnInit {
     });
   }
 
-  togglePesquisa(){
-    return Util.isEmpty(this.movimento.id);    
+  togglePesquisa() {
+    return Util.isEmpty(this.movimento.id);
   }
 
-  pesquisaItemMovimentoGeral(){
+  pesquisaItemMovimentoGeral() {
     this.errors = [];
     this.loading = true;
        this.service.list('estoque/item-movimento/' + this.movimento.id).subscribe(result => {
         this.listaMaterialLote = result;
         this.loading = false;
-        if(result.length==0)
+        if (result.length == 0) {
           this.errors.push({
-            message: "Movimento não encontrado"
+            message: 'Movimento não encontrado'
           });
+        }
       }, error => {
         this.loading = false;
         this.errors = Util.customHTTPResponse(error);
@@ -108,28 +109,27 @@ export class ReverterAjusteEstoqueFormComponent implements OnInit {
   }
 
   sendForm(event, acao) {
-    this.errors = [];    
+    this.errors = [];
     event.preventDefault();
     this.movimento.idMovimentoEstornado = this.movimento.id;
 
-    if(this.listaMaterialLote.filter(itemExistente=> itemExistente.itemSelecionado).length == 0)
-    {
+    if (this.listaMaterialLote.filter(itemExistente => itemExistente.itemSelecionado).length == 0) {
       this.errors.push({
-        message: "Nenhum item selecionado."
+        message: 'Nenhum item selecionado.'
       });
       return;
     }
 
-    this.movimento.itensMovimento = this.listaMaterialLote.filter(itemExistente=> itemExistente.itemSelecionado);
+    this.movimento.itensMovimento = this.listaMaterialLote.filter(itemExistente => itemExistente.itemSelecionado);
 
     this.service
-      .inserirMaterialEstoque(this.movimento, "entrada-material-estoque")
+      .inserirMaterialEstoque(this.movimento, 'entrada-material-estoque')
       .subscribe((res: any) => {
         this.movimento.id = res.id;
         this.movimento.dataMovimento = res.dataMovimento;
-        this.openConfirmacao(this.contentRecibo);        
-        this.warning = "";
-      }, erro => {        
+        this.openConfirmacao(this.contentRecibo);
+        this.warning = '';
+      }, erro => {
         this.errors = Util.customHTTPResponse(erro);
       });
   }
@@ -139,32 +139,33 @@ export class ReverterAjusteEstoqueFormComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
 
-  selectAll(){
+  selectAll() {
 
   }
 
   close() {
-    if(this.modalRef)
-      this.modalRef.close();  
-    
+    if (this.modalRef) {
+      this.modalRef.close();
+    }
+
     this.movimento = new MovimentoGeral();
-    this.itemMovimento = new ItemMovimentoGeral();      
+    this.itemMovimento = new ItemMovimentoGeral();
     this.listaMaterialLote = [];
     this.objectMaterial = new Material();
     this.domains[0].idLoteAtual = [];
-    this.ref.detectChanges();    
+    this.ref.detectChanges();
   }
 
-    abreRelatorio() {    
-    let dadosRelatorio: any = {};
+    abreRelatorio() {
+    const dadosRelatorio: any = {};
     dadosRelatorio.idMovimentoGeral = this.movimento.id;
     dadosRelatorio.numeroDocumento = this.movimento.id;
     dadosRelatorio.dataMovimentacao = this.movimento.dataMovimento;
-    this.estoqueImpressaoService.imprimir("ENTRADA_MATERIAL", "Reversão de ajuste de estoque", this.movimento.nomeEstabelecimento, dadosRelatorio);
+    this.estoqueImpressaoService.imprimir('ENTRADA_MATERIAL', 'Reversão de ajuste de estoque', this.movimento.nomeEstabelecimento, dadosRelatorio);
     this.close();
   }
 }

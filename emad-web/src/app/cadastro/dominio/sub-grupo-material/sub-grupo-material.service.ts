@@ -10,53 +10,53 @@ export class SubGrupoMaterialService extends GenericsService {
   constructor(public http: HttpClient) {
     super(http);
   }
-  
-  public fields: any[] = [    
+
+  public fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: true,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "idGrupoMaterial",
-      type: "select",
-      label: "Grupo de material",
+      field: 'idGrupoMaterial',
+      type: 'select',
+      label: 'Grupo de material',
       grid: false,
       form: true,
       required: true,
       validator: ['', Validators.required]
     },
     {
-      field: "nomeGrupoMaterial",
-      type: "text",
-      label: "Grupo de material",
+      field: 'nomeGrupoMaterial',
+      type: 'text',
+      label: 'Grupo de material',
       grid: true,
       form: false,
       required: false,
       validator: ['', '']
     },
     {
-      field: "nome",
-      type: "text",
-      label: "Nome do subgrupo",
+      field: 'nome',
+      type: 'text',
+      label: 'Nome do subgrupo',
       grid: true,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "situacao",
-      type: "checkbox",
-      label: "Situação",
+      field: 'situacao',
+      type: 'checkbox',
+      label: 'Situação',
       grid: true,
       form: true,
-      translate: {1: "Ativo", 0: "Inativo"},
+      translate: {1: 'Ativo', 0: 'Inativo'},
       required: true,
-      validator:['', Validators.required]
+      validator: ['', Validators.required]
     }
   ];
 }

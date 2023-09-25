@@ -1,9 +1,9 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs/Observable";
-import { FileUpload } from "../model/file-upload.model";
-import { GenericsService } from "../../../_services/generics.service";
-import { map } from "rxjs/operators/map";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
+import { FileUpload } from '../model/file-upload.model';
+import { GenericsService } from '../../../_services/generics.service';
+import { map } from 'rxjs/operators/map';
 
 @Injectable()
 export class FileUploadService extends GenericsService {
@@ -20,7 +20,7 @@ export class FileUploadService extends GenericsService {
   }
 
   uploadListImage(files: Array<FileUpload>) {
-    let list = [];
+    const list = [];
 
     files.forEach(element => {
       list.push({
@@ -28,7 +28,7 @@ export class FileUploadService extends GenericsService {
         name: element.name,
         base64: element.base64,
         extension: element.extension
-      })
+      });
     });
 
     return this.http.post('documentos/exame', JSON.stringify(list))

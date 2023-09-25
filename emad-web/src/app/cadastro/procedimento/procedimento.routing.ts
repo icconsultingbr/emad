@@ -1,18 +1,18 @@
-import { Routes } from "@angular/router";
-import { ProcedimentoFormComponent } from "./procedimento-form.component";
-import { ProcedimentoComponent } from "./procedimento.component";
+import { Routes } from '@angular/router';
+import { ProcedimentoFormComponent } from './procedimento-form.component';
+import { ProcedimentoComponent } from './procedimento.component';
 
 export const procedimentoRoutes: Routes = [
     {
         path: '',
-        component: ProcedimentoComponent,        
+        component: ProcedimentoComponent,
     },
     {
         path: 'cadastro',
-        component: ProcedimentoFormComponent,        
+        component: ProcedimentoFormComponent,
     },
     {
         path: 'cadastro/:id',
-        component: ProcedimentoFormComponent,        
+        component: ProcedimentoFormComponent,
     }
 ];

@@ -12,16 +12,16 @@ import { ItemReceita } from '../../_core/_models/ItemReceita';
 import { Material } from '../../_core/_models/Material';
 
 @Component({
-  selector: 'app-pesquisa-medicamento',  
+  selector: 'app-pesquisa-medicamento',
   templateUrl: './pesquisa-medicamento.component.html',
   styleUrls: ['./pesquisa-medicamento.component.css']
 })
 
 export class PesquisaMedicamentoComponent implements OnInit, AfterViewInit {
-  @Output() medicamentoSelecionadoEvent = new EventEmitter<any>();  
-  @Input() medicamentoClearEvent = new EventEmitter<any>();  
-  @Input() idProfissional: number;  
-  @Input() idMaterial: number;  
+  @Output() medicamentoSelecionadoEvent = new EventEmitter<any>();
+  @Input() medicamentoClearEvent = new EventEmitter<any>();
+  @Input() idProfissional: number;
+  @Input() idMaterial: number;
   @Input() object: Material = new Material();
   loading: Boolean = false;
   modalRef: NgbModalRef = null;
@@ -29,7 +29,7 @@ export class PesquisaMedicamentoComponent implements OnInit, AfterViewInit {
   form: FormGroup;
   groupForm: any = {};
   type: string;
-  
+
   id: any;
   errors: any[] = [];
   materialSelecionado: any = null;
@@ -40,16 +40,16 @@ export class PesquisaMedicamentoComponent implements OnInit, AfterViewInit {
   allItems: any[] = [];
   pager: any = {};
   pagedItems: any[];
-  pageLimit: number = 10;
+  pageLimit = 10;
   fieldsPacientes: any[] = [];
-  
+
   setPage(page: number) {
     this.pager = this.pagerService.getPager(this.allItems.length, page, this.pageLimit);
     this.pagedItems = this.allItems.slice(this.pager.startIndex, this.pager.endIndex + 1);
   }
 
   loadQuantityPerPage(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.pageLimit = id;
     this.setPage(1);
   }
@@ -63,13 +63,12 @@ export class PesquisaMedicamentoComponent implements OnInit, AfterViewInit {
     private modalService: NgbModal
   ) {
     this.service = service;
-  }  
+  }
 
   ngOnInit() {
-    this.createGroup();  
-    this.loadDomains(); 
-    if(this.id)
-    { 
+    this.createGroup();
+    this.loadDomains();
+    if (this.id) {
       this.object.id = this.idMaterial;
     }
   }
@@ -97,7 +96,7 @@ export class PesquisaMedicamentoComponent implements OnInit, AfterViewInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
 
@@ -106,11 +105,11 @@ export class PesquisaMedicamentoComponent implements OnInit, AfterViewInit {
 
   close() {
     this.modalRef.close();
-  } 
+  }
 
   clear() {
     this.object = new Material();
-    this.materialSelecionado = null;    
+    this.materialSelecionado = null;
     this.listaMedicamentos = [];
   }
 
@@ -123,33 +122,31 @@ export class PesquisaMedicamentoComponent implements OnInit, AfterViewInit {
   }
 
   confirmaMedicamento() {
-    this.object = this.materialSelecionado;        
+    this.object = this.materialSelecionado;
     this.medicamentoSelecionadoEvent.emit(this.object);
     this.close();
   }
 
   buscaMedicamento() {
     this.loading = true;
-    let params = "";
+    let params = '';
     this.listaMedicamentos = [];
 
-    if (Util.isEmpty(this.object.descricao) || this.object.descricao.length<3)
-    {
-       this.errors = [{message:"Informe a descrição do medicamento, ao menos 3 caracteres"}];
+    if (Util.isEmpty(this.object.descricao) || this.object.descricao.length < 3) {
+       this.errors = [{message: 'Informe a descrição do medicamento, ao menos 3 caracteres'}];
        this.loading = false;
        return;
     }
 
-    if (Util.isEmpty(this.idProfissional) && this.idProfissional != 999)
-    {
-       this.errors = [{message:"Selecione o profissional antes de pesquisar um medicamento"}];
+    if (Util.isEmpty(this.idProfissional) && this.idProfissional != 999) {
+       this.errors = [{message: 'Selecione o profissional antes de pesquisar um medicamento'}];
        this.loading = false;
        return;
     }
-    
-    params = "?descricao=" + this.object.descricao + "&idGrupoMaterial=" + this.object.idGrupoMaterial;
 
-    if(this.idProfissional == 999){
+    params = '?descricao=' + this.object.descricao + '&idGrupoMaterial=' + this.object.idGrupoMaterial;
+
+    if (this.idProfissional == 999) {
       this.service.list('material' + params).subscribe(result => {
         this.listaMedicamentos = result;
         this.setPage(1);
@@ -159,8 +156,7 @@ export class PesquisaMedicamentoComponent implements OnInit, AfterViewInit {
         this.loading = false;
         this.errors = Util.customHTTPResponse(erro);
       });
-    }
-    else{
+    } else {
       this.service.list('material/especialidade/' + this.idProfissional + params).subscribe(result => {
         this.listaMedicamentos = result;
         this.setPage(1);
@@ -170,7 +166,7 @@ export class PesquisaMedicamentoComponent implements OnInit, AfterViewInit {
         this.loading = false;
         this.errors = Util.customHTTPResponse(erro);
       });
-    }   
+    }
   }
 }
 

@@ -18,58 +18,58 @@ const myId = uuid.v4();
     providers: [MedicamentoVencidoVencerService]
 })
 
-export class MedicamentoVencidoVencerComponent implements OnInit {  
+export class MedicamentoVencidoVencerComponent implements OnInit {
   object: RelatorioMedicamento = new RelatorioMedicamento();
-  itemReceita: ItemReceita = new ItemReceita();  
-  itemEstoque: Estoque = new Estoque();    
+  itemReceita: ItemReceita = new ItemReceita();
+  itemEstoque: Estoque = new Estoque();
   fields: any[] = [];
-  label: string = "";
+  label = '';
   id: number = null;
-  domains: any[] = [];  
+  domains: any[] = [];
   loading: Boolean = false;
   form: FormGroup;
   groupForm: any = {};
   type: string;
-  message: string = '';
-  warning: string = '';     
-  errors: any[] = [];  
+  message = '';
+  warning = '';
+  errors: any[] = [];
   objectMaterial: Material = new Material();
-  
+
   constructor(
     private fb: FormBuilder,
-    private service: MedicamentoVencidoVencerService, 
-    private ref: ChangeDetectorRef, 
+    private service: MedicamentoVencidoVencerService,
+    private ref: ChangeDetectorRef,
     private medicamentoVencidoVencerService: MedicamentoVencidoVencerImpressaoService) {
       this.fields = service.fields;
     }
 
   ngOnInit() {
     this.createGroup();
-    this.loadDomains();  
-    this.object.ordenadoPor = "mat.codigo";
-    this.object.idEstabelecimento = JSON.parse(localStorage.getItem("est"))[0].id;
-    this.object.nomeEstabelecimento = JSON.parse(localStorage.getItem("est"))[0].nomeFantasia;
+    this.loadDomains();
+    this.object.ordenadoPor = 'mat.codigo';
+    this.object.idEstabelecimento = JSON.parse(localStorage.getItem('est'))[0].id;
+    this.object.nomeEstabelecimento = JSON.parse(localStorage.getItem('est'))[0].nomeFantasia;
   }
 
-  loadDomains() {       
+  loadDomains() {
     this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
       this.service.listDomains('fabricante-material').subscribe(fabricantes => {
-        this.domains.push({            
+        this.domains.push({
           idEstabelecimento: estabelecimentos,
           idFabricanteMaterial: fabricantes,
           ordenadoPor: [
-            { id: "mat.codigo", nome: "Código" },
-            { id: "est.validade", nome: "Data de validade" },
-            { id: "fab.nome", nome: "Fabricante" },
-            { id: "est.lote", nome: "Lote" },          
-            { id: "mat.descricao", nome: "Medicamento" },                               
+            { id: 'mat.codigo', nome: 'Código' },
+            { id: 'est.validade', nome: 'Data de validade' },
+            { id: 'fab.nome', nome: 'Fabricante' },
+            { id: 'est.lote', nome: 'Lote' },
+            { id: 'mat.descricao', nome: 'Medicamento' },
           ],
-        });                           
-      });                           
-    });                           
-  }      
-  
-  visualizarPdf() {        
+        });
+      });
+    });
+  }
+
+  visualizarPdf() {
     this.errors = [];
 
     this.object.criteriosPesquisa = {};
@@ -80,20 +80,20 @@ export class MedicamentoVencidoVencerComponent implements OnInit {
     this.object.criteriosPesquisa.nomeEstabelecimento = this.object.nomeEstabelecimento;
     this.object.criteriosPesquisa.nomeFabricanteMaterial = this.object.nomeFabricanteMaterial;
 
-    var dataInicialFiltro =  this.object.dataInicial.getFullYear() + "-" + this.twoDigits(1 + this.object.dataInicial.getMonth()) + "-" + this.twoDigits(this.object.dataInicial.getDate());
-    var dataFinalFiltro =  this.object.dataFinal.getFullYear() + "-" + this.twoDigits(1 + this.object.dataFinal.getMonth()) + "-" + this.twoDigits(this.object.dataFinal.getDate());
+    let dataInicialFiltro =  this.object.dataInicial.getFullYear() + '-' + this.twoDigits(1 + this.object.dataInicial.getMonth()) + '-' + this.twoDigits(this.object.dataInicial.getDate());
+    let dataFinalFiltro =  this.object.dataFinal.getFullYear() + '-' + this.twoDigits(1 + this.object.dataFinal.getMonth()) + '-' + this.twoDigits(this.object.dataFinal.getDate());
 
-    this.object.params = "?dataInicial=" + dataInicialFiltro
-                       + "&dataFinal=" + dataFinalFiltro
-                       + "&idMaterial=" + (this.object.idMaterial ? this.object.idMaterial : '')
-                       + "&idFabricante=" + (this.object.idFabricanteMaterial  ? this.object.idFabricanteMaterial : '')
-                       + "&idEstabelecimento=" + (this.object.idEstabelecimento  ? this.object.idEstabelecimento : '')
-                       + "&ordenadoPor=" + (this.object.ordenadoPor  ? this.object.ordenadoPor : '');
+    this.object.params = '?dataInicial=' + dataInicialFiltro
+                       + '&dataFinal=' + dataFinalFiltro
+                       + '&idMaterial=' + (this.object.idMaterial ? this.object.idMaterial : '')
+                       + '&idFabricante=' + (this.object.idFabricanteMaterial  ? this.object.idFabricanteMaterial : '')
+                       + '&idEstabelecimento=' + (this.object.idEstabelecimento  ? this.object.idEstabelecimento : '')
+                       + '&ordenadoPor=' + (this.object.ordenadoPor  ? this.object.ordenadoPor : '');
 
-    this.medicamentoVencidoVencerService.imprimir(this.object, JSON.parse(localStorage.getItem("est"))[0].nomeFantasia, this.object.criteriosPesquisa);    
+    this.medicamentoVencidoVencerService.imprimir(this.object, JSON.parse(localStorage.getItem('est'))[0].nomeFantasia, this.object.criteriosPesquisa);
   }
 
-  exportarCsv(){
+  exportarCsv() {
     this.errors = [];
 
     this.object.criteriosPesquisa = {};
@@ -104,52 +104,52 @@ export class MedicamentoVencidoVencerComponent implements OnInit {
     this.object.criteriosPesquisa.nomeEstabelecimento = this.object.nomeEstabelecimento;
     this.object.criteriosPesquisa.nomeFabricanteMaterial = this.object.nomeFabricanteMaterial;
 
-    var dataInicialFiltro =  this.object.dataInicial.getFullYear() + "-" + this.twoDigits(1 + this.object.dataInicial.getMonth()) + "-" + this.twoDigits(this.object.dataInicial.getDate());
-    var dataFinalFiltro =  this.object.dataFinal.getFullYear() + "-" + this.twoDigits(1 + this.object.dataFinal.getMonth()) + "-" + this.twoDigits(this.object.dataFinal.getDate());
+    let dataInicialFiltro =  this.object.dataInicial.getFullYear() + '-' + this.twoDigits(1 + this.object.dataInicial.getMonth()) + '-' + this.twoDigits(this.object.dataInicial.getDate());
+    let dataFinalFiltro =  this.object.dataFinal.getFullYear() + '-' + this.twoDigits(1 + this.object.dataFinal.getMonth()) + '-' + this.twoDigits(this.object.dataFinal.getDate());
 
-    this.object.params = "?dataInicial=" + dataInicialFiltro
-                       + "&dataFinal=" + dataFinalFiltro
-                       + "&idMaterial=" + (this.object.idMaterial ? this.object.idMaterial : '')
-                       + "&idFabricante=" + (this.object.idFabricanteMaterial  ? this.object.idFabricanteMaterial : '')
-                       + "&idEstabelecimento=" + (this.object.idEstabelecimento  ? this.object.idEstabelecimento : '')
-                       + "&ordenadoPor=" + (this.object.ordenadoPor  ? this.object.ordenadoPor : '');
+    this.object.params = '?dataInicial=' + dataInicialFiltro
+                       + '&dataFinal=' + dataFinalFiltro
+                       + '&idMaterial=' + (this.object.idMaterial ? this.object.idMaterial : '')
+                       + '&idFabricante=' + (this.object.idFabricanteMaterial  ? this.object.idFabricanteMaterial : '')
+                       + '&idEstabelecimento=' + (this.object.idEstabelecimento  ? this.object.idEstabelecimento : '')
+                       + '&ordenadoPor=' + (this.object.ordenadoPor  ? this.object.ordenadoPor : '');
 
 
-    this.medicamentoVencidoVencerService.exportar(this.object, JSON.parse(localStorage.getItem("est"))[0].nomeFantasia, this.object.criteriosPesquisa); 
+    this.medicamentoVencidoVencerService.exportar(this.object, JSON.parse(localStorage.getItem('est'))[0].nomeFantasia, this.object.criteriosPesquisa);
   }
 
-  clear(){
+  clear() {
     this.object = new RelatorioMedicamento();
     this.objectMaterial = new Material();
     this.ref.detectChanges();
-    this.object.ordenadoPor = "mat.codigo";
-    this.object.idEstabelecimento = JSON.parse(localStorage.getItem("est"))[0].id;
-    this.object.nomeEstabelecimento = JSON.parse(localStorage.getItem("est"))[0].nomeFantasia;
+    this.object.ordenadoPor = 'mat.codigo';
+    this.object.idEstabelecimento = JSON.parse(localStorage.getItem('est'))[0].id;
+    this.object.nomeEstabelecimento = JSON.parse(localStorage.getItem('est'))[0].nomeFantasia;
   }
 
-  medicamentoSelecionado(material: any){
+  medicamentoSelecionado(material: any) {
     this.object.idMaterial = material.id;
     this.object.nomeMaterial = material.descricao;
   }
 
-  estabelecimentoSelecionado(idEstabelecimento: any){            
-    this.object.nomeEstabelecimento = this.domains[0].idEstabelecimento[idEstabelecimento.target.options.selectedIndex-1].nome;
+  estabelecimentoSelecionado(idEstabelecimento: any) {
+    this.object.nomeEstabelecimento = this.domains[0].idEstabelecimento[idEstabelecimento.target.options.selectedIndex - 1].nome;
   }
-  
-  fabricanteSelecionado(fabricante: any){            
-    this.object.nomeFabricanteMaterial = this.domains[0].idFabricanteMaterial[fabricante.target.options.selectedIndex-1].nome;
-  } 
+
+  fabricanteSelecionado(fabricante: any) {
+    this.object.nomeFabricanteMaterial = this.domains[0].idFabricanteMaterial[fabricante.target.options.selectedIndex - 1].nome;
+  }
 
   twoDigits(d) {
-    if(0 <= d && d < 10) return "0" + d.toString();
-    if(-10 < d && d < 0) return "-0" + (-1*d).toString();
+    if (0 <= d && d < 10) { return '0' + d.toString(); }
+    if (-10 < d && d < 0) { return '-0' + (-1 * d).toString(); }
     return d.toString();
   }
-  
+
   createGroup() {
-    this.form = this.fb.group({      
-      idEstabelecimento: new FormControl({value: '', disabled: true}, Validators.required),      
-      idFabricanteMaterial: ['', ''],      
+    this.form = this.fb.group({
+      idEstabelecimento: new FormControl({value: '', disabled: true}, Validators.required),
+      idFabricanteMaterial: ['', ''],
       ordenadoPor: ['', Validators.required],
       dataInicial: ['', Validators.required],
       dataFinal: ['', Validators.required],

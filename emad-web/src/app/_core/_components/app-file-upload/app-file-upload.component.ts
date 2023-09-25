@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output, OnInit } from "@angular/core";
-import { FileUpload } from "./model/file-upload.model";
-import { Guid } from "guid-typescript";
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { FileUpload } from './model/file-upload.model';
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-file-upload',
@@ -26,7 +26,7 @@ export class AppFileUploadComponent implements OnInit {
 
   ngOnInit(): void {
     this.maxSize = this.maxSize || 20 * 1024000;
-    this.formatsAllowed = this.formatsAllowed || '.jpg,.png,.pdf,.docx,.txt,.gif,.jpeg'
+    this.formatsAllowed = this.formatsAllowed || '.jpg,.png,.pdf,.docx,.txt,.gif,.jpeg';
   }
 
   resetFileUpload() {
@@ -46,12 +46,12 @@ export class AppFileUploadComponent implements OnInit {
     fileList = event.target.files || event.srcElement.files;
 
     for (let i = 0; i < fileList.length; i++) {
-      let file = fileList[i] as FileUpload;
+      const file = fileList[i] as FileUpload;
 
       file.id = Guid.create();
       file.event = event;
 
-      file.extension = file.name.split(".").pop()
+      file.extension = file.name.split('.').pop();
 
       const currentFileExt = fileExtRegExp.exec(file.name)[1].toLowerCase();
 

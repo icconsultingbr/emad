@@ -12,7 +12,7 @@ import { ListaControleEspecial } from '../../../_core/_models/ListaControleEspec
 
 export class ListaControleEspecialComponent implements OnInit {
 
-  method: string = "lista-controle-especial";
+  method = 'lista-controle-especial';
   object: ListaControleEspecial = new ListaControleEspecial();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class ListaControleEspecialComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: ListaControleEspecialService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

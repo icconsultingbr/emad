@@ -12,7 +12,7 @@ import { Receita } from '../../_core/_models/Receita';
 
 export class ReceitaComponent implements OnInit {
 
-  method: String = "receita";
+  method: String = 'receita';
   object: Receita = new Receita();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class ReceitaComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: ReceitaService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

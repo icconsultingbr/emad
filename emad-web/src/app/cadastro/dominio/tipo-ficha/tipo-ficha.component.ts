@@ -12,7 +12,7 @@ import { TipoFicha } from '../../../_core/_models/TipoFicha';
 
 export class TipoFichaComponent implements OnInit {
 
-  method: string = "tipo-ficha";
+  method = 'tipo-ficha';
   object: TipoFicha = new TipoFicha();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class TipoFichaComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: TipoFichaService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

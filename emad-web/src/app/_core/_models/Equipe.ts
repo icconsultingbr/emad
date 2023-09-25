@@ -1,4 +1,4 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
 export class Equipe {
     id: Number;
@@ -7,7 +7,7 @@ export class Equipe {
     @Input() nome: string;
     @Input() tipo: string;
     @Input() situacao: Boolean;
-    @Input() idEstabelecimento: Number = +JSON.parse(localStorage.getItem("est"))[0].id;
+    @Input() idEstabelecimento: Number = +JSON.parse(localStorage.getItem('est'))[0].id;
     @Input() idEquipeEmap: Number;
-    @Input() profissionais : any[];
+    @Input() profissionais: any[];
 }

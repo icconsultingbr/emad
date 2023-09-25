@@ -1,22 +1,29 @@
-
-
 <div class="row">
-  <label class="col-xl-2 col-form-label text-left">Pesquisar medicamento    
+  <label class="col-xl-2 col-form-label text-left"
+    >Pesquisar medicamento
   </label>
   <div class="col-xl-10">
     <div class="input-group">
-      <input type="text" class="form-control has-error rounded" [(ngModel)]="object.descricao" readonly>
+      <input
+        type="text"
+        class="form-control has-error rounded"
+        [(ngModel)]="object.descricao"
+        readonly
+      />
 
       <div class="input-group-append">
-        <button type="button" class="btn btn-primary ml-3 rounded"
-          (click)="open(contentMedicamento)">
+        <button
+          type="button"
+          class="btn btn-primary ml-3 rounded"
+          (click)="open(contentMedicamento)"
+        >
           <i class="fa fa-search"></i>
         </button>
       </div>
     </div>
   </div>
 </div>
-  
+
 <ng-template #contentMedicamento>
   <div class="modal-header">
     <h4 class="modal-title">Prescrição de medicamento</h4>
@@ -25,11 +32,10 @@
     </button>
   </div>
   <div class="modal-body">
-
     <div *ngIf="errors.length" class="alert alert-danger">
       <div *ngFor="let error of errors" class="row">
         <div class="col-12 text-left">
-          {{error.message}}
+          {{ error.message }}
         </div>
       </div>
     </div>
@@ -39,10 +45,19 @@
         Grupo do medicamento:
       </label>
       <div class="col-xl-8 col-sm-12">
-        <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idGrupoMaterial">
+        <select
+          *ngIf="domains"
+          class="custom-select d-block w-100"
+          [(ngModel)]="object.idGrupoMaterial"
+        >
           <option [value]="null">Selecione...</option>
-          <option *ngFor="let item of domains[0]?.idGrupoMaterial" [value]="item.id">{{item.nome}}</option>
-      </select>
+          <option
+            *ngFor="let item of domains[0]?.idGrupoMaterial"
+            [value]="item.id"
+          >
+            {{ item.nome }}
+          </option>
+        </select>
       </div>
     </div>
 
@@ -51,13 +66,21 @@
         Nome do medicamento:
       </label>
       <div class="col-xl-8 col-sm-12">
-        <input type="text" class="form-control has-error" [(ngModel)]="object.descricao">
+        <input
+          type="text"
+          class="form-control has-error"
+          [(ngModel)]="object.descricao"
+        />
       </div>
     </div>
 
     <div class="form-group row">
       <div class="col-12">
-        <button [routerLink]="" class="btn btn-primary float-right" (click)="buscaMedicamento()">
+        <button
+          [routerLink]=""
+          class="btn btn-primary float-right"
+          (click)="buscaMedicamento()"
+        >
           <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin text-left">
             <i class="fa fa-spinner"></i>
           </i>
@@ -71,34 +94,70 @@
         <table class="table table-striped">
           <thead>
             <tr class="text-left">
-              <th></th>                      
+              <th></th>
               <th>Código</th>
               <th>Descrição do medicamento</th>
               <th>Unidade</th>
             </tr>
           </thead>
-          <tbody *ngFor="let item of listaMedicamentos let index=index; let odd='odd'; let even='even';">
+          <tbody
+            *ngFor="
+              let item of listaMedicamentos;
+              let index = index;
+              let odd = odd;
+              let even = even
+            "
+          >
             <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
               <td class="text-secondary">
-                <div class="custom-control custom-radio float-left" *ngIf="(item.autorizado && item.dispensavel) || this.idProfissional == 999">
-                  <input type="radio" (change)="selecionaMedicamento(item)" class="custom-control-input" id="{{ item.id }}"
-                    name="radio-item">
-                  <label class="custom-control-label" for="{{ item.id }}">&nbsp;</label>
+                <div
+                  class="custom-control custom-radio float-left"
+                  *ngIf="
+                    (item.autorizado && item.dispensavel) ||
+                    this.idProfissional == 999
+                  "
+                >
+                  <input
+                    type="radio"
+                    (change)="selecionaMedicamento(item)"
+                    class="custom-control-input"
+                    id="{{ item.id }}"
+                    name="radio-item"
+                  />
+                  <label class="custom-control-label" for="{{ item.id }}"
+                    >&nbsp;</label
+                  >
                 </div>
-                <div class="float-left" *ngIf="!item.autorizado && this.idProfissional != 999">                  
-                    <i class="fa fa-ban text-left" title="Material não autorizado para o profissional" style="color:red"></i>
+                <div
+                  class="float-left"
+                  *ngIf="!item.autorizado && this.idProfissional != 999"
+                >
+                  <i
+                    class="fa fa-ban text-left"
+                    title="Material não autorizado para o profissional"
+                    style="color: red"
+                  ></i>
                 </div>
-                <div class="float-left" *ngIf="!item.dispensavel && this.idProfissional != 999">                  
-                  <i class="fa fa-ban text-left" title="Material não dispensável" style="color:red"></i>
-              </div>
-              </td>           
-              <td class="text-secondary">{{item.codigo}}</td>              
-              <td class="text-secondary" title="{{item.descricaoCompleta}}">{{item.descricao}}</td>              
-              <td class="text-secondary">{{item.nomeUnidadeMaterial}}</td>   
+                <div
+                  class="float-left"
+                  *ngIf="!item.dispensavel && this.idProfissional != 999"
+                >
+                  <i
+                    class="fa fa-ban text-left"
+                    title="Material não dispensável"
+                    style="color: red"
+                  ></i>
+                </div>
+              </td>
+              <td class="text-secondary">{{ item.codigo }}</td>
+              <td class="text-secondary" title="{{ item.descricaoCompleta }}">
+                {{ item.descricao }}
+              </td>
+              <td class="text-secondary">{{ item.nomeUnidadeMaterial }}</td>
             </tr>
           </tbody>
 
-          <tbody *ngIf="!listaMedicamentos || listaMedicamentos.length==0">
+          <tbody *ngIf="!listaMedicamentos || listaMedicamentos.length == 0">
             <tr class="text-left">
               <td colspan="99" class="text-secondary">
                 <i>Não há resultados...</i>
@@ -109,12 +168,19 @@
       </div>
     </div>
     <div class="row mb-2">
-      <div *ngIf="pager.pages && pager.pages.length" class="text text-secondary col-md-12 pr-0 mx-auto">
+      <div
+        *ngIf="pager.pages && pager.pages.length"
+        class="text text-secondary col-md-12 pr-0 mx-auto"
+      >
         <i>
           Exibindo
-          {{pager.currentPage === pager.totalPages?allMedicamentosDim.length:pager.currentPage*pagedItems.length}}
+          {{
+            pager.currentPage === pager.totalPages
+              ? allMedicamentosDim.length
+              : pager.currentPage * pagedItems.length
+          }}
           de
-          {{allMedicamentosDim.length}}
+          {{ allMedicamentosDim.length }}
           resultado(s).
         </i>
       </div>
@@ -122,30 +188,39 @@
 
     <div class="row">
       <ul *ngIf="pager.pages && pager.pages.length" class="pagination mx-auto">
-        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === 1}">
+        <li class="page-item" [ngClass]="{ disabled: pager.currentPage === 1 }">
           <a class="page-link" (click)="setPage(1)">
             <i class="fas fa-angle-double-left"></i>
           </a>
         </li>
-        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === 1}">
+        <li class="page-item" [ngClass]="{ disabled: pager.currentPage === 1 }">
           <a class="page-link" (click)="setPage(pager.currentPage - 1)">
             <i class="fas fa-angle-left"></i>
           </a>
         </li>
         <li>
-          <select (change)="loadQuantityPerPage($event)" class="custom-select d-block w-100"
-            style="border: 1px solid #dee2e6">
+          <select
+            (change)="loadQuantityPerPage($event)"
+            class="custom-select d-block w-100"
+            style="border: 1px solid #dee2e6"
+          >
             <option [ngValue]="10">10</option>
             <option [ngValue]="25">25</option>
             <option [ngValue]="50">50</option>
           </select>
         </li>
-        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === pager.totalPages}">
+        <li
+          class="page-item"
+          [ngClass]="{ disabled: pager.currentPage === pager.totalPages }"
+        >
           <a class="page-link" (click)="setPage(pager.currentPage + 1)">
             <i class="fas fa-angle-right"></i>
           </a>
         </li>
-        <li class="page-item" [ngClass]="{'disabled':pager.currentPage === pager.totalPages}">
+        <li
+          class="page-item"
+          [ngClass]="{ disabled: pager.currentPage === pager.totalPages }"
+        >
           <a class="page-link" (click)="setPage(pager.totalPages)">
             <i class="fas fa-angle-double-right"></i>
           </a>
@@ -155,8 +230,12 @@
 
     <div class="form-group row text-right">
       <div class="col-12">
-        <button class="btn btn-primary  mr-2" type="button" [disabled]="toggleMedicamento()"
-          (click)="confirmaMedicamento()">
+        <button
+          class="btn btn-primary mr-2"
+          type="button"
+          [disabled]="toggleMedicamento()"
+          (click)="confirmaMedicamento()"
+        >
           <i class="fa fa-plus-circle"></i> Adicionar
         </button>
 
@@ -165,6 +244,5 @@
         </button>
       </div>
     </div>
-
   </div>
 </ng-template>

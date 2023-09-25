@@ -1,13 +1,13 @@
-import { Component, Output, EventEmitter, Input, ChangeDetectorRef, OnInit } from "@angular/core";
-import { ImageCroppedEvent } from "ngx-image-cropper";
-import { FileUpload } from "../app-file-upload/model/file-upload.model";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { Guid } from "guid-typescript";
-import { HttpClient } from "@angular/common/http";
-import { FileUploadService } from "../app-file-upload/services/file-upload.service";
-import { environment } from "../../../../environments/environment";
-import { switchMap } from "rxjs/operators";
-import { Observable } from "rxjs/Observable";
+import { Component, Output, EventEmitter, Input, ChangeDetectorRef, OnInit } from '@angular/core';
+import { ImageCroppedEvent } from 'ngx-image-cropper';
+import { FileUpload } from '../app-file-upload/model/file-upload.model';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { Guid } from 'guid-typescript';
+import { HttpClient } from '@angular/common/http';
+import { FileUploadService } from '../app-file-upload/services/file-upload.service';
+import { environment } from '../../../../environments/environment';
+import { switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-image-cropper-upload',
@@ -56,7 +56,7 @@ export class AppImageCropperUploadComponent {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
 

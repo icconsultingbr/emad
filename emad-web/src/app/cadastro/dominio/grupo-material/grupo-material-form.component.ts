@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class GrupoMaterialFormComponent implements OnInit {
 
   object: GrupoMaterial = new GrupoMaterial();
-  method: string = "grupo-material";
+  method = 'grupo-material';
   fields: any[] = [];
-  label: string = "Grupo de material";
+  label = 'Grupo de material';
   id: Number = null;
 
   constructor(

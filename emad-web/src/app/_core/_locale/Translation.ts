@@ -1,7 +1,7 @@
-import { PtBr } from "./pt-br/PtBr";
+import { PtBr } from './pt-br/PtBr';
 
 export class Translation {
-  static t(term) {    
+  static t(term) {
     return PtBr.translate(term);
   }
 }

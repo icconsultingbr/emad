@@ -1,9 +1,9 @@
-import { Routes } from "@angular/router";
-import { AjusteEstoqueFormComponent } from "./ajuste-estoque-form.component";
+import { Routes } from '@angular/router';
+import { AjusteEstoqueFormComponent } from './ajuste-estoque-form.component';
 
-export const ajusteEstoqueRoutes: Routes = [    
+export const ajusteEstoqueRoutes: Routes = [
     {
         path: '',
-        component: AjusteEstoqueFormComponent,        
+        component: AjusteEstoqueFormComponent,
     }
 ];

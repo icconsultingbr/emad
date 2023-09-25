@@ -17,14 +17,14 @@ import { Material } from '../../../_core/_models/Material';
 export class AlteraValidadeFormComponent implements OnInit {
 
   object: Estoque = new Estoque();
-  method: String = "estoque";
+  method: String = 'estoque';
   fields: any[] = [];
-  label: String = "Estoque";
+  label: String = 'Estoque';
   id: number = null;
   domains: any[] = [];
   loading: Boolean = false;
-  message: string = '';
-  errors: any[] = [];      
+  message = '';
+  errors: any[] = [];
   form: FormGroup;
   objectMaterial: Material = new Material();
 
@@ -42,17 +42,17 @@ export class AlteraValidadeFormComponent implements OnInit {
       this.id = params['id'];
     });
     this.createGroup();
-    this.domains.push({            
+    this.domains.push({
       idLoteAtual: []
-     }); 
+     });
   }
 
   createGroup() {
     this.form = this.fb.group({
       id: [''],
-      idTipoMovimento: ['', ''],      
-      nomeMaterial: ['', ''],      
-      idFabricante: ['', ''],      
+      idTipoMovimento: ['', ''],
+      nomeMaterial: ['', ''],
+      idFabricante: ['', ''],
       idEstabelecimento: ['', ''],
       numeroEmpenho: ['', ''],
       validade: ['', ''],
@@ -65,26 +65,26 @@ export class AlteraValidadeFormComponent implements OnInit {
     });
   }
 
-  toggleItemEntradaMaterial(){
-    return Util.isEmpty(this.object.idMaterial)     
+  toggleItemEntradaMaterial() {
+    return Util.isEmpty(this.object.idMaterial)
     || Util.isEmpty(this.object.lote)
-    || Util.isEmpty(this.object.validade);    
+    || Util.isEmpty(this.object.validade);
   }
 
-  medicamentoSelecionado(material: any){
+  medicamentoSelecionado(material: any) {
     this.object.idMaterial = material.id;
-    this.object.nomeMaterial = material.descricao;        
+    this.object.nomeMaterial = material.descricao;
     this.buscaLotes();
-  } 
+  }
 
   buscaLotes() {
     this.loading = true;
-       this.service.list('estoque/material-lote/' 
+       this.service.list('estoque/material-lote/'
        + this.object.idMaterial
-        + '/estabelecimento/' 
-        +  JSON.parse(localStorage.getItem("est"))[0].id 
-        + "?loteBloqueado=" + "0"        
-        + "&operacao="  + "2").subscribe(result => {
+        + '/estabelecimento/'
+        +  JSON.parse(localStorage.getItem('est'))[0].id
+        + '?loteBloqueado=' + '0'
+        + '&operacao='  + '2').subscribe(result => {
         this.domains[0].idLoteAtual = result;
         this.object.lote = null;
         this.loading = false;
@@ -94,31 +94,31 @@ export class AlteraValidadeFormComponent implements OnInit {
       });
   }
 
-  
-  loteSelecionado(lote: any){
-    var loteSelecionado: any = {};
-    loteSelecionado = this.domains[0].idLoteAtual[lote.target.options.selectedIndex-1];    
+
+  loteSelecionado(lote: any) {
+    let loteSelecionado: any = {};
+    loteSelecionado = this.domains[0].idLoteAtual[lote.target.options.selectedIndex - 1];
     this.object.id = loteSelecionado.id;
-  }   
+  }
 
   sendForm(event) {
-    this.errors = [];    
+    this.errors = [];
     event.preventDefault();
-    
-    if(!this.object.validade){
+
+    if (!this.object.validade) {
       this.errors.push({
-        message: "Favor informar a validade"
-      });      
+        message: 'Favor informar a validade'
+      });
       return;
-    }   
+    }
 
     this.service
        .alterarValidade(this.object)
        .subscribe((res: any) => {
          this.object = new Estoque();
          this.objectMaterial = new Material();
-         this.ref.detectChanges(); 
-       }, erro => {        
+         this.ref.detectChanges();
+       }, erro => {
          this.errors = Util.customHTTPResponse(erro);
        });
   }

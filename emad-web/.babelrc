@@ -1,0 +1,13 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "14.17.6" // Configure para a versão do Node.js que você está usando
+        }
+      }
+    ],
+    "@babel/preset-typescript"
+  ]
+}

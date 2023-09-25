@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class EstabelecimentoGrupoMaterialFormComponent implements OnInit {
 
   object: EstabelecimentoGrupoMaterial = new EstabelecimentoGrupoMaterial();
-  method: string = "estabelecimento-grupo-material";
+  method = 'estabelecimento-grupo-material';
   fields: any[] = [];
-  label: string = "Associação de grupo de materiais ao estabelecimento";
+  label = 'Associação de grupo de materiais ao estabelecimento';
   id: Number = null;
   domains: any[] = [];
 
@@ -35,11 +35,11 @@ export class EstabelecimentoGrupoMaterialFormComponent implements OnInit {
     this.loadDomains();
   }
 
-  loadDomains() {    
+  loadDomains() {
     this.service.carregaGrupoSemEstabelecimento().subscribe(grupoMaterial => {
-      this.domains.push({            
+      this.domains.push({
         idGrupoMaterial: grupoMaterial
-      });                      
+      });
     });
   }
 }

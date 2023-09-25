@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class TipoMovimentoFormComponent implements OnInit {
 
   object: TipoMovimento = new TipoMovimento();
-  method: string = "tipo-movimento";
+  method = 'tipo-movimento';
   fields: any[] = [];
-  label: string = "Tipo de movimento";
+  label = 'Tipo de movimento';
   id: Number = null;
   domains: any[] = [];
 
@@ -36,22 +36,22 @@ export class TipoMovimentoFormComponent implements OnInit {
   }
 
   loadDomains() {
-    this.domains.push({      
+    this.domains.push({
       operacao: [
-        { id: 1, nome: "Entrada" },
-        { id: 2, nome: "Saída" },
-        { id: 3, nome: "Perda" }
+        { id: 1, nome: 'Entrada' },
+        { id: 2, nome: 'Saída' },
+        { id: 3, nome: 'Perda' }
       ],
       loteBloqueado: [
-        { id: 1, nome: "" },
-        { id: 2, nome: "Sim" },
-        { id: 3, nome: "Não" }
+        { id: 1, nome: '' },
+        { id: 2, nome: 'Sim' },
+        { id: 3, nome: 'Não' }
       ],
       loteVencido: [
-        { id: 1, nome: "" },
-        { id: 2, nome: "Sim" },
-        { id: 3, nome: "Não" }
+        { id: 1, nome: '' },
+        { id: 2, nome: 'Sim' },
+        { id: 3, nome: 'Não' }
       ]
-   });  
+   });
   }
 }

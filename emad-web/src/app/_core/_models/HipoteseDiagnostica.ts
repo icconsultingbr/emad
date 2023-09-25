@@ -1,8 +1,8 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
 export class HipoteseDiagnostica {
-    id: Number;  
+    id: Number;
     @Input() nome: string;
-    @Input() situacao : Boolean;
+    @Input() situacao: Boolean;
     @Input() cid_10: string;
 }

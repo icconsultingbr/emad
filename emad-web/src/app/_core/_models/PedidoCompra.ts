@@ -1,5 +1,5 @@
-import { Input } from "@angular/core";
-import { ItemPedidoCompra } from "./ItemPedidoCompra";
+import { Input } from '@angular/core';
+import { ItemPedidoCompra } from './ItemPedidoCompra';
 
 export class PedidoCompra {
     id: Number;
@@ -9,7 +9,7 @@ export class PedidoCompra {
     @Input() dataEmpenho: Date;
     @Input() status: string;
     @Input() situacao: Boolean;
-    @Input() itensPedidoCompra: ItemPedidoCompra[] = [];      
-    @Input() itensPedidoCompraExcluidos: ItemPedidoCompra[] = [];      
+    @Input() itensPedidoCompra: ItemPedidoCompra[] = [];
+    @Input() itensPedidoCompraExcluidos: ItemPedidoCompra[] = [];
 }
 

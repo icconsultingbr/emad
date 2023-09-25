@@ -22,19 +22,19 @@ export class AppGridViewComponent implements AfterViewInit {
   pager: any = {};
   pagedItems: any[];
   router: Router;
-  token: string = "";
-  message: string = "";
-  mensagem: string = "";
-  classMensagem: string = "";
+  token = '';
+  message = '';
+  mensagem = '';
+  classMensagem = '';
   closeResult: string;
   service: AppGridViewService;
   pagerService: PagerService;
-  @Input() loading: boolean = false;
-  isFilterCollapse: boolean = false;
+  @Input() loading = false;
+  isFilterCollapse = false;
   user: Usuario = new Usuario();
-  warning: string = "";
-  motivoExclusao: string = '';
-  pageLimit: number = 10;
+  warning = '';
+  motivoExclusao = '';
+  pageLimit = 10;
   totalPages: Number;
   paging: any = {
     offset: 0,
@@ -45,8 +45,8 @@ export class AppGridViewComponent implements AfterViewInit {
   enableSearchButton: any[] = [];
   dropdownList: any[] = [];
 
-  sortColumn: string = '';
-  sortOrder: string = '';
+  sortColumn = '';
+  sortOrder = '';
 
 
   @Input() errors: any[] = [];
@@ -57,8 +57,8 @@ export class AppGridViewComponent implements AfterViewInit {
   @Input() object: any;
   @Input() exportXls: Boolean = false;
   @Input() showLabels: Boolean = true;
-  @Input() customUrls : any[] = [];
-  
+  @Input() customUrls: any[] = [];
+
 
 
   //ACTION BUTTONS
@@ -73,7 +73,7 @@ export class AppGridViewComponent implements AfterViewInit {
   @Input() urlForm: string;
   @Input() pagination: Boolean = false;
   @Input() autoLoad: Boolean = true;
-  @Input() removeField: string = "id";
+  @Input() removeField = 'id';
 
   @ViewChild('textoProcurado') textoProcurado: ElementRef;
   @Output() emitAlterXlsMethod = new EventEmitter();
@@ -131,9 +131,9 @@ export class AppGridViewComponent implements AfterViewInit {
 
     this.service.remove(item.id, this.method).subscribe(() => {
 
-      this.mensagem = Translation.t("Registro removido com sucesso!");
+      this.mensagem = Translation.t('Registro removido com sucesso!');
 
-      this.classMensagem = "alert-info";
+      this.classMensagem = 'alert-info';
 
       if (this.pagination) {
         this.getListPaged();
@@ -150,9 +150,9 @@ export class AppGridViewComponent implements AfterViewInit {
 
   getList() {
 
-    let params = "";
+    let params = '';
     this.errors = [];
-    this.message = "";
+    this.message = '';
 
     if (this.loading != true) {
       setTimeout(() => this.loading = true, 300);
@@ -161,54 +161,53 @@ export class AppGridViewComponent implements AfterViewInit {
 
     if (this.object != null) {
       if (Object.keys(this.object).length) {
-        for (let key of Object.keys(this.object)) {
+        for (const key of Object.keys(this.object)) {
 
-          if (this.object[key] != "" && this.object[key] != 0 && this.object[key] != null) {
-            if (typeof this.object[key] !== "undefined") {
+          if (this.object[key] != '' && this.object[key] != 0 && this.object[key] != null) {
+            if (typeof this.object[key] !== 'undefined') {
               if (typeof this.object[key] == 'object') {
 
                 if (isDate(this.object[key])) {
-                  params += key + "=" + Util.dateFormat(this.object[key], "yyyy-MM-dd") + "&";
+                  params += key + '=' + Util.dateFormat(this.object[key], 'yyyy-MM-dd') + '&';
                 } else {
-                  let p: string = "";
+                  let p = '';
 
-                  for (let k of this.object[key]) {
-                    p += k.id + ",";
+                  for (const k of this.object[key]) {
+                    p += k.id + ',';
                   }
-                  params += key + "=" + p.substring(0, p.length - 1) + "&";
+                  params += key + '=' + p.substring(0, p.length - 1) + '&';
                 }
 
 
 
               } else {
                 if (this.object[key].toString().indexOf('/') >= 0) {
-                  params += key + "=" + Util.dateFormat(this.object[key], "yyyy-MM-dd") + "&";
+                  params += key + '=' + Util.dateFormat(this.object[key], 'yyyy-MM-dd') + '&';
                 } else {
-                  params += key + "=" + this.object[key] + "&";
+                  params += key + '=' + this.object[key] + '&';
                 }
               }
             }
           }
         }
 
-        if (params != "") {
-          params = "?" + params;
+        if (params != '') {
+          params = '?' + params;
         }
       }
     }
 
-    if(this.sortColumn) {
-      params += (params == "" ? "?" : "&") +  `sortColumn=${this.sortColumn}&sortOrder=${this.sortOrder}`;
+    if (this.sortColumn) {
+      params += (params == '' ? '?' : '&') +  `sortColumn=${this.sortColumn}&sortOrder=${this.sortOrder}`;
     }
 
     this.service.list(this.method + params).subscribe(result => {
-      this.warning = "";
+      this.warning = '';
       this.allItems = result;
 
       if (Util.getPageState('route') == this.method) {
         this.setPage((Util.getPageState('page') ? parseInt(Util.getPageState('page')) : 0));
-      }
-      else {
+      } else {
         this.setPage(1);
       }
 
@@ -231,13 +230,11 @@ export class AppGridViewComponent implements AfterViewInit {
         this.loading = false;
         this.loadContent();
       }, 100);
-    }
-    else {
+    } else {
 
       if (this.errors.length) {
         this.loading = false;
-      }
-      else {
+      } else {
         setTimeout(() => {
           this.checkDomains();
         }, 1000);
@@ -247,7 +244,7 @@ export class AppGridViewComponent implements AfterViewInit {
 
   getListPaged(offset: Number = null, limit: Number = null) {
 
-    this.message = "";
+    this.message = '';
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
 
@@ -255,52 +252,52 @@ export class AppGridViewComponent implements AfterViewInit {
       setTimeout(() => this.loading = true, 300);
     }
 
-    let params = "";
+    let params = '';
     this.errors = [];
 
     if (this.object !== null) {
       if (Object.keys(this.object).length) {
-        for (let key of Object.keys(this.object)) {
-          if (this.object[key] != "" && this.object[key] != 0 && this.object[key] != null) {
-            if (typeof this.object[key] !== "undefined") {
+        for (const key of Object.keys(this.object)) {
+          if (this.object[key] != '' && this.object[key] != 0 && this.object[key] != null) {
+            if (typeof this.object[key] !== 'undefined') {
               if (typeof this.object[key] == 'object') {
                 if (isDate(this.object[key])) {
-                  params += key + "=" + Util.dateFormat(this.object[key], "yyyy-MM-dd") + "&";
+                  params += key + '=' + Util.dateFormat(this.object[key], 'yyyy-MM-dd') + '&';
                 } else {
-                  let p: string = "";
+                  let p = '';
 
-                  for (let k of this.object[key]) {
-                    p += k.id + ",";
+                  for (const k of this.object[key]) {
+                    p += k.id + ',';
                   }
-                  params += key + "=" + p.substring(0, p.length - 1) + "&";
+                  params += key + '=' + p.substring(0, p.length - 1) + '&';
                 }
               } else {
                 if (this.object[key].toString().indexOf('/') >= 0) {
-                  params += key + "=" + Util.dateFormat(this.object[key], "yyyy-MM-dd") + "&";
+                  params += key + '=' + Util.dateFormat(this.object[key], 'yyyy-MM-dd') + '&';
                 } else {
-                  params += key + "=" + this.object[key] + "&";
+                  params += key + '=' + this.object[key] + '&';
                 }
               }
             }
           }
         }
 
-        if (params != "") {
-          params = "?" + params;
+        if (params != '') {
+          params = '?' + params;
         }
       }
     }
 
     if (this.paging.offset != null && this.paging.limit != null) {
-      params += (params == "" ? "?" : "") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+      params += (params == '' ? '?' : '') + 'offset=' + this.paging.offset + '&limit=' + this.paging.limit;
     }
 
-    if(this.sortColumn) {
-      params += (params == "" ? "?" : "&") +  `sortColumn=${this.sortColumn}&sortOrder=${this.sortOrder}`;
+    if (this.sortColumn) {
+      params += (params == '' ? '?' : '&') +  `sortColumn=${this.sortColumn}&sortOrder=${this.sortOrder}`;
     }
 
     this.service.list(this.method + params).subscribe(result => {
-      this.warning = "";
+      this.warning = '';
       this.paging.total = result.total;
       this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
       this.allItems = result.items;
@@ -317,7 +314,7 @@ export class AppGridViewComponent implements AfterViewInit {
   }
 
   open(content, item) {
-    this.message = "";
+    this.message = '';
     this.modalService.open(content).result.then((result) => {
       if (result) {
         this.remover(item);
@@ -332,17 +329,17 @@ export class AppGridViewComponent implements AfterViewInit {
     if (this.urlForm != undefined) {
       this.router.navigate(['/' + this.urlForm]);
     } else {
-      let route = this.method.split("/");
+      const route = this.method.split('/');
       this.router.navigate(['/' + route[0] + '-form']);
     }
   }
 
   alter(item) {
 
-    this.message = "";
+    this.message = '';
     let compoundKey: any[] = [];
 
-    for (let field of this.fields) {
+    for (const field of this.fields) {
 
       if (field.compoundKey) {
         compoundKey = field.compoundKey;
@@ -351,23 +348,23 @@ export class AppGridViewComponent implements AfterViewInit {
 
     if (compoundKey.length) {
 
-      let uri: string = "";
+      let uri = '';
 
-      for (let ck of compoundKey) {
-        uri += "/" + item[ck.field];
+      for (const ck of compoundKey) {
+        uri += '/' + item[ck.field];
       }
 
       if (this.urlForm != undefined) {
         this.router.navigate(['/' + this.urlForm + uri]);
       } else {
-        let route = this.method.split("/");
+        const route = this.method.split('/');
         this.router.navigate(['/' + route[0] + '-form' + uri]);
       }
     } else {
       if (this.urlForm != undefined) {
         this.router.navigate(['/' + this.urlForm + '/' + item.id]);
       } else {
-        let route = this.method.split("/");
+        const route = this.method.split('/');
         this.router.navigate(['/' + route[0] + '-form/' + item.id]);
       }
 
@@ -375,11 +372,11 @@ export class AppGridViewComponent implements AfterViewInit {
   }
 
   viewer(id) {
-    this.message = "";
+    this.message = '';
     if (this.urlForm != undefined) {
       this.router.navigate(['/' + this.urlForm + '/' + id]);
     } else {
-      let route = this.method.split("/");
+      const route = this.method.split('/');
       this.router.navigate(['/' + route[0] + '-view/' + id]);
     }
   }
@@ -407,7 +404,7 @@ export class AppGridViewComponent implements AfterViewInit {
   }
 
   refresher() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.getList();
   }
@@ -422,8 +419,8 @@ export class AppGridViewComponent implements AfterViewInit {
   }
 
   loadDomain(route: string, event, object: any) {
-    this.message = "";
-    let id = event.target.value;
+    this.message = '';
+    const id = event.target.value;
     this.listDomain(route, id, object);
   }
 
@@ -434,15 +431,14 @@ export class AppGridViewComponent implements AfterViewInit {
       }
 
 
-      this.service.list(route + "/" + id).subscribe(result => {
+      this.service.list(route + '/' + id).subscribe(result => {
 
-        for (let field of this.fieldsSearch) {
+        for (const field of this.fieldsSearch) {
           if (field.field == object) {
 
             if (result[field.returnedObject]) {
               this.domains[0][object] = result[field.returnedObject];
-            }
-            else {
+            } else {
               this.domains[0][object] = result;
             }
           }
@@ -451,17 +447,16 @@ export class AppGridViewComponent implements AfterViewInit {
           setTimeout(() => this.loading = false, 300);
         }
       }, error => {
-        this.mensagem = Translation.t("ERROR_RESULT");
+        this.mensagem = Translation.t('ERROR_RESULT');
         setTimeout(() => this.loading = false, 300);
       });
-    }
-    else {
+    } else {
       this.domains[0][object] = [];
     }
   }
 
   searchFilter() {
-    this.mensagem = "";
+    this.mensagem = '';
     if (this.pagination) {
       this.getListPaged();
     } else {
@@ -475,15 +470,15 @@ export class AppGridViewComponent implements AfterViewInit {
     if (this.object != null) {
 
       if (Object.keys(this.object).length) {
-        for (let key of Object.keys(this.object)) {
+        for (const key of Object.keys(this.object)) {
 
-          if (this.object[key] != "" && this.object[key] != 0) {
+          if (this.object[key] != '' && this.object[key] != 0) {
 
-            let fields2 = this.fieldsSearch.filter(item => item.field == key);
+            const fields2 = this.fieldsSearch.filter(item => item.field == key);
 
             if (typeof fields2[0] != 'undefined' && fields2[0] !== null) {
-              if (fields2[0].filter.type == "select") {
-                if (fields2[0].filter.changeTarget){
+              if (fields2[0].filter.type == 'select') {
+                if (fields2[0].filter.changeTarget) {
                   this.domains[0][fields2[0].filter.changeTarget] = [];
                 }
                 this.object[key] = undefined;
@@ -494,21 +489,21 @@ export class AppGridViewComponent implements AfterViewInit {
           }
         }
       }
-      Util.savePageState(null, 0, null, null, "");
+      Util.savePageState(null, 0, null, null, '');
       this.allItems = [];
-      this.textoProcurado.nativeElement.value = "";
+      this.textoProcurado.nativeElement.value = '';
     }
 
   }
 
   loadQuantityPerPage(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.pageLimit = id;
     this.setPage(1);
   }
 
   loadQuantityPerPagePagination(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.paging.limit = id;
 
     this.setPagePagined(this.pager.offset, this.paging.limit);
@@ -517,8 +512,7 @@ export class AppGridViewComponent implements AfterViewInit {
   translate(term, obj) {
     if (typeof (obj) == 'object') {
       return obj[term];
-    }
-    else {
+    } else {
       return Translation.t(term);
     }
   }
@@ -529,13 +523,13 @@ export class AppGridViewComponent implements AfterViewInit {
 
   toCurrency(number, mask) {
     if (number == null) {
-      return "";
+      return '';
     }
 
     if (typeof (mask) == 'object') {
       return Util.convertToCurrency(number);
     } else {
-      return number.replace("R$ ", "").replace(".", ",");
+      return number.replace('R$ ', '').replace('.', ',');
     }
   }
 
@@ -586,14 +580,14 @@ export class AppGridViewComponent implements AfterViewInit {
   checkRequiredFields() {
     this.enableSearchButton = [];
 
-    for (let field of this.fieldsSearch) {
+    for (const field of this.fieldsSearch) {
       if (field.filter) {
         if (field.filter.required) {
 
           //console.log(field.field, this.object[field.field]);
           if (this.object[field.field] !== undefined && this.object[field.field] != null) {
             if (typeof this.object[field.field] == 'object') {
-              if (field.type == "date" || field.type == "dateTime") {
+              if (field.type == 'date' || field.type == 'dateTime') {
                 this.enableSearchButton.push(true);
               } else {
                 if (this.object[field.field].length) {
@@ -605,8 +599,7 @@ export class AppGridViewComponent implements AfterViewInit {
             } else {
               this.enableSearchButton.push(true);
             }
-          }
-          else {
+          } else {
             this.enableSearchButton.push(false);
           }
         }
@@ -630,27 +623,30 @@ export class AppGridViewComponent implements AfterViewInit {
   }
 
   filterMultiSelectMethod(field, value) {
-    if (typeof field !== "undefined" && typeof value !== "undefined" && field !== null && value !== null) {
+    if (typeof field !== 'undefined' && typeof value !== 'undefined' && field !== null && value !== null) {
       this.emitFilterMultiSelectMethod.emit({ field: field, value: value });
     }
   }
 
-  openCustomUrl(url : any, id : any, item : any) : void {
+  openCustomUrl(url: any, id: any, item: any): void {
 
-    let uri = url.url.replace("{id}", id);
+    let uri = url.url.replace('{id}', id);
 
-    if(item.ano_receita)
-      uri = uri.replace("{ano_receita}", item.ano_receita);
+    if (item.ano_receita) {
+      uri = uri.replace('{ano_receita}', item.ano_receita);
+    }
 
-    if(item.numero_receita)
-      uri = uri.replace("{numero_receita}", item.numero_receita);
+    if (item.numero_receita) {
+      uri = uri.replace('{numero_receita}', item.numero_receita);
+    }
 
-    if(item.unidade_receita)
-      uri = uri.replace("{unidade_receita}", item.unidade_receita);
+    if (item.unidade_receita) {
+      uri = uri.replace('{unidade_receita}', item.unidade_receita);
+    }
 
     this.loading = true;
 
-    this.service.file(url.log, uri).subscribe(result=>{
+    this.service.file(url.log, uri).subscribe(result => {
       this.loading = false;
       window.open(
         uri,
@@ -660,12 +656,12 @@ export class AppGridViewComponent implements AfterViewInit {
   }
 
   sort(field: string): void {
-    if(this.sortColumn === field){
+    if (this.sortColumn === field) {
       this.toggleSort();
     }
 
     this.sortColumn = field;
-  
+
     if (this.pagination) {
       this.getListPaged();
     } else {

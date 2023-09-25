@@ -12,7 +12,7 @@ import { SubGrupoMaterial } from '../../../_core/_models/SubGrupoMaterial';
 
 export class SubGrupoMaterialComponent implements OnInit {
 
-  method: string = "sub-grupo-material";
+  method = 'sub-grupo-material';
   object: SubGrupoMaterial = new SubGrupoMaterial();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class SubGrupoMaterialComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: SubGrupoMaterialService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

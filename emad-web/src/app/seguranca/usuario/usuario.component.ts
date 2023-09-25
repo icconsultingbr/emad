@@ -12,24 +12,24 @@ import { Router } from '@angular/router';
 })
 export class UsuarioComponent implements OnInit {
 
-  method: string = "usuario";
+  method = 'usuario';
   service: UsuarioService;
   fields = [];
   fieldsSearch = [];
   domains = [];
   object: Usuario = new Usuario();
-  virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
+  virtualDirectory: string = environment.virtualDirectory != '' ? environment.virtualDirectory + '/' : '';
 
-  urls : any[] = [
-    { 
+  urls: any[] = [
+    {
       icon : 'fa-key',
       label : 'Alterar senha',
-      url : this.router.url.replace('usuarios','') + this.virtualDirectory + "#/usuarios/alterar-senha/id/{id}",
+      url : this.router.url.replace('usuarios', '') + this.virtualDirectory + '#/usuarios/alterar-senha/id/{id}',
       log: 'usuario/alterar-senha',
       title: 'Alterar senha',
       self: true
     }
-  ]
+  ];
 
 
   constructor(
@@ -39,7 +39,7 @@ export class UsuarioComponent implements OnInit {
 
     this.service = service;
 
-    for (let field of service.fields) {
+    for (const field of service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }
@@ -51,7 +51,7 @@ export class UsuarioComponent implements OnInit {
 
 
     this.domains.push({
-      situacao: [{ id: "false", nome: "Inativo" }, { id: "true", nome: "Ativo" }],
+      situacao: [{ id: 'false', nome: 'Inativo' }, { id: 'true', nome: 'Ativo' }],
     });
 
   }

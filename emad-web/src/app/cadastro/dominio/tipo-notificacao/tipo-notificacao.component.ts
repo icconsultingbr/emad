@@ -12,7 +12,7 @@ import { TipoNotificacao } from '../../../_core/_models/TipoNotificacao';
 
 export class TipoNotificacaoComponent implements OnInit {
 
-  method: string = "tipo-notificacao";
+  method = 'tipo-notificacao';
   object: TipoNotificacao = new TipoNotificacao();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class TipoNotificacaoComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: TipoNotificacaoService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

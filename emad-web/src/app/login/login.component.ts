@@ -18,22 +18,22 @@ export class LoginComponent implements OnInit {
   service: LoginService;
   route: ActivatedRoute;
   router: Router;
-  carregando: boolean = false;
-  loginRealizado: boolean = false;
-  erro: string = "";
+  carregando = false;
+  loginRealizado = false;
+  erro = '';
   isErro: Boolean = false;
-  logo: string = Util.urlapi + "/logos/logo_" + window.location.hostname + ".png";
-  url_logo = "assets/imgs/logotipo-e-atende.png";
+  logo: string = Util.urlapi + '/logos/logo_' + window.location.hostname + '.png';
+  url_logo = 'assets/imgs/logotipo-e-atende.png';
   domains: any[] = [];
   estabelecimentosCompleto: any[] = [];
-  estabelecimentoLogin: "0";  
+  estabelecimentoLogin: '0';
 
-  sucesso: string = "";
-  isSucesso: Boolean = false; 
+  sucesso = '';
+  isSucesso: Boolean = false;
 
   ano: number = new Date().getFullYear();
 
-  forgotP: boolean = false;
+  forgotP = false;
 
   constructor(
     public nav: AppNavbarService,
@@ -64,27 +64,25 @@ export class LoginComponent implements OnInit {
   logar(event) {
     event.preventDefault();
     this.isErro = false;
-    this.erro = "";
+    this.erro = '';
 
     this.carregando = true;
-    
-    if(this.loginForm.value.estabelecimentoLogin && this.loginForm.value.estabelecimentoLogin > 0)
-    {
-        var estabelecimento = this.estabelecimentosCompleto.filter((estabelecimento) => estabelecimento.id == this.loginForm.value.estabelecimentoLogin);      
+
+    if (this.loginForm.value.estabelecimentoLogin && this.loginForm.value.estabelecimentoLogin > 0) {
+        const estabelecimento = this.estabelecimentosCompleto.filter((estabelecimento) => estabelecimento.id == this.loginForm.value.estabelecimentoLogin);
         localStorage.setItem('est', JSON.stringify(estabelecimento));
         this.carregando = false;
-        window.location.href = window.location.href.replace("#/login", "");
+        window.location.href = window.location.href.replace('#/login', '');
 
-        return;     
-    } 
+        return;
+    }
 
-    if(this.loginForm.value.estabelecimentoLogin == "0" && this.estabelecimentosCompleto.length > 0)
-    {
+    if (this.loginForm.value.estabelecimentoLogin == '0' && this.estabelecimentosCompleto.length > 0) {
         this.isErro = true;
-        this.erro = "Selecione o estabelecimento";
+        this.erro = 'Selecione o estabelecimento';
         this.carregando = false;
-        return;     
-    } 
+        return;
+    }
 
     this.service.login(this.loginForm.value)
       .subscribe((res: any) => {
@@ -92,17 +90,17 @@ export class LoginComponent implements OnInit {
           this.domains.push({
             estabelecimentos: res.estabelecimentos
           });
-          this.estabelecimentoLogin = "0";
+          this.estabelecimentoLogin = '0';
           this.estabelecimentosCompleto = res.estabelecimentos;
           this.loginRealizado = true;
           localStorage.setItem('currentUser', JSON.stringify(res));
-          if(localStorage.getItem('est')){
+          if (localStorage.getItem('est')) {
             localStorage.removeItem('est');
           }
           this.carregando = false;
         }
       }, error => {
-        
+
         this.loginRealizado = false;
         this.isErro = true;
 
@@ -110,11 +108,11 @@ export class LoginComponent implements OnInit {
 
           this.carregando = false;
 
-          var msg = error;
+          const msg = error;
           this.erro = msg[0].msg;
 
         } else {
-          this.erro = "Serviço indisponível";
+          this.erro = 'Serviço indisponível';
         }
 
         this.carregando = false;
@@ -123,7 +121,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.nav.hide();
-    this.elementRef.nativeElement.ownerDocument.body.style.background = "url(assets/imgs/bglogin2.jpg)";
+    this.elementRef.nativeElement.ownerDocument.body.style.background = 'url(assets/imgs/bglogin2.jpg)';
   }
 
   resolved(captchaResponse: string) {
@@ -133,33 +131,33 @@ export class LoginComponent implements OnInit {
   forgotPassword() {
     this.forgotP = !this.forgotP;
     this.isSucesso = false;
-    this.sucesso = "";
+    this.sucesso = '';
     this.isErro = false;
-    this.erro = "";
+    this.erro = '';
   }
 
   solicitarSenha(event) {
     event.preventDefault();
     this.isSucesso = false;
-    this.sucesso = "";
+    this.sucesso = '';
     this.isErro = false;
-    this.erro = "";
+    this.erro = '';
 
     this.carregando = true;
     this.service.recuperarSenha(this.forgotForm.value)
       .subscribe(res => {
 
         this.isSucesso = true;
-        this.sucesso = "Solicitação enviada com sucesso!";
+        this.sucesso = 'Solicitação enviada com sucesso!';
 
         this.isErro = false;
-        this.erro = "";
+        this.erro = '';
         this.carregando = false;
 
 
       }, error => {
         this.isErro = true;
-        var msg = JSON.parse(error);
+        const msg = JSON.parse(error);
         this.erro = msg[0].msg;
 
         this.carregando = false;

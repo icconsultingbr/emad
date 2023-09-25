@@ -12,7 +12,7 @@ import { Livro } from '../../_core/_models/Livro';
 
 export class LivroComponent implements OnInit {
 
-  method: string = "livro";
+  method = 'livro';
   object: Livro = new Livro();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class LivroComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: LivroService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }
