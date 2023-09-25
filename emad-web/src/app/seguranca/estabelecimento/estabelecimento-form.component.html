@@ -1,10 +1,12 @@
-<h4 class="mb-5 text-left">{{id!=null?'Editar '+label:'Adicionar '+label}}</h4>
+<h4 class="mb-5 text-left">
+  {{ id != null ? "Editar " + label : "Adicionar " + label }}
+</h4>
 <app-loader [loading]="loading"></app-loader>
-<p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
+<p *ngIf="message.length" class="alert alert-info sticky-top">{{ message }}</p>
 <div *ngIf="errors.length" class="alert alert-danger sticky-top">
   <div *ngFor="let error of errors" class="row">
     <div class="col-12 text-left">
-      {{error.message}}
+      {{ error.message }}
     </div>
   </div>
 </div>
@@ -19,7 +21,6 @@
 
         <div class="card mb-4">
           <div class="card-body text-left">
-
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
@@ -27,15 +28,25 @@
                     CNES<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.cnes"
-                      formControlName="cnes" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.cnes"
+                      formControlName="cnes"
+                    />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     CNPJ<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" mask="99.999.999/9999-99" placeholder="99.999.999/9999-99"
-                      class="form-control has-error" [(ngModel)]="object.cnpj" formControlName="cnpj" />
+                    <input
+                      type="text"
+                      mask="99.999.999/9999-99"
+                      placeholder="99.999.999/9999-99"
+                      class="form-control has-error"
+                      [(ngModel)]="object.cnpj"
+                      formControlName="cnpj"
+                    />
                   </div>
                 </div>
               </div>
@@ -45,18 +56,30 @@
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                    Razão Social<span class="text-danger font-weight-bold"> *</span>
+                    Razão Social<span class="text-danger font-weight-bold">
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.razaoSocial"
-                      formControlName="razaoSocial" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.razaoSocial"
+                      formControlName="razaoSocial"
+                    />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
-                    Nome Fantasia<span class="text-danger font-weight-bold"> *</span>
+                    Nome Fantasia<span class="text-danger font-weight-bold">
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.nomeFantasia"
-                      formControlName="nomeFantasia" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.nomeFantasia"
+                      formControlName="nomeFantasia"
+                    />
                   </div>
                 </div>
               </div>
@@ -69,16 +92,27 @@
                     Endereço<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" id="logradouro" name="logradouro" clearIfNotMatch="true"
-                      formControlName="logradouro" [(ngModel)]="object.logradouro" class="form-control has-error"
-                      autocomplete="off">
+                    <input
+                      type="text"
+                      id="logradouro"
+                      name="logradouro"
+                      clearIfNotMatch="true"
+                      formControlName="logradouro"
+                      [(ngModel)]="object.logradouro"
+                      class="form-control has-error"
+                      autocomplete="off"
+                    />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Número<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.numero"
-                      formControlName="numero" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.numero"
+                      formControlName="numero"
+                    />
                   </div>
                 </div>
               </div>
@@ -91,15 +125,25 @@
                     Latitude
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" readonly class="form-control has-error" [(ngModel)]="object.latitude"
-                      formControlName="latitude" />
+                    <input
+                      type="text"
+                      readonly
+                      class="form-control has-error"
+                      [(ngModel)]="object.latitude"
+                      formControlName="latitude"
+                    />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Longitude
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" readonly class="form-control has-error" [(ngModel)]="object.longitude"
-                      formControlName="longitude" />
+                    <input
+                      type="text"
+                      readonly
+                      class="form-control has-error"
+                      [(ngModel)]="object.longitude"
+                      formControlName="longitude"
+                    />
                   </div>
                 </div>
               </div>
@@ -112,15 +156,25 @@
                     Bairro<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.bairro"
-                      formControlName="bairro" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.bairro"
+                      formControlName="bairro"
+                    />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     CEP<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" mask="99999-999" placeholder="00000-000" class="form-control has-error"
-                      [(ngModel)]="object.cep" formControlName="cep" />
+                    <input
+                      type="text"
+                      mask="99999-999"
+                      placeholder="00000-000"
+                      class="form-control has-error"
+                      [(ngModel)]="object.cep"
+                      formControlName="cep"
+                    />
                   </div>
                 </div>
               </div>
@@ -133,20 +187,41 @@
                     Estado<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idUf"
-                      formControlName="idUf" (change)="carregaMunicipios()">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.idUf"
+                      formControlName="idUf"
+                      (change)="carregaMunicipios()"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idUf" [value]="item.id">{{item.nome}}</option>
+                      <option
+                        *ngFor="let item of domains[0]?.idUf"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
                     </select>
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
-                    Município<span class="text-danger font-weight-bold"> *</span>
+                    Município<span class="text-danger font-weight-bold">
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idMunicipio"
-                      formControlName="idMunicipio">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.idMunicipio"
+                      formControlName="idMunicipio"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idMunicipio" [value]="item.id">{{item.nome}}</option>
+                      <option
+                        *ngFor="let item of domains[0]?.idMunicipio"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -160,15 +235,23 @@
                     Fone 1
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.telefone1"
-                      formControlName="telefone1" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.telefone1"
+                      formControlName="telefone1"
+                    />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Fone 2
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.telefone2"
-                      formControlName="telefone2" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.telefone2"
+                      formControlName="telefone2"
+                    />
                   </div>
                 </div>
               </div>
@@ -181,18 +264,36 @@
                     CNPJ mantedora
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" mask="99.999.999/9999-99" placeholder="99.999.999/9999-99"
-                      class="form-control has-error" [(ngModel)]="object.cnpjMantedora"
-                      formControlName="cnpjMantedora" />
+                    <input
+                      type="text"
+                      mask="99.999.999/9999-99"
+                      placeholder="99.999.999/9999-99"
+                      class="form-control has-error"
+                      [(ngModel)]="object.cnpjMantedora"
+                      formControlName="cnpjMantedora"
+                    />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
-                    Grau de dependência<span class="text-danger font-weight-bold"> *</span>
+                    Grau de dependência<span
+                      class="text-danger font-weight-bold"
+                    >
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.grauDependencia"
-                      formControlName="grauDependencia">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.grauDependencia"
+                      formControlName="grauDependencia"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.grauDependencia" [value]="item.id">{{item.nome}}</option>
+                      <option
+                        *ngFor="let item of domains[0]?.grauDependencia"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -203,13 +304,25 @@
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                    Esfera administradora<span class="text-danger font-weight-bold"> *</span>
+                    Esfera administradora<span
+                      class="text-danger font-weight-bold"
+                    >
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100"
-                      [(ngModel)]="object.esferaAdministradora" formControlName="esferaAdministradora">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.esferaAdministradora"
+                      formControlName="esferaAdministradora"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.esferaAdministradora" [value]="item.id">{{item.nome}}
+                      <option
+                        *ngFor="let item of domains[0]?.esferaAdministradora"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
                       </option>
                     </select>
                   </div>
@@ -217,10 +330,18 @@
                     Tipo de unidade
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idTipoUnidade"
-                      formControlName="idTipoUnidade">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.idTipoUnidade"
+                      formControlName="idTipoUnidade"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idTipoUnidade" [value]="item.id">{{item.nome}}
+                      <option
+                        *ngFor="let item of domains[0]?.idTipoUnidade"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
                       </option>
                     </select>
                   </div>
@@ -232,19 +353,34 @@
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                    Und. E-care correspondente<span class="text-danger font-weight-bold"> *</span>
+                    Und. E-care correspondente<span
+                      class="text-danger font-weight-bold"
+                    >
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.idUnidadeCorrespondenteDim"
-                      formControlName="idUnidadeCorrespondenteDim" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.idUnidadeCorrespondenteDim"
+                      formControlName="idUnidadeCorrespondenteDim"
+                    />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
-                    Und. E-care pesquisa de medicamentos<span class="text-danger font-weight-bold"> *</span>
+                    Und. E-care pesquisa de medicamentos<span
+                      class="text-danger font-weight-bold"
+                    >
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error"
+                    <input
+                      type="text"
+                      class="form-control has-error"
                       [(ngModel)]="object.idUnidadePesquisaMedicamentoDim"
-                      formControlName="idUnidadePesquisaMedicamentoDim" />
+                      formControlName="idUnidadePesquisaMedicamentoDim"
+                    />
                   </div>
                 </div>
               </div>
@@ -254,23 +390,39 @@
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                    Und. E-care registro de receita<span class="text-danger font-weight-bold"> *</span>
+                    Und. E-care registro de receita<span
+                      class="text-danger font-weight-bold"
+                    >
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.idUnidadeRegistroReceitaDim"
-                      formControlName="idUnidadeRegistroReceitaDim" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.idUnidadeRegistroReceitaDim"
+                      formControlName="idUnidadeRegistroReceitaDim"
+                    />
                   </div>
 
                   <label class="col-xl-2 col-form-label text-left">
                     Estabelecimento superior
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100"
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
                       [(ngModel)]="object.idEstabelecimentoNivelSuperior"
-                      formControlName="idEstabelecimentoNivelSuperior">
+                      formControlName="idEstabelecimentoNivelSuperior"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idEstabelecimentoNivelSuperior" [value]="item.id">
-                        {{item.nome}}
+                      <option
+                        *ngFor="
+                          let item of domains[0]?.idEstabelecimentoNivelSuperior
+                        "
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
                       </option>
                     </select>
                   </div>
@@ -285,20 +437,44 @@
                     Nível superior
                   </label>
                   <div class="col-xl-4">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="nivelSuperior" [(ngModel)]="object.nivelSuperior"
-                        formControlName="nivelSuperior" class="custom-control-input">
-                      <label class="custom-control-label" for="nivelSuperior"></label>
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="nivelSuperior"
+                        [(ngModel)]="object.nivelSuperior"
+                        formControlName="nivelSuperior"
+                        class="custom-control-input"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="nivelSuperior"
+                      ></label>
                     </div>
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
-                    Terceiros<span class="text-danger font-weight-bold"> *</span>
+                    Terceiros<span class="text-danger font-weight-bold">
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="terceiros" [(ngModel)]="object.terceiros" formControlName="terceiros"
-                        class="custom-control-input">
-                      <label class="custom-control-label" for="terceiros"></label>
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="terceiros"
+                        [(ngModel)]="object.terceiros"
+                        formControlName="terceiros"
+                        class="custom-control-input"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="terceiros"
+                      ></label>
                     </div>
                   </div>
                 </div>
@@ -312,17 +488,26 @@
                     Situação<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao"
-                        class="custom-control-input">
-                      <label class="custom-control-label" for="situacao"></label>
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="situacao"
+                        [(ngModel)]="object.situacao"
+                        formControlName="situacao"
+                        class="custom-control-input"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="situacao"
+                      ></label>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
-
           </div>
         </div>
       </tab>
@@ -333,33 +518,50 @@
         </ng-template>
         <div class="card mb-4">
           <div class="card-body text-left">
-
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                    CNS Profissional eSus<span class="text-danger font-weight-bold"> *</span>
+                    CNS Profissional eSus<span
+                      class="text-danger font-weight-bold"
+                    >
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.cnsProfissionaleSus"
-                      formControlName="cnsProfissionaleSus" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.cnsProfissionaleSus"
+                      formControlName="cnsProfissionaleSus"
+                    />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
-                    CBO Profissional eSus<span class="text-danger font-weight-bold"> *</span>
+                    CBO Profissional eSus<span
+                      class="text-danger font-weight-bold"
+                    >
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.cboProfissionalEsus"
-                      formControlName="cboProfissionalEsus">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.cboProfissionalEsus"
+                      formControlName="cboProfissionalEsus"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.cboProfissionalEsus" [value]="item.id">
-                        {{item.nome}}
+                      <option
+                        *ngFor="let item of domains[0]?.cboProfissionalEsus"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
                       </option>
                     </select>
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </tab>
@@ -370,26 +572,40 @@
         </ng-template>
         <div class="card mb-4">
           <div class="card-body text-left">
-
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                    Fichas disponíveis novo Atendimento<span class="text-danger font-weight-bold"> *</span>
+                    Fichas disponíveis novo Atendimento<span
+                      class="text-danger font-weight-bold"
+                    >
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <ng-multiselect-dropdown name="tipoFichas" style="border-color: #adadad;"
-                      formControlName="tipoFichas" [placeholder]="'Selecionar'" [data]="dropdownList"
-                      [(ngModel)]="selectedItems" [settings]="dropdownSettings" (onSelect)="onItemSelect($event)"
-                      (onSelectAll)="onSelectAll($event)">
+                    <ng-multiselect-dropdown
+                      name="tipoFichas"
+                      style="border-color: #adadad"
+                      formControlName="tipoFichas"
+                      [placeholder]="'Selecionar'"
+                      [data]="dropdownList"
+                      [(ngModel)]="selectedItems"
+                      [settings]="dropdownSettings"
+                      (onSelect)="onItemSelect($event)"
+                      (onSelectAll)="onSelectAll($event)"
+                    >
                     </ng-multiselect-dropdown>
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Celular default cadastro novo Paciente
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.celularDefaultNovoPaciente"
-                      formControlName="celularDefaultNovoPaciente" />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.celularDefaultNovoPaciente"
+                      formControlName="celularDefaultNovoPaciente"
+                    />
                   </div>
                 </div>
               </div>
@@ -402,21 +618,42 @@
                     Obriga CPF novo Paciente
                   </label>
                   <div class="col-xl-4">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="obrigaCpfNovoPaciente" [(ngModel)]="object.obrigaCpfNovoPaciente"
-                        formControlName="obrigaCpfNovoPaciente" class="custom-control-input">
-                      <label class="custom-control-label" for="obrigaCpfNovoPaciente"></label>
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="obrigaCpfNovoPaciente"
+                        [(ngModel)]="object.obrigaCpfNovoPaciente"
+                        formControlName="obrigaCpfNovoPaciente"
+                        class="custom-control-input"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="obrigaCpfNovoPaciente"
+                      ></label>
                     </div>
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Obriga Cartão SUS novo Paciente
                   </label>
                   <div class="col-xl-4">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="obrigaCartaoSusNovoPaciente"
-                        [(ngModel)]="object.obrigaCartaoSusNovoPaciente" formControlName="obrigaCartaoSusNovoPaciente"
-                        class="custom-control-input">
-                      <label class="custom-control-label" for="obrigaCartaoSusNovoPaciente"></label>
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="obrigaCartaoSusNovoPaciente"
+                        [(ngModel)]="object.obrigaCartaoSusNovoPaciente"
+                        formControlName="obrigaCartaoSusNovoPaciente"
+                        class="custom-control-input"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="obrigaCartaoSusNovoPaciente"
+                      ></label>
                     </div>
                   </div>
                 </div>
@@ -430,34 +667,79 @@
                     Obriga validação de paciente
                   </label>
                   <div class="col-xl-4">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="obrigaValidarPacienteAtendimento"
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="obrigaValidarPacienteAtendimento"
                         [(ngModel)]="object.obrigaValidarPacienteAtendimento"
-                        formControlName="obrigaValidarPacienteAtendimento" class="custom-control-input">
-                      <label class="custom-control-label" for="obrigaValidarPacienteAtendimento"></label>
+                        formControlName="obrigaValidarPacienteAtendimento"
+                        class="custom-control-input"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="obrigaValidarPacienteAtendimento"
+                      ></label>
                     </div>
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Envia medicamentos para o eSUS
                   </label>
                   <div class="col-xl-4">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="enviaMedicamentoSus"
-                        [(ngModel)]="object.enviaMedicamentoSus" formControlName="enviaMedicamentoSus"
-                        class="custom-control-input">
-                      <label class="custom-control-label" for="enviaMedicamentoSus"></label>
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="enviaMedicamentoSus"
+                        [(ngModel)]="object.enviaMedicamentoSus"
+                        formControlName="enviaMedicamentoSus"
+                        class="custom-control-input"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="enviaMedicamentoSus"
+                      ></label>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-2 col-form-label text-left">
+                    Obriga ID SAP
+                  </label>
+                  <div class="col-xl-4">
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="obrigaIdSAP"
+                        [(ngModel)]="object.obrigaIdSAP"
+                        formControlName="obrigaIdSAP"
+                        class="custom-control-input"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="obrigaIdSAP"
+                      ></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </tab>
-
     </tabset>
-
   </div>
 
   <div class="form-group text-right">
@@ -465,7 +747,7 @@
       <i class="fa fa-arrow-left"></i> Retornar
     </button>
     <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
-      <i class="fa fa-save"></i> {{ !object.id ? 'Salvar' : 'Atualizar'}}
+      <i class="fa fa-save"></i> {{ !object.id ? "Salvar" : "Atualizar" }}
     </button>
   </div>
 </form>

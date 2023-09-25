@@ -35,6 +35,17 @@ module.exports = function (app) {
         });
     });
 
+    app.get('/dominios/escolaridade', function (req, res) {
+
+        var connection = app.dao.ConnectionFactory();
+        var dao = new app.dao.GenericDAO(connection, "tb_escolaridade");
+
+        listaDominios(dao, "escolaridade", res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
     app.get('/dominios/nacionalidade', function (req, res) {
 
         var connection = app.dao.ConnectionFactory();
