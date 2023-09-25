@@ -1,26 +1,26 @@
-import { Component, OnInit } from "@angular/core";
-import { Estabelecimento } from "../../_core/_models/Estabelecimento";
-import { EstabelecimentoService } from "./estabelecimento.service";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Util } from "../../_core/_util/Util";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { TipoFichaService } from "../../cadastro/dominio/tipo-ficha/tipo-ficha.service";
-import { each } from "jquery";
+import { Component, OnInit } from '@angular/core';
+import { Estabelecimento } from '../../_core/_models/Estabelecimento';
+import { EstabelecimentoService } from './estabelecimento.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Util } from '../../_core/_util/Util';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TipoFichaService } from '../../cadastro/dominio/tipo-ficha/tipo-ficha.service';
+import { each } from 'jquery';
 
 @Component({
-  selector: "app-estabelecimento-form",
-  templateUrl: "./estabelecimento-form.component.html",
-  styleUrls: ["./estabelecimento-form.component.css"],
+  selector: 'app-estabelecimento-form',
+  templateUrl: './estabelecimento-form.component.html',
+  styleUrls: ['./estabelecimento-form.component.css'],
 })
 export class EstabelecimentoFormComponent implements OnInit {
   object: Estabelecimento = new Estabelecimento();
-  method: string = "estabelecimento";
+  method: string = 'estabelecimento';
   fields = [];
-  label: string = "Estabelecimento";
+  label = 'Estabelecimento';
   id: Number = null;
   domains: any[] = [];
   loading: Boolean = false;
-  message: string = "";
+  message = '';
   errors: any[] = [];
   form: FormGroup;
 
@@ -35,23 +35,23 @@ export class EstabelecimentoFormComponent implements OnInit {
     private service: EstabelecimentoService,
     private serviceFicha: TipoFichaService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) {
     this.fields = service.fields;
   }
 
   ngOnInit() {
     this.route.params.subscribe((params) => {
-      this.id = params["id"];
+      this.id = params['id'];
     });
     this.createGroup();
     this.loadDomains();
     this.dropdownSettings = {
       singleSelection: false,
-      idField: "id",
-      textField: "nome",
-      selectAllText: "Marcar todos",
-      unSelectAllText: "Desmarcar todos",
+      idField: 'id',
+      textField: 'nome',
+      selectAllText: 'Marcar todos',
+      unSelectAllText: 'Desmarcar todos',
       itemsShowLimit: 5,
       allowSearchFilter: false,
     };
@@ -59,16 +59,16 @@ export class EstabelecimentoFormComponent implements OnInit {
   }
 
   loadDomains() {
-    this.service.listDomains("uf").subscribe((ufs) => {
-      this.service.listDomains("tipo-unidade").subscribe((tipos) => {
+    this.service.listDomains('uf').subscribe((ufs) => {
+      this.service.listDomains('tipo-unidade').subscribe((tipos) => {
         this.service
-          .list("estabelecimento/nivel-superior/" + this.id)
+          .list('estabelecimento/nivel-superior/' + this.id)
           .subscribe((estabelecimentos) => {
             this.service
-              .listDomains("especialidade")
+              .listDomains('especialidade')
               .subscribe((cboProfEsus) => {
                 this.service
-                  .listDomains("tipo-ficha")
+                  .listDomains('tipo-ficha')
                   .subscribe((tipoFichas) => {
                     this.domains.push({
                       idUf: ufs,
@@ -76,13 +76,13 @@ export class EstabelecimentoFormComponent implements OnInit {
                       cboProfissionalEsus: cboProfEsus,
                       idTipoUnidade: tipos,
                       grauDependencia: [
-                        { id: "I", nome: "Individual" },
-                        { id: "M", nome: "Mantida" },
+                        { id: 'I', nome: 'Individual' },
+                        { id: 'M', nome: 'Mantida' },
                       ],
                       esferaAdministradora: [
-                        { id: "E", nome: "Estadual" },
-                        { id: "F", nome: "Federal" },
-                        { id: "M", nome: "Municipal" },
+                        { id: 'E', nome: 'Estadual' },
+                        { id: 'F', nome: 'Federal' },
+                        { id: 'M', nome: 'Municipal' },
                       ],
                       idEstabelecimentoNivelSuperior: estabelecimentos,
                       tipoFichas: tipoFichas,
@@ -100,25 +100,25 @@ export class EstabelecimentoFormComponent implements OnInit {
   }
 
   preencher() {
-    this.object.cnes = "1231312313123";
-    this.object.cnpj = "132123123123123";
-    this.object.razaoSocial = "teste1";
-    this.object.nomeFantasia = "teste2";
-    this.object.cep = "04890100";
-    this.object.logradouro = "teste3";
-    this.object.numero = "12345";
-    this.object.complemento = "123";
-    this.object.bairro = "teste4";
+    this.object.cnes = '1231312313123';
+    this.object.cnpj = '132123123123123';
+    this.object.razaoSocial = 'teste1';
+    this.object.nomeFantasia = 'teste2';
+    this.object.cep = '04890100';
+    this.object.logradouro = 'teste3';
+    this.object.numero = '12345';
+    this.object.complemento = '123';
+    this.object.bairro = 'teste4';
     this.object.idMunicipio = 1;
     this.object.idUf = 1;
-    this.object.telefone1 = "1159213799";
-    this.object.telefone2 = "11983614417";
-    this.object.email = "teste@teste.com";
-    this.object.cnpjMantedora = "";
-    this.object.grauDependencia = "M";
+    this.object.telefone1 = '1159213799';
+    this.object.telefone2 = '11983614417';
+    this.object.email = 'teste@teste.com';
+    this.object.cnpjMantedora = '';
+    this.object.grauDependencia = 'M';
     this.object.terceiros = false;
     this.object.idTipoUnidade = 1;
-    this.object.esferaAdministradora = "E";
+    this.object.esferaAdministradora = 'E';
     this.object.situacao = true;
     this.object.latitude = null;
     this.object.longitude = null;
@@ -147,7 +147,7 @@ export class EstabelecimentoFormComponent implements OnInit {
 
   sendForm(event) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
     event.preventDefault();
     this.service.save(this.object, this.method).subscribe(
@@ -157,10 +157,10 @@ export class EstabelecimentoFormComponent implements OnInit {
 
         if (this.form.value.id) {
           this.idEstabelecimento = this.form.value.id;
-          this.message = "Alteração efetuada com sucesso!";
+          this.message = 'Alteração efetuada com sucesso!';
         } else {
           this.idEstabelecimento = res.id;
-          this.message = "Cadastro efetuado com sucesso!";
+          this.message = 'Cadastro efetuado com sucesso!';
         }
 
         this.createListaFicha(this.idEstabelecimento);
@@ -171,7 +171,7 @@ export class EstabelecimentoFormComponent implements OnInit {
         this.loading = false;
         setTimeout(() => (this.loading = false), 300);
         this.errors = Util.customHTTPResponse(erro);
-      }
+      },
     );
   }
 
@@ -198,55 +198,55 @@ export class EstabelecimentoFormComponent implements OnInit {
 
   createGroup() {
     this.form = this.fb.group({
-      id: [""],
-      nome: ["", ""],
-      cnes: ["", Validators.required],
-      cnpj: ["", Validators.required],
-      razaoSocial: ["", Validators.required],
-      nomeFantasia: ["", Validators.required],
-      cep: ["", Validators.required],
-      logradouro: ["", Validators.required],
-      numero: ["", Validators.required],
-      complemento: ["", ""],
-      bairro: ["", Validators.required],
-      idMunicipio: ["", Validators.required],
-      idUf: ["", Validators.required],
-      telefone1: ["", ""],
-      telefone2: ["", ""],
-      email: ["", ""],
-      cnpjMantedora: ["", ""],
-      grauDependencia: ["", Validators.required],
-      terceiros: ["", Validators.required],
-      idTipoUnidade: ["", Validators.required],
-      esferaAdministradora: ["", Validators.required],
-      situacao: ["", Validators.required],
-      latitude: ["", ""],
-      longitude: ["", ""],
-      distancia: ["", ""],
-      idUnidadeCorrespondenteDim: ["", Validators.required],
-      idUnidadePesquisaMedicamentoDim: ["", Validators.required],
-      idUnidadeRegistroReceitaDim: ["", ""],
-      idEstabelecimentoNivelSuperior: ["", ""],
-      nivelSuperior: ["", ""],
-      obrigaCpfNovoPaciente: ["", ""],
-      obrigaCartaoSusNovoPaciente: ["", ""],
-      obrigaValidarPacienteAtendimento: ["", ""],
-      obrigaIdSAP: ["", ""],
-      enviaMedicamentoSus: ["", ""],
-      celularDefaultNovoPaciente: ["", ""],
-      cnsProfissionaleSus: ["", Validators.required],
-      cboProfissionalEsus: ["", Validators.required],
-      tipoFichas: ["", Validators.required],
+      id: [''],
+      nome: ['', ''],
+      cnes: ['', Validators.required],
+      cnpj: ['', Validators.required],
+      razaoSocial: ['', Validators.required],
+      nomeFantasia: ['', Validators.required],
+      cep: ['', Validators.required],
+      logradouro: ['', Validators.required],
+      numero: ['', Validators.required],
+      complemento: ['', ''],
+      bairro: ['', Validators.required],
+      idMunicipio: ['', Validators.required],
+      idUf: ['', Validators.required],
+      telefone1: ['', ''],
+      telefone2: ['', ''],
+      email: ['', ''],
+      cnpjMantedora: ['', ''],
+      grauDependencia: ['', Validators.required],
+      terceiros: ['', Validators.required],
+      idTipoUnidade: ['', Validators.required],
+      esferaAdministradora: ['', Validators.required],
+      situacao: ['', Validators.required],
+      latitude: ['', ''],
+      longitude: ['', ''],
+      distancia: ['', ''],
+      idUnidadeCorrespondenteDim: ['', Validators.required],
+      idUnidadePesquisaMedicamentoDim: ['', Validators.required],
+      idUnidadeRegistroReceitaDim: ['', ''],
+      idEstabelecimentoNivelSuperior: ['', ''],
+      nivelSuperior: ['', ''],
+      obrigaCpfNovoPaciente: ['', ''],
+      obrigaCartaoSusNovoPaciente: ['', ''],
+      obrigaValidarPacienteAtendimento: ['', ''],
+      obrigaIdSAP: ['', ''],
+      enviaMedicamentoSus: ['', ''],
+      celularDefaultNovoPaciente: ['', ''],
+      cnsProfissionaleSus: ['', Validators.required],
+      cboProfissionalEsus: ['', Validators.required],
+      tipoFichas: ['', Validators.required],
     });
   }
 
   back() {
-    const route = "estabelecimentos";
+    const route = 'estabelecimentos';
     this.router.navigate([route]);
   }
 
   carregaMunicipios() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
@@ -255,7 +255,7 @@ export class EstabelecimentoFormComponent implements OnInit {
         this.domains[0].idMunicipio = municipios;
         let listaMunicipios = municipios.filter(
           (municipio) =>
-            municipio.nome.toUpperCase() == municipio.toString().toUpperCase()
+            municipio.nome.toUpperCase() == municipio.toString().toUpperCase(),
         );
         if (listaMunicipios.length > 0) {
           this.object.idMunicipio = listaMunicipios[0].id;
@@ -264,14 +264,14 @@ export class EstabelecimentoFormComponent implements OnInit {
       (error) => {
         this.loading = false;
         this.errors = Util.customHTTPResponse(error);
-      }
+      },
     );
   }
 
   encontraEstabelecimento() {
     this.object.id = this.id;
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
 
     this.service.findById(this.id, this.method).subscribe(
@@ -284,14 +284,14 @@ export class EstabelecimentoFormComponent implements OnInit {
         this.object = new Estabelecimento();
         this.loading = false;
         this.errors.push({
-          message: "Estabelecimento não encontrado",
+          message: 'Estabelecimento não encontrado',
         });
-      }
+      },
     );
   }
 
   listTipoFicha() {
-    this.service.listDomains("tipo-ficha").subscribe((tipoFichas) => {
+    this.service.listDomains('tipo-ficha').subscribe((tipoFichas) => {
       this.dropdownList = tipoFichas;
     });
   }

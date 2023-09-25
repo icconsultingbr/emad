@@ -1,18 +1,18 @@
-import { Routes } from "@angular/router";
-import { NotificacaoFormComponent } from "./notificacao-form.component";
-import { NotificacaoComponent } from "./notificacao.component";
+import { Routes } from '@angular/router';
+import { NotificacaoFormComponent } from './notificacao-form.component';
+import { NotificacaoComponent } from './notificacao.component';
 
 export const notificacaoRoutes: Routes = [
     {
         path: '',
-        component: NotificacaoComponent,        
+        component: NotificacaoComponent,
     },
     {
         path: 'cadastro',
-        component: NotificacaoFormComponent,        
+        component: NotificacaoFormComponent,
     },
     {
         path: 'cadastro/:id',
-        component: NotificacaoFormComponent,        
+        component: NotificacaoFormComponent,
     }
 ];

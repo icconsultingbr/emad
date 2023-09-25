@@ -1,18 +1,18 @@
-import { Routes } from "@angular/router";
-import { ListaControleEspecialFormComponent } from "./lista-controle-especial-form.component";
-import { ListaControleEspecialComponent } from "./lista-controle-especial.component";
+import { Routes } from '@angular/router';
+import { ListaControleEspecialFormComponent } from './lista-controle-especial-form.component';
+import { ListaControleEspecialComponent } from './lista-controle-especial.component';
 
 export const listaControleEspecialRoutes: Routes = [
     {
         path: '',
-        component: ListaControleEspecialComponent,        
+        component: ListaControleEspecialComponent,
     },
     {
         path: 'cadastro',
-        component: ListaControleEspecialFormComponent,        
+        component: ListaControleEspecialFormComponent,
     },
     {
         path: 'cadastro/:id',
-        component: ListaControleEspecialFormComponent,        
+        component: ListaControleEspecialFormComponent,
     }
 ];

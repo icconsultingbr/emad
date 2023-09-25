@@ -3,7 +3,7 @@ import { ProfissionalService } from './profissional.service';
 import { Profissional } from '../../_core/_models/Profissional';
 import { AppNavbarService } from '../../_core/_components/app-navbar/app-navbar.service';
 import { Router } from '@angular/router';
-import { environment } from "../../../environments/environment";
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-profissional',
@@ -12,31 +12,31 @@ import { environment } from "../../../environments/environment";
   providers: [ProfissionalService]
 })
 
-export class ProfissionalComponent implements OnInit {  
-  method: string = "profissional";
+export class ProfissionalComponent implements OnInit {
+  method = 'profissional';
   domains: any[] = [];
   fields = [];
   fieldsSearch = [];
   object: Profissional = new Profissional();
-  virtualDirectory: string = environment.virtualDirectory != "" ? environment.virtualDirectory + "/" : "";
+  virtualDirectory: string = environment.virtualDirectory != '' ? environment.virtualDirectory + '/' : '';
 
-  urls : any[] = [
-    { 
+  urls: any[] = [
+    {
       icon : 'fa-calendar',
       label : 'Escala',
-      url : this.router.url.replace('profissional','') + this.virtualDirectory + "#/escalas-profissionais/id/{id}",
+      url : this.router.url.replace('profissional', '') + this.virtualDirectory + '#/escalas-profissionais/id/{id}',
       log: 'escala-profissional/view-escala',
       title: 'Visualizar escala',
       self: true
     }
-  ]
+  ];
 
   constructor(
     public nav: AppNavbarService,
     private service: ProfissionalService,
     private router: Router) {
 
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }
@@ -54,8 +54,8 @@ export class ProfissionalComponent implements OnInit {
   loadDomains() {
     this.service.listDomains('especialidade').subscribe(especialidades => {
         this.domains.push({
-          idEspecialidade : especialidades          
-        })
+          idEspecialidade : especialidades
+        });
     });
   }
 }

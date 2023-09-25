@@ -19,8 +19,8 @@ import { ExameService } from './exame.service';
     providers: [
         ReciboReceitaImpressaoService,
         ReceitaService,
-        EstoqueUnidadeImpressaoService,  
-        EstoqueMedicamentoImpressaoService ,  
+        EstoqueUnidadeImpressaoService,
+        EstoqueMedicamentoImpressaoService ,
         EstoqueConsumoImpressaoService,
         EstoqueImpressaoService,
         RelatoriosEstoqueService,

@@ -18,62 +18,62 @@ const myId = uuid.v4();
     providers: [MedicamentoMovimentoService]
 })
 
-export class MedicamentoMovimentoComponent implements OnInit {  
+export class MedicamentoMovimentoComponent implements OnInit {
   object: RelatorioMedicamento = new RelatorioMedicamento();
-  itemReceita: ItemReceita = new ItemReceita();  
-  itemEstoque: Estoque = new Estoque();    
+  itemReceita: ItemReceita = new ItemReceita();
+  itemEstoque: Estoque = new Estoque();
   fields: any[] = [];
-  label: string = "";
+  label = '';
   id: number = null;
-  domains: any[] = [];  
+  domains: any[] = [];
   loading: Boolean = false;
   form: FormGroup;
   groupForm: any = {};
   type: string;
-  message: string = '';
-  warning: string = '';     
-  errors: any[] = [];  
+  message = '';
+  warning = '';
+  errors: any[] = [];
   objectMaterial: Material = new Material();
-  
+
   constructor(
     private fb: FormBuilder,
-    private service: MedicamentoMovimentoService, 
-    private ref: ChangeDetectorRef, 
+    private service: MedicamentoMovimentoService,
+    private ref: ChangeDetectorRef,
     private medicamentoMovimentoService: MedicamentoMovimentoImpressaoService) {
       this.fields = service.fields;
     }
 
   ngOnInit() {
     this.createGroup();
-    this.loadDomains();  
-    this.object.ordenadoPor = "mvg.dataMovimento";
-    this.object.idEstabelecimento = JSON.parse(localStorage.getItem("est"))[0].id;
-    this.object.nomeEstabelecimento = JSON.parse(localStorage.getItem("est"))[0].nomeFantasia;
+    this.loadDomains();
+    this.object.ordenadoPor = 'mvg.dataMovimento';
+    this.object.idEstabelecimento = JSON.parse(localStorage.getItem('est'))[0].id;
+    this.object.nomeEstabelecimento = JSON.parse(localStorage.getItem('est'))[0].nomeFantasia;
   }
 
-  loadDomains() {       
+  loadDomains() {
     this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
-        this.domains.push({            
+        this.domains.push({
           idEstabelecimento: estabelecimentos,
           idOperacao: [
-            { id: "1", nome: "Entrada" },
-            { id: "2", nome: "Saída" },
-            { id: "3", nome: "Perda" }
+            { id: '1', nome: 'Entrada' },
+            { id: '2', nome: 'Saída' },
+            { id: '3', nome: 'Perda' }
           ],
           idTipoMovimento: [],
           ordenadoPor: [
-            { id: "mvg.dataMovimento", nome: "Data movimento" },
-            { id: "mvg.id", nome: "Documento" },
-            { id: "fab.nome", nome: "Fabricante" },
-            { id: "img.lote", nome: "Lote" },          
-            { id: "mat.descricao", nome: "Medicamento" },
-            { id: " tmv.nome", nome: "Tipo movimento" },
+            { id: 'mvg.dataMovimento', nome: 'Data movimento' },
+            { id: 'mvg.id', nome: 'Documento' },
+            { id: 'fab.nome', nome: 'Fabricante' },
+            { id: 'img.lote', nome: 'Lote' },
+            { id: 'mat.descricao', nome: 'Medicamento' },
+            { id: ' tmv.nome', nome: 'Tipo movimento' },
           ],
-        });                           
-      });                             
-  }      
-  
-  visualizarPdf() {        
+        });
+      });
+  }
+
+  visualizarPdf() {
     this.errors = [];
 
     this.object.criteriosPesquisa = {};
@@ -85,19 +85,19 @@ export class MedicamentoMovimentoComponent implements OnInit {
     this.object.criteriosPesquisa.nomeOperacao = this.object.nomeOperacao;
     this.object.criteriosPesquisa.nomeTipoMovimento = this.object.nomeTipoMovimento;
 
-    var dataInicialFiltro =  this.object.dataInicial.getFullYear() + "-" + this.twoDigits(1 + this.object.dataInicial.getMonth()) + "-" + this.twoDigits(this.object.dataInicial.getDate());
-    var dataFinalFiltro =  this.object.dataFinal.getFullYear() + "-" + this.twoDigits(1 + this.object.dataFinal.getMonth()) + "-" + this.twoDigits(this.object.dataFinal.getDate());
+    let dataInicialFiltro =  this.object.dataInicial.getFullYear() + '-' + this.twoDigits(1 + this.object.dataInicial.getMonth()) + '-' + this.twoDigits(this.object.dataInicial.getDate());
+    let dataFinalFiltro =  this.object.dataFinal.getFullYear() + '-' + this.twoDigits(1 + this.object.dataFinal.getMonth()) + '-' + this.twoDigits(this.object.dataFinal.getDate());
 
-    this.object.params = "?dataInicial=" + dataInicialFiltro
-                       + "&dataFinal=" + dataFinalFiltro
-                       + "&idMaterial=" + (this.object.idMaterial ? this.object.idMaterial : '')                       
-                       + "&idEstabelecimento=" + (this.object.idEstabelecimento  ? this.object.idEstabelecimento : '')
-                       + "&ordenadoPor=" + (this.object.ordenadoPor  ? this.object.ordenadoPor : '');
+    this.object.params = '?dataInicial=' + dataInicialFiltro
+                       + '&dataFinal=' + dataFinalFiltro
+                       + '&idMaterial=' + (this.object.idMaterial ? this.object.idMaterial : '')
+                       + '&idEstabelecimento=' + (this.object.idEstabelecimento  ? this.object.idEstabelecimento : '')
+                       + '&ordenadoPor=' + (this.object.ordenadoPor  ? this.object.ordenadoPor : '');
 
-    this.medicamentoMovimentoService.imprimir(this.object, JSON.parse(localStorage.getItem("est"))[0].nomeFantasia, this.object.criteriosPesquisa);    
+    this.medicamentoMovimentoService.imprimir(this.object, JSON.parse(localStorage.getItem('est'))[0].nomeFantasia, this.object.criteriosPesquisa);
   }
 
-  exportarCsv(){
+  exportarCsv() {
     this.errors = [];
 
     this.object.criteriosPesquisa = {};
@@ -109,64 +109,64 @@ export class MedicamentoMovimentoComponent implements OnInit {
     this.object.criteriosPesquisa.nomeOperacao = this.object.nomeOperacao;
     this.object.criteriosPesquisa.nomeTipoMovimento = this.object.nomeTipoMovimento;
 
-    var dataInicialFiltro =  this.object.dataInicial.getFullYear() + "-" + this.twoDigits(1 + this.object.dataInicial.getMonth()) + "-" + this.twoDigits(this.object.dataInicial.getDate());
-    var dataFinalFiltro =  this.object.dataFinal.getFullYear() + "-" + this.twoDigits(1 + this.object.dataFinal.getMonth()) + "-" + this.twoDigits(this.object.dataFinal.getDate());
+    let dataInicialFiltro =  this.object.dataInicial.getFullYear() + '-' + this.twoDigits(1 + this.object.dataInicial.getMonth()) + '-' + this.twoDigits(this.object.dataInicial.getDate());
+    let dataFinalFiltro =  this.object.dataFinal.getFullYear() + '-' + this.twoDigits(1 + this.object.dataFinal.getMonth()) + '-' + this.twoDigits(this.object.dataFinal.getDate());
 
-    this.object.params = "?dataInicial=" + dataInicialFiltro
-                       + "&dataFinal=" + dataFinalFiltro
-                       + "&idMaterial=" + (this.object.idMaterial ? this.object.idMaterial : '')                       
-                       + "&idEstabelecimento=" + (this.object.idEstabelecimento  ? this.object.idEstabelecimento : '')
-                       + "&ordenadoPor=" + (this.object.ordenadoPor  ? this.object.ordenadoPor : '');
+    this.object.params = '?dataInicial=' + dataInicialFiltro
+                       + '&dataFinal=' + dataFinalFiltro
+                       + '&idMaterial=' + (this.object.idMaterial ? this.object.idMaterial : '')
+                       + '&idEstabelecimento=' + (this.object.idEstabelecimento  ? this.object.idEstabelecimento : '')
+                       + '&ordenadoPor=' + (this.object.ordenadoPor  ? this.object.ordenadoPor : '');
 
-    this.medicamentoMovimentoService.exportar(this.object, JSON.parse(localStorage.getItem("est"))[0].nomeFantasia, this.object.criteriosPesquisa); 
+    this.medicamentoMovimentoService.exportar(this.object, JSON.parse(localStorage.getItem('est'))[0].nomeFantasia, this.object.criteriosPesquisa);
   }
 
-  clear(){
+  clear() {
     this.object = new RelatorioMedicamento();
     this.objectMaterial = new Material();
     this.ref.detectChanges();
-    this.object.ordenadoPor = "mvg.dataMovimento";
-    this.object.idEstabelecimento = JSON.parse(localStorage.getItem("est"))[0].id;
-    this.object.nomeEstabelecimento = JSON.parse(localStorage.getItem("est"))[0].nomeFantasia;
+    this.object.ordenadoPor = 'mvg.dataMovimento';
+    this.object.idEstabelecimento = JSON.parse(localStorage.getItem('est'))[0].id;
+    this.object.nomeEstabelecimento = JSON.parse(localStorage.getItem('est'))[0].nomeFantasia;
     this.domains[0].idTipoMovimento = [];
   }
 
-  medicamentoSelecionado(material: any){
+  medicamentoSelecionado(material: any) {
     this.object.idMaterial = material.id;
     this.object.nomeMaterial = material.descricao;
   }
 
-  estabelecimentoSelecionado(idEstabelecimento: any){            
-    this.object.nomeEstabelecimento = this.domains[0].idEstabelecimento[idEstabelecimento.target.options.selectedIndex-1].nome;
+  estabelecimentoSelecionado(idEstabelecimento: any) {
+    this.object.nomeEstabelecimento = this.domains[0].idEstabelecimento[idEstabelecimento.target.options.selectedIndex - 1].nome;
   }
-  
-  operacaoSelecionada(operacao: any){            
-    this.object.nomeOperacao = this.domains[0].idOperacao[operacao.target.options.selectedIndex-1].nome;
-    this.message = "";
+
+  operacaoSelecionada(operacao: any) {
+    this.object.nomeOperacao = this.domains[0].idOperacao[operacao.target.options.selectedIndex - 1].nome;
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.carregaTipoMovimentoPorOperacao(this.object.idOperacao).subscribe(result => {
-      this.domains[0].idTipoMovimento = result;      
-    }, error => {      
+      this.domains[0].idTipoMovimento = result;
+    }, error => {
       this.errors = Util.customHTTPResponse(error);
     });
-  } 
-
-  tipoMovimentoSelecionado(tipoMovimento: any){            
-    this.object.nomeTipoMovimento = this.domains[0].idTipoMovimento[tipoMovimento.target.options.selectedIndex-1].nome;
   }
-  
+
+  tipoMovimentoSelecionado(tipoMovimento: any) {
+    this.object.nomeTipoMovimento = this.domains[0].idTipoMovimento[tipoMovimento.target.options.selectedIndex - 1].nome;
+  }
+
   twoDigits(d) {
-    if(0 <= d && d < 10) return "0" + d.toString();
-    if(-10 < d && d < 0) return "-0" + (-1*d).toString();
+    if (0 <= d && d < 10) { return '0' + d.toString(); }
+    if (-10 < d && d < 0) { return '-0' + (-1 * d).toString(); }
     return d.toString();
   }
-  
+
   createGroup() {
-    this.form = this.fb.group({      
-      idEstabelecimento: new FormControl({value: '', disabled: true}, Validators.required),      
-      idOperacao: ['', Validators.required],      
-      idTipoMovimento: ['', Validators.required],      
+    this.form = this.fb.group({
+      idEstabelecimento: new FormControl({value: '', disabled: true}, Validators.required),
+      idOperacao: ['', Validators.required],
+      idTipoMovimento: ['', Validators.required],
       ordenadoPor: ['', Validators.required],
       dataInicial: ['', Validators.required],
       dataFinal: ['', Validators.required],

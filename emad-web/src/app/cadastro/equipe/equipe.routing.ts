@@ -1,18 +1,18 @@
-import { Routes } from "@angular/router";
-import { EquipeFormComponent } from "./equipe-form.component";
-import { EquipeComponent } from "./equipe.component";
+import { Routes } from '@angular/router';
+import { EquipeFormComponent } from './equipe-form.component';
+import { EquipeComponent } from './equipe.component';
 
 export const equipeRoutes: Routes = [
     {
         path: '',
-        component: EquipeComponent,        
+        component: EquipeComponent,
     },
     {
         path: 'cadastro',
-        component: EquipeFormComponent,        
+        component: EquipeFormComponent,
     },
     {
         path: 'cadastro/:id',
-        component: EquipeFormComponent,        
+        component: EquipeFormComponent,
     }
 ];

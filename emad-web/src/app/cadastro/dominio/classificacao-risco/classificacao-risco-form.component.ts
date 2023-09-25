@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class ClassificacaoRiscoFormComponent implements OnInit {
 
   object: ClassificacaoRisco = new ClassificacaoRisco();
-  method: string = "classificacao-risco";
+  method = 'classificacao-risco';
   fields: any[] = [];
-  label: string = "Classificação de risco";
+  label = 'Classificação de risco';
   id: Number = null;
   domains: any[] = [];
 
@@ -35,11 +35,11 @@ export class ClassificacaoRiscoFormComponent implements OnInit {
     this.loadDomains();
   }
 
-  loadDomains() {    
+  loadDomains() {
     this.service.listDomains('cor-classificacao-risco').subscribe(corClassificacaoRisco => {
-      this.domains.push({            
+      this.domains.push({
         idCorClassificacaoRisco: corClassificacaoRisco
-      });                      
+      });
     });
   }
 

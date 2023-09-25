@@ -1,46 +1,46 @@
-import { Routes } from "@angular/router";
-import { AtendimentoFormComponent } from "./atendimento-form.component";
-import { AtendimentoComponent } from "./atendimento.component";
-import { RelatorioReceitaComponent } from "./relatorio-receita.component";
-import { AtendimentoSalaEsperaFormComponent } from "./sala-espera/atendimento-sala-espera-form.component";
-import { AtendimentoSalaEsperaComponent } from "./sala-espera/atendimento-sala-espera.component";
+import { Routes } from '@angular/router';
+import { AtendimentoFormComponent } from './atendimento-form.component';
+import { AtendimentoComponent } from './atendimento.component';
+import { RelatorioReceitaComponent } from './relatorio-receita.component';
+import { AtendimentoSalaEsperaFormComponent } from './sala-espera/atendimento-sala-espera-form.component';
+import { AtendimentoSalaEsperaComponent } from './sala-espera/atendimento-sala-espera.component';
 
 export const atendimentoRoutes: Routes = [
     {
         path: '',
-        component: AtendimentoComponent,        
+        component: AtendimentoComponent,
     },
     {
         path: 'sala-espera',
-        component: AtendimentoSalaEsperaComponent,        
+        component: AtendimentoSalaEsperaComponent,
     },
     {
         path: 'idPaciente/:idPaciente',
-        component: AtendimentoComponent,        
+        component: AtendimentoComponent,
     },
     {
         path: 'cadastro',
-        component: AtendimentoFormComponent,        
-    }, 
+        component: AtendimentoFormComponent,
+    },
     {
         path: 'cadastro/:id',
-        component: AtendimentoFormComponent,        
-    }, 
+        component: AtendimentoFormComponent,
+    },
     {
         path: 'pesquisa/:armazenaPesquisa',
-        component: AtendimentoComponent,        
-    },     
+        component: AtendimentoComponent,
+    },
     {
         path: 'sala-espera-criar',
-        component: AtendimentoSalaEsperaFormComponent,        
-    },    
+        component: AtendimentoSalaEsperaFormComponent,
+    },
     {
         path: 'sala-espera-criar/:id',
-        component: AtendimentoSalaEsperaFormComponent,        
-    },   
+        component: AtendimentoSalaEsperaFormComponent,
+    },
     {
         path: 'historico/:idHistorico',
-        component: AtendimentoFormComponent,        
+        component: AtendimentoFormComponent,
     },
     {
         path: 'relatorio-receita/:ano/:estabelecimentoId/:numero/:farmacia',

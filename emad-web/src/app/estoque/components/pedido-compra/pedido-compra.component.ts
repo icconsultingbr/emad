@@ -12,7 +12,7 @@ import { PedidoCompra } from '../../../_core/_models/PedidoCompra';
 
 export class PedidoCompraComponent implements OnInit {
 
-  method: String = "pedido-compra";
+  method: String = 'pedido-compra';
   object: PedidoCompra = new PedidoCompra();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class PedidoCompraComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: PedidoCompraService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

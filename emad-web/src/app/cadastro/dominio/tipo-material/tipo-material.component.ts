@@ -12,7 +12,7 @@ import { TipoMaterial } from '../../../_core/_models/TipoMaterial';
 
 export class TipoMaterialComponent implements OnInit {
 
-  method: string = "tipo-material";
+  method = 'tipo-material';
   object: TipoMaterial = new TipoMaterial();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class TipoMaterialComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: TipoMaterialService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

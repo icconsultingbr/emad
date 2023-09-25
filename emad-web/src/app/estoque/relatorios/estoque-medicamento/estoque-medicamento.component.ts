@@ -19,57 +19,57 @@ export class EstoqueMedicamentoComponent implements OnInit {
 
   //MESSAGES
   loading: Boolean = false;
-  message: string = "";
+  message = '';
   errors: any[] = [];
   modalRef: NgbModalRef = null;
   modalRemoveRef: NgbModalRef = null;
   form: FormGroup;
-  method: string = "agenda";
+  method = 'agenda';
 
   //PAGINATION
   allItems: any[];
   pager: any = {};
   pagedItems: any[];
-  pageLimit: number = 10;
+  pageLimit = 10;
   fields: any[] = [];
 
   //MODELS (OBJECTS)
   object: RelatorioEstoque = new RelatorioEstoque();
   estoquePorUnidade: any[] = [];
-  listaEstoqueUnidadeDetalhe: any[] = [];  
+  listaEstoqueUnidadeDetalhe: any[] = [];
   domains: any[] = [];
   objectMaterial: Material = new Material();
-  
+
   constructor(
     private pagerService: PagerService,
     private fb: FormBuilder,
     private service: EstoqueMedicamentoService,
-    private estoqueMedicamentoImpressaoService: EstoqueMedicamentoImpressaoService,     
+    private estoqueMedicamentoImpressaoService: EstoqueMedicamentoImpressaoService,
     private ref: ChangeDetectorRef) {
 
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }
     }
   }
 
-  medicamentoSelecionado(material: any){
+  medicamentoSelecionado(material: any) {
     this.object.idMaterial = material.id;
     this.object.nomeMaterial = material.descricao;
     this.carregaEstoquePorMedicamento();
-  } 
+  }
 
   ngOnInit() {
 
   }
 
   carregaEstoquePorMedicamento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
-    this.service.carregaEstoquePorMedicamento("pesquisa", this.object.idMaterial).subscribe(result => {
+    this.service.carregaEstoquePorMedicamento('pesquisa', this.object.idMaterial).subscribe(result => {
       this.estoquePorUnidade = result;
       this.loading = false;
     }, error => {
@@ -78,15 +78,15 @@ export class EstoqueMedicamentoComponent implements OnInit {
     });
   }
 
-  carregaEstoque(item: any){
+  carregaEstoque(item: any) {
     this.loading = true;
     this.listaEstoqueUnidadeDetalhe = [];
-    this.estoquePorUnidade.forEach(itemEstoque => {      
+    this.estoquePorUnidade.forEach(itemEstoque => {
       itemEstoque.expandir = (itemEstoque.idEstabelecimento == item.idEstabelecimento && itemEstoque.expandir == true) ? true : false;
     });
-    item.expandir = !item.expandir;    
+    item.expandir = !item.expandir;
     this.service.carregaEstoquePorEstabelecimentoDetalhado(item.idEstabelecimento, item.idMaterial).subscribe(estoque => {
-      this.listaEstoqueUnidadeDetalhe = estoque;                  
+      this.listaEstoqueUnidadeDetalhe = estoque;
       this.loading = false;
     }, erro => {
       this.loading = false;
@@ -94,16 +94,16 @@ export class EstoqueMedicamentoComponent implements OnInit {
     });
   }
 
-  clear(){
-    this.object.nomeMaterial = "";
-    this.object.nomeLote = "";
+  clear() {
+    this.object.nomeMaterial = '';
+    this.object.nomeLote = '';
     this.estoquePorUnidade = [];
     this.objectMaterial = new Material();
     this.ref.detectChanges();
   }
 
-  abreRelatorioEstoqueMedicamento(idMaterial: number, open: boolean) {    
-    this.estoqueMedicamentoImpressaoService.imprimir(idMaterial, "");
+  abreRelatorioEstoqueMedicamento(idMaterial: number, open: boolean) {
+    this.estoqueMedicamentoImpressaoService.imprimir(idMaterial, '');
   }
 
   setPage(page: number) {
@@ -112,7 +112,7 @@ export class EstoqueMedicamentoComponent implements OnInit {
   }
 
   loadQuantityPerPage(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.pageLimit = id;
     this.setPage(1);
   }

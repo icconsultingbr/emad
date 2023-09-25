@@ -9,54 +9,54 @@ export class EspecialidadeService extends GenericsService {
   constructor(public http: HttpClient) {
     super(http);
   }
-  
-  public fields : any[] = [
+
+  public fields: any[] = [
     {
-      field:"id",
-      type:"hidden", 
-      label:"Id", 
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: true,
       form: true,
-      required: false, 
+      required: false,
       validator: ['', '']
     },
     {
-      field: "nome", 
-      type: "text", 
-      label: "Nome", 
-      grid: true,  
+      field: 'nome',
+      type: 'text',
+      label: 'Nome',
+      grid: true,
       form: true,
-      required: true, 
-      validator:['', Validators.required]
+      required: true,
+      validator: ['', Validators.required]
     },
     {
-      field: "codigoCBO", 
-      type: "text", 
-      label: "CBO", 
-      grid: false,  
+      field: 'codigoCBO',
+      type: 'text',
+      label: 'CBO',
+      grid: false,
       form: true,
-      required: true, 
-      validator:['', Validators.required]
+      required: true,
+      validator: ['', Validators.required]
     },
     {
-      field: "visualizaProntuario", 
-      type: "checkbox", 
-      label: "Visualizar prontuário do paciente?", 
-      grid: true,  
+      field: 'visualizaProntuario',
+      type: 'checkbox',
+      label: 'Visualizar prontuário do paciente?',
+      grid: true,
       form: true,
-      translate: {1: "Sim", 0: "Não"},
-      required: true, 
-      validator:['', Validators.required]
-    },    
+      translate: {1: 'Sim', 0: 'Não'},
+      required: true,
+      validator: ['', Validators.required]
+    },
     {
-      field: "situacao", 
-      type: "checkbox", 
-      label: "Situação", 
-      grid: true,  
+      field: 'situacao',
+      type: 'checkbox',
+      label: 'Situação',
+      grid: true,
       form: true,
-      translate: {1: "Ativo", 0: "Inativo"},
-      required: true, 
-      validator:['', Validators.required]
+      translate: {1: 'Ativo', 0: 'Inativo'},
+      required: true,
+      validator: ['', Validators.required]
     }
   ];
 

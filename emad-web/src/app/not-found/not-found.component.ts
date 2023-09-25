@@ -10,7 +10,7 @@ import { AppNavbarService } from '../_core/_components/app-navbar/app-navbar.ser
 export class NotFoundComponent implements OnInit {
 
   constructor(public nav: AppNavbarService) {}
-  
+
   ngOnInit() {
     this.nav.show();
   }

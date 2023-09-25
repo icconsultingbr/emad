@@ -6,75 +6,75 @@ import {
   Output,
   ElementRef,
   EventEmitter,
-} from "@angular/core";
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   Validators,
   FormControl,
-} from "@angular/forms";
-import { PacienteService } from "./paciente.service";
-import { Paciente } from "../../_core/_models/Paciente";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Util } from "../../_core/_util/Util";
+} from '@angular/forms';
+import { PacienteService } from './paciente.service';
+import { Paciente } from '../../_core/_models/Paciente';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Util } from '../../_core/_util/Util';
 import PlaceResult = google.maps.places.PlaceResult;
 import PlaceGeometry = google.maps.places.PlaceGeometry;
 import GeocoderAddressComponent = google.maps.GeocoderAddressComponent;
-import { environment } from "../../../environments/environment";
-import { PacienteHipotese } from "../../_core/_models/PacienteHipotese";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { HipoteseDiagnostica } from "../../_core/_models/HipoteseDiagnostica";
-import { Estabelecimento } from "../../_core/_models/Estabelecimento";
-import { EstabelecimentoService } from "../../seguranca/estabelecimento/estabelecimento.service";
+import { environment } from '../../../environments/environment';
+import { PacienteHipotese } from '../../_core/_models/PacienteHipotese';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HipoteseDiagnostica } from '../../_core/_models/HipoteseDiagnostica';
+import { Estabelecimento } from '../../_core/_models/Estabelecimento';
+import { EstabelecimentoService } from '../../seguranca/estabelecimento/estabelecimento.service';
 
 @Component({
-  selector: "app-paciente-form",
-  templateUrl: "./paciente-form.component.html",
-  styleUrls: ["./paciente-form.component.css"],
+  selector: 'app-paciente-form',
+  templateUrl: './paciente-form.component.html',
+  styleUrls: ['./paciente-form.component.css'],
   providers: [PacienteService],
 })
 export class PacienteFormComponent implements OnInit {
   object: Paciente = new Paciente();
   objectEstabelecimento: Estabelecimento = new Estabelecimento();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
-  method: string = "paciente";
+  method: string = 'paciente';
   fields = [];
-  label: string = "Paciente";
+  label = 'Paciente';
   id: number = null;
   domains: any[] = [];
   form: FormGroup;
   loading: Boolean = false;
-  message: string = "";
+  message = '';
   errors: any[] = [];
   dropdownList = [];
   selectedItems = [];
   dropdownSettings = {};
   allItemsHipotese: any[] = [];
   virtualDirectory: string =
-    environment.virtualDirectory != ""
-      ? environment.virtualDirectory + "/"
-      : "";
+    environment.virtualDirectory != ''
+      ? environment.virtualDirectory + '/'
+      : '';
   modalRef: NgbModalRef = null;
-  loadPhoto: boolean = false;
+  loadPhoto = false;
   allItemsPesquisaHipoteseDiagnostica: any[] = null;
   hipoteseDiagnostica: HipoteseDiagnostica = new HipoteseDiagnostica();
 
-  cpfObrigatorio: boolean = false;
-  susObrigatorio: boolean = false;
-  telefoneDefault: string = "";
+  cpfObrigatorio = false;
+  susObrigatorio = false;
+  telefoneDefault = '';
 
-  @ViewChild("addresstext") addresstext: ElementRef;
+  @ViewChild('addresstext') addresstext: ElementRef;
 
   //PAGINATION
   pager: any = {};
   pagedItems: any[];
-  pageLimit: number = 10;
+  pageLimit = 10;
   paging: any = {
     offset: 0,
     limit: 10,
     total: 0,
   };
-  warning: string = "";
+  warning = '';
   totalPages: Number;
 
   constructor(
@@ -92,17 +92,17 @@ export class PacienteFormComponent implements OnInit {
   ngOnInit() {
     this.dropdownSettings = {
       singleSelection: false,
-      idField: "id",
-      textField: "nome",
-      selectAllText: "Marcar todos",
-      unSelectAllText: "Desmarcar todos",
-      searchPlaceholderText: "Procurar",
-      noDataAvailablePlaceholderText: "Sem dados disponíveis",
+      idField: 'id',
+      textField: 'nome',
+      selectAllText: 'Marcar todos',
+      unSelectAllText: 'Desmarcar todos',
+      searchPlaceholderText: 'Procurar',
+      noDataAvailablePlaceholderText: 'Sem dados disponíveis',
       itemsShowLimit: 5,
       allowSearchFilter: true,
     };
     this.route.params.subscribe((params) => {
-      this.id = params["id"];
+      this.id = params['id'];
     });
     this.createGroup();
     this.loadDomains();
@@ -116,21 +116,21 @@ export class PacienteFormComponent implements OnInit {
 
   loadDomains() {
     this.loading = true;
-    this.service.listDomains("uf").subscribe((ufs) => {
-      this.service.listDomains("nacionalidade").subscribe((paises) => {
-        this.service.listDomains("modalidade").subscribe((modalidades) => {
+    this.service.listDomains('uf').subscribe((ufs) => {
+      this.service.listDomains('nacionalidade').subscribe((paises) => {
+        this.service.listDomains('modalidade').subscribe((modalidades) => {
           this.service
-            .listDomains("estabelecimento")
+            .listDomains('estabelecimento')
             .subscribe((estabelecimentos) => {
-              this.service.listDomains("raca").subscribe((racas) => {
+              this.service.listDomains('raca').subscribe((racas) => {
                 this.service
-                  .listDomains("hipotese-diagnostica")
+                  .listDomains('hipotese-diagnostica')
                   .subscribe((hipoteseDiagnostica) => {
                     this.service
-                      .listDomains("atencao-continuada")
+                      .listDomains('atencao-continuada')
                       .subscribe((atencaoContinuada) => {
                         this.service
-                          .listDomains("escolaridade")
+                          .listDomains('escolaridade')
                           .subscribe((escolaridade) => {
                             this.domains.push({
                               idUf: ufs,
@@ -142,26 +142,26 @@ export class PacienteFormComponent implements OnInit {
                               escolaridade: escolaridade,
                               idModalidade: modalidades,
                               sexo: [
-                                { id: "1", nome: "Masculino" },
-                                { id: "2", nome: "Feminino" },
-                                { id: "3", nome: "Ambos" },
-                                { id: "4", nome: "Não informado" },
+                                { id: '1', nome: 'Masculino' },
+                                { id: '2', nome: 'Feminino' },
+                                { id: '3', nome: 'Ambos' },
+                                { id: '4', nome: 'Não informado' },
                               ],
                               idTipoSanguineo: [
-                                { id: "1", nome: "A_POSITIVO" },
-                                { id: "2", nome: "A_NEGATIVO" },
-                                { id: "3", nome: "B_POSITIVO" },
-                                { id: "4", nome: "B_NEGATIVO" },
-                                { id: "5", nome: "AB_POSITIVO" },
-                                { id: "6", nome: "AB_NEGATIVO" },
-                                { id: "7", nome: "O_POSITIVO" },
-                                { id: "8", nome: "O_NEGATIVO" },
+                                { id: '1', nome: 'A_POSITIVO' },
+                                { id: '2', nome: 'A_NEGATIVO' },
+                                { id: '3', nome: 'B_POSITIVO' },
+                                { id: '4', nome: 'B_NEGATIVO' },
+                                { id: '5', nome: 'AB_POSITIVO' },
+                                { id: '6', nome: 'AB_NEGATIVO' },
+                                { id: '7', nome: 'O_POSITIVO' },
+                                { id: '8', nome: 'O_NEGATIVO' },
                               ],
                               aleitamentoMaterno: [
-                                { id: "1", nome: "Exclusivo" },
-                                { id: "2", nome: "Predominante" },
-                                { id: "3", nome: "Complementado" },
-                                { id: "4", nome: "Inexistente" },
+                                { id: '1', nome: 'Exclusivo' },
+                                { id: '2', nome: 'Predominante' },
+                                { id: '3', nome: 'Complementado' },
+                                { id: '4', nome: 'Inexistente' },
                               ],
                               idRaca: racas,
                               idAtencaoContinuada: atencaoContinuada,
@@ -186,7 +186,7 @@ export class PacienteFormComponent implements OnInit {
   encontraPaciente() {
     this.object.id = this.id;
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
 
     this.service.findById(this.id, this.method).subscribe(
@@ -206,7 +206,7 @@ export class PacienteFormComponent implements OnInit {
         this.allItemsHipotese = [];
         //this.allItemsMedicamento = [];
         this.errors.push({
-          message: "Paciente não encontrado",
+          message: 'Paciente não encontrado',
         });
       },
     );
@@ -228,78 +228,78 @@ export class PacienteFormComponent implements OnInit {
   }
 
   back() {
-    const route = "pacientes";
+    const route = 'pacientes';
     this.router.navigate([route]);
   }
 
   createGroup() {
     this.form = this.fb.group({
-      id: [""],
-      cartaoSus: ["", ""],
-      nome: ["", Validators.required],
-      nomeSocial: ["", ""],
-      apelido: ["", ""],
-      nomeMae: ["", Validators.required],
-      nomePai: ["", ""],
-      dataNascimento: ["", Validators.required],
-      sexo: ["", Validators.required],
-      idNacionalidade: ["", Validators.required],
-      idNaturalidade: ["", Validators.required],
-      ocupacao: ["", ""],
-      cpf: ["", ""],
-      rg: ["", ""],
-      dataEmissao: ["", ""],
-      orgaoEmissor: ["", ""],
-      escolaridade: ["", Validators.required],
-      cep: ["", ""],
-      logradouro: ["", ""],
-      numero: ["", ""],
-      complemento: ["", ""],
-      bairro: ["", ""],
-      idMunicipio: ["", ""],
-      idUf: ["", ""],
-      foneResidencial: ["", ""],
-      foneCelular: ["", ""],
-      foneContato: ["", ""],
-      contato: ["", ""],
-      email: ["", ""],
-      idModalidade: ["", ""],
-      latitude: ["", ""],
-      longitude: ["", ""],
-      idSap: ["", ""],
-      idTipoSanguineo: ["", ""],
-      idRaca: ["", ""],
-      numeroProntuario: ["", ""],
-      numeroProntuarioCnes: ["", ""],
-      idAtencaoContinuada: ["", ""],
-      historiaProgressaFamiliar: ["", ""],
-      observacao: ["", ""],
+      id: [''],
+      cartaoSus: ['', ''],
+      nome: ['', Validators.required],
+      nomeSocial: ['', ''],
+      apelido: ['', ''],
+      nomeMae: ['', Validators.required],
+      nomePai: ['', ''],
+      dataNascimento: ['', Validators.required],
+      sexo: ['', Validators.required],
+      idNacionalidade: ['', Validators.required],
+      idNaturalidade: ['', Validators.required],
+      ocupacao: ['', ''],
+      cpf: ['', ''],
+      rg: ['', ''],
+      dataEmissao: ['', ''],
+      orgaoEmissor: ['', ''],
+      escolaridade: ['', Validators.required],
+      cep: ['', ''],
+      logradouro: ['', ''],
+      numero: ['', ''],
+      complemento: ['', ''],
+      bairro: ['', ''],
+      idMunicipio: ['', ''],
+      idUf: ['', ''],
+      foneResidencial: ['', ''],
+      foneCelular: ['', ''],
+      foneContato: ['', ''],
+      contato: ['', ''],
+      email: ['', ''],
+      idModalidade: ['', ''],
+      latitude: ['', ''],
+      longitude: ['', ''],
+      idSap: ['', ''],
+      idTipoSanguineo: ['', ''],
+      idRaca: ['', ''],
+      numeroProntuario: ['', ''],
+      numeroProntuarioCnes: ['', ''],
+      idAtencaoContinuada: ['', ''],
+      historiaProgressaFamiliar: ['', ''],
+      observacao: ['', ''],
       idEstabelecimentoCadastro: new FormControl(
         {
-          value: "",
+          value: '',
           disabled: this.id > 0 || this.object.id > 0 ? true : false,
         },
         Validators.required,
       ),
-      gruposAtencaoContinuada: ["", ""],
-      falecido: ["", ""],
-      necessidadeEspeciais: ["", ""],
-      reeducando: ["", ""],
-      gestante: ["", ""],
-      aleitamentoMaterno: ["", ""],
-      dumDaGestante: ["", ""],
-      idadeGestacional: ["", ""],
-      stGravidezPlanejada: ["", ""],
-      nuGestasPrevias: ["", ""],
-      nuPartos: ["", ""],
-      situacao: ["", Validators.required],
-      foto: [""],
+      gruposAtencaoContinuada: ['', ''],
+      falecido: ['', ''],
+      necessidadeEspeciais: ['', ''],
+      reeducando: ['', ''],
+      gestante: ['', ''],
+      aleitamentoMaterno: ['', ''],
+      dumDaGestante: ['', ''],
+      idadeGestacional: ['', ''],
+      stGravidezPlanejada: ['', ''],
+      nuGestasPrevias: ['', ''],
+      nuPartos: ['', ''],
+      situacao: ['', Validators.required],
+      foto: [''],
     });
   }
 
   sendForm(event) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
     event.preventDefault();
 
@@ -308,8 +308,8 @@ export class PacienteFormComponent implements OnInit {
         this.loading = false;
         this.object.id = res.id;
         if (this.form.value.id)
-          this.message = "Alteração efetuada com sucesso!";
-        else this.message = "Cadastro efetuado com sucesso!";
+          this.message = 'Alteração efetuada com sucesso!';
+        else this.message = 'Cadastro efetuado com sucesso!';
 
         this.back();
         return;
@@ -349,45 +349,45 @@ export class PacienteFormComponent implements OnInit {
     const autocomplete = new google.maps.places.Autocomplete(
       this.addresstext.nativeElement,
       {
-        componentRestrictions: { country: "BR" },
-        types: ["geocode"], // 'establishment' / 'address' / 'geocode'
+        componentRestrictions: { country: 'BR' },
+        types: ['geocode'], // 'establishment' / 'address' / 'geocode'
       },
     );
 
     // Set the data fields to return when the user selects a place.
-    autocomplete.setFields(["address_components", "geometry", "icon", "name"]);
+    autocomplete.setFields(['address_components', 'geometry', 'icon', 'name']);
 
-    google.maps.event.addListener(autocomplete, "place_changed", () => {
+    google.maps.event.addListener(autocomplete, 'place_changed', () => {
       let place: PlaceResult = autocomplete.getPlace();
       let geometry: PlaceGeometry = place.geometry;
 
-      let rua: string = "";
-      let numero: string = "";
-      let bairro: string = "";
-      let municipio: string = "";
-      let estado: string = "";
-      let latitude: number = 0;
-      let longitude: number = 0;
-      let cep: string = "";
+      let rua = '';
+      let numero = '';
+      let bairro = '';
+      let municipio = '';
+      let estado = '';
+      let latitude = 0;
+      let longitude = 0;
+      let cep = '';
 
       place.address_components.forEach(
         (address_component: GeocoderAddressComponent) => {
-          if (address_component.types[0] === "route") {
+          if (address_component.types[0] === 'route') {
             rua = address_component.long_name;
           }
-          if (address_component.types[0] === "street_number") {
+          if (address_component.types[0] === 'street_number') {
             numero = address_component.long_name;
           }
-          if (address_component.types[0] === "sublocality_level_1") {
+          if (address_component.types[0] === 'sublocality_level_1') {
             bairro = address_component.long_name;
           }
-          if (address_component.types[0] === "administrative_area_level_2") {
+          if (address_component.types[0] === 'administrative_area_level_2') {
             municipio = address_component.long_name;
           }
-          if (address_component.types[0] === "administrative_area_level_1") {
+          if (address_component.types[0] === 'administrative_area_level_1') {
             estado = address_component.long_name;
           }
-          if (address_component.types[0] === "postal_code") {
+          if (address_component.types[0] === 'postal_code') {
             cep = address_component.long_name;
           }
         },
@@ -430,7 +430,7 @@ export class PacienteFormComponent implements OnInit {
   }
 
   carregaMunicipios() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
@@ -453,7 +453,7 @@ export class PacienteFormComponent implements OnInit {
   }
 
   findHipotesePorPaciente() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findHipoteseByPaciente(this.object.id).subscribe(
@@ -470,36 +470,36 @@ export class PacienteFormComponent implements OnInit {
 
   visualizaAtendimentos(id: any): void {
     let url =
-      this.router.url.replace("paciente", "") +
+      this.router.url.replace('paciente', '') +
       this.virtualDirectory +
-      "#/atendimentos/cadastro/" +
+      '#/atendimentos/cadastro/' +
       id;
     this.service
-      .file("atendimento/consulta-por-paciente", url)
+      .file('atendimento/consulta-por-paciente', url)
       .subscribe((result) => {
         this.loading = false;
-        window.open(url, "_blank");
+        window.open(url, '_blank');
       });
   }
 
   openHipotese(content: any) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.allItemsPesquisaHipoteseDiagnostica = [];
     this.pacienteHipotese = new PacienteHipotese();
     this.hipoteseDiagnostica = new HipoteseDiagnostica();
 
     this.modalRef = this.modalService.open(content, {
-      backdrop: "static",
+      backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg",
+      size: 'lg',
     });
   }
 
   pesquisaHipoteseDiagnostica() {
     this.loading = true;
-    let params = "";
+    const params = '';
     this.allItemsPesquisaHipoteseDiagnostica = [];
     this.errors = [];
 
@@ -507,14 +507,14 @@ export class PacienteFormComponent implements OnInit {
       Util.isEmpty(this.hipoteseDiagnostica.nome) &&
       Util.isEmpty(this.hipoteseDiagnostica.cid_10)
     ) {
-      this.errors = [{ message: "Informe o nome ou código CID 10" }];
+      this.errors = [{ message: 'Informe o nome ou código CID 10' }];
       this.loading = false;
       return;
     }
 
     if (!Util.isEmpty(this.hipoteseDiagnostica.nome)) {
       if (this.hipoteseDiagnostica.nome.length < 3) {
-        this.errors = [{ message: "Informe o nome, ao menos 3 caracteres" }];
+        this.errors = [{ message: 'Informe o nome, ao menos 3 caracteres' }];
         this.loading = false;
         return;
       }
@@ -523,7 +523,7 @@ export class PacienteFormComponent implements OnInit {
     if (!Util.isEmpty(this.hipoteseDiagnostica.cid_10)) {
       if (this.hipoteseDiagnostica.cid_10.length < 2) {
         this.errors = [
-          { message: "Informe o código CID 10, ao menos 2 caracteres" },
+          { message: 'Informe o código CID 10, ao menos 2 caracteres' },
         ];
         this.loading = false;
         return;
@@ -540,23 +540,23 @@ export class PacienteFormComponent implements OnInit {
     this.paging.limit = limit ? limit : 10;
 
     var params =
-      "?nome=" +
+      '?nome=' +
       this.hipoteseDiagnostica.nome +
-      "&cid=" +
+      '&cid=' +
       this.hipoteseDiagnostica.cid_10;
 
     if (this.paging.offset != null && this.paging.limit != null) {
       params +=
-        (params == "" ? "?" : "&") +
-        "offset=" +
+        (params == '' ? '?' : '&') +
+        'offset=' +
         this.paging.offset +
-        "&limit=" +
+        '&limit=' +
         this.paging.limit;
     }
 
-    this.service.list("hipotese-diagnostica" + params).subscribe(
+    this.service.list('hipotese-diagnostica' + params).subscribe(
       (result) => {
-        this.warning = "";
+        this.warning = '';
         this.paging.total = result.total;
         this.totalPages = Math.ceil(this.paging.total / this.paging.limit);
         this.allItemsPesquisaHipoteseDiagnostica = result.items;
@@ -584,18 +584,18 @@ export class PacienteFormComponent implements OnInit {
   }
 
   saveHipotese() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.pacienteHipotese.idHipoteseDiagnostica = this.hipoteseDiagnostica.id;
     this.pacienteHipotese.idPaciente = this.id;
-    this.pacienteHipotese.funcionalidade = "PACIENTE";
+    this.pacienteHipotese.funcionalidade = 'PACIENTE';
     this.pacienteHipotese.idEstabelecimento =
       this.object.idEstabelecimentoCadastro;
 
     this.service.saveHipotese(this.pacienteHipotese).subscribe(
       (result) => {
-        this.message = "Hipótese diagnóstica inserida com sucesso!";
+        this.message = 'Hipótese diagnóstica inserida com sucesso!';
         this.close();
         this.loading = false;
         this.findHipotesePorPaciente();
@@ -609,7 +609,7 @@ export class PacienteFormComponent implements OnInit {
 
   removeHipotese(item) {
     this.service.removeHipotese(item.id).subscribe((result) => {
-      this.message = "Hipótese diagnóstica removida com sucesso!";
+      this.message = 'Hipótese diagnóstica removida com sucesso!';
       this.close();
       this.loading = false;
       this.findHipotesePorPaciente();
@@ -622,7 +622,7 @@ export class PacienteFormComponent implements OnInit {
   }
 
   loadQuantityPerPagePaginationHipotese(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.paging.limit = id;
 
     this.setPagePaginedHipotese(this.pager.offset, this.paging.limit);
@@ -637,11 +637,11 @@ export class PacienteFormComponent implements OnInit {
 
   onChangeEstabelecimento(idEstabelecimento) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
 
     this.serviceEstabelecimento
-      .findById(idEstabelecimento, "estabelecimento")
+      .findById(idEstabelecimento, 'estabelecimento')
       .subscribe(
         (result) => {
           this.objectEstabelecimento = result;
@@ -667,7 +667,7 @@ export class PacienteFormComponent implements OnInit {
           this.objectEstabelecimento = new Estabelecimento();
           this.loading = false;
           this.errors.push({
-            message: "Estabelecimento não encontrado",
+            message: 'Estabelecimento não encontrado',
           });
         },
       );

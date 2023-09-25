@@ -10,38 +10,38 @@ export class SolicitacaoRemanejamentoService extends GenericsService {
     super(http);
   }
 
-  public fields: any[] = [    
+  public fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: true,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "idEstabelecimentoSolicitante",
-      type: "select",
-      label: "Unidade solicitante",
+      field: 'idEstabelecimentoSolicitante',
+      type: 'select',
+      label: 'Unidade solicitante',
       grid: false,
       form: true,
       required: true,
       validator: ['', Validators.required]
     },
     {
-      field: "nomeEstabelecimentoSolicitante",
-      type: "text",
-      label: "Unidade solicitante",
+      field: 'nomeEstabelecimentoSolicitante',
+      type: 'text',
+      label: 'Unidade solicitante',
       grid: true,
       form: false,
       required: false,
       validator: ['', '']
     },
     {
-      field: "idEstabelecimentoSolicitada",
-      type: "select",
-      label: "Unidade solicitada",
+      field: 'idEstabelecimentoSolicitada',
+      type: 'select',
+      label: 'Unidade solicitada',
       grid: false,
       form: true,
       required: true,
@@ -49,18 +49,18 @@ export class SolicitacaoRemanejamentoService extends GenericsService {
       validator: ['', Validators.required]
     },
     {
-      field: "nomeEstabelecimentoSolicitada",
-      type: "text",
-      label: "Unidade solicitada",
+      field: 'nomeEstabelecimentoSolicitada',
+      type: 'text',
+      label: 'Unidade solicitada',
       grid: true,
       form: false,
       required: false,
       validator: ['', '']
-    },    
+    },
     {
-      field: "dataCriacao",
-      type: "hidden",
-      label: "Data solicitação",
+      field: 'dataCriacao',
+      type: 'hidden',
+      label: 'Data solicitação',
       grid: true,
       form: false,
       isDate: true,
@@ -73,14 +73,14 @@ export class SolicitacaoRemanejamentoService extends GenericsService {
       },
     },
     {
-      field: "situacao",
-      type: "checkbox",
-      label: "Situação",
+      field: 'situacao',
+      type: 'checkbox',
+      label: 'Situação',
       grid: true,
       form: false,
-      translate: {0: "INATIVA", 1: "PENDENTE MATERIAL", 2: "SOLICITADA",  3: "RESERVADA", 4: "FORNECIDO", 5 : "NÃO ATENDIDA"},
+      translate: {0: 'INATIVA', 1: 'PENDENTE MATERIAL', 2: 'SOLICITADA',  3: 'RESERVADA', 4: 'FORNECIDO', 5 : 'NÃO ATENDIDA'},
       required: true,
-      validator:['', Validators.required]
+      validator: ['', Validators.required]
     }
   ];
 
@@ -88,8 +88,7 @@ export class SolicitacaoRemanejamentoService extends GenericsService {
     if (obj.id) {
         return this.http
             .put('solicitacao-remanejamento', JSON.stringify(obj));
-    }
-    else {
+    } else {
         return this.http
             .post('solicitacao-remanejamento', JSON.stringify(obj));
     }

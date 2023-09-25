@@ -12,15 +12,15 @@ import { Paciente } from '../../_core/_models/Paciente';
 import { PagerService } from '../../_core/_services/pager.service';
 
 @Component({
-  selector: 'app-pesquisa-paciente',  
+  selector: 'app-pesquisa-paciente',
   templateUrl: './pesquisa-paciente.component.html',
   styleUrls: ['./pesquisa-paciente.component.css']
 })
 
 export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
   @Output() pacienteSelecionadoEvent = new EventEmitter<any>();
-  @Input() idPaciente: number;  
-  @Input() pacienteNome: string;  
+  @Input() idPaciente: number;
+  @Input() pacienteNome: string;
   object: Paciente = new Paciente();
   loading: Boolean = false;
   modalRef: NgbModalRef = null;
@@ -28,7 +28,7 @@ export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
   form: FormGroup;
   groupForm: any = {};
   type: string;
-  
+
   id: any;
   errors: any[] = [];
   pacienteSelecionado: any = null;
@@ -38,15 +38,15 @@ export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
   allItems: any[] = [];
   pager: any = {};
   pagedItems: any[];
-  pageLimit: number = 10;
+  pageLimit = 10;
   fieldsPacientes: any[] = [];
-  
+
   paging: any = {
     offset: 0,
     limit: 10,
     total: 0
-  };  
-  warning: string = "";    
+  };
+  warning = '';
   totalPages: Number;
 
   setPage(page: number) {
@@ -55,7 +55,7 @@ export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
   }
 
   loadQuantityPerPage(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.pageLimit = id;
     this.setPage(1);
   }
@@ -84,7 +84,7 @@ export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
 
@@ -92,9 +92,8 @@ export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.createGroup();    
-    if(this.idPaciente)
-    { 
+    this.createGroup();
+    if (this.idPaciente) {
       this.object.id = this.idPaciente;
       this.object.nome = this.pacienteNome;
     }
@@ -108,18 +107,18 @@ export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
 
   close() {
     this.modalRef.close();
-  } 
+  }
 
   clear() {
     this.object = new Paciente();
-    this.pacienteSelecionado = null;    
+    this.pacienteSelecionado = null;
     this.listaPacientes = [];
   }
 
   togglePaciente() {
-    return Util.isEmpty(this.object.cartaoSus) 
-           && Util.isEmpty(this.object.nome) 
-           && Util.isEmpty(this.object.nomeMae) 
+    return Util.isEmpty(this.object.cartaoSus)
+           && Util.isEmpty(this.object.nome)
+           && Util.isEmpty(this.object.nomeMae)
            && Util.isEmpty(this.object.numeroProntuario)
            && Util.isEmpty(this.object.cpf)
            && Util.isEmpty(this.object.dataNascimento)
@@ -137,32 +136,32 @@ export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
     this.close();
   }
 
-  buscaPaciente(offset: Number = null, limit: Number = null) {    
+  buscaPaciente(offset: Number = null, limit: Number = null) {
     this.errors = [];
     this.loading = true;
-    let params = "pesquisa=1&";
-    
+    let params = 'pesquisa=1&';
+
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
 
     if (!Util.isEmpty(this.object)) {
       if (Object.keys(this.object).length) {
-        for (let key of Object.keys(this.object)) {
+        for (const key of Object.keys(this.object)) {
           if (!Util.isEmpty(this.object[key])) {
-            params += key + "=" + this.object[key] + "&";
+            params += key + '=' + this.object[key] + '&';
           }
         }
-        if (params != "") {
-          params = "?" + params;
+        if (params != '') {
+          params = '?' + params;
         }
       }
     }
 
     if (this.paging.offset != null && this.paging.limit != null) {
-      params += (params == "" ? "?" : "") + "offset=" + this.paging.offset + "&limit=" + this.paging.limit;
+      params += (params == '' ? '?' : '') + 'offset=' + this.paging.offset + '&limit=' + this.paging.limit;
     }
 
-    this.service.list('paciente' + params).subscribe(result => {      
+    this.service.list('paciente' + params).subscribe(result => {
       this.paging.total = result.total;
       this.totalPages = Math.ceil((this.paging.total / this.paging.limit));
       this.listaPacientes = result.items;
@@ -176,7 +175,7 @@ export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
   }
 
   loadQuantityPerPagePagination(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.paging.limit = id;
 
     this.setPagePagined(this.pager.offset, this.paging.limit);
@@ -184,7 +183,7 @@ export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
 
   setPagePagined(offset: number, limit: Number) {
     this.paging.offset = offset !== undefined ? offset : 0;
-    this.paging.limit = limit ? limit : this.paging.limit;    
+    this.paging.limit = limit ? limit : this.paging.limit;
     this.buscaPaciente(this.paging.offset, this.paging.limit);
   }
 }

@@ -1,18 +1,18 @@
-import { Routes } from "@angular/router";
-import { ReceitaFormComponent } from "./receita-form.component";
-import { ReceitaComponent } from "./receita.component";
+import { Routes } from '@angular/router';
+import { ReceitaFormComponent } from './receita-form.component';
+import { ReceitaComponent } from './receita.component';
 
 export const receitaRoutes: Routes = [
     {
         path: '',
-        component: ReceitaComponent,        
+        component: ReceitaComponent,
     },
     {
         path: 'cadastro',
-        component: ReceitaFormComponent,        
+        component: ReceitaFormComponent,
     },
     {
         path: 'cadastro/:id',
-        component: ReceitaFormComponent,        
+        component: ReceitaFormComponent,
     }
 ];

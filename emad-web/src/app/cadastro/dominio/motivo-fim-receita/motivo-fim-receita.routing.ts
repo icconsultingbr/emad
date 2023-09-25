@@ -1,18 +1,18 @@
-import { Routes } from "@angular/router";
-import { MotivoFimReceitaFormComponent } from "./motivo-fim-receita-form.component";
-import { MotivoFimReceitaComponent } from "./motivo-fim-receita.component";
+import { Routes } from '@angular/router';
+import { MotivoFimReceitaFormComponent } from './motivo-fim-receita-form.component';
+import { MotivoFimReceitaComponent } from './motivo-fim-receita.component';
 
 export const motivoFimReceitaRoutes: Routes = [
     {
         path: '',
-        component: MotivoFimReceitaComponent,        
+        component: MotivoFimReceitaComponent,
     },
     {
         path: 'cadastro',
-        component: MotivoFimReceitaFormComponent,        
+        component: MotivoFimReceitaFormComponent,
     },
     {
         path: 'cadastro/:id',
-        component: MotivoFimReceitaFormComponent,        
+        component: MotivoFimReceitaFormComponent,
     }
 ];

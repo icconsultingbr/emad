@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class CpfCnpjPipe implements PipeTransform {
 
   transform(value: any, args?: any): any {
-    if(typeof value != 'undefined') {
+    if (typeof value != 'undefined') {
       value = value.toString();
       if (value.length === 14) {
         return this.cnpj_mask(value);

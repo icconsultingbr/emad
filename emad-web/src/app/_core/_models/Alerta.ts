@@ -1,24 +1,24 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
-export class Alerta{
-    id:Number;
+export class Alerta {
+    id: Number;
     @Input() titulo: string;
     @Input() descricao: string;
-    @Input() tipo : string;
-    @Input() url : string;
-    @Input() tipoFormatado : string;
-    @Input() novo : number;
-    @Input() data : string;
+    @Input() tipo: string;
+    @Input() url: string;
+    @Input() tipoFormatado: string;
+    @Input() novo: number;
+    @Input() data: string;
 
-    public getCor():string{
+    public getCor(): string {
         let cor = 'info';
-        if(this.tipo == 'N'){
+        if (this.tipo == 'N') {
             cor = 'info';
         }
-        if(this.tipo == 'A'){
+        if (this.tipo == 'A') {
             cor = 'warning';
         }
-        if(this.tipo == 'V'){
+        if (this.tipo == 'V') {
             cor = 'danger';
         }
         return cor;

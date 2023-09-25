@@ -12,7 +12,7 @@ import { EstabelecimentoGrupoMaterial } from '../../_core/_models/Estabeleciment
 
 export class EstabelecimentoGrupoMaterialComponent implements OnInit {
 
-  method: string = "estabelecimento-grupo-material";
+  method = 'estabelecimento-grupo-material';
   object: EstabelecimentoGrupoMaterial = new EstabelecimentoGrupoMaterial();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class EstabelecimentoGrupoMaterialComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: EstabelecimentoGrupoMaterialService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

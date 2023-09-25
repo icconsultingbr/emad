@@ -17,10 +17,10 @@ export class UsuarioAlterarSenhaComponent implements OnInit {
   usuarioForm: FormGroup;
   route: ActivatedRoute;
   router: Router;
-  mensagem: string = "";
-  warning: string = "";
+  mensagem = '';
+  warning = '';
   usuario: Senha = new Senha();
-  @Input() ep : Number = 0;
+  @Input() ep: Number = 0;
   id: number;
 
   constructor(
@@ -29,7 +29,7 @@ export class UsuarioAlterarSenhaComponent implements OnInit {
     route: ActivatedRoute,
     router: Router,
     service: UsuarioService,
-    public loginService : LoginService) {
+    public loginService: LoginService) {
 
     this.route = route;
     this.router = router;
@@ -37,46 +37,46 @@ export class UsuarioAlterarSenhaComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       this.id = params['id'];
-      
+
       if (this.id) {
         this.service.buscaPorId(this.id)
           .subscribe(
             mensagem => {
               //console.log(mensagem);
-              this.usuario = mensagem.usuario; 
+              this.usuario = mensagem.usuario;
             }
           );
       }
     });
- 
+
     this.usuarioForm = fb.group({
       id: [this.id],
       nome: [this.usuario.nome],
-      cpf: [this.usuario.cpf],      
+      cpf: [this.usuario.cpf],
       novaSenha: ['', Validators.required],
       confirmarNovaSenha: ['', Validators.required]
-    }); 
+    });
   }
 
   ngOnInit() {
     this.nav.show();
   }
 
-  redefinirSenha(event){
+  redefinirSenha(event) {
     event.preventDefault();
 
     this.service
     .redefinirSenhaAdmin(this.usuarioForm.value)
-    .subscribe(res=>{      
-      this.mensagem = "Senha alterada com sucesso!";
-      this.warning = "";
+    .subscribe(res => {
+      this.mensagem = 'Senha alterada com sucesso!';
+      this.warning = '';
       this.router.navigate(['usuarios']);
-    }, erro=>{
-      let json = erro; 
-      this.warning ="";
+    }, erro => {
+      const json = erro;
+      this.warning = '';
 
-      for (var key in json) {
-        this.warning+="-"+json[key].msg+'\n';
+      for (const key in json) {
+        this.warning += '-' + json[key].msg + '\n';
       }
     });
   }

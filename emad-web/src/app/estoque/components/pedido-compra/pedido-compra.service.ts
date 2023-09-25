@@ -10,38 +10,38 @@ export class PedidoCompraService extends GenericsService {
     super(http);
   }
 
-  public fields: any[] = [    
+  public fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: true,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "numeroPedido",
-      type: "text",
-      label: "Número",
+      field: 'numeroPedido',
+      type: 'text',
+      label: 'Número',
       grid: true,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "numeroEmpenho",
-      type: "text",
-      label: "Empenho",
+      field: 'numeroEmpenho',
+      type: 'text',
+      label: 'Empenho',
       grid: true,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "dataPedido",
-      type: "text",
-      label: "Data pedido",
+      field: 'dataPedido',
+      type: 'text',
+      label: 'Data pedido',
       grid: true,
       form: false,
       isDate: true,
@@ -54,9 +54,9 @@ export class PedidoCompraService extends GenericsService {
       },
     },
     {
-      field: "dataEmpenho",
-      type: "hidden",
-      label: "Data empenho",
+      field: 'dataEmpenho',
+      type: 'hidden',
+      label: 'Data empenho',
       grid: true,
       form: false,
       isDate: true,
@@ -69,24 +69,24 @@ export class PedidoCompraService extends GenericsService {
       },
     },
     {
-      field: "status",
-      type: "text",
-      label: "Status",
+      field: 'status',
+      type: 'text',
+      label: 'Status',
       grid: true,
       form: true,
       required: true,
-      translate: {"A": "ATIVO", "F": "FINALIZADO"},
+      translate: {'A': 'ATIVO', 'F': 'FINALIZADO'},
       validator: ['', Validators.required]
     },
     {
-      field: "situacao",
-      type: "checkbox",
-      label: "Situação",
+      field: 'situacao',
+      type: 'checkbox',
+      label: 'Situação',
       grid: false,
       form: false,
-      translate: {1: "Ativo", 0: "Inativo"},
+      translate: {1: 'Ativo', 0: 'Inativo'},
       required: true,
-      validator:['', Validators.required]
+      validator: ['', Validators.required]
     }
   ];
 
@@ -94,8 +94,7 @@ export class PedidoCompraService extends GenericsService {
     if (obj.id) {
         return this.http
             .put('pedido-compra', JSON.stringify(obj));
-    }
-    else {
+    } else {
         return this.http
             .post('pedido-compra', JSON.stringify(obj));
     }

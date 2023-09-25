@@ -1,17 +1,17 @@
-import { Injectable } from "@angular/core";
-import { PacienteService } from "../../cadastro/paciente/paciente.service";
-import * as _moment from "moment";
-import { environment } from "../../../environments/environment";
-import { RelatorioProntuarioPacienteService } from "./prontuario-paciente.service";
-import { data } from "jquery";
+import { Injectable } from '@angular/core';
+import { PacienteService } from '../../cadastro/paciente/paciente.service';
+import * as _moment from 'moment';
+import { environment } from '../../../environments/environment';
+import { RelatorioProntuarioPacienteService } from './prontuario-paciente.service';
+import { data } from 'jquery';
 
 @Injectable()
 export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacienteService {
   pathFiles = `${environment.apiUrl}/fotos/`;
 
   tipoHistoriaClinica = [
-    { id: 1, nome: "Anamnese" },
-    { id: 2, nome: "Evolução" },
+    { id: 1, nome: 'Anamnese' },
+    { id: 2, nome: 'Evolução' },
   ];
 
   constructor(private pacienteService: PacienteService) {
@@ -29,7 +29,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
             /*Oculta os rodapes de impressão*/
             display: none;
         }
-    
+
         @media print {
             html, body {
                 min-height: 100%;
@@ -41,12 +41,12 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
             .hidden-button{
                 display: none;
             }
-    
+
             footer {
                 /*some com o rodapé original*/
                 display: none;
             }
-    
+
             div.page div.print-footer {
                 /*exibe os rodapés de impressão (que no caso são divs)*/
                 display: block;
@@ -55,7 +55,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                 margin-top: -2%;
                 height: 2%; /*quando ajustar a altura deves ajustar margin-top e o top*/
             }
-    
+
             div.content {
                 /*Ajuda a trabalhar o conteudo com o .print-footer*/
                 position: relative;
@@ -63,7 +63,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                 top: 0;
                 left: 0;
             }
-    
+
             div.page {
                 /*Força sempre quebrar a página no final*/
                 page-break-after: always;
@@ -100,16 +100,16 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
             margin-left: 30px;
             margin-right: 30px;
         }
-        
+
         .collapsible-body{
             display: block !important;
         }
-        
+
         .input-field{
             margin-top: unset !important;
         }
-        
-        .cor_topo {            
+
+        .cor_topo {
             color: #000000;
         }
 
@@ -144,75 +144,75 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
     dataFinal: string,
     tipoFicha: number,
     profissional: number,
-    target: string = "_blank",
+    target: string = '_blank',
   ) {
     this.pacienteService
       .obterProntuarioPacienteRelatorio(idPaciente, tipoFicha, profissional)
       .subscribe((result) => {
         console.log(result);
-        let sinaisVitais = "";
-        let atendimentos = "";
-        let receitas = "";
-        let fichasAtendimento = "";
-        let exames = "";
-        let hipoteseDiagnostica = "";
-        let vacinas = "";
-        let procedimentos = "";
-        let encaminhamentos = "";
+        let sinaisVitais = '';
+        let atendimentos = '';
+        let receitas = '';
+        let fichasAtendimento = '';
+        let exames = '';
+        let hipoteseDiagnostica = '';
+        let vacinas = '';
+        let procedimentos = '';
+        let encaminhamentos = '';
 
         const sinaisVitaisFilter = this.filter(
           result.sinaisVitais,
           dataInicial,
           dataFinal,
-          "dataCriacao",
+          'dataCriacao',
         );
         const atendimentosFilter = this.filter(
           result.atendimentos,
           dataInicial,
           dataFinal,
-          "dataCriacao",
+          'dataCriacao',
         );
         const receitasFilter = this.filter(
           result.receitas,
           dataInicial,
           dataFinal,
-          "dataEmissao",
+          'dataEmissao',
         );
         const fichasAtendimentoFilter = this.filter(
           result.vacinas,
           dataInicial,
           dataFinal,
-          "dataCriacao",
+          'dataCriacao',
         );
         const examesFilter = this.filter(
           result.exames,
           dataInicial,
           dataFinal,
-          "dataCriacao",
+          'dataCriacao',
         );
         const hipoteseDiagnosticaFilter = this.filter(
           result.hipoteseDiagnostica,
           dataInicial,
           dataFinal,
-          "dataCriacao",
+          'dataCriacao',
         );
         const vacinasFilter = this.filter(
           result.vacinas,
           dataInicial,
           dataFinal,
-          "dataUltDisp",
+          'dataUltDisp',
         );
         const procedimentosFilter = this.filter(
           result.procedimentos,
           dataInicial,
           dataFinal,
-          "dataCriacao",
+          'dataCriacao',
         );
         const encaminhamentosFilter = this.filter(
           result.encaminhamentos,
           dataInicial,
           dataFinal,
-          "dataCriacao",
+          'dataCriacao',
         );
 
         if (sinaisVitaisFilter) {
@@ -226,7 +226,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 <th style="width:14%">Temperatura</th>
                                                 <th style="width:14%">Peso</th>
                                                 <th style="width:14%">Glicemia</th>
-                                                <th style="width:15%">Data</th>   
+                                                <th style="width:15%">Data</th>
                                                 </tr>
                                             </thead>`;
 
@@ -237,29 +237,29 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                         <td class="text-secondary">${
                                           sinais.pressaoArterial
                                             ? sinais.pressaoArterial
-                                            : ""
+                                            : ''
                                         }</td>
                                         <td class="text-secondary">${
-                                          sinais.pulso ? sinais.pulso : ""
+                                          sinais.pulso ? sinais.pulso : ''
                                         }</td>
                                         <td class="text-secondary">${
                                           sinais.saturacao
                                             ? sinais.saturacao
-                                            : ""
+                                            : ''
                                         }</td>
                                         <td class="text-secondary">${
                                           sinais.temperatura
                                             ? sinais.temperatura
-                                            : ""
+                                            : ''
                                         }</td>
                                         <td class="text-secondary">${
-                                          sinais.peso ? sinais.peso : ""
+                                          sinais.peso ? sinais.peso : ''
                                         }</td>
                                         <td class="text-secondary">${
-                                          sinais.glicemia ? sinais.glicemia : ""
+                                          sinais.glicemia ? sinais.glicemia : ''
                                         }</td>
                                         <td class="text-secondary">${
-                                          sinais.label ? sinais.label : ""
+                                          sinais.label ? sinais.label : ''
                                         }</td>
                                     </tr>`;
           });
@@ -275,14 +275,14 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
             var tpHistoriaClinica = this.tipoHistoriaClinica.find(
               (x) => x.id == atendimento.tipoHistoriaClinica,
             );
-            let atividadesAtendimento = "";
+            let atividadesAtendimento = '';
 
             atividadesAtendimento += `<div class="col s12">
                                             <table class="table table-striped">
                                                 <thead>
                                                 <tr>
                                                 <th style="width:50%">Data</th>
-                                                <th style="width:50%">Atividade</th>   
+                                                <th style="width:50%">Atividade</th>
                                                 </tr>
                                             </thead>`;
 
@@ -317,17 +317,17 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                             <span> <b>Motivo da queixa</b>: ${
                                               atendimento.motivoQueixa
                                                 ? atendimento.motivoQueixa
-                                                : ""
+                                                : ''
                                             }</span>
                                             <span> <b>Tipo</b>: ${
                                               atendimento.tipoHistoriaClinica
                                                 ? tpHistoriaClinica.nome
-                                                : ""
+                                                : ''
                                             }</span>
                                             <span> <b>Descrição</b>: ${
                                               atendimento.historicoClinico
                                                 ? atendimento.historicoClinico
-                                                : ""
+                                                : ''
                                             }</span>
                                             ${atividadesAtendimento}
                                         </div>`;
@@ -336,7 +336,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
 
         if (receitasFilter) {
           receitasFilter.forEach((receita) => {
-            let itensReceita = "";
+            let itensReceita = '';
 
             itensReceita += `<div class="col s12">
                                             <table class="table table-striped">
@@ -345,10 +345,10 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 <th style="width:13%">Código do material</th>
                                                 <th style="width:21%">Descrição do material</th>
                                                 <th style="width:12%">Qtd. prescrita</th>
-                                                <th style="width:12%">Tempo tratamento</th> 
+                                                <th style="width:12%">Tempo tratamento</th>
                                                 <th style="width:12%">Qtd. dispensada</th>
-                                                <th style="width:14%">Data últ. dispensação</th> 
-                                                <th style="width:14%">Observação</th>    
+                                                <th style="width:14%">Data últ. dispensação</th>
+                                                <th style="width:14%">Observação</th>
                                                 </tr>
                                             </thead>`;
 
@@ -376,14 +376,14 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                     ? _moment(
                                                         itens.dataUltDisp,
                                                       ).format(
-                                                        "DD/MM/YYYY HH:mm",
+                                                        'DD/MM/YYYY HH:mm',
                                                       )
-                                                    : ""
+                                                    : ''
                                                 }</td>
                                                 <td class="text-secondary">${
                                                   itens.observacao
                                                     ? itens.observacao
-                                                    : ""
+                                                    : ''
                                                 }</td>
                                             </tr>`;
             });
@@ -411,8 +411,8 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                           receita.dataEmissao
                                             ? _moment(
                                                 receita.dataEmissao,
-                                              ).format("DD/MM/YYYY HH:mm")
-                                            : ""
+                                              ).format('DD/MM/YYYY HH:mm')
+                                            : ''
                                         }</span>
                                         ${itensReceita}
                                 </div>`;
@@ -430,7 +430,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 <th style="width:14%">Queixa</th>
                                                 <th style="width:14%">Situação</th>
                                                 <th style="width:14%">Data</th>
-                                                <th style="width:14%">Estabelecimento</th>   
+                                                <th style="width:14%">Estabelecimento</th>
                                                 </tr>
                                             </thead>`;
 
@@ -451,7 +451,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 <td class="text-secondary">${
                                                   ficha.motivoQueixa
                                                     ? ficha.motivoQueixa
-                                                    : ""
+                                                    : ''
                                                 }</td>
                                                 <td class="text-secondary">${
                                                   ficha.situacaoNome
@@ -461,9 +461,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                     ? _moment(
                                                         ficha.dataCriacao,
                                                       ).format(
-                                                        "DD/MM/YYYY HH:mm",
+                                                        'DD/MM/YYYY HH:mm',
                                                       )
-                                                    : ""
+                                                    : ''
                                                 }</td>
                                                 <td class="text-secondary">${
                                                   ficha.estabelecimentoNome
@@ -488,7 +488,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                     <th style="width:16%">Situação</th>
                                     <th style="width:16%">Resultado</th>
                                     <th style="width:16%">Data</th>
-                                    <th style="width:16%">Estabelecimento</th>   
+                                    <th style="width:16%">Estabelecimento</th>
                                     </tr>
                                 </thead>`;
 
@@ -514,9 +514,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                         <td class="text-secondary">${
                                           exame.dataCriacao
                                             ? _moment(exame.dataCriacao).format(
-                                                "DD/MM/YYYY HH:mm",
+                                                'DD/MM/YYYY HH:mm',
                                               )
-                                            : ""
+                                            : ''
                                         }</td>
                                         <td class="text-secondary">${
                                           exame.estabelecimentoNome
@@ -538,7 +538,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 <th style="width:25%">Código</th>
                                                 <th style="width:25%">Diagnóstico</th>
                                                 <th style="width:25%">CID 10</th>
-                                                <th style="width:25%">Data</th>   
+                                                <th style="width:25%">Data</th>
                                                 </tr>
                                             </thead>`;
 
@@ -561,9 +561,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                         ? _moment(
                                                             hipotese.dataCriacao,
                                                           ).format(
-                                                            "DD/MM/YYYY HH:mm",
+                                                            'DD/MM/YYYY HH:mm',
                                                           )
-                                                        : ""
+                                                        : ''
                                                     }</td>
                                                 </tr>`;
           });
@@ -583,9 +583,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                     <th style="width:15%">Profissional</th>
                                     <th style="width:10%">Código material</th>
                                     <th style="width:25%">Descrição do material</th>
-                                    <th style="width:8%">Qtd. prescrita</th>   
-                                    <th style="width:8%">Qtd. dispensada</th>   
-                                    <th style="width:35%">Data últ. dispensação</th>   
+                                    <th style="width:8%">Qtd. prescrita</th>
+                                    <th style="width:8%">Qtd. dispensada</th>
+                                    <th style="width:35%">Data últ. dispensação</th>
                                     </tr>
                                 </thead>`;
 
@@ -599,7 +599,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                         <td class="text-secondary">${
                                           vacina.nomeProfissional
                                             ? vacina.nomeProfissional
-                                            : ""
+                                            : ''
                                         }</td>
                                         <td class="text-secondary">${
                                           vacina.codigo
@@ -617,8 +617,8 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                           vacina.dataUltDisp
                                             ? _moment(
                                                 vacina.dataUltDisp,
-                                              ).format("DD/MM/YYYY HH:mm")
-                                            : ""
+                                              ).format('DD/MM/YYYY HH:mm')
+                                            : ''
                                         }</td>
                                     </tr>`;
           });
@@ -663,9 +663,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                     ? _moment(
                                                         procedimento.dataCriacao,
                                                       ).format(
-                                                        "DD/MM/YYYY HH:mm",
+                                                        'DD/MM/YYYY HH:mm',
                                                       )
-                                                    : ""
+                                                    : ''
                                                 }</td>
                                             </tr>`;
           });
@@ -702,9 +702,9 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                     ? _moment(
                                                         encaminhamento.dataCriacao,
                                                       ).format(
-                                                        "DD/MM/YYYY HH:mm",
+                                                        'DD/MM/YYYY HH:mm',
                                                       )
-                                                    : ""
+                                                    : ''
                                                 }</td>
                                             </tr>`;
           });
@@ -748,63 +748,63 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                         <span> Cartão SUS: ${
                                           result.paciente[0].cartaoSus
                                             ? result.paciente[0].cartaoSus
-                                            : ""
+                                            : ''
                                         }</span>
                                     </div>
                                     <div class="col s3">
                                         <span> Id SAP: ${
                                           result.paciente[0].idSap
                                             ? result.paciente[0].idSap
-                                            : ""
+                                            : ''
                                         }</span>
                                     </div>
                                     <div class="col s3">
                                         <span> Paciente: ${
                                           result.paciente[0].nome
                                             ? result.paciente[0].nome
-                                            : ""
+                                            : ''
                                         }</span>
                                     </div>
                                     <div class="col s3">
                                         <span> Nome Social: ${
                                           result.paciente[0].nomeSocial
                                             ? result.paciente[0].nomeSocial
-                                            : ""
+                                            : ''
                                         }</span>
                                     </div>
                                     <div class="col s3">
                                         <span> Apelido: ${
                                           result.paciente[0].apelido
                                             ? result.paciente[0].apelido
-                                            : ""
+                                            : ''
                                         }</span>
                                     </div>
                                     <div class="col s3">
                                         <span> Nome da mãe: ${
                                           result.paciente[0].nomeMae
                                             ? result.paciente[0].nomeMae
-                                            : ""
+                                            : ''
                                         }</span>
                                     </div>
                                     <div class="col s3">
                                         <span> Nome do pai: ${
                                           result.paciente[0].nomePai
                                             ? result.paciente[0].nomePai
-                                            : ""
+                                            : ''
                                         }</span>
                                     </div>
                                     <div class="col s3">
                                         <span> Data de nascimento: ${
                                           result.paciente[0].dataNascimento
                                             ? result.paciente[0].dataNascimento
-                                            : ""
+                                            : ''
                                         }</span>
                                     </div>
                                     <div class="col s3">
                                         <span> Sexo: ${
                                           result.paciente[0].sexo == 1
-                                            ? "Masculino"
-                                            : "Feminino"
+                                            ? 'Masculino'
+                                            : 'Feminino'
                                         }</span>
                                     </div>
                                     <div class="col s3">
@@ -812,7 +812,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                           result.paciente[0].nacionalidadeNome
                                             ? result.paciente[0]
                                                 .nacionalidadeNome
-                                            : ""
+                                            : ''
                                         }</span>
                                     </div>
                                     <div class="col s3">
@@ -820,28 +820,28 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                           result.paciente[0].naturalidadeNome
                                             ? result.paciente[0]
                                                 .naturalidadeNome
-                                            : ""
+                                            : ''
                                         }</span>
                                     </div>
                                     <div class="col s3">
                                         <span> CPF: ${
                                           result.paciente[0].cpf
                                             ? result.paciente[0].cpf
-                                            : ""
+                                            : ''
                                         }</span>
                                     </div>
                                     <div class="col s3">
                                         <span> Ocupação: ${
                                           result.paciente[0].ocupacao
                                             ? result.paciente[0].ocupacao
-                                            : ""
+                                            : ''
                                         }</span>
                                     </div>
                                     <div class="col s3">
                                         <span> Escolaridade: ${
                                           result.paciente[0].escolaridade
                                             ? result.paciente[0].escolaridade
-                                            : ""
+                                            : ''
                                         }</span>
                                     </div>
                                     <div class="col s3">
@@ -849,28 +849,28 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                           result.estabelecimento.nomeFantasia
                                             ? result.estabelecimento
                                                 .nomeFantasia
-                                            : ""
+                                            : ''
                                         }</span>
                                     </div>
                                     <div class="col s3">
                                         <span> Observações: ${
                                           result.paciente[0].observacao
                                             ? result.paciente[0].observacao
-                                            : ""
+                                            : ''
                                         }</span>
                                     </div>
                                     <div class="col s3">
                                         <span> Falecido: ${
                                           result.paciente[0].falecido == 0
-                                            ? "Não"
-                                            : "Sim"
+                                            ? 'Não'
+                                            : 'Sim'
                                         }</span>
                                     </div>
                                     <div class="col s4">
                                         <span> Situação: ${
                                           result.paciente[0].situacao == 1
-                                            ? "Ativo"
-                                            : "Inativo"
+                                            ? 'Ativo'
+                                            : 'Inativo'
                                         }</span>
                                     </div>
                                 </div>
@@ -885,7 +885,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                             .historiaProgressaFamiliar
                                             ? result.paciente[0]
                                                 .historiaProgressaFamiliar
-                                            : "Nada consta"
+                                            : 'Nada consta'
                                         }</span>
                                     </div>
                                 </div>

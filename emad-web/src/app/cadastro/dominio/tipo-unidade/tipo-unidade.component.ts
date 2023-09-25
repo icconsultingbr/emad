@@ -12,7 +12,7 @@ import { TipoUnidade } from '../../../_core/_models/TipoUnidade';
 
 export class TipoUnidadeComponent implements OnInit {
 
-  method: string = "tipo-unidade";
+  method = 'tipo-unidade';
   object: TipoUnidade = new TipoUnidade();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class TipoUnidadeComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: TipoUnidadeService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

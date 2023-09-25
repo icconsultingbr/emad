@@ -19,7 +19,7 @@ export class EstoqueUnidadeComponent implements OnInit {
 
   //MESSAGES
   loading: Boolean = false;
-  message: string = "";
+  message = '';
   errors: any[] = [];
   modalRef: NgbModalRef = null;
   modalRemoveRef: NgbModalRef = null;
@@ -29,14 +29,14 @@ export class EstoqueUnidadeComponent implements OnInit {
   allItems: any[];
   pager: any = {};
   pagedItems: any[];
-  pageLimit: number = 10;
+  pageLimit = 10;
   fields: any[] = [];
   agendas: any[] = [];
 
   //MODELS (OBJECTS)
   object: RelatorioEstoque = new RelatorioEstoque();
   estoquePorUnidade: any[] = [];
-  listaEstoqueUnidadeDetalhe: any[] = [];  
+  listaEstoqueUnidadeDetalhe: any[] = [];
   domains: any[] = [];
 
   constructor(
@@ -44,10 +44,10 @@ export class EstoqueUnidadeComponent implements OnInit {
     private fb: FormBuilder,
     private service: EstoqueUnidadeService,
     private modalService: NgbModal,
-    private estoqueUnidadeImpressaoService: EstoqueUnidadeImpressaoService, 
+    private estoqueUnidadeImpressaoService: EstoqueUnidadeImpressaoService,
     private router: Router) {
 
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }
@@ -59,29 +59,27 @@ export class EstoqueUnidadeComponent implements OnInit {
   }
 
   carregaEstoquePorEstabelecimento(btn) {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
-    if(btn){
-      if (!Util.isEmpty(this.object.nomeMaterial) && this.object.nomeMaterial.length<3)
-      {
-         this.errors = [{message:"Informe ao menos 3 caracteres da descrição do medicamento"}];
+    if (btn) {
+      if (!Util.isEmpty(this.object.nomeMaterial) && this.object.nomeMaterial.length < 3) {
+         this.errors = [{message: 'Informe ao menos 3 caracteres da descrição do medicamento'}];
          this.loading = false;
          return;
       }
-      
-      if (!Util.isEmpty(this.object.nomeLote) && this.object.nomeLote.length<3)
-      {
-         this.errors = [{message:"Informe ao menos 3 caracteres da descrição do lote"}];
+
+      if (!Util.isEmpty(this.object.nomeLote) && this.object.nomeLote.length < 3) {
+         this.errors = [{message: 'Informe ao menos 3 caracteres da descrição do lote'}];
          this.loading = false;
          return;
-      }  
+      }
     }
 
-    var params = "?nomeMaterial=" + this.object.nomeMaterial + "&nomeLote=" + this.object.nomeLote;
+    const params = '?nomeMaterial=' + this.object.nomeMaterial + '&nomeLote=' + this.object.nomeLote;
 
-    this.service.carregaEstoquePorEstabelecimento("pesquisa", this.object.idEstabelecimento, params).subscribe(result => {
+    this.service.carregaEstoquePorEstabelecimento('pesquisa', this.object.idEstabelecimento, params).subscribe(result => {
       this.estoquePorUnidade = result;
       this.loading = false;
     }, error => {
@@ -90,15 +88,15 @@ export class EstoqueUnidadeComponent implements OnInit {
     });
   }
 
-  carregaEstoque(item: any){
+  carregaEstoque(item: any) {
     this.loading = true;
     this.listaEstoqueUnidadeDetalhe = [];
-    this.estoquePorUnidade.forEach(itemEstoque => {      
+    this.estoquePorUnidade.forEach(itemEstoque => {
       itemEstoque.expandir = (itemEstoque.idMaterial == item.idMaterial && itemEstoque.expandir == true) ? true : false;
     });
-    item.expandir = !item.expandir;    
+    item.expandir = !item.expandir;
     this.service.carregaEstoquePorEstabelecimentoDetalhado(this.object.idEstabelecimento, item.idMaterial).subscribe(estoque => {
-      this.listaEstoqueUnidadeDetalhe = estoque;                  
+      this.listaEstoqueUnidadeDetalhe = estoque;
       this.loading = false;
     }, erro => {
       this.loading = false;
@@ -106,14 +104,14 @@ export class EstoqueUnidadeComponent implements OnInit {
     });
   }
 
-  clear(){
-    this.object.nomeMaterial = "";
-    this.object.nomeLote = "";
+  clear() {
+    this.object.nomeMaterial = '';
+    this.object.nomeLote = '';
     this.carregaEstoquePorEstabelecimento(false);
   }
 
-  abreRelatorioEstoqueUnidade(idEstabelecimento: number, nomeMaterial: string, nomeLote: string, open: boolean) {    
-    this.estoqueUnidadeImpressaoService.imprimir(idEstabelecimento, this.object.nomeEstabelecimento,  nomeMaterial, nomeLote, "");
+  abreRelatorioEstoqueUnidade(idEstabelecimento: number, nomeMaterial: string, nomeLote: string, open: boolean) {
+    this.estoqueUnidadeImpressaoService.imprimir(idEstabelecimento, this.object.nomeEstabelecimento,  nomeMaterial, nomeLote, '');
   }
 
   setPage(page: number) {
@@ -122,7 +120,7 @@ export class EstoqueUnidadeComponent implements OnInit {
   }
 
   loadQuantityPerPage(event) {
-    let id = parseInt(event.target.value);
+    const id = parseInt(event.target.value);
     this.pageLimit = id;
     this.setPage(1);
   }

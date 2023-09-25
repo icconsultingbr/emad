@@ -1,5 +1,5 @@
 <h4 class="mb-5 text-left">
-  {{ id != null ? "Editar " + label : "Adicionar " + label }}
+  {{ id != null ? 'Editar ' + label : 'Adicionar ' + label }}
 </h4>
 <app-loader [loading]="loading"></app-loader>
 <p *ngIf="message.length" class="alert alert-info sticky-top">{{ message }}</p>
@@ -369,6 +369,7 @@
                       [(ngModel)]="object.observacao"
                       formControlName="observacao"
                     ></textarea>
+                    <<<<<<< HEAD
                   </div>
                 </div>
               </div>
@@ -396,6 +397,7 @@
                         for="reeducando"
                       ></label>
                     </div>
+                    ======= >>>>>>> c334f19488ea89a70c2fa10e48969ecce1d05756
                   </div>
                 </div>
               </div>
@@ -1157,7 +1159,11 @@
                       <td class="text-secondary">{{ item.nome }}</td>
                       <td class="text-secondary">{{ item.cid_10 }}</td>
                       <td class="text-secondary">
-                        {{ item.dataCriacao | date: "dd/MM/yyyy HH:mm:ss" }}
+                        <<<<<<< HEAD
+                        {{ item.dataCriacao | date: 'dd/MM/yyyy HH:mm:ss' }}
+                        =======
+                        {{ item.dataCriacao | date: 'dd/MM/yyyy HH:mm:ss' }}
+                        >>>>>>> c334f19488ea89a70c2fa10e48969ecce1d05756
                       </td>
                       <td class="text-secondary">
                         <a
@@ -1204,7 +1210,11 @@
       <i class="fa fa-arrow-left"></i> Retornar
     </button>
     <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
-      <i class="fa fa-save"></i> {{ !object.id ? "Salvar" : "Atualizar" }}
+      <<<<<<< HEAD
+      <i class="fa fa-save"></i> {{ !object.id ? 'Salvar' : 'Atualizar' }}
+      =======
+      <i class="fa fa-save"></i> {{ !object.id ? 'Salvar' : 'Atualizar' }}
+      >>>>>>> c334f19488ea89a70c2fa10e48969ecce1d05756
     </button>
   </div>
 </form>

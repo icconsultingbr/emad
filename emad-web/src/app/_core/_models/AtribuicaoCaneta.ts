@@ -1,4 +1,4 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
 export class AtribuicaoCaneta {
     id: Number;
@@ -9,8 +9,8 @@ export class AtribuicaoCaneta {
     @Input() situacao: Boolean;
 }
 
-export class AtribuicaoCanetaHorario {        
+export class AtribuicaoCanetaHorario {
     @Input() horarioInicial: string;
-    @Input() horarioFinal: string;    
-    @Input() dataAtribuicao: Date;       
+    @Input() horarioFinal: string;
+    @Input() dataAtribuicao: Date;
 }

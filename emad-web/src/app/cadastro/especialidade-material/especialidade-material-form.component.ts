@@ -19,15 +19,15 @@ import { PagerService } from '../../_core/_services/pager.service';
 export class EspecialidadeMaterialFormComponent implements OnInit {
   //MESSAGES
   loading: Boolean = false;
-  message: string = "";
+  message = '';
   errors: any[] = [];
   modalRef: NgbModalRef = null;
   modalRemoveRef: NgbModalRef = null;
   form: FormGroup;
-  method: string = "especialidade-material";
+  method = 'especialidade-material';
   ausenciaProfissional: AusenciaProfissional = new AusenciaProfissional();
   fields: any[] = [];
-  object: EspecialidadeMaterial = new EspecialidadeMaterial();  
+  object: EspecialidadeMaterial = new EspecialidadeMaterial();
   domains: any[] = [];
   allItemsMaterial: any[] = [];
   allItemsPesquisaMaterial: any[] = [];
@@ -39,7 +39,7 @@ export class EspecialidadeMaterialFormComponent implements OnInit {
   allItems: any[] = [];
   pager: any = {};
   pagedItems: any[];
-  pageLimit: number = 10;
+  pageLimit = 10;
   fieldsPacientes: any[] = [];
 
   constructor(
@@ -49,7 +49,7 @@ export class EspecialidadeMaterialFormComponent implements OnInit {
     private modalService: NgbModal,
     private route: ActivatedRoute,
     private router: Router) {
-      for (let field of this.service.fields) {
+      for (const field of this.service.fields) {
         if (field.grid) {
           this.fields.push(field);
         }
@@ -60,9 +60,9 @@ export class EspecialidadeMaterialFormComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.idEspecialidade = params['id'];
 
-      this.domains.push({            
+      this.domains.push({
         idEspecialidade: []
-      }); 
+      });
 
       this.buscaEspecialidades();
       this.createGroup();
@@ -73,7 +73,7 @@ export class EspecialidadeMaterialFormComponent implements OnInit {
       }
     });
   }
-  
+
   buscaEspecialidades() {
     this.loading = true;
        this.service.list('especialidade').subscribe(result => {
@@ -93,47 +93,44 @@ export class EspecialidadeMaterialFormComponent implements OnInit {
   }
 
   salvaMedicamento() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
 
-    if (!this.materialSelecionado.id)
-    {
-      this.errors = [{message:"Selecione o material"}];
+    if (!this.materialSelecionado.id) {
+      this.errors = [{message: 'Selecione o material'}];
       this.loading = false;
       return;
     }
 
-    if (!this.object.idEspecialidade)
-    {
-      this.errors = [{message:"Selecione o material"}];
+    if (!this.object.idEspecialidade) {
+      this.errors = [{message: 'Selecione o material'}];
       this.loading = false;
       return;
     }
-    
+
     this.object.idMaterial = this.materialSelecionado.id;
 
     this.service.salvaMaterial(this.object).subscribe(result => {
-      this.message = "Material vinculado com sucesso!"
-      this.loading = false;      
+      this.message = 'Material vinculado com sucesso!';
+      this.loading = false;
       this.modalRef.close();
-      this.carregaMaterialPorEspecialidade();      
+      this.carregaMaterialPorEspecialidade();
     }, error => {
       this.loading = false;
       this.errors = Util.customHTTPResponse(error);
-    });    
+    });
     this.ausenciaProfissional.periodoInicial = null;
     this.ausenciaProfissional.periodoFinal = null;
     this.ausenciaProfissional.idTipoAusencia = 0;
   }
 
-  carregaDadosDoProfissional()
-  {
+  carregaDadosDoProfissional() {
     this.carregaMaterialPorEspecialidade();
   }
-  
+
   carregaMaterialPorEspecialidade() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.allItemsMaterial = [];
@@ -148,7 +145,7 @@ export class EspecialidadeMaterialFormComponent implements OnInit {
 
   removeMaterial(item) {
     this.service.removeMaterial(item.id).subscribe(result => {
-      this.message = "Material removido com sucesso!"
+      this.message = 'Material removido com sucesso!';
       this.loading = false;
       this.carregaMaterialPorEspecialidade();
     });
@@ -156,17 +153,16 @@ export class EspecialidadeMaterialFormComponent implements OnInit {
 
   buscaMaterial() {
     this.loading = true;
-    let params = "";
+    let params = '';
     this.allItemsPesquisaMaterial = [];
 
-    if (Util.isEmpty(this.material.descricao) || this.material.descricao.length<3)
-    {
-      this.errors = [{message:"Informe a descrição do material, ao menos 3 caracteres"}];
+    if (Util.isEmpty(this.material.descricao) || this.material.descricao.length < 3) {
+      this.errors = [{message: 'Informe a descrição do material, ao menos 3 caracteres'}];
       this.loading = false;
       return;
     }
-    
-    params = "?descricao=" + this.material.descricao;
+
+    params = '?descricao=' + this.material.descricao;
 
     this.service.list('material' + params).subscribe(result => {
       this.allItemsPesquisaMaterial = result;
@@ -186,16 +182,16 @@ export class EspecialidadeMaterialFormComponent implements OnInit {
 
   openMaterial(content: any) {
     this.errors = [];
-    this.message = "";
-    this.material.descricao = "";
-    //this.materialSelecionado = null;    
+    this.message = '';
+    this.material.descricao = '';
+    //this.materialSelecionado = null;
     this.allItemsPesquisaMaterial = [];
 
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
       keyboard: false,
       centered: true,
-      size: "lg"
+      size: 'lg'
     });
   }
 

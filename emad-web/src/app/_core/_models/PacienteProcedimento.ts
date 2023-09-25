@@ -1,4 +1,4 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
 export class PacienteProcedimento {
     id: Number = null;
@@ -6,5 +6,5 @@ export class PacienteProcedimento {
     @Input() idPaciente: Number = null;
     @Input() idProcedimento: Number = null;
     @Input() qtd: Number = null;
-    @Input() funcionalidade: string = 'ATENDIMENTO';
+    @Input() funcionalidade = 'ATENDIMENTO';
 }

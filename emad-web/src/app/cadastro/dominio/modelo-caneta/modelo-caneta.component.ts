@@ -12,7 +12,7 @@ import { ModeloCaneta } from '../../../_core/_models/ModeloCaneta';
 
 export class ModeloCanetaComponent implements OnInit {
 
-  method: string = "modelo-caneta";
+  method = 'modelo-caneta';
   object: ModeloCaneta = new ModeloCaneta();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class ModeloCanetaComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: ModeloCanetaService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

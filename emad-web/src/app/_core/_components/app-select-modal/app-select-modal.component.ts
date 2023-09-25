@@ -1,6 +1,6 @@
-import { AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { FormGroup } from "@angular/forms";
-import { SelectBaseModalModel } from "./model/select-base-modal.model";
+import { AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { SelectBaseModalModel } from './model/select-base-modal.model';
 
 @Component({
     selector: 'app-select-modal',
@@ -39,8 +39,10 @@ export class SelectModalComponent implements AfterViewChecked {
             this.formGroup.get(this.name).patchValue(value.id, { emitEvent: false });
         }
 
-        if(value)
-            if(value.id)
-                this.valueChange.emit(value.id);        
+        if (value) {
+            if (value.id) {
+                this.valueChange.emit(value.id);
+            }
+        }
     }
 }

@@ -1,6 +1,6 @@
-import { Routes } from "@angular/router";
-import { ModalidadeComponent } from "./modalidade.component";
-import { ModalidadeFormComponent } from "./modalidade-form.component";
+import { Routes } from '@angular/router';
+import { ModalidadeComponent } from './modalidade.component';
+import { ModalidadeFormComponent } from './modalidade-form.component';
 
 export const modalidadeRoutes: Routes = [
     {

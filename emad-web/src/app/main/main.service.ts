@@ -11,50 +11,50 @@ export class MainService extends GenericsService {
   }
 
   carregaQtdAtendimentosPorPeriodo(periodo: number): Observable<any> {
-    return this.http.get("atendimentos-quantidade?periodo="
-      + periodo + "&idEstabelecimento="
-      + JSON.parse(localStorage.getItem("est"))[0].id);
+    return this.http.get('atendimentos-quantidade?periodo='
+      + periodo + '&idEstabelecimento='
+      + JSON.parse(localStorage.getItem('est'))[0].id);
   }
 
   carregaAtendimentosPorPeriodo(periodo: number): Observable<any> {
-    return this.http.get("atendimentos-por-periodo?periodo="
-      + periodo + "&idEstabelecimento="
-      + JSON.parse(localStorage.getItem("est"))[0].id);
+    return this.http.get('atendimentos-por-periodo?periodo='
+      + periodo + '&idEstabelecimento='
+      + JSON.parse(localStorage.getItem('est'))[0].id);
   }
 
   carregaQtdMedicamentosPorPeriodo(periodo: number): Observable<any> {
-    return this.http.get("medicamentos-quantidade?periodo="
-      + periodo + "&idEstabelecimento="
-      + JSON.parse(localStorage.getItem("est"))[0].id);
+    return this.http.get('medicamentos-quantidade?periodo='
+      + periodo + '&idEstabelecimento='
+      + JSON.parse(localStorage.getItem('est'))[0].id);
   }
 
   carregaMedicamentosPorPeriodo(periodo: number): Observable<any> {
-    return this.http.get("medicamentos-por-periodo?periodo="
-      + periodo + "&idEstabelecimento="
-      + JSON.parse(localStorage.getItem("est"))[0].id);
+    return this.http.get('medicamentos-por-periodo?periodo='
+      + periodo + '&idEstabelecimento='
+      + JSON.parse(localStorage.getItem('est'))[0].id);
   }
 
   carregaTipoAtendimentoExistentePorPeriodo(periodo: number): Observable<any> {
-    return this.http.get("tipo-atendimento-existente-por-periodo?periodo="
-      + periodo + "&idEstabelecimento="
-      + JSON.parse(localStorage.getItem("est"))[0].id);
+    return this.http.get('tipo-atendimento-existente-por-periodo?periodo='
+      + periodo + '&idEstabelecimento='
+      + JSON.parse(localStorage.getItem('est'))[0].id);
   }
 
   carregaTipoAtendimentoPorPeriodo(periodo: number): Observable<any> {
-    return this.http.get("tipo-atendimento-por-periodo?periodo="
-      + periodo + "&idEstabelecimento="
-      + JSON.parse(localStorage.getItem("est"))[0].id);
+    return this.http.get('tipo-atendimento-por-periodo?periodo='
+      + periodo + '&idEstabelecimento='
+      + JSON.parse(localStorage.getItem('est'))[0].id);
   }
 
   carregaAtendimentoSituacaoExistentePorPeriodo(periodo: number): Observable<any> {
-    return this.http.get("atendimento-situacao-existente-por-periodo?periodo="
-      + periodo + "&idEstabelecimento="
-      + JSON.parse(localStorage.getItem("est"))[0].id);
+    return this.http.get('atendimento-situacao-existente-por-periodo?periodo='
+      + periodo + '&idEstabelecimento='
+      + JSON.parse(localStorage.getItem('est'))[0].id);
   }
 
   carregaAtendimentoSituacaoPorPeriodo(periodo: number): Observable<any> {
-    return this.http.get("atendimento-situacao-por-periodo?periodo="
-      + periodo + "&idEstabelecimento="
-      + JSON.parse(localStorage.getItem("est"))[0].id);
+    return this.http.get('atendimento-situacao-por-periodo?periodo='
+      + periodo + '&idEstabelecimento='
+      + JSON.parse(localStorage.getItem('est'))[0].id);
   }
 }

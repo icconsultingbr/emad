@@ -12,48 +12,48 @@ export class TipoExameService extends GenericsService {
     super(http);
   }
 
-  public fields: any[] = [    
+  public fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: true,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "nome",
-      type: "text",
-      label: "Nome",
+      field: 'nome',
+      type: 'text',
+      label: 'Nome',
       grid: true,
       form: true,
       required: true,
       validator: ['', Validators.required]
     },
     {
-      field: "nomeHipoteseDiagnostica",
-      type: "text",
-      label: "Hipótese diagnóstica vinculada",
+      field: 'nomeHipoteseDiagnostica',
+      type: 'text',
+      label: 'Hipótese diagnóstica vinculada',
       grid: true,
       form: false,
       required: false,
       validator: ['', '']
-    },    
-    {
-      field: "situacao",
-      type: "checkbox",
-      label: "Situação",
-      grid: true,
-      form: true,
-      translate: {1: "Ativo", 0: "Inativo"},
-      required: true,
-      validator:['', Validators.required]
     },
     {
-      field: "nomeProcedimento",
-      type: "text",
-      label: "Procedimento",
+      field: 'situacao',
+      type: 'checkbox',
+      label: 'Situação',
+      grid: true,
+      form: true,
+      translate: {1: 'Ativo', 0: 'Inativo'},
+      required: true,
+      validator: ['', Validators.required]
+    },
+    {
+      field: 'nomeProcedimento',
+      type: 'text',
+      label: 'Procedimento',
       grid: true,
       form: false,
       required: false,
@@ -62,15 +62,14 @@ export class TipoExameService extends GenericsService {
   ];
 
   public buscaPorId(id: number): Observable<any> {
-    return this.http.get("tipo-exame/" + id);
+    return this.http.get('tipo-exame/' + id);
   }
 
   public cadastra(obj: TipoExame) {
     if (obj.id) {
       return this.http
         .put('tipo-exame', JSON.stringify(obj));
-    }
-    else {
+    } else {
       return this.http
         .post('tipo-exame', JSON.stringify(obj));
     }

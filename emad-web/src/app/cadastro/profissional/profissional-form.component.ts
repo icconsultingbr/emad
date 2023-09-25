@@ -1,21 +1,21 @@
-import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
-import { ProfissionalService } from "./profissional.service";
-import { Profissional } from "../../_core/_models/Profissional";
-import { FormBuilder } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
-import { Util } from "../../_core/_util/Util";
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ProfissionalService } from './profissional.service';
+import { Profissional } from '../../_core/_models/Profissional';
+import { FormBuilder } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { Util } from '../../_core/_util/Util';
 
 @Component({
-  selector: "app-profissional-form",
-  templateUrl: "./profissional-form.component.html",
-  styleUrls: ["./profissional-form.component.css"],
+  selector: 'app-profissional-form',
+  templateUrl: './profissional-form.component.html',
+  styleUrls: ['./profissional-form.component.css'],
   providers: [ProfissionalService],
 })
 export class ProfissionalFormComponent implements OnInit {
   object: Profissional = new Profissional();
-  method: string = "profissional";
+  method: string = 'profissional';
   fields = [];
-  label: string = "Profissional";
+  label = 'Profissional';
   id: Number = null;
   domains: any[] = [];
   loading: Boolean = false;
@@ -32,24 +32,24 @@ export class ProfissionalFormComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe((params) => {
-      this.id = params["id"];
+      this.id = params['id'];
     });
 
     this.loadDomains();
   }
 
   loadDomains() {
-    this.service.list("tipo-usuario-profissional").subscribe((tiposUsuario) => {
+    this.service.list('tipo-usuario-profissional').subscribe((tiposUsuario) => {
       this.service
-        .listDomains("estabelecimento")
+        .listDomains('estabelecimento')
         .subscribe((estabelecimentos) => {
-          this.service.listDomains("uf").subscribe((ufs) => {
-            this.service.listDomains("nacionalidade").subscribe((paises) => {
+          this.service.listDomains('uf').subscribe((ufs) => {
+            this.service.listDomains('nacionalidade').subscribe((paises) => {
               this.service
-                .listDomains("especialidade")
+                .listDomains('especialidade')
                 .subscribe((especialidades) => {
                   this.service
-                    .listDomains("escolaridade")
+                    .listDomains('escolaridade')
                     .subscribe((escolaridade) => {
                       //this.service.listDomains('usuario').subscribe(usuarios => {
                       this.domains.push({
@@ -58,53 +58,53 @@ export class ProfissionalFormComponent implements OnInit {
                         idNaturalidade: [],
                         idMunicipio: [],
                         profissionalSus: [
-                          { id: "N", nome: "Não" },
-                          { id: "S", nome: "Sim" },
+                          { id: 'N', nome: 'Não' },
+                          { id: 'S', nome: 'Sim' },
                         ],
 
                         idEspecialidade: especialidades,
                         vinculo: [
-                          { id: "A", nome: "Autônomo" },
-                          { id: "E", nome: "Empregatício" },
+                          { id: 'A', nome: 'Autônomo' },
+                          { id: 'E', nome: 'Empregatício' },
                         ],
                         sexo: [
-                          { id: "F", nome: "Feminino" },
-                          { id: "M", nome: "Masculino" },
+                          { id: 'F', nome: 'Feminino' },
+                          { id: 'M', nome: 'Masculino' },
                         ],
                         idConselho: [
                           {
                             id: 1,
-                            nome: "Conselho Regional de Assistência Social (CRAS)",
+                            nome: 'Conselho Regional de Assistência Social (CRAS)',
                           },
                           {
                             id: 2,
-                            nome: "Conselho Regional de Enfermagem (COREN)",
+                            nome: 'Conselho Regional de Enfermagem (COREN)',
                           },
                           {
                             id: 3,
-                            nome: "Conselho Regional de Farmácia (CRF)",
+                            nome: 'Conselho Regional de Farmácia (CRF)',
                           },
                           {
                             id: 4,
-                            nome: "Conselho Regional de Fonoaudiologia (CRFA)",
+                            nome: 'Conselho Regional de Fonoaudiologia (CRFA)',
                           },
                           {
                             id: 5,
-                            nome: "Conselho Regional de Medicina (CRM)",
+                            nome: 'Conselho Regional de Medicina (CRM)',
                           },
                           {
                             id: 6,
-                            nome: "Conselho Regional de Nutrição (CRN)",
+                            nome: 'Conselho Regional de Nutrição (CRN)',
                           },
                           {
                             id: 7,
-                            nome: "Conselho Regional de Odontologia (CRO)",
+                            nome: 'Conselho Regional de Odontologia (CRO)',
                           },
                           {
                             id: 8,
-                            nome: "Conselho Regional de Psicologia (CRP)",
+                            nome: 'Conselho Regional de Psicologia (CRP)',
                           },
-                          { id: 9, nome: "Outros Conselhos" },
+                          { id: 9, nome: 'Outros Conselhos' },
                         ],
                         idUsuario: [], //usuarios,
                         idTipoUsuario: tiposUsuario,
@@ -125,10 +125,10 @@ export class ProfissionalFormComponent implements OnInit {
     this.loading = true;
     this.service
       .list(
-        "usuario/usuario-sem-profissional?id=" +
+        'usuario/usuario-sem-profissional?id=' +
           (this.id ? this.id : 0) +
-          "&idEstabelecimento=" +
-          JSON.parse(localStorage.getItem("est"))[0].id,
+          '&idEstabelecimento=' +
+          JSON.parse(localStorage.getItem('est'))[0].id,
       )
       .subscribe(
         (result) => {
@@ -143,8 +143,8 @@ export class ProfissionalFormComponent implements OnInit {
   }
 
   getGeocodeAddress(event) {
-    let address: any = event.address;
-    let object: Profissional = event.object;
+    const address: any = event.address;
+    const object: Profissional = event.object;
 
     object.logradouro = address.rua;
     object.numero = address.numero;

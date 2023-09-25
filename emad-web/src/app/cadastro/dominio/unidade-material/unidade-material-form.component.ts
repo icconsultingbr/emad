@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class UnidadeMaterialFormComponent implements OnInit {
 
   object: UnidadeMaterial = new UnidadeMaterial();
-  method: string = "unidade-material";
+  method = 'unidade-material';
   fields: any[] = [];
-  label: string = "Unidade de material";
+  label = 'Unidade de material';
   id: Number = null;
   domains: any[] = [];
 

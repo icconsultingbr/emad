@@ -12,7 +12,7 @@ import { ClassificacaoRisco } from '../../../_core/_models/ClassificacaoRisco';
 
 export class ClassificacaoRiscoComponent implements OnInit {
 
-  method: string = "classificacao-risco";
+  method = 'classificacao-risco';
   object: ClassificacaoRisco = new ClassificacaoRisco();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class ClassificacaoRiscoComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: ClassificacaoRiscoService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

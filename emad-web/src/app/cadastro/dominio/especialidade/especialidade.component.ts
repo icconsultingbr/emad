@@ -10,7 +10,7 @@ import { AppNavbarService } from '../../../_core/_components/app-navbar/app-navb
 })
 export class EspecialidadeComponent implements OnInit {
 
-  method: string = "especialidade";
+  method = 'especialidade';
   object: Especialidade = new Especialidade();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -18,12 +18,12 @@ export class EspecialidadeComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: EspecialidadeService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }
       if (field.filter) {
-        this.fieldsSearch.push(field)
+        this.fieldsSearch.push(field);
       }
 
     }

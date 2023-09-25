@@ -10,76 +10,76 @@ export class FamiliaMaterialService extends GenericsService {
   constructor(public http: HttpClient) {
     super(http);
   }
-  
-  public fields: any[] = [    
+
+  public fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: true,
       form: true,
       required: false,
       validator: ['', '']
     },
     {
-      field: "idGrupoMaterial",
-      type: "select",
-      label: "Grupo de material",
+      field: 'idGrupoMaterial',
+      type: 'select',
+      label: 'Grupo de material',
       grid: false,
       form: true,
       required: true,
       validator: ['', Validators.required],
       filter: {
-        type: "select",
+        type: 'select',
         changeMethod: 'sub-grupo-material/grupo-material',
-        changeTarget: 'idSubGrupoMaterial' 
+        changeTarget: 'idSubGrupoMaterial'
       },
     },
     {
-      field: "nomeGrupoMaterial",
-      type: "text",
-      label: "Grupo de material",
+      field: 'nomeGrupoMaterial',
+      type: 'text',
+      label: 'Grupo de material',
       grid: true,
       form: false,
       required: false,
       validator: ['', '']
     },
     {
-      field: "idSubGrupoMaterial",
-      type: "select",
-      label: "Subgrupo de material",
+      field: 'idSubGrupoMaterial',
+      type: 'select',
+      label: 'Subgrupo de material',
       grid: false,
       form: true,
       required: true,
       validator: ['', Validators.required]
     },
     {
-      field: "nomeSubGrupoMaterial",
-      type: "text",
-      label: "Subgrupo de material",
+      field: 'nomeSubGrupoMaterial',
+      type: 'text',
+      label: 'Subgrupo de material',
       grid: true,
       form: false,
       required: false,
       validator: ['', '']
     },
     {
-      field: "nome",
-      type: "text",
-      label: "Nome da família",
+      field: 'nome',
+      type: 'text',
+      label: 'Nome da família',
       grid: true,
       form: true,
       required: true,
       validator: ['', Validators.required]
     },
     {
-      field: "situacao",
-      type: "checkbox",
-      label: "Situação",
+      field: 'situacao',
+      type: 'checkbox',
+      label: 'Situação',
       grid: true,
       form: true,
-      translate: {1: "Ativo", 0: "Inativo"},
+      translate: {1: 'Ativo', 0: 'Inativo'},
       required: true,
-      validator:['', Validators.required]
+      validator: ['', Validators.required]
     }
   ];
 }

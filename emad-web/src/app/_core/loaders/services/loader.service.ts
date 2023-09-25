@@ -1,9 +1,9 @@
-import { Injectable } from "@angular/core";
-import { Observable, Subject } from "rxjs";
+import { Injectable } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable()
 export class LoaderService {
-    private count: number = 0;
+    private count = 0;
     private openSubject: Subject<any> = new Subject<any>();
     private closeSubject: Subject<any> = new Subject<any>();
 

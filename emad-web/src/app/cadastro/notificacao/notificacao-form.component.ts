@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class NotificacaoFormComponent implements OnInit {
 
   object: Notificacao = new Notificacao();
-  method: string = "notificacao";
+  method = 'notificacao';
   fields: any[] = [];
-  label: string = "Notificações";
+  label = 'Notificações';
   id: Number = null;
   domains: any[] = [];
 
@@ -35,15 +35,15 @@ export class NotificacaoFormComponent implements OnInit {
     this.loadDomains();
   }
 
-  loadDomains() {    
+  loadDomains() {
     this.service.listDomains('tipo-usuario').subscribe(tipoUsuario => {
       this.service.listDomains('tipo-notificacao').subscribe(tipoNotificacao => {
-        this.domains.push({            
+        this.domains.push({
           idTipoUsuario: tipoUsuario,
           tipo: tipoNotificacao,
           idUsuario: []
-        });                      
-      });                      
+        });
+      });
     });
   }
 }

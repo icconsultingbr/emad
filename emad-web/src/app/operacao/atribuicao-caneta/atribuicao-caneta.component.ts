@@ -12,7 +12,7 @@ import { Util } from '../../_core/_util/Util';
 })
 export class AtribuicaoCanetaComponent implements OnInit {
 
-  method: string = "atribuicao-caneta";
+  method = 'atribuicao-caneta';
   domains: any[] = [];
   fields = [];
   fieldsSearch = [];
@@ -23,7 +23,7 @@ export class AtribuicaoCanetaComponent implements OnInit {
     public nav: AppNavbarService,
     private service: AtribuicaoCanetaService) {
 
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }
@@ -41,7 +41,7 @@ export class AtribuicaoCanetaComponent implements OnInit {
   }
 
   buscaProfissionais() {
-       this.service.list('profissional/estabelecimento/' + JSON.parse(localStorage.getItem("est"))[0].id).subscribe(result => {
+       this.service.list('profissional/estabelecimento/' + JSON.parse(localStorage.getItem('est'))[0].id).subscribe(result => {
         this.domains[0].idProfissional = result;
       }, error => {
         this.errors = Util.customHTTPResponse(error);
@@ -49,7 +49,7 @@ export class AtribuicaoCanetaComponent implements OnInit {
   }
 
   buscaCaneta() {
-       this.service.list('caneta?idEstabelecimento=' + JSON.parse(localStorage.getItem("est"))[0].id).subscribe(result => {
+       this.service.list('caneta?idEstabelecimento=' + JSON.parse(localStorage.getItem('est'))[0].id).subscribe(result => {
         this.domains[0].idCaneta = result;
       }, error => {
        this.errors = Util.customHTTPResponse(error);

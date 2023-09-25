@@ -12,7 +12,7 @@ import { FamiliaMaterial } from '../../../_core/_models/FamiliaMaterial';
 
 export class FamiliaMaterialComponent implements OnInit {
 
-  method: string = "familia-material";
+  method = 'familia-material';
   object: FamiliaMaterial = new FamiliaMaterial();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class FamiliaMaterialComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: FamiliaMaterialService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

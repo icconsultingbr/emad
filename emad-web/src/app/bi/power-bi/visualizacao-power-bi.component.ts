@@ -9,14 +9,14 @@ import { VisualizacaoPowerBiService } from './visualizacao-power-bi.service';
     providers: [VisualizacaoPowerBiService]
 })
 
-export class VisualizacaoPowerBIComponent implements OnInit {  
-  
+export class VisualizacaoPowerBIComponent implements OnInit {
+
   constructor(
     private fb: FormBuilder,
-    private ref: ChangeDetectorRef, 
-    private visualizacaoPowerBIService: VisualizacaoPowerBiService) {      
+    private ref: ChangeDetectorRef,
+    private visualizacaoPowerBIService: VisualizacaoPowerBiService) {
     }
-  
+
   urlBI: string;
   ngOnInit() {
     this.visualizacaoPowerBIService.buscaPorChaveId('IFRAME_POWER_BI').subscribe(res => {

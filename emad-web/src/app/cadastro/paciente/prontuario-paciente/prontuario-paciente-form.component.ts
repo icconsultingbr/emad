@@ -6,35 +6,35 @@ import {
   Output,
   ElementRef,
   EventEmitter,
-} from "@angular/core";
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   Validators,
   FormControl,
-} from "@angular/forms";
-import { PacienteService } from ".././paciente.service";
-import { Paciente } from "../../../_core/_models/Paciente";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Util } from "../../../_core/_util/Util";
-import { environment } from "../../../../environments/environment";
-import { PacienteHipotese } from "../../../_core/_models/PacienteHipotese";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { ReciboReceitaImpressaoService } from "../../../shared/services/recibo-receita-impressao.service";
-import { MainChartLine } from "../../../_core/_models/MainChart";
-import { AtendimentoService } from "../../../operacao/atendimento/atendimento.service";
+} from '@angular/forms';
+import { PacienteService } from '.././paciente.service';
+import { Paciente } from '../../../_core/_models/Paciente';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Util } from '../../../_core/_util/Util';
+import { environment } from '../../../../environments/environment';
+import { PacienteHipotese } from '../../../_core/_models/PacienteHipotese';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { ReciboReceitaImpressaoService } from '../../../shared/services/recibo-receita-impressao.service';
+import { MainChartLine } from '../../../_core/_models/MainChart';
+import { AtendimentoService } from '../../../operacao/atendimento/atendimento.service';
 import {
   Atendimento,
   AtendimentoHistorico,
-} from "../../../_core/_models/Atendimento";
-import { Exame } from "../../../_core/_models/Exame";
-import { ProntuarioPacienteImpressaoService } from "../../../shared/services/prontuario-paciente-impressao.service";
-import { ReciboExameImpressaoService } from "../../../shared/services/recibo-exame-impressao.service";
+} from '../../../_core/_models/Atendimento';
+import { Exame } from '../../../_core/_models/Exame';
+import { ProntuarioPacienteImpressaoService } from '../../../shared/services/prontuario-paciente-impressao.service';
+import { ReciboExameImpressaoService } from '../../../shared/services/recibo-exame-impressao.service';
 
 @Component({
-  selector: "app-prontuario-paciente-form",
-  templateUrl: "./prontuario-paciente-form.component.html",
-  styleUrls: ["./prontuario-paciente-form.component.css"],
+  selector: 'app-prontuario-paciente-form',
+  templateUrl: './prontuario-paciente-form.component.html',
+  styleUrls: ['./prontuario-paciente-form.component.css'],
   providers: [PacienteService],
 })
 export class ProntuarioPacienteFormComponent implements OnInit {
@@ -42,9 +42,9 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   objectExame: Exame = new Exame();
   objectHistorico: Atendimento = new Atendimento();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
-  method: string = "paciente";
+  method: string = 'paciente';
   fields = [];
-  label: string = "Paciente";
+  label = 'Paciente';
   formHistorico: FormGroup;
   formHipotese: FormGroup;
   formMedicamento: FormGroup;
@@ -52,8 +52,8 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   domains: any[] = [];
   form: FormGroup;
   loading: Boolean = false;
-  message: string = "";
-  warning: string = "";
+  message = '';
+  warning = '';
   errors: any[] = [];
   dropdownList = [];
   selectedItems = [];
@@ -79,11 +79,11 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   listaMaterialLoteDispensadoGravado: any[] = [];
   listaMaterialLoteDispensadoFinalizado: any[] = [];
   virtualDirectory: string =
-    environment.virtualDirectory != ""
-      ? environment.virtualDirectory + "/"
-      : "";
+    environment.virtualDirectory != ''
+      ? environment.virtualDirectory + '/'
+      : '';
   modalRef: NgbModalRef = null;
-  loadPhoto: boolean = false;
+  loadPhoto = false;
   totalPressaoArterial: number;
   totalPulso: number;
   totalSaturacao: number;
@@ -96,14 +96,14 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   dataHistorico: string;
   nomeProfissional: string;
   nomeTipoHistorico: string;
-  mostraHistorico: boolean = false;
+  mostraHistorico = false;
 
   dataInicial: Date;
   dataFinal: Date;
   tipoFichaFiltro: number;
   profissionalFiltro: number;
 
-  @ViewChild("addresstext") addresstext: ElementRef;
+  @ViewChild('addresstext') addresstext: ElementRef;
 
   public lineChartDataPressaoArterial: Array<any> = [{ data: [] }];
   public lineChartLabelsPressaoArterial: Array<any> = [];
@@ -127,16 +127,16 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   public pieChartData = [];
 
   public lineChartLegend: boolean = false;
-  public lineChartType: string = "line";
+  public lineChartType: string = 'line';
 
   objectTipoAtendimento: MainChartLine = new MainChartLine();
   objectAtendimentoSituacao: MainChartLine = new MainChartLine();
 
-  public barChartType: string = "bar";
+  public barChartType: string = 'bar';
   public barChartLegend: boolean = true;
-  public barChartDataTipoAtendimento: any[] = [{ data: [], label: "" }];
+  public barChartDataTipoAtendimento: any[] = [{ data: [], label: '' }];
   public barChartLabelsTipoAtendimento: string[] = [];
-  public barChartDataAtendimentoSituacao: any[] = [{ data: [], label: "" }];
+  public barChartDataAtendimentoSituacao: any[] = [{ data: [], label: '' }];
   public barChartLabelsAtendimentoSituacao: string[] = [];
 
   constructor(
@@ -158,7 +158,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe((params) => {
-      this.id = params["id"];
+      this.id = params['id'];
     });
     this.createGroup();
     this.loadDomains();
@@ -166,37 +166,37 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
   loadDomains() {
     this.loading = true;
-    this.service.listDomains("uf").subscribe((ufs) => {
-      this.service.listDomains("nacionalidade").subscribe((paises) => {
-        this.service.listDomains("modalidade").subscribe((modalidades) => {
+    this.service.listDomains('uf').subscribe((ufs) => {
+      this.service.listDomains('nacionalidade').subscribe((paises) => {
+        this.service.listDomains('modalidade').subscribe((modalidades) => {
           this.service
-            .listDomains("estabelecimento")
+            .listDomains('estabelecimento')
             .subscribe((estabelecimentos) => {
               this.service
-                .listDomains("escolaridade")
+                .listDomains('escolaridade')
                 .subscribe((escolaridade) => {
-                  this.service.listDomains("raca").subscribe((racas) => {
+                  this.service.listDomains('raca').subscribe((racas) => {
                     this.service
-                      .listDomains("hipotese-diagnostica")
+                      .listDomains('hipotese-diagnostica')
                       .subscribe((hipoteseDiagnostica) => {
                         this.service
-                          .listDomains("atencao-continuada")
+                          .listDomains('atencao-continuada')
                           .subscribe((atencaoContinuada) => {
                             this.service
-                              .listDomains("tipo-ficha")
+                              .listDomains('tipo-ficha')
                               .subscribe((tipoFichas) => {
                                 this.service
                                   .list(
-                                    "profissional/estabelecimento/" +
-                                      JSON.parse(localStorage.getItem("est"))[0]
+                                    'profissional/estabelecimento/' +
+                                      JSON.parse(localStorage.getItem('est'))[0]
                                         .id,
                                   )
                                   .subscribe((profissionais) => {
                                     this.service
-                                      .listDomains("classificacao-risco")
+                                      .listDomains('classificacao-risco')
                                       .subscribe((classificacaoRiscos) => {
                                         this.service
-                                          .listDomains("tipo-exame")
+                                          .listDomains('tipo-exame')
                                           .subscribe((tipoExame) => {
                                             this.domains.push({
                                               escolaridade: escolaridade,
@@ -212,34 +212,34 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                                               classificacaoRiscos:
                                                 classificacaoRiscos,
                                               tipoHistoriaClinica: [
-                                                { id: 1, nome: "Anamnese" },
-                                                { id: 2, nome: "Evolução" },
+                                                { id: 1, nome: 'Anamnese' },
+                                                { id: 2, nome: 'Evolução' },
                                               ],
                                               idModalidade: modalidades,
                                               sexo: [
-                                                { id: "1", nome: "Masculino" },
-                                                { id: "2", nome: "Feminino" },
-                                                { id: "3", nome: "Ambos" },
+                                                { id: '1', nome: 'Masculino' },
+                                                { id: '2', nome: 'Feminino' },
+                                                { id: '3', nome: 'Ambos' },
                                                 {
-                                                  id: "4",
-                                                  nome: "Não informado",
+                                                  id: '4',
+                                                  nome: 'Não informado',
                                                 },
                                               ],
                                               idTipoSanguineo: [
-                                                { id: "1", nome: "A_POSITIVO" },
-                                                { id: "2", nome: "A_NEGATIVO" },
-                                                { id: "3", nome: "B_POSITIVO" },
-                                                { id: "4", nome: "B_NEGATIVO" },
+                                                { id: '1', nome: 'A_POSITIVO' },
+                                                { id: '2', nome: 'A_NEGATIVO' },
+                                                { id: '3', nome: 'B_POSITIVO' },
+                                                { id: '4', nome: 'B_NEGATIVO' },
                                                 {
-                                                  id: "5",
-                                                  nome: "AB_POSITIVO",
+                                                  id: '5',
+                                                  nome: 'AB_POSITIVO',
                                                 },
                                                 {
-                                                  id: "6",
-                                                  nome: "AB_NEGATIVO",
+                                                  id: '6',
+                                                  nome: 'AB_NEGATIVO',
                                                 },
-                                                { id: "7", nome: "O_POSITIVO" },
-                                                { id: "8", nome: "O_NEGATIVO" },
+                                                { id: '7', nome: 'O_POSITIVO' },
+                                                { id: '8', nome: 'O_NEGATIVO' },
                                               ],
                                               idRaca: racas,
                                               idAtencaoContinuada:
@@ -250,15 +250,15 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                                               resultadoFinal: [
                                                 {
                                                   id: 1,
-                                                  nome: "Amostra não reagente",
+                                                  nome: 'Amostra não reagente',
                                                 },
                                                 {
                                                   id: 2,
-                                                  nome: "Amostra reagente",
+                                                  nome: 'Amostra reagente',
                                                 },
                                                 {
                                                   id: 3,
-                                                  nome: "Não realizado",
+                                                  nome: 'Não realizado',
                                                 },
                                               ],
                                             });
@@ -285,7 +285,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   encontraPaciente() {
     this.object.id = this.id;
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
 
     this.service.findById(this.id, this.method).subscribe(
@@ -301,7 +301,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
         this.loading = false;
         this.allItemsHipotese = [];
         this.errors.push({
-          message: "Paciente não encontrado",
+          message: 'Paciente não encontrado',
         });
       },
     );
@@ -335,77 +335,77 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   back() {
-    const route = "pacientes";
+    const route = 'pacientes';
     this.router.navigate([route]);
   }
 
   createGroup() {
     this.form = this.fb.group({
-      id: [""],
-      cartaoSus: ["", ""],
-      nome: ["", Validators.required],
-      nomeSocial: ["", ""],
-      apelido: ["", ""],
-      nomeMae: ["", Validators.required],
-      nomePai: ["", ""],
-      dataNascimento: ["", Validators.required],
-      sexo: new FormControl({ value: "", disabled: true }),
-      idNacionalidade: new FormControl({ value: "", disabled: true }),
-      idNaturalidade: new FormControl({ value: "", disabled: true }),
-      ocupacao: ["", ""],
-      cpf: ["", ""],
-      rg: ["", ""],
-      dataEmissao: ["", ""],
-      orgaoEmissor: ["", ""],
-      escolaridade: new FormControl({ value: "", disabled: true }),
-      cep: ["", ""],
-      logradouro: ["", ""],
-      numero: ["", ""],
-      complemento: ["", ""],
-      bairro: ["", ""],
-      idMunicipio: ["", ""],
-      idUf: ["", ""],
-      foneResidencial: ["", ""],
-      foneCelular: ["", ""],
-      foneContato: ["", ""],
-      contato: ["", ""],
-      email: ["", ""],
-      idModalidade: ["", ""],
-      latitude: ["", ""],
-      longitude: ["", ""],
-      idSap: ["", ""],
-      idTipoSanguineo: ["", ""],
-      idRaca: ["", ""],
-      numeroProntuario: ["", ""],
-      numeroProntuarioCnes: ["", ""],
-      idAtencaoContinuada: ["", ""],
-      historiaProgressaFamiliar: ["", ""],
-      observacao: ["", ""],
+      id: [''],
+      cartaoSus: ['', ''],
+      nome: ['', Validators.required],
+      nomeSocial: ['', ''],
+      apelido: ['', ''],
+      nomeMae: ['', Validators.required],
+      nomePai: ['', ''],
+      dataNascimento: ['', Validators.required],
+      sexo: new FormControl({ value: '', disabled: true }),
+      idNacionalidade: new FormControl({ value: '', disabled: true }),
+      idNaturalidade: new FormControl({ value: '', disabled: true }),
+      ocupacao: ['', ''],
+      cpf: ['', ''],
+      rg: ['', ''],
+      dataEmissao: ['', ''],
+      orgaoEmissor: ['', ''],
+      escolaridade: new FormControl({ value: '', disabled: true }),
+      cep: ['', ''],
+      logradouro: ['', ''],
+      numero: ['', ''],
+      complemento: ['', ''],
+      bairro: ['', ''],
+      idMunicipio: ['', ''],
+      idUf: ['', ''],
+      foneResidencial: ['', ''],
+      foneCelular: ['', ''],
+      foneContato: ['', ''],
+      contato: ['', ''],
+      email: ['', ''],
+      idModalidade: ['', ''],
+      latitude: ['', ''],
+      longitude: ['', ''],
+      idSap: ['', ''],
+      idTipoSanguineo: ['', ''],
+      idRaca: ['', ''],
+      numeroProntuario: ['', ''],
+      numeroProntuarioCnes: ['', ''],
+      idAtencaoContinuada: ['', ''],
+      historiaProgressaFamiliar: ['', ''],
+      observacao: ['', ''],
       idEstabelecimentoCadastro: new FormControl(
         {
-          value: "",
+          value: '',
           disabled: this.id > 0 || this.object.id > 0 ? true : false,
         },
         Validators.required,
       ),
-      gruposAtencaoContinuada: ["", ""],
-      falecido: new FormControl({ value: "", disabled: true }),
-      situacao: new FormControl({ value: "", disabled: true }),
-      necessidadeEspeciais: new FormControl({ value: "", disabled: true }),
-      gestante: new FormControl({ value: "", disabled: true }),
-      aleitamentoMaterno: ["", ""],
-      dumDaGestante: ["", Validators.required],
-      idadeGestacional: ["", ""],
-      stGravidezPlanejada: new FormControl({ value: "", disabled: true }),
-      nuGestasPrevias: ["", ""],
-      nuPartos: ["", ""],
-      tipoFichaFiltro: ["", ""],
-      profissionalFiltro: ["", ""],
+      gruposAtencaoContinuada: ['', ''],
+      falecido: new FormControl({ value: '', disabled: true }),
+      situacao: new FormControl({ value: '', disabled: true }),
+      necessidadeEspeciais: new FormControl({ value: '', disabled: true }),
+      gestante: new FormControl({ value: '', disabled: true }),
+      aleitamentoMaterno: ['', ''],
+      dumDaGestante: ['', Validators.required],
+      idadeGestacional: ['', ''],
+      stGravidezPlanejada: new FormControl({ value: '', disabled: true }),
+      nuGestasPrevias: ['', ''],
+      nuPartos: ['', ''],
+      tipoFichaFiltro: ['', ''],
+      profissionalFiltro: ['', ''],
     });
   }
 
   findHipotesePorPaciente() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findHipoteseByPaciente(this.object.id).subscribe(
@@ -442,7 +442,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   findAtendimentoPorPaciente() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findAtendimentoByPaciente(this.object.id, 1).subscribe(
@@ -458,7 +458,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   findSinaisVitaisPorPaciente() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.lineChartDataPressaoArterial = [{ data: [] }];
@@ -469,7 +469,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.lineChartDataGlicemia = [{ data: [] }];
 
     this.service
-      .findSinaisVitaisByPaciente(this.object.id, "pressaoArterial")
+      .findSinaisVitaisByPaciente(this.object.id, 'pressaoArterial')
       .subscribe(
         (result) => {
           this.allItemsSinaisVitaisPressaoArterial = result;
@@ -486,7 +486,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
           //   this.lineChartDataPressaoArterial[0].data = data;
 
           this.service
-            .findSinaisVitaisByPaciente(this.object.id, "pulso")
+            .findSinaisVitaisByPaciente(this.object.id, 'pulso')
             .subscribe(
               (result) => {
                 this.allItemsSinaisVitaisPulso = result;
@@ -503,7 +503,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                 this.lineChartDataPulso[0].data = data;
 
                 this.service
-                  .findSinaisVitaisByPaciente(this.object.id, "saturacao")
+                  .findSinaisVitaisByPaciente(this.object.id, 'saturacao')
                   .subscribe(
                     (result) => {
                       this.allItemsSinaisVitaisSaturacao = result;
@@ -523,7 +523,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                       this.service
                         .findSinaisVitaisByPaciente(
                           this.object.id,
-                          "temperatura",
+                          'temperatura',
                         )
                         .subscribe(
                           (result) => {
@@ -544,7 +544,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                             this.service
                               .findSinaisVitaisByPaciente(
                                 this.object.id,
-                                "peso",
+                                'peso',
                               )
                               .subscribe(
                                 (result) => {
@@ -565,7 +565,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                                   this.service
                                     .findSinaisVitaisByPaciente(
                                       this.object.id,
-                                      "glicemia",
+                                      'glicemia',
                                     )
                                     .subscribe(
                                       (result) => {
@@ -624,7 +624,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   findFichasPorPaciente() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findAtendimentoByPaciente(this.object.id, 2).subscribe(
@@ -640,7 +640,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   findExamesPorPaciente() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findExameByPaciente(this.object.id).subscribe(
@@ -656,7 +656,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   findReceitaPorPaciente() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findReceitaByPaciente(this.object.id).subscribe(
@@ -672,7 +672,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   findProntuarioVacinacaoPorPaciente() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findProntuarioVacinacaoByPaciente(this.object.id).subscribe(
@@ -688,7 +688,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   findCarteiraVacinacaoPorPaciente() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service.findCarteiraVacinacaoByPaciente(this.object.id).subscribe(
@@ -704,7 +704,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   findProcedimentosPorPaciente() {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.service
@@ -723,15 +723,15 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
   visualizaAtendimentos(id: any): void {
     let url =
-      this.router.url.replace("paciente", "") +
+      this.router.url.replace('paciente', '') +
       this.virtualDirectory +
-      "#/atendimentos/cadastro/" +
+      '#/atendimentos/cadastro/' +
       id;
     this.service
-      .file("atendimento/consulta-por-paciente", url)
+      .file('atendimento/consulta-por-paciente', url)
       .subscribe((result) => {
         this.loading = false;
-        window.open(url, "_blank");
+        window.open(url, '_blank');
       });
   }
 
@@ -781,7 +781,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
     if (this.dataFinal < this.dataInicial) {
       this.warning =
-        "Atenção: A data final e menor que a data Inicial, efetue a correção.";
+        'Atenção: A data final e menor que a data Inicial, efetue a correção.';
       return;
     }
 
@@ -814,10 +814,10 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.mostraHistorico = idAtendimento ? false : true;
 
     this.modalRef = this.modalService.open(content, {
-      backdrop: "static",
+      backdrop: 'static',
       keyboard: false,
       centered: true,
-      windowClass: "modal-gg",
+      windowClass: 'modal-gg',
     });
   }
 
@@ -826,18 +826,18 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     this.carregaExame(idExame);
 
     this.modalRef = this.modalService.open(content, {
-      backdrop: "static",
+      backdrop: 'static',
       keyboard: false,
       centered: true,
-      windowClass: "modal-gg",
+      windowClass: 'modal-gg',
     });
   }
 
   carregaExame(id: number) {
     this.errors = [];
-    this.message = "";
+    this.message = '';
     this.loading = true;
-    this.service.findById(id, "exame").subscribe(
+    this.service.findById(id, 'exame').subscribe(
       (result) => {
         this.objectExame = result;
         this.loading = false;
@@ -845,7 +845,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       (error) => {
         this.objectExame = new Exame();
         this.errors.push({
-          message: "Exame não encontrado",
+          message: 'Exame não encontrado',
         });
       },
     );
@@ -853,29 +853,29 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
   createGroupExame() {
     this.form = this.fb.group({
-      idTipoExame: ["", ""],
-      resultadoFinal: ["", ""],
+      idTipoExame: ['', ''],
+      resultadoFinal: ['', ''],
     });
   }
 
   openCarteiraVacinacao(content: any) {
     this.findCarteiraVacinacaoPorPaciente();
     this.modalRef = this.modalService.open(content, {
-      backdrop: "static",
+      backdrop: 'static',
       keyboard: false,
       centered: true,
-      windowClass: "modal-gg",
+      windowClass: 'modal-gg',
     });
   }
 
   encontraAtendimentoHistorico(idAtendimento: number, idHistorico: number) {
     this.object.id = this.id;
     this.errors = [];
-    this.message = "";
+    this.message = '';
 
     if (idAtendimento) {
       this.loading = true;
-      this.atendimentoService.findById(idAtendimento, "atendimento").subscribe(
+      this.atendimentoService.findById(idAtendimento, 'atendimento').subscribe(
         (result) => {
           this.objectHistorico = result;
           this.objectHistorico.pacienteHistoriaProgressa =
@@ -890,7 +890,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
           this.loading = false;
           this.close();
           this.errors.push({
-            message: "Atendimento não encontrado",
+            message: 'Atendimento não encontrado',
           });
         },
       );
@@ -920,7 +920,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
           this.loading = false;
           this.close();
           this.errors.push({
-            message: "Atendimento histórico não encontrado",
+            message: 'Atendimento histórico não encontrado',
           });
         },
       );
@@ -943,7 +943,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   findHipotesePorAtendimento(idAtendimento: number) {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.atendimentoService.findHipoteseByAtendimento(idAtendimento).subscribe(
@@ -959,7 +959,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   findEncaminhamentoPorAtendimento(idAtendimento: number) {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.atendimentoService
@@ -977,7 +977,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   findEncaminhamentoPorPaciente(idUsuario: number) {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.atendimentoService.findEncaminhamentoByPaciente(idUsuario).subscribe(
@@ -993,7 +993,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   findMedicamentoPorAtendimento(idAtendimento: number) {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.atendimentoService
@@ -1011,7 +1011,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   findProcedimentoPorAtendimento(idAtendimento: number) {
-    this.message = "";
+    this.message = '';
     this.errors = [];
     this.loading = true;
     this.atendimentoService
@@ -1030,23 +1030,23 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
   createGroupHistorico() {
     this.formHistorico = this.fb.group({
-      pacienteHistoriaProgressa: new FormControl({ value: "", disabled: true }),
-      pressaoArterial: new FormControl({ value: "", disabled: true }),
-      pulso: new FormControl({ value: "", disabled: true }),
-      saturacao: new FormControl({ value: "", disabled: true }),
-      temperatura: new FormControl({ value: "", disabled: true }),
-      altura: new FormControl({ value: "", disabled: true }),
-      peso: new FormControl({ value: "", disabled: true }),
-      glicemia: new FormControl({ value: "", disabled: true }),
-      historicoClinico: new FormControl({ value: "", disabled: true }),
-      exameFisico: new FormControl({ value: "", disabled: true }),
-      observacoesGerais: new FormControl({ value: "", disabled: true }),
-      situacao: new FormControl({ value: "", disabled: true }),
-      motivoCancelamento: new FormControl({ value: "", disabled: true }),
-      tipoFicha: new FormControl({ value: "", disabled: true }),
-      idClassificacaoRisco: new FormControl({ value: "", disabled: true }),
-      motivoQueixa: new FormControl({ value: "", disabled: true }),
-      tipoHistoriaClinica: new FormControl({ value: "", disabled: true }),
+      pacienteHistoriaProgressa: new FormControl({ value: '', disabled: true }),
+      pressaoArterial: new FormControl({ value: '', disabled: true }),
+      pulso: new FormControl({ value: '', disabled: true }),
+      saturacao: new FormControl({ value: '', disabled: true }),
+      temperatura: new FormControl({ value: '', disabled: true }),
+      altura: new FormControl({ value: '', disabled: true }),
+      peso: new FormControl({ value: '', disabled: true }),
+      glicemia: new FormControl({ value: '', disabled: true }),
+      historicoClinico: new FormControl({ value: '', disabled: true }),
+      exameFisico: new FormControl({ value: '', disabled: true }),
+      observacoesGerais: new FormControl({ value: '', disabled: true }),
+      situacao: new FormControl({ value: '', disabled: true }),
+      motivoCancelamento: new FormControl({ value: '', disabled: true }),
+      tipoFicha: new FormControl({ value: '', disabled: true }),
+      idClassificacaoRisco: new FormControl({ value: '', disabled: true }),
+      motivoQueixa: new FormControl({ value: '', disabled: true }),
+      tipoHistoriaClinica: new FormControl({ value: '', disabled: true }),
     });
 
     this.formHipotese = this.fbHipotese.group({
@@ -1082,7 +1082,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     },
     title: {
       display: false,
-      text: "Custom Chart Title",
+      text: 'Custom Chart Title',
     },
     scales: {
       xAxes: [
@@ -1099,22 +1099,22 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   };
 
   public lineChartColors: Array<any> = this.renderBgChart(
-    "rgba(0, 0, 0, 0)",
-    "rgba(255,255,255,1)",
-    "rgba(255,255,255,1)",
-    "#fff",
-    "#B4B4B4",
-    "rgba(255,255,255,0.8)",
+    'rgba(0, 0, 0, 0)',
+    'rgba(255,255,255,1)',
+    'rgba(255,255,255,1)',
+    '#fff',
+    '#B4B4B4',
+    'rgba(255,255,255,0.8)',
   );
   public lineChartColors2: Array<any> = this.renderBgChart(
-    "rgba(0, 0, 0, 0)",
-    "rgba(219,219,219,1)",
-    "rgba(219,219,219,1)",
-    "#00929c",
-    "rgb(77, 111, 160,1)",
-    "rgba(46,79,143,0.8)",
+    'rgba(0, 0, 0, 0)',
+    'rgba(219,219,219,1)',
+    'rgba(219,219,219,1)',
+    '#00929c',
+    'rgb(77, 111, 160,1)',
+    'rgba(46,79,143,0.8)',
   );
-  public pieChartType = "pie";
+  public pieChartType = 'pie';
 
   // events
   public chartClicked(e: any): void {
@@ -1136,14 +1136,14 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     let lineChartColors: Array<any> = [
       {
         // grey
-        backgroundColor: bg ? bg : "rgba(0, 0, 0, 0)",
-        borderColor: border ? border : "rgba(255,255,255,0.2)",
-        pointBackgroundColor: pointBg ? pointBg : "rgba(255,255,255,1)",
-        pointBorderColor: pointBorder ? pointBorder : "#fff",
-        pointHoverBackgroundColor: pointHoverBg ? pointHoverBg : "#fff",
+        backgroundColor: bg ? bg : 'rgba(0, 0, 0, 0)',
+        borderColor: border ? border : 'rgba(255,255,255,0.2)',
+        pointBackgroundColor: pointBg ? pointBg : 'rgba(255,255,255,1)',
+        pointBorderColor: pointBorder ? pointBorder : '#fff',
+        pointHoverBackgroundColor: pointHoverBg ? pointHoverBg : '#fff',
         pointHoverBorderColor: pointHoverBorder
           ? pointHoverBorder
-          : "rgba(255,255,255,0.8)",
+          : 'rgba(255,255,255,0.8)',
       },
     ];
 
@@ -1152,18 +1152,18 @@ export class ProntuarioPacienteFormComponent implements OnInit {
 
   abreAtendimentoFichaDigital(id: Number) {
     this.errors = [];
-    let url = JSON.parse(localStorage.getItem("parametro_seguranca")).filter(
-      (url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO",
+    let url = JSON.parse(localStorage.getItem('parametro_seguranca')).filter(
+      (url) => url.nome == 'URL_FICHA_MEDICA_VISUALIZACAO',
     )
-      ? JSON.parse(localStorage.getItem("parametro_seguranca"))
-          .filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")[0]
-          .valor.replace("{id}", id)
-      : "";
+      ? JSON.parse(localStorage.getItem('parametro_seguranca'))
+          .filter((url) => url.nome == 'URL_FICHA_MEDICA_VISUALIZACAO')[0]
+          .valor.replace('{id}', id)
+      : '';
     this.loading = true;
     this.atendimentoService.openDocument(url).subscribe(
       (result) => {
         this.loading = false;
-        window.open(url, "_blank");
+        window.open(url, '_blank');
       },
       (error) => {
         this.loading = false;

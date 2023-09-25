@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class AtencaoContinuadaFormComponent implements OnInit {
 
   object: AtencaoContinuada = new AtencaoContinuada();
-  method: string = "atencao-continuada";
+  method = 'atencao-continuada';
   fields: any[] = [];
-  label: string = "Grupos de atenção continuada";
+  label = 'Grupos de atenção continuada';
   id: Number = null;
 
   constructor(

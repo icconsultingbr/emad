@@ -13,9 +13,9 @@ import { ActivatedRoute } from '@angular/router';
 export class CanetaFormComponent implements OnInit {
 
   object: Caneta = new Caneta();
-  method: string = 'caneta';
+  method = 'caneta';
   fields = [];
-  label: string = "Caneta";
+  label = 'Caneta';
   id: Number = null;
   domains: any[] = [];
 
@@ -39,9 +39,9 @@ export class CanetaFormComponent implements OnInit {
     this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
       this.service.listDomains('modelo-caneta').subscribe(modelosCaneta => {
           this.domains.push({
-            idEstabelecimento: estabelecimentos,          
+            idEstabelecimento: estabelecimentos,
             idModeloCaneta: modelosCaneta
-          });              
+          });
         });
     });
   }

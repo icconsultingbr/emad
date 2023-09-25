@@ -1,12 +1,12 @@
-import { Input } from "@angular/core";
+import { Input } from '@angular/core';
 
 export class MovimentoGeral {
     id: number;
     @Input() idTipoMovimento: number;
     @Input() idMovimentoEstornado: number;
     @Input() idUsuario: number;
-    @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem("est"))[0].id;
-    @Input() nomeEstabelecimento: string = JSON.parse(localStorage.getItem("est"))[0].nomeFantasia;
+    @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem('est'))[0].id;
+    @Input() nomeEstabelecimento: string = JSON.parse(localStorage.getItem('est'))[0].nomeFantasia;
     @Input() idReceita: number;
     @Input() idPaciente: number;
     @Input() numeroDocumento: number;
@@ -16,8 +16,8 @@ export class MovimentoGeral {
     @Input() idPacienteOrigem: number;
     @Input() codigoDistribuidor: number;
     @Input() situacao: Boolean;
-    @Input() itensMovimento: ItemMovimentoGeral[] = [];   
-    @Input() itemSelecionado: Boolean;  
+    @Input() itensMovimento: ItemMovimentoGeral[] = [];
+    @Input() itemSelecionado: Boolean;
 }
 
 export class ItemMovimentoGeral {
@@ -30,13 +30,13 @@ export class ItemMovimentoGeral {
     @Input() idFabricante: number;
     @Input() nomeFabricante: string;
     @Input() lote: string;
-    @Input() validade: Date;    
+    @Input() validade: Date;
     @Input() quantidade: number;
     @Input() quantidadeAtual: number;
     @Input() idItemReceita: number;
     @Input() idUsuarioAutorizador: number;
     @Input() itemSolicitacaoRemanejamento: number;
     @Input() quantidadeDispensadaAnterior: number;
-    @Input() situacao: Boolean;  
-    @Input() itemSelecionado: Boolean;  
+    @Input() situacao: Boolean;
+    @Input() itemSelecionado: Boolean;
 }

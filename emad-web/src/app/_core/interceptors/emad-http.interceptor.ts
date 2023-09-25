@@ -24,9 +24,9 @@ export class EmadHttpInterceptor implements HttpInterceptor {
         headers['Accept'] = 'application/json';
         headers['Authorization'] = this.authService.getToken();
 
-        if (localStorage.getItem("est")) {
-            req.headers.delete("est");
-            headers['est'] = JSON.parse(localStorage.getItem("est"))[0].id;
+        if (localStorage.getItem('est')) {
+            req.headers.delete('est');
+            headers['est'] = JSON.parse(localStorage.getItem('est'))[0].id;
         }
 
         if (req.body instanceof FormData) {
@@ -49,7 +49,7 @@ export class EmadHttpInterceptor implements HttpInterceptor {
                 catchError((error: HttpErrorResponse) => {
                     if (error.status === 401) {
                         this.router.navigate(['login']);
-                    } else if(error.status === 500){
+                    } else if (error.status === 500) {
                         return Observable.throw(error.error ? error.error : '');
                     } else {
                         console.log(error);

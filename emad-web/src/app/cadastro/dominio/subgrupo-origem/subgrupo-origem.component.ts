@@ -12,7 +12,7 @@ import { SubgrupoOrigem } from '../../../_core/_models/SubgrupoOrigem';
 
 export class SubgrupoOrigemComponent implements OnInit {
 
-  method: String = "subgrupo-origem";
+  method: String = 'subgrupo-origem';
   object: SubgrupoOrigem = new SubgrupoOrigem();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class SubgrupoOrigemComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: SubgrupoOrigemService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

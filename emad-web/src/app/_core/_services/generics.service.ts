@@ -16,15 +16,14 @@ export abstract class GenericsService {
   }
 
   findById(id: any, method: string): Observable<any> {
-    return this.http.get(method + "/" + id);
+    return this.http.get(method + '/' + id);
   }
 
   save(obj: any, method: string) {
     if (obj.id) {
       return this.http
         .put(method, JSON.stringify(obj));
-    }
-    else {
+    } else {
       return this.http
         .post(method, JSON.stringify(obj));
     }
@@ -45,7 +44,7 @@ export abstract class GenericsService {
   }
 
   file(url: any, uri: any): Observable<any> {
-    let object: any = {};
+    const object: any = {};
     object.url = uri;
     return this.http.post(url, JSON.stringify(object));
   }

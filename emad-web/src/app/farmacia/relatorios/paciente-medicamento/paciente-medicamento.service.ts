@@ -12,9 +12,9 @@ export class PacienteMedicamentoService extends GenericsService {
 
   fields: any[] = [
     {
-      field: "id",
-      type: "hidden",
-      label: "Id",
+      field: 'id',
+      type: 'hidden',
+      label: 'Id',
       grid: false,
       form: true,
       required: false,
@@ -22,7 +22,7 @@ export class PacienteMedicamentoService extends GenericsService {
     }
   ];
 
-  carregaPacientePorMedicamento(params: any): Observable<any> {    
-    return this.http.get("paciente/material/filtros" + params);
+  carregaPacientePorMedicamento(params: any): Observable<any> {
+    return this.http.get('paciente/material/filtros' + params);
   }
 }

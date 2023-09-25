@@ -12,7 +12,7 @@ import { Notificacao } from '../../_core/_models/Notificacao';
 
 export class NotificacaoComponent implements OnInit {
 
-  method: string = "notificacao";
+  method = 'notificacao';
   object: Notificacao = new Notificacao();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class NotificacaoComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: NotificacaoService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

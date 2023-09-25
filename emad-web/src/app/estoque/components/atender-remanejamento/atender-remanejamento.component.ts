@@ -13,7 +13,7 @@ import { SolicitacaoRemanejamentoService } from '../solicitacao-remanejamento/so
 
 export class AtenderRemanejamentoComponent implements OnInit {
 
-  method: String = "solicitacao-remanejamento/atender";
+  method: String = 'solicitacao-remanejamento/atender';
   object: SolicitacaoRemanejamento = new SolicitacaoRemanejamento();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -21,7 +21,7 @@ export class AtenderRemanejamentoComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: SolicitacaoRemanejamentoService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }

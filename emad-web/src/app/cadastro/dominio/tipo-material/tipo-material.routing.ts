@@ -1,18 +1,18 @@
-import { Routes } from "@angular/router";
-import { TipoMaterialFormComponent } from "./tipo-material-form.component";
-import { TipoMaterialComponent } from "./tipo-material.component";
+import { Routes } from '@angular/router';
+import { TipoMaterialFormComponent } from './tipo-material-form.component';
+import { TipoMaterialComponent } from './tipo-material.component';
 
 export const tipoMaterialRoutes: Routes = [
     {
         path: '',
-        component: TipoMaterialComponent,        
+        component: TipoMaterialComponent,
     },
     {
         path: 'cadastro',
-        component: TipoMaterialFormComponent,        
+        component: TipoMaterialFormComponent,
     },
     {
         path: 'cadastro/:id',
-        component: TipoMaterialFormComponent,        
+        component: TipoMaterialFormComponent,
     }
 ];

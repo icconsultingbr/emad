@@ -1,9 +1,9 @@
-import { Routes } from "@angular/router";
-import { PacienteMedicamentoComponent } from "./paciente-medicamento.component";
+import { Routes } from '@angular/router';
+import { PacienteMedicamentoComponent } from './paciente-medicamento.component';
 
-export const pacienteMedicamentoRoutes: Routes = [    
+export const pacienteMedicamentoRoutes: Routes = [
     {
         path: '',
-        component: PacienteMedicamentoComponent,        
+        component: PacienteMedicamentoComponent,
     }
 ];

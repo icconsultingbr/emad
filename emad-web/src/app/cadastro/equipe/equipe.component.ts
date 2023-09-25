@@ -11,7 +11,7 @@ import { EquipeService } from './equipe.service';
 })
 export class EquipeComponent implements OnInit {
 
-  method: string = "equipe";
+  method = 'equipe';
   domains: any[] = [];
   fields = [];
   fieldsSearch = [];
@@ -21,7 +21,7 @@ export class EquipeComponent implements OnInit {
     public nav: AppNavbarService,
     private service: EquipeService) {
 
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }
@@ -40,7 +40,7 @@ export class EquipeComponent implements OnInit {
     this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
       this.domains.push({
         idEstabelecimento: estabelecimentos
-      })
+      });
     });
   }
 

@@ -14,9 +14,9 @@ import { ActivatedRoute } from '@angular/router';
 export class FamiliaMaterialFormComponent implements OnInit {
 
   object: FamiliaMaterial = new FamiliaMaterial();
-  method: string = "familia-material";
+  method = 'familia-material';
   fields: any[] = [];
-  label: string = "Família de material";
+  label = 'Família de material';
   id: Number = null;
   domains: any[] = [];
 
@@ -35,12 +35,12 @@ export class FamiliaMaterialFormComponent implements OnInit {
     this.loadDomains();
   }
 
-  loadDomains() {    
+  loadDomains() {
     this.service.listDomains('grupo-material').subscribe(grupoMaterial => {
-      this.domains.push({            
+      this.domains.push({
         idGrupoMaterial: grupoMaterial,
         idSubGrupoMaterial: [],
-      });                      
+      });
     });
   }
 }

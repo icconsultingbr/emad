@@ -15,12 +15,12 @@ import { Procedimento } from '../../_core/_models/Procedimento';
 export class ProcedimentoFormComponent implements OnInit {
 
   object: Procedimento = new Procedimento();
-  method: string = 'procedimento';
+  method = 'procedimento';
   fields: any[] = [];
-  label: string = "Procedimento";
+  label = 'Procedimento';
   id: Number = null;
   domains: any[] = [];
-  loading: boolean = false;
+  loading = false;
 
   constructor(
     fb: FormBuilder,

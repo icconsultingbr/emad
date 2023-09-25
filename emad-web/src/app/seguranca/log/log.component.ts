@@ -10,7 +10,7 @@ import { LogService } from './log.service';
 })
 export class LogComponent implements OnInit {
 
-  method: string = "log";
+  method = 'log';
   object: Log = new Log();
   domains: any[] = [];
   fields = [];
@@ -19,8 +19,8 @@ export class LogComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: LogService) {
-      
-      for (let field of this.service.fields) {
+
+      for (const field of this.service.fields) {
         if (field.grid) {
           this.fields.push(field);
         }
@@ -40,7 +40,7 @@ export class LogComponent implements OnInit {
     this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
       this.domains.push({
         idEstabelecimento: estabelecimentos
-      })
+      });
     });
   }
 

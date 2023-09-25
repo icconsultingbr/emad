@@ -12,7 +12,7 @@ import { TipoMovimento } from '../../../_core/_models/TipoMovimento';
 
 export class TipoMovimentoComponent implements OnInit {
 
-  method: string = "tipo-movimento";
+  method = 'tipo-movimento';
   object: TipoMovimento = new TipoMovimento();
   fields: any[] = [];
   fieldsSearch: any[] = [];
@@ -20,7 +20,7 @@ export class TipoMovimentoComponent implements OnInit {
   constructor(
     public nav: AppNavbarService,
     private service: TipoMovimentoService) {
-    for (let field of this.service.fields) {
+    for (const field of this.service.fields) {
       if (field.grid) {
         this.fields.push(field);
       }
