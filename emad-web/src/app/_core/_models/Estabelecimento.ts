@@ -37,4 +37,5 @@ export class Estabelecimento {
   @Input() cboProfissionalEsus: Number = null;
   @Input() cnsProfissionaleSus: Number = null;
   @Input() nivelSuperior: string;
+  @Input() obrigaIdSAP: boolean;
 }
