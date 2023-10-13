@@ -37,7 +37,7 @@ export class PacienteFormComponent implements OnInit {
   object: Paciente = new Paciente();
   objectEstabelecimento: Estabelecimento = new Estabelecimento();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
-  method: string = 'paciente';
+  method = 'paciente';
   fields = [];
   label = 'Paciente';
   id: number = null;
@@ -129,51 +129,58 @@ export class PacienteFormComponent implements OnInit {
                     this.service
                       .listDomains('atencao-continuada')
                       .subscribe((atencaoContinuada) => {
-                        this.service
-                          .listDomains('escolaridade')
-                          .subscribe((escolaridade) => {
-                            this.domains.push({
-                              idUf: ufs,
-                              idNacionalidade: paises,
-                              idNaturalidade: [],
-                              idMunicipio: [],
-                              hipoteses: hipoteseDiagnostica,
-                              idEstabelecimentoCadastro: estabelecimentos,
-                              escolaridade: escolaridade,
-                              idModalidade: modalidades,
-                              sexo: [
-                                { id: '1', nome: 'Masculino' },
-                                { id: '2', nome: 'Feminino' },
-                                { id: '3', nome: 'Ambos' },
-                                { id: '4', nome: 'Não informado' },
-                              ],
-                              idTipoSanguineo: [
-                                { id: '1', nome: 'A_POSITIVO' },
-                                { id: '2', nome: 'A_NEGATIVO' },
-                                { id: '3', nome: 'B_POSITIVO' },
-                                { id: '4', nome: 'B_NEGATIVO' },
-                                { id: '5', nome: 'AB_POSITIVO' },
-                                { id: '6', nome: 'AB_NEGATIVO' },
-                                { id: '7', nome: 'O_POSITIVO' },
-                                { id: '8', nome: 'O_NEGATIVO' },
-                              ],
-                              aleitamentoMaterno: [
-                                { id: '1', nome: 'Exclusivo' },
-                                { id: '2', nome: 'Predominante' },
-                                { id: '3', nome: 'Complementado' },
-                                { id: '4', nome: 'Inexistente' },
-                              ],
-                              idRaca: racas,
-                              idAtencaoContinuada: atencaoContinuada,
-                              gruposAtencaoContinuada: atencaoContinuada,
-                            });
-                            if (!Util.isEmpty(this.id)) {
-                              this.encontraPaciente();
-                            } else {
-                              this.loading = false;
-                              this.loadPhoto = true;
-                            }
-                          });
+                        this.domains.push({
+                          idUf: ufs,
+                          idNacionalidade: paises,
+                          idNaturalidade: [],
+                          idMunicipio: [],
+                          hipoteses: hipoteseDiagnostica,
+                          idEstabelecimentoCadastro: estabelecimentos,
+                          escolaridade: [
+                            { id: 1, nome: 'Educação infantil' },
+                            { id: 2, nome: 'Fundamental' },
+                            { id: 3, nome: 'Médio' },
+                            { id: 4, nome: 'Superior (Graduação)' },
+                            { id: 5, nome: 'Pós-graduação' },
+                            { id: 6, nome: 'Mestrado' },
+                            { id: 7, nome: 'Doutorado' },
+                            { id: 8, nome: 'Escola' },
+                            { id: 9, nome: 'Analfabeto' },
+                            { id: 10, nome: 'Não informado' },
+                          ],
+                          idModalidade: modalidades,
+                          sexo: [
+                            { id: '1', nome: 'Masculino' },
+                            { id: '2', nome: 'Feminino' },
+                            { id: '3', nome: 'Ambos' },
+                            { id: '4', nome: 'Não informado' },
+                          ],
+                          idTipoSanguineo: [
+                            { id: '1', nome: 'A_POSITIVO' },
+                            { id: '2', nome: 'A_NEGATIVO' },
+                            { id: '3', nome: 'B_POSITIVO' },
+                            { id: '4', nome: 'B_NEGATIVO' },
+                            { id: '5', nome: 'AB_POSITIVO' },
+                            { id: '6', nome: 'AB_NEGATIVO' },
+                            { id: '7', nome: 'O_POSITIVO' },
+                            { id: '8', nome: 'O_NEGATIVO' },
+                          ],
+                          aleitamentoMaterno: [
+                            { id: '1', nome: 'Exclusivo' },
+                            { id: '2', nome: 'Predominante' },
+                            { id: '3', nome: 'Complementado' },
+                            { id: '4', nome: 'Inexistente' },
+                          ],
+                          idRaca: racas,
+                          idAtencaoContinuada: atencaoContinuada,
+                          gruposAtencaoContinuada: atencaoContinuada,
+                        });
+                        if (!Util.isEmpty(this.id)) {
+                          this.encontraPaciente();
+                        } else {
+                          this.loading = false;
+                          this.loadPhoto = true;
+                        }
                       });
                   });
               });
@@ -284,7 +291,6 @@ export class PacienteFormComponent implements OnInit {
       gruposAtencaoContinuada: ['', ''],
       falecido: ['', ''],
       necessidadeEspeciais: ['', ''],
-      reeducando: ['', ''],
       gestante: ['', ''],
       aleitamentoMaterno: ['', ''],
       dumDaGestante: ['', ''],
@@ -307,9 +313,10 @@ export class PacienteFormComponent implements OnInit {
       (res: any) => {
         this.loading = false;
         this.object.id = res.id;
-        if (this.form.value.id)
+        if (this.form.value.id) {
           this.message = 'Alteração efetuada com sucesso!';
-        else this.message = 'Cadastro efetuado com sucesso!';
+        }
+        else { this.message = 'Cadastro efetuado com sucesso!'; }
 
         this.back();
         return;
@@ -358,8 +365,8 @@ export class PacienteFormComponent implements OnInit {
     autocomplete.setFields(['address_components', 'geometry', 'icon', 'name']);
 
     google.maps.event.addListener(autocomplete, 'place_changed', () => {
-      let place: PlaceResult = autocomplete.getPlace();
-      let geometry: PlaceGeometry = place.geometry;
+      const place: PlaceResult = autocomplete.getPlace();
+      const geometry: PlaceGeometry = place.geometry;
 
       let rua = '';
       let numero = '';
@@ -405,7 +412,7 @@ export class PacienteFormComponent implements OnInit {
       this.object.longitude = longitude;
       this.object.cep = cep;
 
-      let ufs = this.domains[0].idUf.filter(
+      const ufs = this.domains[0].idUf.filter(
         (uf) => uf.nome.toUpperCase() == estado.toUpperCase(),
       );
 
@@ -416,7 +423,7 @@ export class PacienteFormComponent implements OnInit {
           .list(`municipio/uf/${this.object.idUf}`)
           .subscribe((municipios) => {
             this.domains[0].idMunicipio = municipios;
-            let ufMunicipios = municipios.filter(
+            const ufMunicipios = municipios.filter(
               (uf) =>
                 uf.nome.toUpperCase() == municipio.toString().toUpperCase(),
             );
@@ -437,7 +444,7 @@ export class PacienteFormComponent implements OnInit {
     this.service.list(`municipio/uf/${this.object.idUf}`).subscribe(
       (municipios) => {
         this.domains[0].idMunicipio = municipios;
-        let listaMunicipios = municipios.filter(
+        const listaMunicipios = municipios.filter(
           (municipio) =>
             municipio.nome.toUpperCase() == municipio.toString().toUpperCase(),
         );
@@ -469,7 +476,7 @@ export class PacienteFormComponent implements OnInit {
   }
 
   visualizaAtendimentos(id: any): void {
-    let url =
+    const url =
       this.router.url.replace('paciente', '') +
       this.virtualDirectory +
       '#/atendimentos/cadastro/' +
@@ -539,7 +546,7 @@ export class PacienteFormComponent implements OnInit {
     this.paging.offset = offset ? offset : 0;
     this.paging.limit = limit ? limit : 10;
 
-    var params =
+    let params =
       '?nome=' +
       this.hipoteseDiagnostica.nome +
       '&cid=' +
@@ -576,7 +583,7 @@ export class PacienteFormComponent implements OnInit {
   }
 
   close() {
-    if (this.modalRef) this.modalRef.close();
+    if (this.modalRef) { this.modalRef.close(); }
   }
 
   disableHipoteseButton() {
@@ -647,7 +654,7 @@ export class PacienteFormComponent implements OnInit {
           this.objectEstabelecimento = result;
           this.loading = false;
 
-          let estabelecimento = JSON.parse(JSON.stringify(result));
+          const estabelecimento = JSON.parse(JSON.stringify(result));
 
           // VALIDACAO EM TELA
           this.cpfObrigatorio = estabelecimento.obrigaCpfNovoPaciente == 1;

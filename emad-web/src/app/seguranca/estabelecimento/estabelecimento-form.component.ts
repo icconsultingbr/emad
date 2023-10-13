@@ -10,11 +10,12 @@ import { each } from 'jquery';
 @Component({
   selector: 'app-estabelecimento-form',
   templateUrl: './estabelecimento-form.component.html',
-  styleUrls: ['./estabelecimento-form.component.css'],
+  styleUrls: ['./estabelecimento-form.component.css']
 })
 export class EstabelecimentoFormComponent implements OnInit {
+
   object: Estabelecimento = new Estabelecimento();
-  method: string = 'estabelecimento';
+  method = 'estabelecimento';
   fields = [];
   label = 'Estabelecimento';
   id: Number = null;
@@ -41,7 +42,7 @@ export class EstabelecimentoFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.subscribe((params) => {
+    this.route.params.subscribe(params => {
       this.id = params['id'];
     });
     this.createGroup();
@@ -53,53 +54,49 @@ export class EstabelecimentoFormComponent implements OnInit {
       selectAllText: 'Marcar todos',
       unSelectAllText: 'Desmarcar todos',
       itemsShowLimit: 5,
-      allowSearchFilter: false,
+      allowSearchFilter: false
     };
     this.listTipoFicha();
   }
 
   loadDomains() {
-    this.service.listDomains('uf').subscribe((ufs) => {
-      this.service.listDomains('tipo-unidade').subscribe((tipos) => {
-        this.service
-          .list('estabelecimento/nivel-superior/' + this.id)
-          .subscribe((estabelecimentos) => {
-            this.service
-              .listDomains('especialidade')
-              .subscribe((cboProfEsus) => {
-                this.service
-                  .listDomains('tipo-ficha')
-                  .subscribe((tipoFichas) => {
-                    this.domains.push({
-                      idUf: ufs,
-                      idMunicipio: [],
-                      cboProfissionalEsus: cboProfEsus,
-                      idTipoUnidade: tipos,
-                      grauDependencia: [
-                        { id: 'I', nome: 'Individual' },
-                        { id: 'M', nome: 'Mantida' },
-                      ],
-                      esferaAdministradora: [
-                        { id: 'E', nome: 'Estadual' },
-                        { id: 'F', nome: 'Federal' },
-                        { id: 'M', nome: 'Municipal' },
-                      ],
-                      idEstabelecimentoNivelSuperior: estabelecimentos,
-                      tipoFichas: tipoFichas,
-                    });
-                    if (!Util.isEmpty(this.id)) {
-                      this.encontraEstabelecimento();
-                    } else {
-                      this.loading = false;
-                    }
-                  });
+    this.service.listDomains('uf').subscribe(ufs => {
+      this.service.listDomains('tipo-unidade').subscribe(tipos => {
+        this.service.list('estabelecimento/nivel-superior/' + this.id).subscribe(estabelecimentos => {
+          this.service.listDomains('especialidade').subscribe(cboProfEsus => {
+            this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {
+              this.domains.push({
+                idUf: ufs,
+                idMunicipio: [],
+                cboProfissionalEsus: cboProfEsus,
+                idTipoUnidade: tipos,
+                grauDependencia: [
+                  { id: 'I', nome: 'Individual' },
+                  { id: 'M', nome: 'Mantida' }
+                ],
+                esferaAdministradora: [
+                  { id: 'E', nome: 'Estadual' },
+                  { id: 'F', nome: 'Federal' },
+                  { id: 'M', nome: 'Municipal' }
+                ],
+                idEstabelecimentoNivelSuperior: estabelecimentos,
+                tipoFichas: tipoFichas
               });
+              if (!Util.isEmpty(this.id)) {
+                this.encontraEstabelecimento();
+              } else {
+                this.loading = false;
+              }
+            });
           });
+        });
       });
     });
+
   }
 
   preencher() {
+
     this.object.cnes = '1231312313123';
     this.object.cnpj = '132123123123123';
     this.object.razaoSocial = 'teste1';
@@ -125,7 +122,6 @@ export class EstabelecimentoFormComponent implements OnInit {
     this.object.distancia = 3;
     this.object.obrigaCpfNovoPaciente = true;
     this.object.obrigaCartaoSusNovoPaciente = true;
-    this.object.obrigaIdSAP = true;
     this.object.obrigaValidarPacienteAtendimento = true;
     this.object.enviaMedicamentoSus = false;
     this.object.celularDefaultNovoPaciente = null;
@@ -137,63 +133,58 @@ export class EstabelecimentoFormComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.service
-      .findTipoFichaEstabelecimento(this.id)
-      .subscribe((tipoFichas) => {
-        this.selectedItems = tipoFichas;
-        this.loading = true;
-      });
+    this.service.findTipoFichaEstabelecimento(this.id).subscribe(tipoFichas => {
+      this.selectedItems = tipoFichas;
+      this.loading = true;
+    });
   }
 
   sendForm(event) {
+
     this.errors = [];
     this.message = '';
     this.loading = true;
     event.preventDefault();
-    this.service.save(this.object, this.method).subscribe(
-      (res: any) => {
-        this.loading = false;
-        this.object.id = res.id;
+    this.service.save(this.object, this.method).subscribe((res: any) => {
 
-        if (this.form.value.id) {
-          this.idEstabelecimento = this.form.value.id;
-          this.message = 'Alteração efetuada com sucesso!';
-        } else {
-          this.idEstabelecimento = res.id;
-          this.message = 'Cadastro efetuado com sucesso!';
-        }
+      this.loading = false;
+      this.object.id = res.id;
 
-        this.createListaFicha(this.idEstabelecimento);
-        this.back();
-        return;
-      },
-      (erro) => {
-        this.loading = false;
-        setTimeout(() => (this.loading = false), 300);
-        this.errors = Util.customHTTPResponse(erro);
-      },
-    );
+      if (this.form.value.id) {
+        this.idEstabelecimento = this.form.value.id;
+        this.message = 'Alteração efetuada com sucesso!';
+      } else {
+        this.idEstabelecimento = res.id;
+        this.message = 'Cadastro efetuado com sucesso!';
+      }
+
+      this.createListaFicha(this.idEstabelecimento);
+      this.back();
+      return;
+
+    }, erro => {
+      this.loading = false;
+      setTimeout(() => this.loading = false, 300);
+      this.errors = Util.customHTTPResponse(erro);
+    });
   }
 
   createListaFicha(idEstabelecimento) {
-    this.serviceFicha
-      .deleteFichaEstabelecimento(idEstabelecimento)
-      .subscribe((res: any) => {
-        if (res) {
-          let valor = [];
-          for (let field of this.selectedItems) {
-            valor.push({
-              idTipoFicha: field.id,
-              idEstabelecimento: idEstabelecimento,
-            });
-          }
-          this.serviceFicha
-            .saveFichaEstabelecimento(valor)
-            .subscribe((res: any) => {
-              this.loading = false;
-            });
+
+    this.serviceFicha.deleteFichaEstabelecimento(idEstabelecimento).subscribe((res: any) => {
+      if (res) {
+        const valor = [];
+        for (const field of this.selectedItems) {
+          valor.push({
+            idTipoFicha: field.id,
+            idEstabelecimento: idEstabelecimento
+          });
         }
-      });
+        this.serviceFicha.saveFichaEstabelecimento(valor).subscribe((res: any) => {
+          this.loading = false;
+        });
+      }
+    });
   }
 
   createGroup() {
@@ -231,7 +222,6 @@ export class EstabelecimentoFormComponent implements OnInit {
       obrigaCpfNovoPaciente: ['', ''],
       obrigaCartaoSusNovoPaciente: ['', ''],
       obrigaValidarPacienteAtendimento: ['', ''],
-      obrigaIdSAP: ['', ''],
       enviaMedicamentoSus: ['', ''],
       celularDefaultNovoPaciente: ['', ''],
       cnsProfissionaleSus: ['', Validators.required],
@@ -250,22 +240,16 @@ export class EstabelecimentoFormComponent implements OnInit {
     this.errors = [];
     this.loading = true;
 
-    this.service.list(`municipio/uf/${this.object.idUf}`).subscribe(
-      (municipios) => {
-        this.domains[0].idMunicipio = municipios;
-        let listaMunicipios = municipios.filter(
-          (municipio) =>
-            municipio.nome.toUpperCase() == municipio.toString().toUpperCase(),
-        );
-        if (listaMunicipios.length > 0) {
-          this.object.idMunicipio = listaMunicipios[0].id;
-        }
-      },
-      (error) => {
-        this.loading = false;
-        this.errors = Util.customHTTPResponse(error);
-      },
-    );
+    this.service.list(`municipio/uf/${this.object.idUf}`).subscribe(municipios => {
+      this.domains[0].idMunicipio = municipios;
+      const listaMunicipios = municipios.filter((municipio) => municipio.nome.toUpperCase() == municipio.toString().toUpperCase());
+      if (listaMunicipios.length > 0) {
+        this.object.idMunicipio = listaMunicipios[0].id;
+      }
+    }, error => {
+      this.loading = false;
+      this.errors = Util.customHTTPResponse(error);
+    });
   }
 
   encontraEstabelecimento() {
@@ -274,24 +258,22 @@ export class EstabelecimentoFormComponent implements OnInit {
     this.message = '';
     this.loading = true;
 
-    this.service.findById(this.id, this.method).subscribe(
-      (result) => {
-        this.object = result;
-        this.loading = false;
-        this.carregaMunicipios();
-      },
-      (error) => {
-        this.object = new Estabelecimento();
-        this.loading = false;
-        this.errors.push({
-          message: 'Estabelecimento não encontrado',
-        });
-      },
-    );
+    this.service.findById(this.id, this.method).subscribe(result => {
+      this.object = result;
+      this.loading = false;
+      this.carregaMunicipios();
+
+    }, error => {
+      this.object = new Estabelecimento();
+      this.loading = false;
+      this.errors.push({
+        message: 'Estabelecimento não encontrado'
+      });
+    });
   }
 
   listTipoFicha() {
-    this.service.listDomains('tipo-ficha').subscribe((tipoFichas) => {
+    this.service.listDomains('tipo-ficha').subscribe(tipoFichas => {
       this.dropdownList = tipoFichas;
     });
   }
@@ -302,5 +284,7 @@ export class EstabelecimentoFormComponent implements OnInit {
   onSelectAll(items: any) {
     this.object.tipoFichas = this.selectedItems;
   }
-  onChange(item: any) {}
+  onChange(item: any) {
+  }
+
 }

@@ -45,7 +45,6 @@ EstabelecimentoDAO.prototype.listaPorUsuario = function (id) {
         e.idEstabelecimentoNivelSuperior,
         e.cnsProfissionaleSus, 
         e.obrigaCpfNovoPaciente,
-        e.obrigaIdSAP,
         e.obrigaCartaoSusNovoPaciente,
         e.enviaMedicamentoSus,
         e.obrigaValidarPacienteAtendimento,
@@ -133,7 +132,6 @@ EstabelecimentoDAO.prototype.lista = async function (addFilter) {
         e.cnsProfissionaleSus, 
         e.obrigaCpfNovoPaciente,
         e.obrigaCartaoSusNovoPaciente,
-        e.obrigaIdSAP,
         e.enviaMedicamentoSus
     FROM 
         tb_estabelecimento AS e 
@@ -183,7 +181,6 @@ EstabelecimentoDAO.prototype.buscaPorId = async function (id, callback) {
             e.cnsProfissionaleSus, 
             e.obrigaCpfNovoPaciente,
             e.obrigaCartaoSusNovoPaciente,
-            e.obrigaIdSAP,
             e.enviaMedicamentoSus,
             e.obrigaValidarPacienteAtendimento,
             e.celularDefaultNovoPaciente

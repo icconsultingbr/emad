@@ -7,17 +7,20 @@ import { data } from 'jquery';
 
 @Injectable()
 export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacienteService {
-  pathFiles = `${environment.apiUrl}/fotos/`;
 
-  tipoHistoriaClinica = [
-    { id: 1, nome: 'Anamnese' },
-    { id: 2, nome: 'Evolução' },
-  ];
+    pathFiles = `${environment.apiUrl}/fotos/`;
 
-  constructor(private pacienteService: PacienteService) {
-    super();
+    tipoHistoriaClinica = [
+        { id: 1, nome: 'Anamnese' },
+        { id: 2, nome: 'Evolução' },
+    ];
 
-    this.style = `<style type="text/css">
+    constructor(private pacienteService: PacienteService) {
+        super();
+
+
+
+        this.style = `<style type="text/css">
 
         @page { size: auto;  margin: 5mm; }
 
@@ -119,104 +122,47 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
         }
         </style>`;
 
-    this.script = `<script>
+        this.script = `<script>
             $(document).ready(function(){
             $('.date').mask('00/00/0000');
             $('.cpf').mask('000.000.000-00');
             $('.cnpj').mask('00.000.000/0000-00');
             });
         </script>`;
-  }
+    }
 
-  filter(result: any, dataInicial: string, dataFinal: string, nomeData: any) {
-    const resultFilter =
-      dataInicial != undefined && dataFinal != undefined
-        ? result.filter(
-            (m) => m[nomeData] >= dataInicial && m[nomeData] <= dataFinal,
-          )
-        : result;
-    return resultFilter;
-  }
+    filter(result: any, dataInicial: string, dataFinal: string, nomeData: any) {
+        const resultFilter = dataInicial != undefined && dataFinal != undefined ? result.filter(m => (m[nomeData] >= dataInicial && m[nomeData] <= dataFinal)) : result;
+        return resultFilter;
+    }
 
-  imprimir(
-    idPaciente: number,
-    dataInicial: string,
-    dataFinal: string,
-    tipoFicha: number,
-    profissional: number,
-    target: string = '_blank',
-  ) {
-    this.pacienteService
-      .obterProntuarioPacienteRelatorio(idPaciente, tipoFicha, profissional)
-      .subscribe((result) => {
-        console.log(result);
-        let sinaisVitais = '';
-        let atendimentos = '';
-        let receitas = '';
-        let fichasAtendimento = '';
-        let exames = '';
-        let hipoteseDiagnostica = '';
-        let vacinas = '';
-        let procedimentos = '';
-        let encaminhamentos = '';
+    imprimir(idPaciente: number, dataInicial: string, dataFinal: string, tipoFicha: number, profissional: number, target: string = '_blank') {
 
-        const sinaisVitaisFilter = this.filter(
-          result.sinaisVitais,
-          dataInicial,
-          dataFinal,
-          'dataCriacao',
-        );
-        const atendimentosFilter = this.filter(
-          result.atendimentos,
-          dataInicial,
-          dataFinal,
-          'dataCriacao',
-        );
-        const receitasFilter = this.filter(
-          result.receitas,
-          dataInicial,
-          dataFinal,
-          'dataEmissao',
-        );
-        const fichasAtendimentoFilter = this.filter(
-          result.vacinas,
-          dataInicial,
-          dataFinal,
-          'dataCriacao',
-        );
-        const examesFilter = this.filter(
-          result.exames,
-          dataInicial,
-          dataFinal,
-          'dataCriacao',
-        );
-        const hipoteseDiagnosticaFilter = this.filter(
-          result.hipoteseDiagnostica,
-          dataInicial,
-          dataFinal,
-          'dataCriacao',
-        );
-        const vacinasFilter = this.filter(
-          result.vacinas,
-          dataInicial,
-          dataFinal,
-          'dataUltDisp',
-        );
-        const procedimentosFilter = this.filter(
-          result.procedimentos,
-          dataInicial,
-          dataFinal,
-          'dataCriacao',
-        );
-        const encaminhamentosFilter = this.filter(
-          result.encaminhamentos,
-          dataInicial,
-          dataFinal,
-          'dataCriacao',
-        );
+        this.pacienteService.obterProntuarioPacienteRelatorio(idPaciente, tipoFicha, profissional)
+            .subscribe((result) => {
+                let sinaisVitais = '';
+                let atendimentos = '';
+                let receitas = '';
+                let fichasAtendimento = '';
+                let exames = '';
+                let hipoteseDiagnostica = '';
+                let vacinas = '';
+                let procedimentos = '';
+                let encaminhamentos = '';
 
-        if (sinaisVitaisFilter) {
-          sinaisVitais += `<div class="col s12">
+                const sinaisVitaisFilter = this.filter(result.sinaisVitais, dataInicial, dataFinal, 'dataCriacao');
+                const atendimentosFilter = this.filter(result.atendimentos, dataInicial, dataFinal, 'dataCriacao');
+                const receitasFilter = this.filter(result.receitas, dataInicial, dataFinal, 'dataEmissao');
+                const fichasAtendimentoFilter = this.filter(result.vacinas, dataInicial, dataFinal, 'dataCriacao');
+                const examesFilter = this.filter(result.exames, dataInicial, dataFinal, 'dataCriacao');
+                const hipoteseDiagnosticaFilter = this.filter(result.hipoteseDiagnostica, dataInicial, dataFinal, 'dataCriacao');
+                const vacinasFilter = this.filter(result.vacinas, dataInicial, dataFinal, 'dataUltDisp');
+                const procedimentosFilter = this.filter(result.procedimentos, dataInicial, dataFinal, 'dataCriacao');
+                const encaminhamentosFilter = this.filter(result.encaminhamentos, dataInicial, dataFinal, 'dataCriacao');
+
+
+                if (sinaisVitaisFilter) {
+                    sinaisVitais += `<div class="col s12">
                                             <table class="table table-striped">
                                                 <thead>
                                                 <tr>
@@ -230,54 +176,32 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 </tr>
                                             </thead>`;
 
-          sinaisVitais += sinaisVitaisFilter.length > 0 ? `<tbody>` : ``;
+                    sinaisVitais += (sinaisVitaisFilter.length > 0 ? `<tbody>` : ``);
 
-          sinaisVitaisFilter.forEach((sinais) => {
-            sinaisVitais += `<tr class="text-left">
-                                        <td class="text-secondary">${
-                                          sinais.pressaoArterial
-                                            ? sinais.pressaoArterial
-                                            : ''
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          sinais.pulso ? sinais.pulso : ''
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          sinais.saturacao
-                                            ? sinais.saturacao
-                                            : ''
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          sinais.temperatura
-                                            ? sinais.temperatura
-                                            : ''
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          sinais.peso ? sinais.peso : ''
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          sinais.glicemia ? sinais.glicemia : ''
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          sinais.label ? sinais.label : ''
-                                        }</td>
+                    sinaisVitaisFilter.forEach(sinais => {
+
+                        sinaisVitais += `<tr class="text-left">
+                                        <td class="text-secondary">${sinais.pressaoArterial ? sinais.pressaoArterial : ''}</td>
+                                        <td class="text-secondary">${sinais.pulso ? sinais.pulso : ''}</td>
+                                        <td class="text-secondary">${sinais.saturacao ? sinais.saturacao : ''}</td>
+                                        <td class="text-secondary">${sinais.temperatura ? sinais.temperatura : ''}</td>
+                                        <td class="text-secondary">${sinais.peso ? sinais.peso : ''}</td>
+                                        <td class="text-secondary">${sinais.glicemia ? sinais.glicemia : ''}</td>
+                                        <td class="text-secondary">${sinais.label ? sinais.label : ''}</td>
                                     </tr>`;
-          });
 
-          sinaisVitais +=
-            sinaisVitaisFilter.length > 0
-              ? `</tbody></table></div>`
-              : `</table></div>`;
-        }
 
-        if (atendimentosFilter) {
-          atendimentosFilter.forEach((atendimento) => {
-            var tpHistoriaClinica = this.tipoHistoriaClinica.find(
-              (x) => x.id == atendimento.tipoHistoriaClinica,
-            );
-            let atividadesAtendimento = '';
+                    });
 
-            atividadesAtendimento += `<div class="col s12">
+                    sinaisVitais += (sinaisVitaisFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
+                }
+
+                if (atendimentosFilter) {
+                    atendimentosFilter.forEach(atendimento => {
+                        const tpHistoriaClinica = this.tipoHistoriaClinica.find(x => x.id == atendimento.tipoHistoriaClinica);
+                        let atividadesAtendimento = '';
+
+                        atividadesAtendimento += `<div class="col s12">
                                             <table class="table table-striped">
                                                 <thead>
                                                 <tr>
@@ -286,59 +210,36 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 </tr>
                                             </thead>`;
 
-            atividadesAtendimento +=
-              atendimento.historicos.length > 0 ? `<tbody>` : ``;
+                        atividadesAtendimento += (atendimento.historicos.length > 0 ? `<tbody>` : ``);
 
-            atendimento.historicos.forEach((atividade) => {
-              atividadesAtendimento += `<tr class="text-left">
+                        atendimento.historicos.forEach(atividade => {
+                            atividadesAtendimento += `<tr class="text-left">
                                                         <td class="text-secondary">${atividade.dataHistorico}</td>
                                                         <td class="text-secondary"> Profissional: ${atividade.nomeProfissional} executou ${atividade.nomeTipoHistorico}</td>
                                                       </tr>`;
-            });
+                        });
 
-            atividadesAtendimento +=
-              atendimento.historicos.length > 0
-                ? `</tbody></table></div>`
-                : `</table></div>`;
+                        atividadesAtendimento += (atendimento.historicos.length > 0 ? `</tbody></table></div>` : `</table></div>`);
 
-            atendimentos += `<div class="col s12">
-                                            <span> <b>ID do Atendimento</b>: ${
-                                              atendimento.id
-                                            }</span>
-                                            <span> <b>Unidade</b>: ${
-                                              atendimento.estabelecimentoNome
-                                            }</span>
-                                            <span> <b>Tipo de atendimento</b>: ${
-                                              atendimento.fichaNome
-                                            }</span>
-                                            <span> <b>Situação atual</b>: ${
-                                              atendimento.situacaoNome
-                                            }</span>
-                                            <span> <b>Motivo da queixa</b>: ${
-                                              atendimento.motivoQueixa
-                                                ? atendimento.motivoQueixa
-                                                : ''
-                                            }</span>
-                                            <span> <b>Tipo</b>: ${
-                                              atendimento.tipoHistoriaClinica
-                                                ? tpHistoriaClinica.nome
-                                                : ''
-                                            }</span>
-                                            <span> <b>Descrição</b>: ${
-                                              atendimento.historicoClinico
-                                                ? atendimento.historicoClinico
-                                                : ''
-                                            }</span>
+                        atendimentos += `<div class="col s12">
+                                            <span> <b>ID do Atendimento</b>: ${atendimento.id}</span>
+                                            <span> <b>Unidade</b>: ${atendimento.estabelecimentoNome}</span>
+                                            <span> <b>Tipo de atendimento</b>: ${atendimento.fichaNome}</span>
+                                            <span> <b>Situação atual</b>: ${atendimento.situacaoNome}</span>
+                                            <span> <b>Motivo da queixa</b>: ${atendimento.motivoQueixa ? atendimento.motivoQueixa : ''}</span>
+                                            <span> <b>Tipo</b>: ${atendimento.tipoHistoriaClinica ? tpHistoriaClinica.nome : ''}</span>
+                                            <span> <b>Descrição</b>: ${atendimento.historicoClinico ? atendimento.historicoClinico : ''}</span>
                                             ${atividadesAtendimento}
                                         </div>`;
-          });
-        }
+                    });
+                }
 
-        if (receitasFilter) {
-          receitasFilter.forEach((receita) => {
-            let itensReceita = '';
+                if (receitasFilter) {
 
-            itensReceita += `<div class="col s12">
+                    receitasFilter.forEach(receita => {
+                        let itensReceita = '';
+
+                        itensReceita += `<div class="col s12">
                                             <table class="table table-striped">
                                                 <thead>
                                                 <tr>
@@ -352,75 +253,38 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 </tr>
                                             </thead>`;
 
-            itensReceita += receita.itensReceita.length > 0 ? `<tbody>` : ``;
+                        itensReceita += (receita.itensReceita.length > 0 ? `<tbody>` : ``);
 
-            receita.itensReceita.forEach((itens) => {
-              itensReceita += `<tr class="text-left">
-                                                <td class="text-secondary">${
-                                                  itens.codigoMaterial
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  itens.nomeMaterial
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  itens.qtdPrescrita
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  itens.tempoTratamento
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  itens.qtdDispAnterior
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  itens.dataUltDisp
-                                                    ? _moment(
-                                                        itens.dataUltDisp,
-                                                      ).format(
-                                                        'DD/MM/YYYY HH:mm',
-                                                      )
-                                                    : ''
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  itens.observacao
-                                                    ? itens.observacao
-                                                    : ''
-                                                }</td>
+
+                        receita.itensReceita.forEach(itens => {
+                            itensReceita += `<tr class="text-left">
+                                                <td class="text-secondary">${itens.codigoMaterial}</td>
+                                                <td class="text-secondary">${itens.nomeMaterial}</td>
+                                                <td class="text-secondary">${itens.qtdPrescrita}</td>
+                                                <td class="text-secondary">${itens.tempoTratamento}</td>
+                                                <td class="text-secondary">${itens.qtdDispAnterior}</td>
+                                                <td class="text-secondary">${itens.dataUltDisp ? _moment(itens.dataUltDisp).format('DD/MM/YYYY HH:mm') : ''}</td>
+                                                <td class="text-secondary">${itens.observacao ? itens.observacao : ''}</td>
                                             </tr>`;
-            });
+                        });
 
-            itensReceita +=
-              receita.itensReceita.length > 0
-                ? `</tbody></table></div>`
-                : `</table></div>`;
+                        itensReceita += (receita.itensReceita.length > 0 ? `</tbody></table></div>` : `</table></div>`);
 
-            receitas += `<div class="col s12">
-                                        <span> <b>Estabelecimento</b>: ${
-                                          receita.nomeEstabelecimento
-                                        }</span>
-                                        <span> <b>Profissional</b>: ${
-                                          receita.nomeProfissional
-                                        }</span>
+                        receitas += `<div class="col s12">
+                                        <span> <b>Estabelecimento</b>: ${receita.nomeEstabelecimento}</span>
+                                        <span> <b>Profissional</b>: ${receita.nomeProfissional}</span>
                                         <span> <b>Ano</b>: ${receita.ano}</span>
-                                        <span> <b>Número</b>: ${
-                                          receita.numero
-                                        }</span>
-                                        <span> <b>Situação</b>: ${
-                                          receita.situacaoNome
-                                        }</span>
-                                        <span> <b>Data emissão</b>: ${
-                                          receita.dataEmissao
-                                            ? _moment(
-                                                receita.dataEmissao,
-                                              ).format('DD/MM/YYYY HH:mm')
-                                            : ''
-                                        }</span>
+                                        <span> <b>Número</b>: ${receita.numero}</span>
+                                        <span> <b>Situação</b>: ${receita.situacaoNome}</span>
+                                        <span> <b>Data emissão</b>: ${receita.dataEmissao ? _moment(receita.dataEmissao).format('DD/MM/YYYY HH:mm') : ''}</span>
                                         ${itensReceita}
                                 </div>`;
-          });
-        }
+                    });
 
-        if (fichasAtendimentoFilter) {
-          fichasAtendimento += `<div class="col s12">
+                }
+
+                if (fichasAtendimentoFilter) {
+                    fichasAtendimento += `<div class="col s12">
                                             <table class="table table-striped">
                                                 <thead>
                                                 <tr>
@@ -434,51 +298,25 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 </tr>
                                             </thead>`;
 
-          fichasAtendimento +=
-            fichasAtendimentoFilter.length > 0 ? `<tbody>` : ``;
+                    fichasAtendimento += (fichasAtendimentoFilter.length > 0 ? `<tbody>` : ``);
 
-          fichasAtendimentoFilter.forEach((ficha) => {
-            fichasAtendimento += `<tr class="text-left">
-                                                <td class="text-secondary">${
-                                                  ficha.id
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  ficha.fichaNome
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  ficha.classificacaoNome
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  ficha.motivoQueixa
-                                                    ? ficha.motivoQueixa
-                                                    : ''
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  ficha.situacaoNome
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  ficha.dataCriacao
-                                                    ? _moment(
-                                                        ficha.dataCriacao,
-                                                      ).format(
-                                                        'DD/MM/YYYY HH:mm',
-                                                      )
-                                                    : ''
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  ficha.estabelecimentoNome
-                                                }</td>
+                    fichasAtendimentoFilter.forEach(ficha => {
+                        fichasAtendimento += `<tr class="text-left">
+                                                <td class="text-secondary">${ficha.id}</td>
+                                                <td class="text-secondary">${ficha.fichaNome}</td>
+                                                <td class="text-secondary">${ficha.classificacaoNome}</td>
+                                                <td class="text-secondary">${ficha.motivoQueixa ? ficha.motivoQueixa : ''}</td>
+                                                <td class="text-secondary">${ficha.situacaoNome}</td>
+                                                <td class="text-secondary">${ficha.dataCriacao ? _moment(ficha.dataCriacao).format('DD/MM/YYYY HH:mm') : ''}</td>
+                                                <td class="text-secondary">${ficha.estabelecimentoNome}</td>
                                             </tr>`;
-          });
+                    });
 
-          fichasAtendimento +=
-            fichasAtendimentoFilter.length > 0
-              ? `</tbody></table></div>`
-              : `</table></div>`;
-        }
+                    fichasAtendimento += (fichasAtendimentoFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
+                }
 
-        if (examesFilter) {
-          exames += `<div class="col s12">
+                if (examesFilter) {
+                    exames += `<div class="col s12">
                                 <table class="table table-striped">
                                     <thead>
                                     <tr>
@@ -492,46 +330,26 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                     </tr>
                                 </thead>`;
 
-          exames += examesFilter.length > 0 ? `<tbody>` : ``;
+                    exames += (examesFilter.length > 0 ? `<tbody>` : ``);
 
-          examesFilter.forEach((exame) => {
-            exames += `<tr class="text-left">
-                                        <td class="text-secondary">${
-                                          exame.id
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          exame.nomeTipoExame
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          exame.nomeProfissional
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          exame.situacaoNome
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          exame.resultadoNome
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          exame.dataCriacao
-                                            ? _moment(exame.dataCriacao).format(
-                                                'DD/MM/YYYY HH:mm',
-                                              )
-                                            : ''
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          exame.estabelecimentoNome
-                                        }</td>
+                    examesFilter.forEach(exame => {
+                        exames += `<tr class="text-left">
+                                        <td class="text-secondary">${exame.id}</td>
+                                        <td class="text-secondary">${exame.nomeTipoExame}</td>
+                                        <td class="text-secondary">${exame.nomeProfissional}</td>
+                                        <td class="text-secondary">${exame.situacaoNome}</td>
+                                        <td class="text-secondary">${exame.resultadoNome}</td>
+                                        <td class="text-secondary">${exame.dataCriacao ? _moment(exame.dataCriacao).format('DD/MM/YYYY HH:mm') : ''}</td>
+                                        <td class="text-secondary">${exame.estabelecimentoNome}</td>
                                     </tr>`;
-          });
+                    });
 
-          exames +=
-            examesFilter.length > 0
-              ? `</tbody></table></div>`
-              : `</table></div>`;
-        }
+                    exames += (examesFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
+                }
 
-        if (hipoteseDiagnosticaFilter) {
-          hipoteseDiagnostica += `<div class="col s12">
+                if (hipoteseDiagnosticaFilter) {
+
+                    hipoteseDiagnostica += `<div class="col s12">
                                             <table class="table table-striped">
                                                 <thead>
                                                 <tr>
@@ -542,40 +360,22 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 </tr>
                                             </thead>`;
 
-          hipoteseDiagnostica +=
-            hipoteseDiagnosticaFilter.length > 0 ? `<tbody>` : ``;
+                    hipoteseDiagnostica += (hipoteseDiagnosticaFilter.length > 0 ? `<tbody>` : ``);
 
-          hipoteseDiagnosticaFilter.forEach((hipotese) => {
-            hipoteseDiagnostica += `<tr class="text-left">
-                                                    <td class="text-secondary">${
-                                                      hipotese.codigo
-                                                    }</td>
-                                                    <td class="text-secondary">${
-                                                      hipotese.nome
-                                                    }</td>
-                                                    <td class="text-secondary">${
-                                                      hipotese.cid_10
-                                                    }</td>
-                                                    <td class="text-secondary">${
-                                                      hipotese.dataCriacao
-                                                        ? _moment(
-                                                            hipotese.dataCriacao,
-                                                          ).format(
-                                                            'DD/MM/YYYY HH:mm',
-                                                          )
-                                                        : ''
-                                                    }</td>
+                    hipoteseDiagnosticaFilter.forEach(hipotese => {
+                        hipoteseDiagnostica += `<tr class="text-left">
+                                                    <td class="text-secondary">${hipotese.codigo}</td>
+                                                    <td class="text-secondary">${hipotese.nome}</td>
+                                                    <td class="text-secondary">${hipotese.cid_10}</td>
+                                                    <td class="text-secondary">${hipotese.dataCriacao ? _moment(hipotese.dataCriacao).format('DD/MM/YYYY HH:mm') : ''}</td>
                                                 </tr>`;
-          });
+                    });
 
-          hipoteseDiagnostica +=
-            hipoteseDiagnosticaFilter.length > 0
-              ? `</tbody></table></div>`
-              : `</table></div>`;
-        }
+                    hipoteseDiagnostica += (hipoteseDiagnosticaFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
+                }
 
-        if (vacinasFilter) {
-          vacinas += `<div class="col s12">
+                if (vacinasFilter) {
+                    vacinas += `<div class="col s12">
                                 <table class="table table-striped">
                                     <thead>
                                     <tr>
@@ -589,48 +389,26 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                     </tr>
                                 </thead>`;
 
-          vacinas += vacinasFilter.length > 0 ? `<tbody>` : ``;
+                    vacinas += (vacinasFilter.length > 0 ? `<tbody>` : ``);
 
-          vacinasFilter.forEach((vacina) => {
-            vacinas += `<tr class="text-left">
-                                        <td class="text-secondary">${
-                                          vacina.nomeEstabelecimento
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          vacina.nomeProfissional
-                                            ? vacina.nomeProfissional
-                                            : ''
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          vacina.codigo
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          vacina.descricao
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          vacina.qtdPrescrita
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          vacina.qtdDispAnterior
-                                        }</td>
-                                        <td class="text-secondary">${
-                                          vacina.dataUltDisp
-                                            ? _moment(
-                                                vacina.dataUltDisp,
-                                              ).format('DD/MM/YYYY HH:mm')
-                                            : ''
-                                        }</td>
+                    vacinasFilter.forEach(vacina => {
+                        vacinas += `<tr class="text-left">
+                                        <td class="text-secondary">${vacina.nomeEstabelecimento}</td>
+                                        <td class="text-secondary">${vacina.nomeProfissional ? vacina.nomeProfissional : ''}</td>
+                                        <td class="text-secondary">${vacina.codigo}</td>
+                                        <td class="text-secondary">${vacina.descricao}</td>
+                                        <td class="text-secondary">${vacina.qtdPrescrita}</td>
+                                        <td class="text-secondary">${vacina.qtdDispAnterior}</td>
+                                        <td class="text-secondary">${vacina.dataUltDisp ? _moment(vacina.dataUltDisp).format('DD/MM/YYYY HH:mm') : ''}</td>
                                     </tr>`;
-          });
+                    });
 
-          vacinas +=
-            vacinasFilter.length > 0
-              ? `</tbody></table></div>`
-              : `</table></div>`;
-        }
+                    vacinas += (vacinasFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
 
-        if (procedimentosFilter) {
-          procedimentos += `<div class="col s12">
+                }
+
+                if (procedimentosFilter) {
+                    procedimentos += `<div class="col s12">
                                             <table class="table table-striped">
                                                 <thead>
                                                 <tr>
@@ -642,42 +420,23 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 </tr>
                                             </thead>`;
 
-          procedimentos += procedimentosFilter.length > 0 ? `<tbody>` : ``;
+                    procedimentos += (procedimentosFilter.length > 0 ? `<tbody>` : ``);
 
-          procedimentosFilter.forEach((procedimento) => {
-            procedimentos += `<tr class="text-left">
-                                                <td class="text-secondary">${
-                                                  procedimento.nomeFantasia
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  procedimento.nome
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  procedimento.co_procedimento
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  procedimento.no_procedimento
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  procedimento.dataCriacao
-                                                    ? _moment(
-                                                        procedimento.dataCriacao,
-                                                      ).format(
-                                                        'DD/MM/YYYY HH:mm',
-                                                      )
-                                                    : ''
-                                                }</td>
+                    procedimentosFilter.forEach(procedimento => {
+                        procedimentos += `<tr class="text-left">
+                                                <td class="text-secondary">${procedimento.nomeFantasia}</td>
+                                                <td class="text-secondary">${procedimento.nome}</td>
+                                                <td class="text-secondary">${procedimento.co_procedimento}</td>
+                                                <td class="text-secondary">${procedimento.no_procedimento}</td>
+                                                <td class="text-secondary">${procedimento.dataCriacao ? _moment(procedimento.dataCriacao).format('DD/MM/YYYY HH:mm') : ''}</td>
                                             </tr>`;
-          });
+                    });
 
-          procedimentos +=
-            procedimentosFilter.length > 0
-              ? `</tbody></table></div>`
-              : `</table></div>`;
-        }
+                    procedimentos += (procedimentosFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
+                }
 
-        if (encaminhamentosFilter) {
-          encaminhamentos += `<div class="col s12">
+                if (encaminhamentosFilter) {
+                    encaminhamentos += `<div class="col s12">
                                             <table class="table table-striped">
                                                 <thead>
                                                 <tr>
@@ -687,35 +446,20 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                                 </tr>
                                             </thead>`;
 
-          encaminhamentos += encaminhamentosFilter.length > 0 ? `<tbody>` : ``;
+                    encaminhamentos += (encaminhamentosFilter.length > 0 ? `<tbody>` : ``);
 
-          encaminhamentosFilter.forEach((encaminhamento) => {
-            encaminhamentos += `<tr class="text-left">
-                                                <td class="text-secondary">${
-                                                  encaminhamento.nome
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  encaminhamento.motivo
-                                                }</td>
-                                                <td class="text-secondary">${
-                                                  encaminhamento.dataCriacao
-                                                    ? _moment(
-                                                        encaminhamento.dataCriacao,
-                                                      ).format(
-                                                        'DD/MM/YYYY HH:mm',
-                                                      )
-                                                    : ''
-                                                }</td>
+                    encaminhamentosFilter.forEach(encaminhamento => {
+                        encaminhamentos += `<tr class="text-left">
+                                                <td class="text-secondary">${encaminhamento.nome}</td>
+                                                <td class="text-secondary">${encaminhamento.motivo}</td>
+                                                <td class="text-secondary">${encaminhamento.dataCriacao ? _moment(encaminhamento.dataCriacao).format('DD/MM/YYYY HH:mm') : ''}</td>
                                             </tr>`;
-          });
+                    });
 
-          encaminhamentos +=
-            encaminhamentosFilter.length > 0
-              ? `</tbody></table></div>`
-              : `</table></div>`;
-        }
+                    encaminhamentos += (encaminhamentosFilter.length > 0 ? `</tbody></table></div>` : `</table></div>`);
+                }
 
-        let conteudo = `
+                const conteudo = `
                     <div class="page">
                         <div class="content">
                             <form class="container" id="form" style="font-size: 12px;">
@@ -724,16 +468,10 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                 </div>
                                 <div class="row">
                                     <div class="col s4" style="margin-top:20px;">
-                                        <img style="width:60%; float:left; margin-left:10px;" src="${
-                                          window.location.origin
-                                        }${
-                                          window.location.pathname
-                                        }/assets/imgs/logo_relatorio.png">
+                                        <img style="width:60%; float:left; margin-left:10px;" src="${window.location.origin}${window.location.pathname}/assets/imgs/logo_relatorio.png">
                                     </div>
                                     <div class="col s8" style="margin-top:40px;text-align: right; color: #7d0000; font-weight:bold">
-                                    Unidade: ${
-                                      result.estabelecimento.nomeFantasia
-                                    }               
+                                    Unidade: ${result.estabelecimento.nomeFantasia}
                                     </div>
                                 </div>
                                 <hr size = 7>
@@ -745,133 +483,58 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                 <br/>
                                 <div class="row">
                                     <div class="col s3">
-                                        <span> Cartão SUS: ${
-                                          result.paciente[0].cartaoSus
-                                            ? result.paciente[0].cartaoSus
-                                            : ''
-                                        }</span>
+                                        <span> Cartão SUS: ${result.paciente[0].cartaoSus ? result.paciente[0].cartaoSus : ''}</span>
                                     </div>
                                     <div class="col s3">
-                                        <span> Id SAP: ${
-                                          result.paciente[0].idSap
-                                            ? result.paciente[0].idSap
-                                            : ''
-                                        }</span>
+                                        <span> Id SAP: ${result.paciente[0].idSap ? result.paciente[0].idSap : ''}</span>
                                     </div>
                                     <div class="col s3">
-                                        <span> Paciente: ${
-                                          result.paciente[0].nome
-                                            ? result.paciente[0].nome
-                                            : ''
-                                        }</span>
+                                        <span> Paciente: ${result.paciente[0].nome ? result.paciente[0].nome : ''}</span>
                                     </div>
                                     <div class="col s3">
-                                        <span> Nome Social: ${
-                                          result.paciente[0].nomeSocial
-                                            ? result.paciente[0].nomeSocial
-                                            : ''
-                                        }</span>
+                                        <span> Nome Social: ${result.paciente[0].nomeSocial ? result.paciente[0].nomeSocial : ''}</span>
                                     </div>
                                     <div class="col s3">
-                                        <span> Apelido: ${
-                                          result.paciente[0].apelido
-                                            ? result.paciente[0].apelido
-                                            : ''
-                                        }</span>
+                                        <span> Apelido: ${result.paciente[0].apelido ? result.paciente[0].apelido : ''}</span>
                                     </div>
                                     <div class="col s3">
-                                        <span> Nome da mãe: ${
-                                          result.paciente[0].nomeMae
-                                            ? result.paciente[0].nomeMae
-                                            : ''
-                                        }</span>
+                                        <span> Nome da mãe: ${result.paciente[0].nomeMae ? result.paciente[0].nomeMae : ''}</span>
                                     </div>
                                     <div class="col s3">
-                                        <span> Nome do pai: ${
-                                          result.paciente[0].nomePai
-                                            ? result.paciente[0].nomePai
-                                            : ''
-                                        }</span>
+                                        <span> Nome do pai: ${result.paciente[0].nomePai ? result.paciente[0].nomePai : ''}</span>
                                     </div>
                                     <div class="col s3">
-                                        <span> Data de nascimento: ${
-                                          result.paciente[0].dataNascimento
-                                            ? result.paciente[0].dataNascimento
-                                            : ''
-                                        }</span>
+                                        <span> Data de nascimento: ${result.paciente[0].dataNascimento ? result.paciente[0].dataNascimento : ''}</span>
                                     </div>
                                     <div class="col s3">
-                                        <span> Sexo: ${
-                                          result.paciente[0].sexo == 1
-                                            ? 'Masculino'
-                                            : 'Feminino'
-                                        }</span>
+                                        <span> Sexo: ${result.paciente[0].sexo == 1 ? 'Masculino' : 'Feminino'}</span>
                                     </div>
                                     <div class="col s3">
-                                        <span> Nacionalidade: ${
-                                          result.paciente[0].nacionalidadeNome
-                                            ? result.paciente[0]
-                                                .nacionalidadeNome
-                                            : ''
-                                        }</span>
+                                        <span> Nacionalidade: ${result.paciente[0].nacionalidadeNome ? result.paciente[0].nacionalidadeNome : ''}</span>
                                     </div>
                                     <div class="col s3">
-                                        <span> Naturalidade: ${
-                                          result.paciente[0].naturalidadeNome
-                                            ? result.paciente[0]
-                                                .naturalidadeNome
-                                            : ''
-                                        }</span>
+                                        <span> Naturalidade: ${result.paciente[0].naturalidadeNome ? result.paciente[0].naturalidadeNome : ''}</span>
                                     </div>
                                     <div class="col s3">
-                                        <span> CPF: ${
-                                          result.paciente[0].cpf
-                                            ? result.paciente[0].cpf
-                                            : ''
-                                        }</span>
+                                        <span> CPF: ${result.paciente[0].cpf ? result.paciente[0].cpf : ''}</span>
                                     </div>
                                     <div class="col s3">
-                                        <span> Ocupação: ${
-                                          result.paciente[0].ocupacao
-                                            ? result.paciente[0].ocupacao
-                                            : ''
-                                        }</span>
+                                        <span> Ocupação: ${result.paciente[0].ocupacao ? result.paciente[0].ocupacao : ''}</span>
                                     </div>
                                     <div class="col s3">
-                                        <span> Escolaridade: ${
-                                          result.paciente[0].escolaridade
-                                            ? result.paciente[0].escolaridade
-                                            : ''
-                                        }</span>
+                                        <span> Escolaridade: ${result.paciente[0].escolaridadeNome ? result.paciente[0].escolaridadeNome : ''}</span>
                                     </div>
                                     <div class="col s3">
-                                        <span> Estabelecimento: ${
-                                          result.estabelecimento.nomeFantasia
-                                            ? result.estabelecimento
-                                                .nomeFantasia
-                                            : ''
-                                        }</span>
+                                        <span> Estabelecimento: ${result.estabelecimento.nomeFantasia ? result.estabelecimento.nomeFantasia : ''}</span>
                                     </div>
                                     <div class="col s3">
-                                        <span> Observações: ${
-                                          result.paciente[0].observacao
-                                            ? result.paciente[0].observacao
-                                            : ''
-                                        }</span>
+                                        <span> Observações: ${result.paciente[0].observacao ? result.paciente[0].observacao : ''}</span>
                                     </div>
                                     <div class="col s3">
-                                        <span> Falecido: ${
-                                          result.paciente[0].falecido == 0
-                                            ? 'Não'
-                                            : 'Sim'
-                                        }</span>
+                                        <span> Falecido: ${result.paciente[0].falecido == 0 ? 'Não' : 'Sim'}</span>
                                     </div>
                                     <div class="col s4">
-                                        <span> Situação: ${
-                                          result.paciente[0].situacao == 1
-                                            ? 'Ativo'
-                                            : 'Inativo'
-                                        }</span>
+                                        <span> Situação: ${result.paciente[0].situacao == 1 ? 'Ativo' : 'Inativo'}</span>
                                     </div>
                                 </div>
                                 <hr size = 7>
@@ -880,13 +543,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                                         <span style="font-family: Arial; font-size: 18px; font-weight:bold">História progressa/familiar</span>
                                     </div>
                                     <div class="col s12">
-                                        <span> História progressa/familiar: ${
-                                          result.paciente[0]
-                                            .historiaProgressaFamiliar
-                                            ? result.paciente[0]
-                                                .historiaProgressaFamiliar
-                                            : 'Nada consta'
-                                        }</span>
+                                        <span> História progressa/familiar: ${result.paciente[0].historiaProgressaFamiliar ? result.paciente[0].historiaProgressaFamiliar : 'Nada consta'}</span>
                                     </div>
                                 </div>
                                 <hr size = 7>
@@ -956,7 +613,7 @@ export class ProntuarioPacienteImpressaoService extends RelatorioProntuarioPacie
                         </div>
                     </div>`;
 
-        this.print(conteudo, target, result.paciente[0].nome);
-      });
-  }
+                this.print(conteudo, target, result.paciente[0].nome);
+            });
+    }
 }
