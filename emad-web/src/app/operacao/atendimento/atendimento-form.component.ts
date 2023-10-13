@@ -1285,9 +1285,9 @@ export class AtendimentoFormComponent implements OnInit {
                                                                               this.service
                                                                                 .list(
                                                                                   "profissional/estabelecimento/" +
-                                                                                    this
-                                                                                      .paciente
-                                                                                      .idEstabelecimento
+                                                                                  this
+                                                                                    .paciente
+                                                                                    .idEstabelecimento
                                                                                 )
                                                                                 .subscribe(
                                                                                   (
@@ -1654,15 +1654,14 @@ export class AtendimentoFormComponent implements OnInit {
       !grid
     )
       return;
-    }
 
     this.errors = [];
     let url = JSON.parse(localStorage.getItem("parametro_seguranca")).filter(
       (url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO"
     )
       ? JSON.parse(localStorage.getItem("parametro_seguranca"))
-          .filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")[0]
-          .valor.replace("{id}", id)
+        .filter((url) => url.nome == "URL_FICHA_MEDICA_IMPRESSAO")[0]
+        .valor.replace("{id}", id)
       : "";
     this.loading = true;
     this.service.printDocument(url).subscribe(
@@ -1696,8 +1695,8 @@ export class AtendimentoFormComponent implements OnInit {
       (url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO"
     )
       ? JSON.parse(localStorage.getItem("parametro_seguranca"))
-          .filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")[0]
-          .valor.replace("{id}", id)
+        .filter((url) => url.nome == "URL_FICHA_MEDICA_VISUALIZACAO")[0]
+        .valor.replace("{id}", id)
       : "";
     this.loading = true;
     this.service.openDocument(url).subscribe(
@@ -2125,7 +2124,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.service
       .list(
         "profissional/estabelecimento/" +
-          JSON.parse(localStorage.getItem("est"))[0].id
+        JSON.parse(localStorage.getItem("est"))[0].id
       )
       .subscribe(
         (result) => {
