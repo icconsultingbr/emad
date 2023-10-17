@@ -1,18 +1,5 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectorRef,
-  ViewChild,
-  Output,
-  ElementRef,
-  EventEmitter,
-} from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  FormControl,
-} from '@angular/forms';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, Output, ElementRef, EventEmitter } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { PacienteService } from './paciente.service';
 import { Paciente } from '../../_core/_models/Paciente';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -274,13 +261,7 @@ export class PacienteFormComponent implements OnInit {
       idAtencaoContinuada: ['', ''],
       historiaProgressaFamiliar: ['', ''],
       observacao: ['', ''],
-      idEstabelecimentoCadastro: new FormControl(
-        {
-          value: '',
-          disabled: this.id > 0 || this.object.id > 0 ? true : false,
-        },
-        Validators.required,
-      ),
+      idEstabelecimentoCadastro: new FormControl({ value: '', disabled: (this.id > 0 || this.object.id > 0) ? true : false }, Validators.required),
       gruposAtencaoContinuada: ['', ''],
       falecido: ['', ''],
       necessidadeEspeciais: ['', ''],
@@ -640,36 +621,28 @@ export class PacienteFormComponent implements OnInit {
     this.message = '';
     this.loading = true;
 
-    this.serviceEstabelecimento
-      .findById(idEstabelecimento, 'estabelecimento')
-      .subscribe(
-        (result) => {
-          this.objectEstabelecimento = result;
-          this.loading = false;
+    this.serviceEstabelecimento.findById(idEstabelecimento, 'estabelecimento').subscribe(result => {
+      this.objectEstabelecimento = result;
+      this.loading = false;
 
-          let estabelecimento = JSON.parse(JSON.stringify(result));
+      let estabelecimento = JSON.parse(JSON.stringify(result));
 
-          // VALIDACAO EM TELA
-          this.cpfObrigatorio = estabelecimento.obrigaCpfNovoPaciente == 1;
-          this.susObrigatorio =
-            estabelecimento.obrigaCartaoSusNovoPaciente == 1;
-          this.telefoneDefault = estabelecimento.celularDefaultNovoPaciente;
+      // VALIDACAO EM TELA
+      this.cpfObrigatorio = estabelecimento.obrigaCpfNovoPaciente == 1;
+      this.susObrigatorio = estabelecimento.obrigaCartaoSusNovoPaciente == 1;
+      this.telefoneDefault = estabelecimento.celularDefaultNovoPaciente;
 
-          //VALIDAR OS DADOS NA API
-          this.object.obrigaCpfNovoPaciente =
-            estabelecimento.obrigaCpfNovoPaciente;
-          this.object.obrigaCartaoSusNovoPaciente =
-            estabelecimento.obrigaCartaoSusNovoPaciente;
-          this.object.celularDefaultNovoPaciente =
-            estabelecimento.celularDefaultNovoPaciente;
-        },
-        (error) => {
-          this.objectEstabelecimento = new Estabelecimento();
-          this.loading = false;
-          this.errors.push({
-            message: 'Estabelecimento não encontrado',
-          });
-        },
-      );
+      //VALIDAR OS DADOS NA API
+      this.object.obrigaCpfNovoPaciente = estabelecimento.obrigaCpfNovoPaciente;
+      this.object.obrigaCartaoSusNovoPaciente = estabelecimento.obrigaCartaoSusNovoPaciente;
+      this.object.celularDefaultNovoPaciente = estabelecimento.celularDefaultNovoPaciente;
+
+    }, error => {
+      this.objectEstabelecimento = new Estabelecimento();
+      this.loading = false;
+      this.errors.push({
+        message: "Estabelecimento não encontrado"
+      });
+    });
   }
 }

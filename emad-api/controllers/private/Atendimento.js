@@ -248,7 +248,7 @@ module.exports = function (app) {
         var objProfissionalAtividadeColetiva = Object.assign({});
         let idEstabelecimento = req.headers.est;
         let mail = new app.util.Mail();
-        let errors;
+        let errors = [];
 
         if (!obj.situacao)
             obj.situacao = "C";
@@ -302,6 +302,18 @@ module.exports = function (app) {
 
 
         }
+
+         //ATIVIDADE COLETIVA
+         if (obj.tipoFicha == '9') {
+            // CAMPO = atencaoDomiciliarModalidade
+            // Não pode ser preenchido se o campo tipoAtendimento = 9 - Visita domiciliar pós-óbito
+            if (obj.localDeAtendimento && obj.localDeAtendimento == '1') {
+                errors = util.customError(errors, "header", "Na Ficha de Atendimento Domiciliar não é permitido Local de atendimento UBS", "");
+                res.status(400).send(errors);
+                return;
+            }
+         }
+
         //else if (obj.tipoFicha == '9' || obj.tipoFicha == '8') { //Ficha de Atendimento Domiciliar E Ficha de Atendimento Odontologico Individual
 
           //  req.assert("tipoAtendimento").notEmpty().withMessage("Preencha o campo tipo de atendimento");
@@ -602,7 +614,6 @@ module.exports = function (app) {
 
         //ATENDIMENTO DOMICILIAR
         if (obj.tipoFicha == '9') {
-            req.assert("tipoAtendimento").notEmpty().withMessage("Preencha o campo tipo de atendimento");
 
             if(obj.modalidade == undefined)
                 obj.modalidade  = '';
