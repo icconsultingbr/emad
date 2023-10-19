@@ -1387,9 +1387,8 @@
                       <td colspan="99" class="text-secondary">
                         <i>{{
                           object.id
-                            ? "Não há resultados..."
-                            : "Você precisa salvar o formulário primeiro para
-                          Adicionar uma condição avaliada!"
+                            ? 'Não há resultados...'
+                            : 'Você precisa salvar o formulário primeiro para Adicionar uma condição avaliada!'
                         }}</i>
                       </td>
                     </tr>
@@ -1467,10 +1466,8 @@
                       <td colspan="99" class="text-secondary">
                         <i>{{
                           object.id
-                            ? "Não há resultados..."
-                            : "Você precisa salvar o formulário primeiro para
-                          inserir
-                          uma hipótese diagnóstica!"
+                            ? 'Não há resultados...'
+                            : 'Você precisa salvar o formulário primeiro para inserir uma hipótese diagnóstica!'
                         }}</i>
                       </td>
                     </tr>
@@ -1539,10 +1536,8 @@
                       <td colspan="99" class="text-secondary">
                         <i>{{
                           object.id
-                            ? "Não há resultados..."
-                            : "Você precisa salvar o formulário primeiro para
-                          inserir
-                          um procedimento diagnóstica!"
+                            ? 'Não há resultados...'
+                            : 'Você precisa salvar o formulário primeiro para inserir um procedimento diagnóstica!'
                         }}</i>
                       </td>
                     </tr>
@@ -1622,9 +1617,8 @@
                       >
                         <i>{{
                           object.id
-                            ? "Não há resultados..."
-                            : "Você precisa salvar o formulário primeiro para
-                          prescrever um medicamento!"
+                            ? 'Não há resultados...'
+                            : 'Você precisa salvar o formulário primeiro para prescrever um medicamento!'
                         }}</i>
                       </td>
                     </tr>
@@ -1713,9 +1707,8 @@
                       >
                         <i>{{
                           object.id
-                            ? "Não há resultados..."
-                            : "Você precisa salvar o formulário primeiro para
-                          prescrever uma vacina!"
+                            ? 'Não há resultados...'
+                            : 'Você precisa salvar o formulário primeiro para prescrever uma vacina!'
                         }}</i>
                       </td>
                     </tr>
@@ -1724,7 +1717,7 @@
                     <tr class="text-left" *ngFor="let item of allItemsVacina">
                       <td class="text-secondary">{{ item.nome }}</td>
                       <td class="text-secondary">
-                        {{ item.validade | date : "dd/MM/yyyy" }}
+                        {{ item.validade | date: 'dd/MM/yyyy' }}
                       </td>
                       <td class="text-secondary">{{ item.lote }}</td>
                       <td class="text-secondary">
@@ -1795,11 +1788,8 @@
                       <td colspan="99" class="text-secondary">
                         <i>{{
                           object.id
-                            ? "Não há resultados..."
-                            : "Você precisa salvar o formulário primeiro para
-                          fazer
-                          um
-                          encaminhamento!"
+                            ? 'Não há resultados...'
+                            : 'Você precisa salvar o formulário primeiro para fazer um encaminhamento!'
                         }}</i>
                       </td>
                     </tr>
@@ -1891,9 +1881,8 @@
                     <td colspan="99" class="text-secondary">
                       <i>{{
                         object.id
-                          ? "Não há resultados..."
-                          : "Você precisa salvar o formulário primeiro para
-                        adicionar um Participante !"
+                          ? 'Não há resultados...'
+                          : 'Você precisa salvar o formulário primeiro para adicionar um Participante !'
                       }}</i>
                     </td>
                   </tr>
@@ -1906,19 +1895,19 @@
                     <td class="text-secondary">{{ item.cartaoSus }}</td>
                     <td class="text-secondary">{{ item.nome }}</td>
                     <td class="text-secondary">
-                      {{ item.dataNascimento | date : "dd/MM/yyyy" }}
+                      {{ item.dataNascimento | date: 'dd/MM/yyyy' }}
                     </td>
                     <td class="text-secondary">
-                      {{ item.sexo == 1 ? "Masculino" : "Feminino" }}
+                      {{ item.sexo == 1 ? 'Masculino' : 'Feminino' }}
                     </td>
                     <td class="text-secondary">
-                      {{ item.avaliacaoAlterada === 1 ? "Sim" : "Não" }}
+                      {{ item.avaliacaoAlterada === 1 ? 'Sim' : 'Não' }}
                     </td>
                     <td class="text-secondary">
-                      {{ item.abandonouGrupo === 1 ? "Sim" : "Não" }}
+                      {{ item.abandonouGrupo === 1 ? 'Sim' : 'Não' }}
                     </td>
                     <td class="text-secondary">
-                      {{ item.parouFumar === 1 ? "Sim" : "Não" }}
+                      {{ item.parouFumar === 1 ? 'Sim' : 'Não' }}
                     </td>
                     <td class="text-secondary">{{ item.peso }}</td>
                     <td class="text-secondary">{{ item.altura }}</td>
@@ -2007,10 +1996,8 @@
                     <td colspan="99" class="text-secondary">
                       <i>{{
                         object.id
-                          ? "Não há resultados..."
-                          : "Você precisa salvar o formulário primeiro para
-                        adicionar um
-                        Profissional!"
+                          ? 'Não há resultados...'
+                          : 'Você precisa salvar o formulário primeiro para adicionar um Profissional!'
                       }}</i>
                     </td>
                   </tr>
@@ -2214,6 +2201,82 @@
         </div>
       </div>
     </tab>
+
+    <tab *ngIf="object.id && !idHistorico">
+      <ng-template tabHeading>
+        <i class="fa fa-upload"></i> Documentos
+      </ng-template>
+
+      <div class="card mb-4">
+        <div class="card mb-12">
+          <div class="card-header text-left">Arquivos</div>
+          <div class="card-body text-left">
+            <div class="row">
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-12 table-responsive">
+                    <div class="form-group row">
+                      <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th>Nome</th>
+                            <th>Data Inclusão</th>
+                            <th>Visualizar</th>
+                            <th>Remover</th>
+                          </tr>
+                        </thead>
+                        <tbody *ngIf="this.listaArquivosUpload?.length">
+                          <tr
+                            class="text-left"
+                            *ngFor="let item of listaArquivosUpload"
+                          >
+                            <td class="text-secondary">{{ item.nome }}</td>
+                            <td class="text-secondary">
+                              {{
+                                item.dataCriacao | date: 'dd/MM/yyyy HH:mm:ss'
+                              }}
+                            </td>
+
+                            <td class="text-secondary">
+                              <a
+                                class="btn btn-link"
+                                *ngIf="item.situacao == '1'"
+                                (click)="abrirDocumento(item)"
+                              >
+                                <i class="fa fa-eye"></i> Visualizar
+                              </a>
+                            </td>
+                            <td class="text-secondary">
+                              <a
+                                class="btn btn-link"
+                                *ngIf="item.situacao == '1'"
+                                (click)="removeItemArquivo(item)"
+                              >
+                                <i class="fa fa-trash-alt"></i> Remover
+                              </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="form-group text-right">
+                      <button
+                        *ngIf="!readOnly"
+                        type="button"
+                        class="btn btn-lg btn-outline-primary"
+                        (click)="openModal(content)"
+                      >
+                        Upload documentos
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </tab>
   </tabset>
 
   <div class="form-group text-right">
@@ -2225,7 +2288,7 @@
       [disabled]="form.invalid"
     >
       <i class="fa fa-save"></i>
-      {{ !object.id ? "Criar atendimento" : "Salvar" }}
+      {{ !object.id ? 'Criar atendimento' : 'Salvar' }}
     </button>
     <button (click)="back()" class="btn btn-default" type="button">
       <i class="fa fa-arrow-left"></i> Retornar
@@ -3228,7 +3291,7 @@
                     <tr class="text-left" *ngFor="let item of allItemsVacina">
                       <td class="text-secondary">{{ item.nome }}</td>
                       <td class="text-secondary">
-                        {{ item.validade | date : "dd/MM/yyyy" }}
+                        {{ item.validade | date: 'dd/MM/yyyy' }}
                       </td>
                       <td class="text-secondary">{{ item.lote }}</td>
                       <td class="text-secondary">
@@ -3478,12 +3541,12 @@
                     field.isDate
                       ? item[field.field]
                       : field.isDateTime
-                      ? (item[field.field] | date : "dd/MM/yyyy HH:mm")
+                      ? (item[field.field] | date: 'dd/MM/yyyy HH:mm')
                       : field.translate
                       ? translate(item[field.field], field.translate)
                       : field.decimalMask
                       ? toCurrency(
-                          item[field.field] | currency : "R$ " : true : "1.2-2",
+                          item[field.field] | currency: 'R$ ' : true : '1.2-2',
                           field.decimalMask
                         )
                       : field.docMask
@@ -4465,12 +4528,12 @@
                     field.isDate
                       ? item[field.field]
                       : field.isDateTime
-                      ? (item[field.field] | date : "dd/MM/yyyy HH:mm")
+                      ? (item[field.field] | date: 'dd/MM/yyyy HH:mm')
                       : field.translate
                       ? translate(item[field.field], field.translate)
                       : field.decimalMask
                       ? toCurrency(
-                          item[field.field] | currency : "R$ " : true : "1.2-2",
+                          item[field.field] | currency: 'R$ ' : true : '1.2-2',
                           field.decimalMask
                         )
                       : field.docMask
@@ -4485,7 +4548,7 @@
                   [routerLink]=""
                   (click)="viewer(item.id, contentExameForm)"
                 >
-                  <i class="fa fa-eye" title="Visualizar exame"></i> {{ "" }}
+                  <i class="fa fa-eye" title="Visualizar exame"></i> {{ '' }}
                 </a>
               </td>
             </tr>
@@ -5797,5 +5860,31 @@
         </button>
       </div>
     </div>
+  </div>
+</ng-template>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title center" id="modal-basic-title">Anexar Documentos</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-file-upload
+      [formatsAllowed]="'.jpg,.png,.jpeg'"
+      [multiple]="true"
+      (changeFiles)="fileChangeEvent($event)"
+    >
+    </app-file-upload>
+  </div>
+  <div *ngIf="this.images?.length > 0" class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="salvarDocumentos()"
+    >
+      Salvar
+    </button>
   </div>
 </ng-template>

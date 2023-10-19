@@ -7,7 +7,6 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class PacienteService extends GenericsService {
-
   constructor(public http: HttpClient) {
     super(http);
   }
@@ -20,7 +19,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'cartaoSus',
@@ -32,8 +31,8 @@ export class PacienteService extends GenericsService {
       validator: ['', ''],
       autoFocus: true,
       filter: {
-        type: 'text'
-      }
+        type: 'text',
+      },
     },
     {
       field: 'idSap',
@@ -44,8 +43,8 @@ export class PacienteService extends GenericsService {
       required: false,
       autoFocus: true,
       filter: {
-        type: 'text'
-      }
+        type: 'text',
+      },
     },
     {
       field: 'nome',
@@ -56,8 +55,8 @@ export class PacienteService extends GenericsService {
       required: true,
       validator: ['', Validators.required],
       filter: {
-        type: 'text'
-      }
+        type: 'text',
+      },
     },
     {
       field: 'dataNascimento',
@@ -77,9 +76,14 @@ export class PacienteService extends GenericsService {
       label: 'Sexo',
       grid: true,
       form: true,
-      translate: { '1': 'Masculino', '2': 'Feminino', '3': 'Ambos', '4': 'Não informado' },
+      translate: {
+        '1': 'Masculino',
+        '2': 'Feminino',
+        '3': 'Ambos',
+        '4': 'Não informado',
+      },
       required: true,
-      validator: ['', Validators.required]
+      validator: ['', Validators.required],
     },
     {
       field: 'cpf',
@@ -92,8 +96,8 @@ export class PacienteService extends GenericsService {
       filter: {
         type: 'text',
         placeHolder: '999.999.999-99',
-        mask: '999.999.999-99'
-      }
+        mask: '999.999.999-99',
+      },
     },
     {
       field: 'logradouro',
@@ -112,7 +116,7 @@ export class PacienteService extends GenericsService {
       form: true,
       required: false,
       readonly: true,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'longitude',
@@ -122,7 +126,7 @@ export class PacienteService extends GenericsService {
       form: true,
       required: false,
       readonly: true,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'numero',
@@ -140,7 +144,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'bairro',
@@ -205,7 +209,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'foneCelular',
@@ -216,7 +220,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'foneContato',
@@ -227,7 +231,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'contato',
@@ -236,7 +240,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'email',
@@ -245,7 +249,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'idModalidade',
@@ -254,7 +258,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'idTipoSanguineo',
@@ -270,10 +274,10 @@ export class PacienteService extends GenericsService {
         '5': 'AB_POSITIVO',
         '6': 'AB_NEGATIVO',
         '7': 'O_POSITIVO',
-        '8': 'O_NEGATIVO'
+        '8': 'O_NEGATIVO',
       },
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'idRaca',
@@ -282,7 +286,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'numeroProntuario',
@@ -291,7 +295,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'numeroProntuarioCnes',
@@ -300,7 +304,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'idAtencaoContinuada',
@@ -309,7 +313,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: false,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'gruposAtencaoContinuada',
@@ -318,7 +322,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'falecido',
@@ -327,7 +331,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'necessidadeEspeciais',
@@ -336,7 +340,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'gestante',
@@ -345,7 +349,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'aleitamentoMaterno ',
@@ -354,7 +358,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'dumDaGestante',
@@ -375,7 +379,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'stGravidezPlanejada',
@@ -384,7 +388,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'nuGestasPrevias',
@@ -393,7 +397,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'nuPartos',
@@ -402,7 +406,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'situacao',
@@ -415,7 +419,7 @@ export class PacienteService extends GenericsService {
         '0': 'INATIVO',
       },
       required: true,
-      validator: ['', Validators.required]
+      validator: ['', Validators.required],
     },
     {
       field: 'idEstabelecimentoCadastro',
@@ -424,7 +428,7 @@ export class PacienteService extends GenericsService {
       grid: false,
       form: true,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'observacao',
@@ -433,7 +437,7 @@ export class PacienteService extends GenericsService {
       grid: true,
       form: false,
       required: false,
-      validator: ['', '']
+      validator: ['', ''],
     },
     {
       field: 'pacienteOutroEstabelecimento',
@@ -445,9 +449,9 @@ export class PacienteService extends GenericsService {
       required: false,
       validator: ['', ''],
       filter: {
-        type: 'select'
-      }
-    }
+        type: 'select',
+      },
+    },
   ];
 
   transfereEstabelecimento(obj: any) {
@@ -468,16 +472,19 @@ export class PacienteService extends GenericsService {
 
   saveHipotese(obj: any) {
     if (obj.id) {
-      return this.http
-        .put('atendimento-hipotese', JSON.stringify(obj));
+      return this.http.put('atendimento-hipotese', JSON.stringify(obj));
     } else {
-      return this.http
-        .post('atendimento-hipotese', JSON.stringify(obj));
+      return this.http.post('atendimento-hipotese', JSON.stringify(obj));
     }
   }
 
   findAtendimentoByPaciente(id: any, tipo: any): Observable<any> {
-    return this.http.get('atendimento/prontuario-paciente/paciente/' + id + '/tipo-atendimento/' + tipo);
+    return this.http.get(
+      'atendimento/prontuario-paciente/paciente/' +
+        id +
+        '/tipo-atendimento/' +
+        tipo,
+    );
   }
 
   findExameByPaciente(id: any): Observable<any> {
@@ -505,34 +512,72 @@ export class PacienteService extends GenericsService {
   }
 
   findSinaisVitaisByPaciente(id: any, tipo: any): Observable<any> {
-    return this.http.get('atendimento/prontuario-paciente/paciente/' + id + '/sinais-vitais/' + tipo);
+    return this.http.get(
+      'atendimento/prontuario-paciente/paciente/' +
+        id +
+        '/sinais-vitais/' +
+        tipo,
+    );
   }
 
   carregaAtendimentosPorPeriodo(periodo: number): Observable<any> {
-    return this.http.get('atendimentos-por-periodo?periodo='
-      + periodo + '&idEstabelecimento='
-      + JSON.parse(localStorage.getItem('est'))[0].id);
+    return this.http.get(
+      'atendimentos-por-periodo?periodo=' +
+        periodo +
+        '&idEstabelecimento=' +
+        JSON.parse(localStorage.getItem('est'))[0].id,
+    );
   }
 
-  carregaAtendimentoSituacaoExistentePorPeriodo(periodo: number): Observable<any> {
-    return this.http.get('atendimento-situacao-existente-por-periodo?periodo='
-      + periodo + '&idEstabelecimento='
-      + JSON.parse(localStorage.getItem('est'))[0].id);
+  carregaAtendimentoSituacaoExistentePorPeriodo(
+    periodo: number,
+  ): Observable<any> {
+    return this.http.get(
+      'atendimento-situacao-existente-por-periodo?periodo=' +
+        periodo +
+        '&idEstabelecimento=' +
+        JSON.parse(localStorage.getItem('est'))[0].id,
+    );
   }
 
   carregaAtendimentoSituacaoPorPeriodo(periodo: number): Observable<any> {
-    return this.http.get('atendimento-situacao-por-periodo?periodo='
-      + periodo + '&idEstabelecimento='
-      + JSON.parse(localStorage.getItem('est'))[0].id);
+    return this.http.get(
+      'atendimento-situacao-por-periodo?periodo=' +
+        periodo +
+        '&idEstabelecimento=' +
+        JSON.parse(localStorage.getItem('est'))[0].id,
+    );
   }
 
-  obterProntuarioPacienteRelatorio(idPaciente: number, tipoFicha: number, profissional: number): Observable<any> {
-    return this.http.get('paciente/prontuario/report?idPaciente=' + idPaciente
-    + '&tipoFicha=' + tipoFicha
-    + '&profissional=' + profissional);
+  obterProntuarioPacienteRelatorio(
+    idPaciente: number,
+    tipoFicha: number,
+    profissional: number,
+  ): Observable<any> {
+    return this.http.get(
+      'paciente/prontuario/report?idPaciente=' +
+        idPaciente +
+        '&tipoFicha=' +
+        tipoFicha +
+        '&profissional=' +
+        profissional,
+    );
   }
 
   obterCamposEstabelecimento(idEstabelecimento: number): Observable<any> {
-    return this.http.get('paciente/campos-estabelecimento/' + idEstabelecimento);
+    return this.http.get(
+      'paciente/campos-estabelecimento/' + idEstabelecimento,
+    );
+  }
+
+  salvarArquivo(obj: any) {
+    return this.http.post('paciente-documento/', JSON.stringify(obj));
+  }
+
+  removeArquivo(obj: any) {
+    return this.http.put(
+      'paciente-documento/atualiza/' + obj.id,
+      JSON.stringify(obj),
+    );
   }
 }

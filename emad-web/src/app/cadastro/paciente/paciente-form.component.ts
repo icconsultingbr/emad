@@ -1,5 +1,18 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, Output, ElementRef, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  ViewChild,
+  Output,
+  ElementRef,
+  EventEmitter,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormControl,
+} from '@angular/forms';
 import { PacienteService } from './paciente.service';
 import { Paciente } from '../../_core/_models/Paciente';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,6 +26,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { HipoteseDiagnostica } from '../../_core/_models/HipoteseDiagnostica';
 import { Estabelecimento } from '../../_core/_models/Estabelecimento';
 import { EstabelecimentoService } from '../../seguranca/estabelecimento/estabelecimento.service';
+import { FileUploadService } from '../../_core/_components/app-file-upload/services/file-upload.service';
 
 @Component({
   selector: 'app-paciente-form',
@@ -21,6 +35,10 @@ import { EstabelecimentoService } from '../../seguranca/estabelecimento/estabele
   providers: [PacienteService],
 })
 export class PacienteFormComponent implements OnInit {
+  //documentos
+  public images;
+  public listaArquivosUpload: any[] = [];
+
   object: Paciente = new Paciente();
   objectEstabelecimento: Estabelecimento = new Estabelecimento();
   pacienteHipotese: PacienteHipotese = new PacienteHipotese();
@@ -72,6 +90,7 @@ export class PacienteFormComponent implements OnInit {
     private ref: ChangeDetectorRef,
     private modalService: NgbModal,
     private router: Router,
+    private fileUploadService: FileUploadService,
   ) {
     this.fields = service.fields;
   }
@@ -95,6 +114,7 @@ export class PacienteFormComponent implements OnInit {
     this.loadDomains();
 
     this.onChangeEstabelecimento(this.object.idEstabelecimentoCadastro);
+    this.recarregarDocumentos();
   }
 
   ngAfterViewInit() {
@@ -261,7 +281,13 @@ export class PacienteFormComponent implements OnInit {
       idAtencaoContinuada: ['', ''],
       historiaProgressaFamiliar: ['', ''],
       observacao: ['', ''],
-      idEstabelecimentoCadastro: new FormControl({ value: '', disabled: (this.id > 0 || this.object.id > 0) ? true : false }, Validators.required),
+      idEstabelecimentoCadastro: new FormControl(
+        {
+          value: '',
+          disabled: this.id > 0 || this.object.id > 0 ? true : false,
+        },
+        Validators.required,
+      ),
       gruposAtencaoContinuada: ['', ''],
       falecido: ['', ''],
       necessidadeEspeciais: ['', ''],
@@ -621,28 +647,100 @@ export class PacienteFormComponent implements OnInit {
     this.message = '';
     this.loading = true;
 
-    this.serviceEstabelecimento.findById(idEstabelecimento, 'estabelecimento').subscribe(result => {
-      this.objectEstabelecimento = result;
-      this.loading = false;
+    this.serviceEstabelecimento
+      .findById(idEstabelecimento, 'estabelecimento')
+      .subscribe(
+        (result) => {
+          this.objectEstabelecimento = result;
+          this.loading = false;
 
-      let estabelecimento = JSON.parse(JSON.stringify(result));
+          let estabelecimento = JSON.parse(JSON.stringify(result));
 
-      // VALIDACAO EM TELA
-      this.cpfObrigatorio = estabelecimento.obrigaCpfNovoPaciente == 1;
-      this.susObrigatorio = estabelecimento.obrigaCartaoSusNovoPaciente == 1;
-      this.telefoneDefault = estabelecimento.celularDefaultNovoPaciente;
+          // VALIDACAO EM TELA
+          this.cpfObrigatorio = estabelecimento.obrigaCpfNovoPaciente == 1;
+          this.susObrigatorio =
+            estabelecimento.obrigaCartaoSusNovoPaciente == 1;
+          this.telefoneDefault = estabelecimento.celularDefaultNovoPaciente;
 
-      //VALIDAR OS DADOS NA API
-      this.object.obrigaCpfNovoPaciente = estabelecimento.obrigaCpfNovoPaciente;
-      this.object.obrigaCartaoSusNovoPaciente = estabelecimento.obrigaCartaoSusNovoPaciente;
-      this.object.celularDefaultNovoPaciente = estabelecimento.celularDefaultNovoPaciente;
+          //VALIDAR OS DADOS NA API
+          this.object.obrigaCpfNovoPaciente =
+            estabelecimento.obrigaCpfNovoPaciente;
+          this.object.obrigaCartaoSusNovoPaciente =
+            estabelecimento.obrigaCartaoSusNovoPaciente;
+          this.object.celularDefaultNovoPaciente =
+            estabelecimento.celularDefaultNovoPaciente;
+        },
+        (error) => {
+          this.objectEstabelecimento = new Estabelecimento();
+          this.loading = false;
+          this.errors.push({
+            message: 'Estabelecimento não encontrado',
+          });
+        },
+      );
+  }
 
-    }, error => {
-      this.objectEstabelecimento = new Estabelecimento();
-      this.loading = false;
-      this.errors.push({
-        message: "Estabelecimento não encontrado"
+  openModal(content) {
+    this.modalRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      size: 'lg',
+    });
+  }
+
+  fileChangeEvent(event: any): void {
+    this.images = event;
+    this.ref.detectChanges();
+
+    if (this.images.length > 0) {
+      this.images.forEach((object) => {
+        {
+          const reader = new FileReader();
+          reader.onload = function () {
+            object.base64 = reader.result;
+          };
+          reader.readAsDataURL(object);
+        }
       });
+    }
+  }
+
+  salvarDocumentos() {
+    this.fileUploadService.uploadListImage(this.images).subscribe((result) => {
+      this.service.salvarArquivo(result).subscribe((result) => {
+        if (result) {
+          this.recarregarDocumentos();
+        }
+        if (this.modalRef) {
+          this.modalRef.close();
+        }
+      });
+    });
+  }
+
+  recarregarDocumentos() {
+    this.service
+      .list(`paciente-documento/documento/${this.id}`)
+      .subscribe((arquivos) => {
+        this.listaArquivosUpload = arquivos;
+      });
+  }
+
+  abrirDocumento(base: any) {
+    const image = new Image();
+    image.src = 'data:image/' + base.tipo + ';base64,' + base.base64;
+    const w = window.open('');
+    w.document.write(image.outerHTML);
+  }
+
+  removeItemArquivo(item: any) {
+    this.service.removeArquivo(item).subscribe((produtoExame) => {
+      this.service
+        .list(`paciente-documento/documento/${this.id}`)
+        .subscribe((arquivo) => {
+          this.listaArquivosUpload = arquivo;
+        });
     });
   }
 }

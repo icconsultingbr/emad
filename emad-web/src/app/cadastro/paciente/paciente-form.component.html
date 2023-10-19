@@ -1198,6 +1198,81 @@
           </div>
         </div>
       </tab>
+
+      <tab>
+        <ng-template tabHeading>
+          <i class="fa fa-upload"></i> Documentos
+        </ng-template>
+        <div class="card mb-4">
+          <div class="card mb-12">
+            <div class="card-header text-left">Arquivos</div>
+            <div class="card-body text-left">
+              <div class="row">
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-12 table-responsive">
+                      <div class="form-group row">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th>Nome</th>
+                              <th>Data Inclusão</th>
+                              <th>Visualizar</th>
+                              <th>Remover</th>
+                            </tr>
+                          </thead>
+                          <tbody *ngIf="this.listaArquivosUpload?.length">
+                            <tr
+                              class="text-left"
+                              *ngFor="let item of listaArquivosUpload"
+                            >
+                              <td class="text-secondary">{{ item.nome }}</td>
+                              <td class="text-secondary">
+                                {{
+                                  item.dataCriacao | date: 'dd/MM/yyyy HH:mm:ss'
+                                }}
+                              </td>
+
+                              <td class="text-secondary">
+                                <a
+                                  class="btn btn-link"
+                                  *ngIf="item.situacao == '1'"
+                                  (click)="abrirDocumento(item)"
+                                >
+                                  <i class="fa fa-eye"></i> Visualizar
+                                </a>
+                              </td>
+                              <td class="text-secondary">
+                                <a
+                                  class="btn btn-link"
+                                  *ngIf="item.situacao == '1'"
+                                  (click)="removeItemArquivo(item)"
+                                >
+                                  <i class="fa fa-trash-alt"></i> Remover
+                                </a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="form-group text-right">
+                        <button
+                          *ngIf="!readOnly"
+                          type="button"
+                          class="btn btn-lg btn-outline-primary"
+                          (click)="openModal(content)"
+                        >
+                          Upload documentos
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tab>
     </tabset>
   </div>
   <div class="form-group text-right">
@@ -1406,5 +1481,31 @@
         </button>
       </div>
     </div>
+  </div>
+</ng-template>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title center" id="modal-basic-title">Anexar Documentos</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-file-upload
+      [formatsAllowed]="'.jpg,.png,.jpeg'"
+      [multiple]="true"
+      (changeFiles)="fileChangeEvent($event)"
+    >
+    </app-file-upload>
+  </div>
+  <div *ngIf="this.images?.length > 0" class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="salvarDocumentos()"
+    >
+      Salvar
+    </button>
   </div>
 </ng-template>

@@ -30,6 +30,7 @@ import {
 import { Exame } from '../../../_core/_models/Exame';
 import { ProntuarioPacienteImpressaoService } from '../../../shared/services/prontuario-paciente-impressao.service';
 import { ReciboExameImpressaoService } from '../../../shared/services/recibo-exame-impressao.service';
+import { FileUploadService } from '../../../_core/_components/app-file-upload/services/file-upload.service';
 
 @Component({
   selector: 'app-prontuario-paciente-form',
@@ -38,6 +39,10 @@ import { ReciboExameImpressaoService } from '../../../shared/services/recibo-exa
   providers: [PacienteService],
 })
 export class ProntuarioPacienteFormComponent implements OnInit {
+  //documentos
+  public images;
+  public listaArquivosUpload: any[] = [];
+
   object: Paciente = new Paciente();
   objectExame: Exame = new Exame();
   objectHistorico: Atendimento = new Atendimento();
@@ -152,6 +157,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     private router: Router,
     private reciboExameService: ReciboExameImpressaoService,
     private prontuarioPacienteImpressao: ProntuarioPacienteImpressaoService,
+    private fileUploadService: FileUploadService,
   ) {
     this.fields = service.fields;
   }
@@ -162,6 +168,7 @@ export class ProntuarioPacienteFormComponent implements OnInit {
     });
     this.createGroup();
     this.loadDomains();
+    this.recarregarDocumentos();
   }
 
   loadDomains() {
@@ -1170,5 +1177,20 @@ export class ProntuarioPacienteFormComponent implements OnInit {
         this.errors = Util.customHTTPResponse(error);
       },
     );
+  }
+
+  recarregarDocumentos() {
+    this.service
+      .list(`paciente-documento/documento/${this.id}`)
+      .subscribe((arquivos) => {
+        this.listaArquivosUpload = arquivos;
+      });
+  }
+
+  abrirDocumento(base: any) {
+    const image = new Image();
+    image.src = 'data:image/' + base.tipo + ';base64,' + base.base64;
+    const w = window.open('');
+    w.document.write(image.outerHTML);
   }
 }
