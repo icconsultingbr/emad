@@ -8,14 +8,14 @@ module.exports = config.util.getEnv('NODE_CONFIG') !== '{}' ? JSON.parse(config.
     "avancado": 2,
     "admin": 1,
     "idUsuarioSistema": 1,
-    "folderUpload": "/Users/helenosantos/uploads",
+    "folderUpload": "/Users/dener.oliveira/uploads",
     "folderUploadExames": "c:/uploads",
     "dbConfig": {
         "host": "34.83.206.222",
         "port": 3306,
         "username": "root",
         "password": "zCAV%xf2",
-        "database": "e-atend-dev"
+        "database": "e-atend-al-dev"
     },
     "idUsuarioIntegracao": 53
 }

@@ -10,7 +10,11 @@ import { AtendimentoService } from './atendimento.service';
 import { atendimentoRoutes } from './atendimento.routing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { NgbModule, NgbCollapseModule, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbModule,
+  NgbCollapseModule,
+  NgbDatepickerModule,
+} from '@ng-bootstrap/ng-bootstrap';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { AppModalModule } from '../../_core/_components/app-modal/app-modal.module';
 import 'rxjs/add/operator/map';
@@ -22,38 +26,37 @@ import { AtendimentoSalaEsperaComponent } from './sala-espera/atendimento-sala-e
 import { AppSelectModule } from '../../_core/_components/app-select/app-select.module';
 import { AppSelectModalModule } from '../../_core/_components/app-select-modal/app-select-modal.module';
 import { ExameFormularioModule } from '../exame-formulario/exame-formulario.module';
+import { AppFileUploadModule } from '../../_core/_components/app-file-upload/app-file-upload.module';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        CoreModule,
-        AppGridViewModule,
-        AppFormModule,
-        FormsModule,
-        ReactiveFormsModule,
-        BsDatepickerModule,
-        NgbModule,
-        NgbCollapseModule,
-        NgbDatepickerModule,
-        NgMultiSelectDropDownModule,
-        AppModalModule,
-        RouterModule.forChild(atendimentoRoutes),
-        SharedServiceModule,
-        TabsModule.forRoot(),
-        AppSelectModule,
-        AppSelectModalModule,
-        ExameFormularioModule
-    ],
-    declarations: [
-        AtendimentoComponent,
-        AtendimentoSalaEsperaComponent,
-        AtendimentoFormComponent,
-        AtendimentoSalaEsperaFormComponent,
-        RelatorioReceitaComponent
-    ],
-    providers: [
-        AtendimentoService
-    ]
+  imports: [
+    CommonModule,
+    CoreModule,
+    AppGridViewModule,
+    AppFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    BsDatepickerModule,
+    NgbModule,
+    NgbCollapseModule,
+    NgbDatepickerModule,
+    NgMultiSelectDropDownModule,
+    AppModalModule,
+    RouterModule.forChild(atendimentoRoutes),
+    SharedServiceModule,
+    TabsModule.forRoot(),
+    AppSelectModule,
+    AppSelectModalModule,
+    AppFileUploadModule,
+    ExameFormularioModule,
+  ],
+  declarations: [
+    AtendimentoComponent,
+    AtendimentoSalaEsperaComponent,
+    AtendimentoFormComponent,
+    AtendimentoSalaEsperaFormComponent,
+    RelatorioReceitaComponent,
+  ],
+  providers: [AtendimentoService],
 })
-export class AtendimentoModule {
-}
+export class AtendimentoModule {}
