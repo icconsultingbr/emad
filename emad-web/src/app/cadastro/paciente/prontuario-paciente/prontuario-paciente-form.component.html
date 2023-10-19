@@ -1,16 +1,18 @@
 <h4 class="mb-3 text-left">Prontuário eletrônico</h4>
 <app-loader [loading]="loading"></app-loader>
-<p *ngIf="message.length" class="alert alert-info sticky-top">{{message}}</p>
-<p *ngIf="warning.length" class="alert alert-danger sticky-top">{{ warning }}</p>
+<p *ngIf="message.length" class="alert alert-info sticky-top">{{ message }}</p>
+<p *ngIf="warning.length" class="alert alert-danger sticky-top">
+  {{ warning }}
+</p>
 <div *ngIf="errors.length" class="alert alert-danger sticky-top">
   <div *ngFor="let error of errors" class="row">
     <div class="col-12 text-left">
-      {{error.message}}
+      {{ error.message }}
     </div>
   </div>
 </div>
 <div class="card mb-4">
-  <div class="card-body text-left">    
+  <div class="card-body text-left">
     <div class="row">
       <div class="col-xl-12">
         <div class="form-group row">
@@ -21,9 +23,18 @@
                   <i class="fa fa-calendar-alt"></i>
                 </div>
               </div>
-              <input type="text" [(ngModel)]="dataInicial" placeholder="Data Inicial" bsDatepicker
-                [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control"
-                autocomplete="off">
+              <input
+                type="text"
+                [(ngModel)]="dataInicial"
+                placeholder="Data Inicial"
+                bsDatepicker
+                [bsConfig]="{
+                  containerClass: 'theme-dark-blue',
+                  dateInputFormat: 'DD/MM/YYYY'
+                }"
+                class="form-control"
+                autocomplete="off"
+              />
             </div>
           </div>
           <div class="col-xl-4">
@@ -33,11 +44,20 @@
                   <i class="fa fa-calendar-alt"></i>
                 </div>
               </div>
-              <input type="text" [(ngModel)]="dataFinal" placeholder="Data Final" bsDatepicker
-                [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" class="form-control"
-                autocomplete="off">
+              <input
+                type="text"
+                [(ngModel)]="dataFinal"
+                placeholder="Data Final"
+                bsDatepicker
+                [bsConfig]="{
+                  containerClass: 'theme-dark-blue',
+                  dateInputFormat: 'DD/MM/YYYY'
+                }"
+                class="form-control"
+                autocomplete="off"
+              />
             </div>
-          </div>  
+          </div>
         </div>
       </div>
     </div>
@@ -48,23 +68,45 @@
             Tipo de ficha
           </label>
           <div class="col-xl-3">
-            <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="tipoFichaFiltro">
+            <select
+              *ngIf="domains"
+              class="custom-select d-block w-100"
+              [(ngModel)]="tipoFichaFiltro"
+            >
               <option [value]="null">Selecione...</option>
-              <option *ngFor="let item of domains[0]?.tipoFichas" [value]="item.id">{{item.nome}}</option>
+              <option
+                *ngFor="let item of domains[0]?.tipoFichas"
+                [value]="item.id"
+              >
+                {{ item.nome }}
+              </option>
             </select>
           </div>
           <label class="col-xl-1 col-form-label text-left">
             Profissional
           </label>
           <div class="col-xl-3">
-            <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="profissionalFiltro">
+            <select
+              *ngIf="domains"
+              class="custom-select d-block w-100"
+              [(ngModel)]="profissionalFiltro"
+            >
               <option [value]="">Selecione...</option>
-              <option *ngFor="let item of domains[0]?.profissionais" [value]="item.id">{{item.nome}}</option>
+              <option
+                *ngFor="let item of domains[0]?.profissionais"
+                [value]="item.id"
+              >
+                {{ item.nome }}
+              </option>
             </select>
-          </div>          
+          </div>
           <div class="col-xl-2">
             <span class="input-group-btn ml-2">
-              <a class="btn btn-primary" style="color: #fff !important;" (click)="imprimirPdfProntuario()">
+              <a
+                class="btn btn-primary"
+                style="color: #fff !important"
+                (click)="imprimirPdfProntuario()"
+              >
                 <i class="far fa-file-pdf"></i> Gerar PDF prontuário
               </a>
             </span>
@@ -72,9 +114,6 @@
         </div>
       </div>
     </div>
-
-
-
   </div>
 </div>
 <form [formGroup]="form">
@@ -88,7 +127,12 @@
           <div class="card-body text-left">
             <div class="row">
               <div class="col-sm-3 text-center">
-                <app-image-cropper-upload *ngIf="loadPhoto" [readOnly]="true" [size]="180" [id]="object.foto">
+                <app-image-cropper-upload
+                  *ngIf="loadPhoto"
+                  [readOnly]="true"
+                  [size]="180"
+                  [id]="object.foto"
+                >
                 </app-image-cropper-upload>
               </div>
               <div class="col-sm-9">
@@ -99,16 +143,30 @@
                         Cartão SUS
                       </label>
                       <div class="col-xl-4">
-                        <input type="text" class="form-control has-error" [(ngModel)]="object.cartaoSus"
-                          formControlName="cartaoSus" readonly />
-                        <input type="hidden" [(ngModel)]="object.id" formControlName="id">
+                        <input
+                          type="text"
+                          class="form-control has-error"
+                          [(ngModel)]="object.cartaoSus"
+                          formControlName="cartaoSus"
+                          readonly
+                        />
+                        <input
+                          type="hidden"
+                          [(ngModel)]="object.id"
+                          formControlName="id"
+                        />
                       </div>
                       <label class="col-xl-2 col-form-label text-left">
                         ID SAP
                       </label>
                       <div class="col-xl-4">
-                        <input type="text" class="form-control has-error" [(ngModel)]="object.idSap"
-                          formControlName="idSap" readonly />
+                        <input
+                          type="text"
+                          class="form-control has-error"
+                          [(ngModel)]="object.idSap"
+                          formControlName="idSap"
+                          readonly
+                        />
                       </div>
                     </div>
                   </div>
@@ -120,8 +178,13 @@
                         Nome
                       </label>
                       <div class="col-xl-10">
-                        <input type="text" class="form-control has-error" [(ngModel)]="object.nome"
-                          formControlName="nome" readonly />
+                        <input
+                          type="text"
+                          class="form-control has-error"
+                          [(ngModel)]="object.nome"
+                          formControlName="nome"
+                          readonly
+                        />
                       </div>
                     </div>
                   </div>
@@ -133,15 +196,25 @@
                         Nome social
                       </label>
                       <div class="col-xl-4">
-                        <input type="text" class="form-control has-error" [(ngModel)]="object.nomeSocial"
-                          formControlName="nomeSocial" readonly />
+                        <input
+                          type="text"
+                          class="form-control has-error"
+                          [(ngModel)]="object.nomeSocial"
+                          formControlName="nomeSocial"
+                          readonly
+                        />
                       </div>
                       <label class="col-xl-2 col-form-label text-left">
                         Apelido
                       </label>
                       <div class="col-xl-4">
-                        <input type="text" class="form-control has-error" [(ngModel)]="object.apelido"
-                          formControlName="apelido" readonly />
+                        <input
+                          type="text"
+                          class="form-control has-error"
+                          [(ngModel)]="object.apelido"
+                          formControlName="apelido"
+                          readonly
+                        />
                       </div>
                     </div>
                   </div>
@@ -153,15 +226,25 @@
                         Nome da mãe
                       </label>
                       <div class="col-xl-4">
-                        <input type="text" class="form-control has-error" [(ngModel)]="object.nomeMae"
-                          formControlName="nomeMae" readonly />
+                        <input
+                          type="text"
+                          class="form-control has-error"
+                          [(ngModel)]="object.nomeMae"
+                          formControlName="nomeMae"
+                          readonly
+                        />
                       </div>
                       <label class="col-xl-2 col-form-label text-left">
                         Nome do pai
                       </label>
                       <div class="col-xl-4">
-                        <input type="text" class="form-control has-error" [(ngModel)]="object.nomePai"
-                          formControlName="nomePai" readonly />
+                        <input
+                          type="text"
+                          class="form-control has-error"
+                          [(ngModel)]="object.nomePai"
+                          formControlName="nomePai"
+                          readonly
+                        />
                       </div>
                     </div>
                   </div>
@@ -181,20 +264,39 @@
                           <i class="fa fa-calendar-alt"></i>
                         </div>
                       </div>
-                      <input type="text" [(ngModel)]="object.dataNascimento" formControlName="dataNascimento"
-                        placeholder="dd/mm/aaaa" bsDatepicker
-                        [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}"
-                        class="form-control" autocomplete="off" readonly>
+                      <input
+                        type="text"
+                        [(ngModel)]="object.dataNascimento"
+                        formControlName="dataNascimento"
+                        placeholder="dd/mm/aaaa"
+                        bsDatepicker
+                        [bsConfig]="{
+                          containerClass: 'theme-dark-blue',
+                          dateInputFormat: 'DD/MM/YYYY'
+                        }"
+                        class="form-control"
+                        autocomplete="off"
+                        readonly
+                      />
                     </div>
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Sexo<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.sexo"
-                      formControlName="sexo">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.sexo"
+                      formControlName="sexo"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.sexo" [value]="item.id">{{item.nome}}</option>
+                      <option
+                        *ngFor="let item of domains[0]?.sexo"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -204,23 +306,46 @@
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                    Nacionalidade<span class="text-danger font-weight-bold"> *</span>
+                    Nacionalidade<span class="text-danger font-weight-bold">
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idNacionalidade"
-                      formControlName="idNacionalidade" (change)="carregaNaturalidade()">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.idNacionalidade"
+                      formControlName="idNacionalidade"
+                      (change)="carregaNaturalidade()"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idNacionalidade" [value]="item.id">{{item.nome}}</option>
+                      <option
+                        *ngFor="let item of domains[0]?.idNacionalidade"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
                     </select>
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
-                    Naturalidade<span class="text-danger font-weight-bold"> *</span>
+                    Naturalidade<span class="text-danger font-weight-bold">
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idNaturalidade"
-                      formControlName="idNaturalidade">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.idNaturalidade"
+                      formControlName="idNaturalidade"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idNaturalidade" [value]="item.id">{{item.nome}}</option>
+                      <option
+                        *ngFor="let item of domains[0]?.idNaturalidade"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -229,19 +354,28 @@
             <div class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
-                  <label class="col-xl-2 col-form-label text-left">
-                    CPF
-                  </label>
+                  <label class="col-xl-2 col-form-label text-left"> CPF </label>
                   <div class="col-xl-4">
-                    <input type="text" mask="999.999.999-99" class="form-control has-error" [(ngModel)]="object.cpf"
-                      formControlName="cpf" readonly />
+                    <input
+                      type="text"
+                      mask="999.999.999-99"
+                      class="form-control has-error"
+                      [(ngModel)]="object.cpf"
+                      formControlName="cpf"
+                      readonly
+                    />
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Ocupação
                   </label>
                   <div class="col-xl-4">
-                    <input type="text" class="form-control has-error" [(ngModel)]="object.ocupacao"
-                      formControlName="ocupacao" readonly />
+                    <input
+                      type="text"
+                      class="form-control has-error"
+                      [(ngModel)]="object.ocupacao"
+                      formControlName="ocupacao"
+                      readonly
+                    />
                   </div>
                 </div>
               </div>
@@ -250,23 +384,44 @@
               <div class="col-xl-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                    Escolaridade<span class="text-danger font-weight-bold"> *</span>
+                    Escolaridade<span class="text-danger font-weight-bold">
+                      *</span
+                    >
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.escolaridade"
-                      formControlName="escolaridade">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.escolaridade"
+                      formControlName="escolaridade"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.escolaridade" [value]="item.id">{{item.nome}}</option>
+                      <option
+                        *ngFor="let item of domains[0]?.escolaridade"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
                     </select>
                   </div>
                   <label class="col-xl-2 col-form-label text-left">
                     Estabelecimento
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100"
-                      [(ngModel)]="object.idEstabelecimentoCadastro" formControlName="idEstabelecimentoCadastro">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="object.idEstabelecimentoCadastro"
+                      formControlName="idEstabelecimentoCadastro"
+                    >
                       <option [value]="">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idEstabelecimentoCadastro" [value]="item.id">{{item.nome}}
+                      <option
+                        *ngFor="
+                          let item of domains[0]?.idEstabelecimentoCadastro
+                        "
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
                       </option>
                     </select>
                   </div>
@@ -280,8 +435,13 @@
                     Observações
                   </label>
                   <div class="col-xl-10">
-                    <textarea rows="4" class="form-control has-error" [(ngModel)]="object.observacao"
-                      formControlName="observacao" readonly></textarea>
+                    <textarea
+                      rows="4"
+                      class="form-control has-error"
+                      [(ngModel)]="object.observacao"
+                      formControlName="observacao"
+                      readonly
+                    ></textarea>
                   </div>
                 </div>
               </div>
@@ -293,10 +453,21 @@
                     Falecido
                   </label>
                   <div class="col-xl-10">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="falecido" [(ngModel)]="object.falecido" formControlName="falecido"
-                        class="custom-control-input">
-                      <label class="custom-control-label" for="falecido"></label>
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="falecido"
+                        [(ngModel)]="object.falecido"
+                        formControlName="falecido"
+                        class="custom-control-input"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="falecido"
+                      ></label>
                     </div>
                   </div>
                 </div>
@@ -309,10 +480,21 @@
                     Situação<span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-10">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="situacao" [(ngModel)]="object.situacao" formControlName="situacao"
-                        class="custom-control-input">
-                      <label class="custom-control-label" for="situacao"></label>
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="situacao"
+                        [(ngModel)]="object.situacao"
+                        formControlName="situacao"
+                        class="custom-control-input"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="situacao"
+                      ></label>
                     </div>
                   </div>
                 </div>
@@ -326,10 +508,22 @@
                     Possui necessidades especiais
                   </label>
                   <div class="col-xl-10">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="necessidadeEspeciais" [(ngModel)]="object.necessidadeEspeciais"
-                        formControlName="necessidadeEspeciais" class="custom-control-input" readonly>
-                      <label class="custom-control-label" for="necessidadeEspeciais"></label>
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="necessidadeEspeciais"
+                        [(ngModel)]="object.necessidadeEspeciais"
+                        formControlName="necessidadeEspeciais"
+                        class="custom-control-input"
+                        readonly
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="necessidadeEspeciais"
+                      ></label>
                     </div>
                   </div>
                 </div>
@@ -343,10 +537,22 @@
                     Gestante
                   </label>
                   <div class="col-xl-10">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="gestante" [(ngModel)]="object.gestante" formControlName="gestante"
-                        class="custom-control-input" readonly>
-                      <label class="custom-control-label" for="gestante"></label>
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="gestante"
+                        [(ngModel)]="object.gestante"
+                        formControlName="gestante"
+                        class="custom-control-input"
+                        readonly
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="gestante"
+                      ></label>
                     </div>
                   </div>
                 </div>
@@ -355,27 +561,36 @@
             <div *ngIf="object.gestante == true" class="row">
               <div class="col-xl-12">
                 <div class="form-group row">
-
                   <div class="col-xl-12">
                     <div class="card mb-4">
-                      <div class="card-header text-left">
-                        Dados da Gestação
-                      </div>
+                      <div class="card-header text-left">Dados da Gestação</div>
                       <div class="card-body text-left">
-
                         <div class="row">
                           <div class="col-xl-12">
                             <div class="form-group row">
                               <label class="col-xl-2 col-form-label text-left">
-                                Cód aleita. materno<span class="text-danger font-weight-bold"> *</span>
+                                Cód aleita. materno<span
+                                  class="text-danger font-weight-bold"
+                                >
+                                  *</span
+                                >
                               </label>
                               <div class="col-xl-4">
-                                <input type="text" id="aleitamentoMaterno" class="form-control has-error"
-                                  [(ngModel)]="object.aleitamentoMaterno" formControlName="aleitamentoMaterno"
-                                  readonly />
+                                <input
+                                  type="text"
+                                  id="aleitamentoMaterno"
+                                  class="form-control has-error"
+                                  [(ngModel)]="object.aleitamentoMaterno"
+                                  formControlName="aleitamentoMaterno"
+                                  readonly
+                                />
                               </div>
                               <label class="col-xl-2 col-form-label text-left">
-                                Dt. Ult. Menstruação<span class="text-danger font-weight-bold"> *</span>
+                                Dt. Ult. Menstruação<span
+                                  class="text-danger font-weight-bold"
+                                >
+                                  *</span
+                                >
                               </label>
                               <div class="col-xl-4">
                                 <div class="input-group">
@@ -384,10 +599,20 @@
                                       <i class="fa fa-calendar-alt"></i>
                                     </div>
                                   </div>
-                                  <input type="text" [(ngModel)]="object.dumDaGestante" formControlName="dumDaGestante"
-                                    placeholder="dd/mm/aaaa" bsDatepicker
-                                    [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}"
-                                    class="form-control" autocomplete="off" readonly>
+                                  <input
+                                    type="text"
+                                    [(ngModel)]="object.dumDaGestante"
+                                    formControlName="dumDaGestante"
+                                    placeholder="dd/mm/aaaa"
+                                    bsDatepicker
+                                    [bsConfig]="{
+                                      containerClass: 'theme-dark-blue',
+                                      dateInputFormat: 'DD/MM/YYYY'
+                                    }"
+                                    class="form-control"
+                                    autocomplete="off"
+                                    readonly
+                                  />
                                 </div>
                               </div>
                             </div>
@@ -398,21 +623,47 @@
                           <div class="col-xl-12">
                             <div class="form-group row">
                               <label class="col-xl-2 col-form-label text-left">
-                                Idade Gest. em semanas<span class="text-danger font-weight-bold"> *</span>
+                                Idade Gest. em semanas<span
+                                  class="text-danger font-weight-bold"
+                                >
+                                  *</span
+                                >
                               </label>
                               <div class="col-xl-4">
-                                <input type="number" onKeyDown="" min='1' max="42" class="form-control has-error"
-                                  [(ngModel)]="object.idadeGestacional" formControlName="idadeGestacional" readonly>
+                                <input
+                                  type="number"
+                                  onKeyDown=""
+                                  min="1"
+                                  max="42"
+                                  class="form-control has-error"
+                                  [(ngModel)]="object.idadeGestacional"
+                                  formControlName="idadeGestacional"
+                                  readonly
+                                />
                               </div>
                               <label class="col-xl-2 col-form-label text-left">
-                                Gravidez Planejada<span class="text-danger font-weight-bold"> *</span>
+                                Gravidez Planejada<span
+                                  class="text-danger font-weight-bold"
+                                >
+                                  *</span
+                                >
                               </label>
                               <div class="col-xl-4">
-                                <div class="custom-control custom-checkbox" style="width: 25px">
-                                  <input type="checkbox" id="stGravidezPlanejada"
-                                    [(ngModel)]="object.stGravidezPlanejada" formControlName="stGravidezPlanejada"
-                                    class="custom-control-input">
-                                  <label class="custom-control-label" for="stGravidezPlanejada"></label>
+                                <div
+                                  class="custom-control custom-checkbox"
+                                  style="width: 25px"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    id="stGravidezPlanejada"
+                                    [(ngModel)]="object.stGravidezPlanejada"
+                                    formControlName="stGravidezPlanejada"
+                                    class="custom-control-input"
+                                  />
+                                  <label
+                                    class="custom-control-label"
+                                    for="stGravidezPlanejada"
+                                  ></label>
                                 </div>
                               </div>
                             </div>
@@ -423,39 +674,59 @@
                           <div class="col-xl-12">
                             <div class="form-group row">
                               <label class="col-xl-2 col-form-label text-left">
-                                Núm. de gestações<span class="text-danger font-weight-bold"> *</span>
+                                Núm. de gestações<span
+                                  class="text-danger font-weight-bold"
+                                >
+                                  *</span
+                                >
                               </label>
                               <div class="col-xl-4">
-                                <input type="number" onKeyDown="" min='1' max="999" class="form-control has-error"
-                                  [(ngModel)]="object.nuGestasPrevias" formControlName="nuGestasPrevias" readonly>
+                                <input
+                                  type="number"
+                                  onKeyDown=""
+                                  min="1"
+                                  max="999"
+                                  class="form-control has-error"
+                                  [(ngModel)]="object.nuGestasPrevias"
+                                  formControlName="nuGestasPrevias"
+                                  readonly
+                                />
                               </div>
                               <label class="col-xl-2 col-form-label text-left">
-                                Núm. de Partos<span class="text-danger font-weight-bold"> *</span>
+                                Núm. de Partos<span
+                                  class="text-danger font-weight-bold"
+                                >
+                                  *</span
+                                >
                               </label>
                               <div class="col-xl-4">
-                                <input type="number" onKeyDown="" min='1' max="999" class="form-control has-error"
-                                  [(ngModel)]="object.nuPartos" formControlName="nuPartos" readonly>
+                                <input
+                                  type="number"
+                                  onKeyDown=""
+                                  min="1"
+                                  max="999"
+                                  class="form-control has-error"
+                                  [(ngModel)]="object.nuPartos"
+                                  formControlName="nuPartos"
+                                  readonly
+                                />
                               </div>
                             </div>
                           </div>
                         </div>
-
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
-
-
-
           </div>
         </div>
       </tab>
       <tab (select)="tabSelected(2)">
         <ng-template tabHeading>
-          <i class="fa fa-id-card" title="Principal"></i> História progressa/familiar
+          <i class="fa fa-id-card" title="Principal"></i> História
+          progressa/familiar
         </ng-template>
         <div class="card mb-4">
           <div class="card-body text-left">
@@ -466,8 +737,13 @@
                     História progressa/familiar
                   </label>
                   <div class="col-xl-10">
-                    <textarea rows="7" class="form-control has-error" [(ngModel)]="object.historiaProgressaFamiliar"
-                      formControlName="historiaProgressaFamiliar" readonly></textarea>
+                    <textarea
+                      rows="7"
+                      class="form-control has-error"
+                      [(ngModel)]="object.historiaProgressaFamiliar"
+                      formControlName="historiaProgressaFamiliar"
+                      readonly
+                    ></textarea>
                   </div>
                 </div>
               </div>
@@ -480,16 +756,12 @@
           <i class="fa fa-heart" title="Principal"></i> Sinais vitais
         </ng-template>
         <div class="card mb-4">
-          <div class="card-header text-left">
-            Sinais vitais por atendimento
-          </div>
+          <div class="card-header text-left">Sinais vitais por atendimento</div>
           <div class="card-body text-left">
             <div class="row">
               <div class="col-12 table-responsive">
                 <div class="card mb-4">
-                  <div class="card-header text-left">
-                    Pressão arterial
-                  </div>
+                  <div class="card-header text-left">Pressão arterial</div>
                   <div class="card-body text-left">
                     <div class="row">
                       <div class="col-9 table-responsive">
@@ -501,11 +773,24 @@
                               <th>Data</th>
                             </tr>
                           </thead>
-                          <tbody *ngIf="allItemsSinaisVitaisPressaoArterial.length">
-                            <tr class="text-left" *ngFor="let item of allItemsSinaisVitaisPressaoArterial">
-                              <td class="text-secondary">{{item.id}}</td>
-                              <td class="text-secondary">{{item.pressaoArterial}}</td>
-                              <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                          <tbody
+                            *ngIf="allItemsSinaisVitaisPressaoArterial.length"
+                          >
+                            <tr
+                              class="text-left"
+                              *ngFor="
+                                let item of allItemsSinaisVitaisPressaoArterial
+                              "
+                            >
+                              <td class="text-secondary">{{ item.id }}</td>
+                              <td class="text-secondary">
+                                {{ item.pressaoArterial }}
+                              </td>
+                              <td class="text-secondary">
+                                {{
+                                  item.dataCriacao | date: 'dd/MM/yyyy HH:mm:ss'
+                                }}
+                              </td>
                             </tr>
                           </tbody>
                         </table>
@@ -514,14 +799,25 @@
                         <div class="col-sm-12 col-md-12 col-xl-12 mb-4">
                           <div class="card text-white bg-primary pb-4">
                             <div class="card-body pb-0">
-                              <div class="text-left medium">Coleta(s) realizada(s): <label
-                                  style="font-weight:bold;">{{totalPressaoArterial}}</label>
+                              <div class="text-left medium">
+                                Coleta(s) realizada(s):
+                                <label style="font-weight: bold">{{
+                                  totalPressaoArterial
+                                }}</label>
                               </div>
                               <br />
-                              <canvas baseChart height="80" [datasets]="lineChartDataPressaoArterial"
-                                [labels]="lineChartLabelsPressaoArterial" [options]="lineChartOptions"
-                                [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType"
-                                (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+                              <canvas
+                                baseChart
+                                height="80"
+                                [datasets]="lineChartDataPressaoArterial"
+                                [labels]="lineChartLabelsPressaoArterial"
+                                [options]="lineChartOptions"
+                                [colors]="lineChartColors"
+                                [legend]="lineChartLegend"
+                                [chartType]="lineChartType"
+                                (chartHover)="chartHovered($event)"
+                                (chartClick)="chartClicked($event)"
+                              ></canvas>
                             </div>
                           </div>
                         </div>
@@ -534,9 +830,7 @@
             <div class="row">
               <div class="col-12 table-responsive">
                 <div class="card mb-4">
-                  <div class="card-header text-left">
-                    Pulso
-                  </div>
+                  <div class="card-header text-left">Pulso</div>
                   <div class="card-body text-left">
                     <div class="row">
                       <div class="col-9 table-responsive">
@@ -549,10 +843,17 @@
                             </tr>
                           </thead>
                           <tbody *ngIf="allItemsSinaisVitaisPulso.length">
-                            <tr class="text-left" *ngFor="let item of allItemsSinaisVitaisPulso">
-                              <td class="text-secondary">{{item.id}}</td>
-                              <td class="text-secondary">{{item.pulso}}</td>
-                              <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                            <tr
+                              class="text-left"
+                              *ngFor="let item of allItemsSinaisVitaisPulso"
+                            >
+                              <td class="text-secondary">{{ item.id }}</td>
+                              <td class="text-secondary">{{ item.pulso }}</td>
+                              <td class="text-secondary">
+                                {{
+                                  item.dataCriacao | date: 'dd/MM/yyyy HH:mm:ss'
+                                }}
+                              </td>
                             </tr>
                           </tbody>
                         </table>
@@ -561,14 +862,25 @@
                         <div class="col-sm-12 col-md-12 col-xl-12 mb-4">
                           <div class="card text-white bg-primary pb-4">
                             <div class="card-body pb-0">
-                              <div class="text-left medium">Coleta(s) realizada(s): <label
-                                  style="font-weight:bold;">{{totalPulso}}</label>
+                              <div class="text-left medium">
+                                Coleta(s) realizada(s):
+                                <label style="font-weight: bold">{{
+                                  totalPulso
+                                }}</label>
                               </div>
                               <br />
-                              <canvas baseChart height="80" [datasets]="lineChartDataPulso"
-                                [labels]="lineChartLabelsPulso" [options]="lineChartOptions" [colors]="lineChartColors"
-                                [legend]="lineChartLegend" [chartType]="lineChartType"
-                                (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+                              <canvas
+                                baseChart
+                                height="80"
+                                [datasets]="lineChartDataPulso"
+                                [labels]="lineChartLabelsPulso"
+                                [options]="lineChartOptions"
+                                [colors]="lineChartColors"
+                                [legend]="lineChartLegend"
+                                [chartType]="lineChartType"
+                                (chartHover)="chartHovered($event)"
+                                (chartClick)="chartClicked($event)"
+                              ></canvas>
                             </div>
                           </div>
                         </div>
@@ -581,9 +893,7 @@
             <div class="row">
               <div class="col-12 table-responsive">
                 <div class="card mb-4">
-                  <div class="card-header text-left">
-                    Saturação
-                  </div>
+                  <div class="card-header text-left">Saturação</div>
                   <div class="card-body text-left">
                     <div class="row">
                       <div class="col-9 table-responsive">
@@ -596,10 +906,19 @@
                             </tr>
                           </thead>
                           <tbody *ngIf="allItemsSinaisVitaisSaturacao.length">
-                            <tr class="text-left" *ngFor="let item of allItemsSinaisVitaisSaturacao">
-                              <td class="text-secondary">{{item.id}}</td>
-                              <td class="text-secondary">{{item.saturacao}}</td>
-                              <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                            <tr
+                              class="text-left"
+                              *ngFor="let item of allItemsSinaisVitaisSaturacao"
+                            >
+                              <td class="text-secondary">{{ item.id }}</td>
+                              <td class="text-secondary">
+                                {{ item.saturacao }}
+                              </td>
+                              <td class="text-secondary">
+                                {{
+                                  item.dataCriacao | date: 'dd/MM/yyyy HH:mm:ss'
+                                }}
+                              </td>
                             </tr>
                           </tbody>
                         </table>
@@ -608,14 +927,25 @@
                         <div class="col-sm-12 col-md-12 col-xl-12 mb-4">
                           <div class="card text-white bg-primary pb-4">
                             <div class="card-body pb-0">
-                              <div class="text-left medium">Coleta(s) realizada(s): <label
-                                  style="font-weight:bold;">{{totalSaturacao}}</label>
+                              <div class="text-left medium">
+                                Coleta(s) realizada(s):
+                                <label style="font-weight: bold">{{
+                                  totalSaturacao
+                                }}</label>
                               </div>
                               <br />
-                              <canvas baseChart height="80" [datasets]="lineChartDataSaturacao"
-                                [labels]="lineChartLabelsSaturacao" [options]="lineChartOptions"
-                                [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType"
-                                (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+                              <canvas
+                                baseChart
+                                height="80"
+                                [datasets]="lineChartDataSaturacao"
+                                [labels]="lineChartLabelsSaturacao"
+                                [options]="lineChartOptions"
+                                [colors]="lineChartColors"
+                                [legend]="lineChartLegend"
+                                [chartType]="lineChartType"
+                                (chartHover)="chartHovered($event)"
+                                (chartClick)="chartClicked($event)"
+                              ></canvas>
                             </div>
                           </div>
                         </div>
@@ -628,9 +958,7 @@
             <div class="row">
               <div class="col-12 table-responsive">
                 <div class="card mb-4">
-                  <div class="card-header text-left">
-                    Temperatura
-                  </div>
+                  <div class="card-header text-left">Temperatura</div>
                   <div class="card-body text-left">
                     <div class="row">
                       <div class="col-9 table-responsive">
@@ -643,10 +971,21 @@
                             </tr>
                           </thead>
                           <tbody *ngIf="allItemsSinaisVitaisTemperatura.length">
-                            <tr class="text-left" *ngFor="let item of allItemsSinaisVitaisTemperatura">
-                              <td class="text-secondary">{{item.id}}</td>
-                              <td class="text-secondary">{{item.temperatura}}</td>
-                              <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                            <tr
+                              class="text-left"
+                              *ngFor="
+                                let item of allItemsSinaisVitaisTemperatura
+                              "
+                            >
+                              <td class="text-secondary">{{ item.id }}</td>
+                              <td class="text-secondary">
+                                {{ item.temperatura }}
+                              </td>
+                              <td class="text-secondary">
+                                {{
+                                  item.dataCriacao | date: 'dd/MM/yyyy HH:mm:ss'
+                                }}
+                              </td>
                             </tr>
                           </tbody>
                         </table>
@@ -655,14 +994,25 @@
                         <div class="col-sm-12 col-md-12 col-xl-12 mb-4">
                           <div class="card text-white bg-primary pb-4">
                             <div class="card-body pb-0">
-                              <div class="text-left medium">Coleta(s) realizada(s): <label
-                                  style="font-weight:bold;">{{totalTemperatura}}</label>
+                              <div class="text-left medium">
+                                Coleta(s) realizada(s):
+                                <label style="font-weight: bold">{{
+                                  totalTemperatura
+                                }}</label>
                               </div>
                               <br />
-                              <canvas baseChart height="80" [datasets]="lineChartDataTemperatura"
-                                [labels]="lineChartLabelsTemperatura" [options]="lineChartOptions"
-                                [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType"
-                                (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+                              <canvas
+                                baseChart
+                                height="80"
+                                [datasets]="lineChartDataTemperatura"
+                                [labels]="lineChartLabelsTemperatura"
+                                [options]="lineChartOptions"
+                                [colors]="lineChartColors"
+                                [legend]="lineChartLegend"
+                                [chartType]="lineChartType"
+                                (chartHover)="chartHovered($event)"
+                                (chartClick)="chartClicked($event)"
+                              ></canvas>
                             </div>
                           </div>
                         </div>
@@ -675,9 +1025,7 @@
             <div class="row">
               <div class="col-12 table-responsive">
                 <div class="card mb-4">
-                  <div class="card-header text-left">
-                    Peso
-                  </div>
+                  <div class="card-header text-left">Peso</div>
                   <div class="card-body text-left">
                     <div class="row">
                       <div class="col-9 table-responsive">
@@ -690,10 +1038,17 @@
                             </tr>
                           </thead>
                           <tbody *ngIf="allItemsSinaisVitaisPeso.length">
-                            <tr class="text-left" *ngFor="let item of allItemsSinaisVitaisPeso">
-                              <td class="text-secondary">{{item.id}}</td>
-                              <td class="text-secondary">{{item.peso}}</td>
-                              <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                            <tr
+                              class="text-left"
+                              *ngFor="let item of allItemsSinaisVitaisPeso"
+                            >
+                              <td class="text-secondary">{{ item.id }}</td>
+                              <td class="text-secondary">{{ item.peso }}</td>
+                              <td class="text-secondary">
+                                {{
+                                  item.dataCriacao | date: 'dd/MM/yyyy HH:mm:ss'
+                                }}
+                              </td>
                             </tr>
                           </tbody>
                         </table>
@@ -702,14 +1057,25 @@
                         <div class="col-sm-12 col-md-12 col-xl-12 mb-4">
                           <div class="card text-white bg-primary pb-4">
                             <div class="card-body pb-0">
-                              <div class="text-left medium">Coleta(s) realizada(s): <label
-                                  style="font-weight:bold;">{{totalPeso}}</label>
+                              <div class="text-left medium">
+                                Coleta(s) realizada(s):
+                                <label style="font-weight: bold">{{
+                                  totalPeso
+                                }}</label>
                               </div>
                               <br />
-                              <canvas baseChart height="80" [datasets]="lineChartDataPeso"
-                                [labels]="lineChartLabelsPeso" [options]="lineChartOptions" [colors]="lineChartColors"
-                                [legend]="lineChartLegend" [chartType]="lineChartType"
-                                (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+                              <canvas
+                                baseChart
+                                height="80"
+                                [datasets]="lineChartDataPeso"
+                                [labels]="lineChartLabelsPeso"
+                                [options]="lineChartOptions"
+                                [colors]="lineChartColors"
+                                [legend]="lineChartLegend"
+                                [chartType]="lineChartType"
+                                (chartHover)="chartHovered($event)"
+                                (chartClick)="chartClicked($event)"
+                              ></canvas>
                             </div>
                           </div>
                         </div>
@@ -722,9 +1088,7 @@
             <div class="row">
               <div class="col-12 table-responsive">
                 <div class="card mb-4">
-                  <div class="card-header text-left">
-                    Glicemia
-                  </div>
+                  <div class="card-header text-left">Glicemia</div>
                   <div class="card-body text-left">
                     <div class="row">
                       <div class="col-9 table-responsive">
@@ -737,10 +1101,19 @@
                             </tr>
                           </thead>
                           <tbody *ngIf="allItemsSinaisVitaisGlicemia.length">
-                            <tr class="text-left" *ngFor="let item of allItemsSinaisVitaisGlicemia">
-                              <td class="text-secondary">{{item.id}}</td>
-                              <td class="text-secondary">{{item.glicemia}}</td>
-                              <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                            <tr
+                              class="text-left"
+                              *ngFor="let item of allItemsSinaisVitaisGlicemia"
+                            >
+                              <td class="text-secondary">{{ item.id }}</td>
+                              <td class="text-secondary">
+                                {{ item.glicemia }}
+                              </td>
+                              <td class="text-secondary">
+                                {{
+                                  item.dataCriacao | date: 'dd/MM/yyyy HH:mm:ss'
+                                }}
+                              </td>
                             </tr>
                           </tbody>
                         </table>
@@ -749,14 +1122,25 @@
                         <div class="col-sm-12 col-md-12 col-xl-12 mb-4">
                           <div class="card text-white bg-primary pb-4">
                             <div class="card-body pb-0">
-                              <div class="text-left medium">Coleta(s) realizada(s): <label
-                                  style="font-weight:bold;">{{totalGlicemia}}</label>
+                              <div class="text-left medium">
+                                Coleta(s) realizada(s):
+                                <label style="font-weight: bold">{{
+                                  totalGlicemia
+                                }}</label>
                               </div>
                               <br />
-                              <canvas baseChart height="80" [datasets]="lineChartDataGlicemia"
-                                [labels]="lineChartLabelsGlicemia" [options]="lineChartOptions"
-                                [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType"
-                                (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+                              <canvas
+                                baseChart
+                                height="80"
+                                [datasets]="lineChartDataGlicemia"
+                                [labels]="lineChartLabelsGlicemia"
+                                [options]="lineChartOptions"
+                                [colors]="lineChartColors"
+                                [legend]="lineChartLegend"
+                                [chartType]="lineChartType"
+                                (chartHover)="chartHovered($event)"
+                                (chartClick)="chartClicked($event)"
+                              ></canvas>
                             </div>
                           </div>
                         </div>
@@ -774,48 +1158,95 @@
           <i class="fa fa-archive" title="Principal"></i> Atendimentos
         </ng-template>
         <div class="card mb-4">
-          <div class="card-header text-left">
-            Atendimentos realizados
-          </div>
+          <div class="card-header text-left">Atendimentos realizados</div>
           <div class="row">
             <div class="card-body text-left">
               <div *ngIf="allItemsAtendimentos.length" class="timeline">
-                <div *ngFor="let itemAtendimento of allItemsAtendimentos" class="timeline-item">
-                  <div class="timeline-badge" [title]="itemAtendimento.classificacaoNome">
-                    <i class="fa fa-circle" [style.color]="itemAtendimento.corIconeGrid" style="font-size: 50px;"></i>
+                <div
+                  *ngFor="let itemAtendimento of allItemsAtendimentos"
+                  class="timeline-item"
+                >
+                  <div
+                    class="timeline-badge"
+                    [title]="itemAtendimento.classificacaoNome"
+                  >
+                    <i
+                      class="fa fa-circle"
+                      [style.color]="itemAtendimento.corIconeGrid"
+                      style="font-size: 50px"
+                    ></i>
                   </div>
                   <div class="timeline-body">
                     <div class="timeline-body-top">
-                      ID do Atendimento: {{itemAtendimento.id}}
+                      ID do Atendimento: {{ itemAtendimento.id }}
                     </div>
                     <div class="timeline-body-content">
-                      <p><b>Unidade:</b> {{itemAtendimento.estabelecimentoNome}}&nbsp;&nbsp;&nbsp;<b>Tipo de
-                          atendimento:</b> {{itemAtendimento.fichaNome}}&nbsp;&nbsp;&nbsp;<b>Situação atual:</b>
-                        {{itemAtendimento.situacaoNome}}&nbsp;&nbsp;&nbsp;<b>Motivo da queixa:</b>
-                        {{itemAtendimento.motivoQueixa}}.</p>
+                      <p>
+                        <b>Unidade:</b>
+                        {{
+                          itemAtendimento.estabelecimentoNome
+                        }}&nbsp;&nbsp;&nbsp;<b>Tipo de atendimento:</b>
+                        {{ itemAtendimento.fichaNome }}&nbsp;&nbsp;&nbsp;<b
+                          >Situação atual:</b
+                        >
+                        {{ itemAtendimento.situacaoNome }}&nbsp;&nbsp;&nbsp;<b
+                          >Motivo da queixa:</b
+                        >
+                        {{ itemAtendimento.motivoQueixa }}.
+                      </p>
                     </div>
                     <div class="card-body text-left">
-                      <div *ngIf="itemAtendimento.historicos.length" class="timeline">
-                        <div *ngFor="let itemHistorico of itemAtendimento.historicos" class="timeline-item">
+                      <div
+                        *ngIf="itemAtendimento.historicos.length"
+                        class="timeline"
+                      >
+                        <div
+                          *ngFor="
+                            let itemHistorico of itemAtendimento.historicos
+                          "
+                          class="timeline-item"
+                        >
                           <div class="timeline-badge">
-                            <img class="float-left" *ngIf="itemHistorico.fotoProfissional"
-                              [src]="pathFiles + itemHistorico.fotoProfissional">
-                            <img class="float-left" *ngIf="!itemHistorico.fotoProfissional"
-                              src="assets/imgs/user2-160x160.jpg">
+                            <img
+                              class="float-left"
+                              *ngIf="itemHistorico.fotoProfissional"
+                              [src]="pathFiles + itemHistorico.fotoProfissional"
+                            />
+                            <img
+                              class="float-left"
+                              *ngIf="!itemHistorico.fotoProfissional"
+                              src="assets/imgs/user2-160x160.jpg"
+                            />
                           </div>
                           <div class="timeline-body">
                             <div class="timeline-body-top">
-                              {{itemHistorico.nomeTipoHistorico}}
+                              {{ itemHistorico.nomeTipoHistorico }}
                             </div>
                             <div class="timeline-body-content">
-                              <p><span class="text-muted">{{itemHistorico.dataHistorico}} - </span>Profissional:
-                                <b>{{itemHistorico.nomeProfissional}}</b> executou
-                                <b>{{itemHistorico.nomeTipoHistorico}}</b>.
+                              <p>
+                                <span class="text-muted"
+                                  >{{ itemHistorico.dataHistorico }} - </span
+                                >Profissional:
+                                <b>{{ itemHistorico.nomeProfissional }}</b>
+                                executou
+                                <b>{{ itemHistorico.nomeTipoHistorico }}</b
+                                >.
                               </p>
-                              <p><button class="btn btn-primary" type="button"
-                                  (click)="openHistorico(contentAtendimentoHistorico, null, itemHistorico.idHistorico)">
+                              <p>
+                                <button
+                                  class="btn btn-primary"
+                                  type="button"
+                                  (click)="
+                                    openHistorico(
+                                      contentAtendimentoHistorico,
+                                      null,
+                                      itemHistorico.idHistorico
+                                    )
+                                  "
+                                >
                                   <i class="fa fa-search"></i> Visualizar
-                                </button></p>
+                                </button>
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -833,9 +1264,7 @@
           <i class="fa fa-notes-medical" title="Principal"></i> Procedimentos
         </ng-template>
         <div class="card mb-4">
-          <div class="card-header text-left">
-            Procedimentos
-          </div>
+          <div class="card-header text-left">Procedimentos</div>
           <div class="card-body text-left">
             <div class="row">
               <div class="col-12 table-responsive">
@@ -853,11 +1282,19 @@
                     <tbody *ngIf="allItemsProcedimentos.length">
                       <ng-container *ngFor="let item of allItemsProcedimentos">
                         <tr class="text-left">
-                          <td class="text-secondary">{{item.nomeFantasia}}</td>
-                          <td class="text-secondary">{{item.nome}}</td>
-                          <td class="text-secondary">{{item.co_procedimento}}</td>
-                          <td class="text-secondary">{{item.no_procedimento}}</td>
-                          <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                          <td class="text-secondary">
+                            {{ item.nomeFantasia }}
+                          </td>
+                          <td class="text-secondary">{{ item.nome }}</td>
+                          <td class="text-secondary">
+                            {{ item.co_procedimento }}
+                          </td>
+                          <td class="text-secondary">
+                            {{ item.no_procedimento }}
+                          </td>
+                          <td class="text-secondary">
+                            {{ item.dataCriacao | date: 'dd/MM/yyyy HH:mm:ss' }}
+                          </td>
                         </tr>
                       </ng-container>
                     </tbody>
@@ -873,9 +1310,7 @@
           <i class="fa fa-file-medical-alt" title="Principal"></i> Medicamentos
         </ng-template>
         <div class="card mb-4">
-          <div class="card-header text-left">
-            Receitas
-          </div>
+          <div class="card-header text-left">Receitas</div>
           <div class="card-body text-left">
             <div class="row">
               <div class="col-12 table-responsive">
@@ -895,27 +1330,52 @@
                     <tbody *ngIf="allItemsReceita.length">
                       <ng-container *ngFor="let item of allItemsReceita">
                         <tr class="text-left">
-                          <td class="text-secondary">{{item.nomeEstabelecimento}}</td>
-                          <td class="text-secondary">{{item.nomeProfissional}}</td>
-                          <td class="text-secondary">{{item.ano}}</td>
-                          <td class="text-secondary">{{item.numero}}</td>
-                          <td class="text-secondary">{{item.situacaoNome}}</td>
-                          <td class="text-secondary">{{item.dataEmissao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                          <td class="text-secondary">
+                            {{ item.nomeEstabelecimento }}
+                          </td>
+                          <td class="text-secondary">
+                            {{ item.nomeProfissional }}
+                          </td>
+                          <td class="text-secondary">{{ item.ano }}</td>
+                          <td class="text-secondary">{{ item.numero }}</td>
+                          <td class="text-secondary">
+                            {{ item.situacaoNome }}
+                          </td>
+                          <td class="text-secondary">
+                            {{ item.dataEmissao | date: 'dd/MM/yyyy HH:mm:ss' }}
+                          </td>
                           <td class="text-secondary text-right">
-                            <button type="button" class="btn btn-primary float-left"
-                              (click)="abreReceitaMedica(item.ano, item.numero, item.idEstabelecimento)"
-                              title="Imprimir receita">
+                            <button
+                              type="button"
+                              class="btn btn-primary float-left"
+                              (click)="
+                                abreReceitaMedica(
+                                  item.ano,
+                                  item.numero,
+                                  item.idEstabelecimento
+                                )
+                              "
+                              title="Imprimir receita"
+                            >
                               <i class="fa fa-file-medical-alt"></i>
                             </button>
-                            <button type="button" class="btn btn-primary float-left" (click)="carregaEstoque(item)"
-                              style="margin-left: 5px;" title="Visualizar itens da receita">
+                            <button
+                              type="button"
+                              class="btn btn-primary float-left"
+                              (click)="carregaEstoque(item)"
+                              style="margin-left: 5px"
+                              title="Visualizar itens da receita"
+                            >
                               <i class="fa fa-eye"></i>
                             </button>
                           </td>
                         </tr>
                         <tr class="text-left">
                           <td colspan="8" *ngIf="item.expandir">
-                            <table class="table table-striped" *ngIf="item.expandir">
+                            <table
+                              class="table table-striped"
+                              *ngIf="item.expandir"
+                            >
                               <thead>
                                 <tr>
                                   <th>Código material</th>
@@ -928,14 +1388,36 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr class="text-left" *ngFor="let item of listaMaterialLoteDispensadoGravado">
-                                  <td class="text-secondary">{{item.codigoMaterial }}</td>
-                                  <td class="text-secondary">{{item.nomeMaterial}}</td>
-                                  <td class="text-secondary">{{item.qtdPrescrita}}</td>
-                                  <td class="text-secondary">{{item.tempoTratamento}}</td>
-                                  <td class="text-secondary">{{item.qtdDispAnterior}}</td>
-                                  <td class="text-secondary">{{item.dataUltDisp | date :'dd/MM/yyyy HH:mm' }}</td>
-                                  <td class="text-secondary">{{item.observacao}}</td>
+                                <tr
+                                  class="text-left"
+                                  *ngFor="
+                                    let item of listaMaterialLoteDispensadoGravado
+                                  "
+                                >
+                                  <td class="text-secondary">
+                                    {{ item.codigoMaterial }}
+                                  </td>
+                                  <td class="text-secondary">
+                                    {{ item.nomeMaterial }}
+                                  </td>
+                                  <td class="text-secondary">
+                                    {{ item.qtdPrescrita }}
+                                  </td>
+                                  <td class="text-secondary">
+                                    {{ item.tempoTratamento }}
+                                  </td>
+                                  <td class="text-secondary">
+                                    {{ item.qtdDispAnterior }}
+                                  </td>
+                                  <td class="text-secondary">
+                                    {{
+                                      item.dataUltDisp
+                                        | date: 'dd/MM/yyyy HH:mm'
+                                    }}
+                                  </td>
+                                  <td class="text-secondary">
+                                    {{ item.observacao }}
+                                  </td>
                                 </tr>
                               </tbody>
                             </table>
@@ -948,7 +1430,6 @@
               </div>
             </div>
           </div>
-
         </div>
       </tab>
       <tab (select)="tabSelected(6)">
@@ -956,9 +1437,7 @@
           <i class="fa fa-folder" title="Principal"></i> Fichas de atendimento
         </ng-template>
         <div class="card mb-4">
-          <div class="card-header text-left">
-            Fichas de atendimento
-          </div>
+          <div class="card-header text-left">Fichas de atendimento</div>
           <div class="card-body text-left">
             <div class="row">
               <div class="col-12 table-responsive">
@@ -977,16 +1456,26 @@
                   </thead>
                   <tbody *ngIf="allItemsFichas.length">
                     <tr class="text-left" *ngFor="let item of allItemsFichas">
-                      <td class="text-secondary">{{item.id}}</td>
-                      <td class="text-secondary">{{item.fichaNome}}</td>
-                      <td class="text-secondary">{{item.classificacaoNome}}</td>
-                      <td class="text-secondary">{{item.motivoQueixa}}</td>
-                      <td class="text-secondary">{{item.situacaoNome}}</td>
-                      <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
-                      <td class="text-secondary">{{item.estabelecimentoNome}}</td>
+                      <td class="text-secondary">{{ item.id }}</td>
+                      <td class="text-secondary">{{ item.fichaNome }}</td>
                       <td class="text-secondary">
-                        <button class="btn btn-primary" title="Visualizar ficha médica" type="button"
-                          (click)="abreAtendimentoFichaDigital(item.id)">
+                        {{ item.classificacaoNome }}
+                      </td>
+                      <td class="text-secondary">{{ item.motivoQueixa }}</td>
+                      <td class="text-secondary">{{ item.situacaoNome }}</td>
+                      <td class="text-secondary">
+                        {{ item.dataCriacao | date: 'dd/MM/yyyy HH:mm:ss' }}
+                      </td>
+                      <td class="text-secondary">
+                        {{ item.estabelecimentoNome }}
+                      </td>
+                      <td class="text-secondary">
+                        <button
+                          class="btn btn-primary"
+                          title="Visualizar ficha médica"
+                          type="button"
+                          (click)="abreAtendimentoFichaDigital(item.id)"
+                        >
                           <i class="fa fa-file-alt"></i>
                         </button>
                       </td>
@@ -1003,9 +1492,7 @@
           <i class="fa fa-check-square" title="Principal"></i> Exames
         </ng-template>
         <div class="card mb-4">
-          <div class="card-header text-left">
-            Exames
-          </div>
+          <div class="card-header text-left">Exames</div>
           <div class="card-body text-left">
             <div class="row">
               <div class="col-12 table-responsive">
@@ -1024,16 +1511,26 @@
                   </thead>
                   <tbody *ngIf="allItemsExames.length">
                     <tr class="text-left" *ngFor="let item of allItemsExames">
-                      <td class="text-secondary">{{item.id}}</td>
-                      <td class="text-secondary">{{item.nomeTipoExame}}</td>
-                      <td class="text-secondary">{{item.nomeProfissional}}</td>
-                      <td class="text-secondary">{{item.situacaoNome}}</td>
-                      <td class="text-secondary">{{item.resultadoNome}}</td>
-                      <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
-                      <td class="text-secondary">{{item.estabelecimentoNome}}</td>
+                      <td class="text-secondary">{{ item.id }}</td>
+                      <td class="text-secondary">{{ item.nomeTipoExame }}</td>
                       <td class="text-secondary">
-                        <button type="button" class="btn btn-primary float-left" (click)="abreReciboExame(item.id)"
-                          title="Visualizar relatório">
+                        {{ item.nomeProfissional }}
+                      </td>
+                      <td class="text-secondary">{{ item.situacaoNome }}</td>
+                      <td class="text-secondary">{{ item.resultadoNome }}</td>
+                      <td class="text-secondary">
+                        {{ item.dataCriacao | date: 'dd/MM/yyyy HH:mm:ss' }}
+                      </td>
+                      <td class="text-secondary">
+                        {{ item.estabelecimentoNome }}
+                      </td>
+                      <td class="text-secondary">
+                        <button
+                          type="button"
+                          class="btn btn-primary float-left"
+                          (click)="abreReciboExame(item.id)"
+                          title="Visualizar relatório"
+                        >
                           <i class="fa fa-file-medical-alt"></i>
                         </button>
                       </td>
@@ -1050,9 +1547,7 @@
           <i class="fa fa-medkit" title="Principal"></i> Hipótese diagnosticada
         </ng-template>
         <div class="card mb-4">
-          <div class="card-header text-left">
-            Hipótese diagnosticada
-          </div>
+          <div class="card-header text-left">Hipótese diagnosticada</div>
           <div class="card-body text-left">
             <div class="row">
               <div class="col-12 table-responsive">
@@ -1069,19 +1564,37 @@
                   </thead>
                   <tbody *ngIf="allItemsHipotese.length">
                     <tr class="text-left" *ngFor="let item of allItemsHipotese">
-                      <td class="text-secondary">{{item.codigo}}</td>
-                      <td class="text-secondary">{{item.nome}}</td>
-                      <td class="text-secondary">{{item.cid_10}}</td>
-                      <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                      <td class="text-secondary">{{ item.codigo }}</td>
+                      <td class="text-secondary">{{ item.nome }}</td>
+                      <td class="text-secondary">{{ item.cid_10 }}</td>
                       <td class="text-secondary">
-                        <button class="btn btn-primary" *ngIf="item.idAtendimento" title="Visualizar atendimento"
-                          type="button" (click)="openHistorico(contentAtendimentoHistorico, item.idAtendimento, null)">
+                        {{ item.dataCriacao | date: 'dd/MM/yyyy HH:mm:ss' }}
+                      </td>
+                      <td class="text-secondary">
+                        <button
+                          class="btn btn-primary"
+                          *ngIf="item.idAtendimento"
+                          title="Visualizar atendimento"
+                          type="button"
+                          (click)="
+                            openHistorico(
+                              contentAtendimentoHistorico,
+                              item.idAtendimento,
+                              null
+                            )
+                          "
+                        >
                           <i class="fa fa-search"></i>
                         </button>
                       </td>
                       <td class="text-secondary">
-                        <button class="btn btn-primary" *ngIf="item.idExame" title="Visualizar atendimento"
-                          type="button" (click)="openExame(contentExame, item.idExame)">
+                        <button
+                          class="btn btn-primary"
+                          *ngIf="item.idExame"
+                          title="Visualizar atendimento"
+                          type="button"
+                          (click)="openExame(contentExame, item.idExame)"
+                        >
                           <i class="fa fa-search"></i>
                         </button>
                       </td>
@@ -1095,8 +1608,13 @@
                 <div class="card text-white bg-light pb-4">
                   <div class="card-body pb-0">
                     <div style="display: block">
-                      <canvas *ngIf="pieChartData.length" baseChart [data]="pieChartData" [labels]="pieChartLabels"
-                        [chartType]="pieChartType"></canvas>
+                      <canvas
+                        *ngIf="pieChartData.length"
+                        baseChart
+                        [data]="pieChartData"
+                        [labels]="pieChartLabels"
+                        [chartType]="pieChartType"
+                      ></canvas>
                     </div>
                   </div>
                 </div>
@@ -1113,7 +1631,11 @@
           <div class="card-header container-header">
             <span class="text-left">Receitas</span>
             <span class="input-group-btn ml-2">
-              <a class="btn btn-primary" [routerLink]="" (click)="openCarteiraVacinacao(contentCarteiraVacinacao)">
+              <a
+                class="btn btn-primary"
+                [routerLink]=""
+                (click)="openCarteiraVacinacao(contentCarteiraVacinacao)"
+              >
                 <i class="far fa-address-card"></i> Carteirinha de Vacinação
               </a>
             </span>
@@ -1137,13 +1659,23 @@
                     <tbody *ngIf="allItemsVacina.length">
                       <ng-container *ngFor="let item of allItemsVacina">
                         <tr class="text-left">
-                          <td class="text-secondary">{{item.nomeEstabelecimento}}</td>
-                          <td class="text-secondary">{{item.nomeProfissional}}</td>
-                          <td class="text-secondary">{{item.codigo}}</td>
-                          <td class="text-secondary">{{item.descricao}}</td>
-                          <td class="text-secondary">{{item.qtdPrescrita}}</td>
-                          <td class="text-secondary">{{item.qtdDispAnterior}}</td>
-                          <td class="text-secondary">{{item.dataUltDisp | date :'dd/MM/yyyy HH:mm:ss' }}</td>
+                          <td class="text-secondary">
+                            {{ item.nomeEstabelecimento }}
+                          </td>
+                          <td class="text-secondary">
+                            {{ item.nomeProfissional }}
+                          </td>
+                          <td class="text-secondary">{{ item.codigo }}</td>
+                          <td class="text-secondary">{{ item.descricao }}</td>
+                          <td class="text-secondary">
+                            {{ item.qtdPrescrita }}
+                          </td>
+                          <td class="text-secondary">
+                            {{ item.qtdDispAnterior }}
+                          </td>
+                          <td class="text-secondary">
+                            {{ item.dataUltDisp | date: 'dd/MM/yyyy HH:mm:ss' }}
+                          </td>
                         </tr>
                       </ng-container>
                     </tbody>
@@ -1152,7 +1684,6 @@
               </div>
             </div>
           </div>
-
         </div>
       </tab>
       <tab (select)="tabSelected(11)">
@@ -1160,9 +1691,7 @@
           <i class="fa fa-share" title="Principal"></i> Encaminhamentos
         </ng-template>
         <div class="card mb-4">
-          <div class="card-header text-left">
-            Encaminhamento
-          </div>
+          <div class="card-header text-left">Encaminhamento</div>
           <div class="card-body text-left">
             <div class="row">
               <div class="col-12 table-responsive">
@@ -1175,10 +1704,17 @@
                     </tr>
                   </thead>
                   <tbody *ngIf="allItemsEncaminhamentoHistoricoPaciente">
-                    <tr class="text-left" *ngFor="let item of allItemsEncaminhamentoHistoricoPaciente">
-                      <td class="text-secondary">{{item.nome}}</td>
-                      <td class="text-secondary">{{item.motivo}}</td>
-                      <td class="text-secondary">{{item.dataCriacao | date :'dd/MM/yyyy HH:mm' }}</td>
+                    <tr
+                      class="text-left"
+                      *ngFor="
+                        let item of allItemsEncaminhamentoHistoricoPaciente
+                      "
+                    >
+                      <td class="text-secondary">{{ item.nome }}</td>
+                      <td class="text-secondary">{{ item.motivo }}</td>
+                      <td class="text-secondary">
+                        {{ item.dataCriacao | date: 'dd/MM/yyyy HH:mm' }}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -1186,7 +1722,62 @@
             </div>
           </div>
         </div>
+      </tab>
 
+      <tab *ngIf="object.id && !idHistorico">
+        <ng-template tabHeading>
+          <i class="fa fa-upload"></i> Documentos
+        </ng-template>
+
+        <div class="card mb-4">
+          <div class="card mb-12">
+            <div class="card-header text-left">Arquivos</div>
+            <div class="card-body text-left">
+              <div class="row">
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-12 table-responsive">
+                      <div class="form-group row">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th>Nome</th>
+                              <th>Data Inclusão</th>
+                              <th>Visualizar</th>
+                            </tr>
+                          </thead>
+                          <tbody *ngIf="this.listaArquivosUpload?.length">
+                            <tr
+                              class="text-left"
+                              *ngFor="let item of listaArquivosUpload"
+                            >
+                              <td class="text-secondary">{{ item.nome }}</td>
+                              <td class="text-secondary">
+                                {{
+                                  item.dataCriacao | date: 'dd/MM/yyyy HH:mm:ss'
+                                }}
+                              </td>
+
+                              <td class="text-secondary">
+                                <a
+                                  class="btn btn-link"
+                                  *ngIf="item.situacao == '1'"
+                                  (click)="abrirDocumento(item)"
+                                >
+                                  <i class="fa fa-eye"></i> Visualizar
+                                </a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </tab>
     </tabset>
   </div>
@@ -1196,7 +1787,9 @@
   <div class="modal-header">
     <div class="row" *ngIf="!mostraHistorico">
       <div class="col-xl-12">
-        <h4 class="modal-title text-left">Atendimento {{objectHistorico.id}}</h4>
+        <h4 class="modal-title text-left">
+          Atendimento {{ objectHistorico.id }}
+        </h4>
       </div>
     </div>
     <div class="row" *ngIf="mostraHistorico">
@@ -1204,8 +1797,9 @@
         <h4 class="modal-title text-left">Histórico do atendimento</h4>
       </div>
       <div class="col-xl-12 text-left">
-        <span class="text-muted">{{dataHistorico}} - </span>Profissional: <b>{{nomeProfissional}}</b> executou
-        <b>{{nomeTipoHistorico}}</b>.
+        <span class="text-muted">{{ dataHistorico }} - </span>Profissional:
+        <b>{{ nomeProfissional }}</b> executou <b>{{ nomeTipoHistorico }}</b
+        >.
       </div>
     </div>
     <button type="button" class="close" (click)="close()">
@@ -1223,23 +1817,46 @@
             <div class="col-xl-12">
               <div class="form-group row">
                 <label class="col-xl-2 col-form-label text-left">
-                  Tipo de atendimento<span class="text-danger font-weight-bold"> *</span>
+                  Tipo de atendimento<span class="text-danger font-weight-bold">
+                    *</span
+                  >
                 </label>
                 <div class="col-xl-4">
-                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="objectHistorico.tipoFicha"
-                    formControlName="tipoFicha">
+                  <select
+                    *ngIf="domains"
+                    class="custom-select d-block w-100"
+                    [(ngModel)]="objectHistorico.tipoFicha"
+                    formControlName="tipoFicha"
+                  >
                     <option [value]="null">Selecione...</option>
-                    <option *ngFor="let item of domains[0]?.tipoFichas" [value]="item.id">{{item.nome}}</option>
+                    <option
+                      *ngFor="let item of domains[0]?.tipoFichas"
+                      [value]="item.id"
+                    >
+                      {{ item.nome }}
+                    </option>
                   </select>
                 </div>
                 <label class="col-xl-2 col-form-label text-left">
-                  Classificação de risco<span class="text-danger font-weight-bold"> *</span>
+                  Classificação de risco<span
+                    class="text-danger font-weight-bold"
+                  >
+                    *</span
+                  >
                 </label>
                 <div class="col-xl-4">
-                  <select *ngIf="domains" class="custom-select d-block w-100"
-                    [(ngModel)]="objectHistorico.idClassificacaoRisco" formControlName="idClassificacaoRisco">
+                  <select
+                    *ngIf="domains"
+                    class="custom-select d-block w-100"
+                    [(ngModel)]="objectHistorico.idClassificacaoRisco"
+                    formControlName="idClassificacaoRisco"
+                  >
                     <option [value]="null">Selecione...</option>
-                    <option *ngFor="let item of domains[0]?.classificacaoRiscos" [value]="item.id">{{item.nome}}
+                    <option
+                      *ngFor="let item of domains[0]?.classificacaoRiscos"
+                      [value]="item.id"
+                    >
+                      {{ item.nome }}
                     </option>
                   </select>
                 </div>
@@ -1250,11 +1867,18 @@
             <div class="col-xl-12">
               <div class="form-group row">
                 <label class="col-xl-2 col-form-label text-left">
-                  Motivo da queixa<span class="text-danger font-weight-bold"></span>
+                  Motivo da queixa<span
+                    class="text-danger font-weight-bold"
+                  ></span>
                 </label>
                 <div class="col-xl-10">
-                  <textarea rows="4" class="form-control has-error" [(ngModel)]="objectHistorico.motivoQueixa"
-                    formControlName="motivoQueixa" [readonly]="disableFields()"></textarea>
+                  <textarea
+                    rows="4"
+                    class="form-control has-error"
+                    [(ngModel)]="objectHistorico.motivoQueixa"
+                    formControlName="motivoQueixa"
+                    [readonly]="disableFields()"
+                  ></textarea>
                 </div>
               </div>
             </div>
@@ -1263,9 +1887,7 @@
       </div>
 
       <div class="card mb-4">
-        <div class="card-header text-left">
-          Sinais vitais
-        </div>
+        <div class="card-header text-left">Sinais vitais</div>
         <div class="card-body text-left">
           <div class="row">
             <div class="col-xl-6">
@@ -1274,20 +1896,34 @@
                   Pressão arterial
                 </label>
                 <div class="col-xl-8">
-                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.pressaoArterial"
-                    formControlName="pressaoArterial" [readonly]="disableFields()" />
+                  <input
+                    type="text"
+                    class="form-control has-error"
+                    [(ngModel)]="objectHistorico.pressaoArterial"
+                    formControlName="pressaoArterial"
+                    [readonly]="disableFields()"
+                  />
                 </div>
               </div>
             </div>
             <div class="col-xl-6">
               <div class="form-group row">
-                <label class="col-xl-4 col-form-label text-left">
-                  Pulso
-                </label>
+                <label class="col-xl-4 col-form-label text-left"> Pulso </label>
                 <div class="col-xl-8">
-                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.pulso"
-                    formControlName="pulso" [readonly]="disableFields()" currencyMask
-                    [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }" />
+                  <input
+                    type="text"
+                    class="form-control has-error"
+                    [(ngModel)]="objectHistorico.pulso"
+                    formControlName="pulso"
+                    [readonly]="disableFields()"
+                    currencyMask
+                    [options]="{
+                      prefix: '',
+                      thousands: '.',
+                      decimal: ',',
+                      align: 'left'
+                    }"
+                  />
                 </div>
               </div>
             </div>
@@ -1299,9 +1935,20 @@
                   Saturação 02
                 </label>
                 <div class="col-xl-8">
-                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.saturacao"
-                    formControlName="saturacao" [readonly]="disableFields()" currencyMask
-                    [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }" />
+                  <input
+                    type="text"
+                    class="form-control has-error"
+                    [(ngModel)]="objectHistorico.saturacao"
+                    formControlName="saturacao"
+                    [readonly]="disableFields()"
+                    currencyMask
+                    [options]="{
+                      prefix: '',
+                      thousands: '.',
+                      decimal: ',',
+                      align: 'left'
+                    }"
+                  />
                 </div>
               </div>
             </div>
@@ -1311,9 +1958,20 @@
                   Temperatura
                 </label>
                 <div class="col-xl-8">
-                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.temperatura"
-                    formControlName="temperatura" [readonly]="disableFields()" currencyMask
-                    [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }" />
+                  <input
+                    type="text"
+                    class="form-control has-error"
+                    [(ngModel)]="objectHistorico.temperatura"
+                    formControlName="temperatura"
+                    [readonly]="disableFields()"
+                    currencyMask
+                    [options]="{
+                      prefix: '',
+                      thousands: '.',
+                      decimal: ',',
+                      align: 'left'
+                    }"
+                  />
                 </div>
               </div>
             </div>
@@ -1325,21 +1983,41 @@
                   Altura
                 </label>
                 <div class="col-xl-8">
-                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.altura"
-                    formControlName="altura" [readonly]="disableFields()" currencyMask
-                    [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }" />
+                  <input
+                    type="text"
+                    class="form-control has-error"
+                    [(ngModel)]="objectHistorico.altura"
+                    formControlName="altura"
+                    [readonly]="disableFields()"
+                    currencyMask
+                    [options]="{
+                      prefix: '',
+                      thousands: '.',
+                      decimal: ',',
+                      align: 'left'
+                    }"
+                  />
                 </div>
               </div>
             </div>
             <div class="col-xl-6">
               <div class="form-group row">
-                <label class="col-xl-4 col-form-label text-left">
-                  Peso
-                </label>
+                <label class="col-xl-4 col-form-label text-left"> Peso </label>
                 <div class="col-xl-8">
-                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.peso"
-                    formControlName="peso" [readonly]="disableFields()" currencyMask
-                    [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }" />
+                  <input
+                    type="text"
+                    class="form-control has-error"
+                    [(ngModel)]="objectHistorico.peso"
+                    formControlName="peso"
+                    [readonly]="disableFields()"
+                    currencyMask
+                    [options]="{
+                      prefix: '',
+                      thousands: '.',
+                      decimal: ',',
+                      align: 'left'
+                    }"
+                  />
                 </div>
               </div>
             </div>
@@ -1351,9 +2029,20 @@
                   Glicemia
                 </label>
                 <div class="col-xl-8">
-                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.glicemia"
-                    formControlName="glicemia" [readonly]="disableFields()" currencyMask
-                    [options]="{ prefix: '', thousands: '.', decimal: ',', align: 'left' }" />
+                  <input
+                    type="text"
+                    class="form-control has-error"
+                    [(ngModel)]="objectHistorico.glicemia"
+                    formControlName="glicemia"
+                    [readonly]="disableFields()"
+                    currencyMask
+                    [options]="{
+                      prefix: '',
+                      thousands: '.',
+                      decimal: ',',
+                      align: 'left'
+                    }"
+                  />
                 </div>
               </div>
             </div>
@@ -1362,9 +2051,7 @@
       </div>
 
       <div class="card mb-4">
-        <div class="card-header text-left">
-          Análise física
-        </div>
+        <div class="card-header text-left">Análise física</div>
         <div class="card-body text-left">
           <div class="row">
             <div class="col-xl-6">
@@ -1373,8 +2060,13 @@
                   Exame físico
                 </label>
                 <div class="col-xl-8">
-                  <textarea rows="4" class="form-control has-error" [(ngModel)]="objectHistorico.exameFisico"
-                    formControlName="exameFisico" [readonly]="disableFields()"></textarea>
+                  <textarea
+                    rows="4"
+                    class="form-control has-error"
+                    [(ngModel)]="objectHistorico.exameFisico"
+                    formControlName="exameFisico"
+                    [readonly]="disableFields()"
+                  ></textarea>
                 </div>
               </div>
             </div>
@@ -1384,8 +2076,13 @@
                   Observações gerais
                 </label>
                 <div class="col-xl-8">
-                  <textarea rows="4" class="form-control has-error" [(ngModel)]="objectHistorico.observacoesGerais"
-                    formControlName="observacoesGerais" [readonly]="disableFields()"></textarea>
+                  <textarea
+                    rows="4"
+                    class="form-control has-error"
+                    [(ngModel)]="objectHistorico.observacoesGerais"
+                    formControlName="observacoesGerais"
+                    [readonly]="disableFields()"
+                  ></textarea>
                 </div>
               </div>
             </div>
@@ -1394,9 +2091,7 @@
       </div>
 
       <div class="card mb-4">
-        <div class="card-header text-left">
-          Histórico
-        </div>
+        <div class="card-header text-left">Histórico</div>
         <div class="card-body text-left">
           <div class="row">
             <div class="col-xl-12">
@@ -1405,9 +2100,13 @@
                   História progressa/familiar
                 </label>
                 <div class="col-xl-10">
-                  <textarea rows="3" class="form-control has-error"
-                    [(ngModel)]="objectHistorico.pacienteHistoriaProgressa" formControlName="pacienteHistoriaProgressa"
-                    [readonly]="disableFields()"></textarea>
+                  <textarea
+                    rows="3"
+                    class="form-control has-error"
+                    [(ngModel)]="objectHistorico.pacienteHistoriaProgressa"
+                    formControlName="pacienteHistoriaProgressa"
+                    [readonly]="disableFields()"
+                  ></textarea>
                 </div>
               </div>
             </div>
@@ -1416,9 +2115,7 @@
       </div>
 
       <div class="card mb-4">
-        <div class="card-header text-left">
-          Anamnese/Evolução
-        </div>
+        <div class="card-header text-left">Anamnese/Evolução</div>
         <div class="card-body text-left">
           <div class="row">
             <div class="col-xl-12">
@@ -1427,10 +2124,18 @@
                   Tipo<span class="text-danger font-weight-bold"> *</span>
                 </label>
                 <div class="col-xl-10">
-                  <select *ngIf="domains" class="custom-select d-block w-100"
-                    [(ngModel)]="objectHistorico.tipoHistoriaClinica" formControlName="tipoHistoriaClinica">
+                  <select
+                    *ngIf="domains"
+                    class="custom-select d-block w-100"
+                    [(ngModel)]="objectHistorico.tipoHistoriaClinica"
+                    formControlName="tipoHistoriaClinica"
+                  >
                     <option [value]="0">Selecione...</option>
-                    <option *ngFor="let item of domains[0]?.tipoHistoriaClinica" [value]="item.id">{{item.nome}}
+                    <option
+                      *ngFor="let item of domains[0]?.tipoHistoriaClinica"
+                      [value]="item.id"
+                    >
+                      {{ item.nome }}
                     </option>
                   </select>
                 </div>
@@ -1444,8 +2149,13 @@
                   Descrição<span class="text-danger font-weight-bold"> *</span>
                 </label>
                 <div class="col-xl-10">
-                  <textarea rows="4" class="form-control has-error" [(ngModel)]="objectHistorico.historicoClinico"
-                    formControlName="historicoClinico" [readonly]="disableFields()"></textarea>
+                  <textarea
+                    rows="4"
+                    class="form-control has-error"
+                    [(ngModel)]="objectHistorico.historicoClinico"
+                    formControlName="historicoClinico"
+                    [readonly]="disableFields()"
+                  ></textarea>
                 </div>
               </div>
             </div>
@@ -1454,9 +2164,7 @@
       </div>
 
       <div class="card mb-4">
-        <div class="card-header text-left">
-          Hipótese diagnostica
-        </div>
+        <div class="card-header text-left">Hipótese diagnostica</div>
         <div class="card-body text-left">
           <div class="row">
             <div class="col-12 table-responsive">
@@ -1468,9 +2176,12 @@
                   </tr>
                 </thead>
                 <tbody *ngIf="allItemsHipoteseHistorico.length">
-                  <tr class="text-left" *ngFor="let item of allItemsHipoteseHistorico">
-                    <td class="text-secondary">{{item.codigo}}</td>
-                    <td class="text-secondary">{{item.nome}}</td>
+                  <tr
+                    class="text-left"
+                    *ngFor="let item of allItemsHipoteseHistorico"
+                  >
+                    <td class="text-secondary">{{ item.codigo }}</td>
+                    <td class="text-secondary">{{ item.nome }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -1480,9 +2191,7 @@
       </div>
 
       <div class="card mb-4">
-        <div class="card-header text-left">
-          Procedimentos
-        </div>
+        <div class="card-header text-left">Procedimentos</div>
         <div class="card-body text-left">
           <div class="row">
             <div class="col-12 table-responsive">
@@ -1502,9 +2211,12 @@
                   </tr>
                 </tbody>
                 <tbody *ngIf="allItemsProcedimentos.length">
-                  <tr class="text-left" *ngFor="let item of allItemsProcedimentos">
-                    <td class="text-secondary">{{item.co_procedimento}}</td>
-                    <td class="text-secondary">{{item.no_procedimento}}</td>
+                  <tr
+                    class="text-left"
+                    *ngFor="let item of allItemsProcedimentos"
+                  >
+                    <td class="text-secondary">{{ item.co_procedimento }}</td>
+                    <td class="text-secondary">{{ item.no_procedimento }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -1514,9 +2226,7 @@
       </div>
 
       <div class="card mb-4">
-        <div class="card-header text-left">
-          Prescrição Medicamentos
-        </div>
+        <div class="card-header text-left">Prescrição Medicamentos</div>
         <div class="card-body text-left">
           <div class="row">
             <div class="col-12 table-responsive">
@@ -1532,13 +2242,16 @@
                   </tr>
                 </thead>
                 <tbody *ngIf="allItemsMedicamentoHistorico.length">
-                  <tr class="text-left" *ngFor="let item of allItemsMedicamentoHistorico">
-                    <td class="text-secondary">{{item.descricaoMaterial}}</td>
-                    <td class="text-secondary">{{item.uso}}</td>
-                    <td class="text-secondary">{{item.tipoVia}}</td>
-                    <td class="text-secondary">{{item.quantidade}}</td>
-                    <td class="text-secondary">{{item.apresentacao}}</td>
-                    <td class="text-secondary">{{item.posologia}}</td>
+                  <tr
+                    class="text-left"
+                    *ngFor="let item of allItemsMedicamentoHistorico"
+                  >
+                    <td class="text-secondary">{{ item.descricaoMaterial }}</td>
+                    <td class="text-secondary">{{ item.uso }}</td>
+                    <td class="text-secondary">{{ item.tipoVia }}</td>
+                    <td class="text-secondary">{{ item.quantidade }}</td>
+                    <td class="text-secondary">{{ item.apresentacao }}</td>
+                    <td class="text-secondary">{{ item.posologia }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -1548,9 +2261,7 @@
       </div>
 
       <div class="card mb-4">
-        <div class="card-header text-left">
-          Encaminhamento
-        </div>
+        <div class="card-header text-left">Encaminhamento</div>
         <div class="card-body text-left">
           <div class="row">
             <div class="col-12 table-responsive">
@@ -1562,9 +2273,12 @@
                   </tr>
                 </thead>
                 <tbody *ngIf="allItemsEncaminhamentoHistorico.length">
-                  <tr class="text-left" *ngFor="let item of allItemsEncaminhamentoHistorico">
-                    <td class="text-secondary">{{item.nome}}</td>
-                    <td class="text-secondary">{{item.motivo}}</td>
+                  <tr
+                    class="text-left"
+                    *ngFor="let item of allItemsEncaminhamentoHistorico"
+                  >
+                    <td class="text-secondary">{{ item.nome }}</td>
+                    <td class="text-secondary">{{ item.motivo }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -1582,15 +2296,21 @@
                   Situação<span class="text-danger font-weight-bold"> *</span>
                 </label>
                 <div class="col-xl-8">
-                  <select class="custom-select d-block w-100" [(ngModel)]="objectHistorico.situacao"
-                    formControlName="situacao" disabled>
+                  <select
+                    class="custom-select d-block w-100"
+                    [(ngModel)]="objectHistorico.situacao"
+                    formControlName="situacao"
+                    disabled
+                  >
                     <option [value]="null">Selecione...</option>
                     <option value="0">Sala de espera</option>
                     <option value="C">Em aberto</option>
                     <option value="2">Concluído</option>
                     <option value="A">Alta</option>
                     <option value="E">Evasão</option>
-                    <option value="5">Transferência hospitalar/ambulatório</option>
+                    <option value="5">
+                      Transferência hospitalar/ambulatório
+                    </option>
                     <option value="6">Transferência unidade prisional</option>
                     <option value="7">Desinternação</option>
                     <option value="8">Álvara de soltura</option>
@@ -1606,8 +2326,13 @@
                   Motivo cancelamento
                 </label>
                 <div class="col-xl-8">
-                  <input type="text" class="form-control has-error" [(ngModel)]="objectHistorico.motivoCancelamento"
-                    formControlName="motivoCancelamento" [readonly]="true" />
+                  <input
+                    type="text"
+                    class="form-control has-error"
+                    [(ngModel)]="objectHistorico.motivoCancelamento"
+                    formControlName="motivoCancelamento"
+                    [readonly]="true"
+                  />
                 </div>
               </div>
             </div>
@@ -1622,7 +2347,7 @@
   <div class="modal-header">
     <div class="row">
       <div class="col-xl-12">
-        <h4 class="modal-title text-left">Exame {{objectExame.id}}</h4>
+        <h4 class="modal-title text-left">Exame {{ objectExame.id }}</h4>
       </div>
     </div>
     <button type="button" class="close" (click)="close()">
@@ -1630,24 +2355,32 @@
     </button>
   </div>
   <div class="modal-body">
-    <form [formGroup]="form" (submit)="sendForm($event,null)">
+    <form [formGroup]="form" (submit)="sendForm($event, null)">
       <div class="card mb-4">
         <div class="card mb-12">
-          <div class="card-header text-left">
-            Exame
-          </div>
+          <div class="card-header text-left">Exame</div>
           <div class="card-body text-left">
             <div class="row">
               <div class="col-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                    Tipo de exame <span class="text-danger font-weight-bold"> *</span>
+                    Tipo de exame
+                    <span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="objectExame.idTipoExame"
-                      formControlName="idTipoExame">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="objectExame.idTipoExame"
+                      formControlName="idTipoExame"
+                    >
                       <option [value]="null">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.idTipoExame" [value]="item.id">{{item.nome}}</option>
+                      <option
+                        *ngFor="let item of domains[0]?.idTipoExame"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -1658,9 +2391,7 @@
       </div>
       <div class="card mb-4">
         <div class="card mb-12">
-          <div class="card-header text-left">
-            Produtos/Método
-          </div>
+          <div class="card-header text-left">Produtos/Método</div>
           <div class="card-body text-left">
             <div class="row">
               <div class="col-12 table-responsive">
@@ -1674,10 +2405,17 @@
                       </tr>
                     </thead>
                     <tbody *ngIf="this.objectExame.itensExame?.length">
-                      <tr class="text-left" *ngFor="let item of this.objectExame.itensExame">
-                        <td class="text-secondary">{{item.nomeProdutoExame}}</td>
-                        <td class="text-secondary">{{item.nomeMetodoExame}}</td>
-                        <td class="text-secondary">{{item.nomeResultado}}</td>
+                      <tr
+                        class="text-left"
+                        *ngFor="let item of this.objectExame.itensExame"
+                      >
+                        <td class="text-secondary">
+                          {{ item.nomeProdutoExame }}
+                        </td>
+                        <td class="text-secondary">
+                          {{ item.nomeMetodoExame }}
+                        </td>
+                        <td class="text-secondary">{{ item.nomeResultado }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -1689,21 +2427,29 @@
       </div>
       <div class="card mb-4">
         <div class="card mb-12">
-          <div class="card-header text-left">
-            Interpretação do resultado
-          </div>
+          <div class="card-header text-left">Interpretação do resultado</div>
           <div class="card-body text-left">
             <div class="row">
               <div class="col-12">
                 <div class="form-group row">
                   <label class="col-xl-2 col-form-label text-left">
-                    Resultado <span class="text-danger font-weight-bold"> *</span>
+                    Resultado
+                    <span class="text-danger font-weight-bold"> *</span>
                   </label>
                   <div class="col-xl-4">
-                    <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="objectExame.resultadoFinal"
-                      formControlName="resultadoFinal">
+                    <select
+                      *ngIf="domains"
+                      class="custom-select d-block w-100"
+                      [(ngModel)]="objectExame.resultadoFinal"
+                      formControlName="resultadoFinal"
+                    >
                       <option [value]="null">Selecione...</option>
-                      <option *ngFor="let item of domains[0]?.resultadoFinal" [value]="item.id">{{item.nome}}</option>
+                      <option
+                        *ngFor="let item of domains[0]?.resultadoFinal"
+                        [value]="item.id"
+                      >
+                        {{ item.nome }}
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -1724,11 +2470,10 @@
     </button>
   </div>
   <div class="modal-body">
-
     <div *ngIf="errors.length" class="alert alert-danger">
       <div *ngFor="let error of errors" class="row">
         <div class="col-12 text-left">
-          {{error.message}}
+          {{ error.message }}
         </div>
       </div>
     </div>
@@ -1751,12 +2496,37 @@
               <tbody *ngIf="allItemsCarteiraVacinacao.length">
                 <ng-container *ngFor="let item of allItemsCarteiraVacinacao">
                   <tr class="text-left">
-                    <td class="text-secondary">{{item.descricao}}</td>
-                    <td class="text-secondary">{{item.datasUltimaDispensacao[0] | date :'dd/MM/yyyy HH:mm:ss'}}</td>
-                    <td class="text-secondary">{{item.datasUltimaDispensacao[1] | date :'dd/MM/yyyy HH:mm:ss'}}</td>
-                    <td class="text-secondary">{{item.datasUltimaDispensacao[2] | date :'dd/MM/yyyy HH:mm:ss'}}</td>
-                    <td class="text-secondary">{{item.datasUltimaDispensacao[3] | date :'dd/MM/yyyy HH:mm:ss'}}</td>
-                    <td class="text-secondary">{{item.datasUltimaDispensacao[4] | date :'dd/MM/yyyy HH:mm:ss'}}</td>
+                    <td class="text-secondary">{{ item.descricao }}</td>
+                    <td class="text-secondary">
+                      {{
+                        item.datasUltimaDispensacao[0]
+                          | date: 'dd/MM/yyyy HH:mm:ss'
+                      }}
+                    </td>
+                    <td class="text-secondary">
+                      {{
+                        item.datasUltimaDispensacao[1]
+                          | date: 'dd/MM/yyyy HH:mm:ss'
+                      }}
+                    </td>
+                    <td class="text-secondary">
+                      {{
+                        item.datasUltimaDispensacao[2]
+                          | date: 'dd/MM/yyyy HH:mm:ss'
+                      }}
+                    </td>
+                    <td class="text-secondary">
+                      {{
+                        item.datasUltimaDispensacao[3]
+                          | date: 'dd/MM/yyyy HH:mm:ss'
+                      }}
+                    </td>
+                    <td class="text-secondary">
+                      {{
+                        item.datasUltimaDispensacao[4]
+                          | date: 'dd/MM/yyyy HH:mm:ss'
+                      }}
+                    </td>
                   </tr>
                 </ng-container>
               </tbody>
@@ -1765,5 +2535,31 @@
         </div>
       </div>
     </div>
+  </div>
+</ng-template>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title center" id="modal-basic-title">Anexar Documentos</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-file-upload
+      [formatsAllowed]="'.jpg,.png,.jpeg'"
+      [multiple]="true"
+      (changeFiles)="fileChangeEvent($event)"
+    >
+    </app-file-upload>
+  </div>
+  <div *ngIf="this.images?.length > 0" class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="salvarDocumentos()"
+    >
+      Salvar
+    </button>
   </div>
 </ng-template>
