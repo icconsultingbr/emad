@@ -46,7 +46,9 @@ module.exports = function (app) {
 
             for (const itemfile of items) {
                 const fs = require('fs');
-                itemfile.base64 = fs.readFileSync(itemfile.caminho, { encoding: 'base64' });
+                if(fs.existsSync(itemfile.caminho)){
+                    itemfile.base64 = fs.readFileSync(itemfile.caminho, { encoding: 'base64' });
+                }   
             }
 
             res.status(200).json(items);
