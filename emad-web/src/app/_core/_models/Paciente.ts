@@ -40,7 +40,7 @@ export class Paciente {
     @Input() numeroProntuario: string = null;
     @Input() numeroProntuarioCnes: string = null;
     @Input() falecido: Boolean = null;
-    @Input() reeducando: Boolean = null;
+    @Input() reeducando: Boolean = false;
     @Input() idAtencaoContinuada: string = null;
     @Input() idEstabelecimentoCadastro: number = +JSON.parse(localStorage.getItem("est"))[0].id;
     @Input() idEstabelecimento: number = +JSON.parse(localStorage.getItem("est"))[0].id;
