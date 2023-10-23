@@ -3,9 +3,9 @@ function AtendimentoDocumentoDAO(connection) {
     this._table = "tb_atendimento_documento";
 }
 
-AtendimentoDocumentoDAO.prototype.buscaPorId = async function (id) {
+AtendimentoDocumentoDAO.prototype.buscaPorIdAtendimento = async function (idAtendimento) {
     let result = [];
-    result = await this._connection.query(`SELECT * FROM ${this._table} a where a.situacao = 1 AND a.idUsuarioCriacao=?`, [id]);
+    result = await this._connection.query(`SELECT * FROM ${this._table} a where a.situacao = 1 AND a.idAtendimento=?`, [idAtendimento]);
     return result;
 }
 

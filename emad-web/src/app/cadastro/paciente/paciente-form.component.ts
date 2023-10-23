@@ -708,6 +708,11 @@ export class PacienteFormComponent implements OnInit {
 
   salvarDocumentos() {
     this.fileUploadService.uploadListImage(this.images).subscribe((result) => {
+
+      result.forEach(object => {
+        object.idPaciente = this.id;        
+      });
+
       this.service.salvarArquivo(result).subscribe((result) => {
         if (result) {
           this.recarregarDocumentos();

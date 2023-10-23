@@ -2448,6 +2448,11 @@ export class AtendimentoFormComponent implements OnInit {
 
   salvarDocumentos() {
     this.fileUploadService.uploadListImage(this.images).subscribe((result) => {
+      
+      result.forEach(object => {
+        object.idAtendimento = this.id;        
+      });
+
       this.service.salvarArquivo(result).subscribe((result) => {
         if (result) {
           this.recarregarDocumentos();

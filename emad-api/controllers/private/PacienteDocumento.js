@@ -23,7 +23,7 @@ module.exports = function (app) {
             await connection.commit();
         }
         catch (exception) {
-            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado, exception: " + exception, ""));
             await connection.rollback();
         }
         finally {
@@ -34,7 +34,7 @@ module.exports = function (app) {
     app.get('/paciente-documento/documento/:id', async function (req, res) {
         let util = new app.util.Util();
         let errors = [];
-        let usuario = req.usuario.id;
+        let idPaciente = req.params.id;
         let items = [];
         const connection = await app.dao.connections.EatendConnection.connection();
 
@@ -42,7 +42,7 @@ module.exports = function (app) {
 
         try {
 
-            items = await repository.buscaPorId(usuario);
+            items = await repository.buscaPorIdPaciente(idPaciente);
 
             for (const itemfile of items) {
                 const fs = require('fs');
