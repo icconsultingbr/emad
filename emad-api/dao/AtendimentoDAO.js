@@ -377,6 +377,10 @@ AtendimentoDAO.prototype.salva = function (objeto, callback) {
 }
 
 AtendimentoDAO.prototype.salvaSync = async function (objeto) {
+     if (objeto.ficouEmObservacao === "") {
+        objeto.ficouEmObservacao = 0; 
+         objeto.ficouEmObservacao = parseInt(objeto.ficouEmObservacao)
+    }
     const response = await this._connection.query("INSERT INTO " + this._table + " SET ?", objeto);
     return [response];
 }
