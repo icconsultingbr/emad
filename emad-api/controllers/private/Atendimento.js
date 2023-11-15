@@ -433,6 +433,7 @@ module.exports = function (app) {
             objHistorico.tipoAtendimento == '' ? objHistorico.tipoAtendimento = 0 : objHistorico.tipoAtendimento;
             objHistorico.vacinasEmDia == '' ? objHistorico.vacinasEmDia = 0 : objHistorico.vacinasEmDia;
             objHistorico.condicaoAvaliada == '' ? objHistorico.condicaoAvaliada = 0 : objHistorico.condicaoAvaliada;
+            objHistorico.ficouEmObservacao == '' ? objHistorico.ficouEmObservacao = 0 : objHistorico.ficouEmObservacao;
 
 
             objHistorico.gestante == '' ? objHistorico.gestante = 0 : objHistorico.gestante;
