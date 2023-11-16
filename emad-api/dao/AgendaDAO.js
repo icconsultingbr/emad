@@ -15,41 +15,38 @@ AgendaDAO.prototype.lista = function(addFilter, callback) {
 
     let where = " 1=1";
 
-    if(addFilter.idPaciente != 'null'){
-        where += " AND a.idPaciente = " +addFilter.idPaciente;
+    if (addFilter.idPaciente != 'null') {
+        where += " AND a.idPaciente = " + addFilter.idPaciente;
     }
 
-    if(addFilter.idEquipe != 'null'){
-        where += " AND a.idEquipe = " +addFilter.idEquipe;
+    if (addFilter.idEquipe != 'null') {
+        where += " AND a.idEquipe = " + addFilter.idEquipe;
     }
 
-    if(addFilter.idProfissional != 'null'){
-        where += " AND a.idProfissional = " +addFilter.idProfissional;
+    if (addFilter.idProfissional != 'null') {
+        where += " AND a.idProfissional = " + addFilter.idProfissional;
     }
 
-
-   
-
+    // Adiciona a condição para permitir todos os agendamentos se addFilter.id for igual a 0
+    where += " AND (" + addFilter.id + " = 0 OR a.id = " + addFilter.id + ")";
 
     this._connection.query(
         `SELECT 
-
-        a.id, 
-        p.nome, 
-        a.idEquipe, 
-        a.idProfissional, 
-        a.idTipoAgenda, 
-        a.dataInicio, 
-        a.dataFim, 
-        a.dataVigencia, 
-        a.daysFlag, 
-        a.observacoes, 
-        a.idPaciente, 
-        a.situacao, 
-        a.idEstabelecimento 
-        
+            a.id, 
+            p.nome, 
+            a.idEquipe, 
+            a.idProfissional, 
+            a.idTipoAgenda, 
+            a.dataInicio, 
+            a.dataFim, 
+            a.dataVigencia, 
+            a.daysFlag, 
+            a.observacoes, 
+            a.idPaciente, 
+            a.situacao, 
+            a.idEstabelecimento 
         FROM ${this._table} a 
-        INNER JOIN tb_profissional p ON(a.idProfissional = p.id) 
+        INNER JOIN tb_profissional p ON (a.idProfissional = p.id) 
         WHERE ${where} AND a.situacao = 1`, callback);
 }
 

@@ -27,18 +27,17 @@ EquipeDAO.prototype.listaPorEstabelecimento = function(idEstabelecimento, callba
 EquipeDAO.prototype.buscaPorEquipe = function (equipe, idEstabelecimento,  callback) {
     this._connection.query(`SELECT 
     e.id,
-    e.equipe,
-    e.cnes, 
-    IFNULL(e.nome, e2.nome) as nome, 
+    e.nome,
+    e.ine, 
     e.tipo, 
     e.situacao,
     e.idEstabelecimento,
-    e.idEquipeEmad,
-    e.dataCriacao s
-    
-    FROM ${this._table} e 
-    LEFT JOIN tb_equipe e2 ON(e.idEquipeEmad = e2.id) 
-    WHERE e.equipe = '${equipe}' AND e.idEstabelecimento = ${idEstabelecimento} AND e.situacao = 1`,callback);
+    e.dataCriacao
+FROM 
+    tb_equipe e 
+WHERE 
+    e.idEstabelecimento = ${idEstabelecimento} AND e.situacao = 1;
+`,callback);
 }
 
 EquipeDAO.prototype.buscaPorId = function (id, callback) {

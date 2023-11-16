@@ -71,6 +71,8 @@ export class PlanoTerapeuticoComponent implements OnInit {
   ngOnInit() {
     this.loadDomains();
     this.loadSchedule(null);
+    this.consultaAgenda();
+
   }
 
   open(content: any) {
@@ -163,7 +165,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
 
     this.service.list('paciente' + params).subscribe(result => {
 
-      this.allItems = result;
+      this.allItems = result.items;
       this.setPage(1);
       this.loading = false;
 
@@ -264,7 +266,15 @@ export class PlanoTerapeuticoComponent implements OnInit {
     this.sexta.schedulers = [];
     this.sabado.schedulers = [];
 
-    if (!Util.isEmpty(this.object.idPaciente)) {
+    if (!this.object.idPaciente){
+      this.service.list('agenda').subscribe((result) => {
+      this.agendas = result;
+      this.loading = false;
+      this.loadSchedule(new Date());
+})
+    }
+
+    if (!this.object.idPaciente) {
       this.loading = true;
       this.service.list('agenda?idPaciente=' + this.object.idPaciente + '&idEquipe=' + this.object.idEquipe + '&idProfissional=' + this.object.idProfissional).subscribe(result => {
 
@@ -429,6 +439,8 @@ export class PlanoTerapeuticoComponent implements OnInit {
           if (new Date(new Date(this.quinta.data).getFullYear(), new Date(this.quinta.data).getMonth(), new Date(this.quinta.data).getDate(), 0, 0, 0).getTime() ==
             new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate(), 0, 0, 0).getTime()) {
             this.quinta.schedulers.push(agenda);
+                        console.log(this.quinta.schedulers)
+
           }
 
           if (new Date(new Date(this.sexta.data).getFullYear(), new Date(this.sexta.data).getMonth(), new Date(this.sexta.data).getDate(), 0, 0, 0).getTime() ==
