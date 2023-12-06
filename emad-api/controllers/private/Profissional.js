@@ -206,6 +206,7 @@ module.exports = function (app) {
         let estabelecimentos = obj.estabelecimentos;
 
 
+
         dadosUsuario.cpf = obj.cpf.replace(/[.-]/g, '');
             if(obj.foneCelular)
                 dadosUsuario.celular = obj.foneCelular.replace(/[() -]/g, '');

@@ -413,6 +413,15 @@ export class ProfissionalService extends GenericsService {
       form: true,
       required: true,
       validator: ['', '']
+    }, 
+    {
+      field: 'teleatendimento',
+      type: 'select',
+      label: 'Permite teleatendimento',
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
     }
   ];
 }
