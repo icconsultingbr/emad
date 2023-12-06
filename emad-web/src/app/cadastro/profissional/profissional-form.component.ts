@@ -110,6 +110,10 @@ export class ProfissionalFormComponent implements OnInit {
                         idTipoUsuario: tiposUsuario,
                         estabelecimentos: estabelecimentos,
                         escolaridade: escolaridade,
+                        teleatendimento: [
+                          { id: 'N', nome: 'Não' },
+                          { id: 'S', nome: 'Sim' },
+                        ],
                       });
                       this.buscaUsuariosSemProfissional();
                       //});
@@ -125,7 +129,7 @@ export class ProfissionalFormComponent implements OnInit {
     this.loading = true;
     this.service
       .list(
-        'usuario/usuario-sem-profissional?id=' +
+        'usuario/usuario-sem-profissiona  l?id=' +
           (this.id ? this.id : 0) +
           '&idEstabelecimento=' +
           JSON.parse(localStorage.getItem('est'))[0].id,
