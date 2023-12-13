@@ -15,6 +15,9 @@ import { AgGridModule } from 'ag-grid-angular';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { AppModalModule } from '../../_core/_components/app-modal/app-modal.module';
 import 'rxjs/add/operator/map';
+import { CalendarModule } from 'angular-calendar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @NgModule({
     imports: [
@@ -32,7 +35,8 @@ import 'rxjs/add/operator/map';
         AgGridModule,
         BsDropdownModule,
         AppModalModule,
-        RouterModule.forChild(planoTerapeuticoRoutes)
+        RouterModule.forChild(planoTerapeuticoRoutes),
+        CalendarModule.forRoot()
     ],
     declarations: [
         PlanoTerapeuticoComponent

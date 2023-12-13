@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { PlanoTerapeuticoService } from './plano-terapeutico.service';
 import { Paciente } from '../../_core/_models/Paciente';
 import { PagerService } from '../../_core/_services';
@@ -8,6 +8,18 @@ import { Util } from '../../_core/_util/Util';
 import { Router } from '@angular/router';
 import { AgendaProfissional } from '../../_core/_models/AgendaProfissional';
 import { environment } from '../../../environments/environment';
+import {
+  startOfDay,
+  subDays,
+  addDays,
+} from 'date-fns';
+
+import {
+  CalendarEvent,
+  CalendarEventAction,
+  CalendarEventTimesChangedEvent,
+} from 'angular-calendar';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-plano-terapeutico',
@@ -16,6 +28,56 @@ import { environment } from '../../../environments/environment';
   providers: [PlanoTerapeuticoService]
 })
 export class PlanoTerapeuticoComponent implements OnInit {
+  viewDate: Date = new Date();
+  activeDayIsOpen: boolean = true;
+
+  actions: CalendarEventAction[] = [
+    {
+      label: '<i class="fas fa-fw fa-pencil-alt"></i>',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+      },
+    },
+    {
+      label: '<i class="fas fa-fw fa-trash-alt"></i>',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        this.events = this.events.filter((iEvent) => iEvent !== event);
+      },
+    },
+  ];
+
+  refresh = new Subject<void>();
+
+  events: CalendarEvent[] = [
+    {
+      start: subDays(startOfDay(new Date()), 1),
+      end: addDays(new Date(), 1),
+      title: 'A 3 day event',
+      color: {
+        primary: '#ad2121',
+        secondary: '#FAE3E3',
+      },
+      actions: this.actions,
+      allDay: true,
+      resizable: {
+        beforeStart: true,
+        afterEnd: true,
+      },
+      draggable: true,
+    }
+  ];
+
+  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+  }
+
+  handleEvent(action: string, event: CalendarEvent): void {
+  }
+
+  eventTimesChanged({
+    event,
+    newStart,
+    newEnd,
+  }: CalendarEventTimesChangedEvent): void {
+  }
 
   //MESSAGES
   loading: Boolean = false;

@@ -1,5 +1,16 @@
 <app-loader [loading]="loading"></app-loader>
-<p *ngIf="message.length" class="alert alert-info">{{message}}</p>
+
+<div>
+    <mwl-calendar-month-view
+        [viewDate]="viewDate">
+    </mwl-calendar-month-view>
+  </div>  
+  <div>
+    <mwl-calendar-day-view [viewDate]="viewDate">
+  </mwl-calendar-day-view>
+  </div>
+
+<!-- <p *ngIf="message.length" class="alert alert-info">{{message}}</p>
 <div *ngIf="errors.length" class="alert alert-danger">
     <div *ngFor="let error of errors" class="row">
         <div class="col-12 text-left">
@@ -765,4 +776,4 @@
             </div>
         </div>
     </div>
-</ng-template>
+</ng-template> -->
