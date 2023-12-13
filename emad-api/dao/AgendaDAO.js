@@ -80,8 +80,6 @@ AgendaDAO.prototype.deletaPorId = function (id, callback){
     this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
 }
 
-
-
 module.exports = function(){
     return AgendaDAO;
 };

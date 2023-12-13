@@ -1,3 +1,4 @@
+<app-agendamento></app-agendamento>
 <app-loader [loading]="loading"></app-loader>
 <p *ngIf="message.length" class="alert alert-info">{{message}}</p>
 <div *ngIf="errors.length" class="alert alert-danger">
@@ -149,7 +150,8 @@
                                 <div *ngFor="let item of domingo.schedulers"
                                     class="col bg-primary text-white rounded small" [style.height.px]="item.duration"
                                     [style.marginLeft.px]="domingo.schedulers.length>1?1:0"
-                                    [style.marginTop.px]="item.margin" (dblclick)="object.idProfissional ? editSchedule(item) : ''">
+                                    [style.marginTop.px]="item.margin"
+                                    (dblclick)="object.idProfissional ? editSchedule(item) : ''">
                                     <div class="row" *ngIf="item.duration > 110">
                                         <div class="col-12 mb-2" *ngIf="domingo.schedulers.length<3">
                                             <div class="resumeUser text-center">
@@ -170,7 +172,8 @@
                                 <div *ngFor="let item of segunda.schedulers"
                                     class="col bg-primary text-white rounded small" [style.height.px]="item.duration"
                                     [style.marginLeft.px]="segunda.schedulers.length>1?1:0"
-                                    [style.marginTop.px]="item.margin" (dblclick)="object.idProfissional ? editSchedule(item) : ''">
+                                    [style.marginTop.px]="item.margin"
+                                    (dblclick)="object.idProfissional ? editSchedule(item) : ''">
 
                                     <div class="row" *ngIf="item.duration > 110">
                                         <div class="col-12 mb-2" *ngIf="segunda.schedulers.length<3">
@@ -192,7 +195,8 @@
                                 <div *ngFor="let item of terca.schedulers"
                                     class="col bg-primary text-white rounded small" [style.height.px]="item.duration"
                                     [style.marginLeft.px]="terca.schedulers.length>1?1:0"
-                                    [style.marginTop.px]="item.margin" (dblclick)="object.idProfissional ? editSchedule(item) : ''">
+                                    [style.marginTop.px]="item.margin"
+                                    (dblclick)="object.idProfissional ? editSchedule(item) : ''">
                                     <div class="row" *ngIf="item.duration > 110">
                                         <div class="col-12 mb-2" *ngIf="terca.schedulers.length<3">
                                             <div class="resumeUser text-center">
@@ -213,7 +217,8 @@
                                 <div *ngFor="let item of quarta.schedulers"
                                     class="col bg-primary text-white rounded small" [style.height.px]="item.duration"
                                     [style.marginLeft.px]="quarta.schedulers.length>1?1:0"
-                                    [style.marginTop.px]="item.margin" (dblclick)="object.idProfissional ? editSchedule(item) : ''">
+                                    [style.marginTop.px]="item.margin"
+                                    (dblclick)="object.idProfissional ? editSchedule(item) : ''">
                                     <div class="row" *ngIf="item.duration > 110">
                                         <div class="col-12 mb-2" *ngIf="quarta.schedulers.length<3">
                                             <div class="resumeUser text-center">
@@ -233,7 +238,8 @@
                                 <div *ngFor="let item of quinta.schedulers"
                                     class="col bg-primary text-white rounded small" [style.height.px]="item.duration"
                                     [style.marginLeft.px]="quinta.schedulers.length>1?1:0"
-                                    [style.marginTop.px]="item.margin" (dblclick)="object.idProfissional ? editSchedule(item) : ''">
+                                    [style.marginTop.px]="item.margin"
+                                    (dblclick)="object.idProfissional ? editSchedule(item) : ''">
                                     <div class="row" *ngIf="item.duration > 110">
                                         <div class="col-12 mb-2" *ngIf="quinta.schedulers.length<3">
                                             <div class="resumeUser text-center">
@@ -255,7 +261,8 @@
                                 <div *ngFor="let item of sexta.schedulers"
                                     class="col bg-primary text-white rounded small" [style.height.px]="item.duration"
                                     [style.marginLeft.px]="sexta.schedulers.length>1?1:0"
-                                    [style.marginTop.px]="item.margin" (dblclick)="object.idProfissional ? editSchedule(item) : ''">
+                                    [style.marginTop.px]="item.margin"
+                                    (dblclick)="object.idProfissional ? editSchedule(item) : ''">
                                     <div class="row" *ngIf="item.duration > 110">
                                         <div class="col-12 mb-2" *ngIf="sexta.schedulers.length<3">
                                             <div class="resumeUser text-center">
@@ -276,7 +283,8 @@
                                 <div *ngFor="let item of sabado.schedulers"
                                     class="col bg-primary text-white rounded small" [style.height.px]="item.duration"
                                     [style.marginLeft.px]="sabado.schedulers.length>1?1:0"
-                                    [style.marginTop.px]="item.margin" (dblclick)="object.idProfissional ? editSchedule(item) : ''">
+                                    [style.marginTop.px]="item.margin"
+                                    (dblclick)="object.idProfissional ? editSchedule(item) : ''">
                                     <div class="row" *ngIf="item.duration > 110">
                                         <div class="col-12 mb-2" *ngIf="sabado.schedulers.length<3">
                                             <div class="resumeUser text-center">
@@ -444,12 +452,13 @@
                             <td *ngFor="let field of fields;">
                                 <label for="{{ item.id }}">
                                     {{
-                                        field.isDate?(item[field.field] | date :'dd/MM/yyyy') : 
-                                        field.isDateTime?(item[field.field] | date :'dd/MM/yyyy HH:mm'): 
-                                        field.translate?(translate(item[field.field], field.translate)):
-                                        field.decimalMask?(toCurrency(item[field.field] | currency:'R$ ':true:'1.2-2',field.decimalMask)):
-                                        field.docMask?(maskDocument(item[field.field])):
-                                        item[field.field]
+                                    field.isDate?(item[field.field] | date :'dd/MM/yyyy') :
+                                    field.isDateTime?(item[field.field] | date :'dd/MM/yyyy HH:mm'):
+                                    field.translate?(translate(item[field.field], field.translate)):
+                                    field.decimalMask?(toCurrency(item[field.field] | currency:'R$
+                                    ':true:'1.2-2',field.decimalMask)):
+                                    field.docMask?(maskDocument(item[field.field])):
+                                    item[field.field]
                                     }}
                                 </label>
                             </td>
@@ -562,10 +571,10 @@
             <label class="col-xl-3 col-form-label text-left">Equipe/Profissonal</label>
             <div class="col-xl-9">
                 <div class="input-group">
-                    <input type="text" class="form-control rounded" [(ngModel)]="object.equipeNome" readonly/>
+                    <input type="text" class="form-control rounded" [(ngModel)]="object.equipeNome" readonly />
                     <span class="input-group-addon mr-3"> </span>
                     <input type="text" class="form-control rounded" [(ngModel)]="object.nome" readonly />
-                
+
                 </div>
             </div>
         </div>
