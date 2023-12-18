@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { CoreModule } from '../../_core/core.module';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { AppGridViewModule } from '../../_core/_components/app-grid-view/app-grid-view.module';
 import { AppFormModule } from '../../_core/_components/app-form/app-form.module';
 import { PlanoTerapeuticoComponent } from './plano-terapeutico.component';
@@ -16,8 +16,9 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { AppModalModule } from '../../_core/_components/app-modal/app-modal.module';
 import 'rxjs/add/operator/map';
 import { CalendarModule } from 'angular-calendar';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import localePt from '@angular/common/locales/pt';
 
+registerLocaleData(localePt);
 
 @NgModule({
     imports: [
@@ -27,7 +28,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         AppFormModule,
         FormsModule,
         ReactiveFormsModule,
-        BsDatepickerModule,
+        BsDatepickerModule.forRoot(),
         NgbModule,
         NgbCollapseModule,
         NgbDatepickerModule,
@@ -36,13 +37,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         BsDropdownModule,
         AppModalModule,
         RouterModule.forChild(planoTerapeuticoRoutes),
-        CalendarModule.forRoot()
+        CalendarModule.forRoot(),
+
     ],
     declarations: [
         PlanoTerapeuticoComponent
     ],
     providers: [
-        PlanoTerapeuticoService
+        PlanoTerapeuticoService, { provide: LOCALE_ID, useValue: 'pt-BR' },
     ],
     exports: [
         PlanoTerapeuticoComponent

@@ -3,32 +3,32 @@ function AgendaDAO(connection) {
     this._table = "tb_agenda_profissional";
 }
 
-AgendaDAO.prototype.salva = function(obj, callback) {
+AgendaDAO.prototype.salva = function (obj, callback) {
     this._connection.query(`INSERT INTO ${this._table} SET ?`, obj, callback);
 }
 
-AgendaDAO.prototype.atualiza = function(obj, id, callback) {
+AgendaDAO.prototype.atualiza = function (obj, id, callback) {
     this._connection.query(`UPDATE ${this._table} SET ? WHERE id= ?`, [obj, id], callback);
 }
 
-AgendaDAO.prototype.lista = function(addFilter, callback) {
+AgendaDAO.prototype.lista = function (addFilter, callback) {
 
     let where = " 1=1";
 
-    if(addFilter.idPaciente != 'null'){
-        where += " AND a.idPaciente = " +addFilter.idPaciente;
+    if (addFilter.idPaciente != 'null') {
+        where += " AND a.idPaciente = " + addFilter.idPaciente;
     }
 
-    if(addFilter.idEquipe != 'null'){
-        where += " AND a.idEquipe = " +addFilter.idEquipe;
+    if (addFilter.idEquipe != 'null') {
+        where += " AND a.idEquipe = " + addFilter.idEquipe;
     }
 
-    if(addFilter.idProfissional != 'null'){
-        where += " AND a.idProfissional = " +addFilter.idProfissional;
+    if (addFilter.idProfissional != 'null') {
+        where += " AND a.idProfissional = " + addFilter.idProfissional;
     }
 
 
-   
+
 
 
     this._connection.query(
@@ -53,7 +53,7 @@ AgendaDAO.prototype.lista = function(addFilter, callback) {
         WHERE ${where} AND a.situacao = 1`, callback);
 }
 
-AgendaDAO.prototype.buscaPorId = function (id,callback) {
+AgendaDAO.prototype.buscaPorId = function (id, callback) {
     this._connection.query(`select 
     a.id, 
     p.nome, 
@@ -68,20 +68,19 @@ AgendaDAO.prototype.buscaPorId = function (id,callback) {
     a.observacoes, 
     a.idPaciente, 
     a.situacao 
-    
     from ${this._table} a 
     inner join tb_profissional p ON(a.idProfissional = p.id) 
     inner join tb_equipe e ON(a.idEquipe = e.id)
-    where a.id = ?`,id,callback);
+    where a.id = ?`, id, callback);
 }
 
 
-AgendaDAO.prototype.deletaPorId = function (id, callback){
-    this._connection.query("UPDATE "+this._table+" set situacao = 0 WHERE id = ? ",id,callback);
+AgendaDAO.prototype.deletaPorId = function (id, callback) {
+    this._connection.query("UPDATE " + this._table + " set situacao = 0 WHERE id = ? ", id, callback);
 }
 
 
 
-module.exports = function(){
+module.exports = function () {
     return AgendaDAO;
 };
