@@ -20,6 +20,28 @@ import {
   CalendarEventTimesChangedEvent,
 } from 'angular-calendar';
 import { Subject } from 'rxjs';
+<<<<<<< Updated upstream
+=======
+import { EventColor, MonthView, getMonthView } from 'calendar-utils';
+import { DatePipe } from '@angular/common';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date';
+import { moment } from 'ngx-bootstrap/chronos/test/chain';
+import { DISABLED } from '@angular/forms/src/model';
+const colors: Record<string, EventColor> = {
+  red: {
+    primary: '#ad2121',
+    secondary: '#FAE3E3',
+  },
+  blue: {
+    primary: '#1e90ff',
+    secondary: '#D1E8FF',
+  },
+  yellow: {
+    primary: '#e3bc08',
+    secondary: '#FDF1BA',
+  },
+};
+>>>>>>> Stashed changes
 
 @Component({
   selector: 'app-plano-terapeutico',
@@ -28,19 +50,70 @@ import { Subject } from 'rxjs';
   providers: [PlanoTerapeuticoService]
 })
 export class PlanoTerapeuticoComponent implements OnInit {
+<<<<<<< Updated upstream
   viewDate: Date = new Date();
   activeDayIsOpen: boolean = true;
+=======
+  @ViewChild('modalInfoAgendamento') modalInfoAgendamento: TemplateRef<any>;
+  @ViewChild('modalAdicionarAgendamento') modalAdicionarAgendamento: TemplateRef<any>;
+  @Input() public readonly: Boolean = false;
+  view: string = 'month';
+  selectedSchedule: any = null;
+  dataAtual = moment().format('YYYY-MM-DDTHH:mm');
+  selectedDate: Date;
+  viewDate: Date = new Date();
+  activeDayIsOpen: boolean = true;
+  refresh = new Subject<void>();
+  modalRef: NgbModalRef = null;
+  modalRefLocalizarPaciente: NgbModalRef = null;
+  modalConsultaAgendamento: NgbModalRef = null;
+  hoveredDate: NgbDate | null = null;
+  fromDate: NgbDate;
+  toDate: NgbDate | null = null;
+  form: FormGroup;
+  dadosAgendamento: any;
+  paciente: Paciente = new Paciente();
+  pacienteSelecionado: any = null;
+  dataSelecionada: any;
+  agendamentoSelecionado: any
+  pageLimit = 10;
+  idEstabelecimento: number
+  allItems: any[];
+  errors: any[] = [];
+  pager: any = {};
+  pagedItems: any[];
+  fields: any[] = [];
+  listaEquipe: any[] = []
+  object: AgendaProfissional = new AgendaProfissional();
+  tipoAtendimento = [];
+  formaAtendimento = [];
+  events: CalendarEvent[] = [];
+
+  listaProfissional = [];
+  mensagem = '';
+
+  modalData: {
+    action: string;
+    event: CalendarEvent;
+  };
+>>>>>>> Stashed changes
 
   actions: CalendarEventAction[] = [
     {
       label: '<i class="fas fa-fw fa-pencil-alt"></i>',
+<<<<<<< Updated upstream
       onClick: ({ event }: { event: CalendarEvent }): void => {
+=======
+      onClick: async ({ event }: { event: CalendarEvent }): Promise<void> => {
+        this.editar(Number(event.id));
+>>>>>>> Stashed changes
       },
     },
     {
       label: '<i class="fas fa-fw fa-trash-alt"></i>',
       onClick: ({ event }: { event: CalendarEvent }): void => {
         this.events = this.events.filter((iEvent) => iEvent !== event);
+        this.excluir(Number(event.id))
       },
     },
   ];
@@ -121,6 +194,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
     private fb: FormBuilder,
     private service: PlanoTerapeuticoService,
     private modalService: NgbModal,
+<<<<<<< Updated upstream
     private router: Router) {
 
     for (const field of this.service.fields) {
@@ -204,6 +278,103 @@ export class PlanoTerapeuticoComponent implements OnInit {
       return false;
     }
     return true;
+=======
+    private pagerService: PagerService,
+    private router: Router,
+    private calendar: NgbCalendar) {
+    this.selectedDate = new Date();
+    this.fromDate = calendar.getToday();
+    this.toDate = calendar.getNext(calendar.getToday(), 'd', 10);
+    for (const field of this.service.fields) {
+      if (field.grid) {
+        this.fields.push(field);
+      }
+    }
+
+  }
+
+  ngOnInit() {
+    this.consultaAgendamentos();
+    this.carregarFormaAtendimento();
+    this.carregarTipoAtendimento();
+    this.fomularioAgendamento()
+
+    this.form.get('tipoAtendimento').valueChanges.subscribe((value) => {
+      if (!value) {
+        return;
+      }
+      if (value == 1) {
+        this.consultaProfissional();
+      }
+      if (value == 2) {
+        this.consultaProfissionalPorEquipe(value);
+      }
+    });
+    this.form.get('dataInicial').valueChanges.subscribe((result) => {
+      this.dataSelecionada = moment(result).format('YYYY-MM-DDTHH:mm');
+    });
+
+  }
+
+  fomularioAgendamento() {
+    this.form = this.fb.group({
+      id: ['', [Validators.required]],
+      idPaciente: ['', [Validators.required]],
+      idEquipe: ['', [Validators.required]],
+      idProfissional: ['', [Validators.required]],
+      nomePaciente: ['', [Validators.required]],
+      formaAtendimento: [1, [Validators.required]],
+      tipoAtendimento: ['', [Validators.required,]],
+      dataInicial: ['', [Validators.required,]],
+      dataFinal: ['', [Validators.required,]],
+      observacao: ['']
+    });
+
+  }
+
+  limparFormulario() {
+    this.form.reset();
+  }
+
+  salvar() {
+    this.service.save(this.form.getRawValue(), 'agendamento').subscribe((result) => {
+      this.mensagem = 'Agendamento salvo com sucesso'
+      this.closeModal()
+      this.consultaAgendamentos();
+      this.limparFormulario()
+    })
+  }
+
+  editar(value: number) {
+    const id = value ? value : this.dadosAgendamento.idAgendamento;
+    this.service.list(`agendamento/${id}`).subscribe((result) => {
+      this.dadosAgendamento = result
+      this.form.patchValue({
+        id: this.dadosAgendamento.idAgendamento,
+        idPaciente: this.dadosAgendamento.idPaciente,
+        idEquipe: this.dadosAgendamento.idEquipe,
+        idProfissional: this.dadosAgendamento.idProfissional,
+        nomePaciente: this.dadosAgendamento.pacienteNome,
+        formaAtendimento: this.dadosAgendamento.formaAtendimento,
+        tipoAtendimento: this.dadosAgendamento.tipoAtendimento,
+        dataInicial: moment(this.dadosAgendamento.dataInicial).format('YYYY-MM-DDTHH:mm'),
+        dataFinal: moment(this.dadosAgendamento.dataFinal).format('YYYY-MM-DDTHH:mm'),
+        observacao: this.dadosAgendamento.observacao
+      });
+      this.consultaPaciente(this.dadosAgendamento.idPaciente)
+      this.openModalAgendamento()
+    });
+    this.modalConsultaAgendamento.dismiss()
+
+  }
+
+  excluir(value: number) {
+    const idAgendamento = value ? value : this.dadosAgendamento.idAgendamento
+    this.service.remove(Number(idAgendamento), 'agendamento').subscribe((result) => {
+      this.consultaAgendamentos();
+      this.closeModal()
+    })
+>>>>>>> Stashed changes
   }
 
   buscaPaciente() {
@@ -216,7 +387,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
             params += key + '=' + this.paciente[key] + '&';
           }
         }
-
         if (params != '') {
           params = '?' + params;
         }
@@ -224,17 +394,20 @@ export class PlanoTerapeuticoComponent implements OnInit {
     }
 
     this.service.list('paciente' + params).subscribe(result => {
-
-      this.allItems = result;
+      this.allItems = result.items;
       this.setPage(1);
+<<<<<<< Updated upstream
       this.loading = false;
 
+=======
+>>>>>>> Stashed changes
     }, erro => {
       this.loading = false;
       this.errors = Util.customHTTPResponse(erro);
     });
   }
 
+<<<<<<< Updated upstream
   setPage(page: number) {
     this.pager = this.pagerService.getPager(this.allItems.length, page, this.pageLimit);
     this.pagedItems = this.allItems.slice(this.pager.startIndex, this.pager.endIndex + 1);
@@ -244,6 +417,48 @@ export class PlanoTerapeuticoComponent implements OnInit {
     const id = parseInt(event.target.value);
     this.pageLimit = id;
     this.setPage(1);
+=======
+  consultaProfissionalPorEquipe(value: number) {
+    const idEquipe = value
+    this.service.list(`profissional/equipe/${idEquipe}`).subscribe((result) => {
+      this.listaProfissional = result;
+    })
+  }
+
+  consultaProfissional() {
+    if (this.pacienteSelecionado) {
+      this.idEstabelecimento = Number(this.pacienteSelecionado.idEstabelecimento);
+    }
+    this.service.list(`profissional/estabelecimento/${this.idEstabelecimento}`).subscribe((result) => {
+      this.listaProfissional = result;
+    })
+  }
+
+  selecionaPaciente(item) {
+    this.pacienteSelecionado = item;
+  }
+
+  confirmaPaciente() {
+    this.form.patchValue({
+      nomePaciente: this.pacienteSelecionado.nome,
+      idPaciente: this.pacienteSelecionado.id
+    });
+    this.modalRefLocalizarPaciente.close();
+    this.buscaEquipe(this.pacienteSelecionado.idEstabelecimento);
+  }
+
+  buscaEquipe(value: number) {
+    const idEstabelecimento = value;
+    this.service.list(`equipe/estabelecimento/${idEstabelecimento}`).subscribe((result) => {
+      this.listaEquipe = result;
+    })
+  }
+
+  carregarFormaAtendimento() {
+    this.service.list('agendamento/forma-atendimento/agendamento').subscribe((result) => {
+      this.formaAtendimento = result;
+    });
+>>>>>>> Stashed changes
   }
 
   clear() {
@@ -252,6 +467,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
     this.allItems = [];
   }
 
+<<<<<<< Updated upstream
   togglePaciente() {
     return Util.isEmpty(this.paciente.cartaoSus) && Util.isEmpty(this.paciente.nome);
   }
@@ -334,6 +550,88 @@ export class PlanoTerapeuticoComponent implements OnInit {
         this.loading = false;
 
         this.loadSchedule(new Date());
+=======
+  consultaAgendamentos() {
+    this.service.list('agendamento').subscribe((result) => {
+      const eventosDoServico: CalendarEvent[] = result.map((evento) => ({
+        id: evento.idAgendamento,
+        title: evento.pacienteNome,
+        start: new Date(evento.dataInicial),
+        end: new Date(evento.dataFinal),
+        resizable: {
+          beforeStart: true,
+          afterEnd: true,
+        },
+        actions: this.actions, //permite deletar e editar
+      }));
+      this.events = [...eventosDoServico];
+    });
+  }
+
+  consultaPaciente(id: number) {
+    this.service.list(`paciente/${id}`).subscribe((result) => {
+      this.idEstabelecimento = result.idEstabelecimentoCadastro
+      this.consultaProfissional()
+    })
+  }
+
+  formatarDataHora(dataString) {
+    const data = new Date(dataString);
+    const dataFormatada = data.toLocaleDateString();
+    const horaFormatada = data.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return { data: dataFormatada, hora: horaFormatada };
+  }
+
+  handleEvent(action: string, event: CalendarEvent): void {
+    this.agendamentoSelecionado = event;
+    const idAgendamento = parseInt(this.agendamentoSelecionado.id)
+    this.modalData = { event, action };
+    this.openModalConsultaAgendamento(this.modalInfoAgendamento)
+    this.consultaAgendamentoId(idAgendamento)
+  }
+
+
+  consultaAgendamentoId(id: number) {
+    this.service.list(`agendamento/${id}`).subscribe((result) => {
+      this.dadosAgendamento = result
+    });
+  }
+
+  openModalConsultaAgendamento(content: any) {
+    this.modalConsultaAgendamento = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      size: 'lg'
+    });
+  }
+
+  openModalAgendamento(): void {
+    this.openModal(this.modalAdicionarAgendamento)
+  }
+
+  openModal(content: any) {
+    this.modalRef = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      size: 'lg'
+    });
+  }
+
+  openModalLocalizarPaciente(content: any) {
+    this.modalRefLocalizarPaciente = this.modalService.open(content, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      size: 'lg'
+    });
+  }
+
+  closeModal() {
+    this.modalRef.dismiss()
+  }
+>>>>>>> Stashed changes
 
       }, error => {
         this.loading = false;
@@ -507,6 +805,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
     }
   }
 
+<<<<<<< Updated upstream
   voltaAgenda(data: Date) {
     const dt1 = new Date(data);
     const dt = new Date(data);
@@ -514,6 +813,23 @@ export class PlanoTerapeuticoComponent implements OnInit {
     dt.setDate((dt1.getDate() - 6));
     dt.setHours(dt.getHours() + (environment.utc));
     this.loadSchedule(dt);
+=======
+  addEvent(): void {
+    this.events = [
+      ...this.events,
+      {
+        title: 'New event',
+        start: startOfDay(new Date()),
+        end: endOfDay(new Date()),
+        color: colors.red,
+        draggable: true,
+        resizable: {
+          beforeStart: true,
+          afterEnd: true,
+        },
+      },
+    ];
+>>>>>>> Stashed changes
   }
 
   avancaAgenda(data: Date) {
@@ -529,6 +845,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
     this.loadSchedule(null);
   }
 
+<<<<<<< Updated upstream
   tipoAgenda($event) {
     const value = $event.target.value;
     if (value == 'U') {
@@ -598,6 +915,8 @@ export class PlanoTerapeuticoComponent implements OnInit {
 
     return bool;
   }
+=======
+>>>>>>> Stashed changes
 
   canCreate() {
     if (
@@ -716,6 +1035,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
     this.loadSchedule(data);
   }
 
+<<<<<<< Updated upstream
   convertTodate(date) {
     if (!Util.isEmpty(date)) {
       const data = new Date(date);
@@ -729,4 +1049,23 @@ export class PlanoTerapeuticoComponent implements OnInit {
     return Util.getInitialsOfName(nome)[0] + '' + Util.getInitialsOfName(nome)[Util.getInitialsOfName(nome).length - 1];
   }
 
+=======
+  //Paginacao consulta paciente
+  setPage(page: number) {
+    this.pager = this.pagerService.getPager(this.allItems.length, page, this.pageLimit);
+    this.pagedItems = this.allItems.slice(this.pager.startIndex, this.pager.endIndex + 1);
+  }
+
+  loadQuantityPerPage(event) {
+    const id = parseInt(event.target.value);
+    this.pageLimit = id;
+    this.setPage(1);
+  }
+
+  togglePaciente() {
+    return Util.isEmpty(this.paciente.cartaoSus) && Util.isEmpty(this.paciente.nome);
+  }
+
+
+>>>>>>> Stashed changes
 }
