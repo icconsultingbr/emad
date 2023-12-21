@@ -231,6 +231,16 @@ ProfissionalDAO.prototype.dominio = function (callback) {
     this._connection.query("select id, nome FROM " + this._table + " WHERE situacao = 1 ORDER BY nome ASC", callback);
 }
 
+ProfissionalDAO.prototype.buscaProfissionalPorEstabelecimentoEEspecialidade = function (idEstabeleciemnto, idEspecialidade, callback) {
+    this._connection.query(`
+        SELECT t.id, t.nome, t.profissionalCNS, t.cargoProfissional
+            FROM ${this._table} as t
+            INNER JOIN tb_estabelecimento_usuario as ep ON (t.idUsuario = ep.idUsuario)
+            INNER JOIN tb_especialidade as esp ON (t.idEspecialidade = esp.id)
+            WHERE ep.idEstabelecimento = ${idEstabeleciemnto} AND t.situacao = 1 AND esp.id = ${idEspecialidade}
+            ORDER BY t.nome ASC`, callback);
+}
+
 ProfissionalDAO.prototype.buscarPorEstabelecimento = function (id, callback) {
     this._connection.query(`
         SELECT t.id, t.nome, t.profissionalCNS, t.cargoProfissional

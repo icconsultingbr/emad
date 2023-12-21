@@ -101,54 +101,19 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- forma de atendimento -->
+                <!-- Especialidade -->
                 <div class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">
-                        Atendimento <span class="text-danger font-weight-bold"> *</span>
+                        Especialidade <span class="text-danger font-weight-bold"> *</span>
                     </label>
                     <div class="col-xl-9">
-                        <select class="custom-select d-block w-100" formControlName="formaAtendimento" disabled>
+                        <select class="custom-select d-block w-100" formControlName="especialidade">
                             <option [value]="null">Selecione...</option>
                             <!-- Iterando sobre as opções em this.formaAtendimento -->
-                            <option *ngFor="let item of formaAtendimento" [value]="item.id">{{ item.nome }}</option>
+                            <option *ngFor="let item of listaEspecialidade" [value]="item.id">{{ item.nome }}</option>
                         </select>
                     </div>
                 </div>
-                <!-- tipo atendimento -->
-                <div class="row itemAgendamento">
-                    <label class="col-xl-3 col-form-label text-left">
-                        Tipo de atendimento <span class="text-danger font-weight-bold"> *</span>
-                    </label>
-                    <div class="col-xl-9">
-                        <select class="custom-select d-block w-100" formControlName="tipoAtendimento">
-                            <option [value]="null">Selecione...</option>
-                            <option *ngFor="let item of tipoAtendimento" [value]="item.id">{{ item.nome }}</option>
-                        </select>
-                    </div>
-                </div>
-                <!-- Equipe de atendimento -->
-                <div *ngIf="form.get('tipoAtendimento').value == 2" class="row itemAgendamento">
-                    <label class="col-xl-3 col-form-label text-left">Equipe de atendimento</label>
-                    <div class="col-xl-9">
-                        <select class="custom-select d-block w-100" formControlName="idEquipe">
-                            <option [value]="null">Selecione...</option>
-                            <option *ngFor="let item of listaEquipe" [value]="item.id">{{ item.nome }}</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Profissional -->
-                <div *ngIf="form.get('tipoAtendimento').value == 1" class="row itemAgendamento">
-                    <label class="col-xl-3 col-form-label text-left">Profissional</label>
-                    <div class="col-xl-9">
-                        <select class="custom-select d-block w-100" formControlName="idProfissional">
-                            <option [value]="null">Selecione...</option>
-                            <option *ngFor="let item of listaProfissional" [value]="item.id">{{item.nome}}</option>
-                        </select>
-                    </div>
-                </div>
-
                 <!-- data -->
                 <div class="row">
                     <div style="text-align: left;" class="col-sm-3 itemAgendamento">
@@ -175,6 +140,54 @@
                         </div>
                     </div>
                 </div>
+                <!-- forma de atendimento -->
+                <div class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">
+                        Atendimento <span class="text-danger font-weight-bold"> *</span>
+                    </label>
+                    <div class="col-xl-9">
+                        <select class="custom-select d-block w-100" formControlName="formaAtendimento" disabled>
+                            <option [value]="null">Selecione...</option>
+                            <!-- Iterando sobre as opções em this.formaAtendimento -->
+                            <option *ngFor="let item of formaAtendimento" [value]="item.id">{{ item.nome }}</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- tipo atendimento -->
+                <div class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">
+                        Tipo de atendimento <span class="text-danger font-weight-bold"> *</span>
+                    </label>
+                    <div class="col-xl-9">
+                        <select class="custom-select d-block w-100" formControlName="tipoAtendimento">
+                            <option [value]="null">Selecione...</option>
+                            <option *ngFor="let item of tipoAtendimento" [value]="item.id">{{ item.nome }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Equipe de atendimento -->
+                <div *ngIf="form.get('tipoAtendimento').value == 2" class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">Equipe de atendimento</label>
+                    <div class="col-xl-9">
+                        <select class="custom-select d-block w-100" formControlName="idEquipe">
+                            <option [value]="null">Selecione...</option>
+                            <option *ngFor="let item of listaEquipe" [value]="item.id">{{ item.nome }}</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Profissional -->
+                <div *ngIf="form.get('tipoAtendimento').value == 1" class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">Profissional</label>
+                    <div class="col-xl-9">
+                        <select class="custom-select d-block w-100" formControlName="idProfissional">
+                            <option [value]="null">Selecione...</option>
+                            <option *ngFor="let item of listaProfissional" [value]="item.id">{{item.nome}}</option>
+                        </select>
+                    </div>
+                </div>
+
+
                 <!-- comenatario -->
                 <div class="row itemAgendamento">
                     <label class="col-xl-3 col-sm-12 col-form-label text-left">
@@ -199,7 +212,7 @@
 <ng-template #modalInfoAgendamento let-close="close">
     <div class="modal-header">
         <h5 class="modal-title">Agendamento</h5>
-        <button type="button" class="close" (click)="closeModal()">
+        <button type="button" class="close" (click)="close()">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>

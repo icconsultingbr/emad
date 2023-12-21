@@ -25,10 +25,23 @@ module.exports = function (app) {
         });
     });
 
+    app.get('/profissional/especialidade/:idEstabelecimento/:idEspecialidade', function (req, res) { //consulta profissional por estabelecimento e especialidade
+        let idEsp = req.params.idEspecialidade;
+        let idEst = req.params.idEstabelecimento;
+        let util = new app.util.Util();
+        let errors = [];
+
+        buscaProfissionalPorEstabelecimentoEEspecialidade(idEst, idEsp, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
     app.get('/profissional/estabelecimento/:id', function (req, res) {
         let usuario = req.usuario;
         let id = req.params.id;
         let util = new app.util.Util();
+        console.log('passndo')
         let errors = [];
 
         buscarPorEstabelecimento(id, res).then(function (response) {
@@ -43,7 +56,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
         let errors = [];
 
-        buscarPorId(id, res).then(function (response) { 
+        buscarPorId(id, res).then(function (response) {
             buscarEstabelecimentosPorUsuario(response.idUsuario, res).then(function (response2) {
                 response.estabelecimentos = response2;
                 res.status(200).json(response);
@@ -54,32 +67,32 @@ module.exports = function (app) {
 
     app.post('/profissional', async function (req, res) {
         var obj = req.body;
-        var usuario = req.usuario;        
+        var usuario = req.usuario;
         var util = new app.util.Util();
         var errors = [];
         let arrEstabelecimentos = [];
         let arrEstabelecimentosDim = [];
         let dadosUsuario = {};
         let estabelecimentos = obj.estabelecimentos;
-        
+
         dadosUsuario.cpf = obj.cpf.replace(/[.-]/g, '');
-        if(obj.foneCelular)
+        if (obj.foneCelular)
             dadosUsuario.celular = obj.foneCelular.replace(/[() -]/g, '');
 
         req.assert("cpf").notEmpty().withMessage("CPF é um campo obrigatório;");
-        req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");            
+        req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");
         req.assert("dataNascimento").notEmpty().withMessage("Data de Nascimento é um campo obrigatório;");
         req.assert("sexo").notEmpty().withMessage("Sexo é um campo obrigatório;");
-        req.assert("profissionalSus").notEmpty().withMessage("Profissional SUS é um campo obrigatório;");                                    
+        req.assert("profissionalSus").notEmpty().withMessage("Profissional SUS é um campo obrigatório;");
         req.assert("idEspecialidade").notEmpty().withMessage("Especialidade é um campo obrigatório;");
-        req.assert("email").notEmpty().withMessage("Email é um campo obrigatório;");            
+        req.assert("email").notEmpty().withMessage("Email é um campo obrigatório;");
         req.assert("idTipoUsuario").notEmpty().withMessage("Grupo de usuário é um campo obrigatório");
         req.assert("senha").notEmpty().withMessage("A senha é um campo obrigatório;").matches(/^(?=.*[a-z])(?=.*\d)[A-Za-z\d$@$!%*?&]{8,}/).withMessage("A senha deve conter pelo menos 8 caracteres, letras e números;");
         req.assert("confirmaSenha").notEmpty().withMessage("A confirmação da senha é um campo obrigatório;").equals(obj.senha).withMessage("A senha e confirmação devem ser idênticas;");
         req.assert("estabelecimentos").notEmpty().withMessage("Selecione o(s) estabelecimento(s) vinculado(s) ao usuário");
         req.assert("idMunicipio").notEmpty().withMessage("Munícipio é um campo obrigatório;");
         req.assert("idUf").notEmpty().withMessage("UF é um campo obrigatório;");
-        
+
         var errors = req.validationErrors();
 
         if (errors) {
@@ -97,12 +110,12 @@ module.exports = function (app) {
 
         //DADOS PARA CRIAÇÃO DO USUÁRIO
         dadosUsuario.situacao = 1;
-        dadosUsuario.dataCriacao = new Date;                        
-        dadosUsuario.dataNascimento = obj.dataNascimento;  
-        dadosUsuario.email = obj.email;            
+        dadosUsuario.dataCriacao = new Date;
+        dadosUsuario.dataNascimento = obj.dataNascimento;
+        dadosUsuario.email = obj.email;
         dadosUsuario.idTipoUsuario = obj.idTipoUsuario;
         dadosUsuario.nome = obj.nome;
-        dadosUsuario.nomeMae = obj.nomeMae;            
+        dadosUsuario.nomeMae = obj.nomeMae;
         dadosUsuario.sexo = obj.sexo;
 
         let hash = util.createHashEmail(obj.email);
@@ -116,81 +129,81 @@ module.exports = function (app) {
         delete obj.senha;
         delete obj.confirmaSenha;
         delete obj.estabelecimentos;
-        delete obj.idTipoUsuario;      
-        
+        delete obj.idTipoUsuario;
+
         const connection = await app.dao.connections.EatendConnection.connection();
 
-            const usuarioRepository = new app.dao.UsuarioDAO(connection);
-            const profissionalRepository = new app.dao.ProfissionalDAO(connection);
-            const estabelecimentoUsuarioRepository = new app.dao.EstabelecimentoUsuarioDAO(connection);
-            
-            try {
+        const usuarioRepository = new app.dao.UsuarioDAO(connection);
+        const profissionalRepository = new app.dao.ProfissionalDAO(connection);
+        const estabelecimentoUsuarioRepository = new app.dao.EstabelecimentoUsuarioDAO(connection);
 
-                await connection.beginTransaction();           
-    
-                var buscaEmailProfissional = await usuarioRepository.buscaPorEmailSync(dadosUsuario);               
+        try {
 
-                if (buscaEmailProfissional.length > 0) {
-                    errors = util.customError(errors, "header", "Já existe um usuário cadastrado com este e-mail!", "");
-                    res.status(400).send(errors);
-                    await connection.rollback();
-                    return;
-                }
+            await connection.beginTransaction();
 
-                var buscaCpfProfissional = await usuarioRepository.buscaPorCPFSync(dadosUsuario);               
+            var buscaEmailProfissional = await usuarioRepository.buscaPorEmailSync(dadosUsuario);
 
-                if (buscaCpfProfissional.length > 0) {
-                    errors = util.customError(errors, "header", "Já existe um usuário cadastrado com este CPF!", "");
-                    res.status(400).send(errors);
-                    await connection.rollback();
-                    return;
-                }
-                
-                var usuarioResult = {};                
-                
-                if (typeof (dadosUsuario.id) != 'undefined' && dadosUsuario.id != null) {                    
-                    let idUsuario = dadosUsuario.id;
-                    delete dadosUsuario.id;  
-
-                    usuarioResult = await usuarioRepository.atualizaSync(dadosUsuario); 
-                    dadosUsuario.id = idUsuario;
-                }
-                else {        
-                    usuarioResult = await usuarioRepository.salvaSync(dadosUsuario);                                         
-                    obj.idUsuario = usuarioResult.insertId;
-                    dadosUsuario.id = obj.idUsuario;
-                }
-
-                var salvaProfissional = await profissionalRepository.salvaSync(obj);          
-
-                obj.id = salvaProfissional.insertId;
-
-                var deleteResult  = await estabelecimentoUsuarioRepository.deletaEstabelecimentosPorUsuarioSync(dadosUsuario.id);
-
-                for (const item of estabelecimentos) {
-                    arrEstabelecimentos.push("(" + dadosUsuario.id + ", " + item.id + ")");   
-                }
-
-                var atualizaResult  = await estabelecimentoUsuarioRepository.atualizaEstabelecimentosPorUsuarioSync(arrEstabelecimentos);
-                
-                delete dadosUsuario.senha;
-                delete dadosUsuario.hash;
-
-                token = util.createWebToken(app, req, dadosUsuario);
-                dadosUsuario.token = token;
-
-                res.status(201).send(obj);
-    
-                await connection.commit();
-            }
-            catch (exception) {
-                console.log("Erro ao salvar o profissional (" + obj.nome + "), exception: " +  exception);
-                res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+            if (buscaEmailProfissional.length > 0) {
+                errors = util.customError(errors, "header", "Já existe um usuário cadastrado com este e-mail!", "");
+                res.status(400).send(errors);
                 await connection.rollback();
+                return;
             }
-            finally {
-                await connection.close();
+
+            var buscaCpfProfissional = await usuarioRepository.buscaPorCPFSync(dadosUsuario);
+
+            if (buscaCpfProfissional.length > 0) {
+                errors = util.customError(errors, "header", "Já existe um usuário cadastrado com este CPF!", "");
+                res.status(400).send(errors);
+                await connection.rollback();
+                return;
             }
+
+            var usuarioResult = {};
+
+            if (typeof (dadosUsuario.id) != 'undefined' && dadosUsuario.id != null) {
+                let idUsuario = dadosUsuario.id;
+                delete dadosUsuario.id;
+
+                usuarioResult = await usuarioRepository.atualizaSync(dadosUsuario);
+                dadosUsuario.id = idUsuario;
+            }
+            else {
+                usuarioResult = await usuarioRepository.salvaSync(dadosUsuario);
+                obj.idUsuario = usuarioResult.insertId;
+                dadosUsuario.id = obj.idUsuario;
+            }
+
+            var salvaProfissional = await profissionalRepository.salvaSync(obj);
+
+            obj.id = salvaProfissional.insertId;
+
+            var deleteResult = await estabelecimentoUsuarioRepository.deletaEstabelecimentosPorUsuarioSync(dadosUsuario.id);
+
+            for (const item of estabelecimentos) {
+                arrEstabelecimentos.push("(" + dadosUsuario.id + ", " + item.id + ")");
+            }
+
+            var atualizaResult = await estabelecimentoUsuarioRepository.atualizaEstabelecimentosPorUsuarioSync(arrEstabelecimentos);
+
+            delete dadosUsuario.senha;
+            delete dadosUsuario.hash;
+
+            token = util.createWebToken(app, req, dadosUsuario);
+            dadosUsuario.token = token;
+
+            res.status(201).send(obj);
+
+            await connection.commit();
+        }
+        catch (exception) {
+            console.log("Erro ao salvar o profissional (" + obj.nome + "), exception: " + exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+            await connection.rollback();
+        }
+        finally {
+            await connection.close();
+        }
 
     });
 
@@ -201,142 +214,142 @@ module.exports = function (app) {
         let errors = [];
         let id = obj.id;
         let arrEstabelecimentosDim = [];
-        let arrEstabelecimentos = [];        
+        let arrEstabelecimentos = [];
         let dadosUsuario = {};
         let estabelecimentos = obj.estabelecimentos;
 
 
 
         dadosUsuario.cpf = obj.cpf.replace(/[.-]/g, '');
-            if(obj.foneCelular)
-                dadosUsuario.celular = obj.foneCelular.replace(/[() -]/g, '');
+        if (obj.foneCelular)
+            dadosUsuario.celular = obj.foneCelular.replace(/[() -]/g, '');
 
-            req.assert("cpf").notEmpty().withMessage("CPF é um campo obrigatório;");
-            req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");            
-            req.assert("dataNascimento").notEmpty().withMessage("Data de Nascimento é um campo obrigatório;");
-            req.assert("sexo").notEmpty().withMessage("Sexo é um campo obrigatório;");
-            req.assert("profissionalSus").notEmpty().withMessage("Profissional SUS é um campo obrigatório;");                                    
-            req.assert("idEspecialidade").notEmpty().withMessage("Especialidade é um campo obrigatório;");
-            req.assert("email").notEmpty().withMessage("Email é um campo obrigatório;");            
-            req.assert("idTipoUsuario").notEmpty().withMessage("Grupo de usuário é um campo obrigatório");
-            req.assert("estabelecimentos").notEmpty().withMessage("Selecione o(s) estabelecimento(s) vinculado(s) ao usuário");
-            req.assert("idMunicipio").notEmpty().withMessage("Munícipio é um campo obrigatório;");
-            req.assert("idUf").notEmpty().withMessage("UF é um campo obrigatório;");
+        req.assert("cpf").notEmpty().withMessage("CPF é um campo obrigatório;");
+        req.assert("nome").notEmpty().withMessage("Nome é um campo obrigatório;");
+        req.assert("dataNascimento").notEmpty().withMessage("Data de Nascimento é um campo obrigatório;");
+        req.assert("sexo").notEmpty().withMessage("Sexo é um campo obrigatório;");
+        req.assert("profissionalSus").notEmpty().withMessage("Profissional SUS é um campo obrigatório;");
+        req.assert("idEspecialidade").notEmpty().withMessage("Especialidade é um campo obrigatório;");
+        req.assert("email").notEmpty().withMessage("Email é um campo obrigatório;");
+        req.assert("idTipoUsuario").notEmpty().withMessage("Grupo de usuário é um campo obrigatório");
+        req.assert("estabelecimentos").notEmpty().withMessage("Selecione o(s) estabelecimento(s) vinculado(s) ao usuário");
+        req.assert("idMunicipio").notEmpty().withMessage("Munícipio é um campo obrigatório;");
+        req.assert("idUf").notEmpty().withMessage("UF é um campo obrigatório;");
 
-            errors = req.validationErrors();
+        errors = req.validationErrors();
 
-            if (errors) {
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
+
+        if (obj.dataEmissao != null) {
+            obj.dataEmissao = util.dateToISO(obj.dataEmissao);
+        }
+        obj.dataNascimento = util.dateToISO(obj.dataNascimento);
+
+        delete obj.estabelecimentos;
+        delete obj.idEstabelecimento;
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+
+        const usuarioRepository = new app.dao.UsuarioDAO(connection);
+        const profissionalRepository = new app.dao.ProfissionalDAO(connection);
+        const estabelecimentoUsuarioRepository = new app.dao.EstabelecimentoUsuarioDAO(connection);
+
+        try {
+
+            await connection.beginTransaction();
+
+            //DADOS PARA CRIAÇÃO DO USUÁRIO
+            dadosUsuario.situacao = 1;
+            dadosUsuario.dataNascimento = obj.dataNascimento;
+            dadosUsuario.email = obj.email;
+            dadosUsuario.idTipoUsuario = obj.idTipoUsuario;
+            dadosUsuario.nome = obj.nome;
+            dadosUsuario.nomeMae = obj.nomeMae;
+            dadosUsuario.sexo = obj.sexo;
+            dadosUsuario.tentativasSenha = 0;
+            dadosUsuario.foto = "";
+
+            delete obj.senha;
+            delete obj.confirmaSenha;
+            delete obj.idTipoUsuario;
+            let idUsuario = 0;
+
+            var buscaProfissional = await profissionalRepository.buscaPorIdSync(id);
+
+            if (!buscaProfissional) {
+                errors = util.customError(errors, "header", "Profissional não encontrado", "");
                 res.status(400).send(errors);
+                await connection.rollback();
                 return;
             }
 
-            if (obj.dataEmissao != null) {
-                obj.dataEmissao = util.dateToISO(obj.dataEmissao);
-            }
-            obj.dataNascimento = util.dateToISO(obj.dataNascimento);
+            dadosUsuario.id = buscaProfissional.idUsuario;
+            idUsuario = buscaProfissional.idUsuario;
 
-            delete obj.estabelecimentos;
-            delete obj.idEstabelecimento;
+            var buscaEmailProfissional = await usuarioRepository.buscaPorEmailSync(dadosUsuario);
 
-            const connection = await app.dao.connections.EatendConnection.connection();
-
-            const usuarioRepository = new app.dao.UsuarioDAO(connection);
-            const profissionalRepository = new app.dao.ProfissionalDAO(connection);
-            const estabelecimentoUsuarioRepository = new app.dao.EstabelecimentoUsuarioDAO(connection);
-            
-            try {
-
-                await connection.beginTransaction();           
-    
-                //DADOS PARA CRIAÇÃO DO USUÁRIO
-                dadosUsuario.situacao = 1;            
-                dadosUsuario.dataNascimento = obj.dataNascimento;  
-                dadosUsuario.email = obj.email;            
-                dadosUsuario.idTipoUsuario = obj.idTipoUsuario;
-                dadosUsuario.nome = obj.nome;
-                dadosUsuario.nomeMae = obj.nomeMae;            
-                dadosUsuario.sexo = obj.sexo;
-                dadosUsuario.tentativasSenha = 0;
-                dadosUsuario.foto = "";
-
-                delete obj.senha;
-                delete obj.confirmaSenha;            
-                delete obj.idTipoUsuario;  
-                let idUsuario = 0;
-
-                var buscaProfissional = await profissionalRepository.buscaPorIdSync(id);               
-
-                if (!buscaProfissional) {
-                    errors = util.customError(errors, "header", "Profissional não encontrado", "");
-                    res.status(400).send(errors);
-                    await connection.rollback();
-                    return;
-                }
-
-                dadosUsuario.id = buscaProfissional.idUsuario;
-                idUsuario = buscaProfissional.idUsuario;                
-
-                var buscaEmailProfissional = await usuarioRepository.buscaPorEmailSync(dadosUsuario);               
-
-                if (buscaEmailProfissional.length > 0) {
-                    errors = util.customError(errors, "header", "Já existe um usuário cadastrado com este e-mail!", "");
-                    res.status(400).send(errors);
-                    await connection.rollback();
-                    return;
-                }
-
-                var buscaCpfProfissional = await usuarioRepository.buscaPorCPFSync(dadosUsuario);               
-
-                if (buscaCpfProfissional.length > 0) {
-                    errors = util.customError(errors, "header", "Já existe um usuário cadastrado com este CPF!", "");
-                    res.status(400).send(errors);
-                    await connection.rollback();
-                    return;
-                }
-                
-                var usuarioResult = {};                
-                
-                if (typeof (dadosUsuario.id) != 'undefined' && dadosUsuario.id != null) {                    
-                    let idUsuario = dadosUsuario.id;
-                    delete dadosUsuario.id;  
-
-                    usuarioResult = await usuarioRepository.atualizaSync(dadosUsuario, idUsuario); 
-                    dadosUsuario.id = idUsuario;
-                }
-                else {        
-                    usuarioResult = await usuarioRepository.salvaSync(dadosUsuario);                                         
-                    obj.idUsuario = idUsuario;
-                }
-
-                var atualizaProfissional = await profissionalRepository.atualizaSync(obj, id);          
-
-                obj.id = id;
-
-                var deleteResult  = await estabelecimentoUsuarioRepository.deletaEstabelecimentosPorUsuarioSync(dadosUsuario.id);
-
-                for (const item of estabelecimentos) {
-                    arrEstabelecimentos.push("(" + dadosUsuario.id + ", " + item.id + ")");   
-                }
-
-                var atualizaResult  = await estabelecimentoUsuarioRepository.atualizaEstabelecimentosPorUsuarioSync(arrEstabelecimentos);
-                
-                delete dadosUsuario.hash;
-
-                token = util.createWebToken(app, req, dadosUsuario);
-                dadosUsuario.token = token;
-
-                res.status(201).send(obj);
-    
-                await connection.commit();
-            }
-            catch (exception) {
-                console.log("Erro ao salvar o profissional (" + obj.nome + "), exception: " +  exception);
-                res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+            if (buscaEmailProfissional.length > 0) {
+                errors = util.customError(errors, "header", "Já existe um usuário cadastrado com este e-mail!", "");
+                res.status(400).send(errors);
                 await connection.rollback();
+                return;
             }
-            finally {
-                await connection.close();
+
+            var buscaCpfProfissional = await usuarioRepository.buscaPorCPFSync(dadosUsuario);
+
+            if (buscaCpfProfissional.length > 0) {
+                errors = util.customError(errors, "header", "Já existe um usuário cadastrado com este CPF!", "");
+                res.status(400).send(errors);
+                await connection.rollback();
+                return;
             }
+
+            var usuarioResult = {};
+
+            if (typeof (dadosUsuario.id) != 'undefined' && dadosUsuario.id != null) {
+                let idUsuario = dadosUsuario.id;
+                delete dadosUsuario.id;
+
+                usuarioResult = await usuarioRepository.atualizaSync(dadosUsuario, idUsuario);
+                dadosUsuario.id = idUsuario;
+            }
+            else {
+                usuarioResult = await usuarioRepository.salvaSync(dadosUsuario);
+                obj.idUsuario = idUsuario;
+            }
+
+            var atualizaProfissional = await profissionalRepository.atualizaSync(obj, id);
+
+            obj.id = id;
+
+            var deleteResult = await estabelecimentoUsuarioRepository.deletaEstabelecimentosPorUsuarioSync(dadosUsuario.id);
+
+            for (const item of estabelecimentos) {
+                arrEstabelecimentos.push("(" + dadosUsuario.id + ", " + item.id + ")");
+            }
+
+            var atualizaResult = await estabelecimentoUsuarioRepository.atualizaEstabelecimentosPorUsuarioSync(arrEstabelecimentos);
+
+            delete dadosUsuario.hash;
+
+            token = util.createWebToken(app, req, dadosUsuario);
+            dadosUsuario.token = token;
+
+            res.status(201).send(obj);
+
+            await connection.commit();
+        }
+        catch (exception) {
+            console.log("Erro ao salvar o profissional (" + obj.nome + "), exception: " + exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+            await connection.rollback();
+        }
+        finally {
+            await connection.close();
+        }
     });
 
     app.get('/profissional/material/filtros', async function (req, res) {
@@ -349,33 +362,33 @@ module.exports = function (app) {
 
         const profissionalRepository = new app.dao.ProfissionalDAO(connection);
 
-        try {            
+        try {
             var response = {};
-            
+
             response.listaMateriais = await profissionalRepository.carregaProfissionalPorMedicamento(addFilter, true);
-            response.totalQtdPrescrita  = 0;
+            response.totalQtdPrescrita = 0;
             response.totalQtdDispensada = 0;
 
-            if(response.listaMateriais.length > 0){
-                for (const itemMaterial of response.listaMateriais) {       
+            if (response.listaMateriais.length > 0) {
+                for (const itemMaterial of response.listaMateriais) {
                     addFilter.idMaterial = itemMaterial.idMaterial;
                     response.totalQtdPrescrita += itemMaterial.totalQtdPrescrita;
                     response.totalQtdDispensada += itemMaterial.totalQtdDispensada;
 
                     var profissionaisMaterial = await profissionalRepository.carregaProfissionalPorMedicamento(addFilter, false);
                     itemMaterial.profissionaisMaterial = profissionaisMaterial ? profissionaisMaterial : null;
-                }            
-            }   
+                }
+            }
             res.status(200).json(response);
         }
         catch (exception) {
-            console.log("Erro ao carregar o registro, exception: " +  exception);
-            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));            
+            console.log("Erro ao carregar o registro, exception: " + exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
         }
         finally {
             await connection.close();
         }
-    }); 
+    });
 
     app.delete('/profissional/:id', function (req, res) {
         var util = new app.util.Util();
@@ -461,6 +474,29 @@ module.exports = function (app) {
         return d.promise;
     }
 
+    function buscaProfissionalPorEstabelecimentoEEspecialidade(idEst, idEsp, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.ProfissionalDAO(connection, null);
+        var errors = [];
+
+        objDAO.buscaProfissionalPorEstabelecimentoEEspecialidade(idEst, idEsp, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
+                res.status(500).send(errors);
+                return;
+            } else {
+
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }
     function buscarPorEstabelecimento(id, res) {
         var q = require('q');
         var d = q.defer();
@@ -539,7 +575,7 @@ module.exports = function (app) {
         const connection = await app.dao.connections.EatendConnection.connection();
         var objDAO = new app.dao.EstabelecimentoUsuarioDAO(connection);
 
-        try{
+        try {
             return await objDAO.buscaPorUsuario(id);
         }
         catch (exception) {

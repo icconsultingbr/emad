@@ -80,6 +80,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
   pagedItems: any[];
   fields: any[] = [];
   listaEquipe: any[] = []
+  listaEspecialidade: any[] = []
   object: AgendaProfissional = new AgendaProfissional();
   tipoAtendimento = [];
   formaAtendimento = [];
@@ -129,6 +130,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
 
   ngOnInit() {
     this.consultaAgendamentos();
+    this.consultaEspecialidade();
     this.carregarFormaAtendimento();
     this.carregarTipoAtendimento();
     this.fomularioAgendamento()
@@ -161,7 +163,8 @@ export class PlanoTerapeuticoComponent implements OnInit {
       tipoAtendimento: ['', [Validators.required,]],
       dataInicial: ['', [Validators.required,]],
       dataFinal: ['', [Validators.required,]],
-      observacao: ['']
+      especialidade: ['', Validators.required],
+      observacao: [''],
     });
 
   }
@@ -233,6 +236,13 @@ export class PlanoTerapeuticoComponent implements OnInit {
     });
   }
 
+  consultaEspecialidade() {
+    this.service.list('especialidade').subscribe((result) => {
+      this.listaEspecialidade = result
+      console.log(result);
+    })
+  }
+
   consultaProfissionalPorEquipe(value: number) {
     const idEquipe = value
     this.service.list(`profissional/equipe/${idEquipe}`).subscribe((result) => {
@@ -241,12 +251,21 @@ export class PlanoTerapeuticoComponent implements OnInit {
   }
 
   consultaProfissional() {
+    const idEspecialidade = Number(this.form.get('especialidade').value)
     if (this.pacienteSelecionado) {
       this.idEstabelecimento = Number(this.pacienteSelecionado.idEstabelecimento);
     }
+
+    if (idEspecialidade) {
+      this.service.list(`profissional/especialidade/${this.idEstabelecimento}/${idEspecialidade}`).subscribe((result) => {
+        this.listaProfissional = result;
+      });
+      return
+    }
+
     this.service.list(`profissional/estabelecimento/${this.idEstabelecimento}`).subscribe((result) => {
       this.listaProfissional = result;
-    })
+    });
   }
 
   selecionaPaciente(item) {
