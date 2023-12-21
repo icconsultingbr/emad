@@ -1,37 +1,45 @@
 <app-loader [loading]="loading"></app-loader>
 
+
 <!-- adicionar agendamento -->
 <div class="row" style="margin: 2%;">
-    <button class="btn btn-success" (click)="adicionarAgendamento()">
+    <button class="btn btn-success" (click)="openModalAgendamento()">
         <i class="fas fa-plus"></i> Adicionar Agendamento
     </button>
 </div>
+<p *ngIf="mensagem?.length" class="alert alert-info">{{mensagem}}</p>
 
 <!-- Agenda -->
 <div class="card">
     <div>
-        <h3>Agenda
+        <h3 style="align-items: center;">Agenda
             <hr>
         </h3>
     </div>
-
     <div class="row">
         <div class="col-md-4">
+            <div class="btn btn-primary" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate"
+                (viewDateChange)="closeOpenMonthViewDay()">
+                Anterior
+            </div>
+        </div>
+
+        <div class="col-md-4">
             <div class="btn-group">
-                <div class="btn btn-primary" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate"
-                    (viewDateChange)="closeOpenMonthViewDay()">
-                    Anterior
-                </div>
-                <div class="btn btn-outline-secondary" mwlCalendarToday [(viewDate)]="viewDate">
-                    Hoje
-                </div>
-                <div class="btn btn-primary" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate"
-                    (viewDateChange)="closeOpenMonthViewDay()">
-                    Próximo
+                <div class="btn" mwlCalendarToday [(viewDate)]="viewDate">
+                    <h3>
+                        {{ viewDate | calendarDate:(view + 'ViewTitle') :'pt-BR' }}
+                    </h3>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
+            <div class="btn btn-primary" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate"
+                (viewDateChange)="closeOpenMonthViewDay()">
+                Próximo
+            </div>
+        </div>
+        <!-- <div class="col-md-4">
             <h3>{{ viewDate | calendarDate:(view + 'ViewTitle') :'pt-BR' }}</h3>
         </div>
         <div class="col-md-4">
@@ -46,7 +54,7 @@
                     Diário
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <div>
@@ -55,138 +63,143 @@
             (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
         </mwl-calendar-month-view>
 
-        <mwl-calendar-week-view *ngIf="view == 'week'" [viewDate]="viewDate" [events]="events" [refresh]="refresh"
+        <!-- <mwl-calendar-week-view *ngIf="view == 'week'" [viewDate]="viewDate" [events]="events" [refresh]="refresh"
             (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
         </mwl-calendar-week-view>
 
         <mwl-calendar-day-view *ngIf="view == 'day'" [viewDate]="viewDate" [events]="events" [refresh]="refresh"
             (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
-        </mwl-calendar-day-view>
+        </mwl-calendar-day-view> -->
     </div>
 </div>
-<!-- modal agendamento -->
-<ng-template #contentScheduler let-close="close">
-    <div class="modal-header">
-        <h4 class="modal-title">{{readonly ? 'Visualizar agenda' : 'Adicionar agenda'}}</h4>
-        <button type="button" class="close" aria-label="Close" (click)="close()">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        <div class="form-group">
-            <!-- consulta paciente -->
-            <div class="row">
-                <label class="col-xl-3 col-form-label text-left">Pesquisar paciente
-                    <span class="text-danger font-weight-bold">*</span>
-                </label>
-                <div class="col-sm-9">
-                    <input type="hidden" [(ngModel)]="form.id">
-                    <input type="hidden" [(ngModel)]="form.idPaciente">
-                    <div class="input-group">
-                        <input type="text" class="form-control has-error" [(ngModel)]="form.pacienteNome">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary ml-3 rounded" type="button" (click)="open(contentClient)">
-                                <i class="fa fa-search"></i>
-                            </button>
+<!-- modal adicionar agendamento -->
+<ng-template #modalAdicionarAgendamento let-close="close">
+    <form [formGroup]="form">
+        <div class="modal-header">
+            <h4 class="modal-title">Adicionar agendamento</h4>
+            <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <!-- consulta paciente -->
+                <div class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">Pesquisar paciente
+                        <span class="text-danger font-weight-bold">*</span>
+                    </label>
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                            <input type="text" disabled="true" class="has-error" style="width: 89%;"
+                                formControlName="nomePaciente">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary ml-3 rounded" type="button"
+                                    (click)="openModalLocalizarPaciente(contentClient)">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- forma de atendimento -->
-            <div class="row form">
-                <label class="col-xl-3 col-form-label text-left">
-                    Forma de atendimento <span class="text-danger font-weight-bold"> *</span>
-                </label>
-                <div class="col-xl-9">
-                    <select class="custom-select d-block w-100" [(ngModel)]="form.formaAtendimento">
-                        <option [value]="null">Selecione...</option>
-                        <!-- Iterando sobre as opções em this.formaAtendimento -->
-                        <option *ngFor="let item of formaAtendimento" [value]="item.id">{{ item.nome }}</option>
-                    </select>
-                </div>
-            </div>
-            <!-- tipo atendimento -->
-            <div class="row form">
-                <label class="col-xl-3 col-form-label text-left">
-                    Tipo de atendimento <span class="text-danger font-weight-bold"> *</span>
-                </label>
-                <div class="col-xl-9">
-                    <select class="custom-select d-block w-100" [(ngModel)]="form.tipoAtendimento">
-                        <option [value]="null">Selecione...</option>
-                        <!-- Iterando sobre as opções em this.formaAtendimento -->
-                        <option *ngFor="let item of tipoAtendimento" [value]="item.id">{{ item.nome }}</option>
-                    </select>
-                </div>
-            </div>
-            <!-- equipe -->
 
-
-            <div class="row">
-                <label class="col-xl-3 col-form-label text-left">Equipe de atendimento</label>
-                <div class="col-xl-9">
-                    <select class="custom-select d-block w-100">
-                        <option [value]="null">Selecione...</option>
-                        <option value="U">Profissional(fake)</option>
-                        <option value="S">Equipe</option>
-                    </select>
-                </div>
-            </div>
-            <!-- profissional -->
-            <div class="row">
-                <label class="col-xl-3 col-form-label text-left">Profissional</label>
-                <div class="col-xl-9">
-                    <select class="custom-select d-block w-100">
-                        <option [value]="null">Selecione...</option>
-                        <option value="U">Profissional</option>
-                        <option value="S">Equipe</option>
-                    </select>
-                </div>
-            </div>
-            <!-- data -->
-            <div style="margin-left: 17px;" class="row">
-                <label class="col-xl-3 col-form-label text-left">Data/Horários
-                    <span class="text-danger font-weight-bold">*</span>
-                </label>
-                <label class="col-xl-1.5 col-form-label text-left">Início do atendimento
-                    <span class="text-danger font-weight-bold">*</span>
-                </label>
-                <div class="col-xl-3">
-                    <div class="input-group">
-                        <input class="form-control" placeholder="Início do atendimento" type="datetime-local"
-                            [min]="currentDate">
+                <!-- forma de atendimento -->
+                <div class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">
+                        Atendimento <span class="text-danger font-weight-bold"> *</span>
+                    </label>
+                    <div class="col-xl-9">
+                        <select class="custom-select d-block w-100" formControlName="formaAtendimento" disabled>
+                            <option [value]="null">Selecione...</option>
+                            <!-- Iterando sobre as opções em this.formaAtendimento -->
+                            <option *ngFor="let item of formaAtendimento" [value]="item.id">{{ item.nome }}</option>
+                        </select>
                     </div>
                 </div>
-                <label class="col-xl-1.5 col-form-label text-left">Fim do atendimento
-                    <span class="text-danger font-weight-bold">*</span>
-                </label>
-                <div class="col-xl-3">
-                    <div class="input-group">
-                        <input class="form-control" placeholder="Final de atendimento" type="datetime-local">
+                <!-- tipo atendimento -->
+                <div class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">
+                        Tipo de atendimento <span class="text-danger font-weight-bold"> *</span>
+                    </label>
+                    <div class="col-xl-9">
+                        <select class="custom-select d-block w-100" formControlName="tipoAtendimento">
+                            <option [value]="null">Selecione...</option>
+                            <option *ngFor="let item of tipoAtendimento" [value]="item.id">{{ item.nome }}</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Equipe de atendimento -->
+                <div *ngIf="form.get('tipoAtendimento').value == 2" class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">Equipe de atendimento</label>
+                    <div class="col-xl-9">
+                        <select class="custom-select d-block w-100" formControlName="idEquipe">
+                            <option [value]="null">Selecione...</option>
+                            <option *ngFor="let item of listaEquipe" [value]="item.id">{{ item.nome }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Profissional -->
+                <div *ngIf="form.get('tipoAtendimento').value == 1" class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">Profissional</label>
+                    <div class="col-xl-9">
+                        <select class="custom-select d-block w-100" formControlName="idProfissional">
+                            <option [value]="null">Selecione...</option>
+                            <option *ngFor="let item of listaProfissional" [value]="item.id">{{item.nome}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- data -->
+                <div class="row">
+                    <div style="text-align: left;" class="col-sm-3 itemAgendamento">
+                        <label class="col-sm-12 p-0">Data/Horários
+                            <span class="text-danger font-weight-bold">*</span>
+                        </label>
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <label class="col-sm-2 text-left p-0">Início
+                                <span class="text-danger font-weight-bold">*</span>
+                            </label>
+                            <div class="col-sm-4 p-0">
+                                <input formControlName="dataInicial" type="datetime-local" [min]="dataAtual"
+                                    class="w-100">
+                            </div>
+                            <label class="col-sm-2 p-0">Fim
+                                <span class="text-danger font-weight-bold">*</span>
+                            </label>
+                            <div class="col-sm-4 p-0">
+                                <input formControlName="dataFinal" type="datetime-local" [min]="dataSelecionada"
+                                    class="w-100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- comenatario -->
+                <div class="row itemAgendamento">
+                    <label class="col-xl-3 col-sm-12 col-form-label text-left">
+                        Comentários: <span class="text-danger font-weight-bold">*</span>
+                    </label>
+                    <div class="col-xl-9 col-sm-12">
+                        <textarea rows="4" class="form-control has-error" formControlName="observacao"></textarea>
                     </div>
                 </div>
             </div>
-            <!-- comenatario -->
-            <div class="row">
-                <label class="col-xl-3 col-sm-12 col-form-label text-left">
-                    Comentários: <span class="text-danger font-weight-bold">*</span>
-                </label>
-                <div class="col-xl-9 col-sm-12">
-                    <textarea rows="4" class="form-control has-error" [(ngModel)]="form.observacoes"></textarea>
-                </div>
-            </div>
-
-
-
         </div>
-    </div>
+        <div class="modal-footer">
+            <div>
+                <button class="btn btn-primary ml-3 rounded" type="button" (click)="salvar()">Salvar</button>
+            </div>
+        </div>
+    </form>
 
 </ng-template>
 
-<!-- pop-up para editar um evento -->
+<!-- consulta agendamento -->
 <ng-template #modalInfoAgendamento let-close="close">
     <div class="modal-header">
         <h5 class="modal-title">Agendamento</h5>
-        <button type="button" class="close" (click)="close()">
+        <button type="button" class="close" (click)="closeModal()">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
@@ -197,7 +210,7 @@
                 <label style="margin-bottom: 0;">
                     Pacientes
                 </label>
-                <h5>{{dadosAgendamento.pacienteNome}}</h5>
+                <h5>{{dadosAgendamento?.pacienteNome}}</h5>
             </div>
         </div>
 
@@ -207,7 +220,7 @@
                 <label style="margin-bottom: 0;">
                     Profissional
                 </label>
-                <h5>{{dadosAgendamento.profissionalNome}}</h5>
+                <h5>{{dadosAgendamento?.profissionalNome}}</h5>
             </div>
         </div>
 
@@ -217,8 +230,8 @@
                 <label style="margin-bottom: 0;">
                     Data de Atendimento
                 </label>
-                <h5>{{formatarDataHora(dadosAgendamento.dataInicial).data + ' Até ' +
-                    formatarDataHora(dadosAgendamento.dataFinal).data}}</h5>
+                <h5>{{formatarDataHora(dadosAgendamento?.dataInicial).data + ' Até ' +
+                    formatarDataHora(dadosAgendamento?.dataFinal).data}}</h5>
 
             </div>
         </div>
@@ -228,24 +241,20 @@
                 <label style="margin-bottom: 0;">
                     Hora de Atendimento
                 </label>
-                <h5>{{formatarDataHora(dadosAgendamento.dataInicial).hora + ' Até ' +
-                    formatarDataHora(dadosAgendamento.dataFinal).hora + ' Horas'}}</h5>
+                <h5>{{formatarDataHora(dadosAgendamento?.dataInicial).hora + ' Até ' +
+                    formatarDataHora(dadosAgendamento?.dataFinal).hora + ' Horas'}}</h5>
             </div>
         </div>
 
     </div>
     <div class="modal-footer">
         <div style=" font-size: 25px;">
-            <i style="margin: 10px;" class="fas fa-edit" (click)="editar(dadosAgendamento)"></i>
-            <i style="margin: 10px;" class="fas fa-trash-alt" (click)="deletar()"></i>
-            <i style="margin: 10px;" class="fas fa-times" (click)="close()"></i>
+            <i style="margin: 10px;" class="fas fa-edit" (click)="editar()"></i>
+            <i style="margin: 10px;" class="fas fa-trash-alt" (click)="excluir()"></i>
+            <i style="margin: 10px;" class="fas fa-times" (click)="closeModal()"></i>
         </div>
     </div>
 </ng-template>
-
-
-
-
 
 <ng-template #contentClient>
     <div class="modal-header">
@@ -320,7 +329,7 @@
                                 </div>
                             </td>
                             <td *ngFor="let field of fields;">
-                                <label for="{{ item.id }}">
+                                <label for="{{ item?.id }}">
                                     {{
                                     field.isDate?(item[field.field] | date :'dd/MM/yyyy') :
                                     field.isDateTime?(item[field.field] | date :'dd/MM/yyyy HH:mm'):
@@ -346,7 +355,7 @@
             </div>
         </div>
         <div class="row mb-2">
-            <div *ngIf="pager.pages && pager.pages.length" class="text text-secondary col-md-12 pr-0 mx-auto">
+            <div *ngIf="pager.pages && pager?.pages.length" class="text text-secondary col-md-12 pr-0 mx-auto">
                 <i>
                     Exibindo
                     {{pager.currentPage === pager.totalPages?allItems.length:pager.currentPage*pagedItems.length}}

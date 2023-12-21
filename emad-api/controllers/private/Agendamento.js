@@ -26,6 +26,7 @@ module.exports = function (app) {
             return;
         });
     });
+
     app.get('/agendamento/tipo-atendimento/agendamento', function (req, res) {
         tipoAtendiemnto(req, res).then(function (response) {
             res.status(200).json(response);
@@ -40,11 +41,11 @@ module.exports = function (app) {
         var errors = [];
         var json = {};
 
-        json.idPaciente = obj.idPaciente;
-        json.idEquipe = obj.idEquipe;
-        json.idProfissional = obj.idProfissional;
-        json.formaAtendimento = obj.formaAtendimento;
-        json.tipoAtendimento = obj.tipoAtendimento;
+        json.idPaciente = Number(obj.idPaciente);
+        json.idEquipe = obj.idEquipe ? Number(obj.idEquipe) : null;
+        json.idProfissional = obj.idProfissional ? Number(obj.idProfissional) : null;
+        json.formaAtendimento = Number(obj.formaAtendimento);
+        json.tipoAtendimento = Number(obj.tipoAtendimento);
         json.dataInicial = obj.dataInicial;
         json.dataFinal = obj.dataFinal;
         json.observacao = obj.observacao
@@ -63,7 +64,7 @@ module.exports = function (app) {
         var errors = [];
         var json = {};
 
-        json.id = obj.idAgendamento
+        json.id = obj.id
         json.idPaciente = obj.idPaciente;
         json.idEquipe = obj.idEquipe;
         json.idProfissional = obj.idProfissional;

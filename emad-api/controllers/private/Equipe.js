@@ -12,6 +12,18 @@ module.exports = function (app) {
         });
     });
 
+    app.get('/equipe/estabelecimento/:id', function (req, res) {
+        let usuario = req.usuario;
+        let util = new app.util.Util();
+        let errors = [];
+        let queryFilter = req.params.id;
+
+        listaPorEstabelecimento(queryFilter, res).then(function (resposne) {
+            res.status(200).json(resposne);
+            return;
+        });
+    });
+
     app.get('/equipe/:id', function (req, res) {
         let usuario = req.usuario;
         let id = req.params.id;
@@ -40,8 +52,8 @@ module.exports = function (app) {
             res.status(200).json(response);
             return;
         });
-            
-    }); 
+
+    });
 
 
     app.post('/equipe', function (req, res) {
@@ -74,7 +86,7 @@ module.exports = function (app) {
 
             deletaProfissionaisPorEquipe(obj.id, res).then(function (response3) {
 
-                
+
                 if (profissionais.length) {
                     for (var i = 0; i < profissionais.length; i++) {
                         arrProfissionais.push("(" + obj.id + ", " + profissionais[i].id + ")");
@@ -108,7 +120,7 @@ module.exports = function (app) {
         req.assert("idEstabelecimento").notEmpty().withMessage("Estabelecimento é um campo obrigatório;");
         req.assert("ine").notEmpty().withMessage("INE é um campo obrigatório;");
         req.assert("ine").isLength({ min: 10, max: 10 }).withMessage("O campo INE deve ter 10 caracteres");
-        
+
         errors = req.validationErrors();
 
         if (errors) {
@@ -231,7 +243,7 @@ module.exports = function (app) {
     }
 
     function buscarPorEquipe(equipe, idEstabelecimento, res) {
-        
+
         var q = require('q');
         var d = q.defer();
         var util = new app.util.Util();

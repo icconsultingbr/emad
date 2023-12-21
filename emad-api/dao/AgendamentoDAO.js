@@ -25,7 +25,7 @@ AgendamentoDAO.prototype.buscaPorId = function (id, callback) {
         pc.nome as pacienteNome
             FROM ${this._table} a 
             inner join tb_profissional p ON(a.idProfissional = p.id) 
-            inner join tb_equipe e ON(a.idEquipe = e.id)
+            left join tb_equipe e ON(a.idEquipe = e.id)
             inner join tb_paciente pc ON(a.idPaciente = pc.id)
         where a.id = ?`, id, callback);
 }
@@ -60,7 +60,7 @@ AgendamentoDAO.prototype.lista = function (addFilter, callback) {
         pc.nome as pacienteNome
             FROM ${this._table} a 
             inner join tb_profissional p ON(a.idProfissional = p.id) 
-            inner join tb_equipe e ON(a.idEquipe = e.id)
+            left join tb_equipe e ON(a.idEquipe = e.id)
             inner join tb_paciente pc ON(a.idPaciente = pc.id)
             WHERE ${where} AND a.situacao = 1`, callback);
 }
