@@ -1,0 +1,80 @@
+<div class="calendario-titulo">
+    <div>
+        <button (click)="alterarMes(-1)">ant.</button>
+    </div>
+    <div class="calendario-titulo-mes-ano">
+        {{ dataAtual | date : 'MMM yyyy' : '' : 'pt-BR' }}
+    </div>
+    <div>
+        <button (click)="alterarMes(+1)">prox.</button>
+    </div>
+</div>
+<div class="calendario-dias">
+    <!-- Aqui renderizamos o nome do dia da semana -->
+    <ng-container *ngFor="let dia of diasCalendario; let i = index">
+        <div *ngIf="i < 7">
+            <strong>{{ dia | date: 'EEEEE': '' : 'pt-BR' }}</strong>
+        </div>
+    </ng-container>
+
+    <!-- 
+         Dias que aparecem no calendário.
+
+         Aqui vale comentar que podemos adicionar
+         classes CSS de forma condicional da
+         seguinte forma:
+           [class.minhaclasse]="condição"
+    -->
+    <div *ngFor="let dia of diasCalendario; let i = index" class="calendario-dia"
+        [class.calendario-quebrar-linha]="i % 7 === 0"
+        [class.calendario-dia-nao-faz-parte-mes-atual]="dataAtual.getMonth() !== dia.getMonth()"
+        (click)="abrirModal(contentScheduler, dia)">
+        {{dia | date : 'dd' : '' : 'pt-BR'}}
+    </div>
+</div>
+
+<ng-template #contentScheduler>
+    <div class="modal-header">
+        <h4 class="modal-title">Detalhes do Atendimento</h4>
+    </div>
+    <form [formGroup]="form">
+        <div class="modal-body">
+            <label for="nomePaciente">Nome do Paciente:</label>
+            <input type="text" id="nomePaciente" formControlName="nomePaciente">
+
+            <label for="idPaciente">ID do Paciente:</label>
+            <input type="text" id="idPaciente" formControlName="idPaciente">
+
+            <label for="tipoAtendimento">Tipo de Atendimento:</label>
+            <input type="text" id="tipoAtendimento" formControlName="tipoAtendimento">
+
+            <label for="profissional">Profissional:</label>
+            <input type="text" id="profissional" formControlName="profissional">
+
+            <label for="equipe">Equipe:</label>
+            <input type="text" id="equipe" formControlName="equipe">
+
+            <label for="dataAtendimento">Data de Atendimento:</label>
+            <input type="date" id="dataAtendimento" formControlName="dataAtendimento">
+
+            <label for="horarioAtendimento">Horário de Atendimento:</label>
+            <input type="time" id="horarioAtendimento" formControlName="horarioAtendimento">
+
+            <label for="teleMedicina">Telemedicina:</label>
+            <input type="checkbox" id="teleMedicina" formControlName="teleMedicina">
+
+            <label for="urlTelemedicina">URL Telemedicina:</label>
+            <input type="text" id="urlTelemedicina" formControlName="urlTelemedicina">
+
+            <label for="descricao">Descrição:</label>
+            <textarea id="descricao" formControlName="descricao"></textarea>
+        </div>
+    </form>
+
+    <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="fechar()">Fechar</button>
+    </div> -->
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="salvar()">Salvar</button>
+    </div>
+</ng-template>

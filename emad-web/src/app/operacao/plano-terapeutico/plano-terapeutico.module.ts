@@ -22,8 +22,8 @@ registerLocaleData(localePt);
 
 @NgModule({
     imports: [
-        CommonModule,
         CoreModule,
+        CommonModule,
         AppGridViewModule,
         AppFormModule,
         FormsModule,
