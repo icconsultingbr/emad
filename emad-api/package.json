@@ -4,6 +4,8 @@
   "description": "Api de comunicação EMAD",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon ./index.js",
+    "start": "node ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -37,6 +39,7 @@
     "mysql": "^2.16.0",
     "node-rest-client": "^3.1.0",
     "nodemailer": "^4.6.3",
+    "nodemon": "^3.0.2",
     "npm": "^6.1.0",
     "passport": "^0.4.0",
     "passport-facebook": "^2.1.1",

@@ -1,15 +1,16 @@
-.mainsHeigt{
+.mainsHeigt {
     height: 40px;
     text-align: center;
-    vertical-align:  middle;
-  /*  width: 70px;*/
+    vertical-align: middle;
+    /*  width: 70px;*/
 }
 
-.table-sm th, .table-sm td{
+.table-sm th,
+.table-sm td {
     padding: 0px;
 }
 
-.row{
+.row {
     margin-right: 0px;
     margin-left: 0px;
 }
@@ -31,10 +32,33 @@
     width: 205px;
 }
 
-.custom-checkbox{
-    margin-top : 4px;
+.custom-checkbox {
+    margin-top: 4px;
 }
 
-.resumeUser{
-    border-radius: 50px; width: 28px; height: 28px; border: 3px solid #eaeaea; margin-top: 10px;
+.resumeUser {
+    border-radius: 50px;
+    width: 28px;
+    height: 28px;
+    border: 3px solid #eaeaea;
+    margin-top: 10px;
+}
+
+.container {
+    max-width: 400px;
+    margin: 50px auto;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.result {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.itemAgendamento {
+    margin-bottom: 10px;
 }
