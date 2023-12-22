@@ -251,22 +251,62 @@ export class PlanoTerapeuticoComponent implements OnInit {
   }
 
   consultaProfissional() {
-    const idEspecialidade = Number(this.form.get('especialidade').value)
+    this.listaProfissional = []
+    const idEspecialidade = Number(this.form.get('especialidade').value);
+    const novaDataInicial = moment(this.form.get('dataInicial').value);
+    const novaDataFinal = moment(this.form.get('dataFinal').value);
     if (this.pacienteSelecionado) {
       this.idEstabelecimento = Number(this.pacienteSelecionado.idEstabelecimento);
     }
-
+    //Cosnulta por estabelecimento e especialidade
     if (idEspecialidade) {
       this.service.list(`profissional/especialidade/${this.idEstabelecimento}/${idEspecialidade}`).subscribe((result) => {
-        this.listaProfissional = result;
+        const listaProfissionais = result;
+        listaProfissionais.forEach(item => {
+          const idProfissional = item.id;
+          this.service.list(`agendamento/profissional/${idProfissional}`).subscribe((result) => {
+            const agendamentoProfissional = result;
+
+            const conflitos = agendamentoProfissional.filter(agendamento =>
+              (novaDataInicial >= moment(agendamento.dataInicial) && novaDataInicial < moment(agendamento.dataFinal)) ||
+              (novaDataFinal > moment(agendamento.dataInicial) && novaDataFinal <= moment(agendamento.dataFinal)) ||
+              (novaDataInicial <= moment(agendamento.dataInicial) && novaDataFinal >= moment(agendamento.dataFinal))
+            );
+
+            if (conflitos.length == 0) {
+              this.listaProfissional.push(item);
+            }
+            console.log(this.listaProfissional)
+          });
+        });
       });
       return
     }
 
+    //Consulta somente por estabelecimento
     this.service.list(`profissional/estabelecimento/${this.idEstabelecimento}`).subscribe((result) => {
-      this.listaProfissional = result;
+      const listaProfissionais = result;
+      //Logica para verificar o conflito de agenda dos profissionais
+      listaProfissionais.forEach(item => {
+        const idProfissional = item.id;
+        this.service.list(`agendamento/profissional/${idProfissional}`).subscribe((result) => {
+          const agendamentoProfissional = result;
+
+          const conflitos = agendamentoProfissional.filter(agendamento =>
+            (novaDataInicial >= moment(agendamento.dataInicial) && novaDataInicial < moment(agendamento.dataFinal)) ||
+            (novaDataFinal > moment(agendamento.dataInicial) && novaDataFinal <= moment(agendamento.dataFinal)) ||
+            (novaDataInicial <= moment(agendamento.dataInicial) && novaDataFinal >= moment(agendamento.dataFinal))
+          );
+
+          if (conflitos.length == 0) {
+            this.listaProfissional.push(item);
+          }
+        });
+      });
     });
   }
+
+
 
   selecionaPaciente(item) {
     this.pacienteSelecionado = item;
