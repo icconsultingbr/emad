@@ -1,373 +1,260 @@
 <app-loader [loading]="loading"></app-loader>
-<p *ngIf="message.length" class="alert alert-info">{{message}}</p>
-<div *ngIf="errors.length" class="alert alert-danger">
-    <div *ngFor="let error of errors" class="row">
-        <div class="col-12 text-left">
-            {{error.message}}
-        </div>
-    </div>
+
+
+<!-- adicionar agendamento -->
+<div class="row" style="margin: 2%;">
+    <button class="btn btn-success" (click)="openModalAgendamento()">
+        <i class="fas fa-plus"></i> Adicionar Agendamento
+    </button>
 </div>
+<p *ngIf="mensagem?.length" class="alert alert-info">{{mensagem}}</p>
 
-<div class="form-group row">
-    <label class="col-xl-2 col-form-label text-left">Pesquisar paciente
-        <span class="text-danger font-weight-bold">*</span>
-    </label>
-    <div class="col-sm-10">
-        <input type="hidden" [(ngModel)]="object.id">
-        <input type="hidden" [(ngModel)]="object.idPaciente">
-        <div class="input-group">
-
-            <input type="text" class="form-control has-error" [(ngModel)]="object.pacienteNome" readonly>
-
-            <div class="input-group-append">
-                <button class="btn btn-primary ml-3 rounded" type="button" (click)="open(contentClient)">
-                    <i class="fa fa-search"></i>
-                </button>
+<!-- Agenda -->
+<div class="card">
+    <div>
+        <h3 style="align-items: center;">Agenda
+            <hr>
+        </h3>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="btn btn-primary" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate"
+                (viewDateChange)="closeOpenMonthViewDay()">
+                Anterior
             </div>
         </div>
+
+        <div class="col-md-4">
+            <div class="btn-group">
+                <div class="btn" mwlCalendarToday [(viewDate)]="viewDate">
+                    <h3>
+                        {{ viewDate | calendarDate:(view + 'ViewTitle') :'pt-BR' }}
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="btn btn-primary" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate"
+                (viewDateChange)="closeOpenMonthViewDay()">
+                Próximo
+            </div>
+        </div>
+        <!-- <div class="col-md-4">
+            <h3>{{ viewDate | calendarDate:(view + 'ViewTitle') :'pt-BR' }}</h3>
+        </div>
+        <div class="col-md-4">
+            <div class="btn-group">
+                <div class="btn btn-primary" (click)="setView('month')" [class.active]="view === 'month'">
+                    Mensal
+                </div>
+                <div class="btn btn-primary" (click)="setView('week')" [class.active]="view === 'week'">
+                    Semanal
+                </div>
+                <div class="btn btn-primary" (click)="setView('day')" [class.active]="view === 'day'">
+                    Diário
+                </div>
+            </div>
+        </div> -->
+    </div>
+
+    <div>
+        <mwl-calendar-month-view *ngIf="view == 'month'" [viewDate]="viewDate" [events]="events" [refresh]="refresh"
+            [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)"
+            (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
+        </mwl-calendar-month-view>
+
+        <!-- <mwl-calendar-week-view *ngIf="view == 'week'" [viewDate]="viewDate" [events]="events" [refresh]="refresh"
+            (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
+        </mwl-calendar-week-view>
+
+        <mwl-calendar-day-view *ngIf="view == 'day'" [viewDate]="viewDate" [events]="events" [refresh]="refresh"
+            (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
+        </mwl-calendar-day-view> -->
     </div>
 </div>
-
-<div class="form-group row">
-    <label class="col-xl-2 col-form-label text-left">
-        Tipo de equipe <span class="text-danger font-weight-bold"> *</span>
-    </label>
-    <div class="col-xl-10">
-        <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.equipe" (change)="buscaEquipe()"
-            [disabled]="object.pacienteNome==null || object.pacienteNome=='null'">
-            <option [value]="null">Selecione...</option>
-            <option *ngFor="let item of domains[0].equipe" [value]="item.id">{{item.nome}}</option>
-        </select>
-    </div>
-</div>
-
-
-<div class="form-group row">
-    <label class="col-xl-2 col-form-label text-left">
-        Equipe EMAD/EMAP <span class="text-danger font-weight-bold"> *</span>
-    </label>
-    <div class="col-xl-10">
-        <select class="custom-select d-block w-100" [(ngModel)]="object.idEquipe" (change)="buscaProfissionais()"
-            [disabled]="object.equipe==null || object.equipe=='null'">
-            <option [value]="null">Selecione...</option>
-            <option *ngFor="let domain of domains[0]['idEquipe']" value="{{domain.id}}">{{domain.nome}}</option>
-        </select>
-    </div>
-</div>
-
-
-<div class="form-group row">
-    <label class="col-xl-2 col-form-label text-left">
-        Profissional <span class="text-danger font-weight-bold"> *</span>
-    </label>
-    <div class="col-xl-10">
-        <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idProfissional"
-            (change)="consultaAgenda()" [disabled]="object.idEquipe==null || object.idEquipe=='null'">
-            <option [value]="null">Selecione...</option>
-            <option *ngFor="let domain of domains[0]['idProfissional']" value="{{domain.id}}">{{domain.nome}}
-            </option>
-        </select>
-    </div>
-</div>
-
-
-
-<div class="card mb-4">
-    <div class="card-header text-left">
-        Agenda do profissional
-    </div>
-    <div class="card-body text-left">
-
-        <div class="row mt-2 mb-2">
-            <button *ngIf="!readonly" class="btn btn-light" type="button" (click)="openSchedule(contentScheduler)"
-                [disabled]="!canCreate()">
-                <i class="fa fa-plus"></i>
-            </button>
-
-            <button *ngIf="!readonly" class="btn btn-light ml-2" type="button" (click)="voltaAgenda(domingo.data)">
-                <i class="fa fa-arrow-left"></i>
-            </button>
-
-            <button *ngIf="readonly" class="btn btn-light" type="button" (click)="voltaAgenda(domingo.data)">
-                <i class="fa fa-arrow-left"></i>
-            </button>
-
-            <button class="btn btn-light ml-2" type="button" (click)="hoje()">
-                Hoje
-            </button>
-
-            <button class="btn btn-light ml-2" type="button" (click)="open(contentList)" [disabled]="!agendas.length">
-                <i class="fa fa-calendar"></i>
-            </button>
-
-            <button class="btn btn-light ml-2" type="button" (click)="avancaAgenda(sabado.data)">
-                <i class="fa fa-arrow-right"></i>
+<!-- modal adicionar agendamento -->
+<ng-template #modalAdicionarAgendamento let-close="close">
+    <form [formGroup]="form">
+        <div class="modal-header">
+            <h4 class="modal-title">Adicionar agendamento</h4>
+            <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+                <span aria-hidden="true">&times;</span>
             </button>
         </div>
-
-
-        <div class="table-responsive">
-            <table class="table table-bordered table-sm">
-                <thead>
-                    <tr>
-                        <td scope="col-5" style="height: 35px; font-size: 11px; vertical-align: middle"></td>
-                        <td scope="col-1"
-                            style="height: 35px; font-size: 11px; vertical-align: middle; text-align: center">
-                            {{domingo.label?domingo.label:'Domingo'}}
-                        </td>
-                        <td scope="col-1"
-                            style="height: 35px; font-size: 11px; vertical-align: middle; text-align: center">
-                            {{segunda.label?segunda.label:'Segunda'}}
-                        </td>
-                        <td scope="col-1"
-                            style="height: 35px; font-size: 11px; vertical-align: middle; text-align: center">
-                            {{terca.label?terca.label:'Terça'}}
-                        </td>
-                        <td scope="col-1"
-                            style="height: 35px; font-size: 11px; vertical-align: middle; text-align: center">
-                            {{quarta.label?quarta.label:'Quarta'}}
-                        </td>
-                        <td scope="col-1"
-                            style="height: 35px; font-size: 11px; vertical-align: middle; text-align: center">
-                            {{quinta.label?quinta.label:'Quinta'}}
-                        </td>
-                        <td scope="col-1"
-                            style="height: 35px; font-size: 11px; vertical-align: middle; text-align: center">
-                            {{sexta.label?sexta.label:'Sexta'}}
-                        </td>
-                        <td scope="col-1"
-                            style="height: 35px; font-size: 11px; vertical-align: middle; text-align: center">
-                            {{sabado.label?sabado.label:'Sábado'}}
-                        </td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="mainsHeigt">00:00</td>
-                        <td rowspan="9999" class="fixe">
-                            <div class="row">
-                                <div *ngFor="let item of domingo.schedulers"
-                                    class="col bg-primary text-white rounded small" [style.height.px]="item.duration"
-                                    [style.marginLeft.px]="domingo.schedulers.length>1?1:0"
-                                    [style.marginTop.px]="item.margin" (dblclick)="object.idProfissional ? editSchedule(item) : ''">
-                                    <div class="row" *ngIf="item.duration > 110">
-                                        <div class="col-12 mb-2" *ngIf="domingo.schedulers.length<3">
-                                            <div class="resumeUser text-center">
-                                                {{ getInitials(item.nome) }}
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            {{ domingo.schedulers.length>3?'':item.deAte }} <br />
-                                            {{ domingo.schedulers.length>1?'':item.observacoes }}
-
-                                        </div>
-                                    </div>
-                                </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <!-- consulta paciente -->
+                <div class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">Pesquisar paciente
+                        <span class="text-danger font-weight-bold">*</span>
+                    </label>
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                            <input type="text" disabled="true" class="has-error" style="width: 89%;"
+                                formControlName="nomePaciente">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary ml-3 rounded" type="button"
+                                    (click)="openModalLocalizarPaciente(contentClient)">
+                                    <i class="fa fa-search"></i>
+                                </button>
                             </div>
-                        </td>
-                        <td rowspan="9999" class="fixe" style="background: #f7f7f7">
-                            <div class="row">
-                                <div *ngFor="let item of segunda.schedulers"
-                                    class="col bg-primary text-white rounded small" [style.height.px]="item.duration"
-                                    [style.marginLeft.px]="segunda.schedulers.length>1?1:0"
-                                    [style.marginTop.px]="item.margin" (dblclick)="object.idProfissional ? editSchedule(item) : ''">
+                        </div>
+                    </div>
+                </div>
 
-                                    <div class="row" *ngIf="item.duration > 110">
-                                        <div class="col-12 mb-2" *ngIf="segunda.schedulers.length<3">
-                                            <div class="resumeUser text-center">
-                                                {{ getInitials(item.nome) }}
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            {{ segunda.schedulers.length>3?'':item.deAte }} <br />
-                                            {{ segunda.schedulers.length>1?'':item.observacoes }}
+                <!-- forma de atendimento -->
+                <div class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">
+                        Atendimento <span class="text-danger font-weight-bold"> *</span>
+                    </label>
+                    <div class="col-xl-9">
+                        <select class="custom-select d-block w-100" formControlName="formaAtendimento" disabled>
+                            <option [value]="null">Selecione...</option>
+                            <!-- Iterando sobre as opções em this.formaAtendimento -->
+                            <option *ngFor="let item of formaAtendimento" [value]="item.id">{{ item.nome }}</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- tipo atendimento -->
+                <div class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">
+                        Tipo de atendimento <span class="text-danger font-weight-bold"> *</span>
+                    </label>
+                    <div class="col-xl-9">
+                        <select class="custom-select d-block w-100" formControlName="tipoAtendimento">
+                            <option [value]="null">Selecione...</option>
+                            <option *ngFor="let item of tipoAtendimento" [value]="item.id">{{ item.nome }}</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Equipe de atendimento -->
+                <div *ngIf="form.get('tipoAtendimento').value == 2" class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">Equipe de atendimento</label>
+                    <div class="col-xl-9">
+                        <select class="custom-select d-block w-100" formControlName="idEquipe">
+                            <option [value]="null">Selecione...</option>
+                            <option *ngFor="let item of listaEquipe" [value]="item.id">{{ item.nome }}</option>
+                        </select>
+                    </div>
+                </div>
 
-                                        </div>
-                                    </div>
-                                </div>
+                <!-- Profissional -->
+                <div *ngIf="form.get('tipoAtendimento').value == 1" class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">Profissional</label>
+                    <div class="col-xl-9">
+                        <select class="custom-select d-block w-100" formControlName="idProfissional">
+                            <option [value]="null">Selecione...</option>
+                            <option *ngFor="let item of listaProfissional" [value]="item.id">{{item.nome}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- data -->
+                <div class="row">
+                    <div style="text-align: left;" class="col-sm-3 itemAgendamento">
+                        <label class="col-sm-12 p-0">Data/Horários
+                            <span class="text-danger font-weight-bold">*</span>
+                        </label>
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <label class="col-sm-2 text-left p-0">Início
+                                <span class="text-danger font-weight-bold">*</span>
+                            </label>
+                            <div class="col-sm-4 p-0">
+                                <input formControlName="dataInicial" type="datetime-local" [min]="dataAtual"
+                                    class="w-100">
                             </div>
-                        </td>
-                        <td rowspan="9999" class="fixe">
-                            <div class="row">
-                                <div *ngFor="let item of terca.schedulers"
-                                    class="col bg-primary text-white rounded small" [style.height.px]="item.duration"
-                                    [style.marginLeft.px]="terca.schedulers.length>1?1:0"
-                                    [style.marginTop.px]="item.margin" (dblclick)="object.idProfissional ? editSchedule(item) : ''">
-                                    <div class="row" *ngIf="item.duration > 110">
-                                        <div class="col-12 mb-2" *ngIf="terca.schedulers.length<3">
-                                            <div class="resumeUser text-center">
-                                                {{ getInitials(item.nome) }}
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            {{ terca.schedulers.length>3?'':item.deAte }} <br />
-                                            {{ terca.schedulers.length>1?'':item.observacoes }}
-
-                                        </div>
-                                    </div>
-                                </div>
+                            <label class="col-sm-2 p-0">Fim
+                                <span class="text-danger font-weight-bold">*</span>
+                            </label>
+                            <div class="col-sm-4 p-0">
+                                <input formControlName="dataFinal" type="datetime-local" [min]="dataSelecionada"
+                                    class="w-100">
                             </div>
-                        </td>
-                        <td rowspan="9999" class="fixe" style="background: #f7f7f7">
-                            <div class="row">
-                                <div *ngFor="let item of quarta.schedulers"
-                                    class="col bg-primary text-white rounded small" [style.height.px]="item.duration"
-                                    [style.marginLeft.px]="quarta.schedulers.length>1?1:0"
-                                    [style.marginTop.px]="item.margin" (dblclick)="object.idProfissional ? editSchedule(item) : ''">
-                                    <div class="row" *ngIf="item.duration > 110">
-                                        <div class="col-12 mb-2" *ngIf="quarta.schedulers.length<3">
-                                            <div class="resumeUser text-center">
-                                                {{ getInitials(item.nome) }}
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            {{ quarta.schedulers.length>3?'':item.deAte }} <br />
-                                            {{ quarta.schedulers.length>1?'':item.observacoes }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                        <td rowspan="9999" class="fixe">
-                            <div class="row">
-                                <div *ngFor="let item of quinta.schedulers"
-                                    class="col bg-primary text-white rounded small" [style.height.px]="item.duration"
-                                    [style.marginLeft.px]="quinta.schedulers.length>1?1:0"
-                                    [style.marginTop.px]="item.margin" (dblclick)="object.idProfissional ? editSchedule(item) : ''">
-                                    <div class="row" *ngIf="item.duration > 110">
-                                        <div class="col-12 mb-2" *ngIf="quinta.schedulers.length<3">
-                                            <div class="resumeUser text-center">
-                                                {{ getInitials(item.nome) }}
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            {{ quinta.schedulers.length>3?'':item.deAte }} <br />
-                                            {{ quinta.schedulers.length>1?'':item.observacoes }}
+                        </div>
+                    </div>
+                </div>
+                <!-- comenatario -->
+                <div class="row itemAgendamento">
+                    <label class="col-xl-3 col-sm-12 col-form-label text-left">
+                        Comentários: <span class="text-danger font-weight-bold">*</span>
+                    </label>
+                    <div class="col-xl-9 col-sm-12">
+                        <textarea rows="4" class="form-control has-error" formControlName="observacao"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div>
+                <button class="btn btn-primary ml-3 rounded" type="button" (click)="salvar()">Salvar</button>
+            </div>
+        </div>
+    </form>
 
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+</ng-template>
 
-                        </td>
-                        <td rowspan="9999" class="fixe" style="background: #f7f7f7">
-                            <div class="row">
-                                <div *ngFor="let item of sexta.schedulers"
-                                    class="col bg-primary text-white rounded small" [style.height.px]="item.duration"
-                                    [style.marginLeft.px]="sexta.schedulers.length>1?1:0"
-                                    [style.marginTop.px]="item.margin" (dblclick)="object.idProfissional ? editSchedule(item) : ''">
-                                    <div class="row" *ngIf="item.duration > 110">
-                                        <div class="col-12 mb-2" *ngIf="sexta.schedulers.length<3">
-                                            <div class="resumeUser text-center">
-                                                {{ getInitials(item.nome) }}
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            {{ sexta.schedulers.length>3?'':item.deAte }} <br />
-                                            {{ sexta.schedulers.length>1?'':item.observacoes }}
+<!-- consulta agendamento -->
+<ng-template #modalInfoAgendamento let-close="close">
+    <div class="modal-header">
+        <h5 class="modal-title">Agendamento</h5>
+        <button type="button" class="close" (click)="closeModal()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row" style="align-items: center;">
+            <i style="font-size: 25px;" class="col-xl-2" class="fas fa-user"></i>
+            <div style="text-align: left; " class="col-xl-10">
+                <label style="margin-bottom: 0;">
+                    Pacientes
+                </label>
+                <h5>{{dadosAgendamento?.pacienteNome}}</h5>
+            </div>
+        </div>
 
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                        <td rowspan="9999" class="fixe">
-                            <div class="row">
-                                <div *ngFor="let item of sabado.schedulers"
-                                    class="col bg-primary text-white rounded small" [style.height.px]="item.duration"
-                                    [style.marginLeft.px]="sabado.schedulers.length>1?1:0"
-                                    [style.marginTop.px]="item.margin" (dblclick)="object.idProfissional ? editSchedule(item) : ''">
-                                    <div class="row" *ngIf="item.duration > 110">
-                                        <div class="col-12 mb-2" *ngIf="sabado.schedulers.length<3">
-                                            <div class="resumeUser text-center">
-                                                {{ getInitials(item.nome) }}
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            {{ sabado.schedulers.length>3?'':item.deAte }} <br />
-                                            {{ sabado.schedulers.length>1?'':item.observacoes }}
+        <div class="row" style="align-items: center;">
+            <i style="font-size: 25px;" class="col-xl-2" class="fas fa-user-md"></i>
+            <div style="text-align: left; " class="col-xl-10">
+                <label style="margin-bottom: 0;">
+                    Profissional
+                </label>
+                <h5>{{dadosAgendamento?.profissionalNome}}</h5>
+            </div>
+        </div>
 
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
+        <div class="row" style="align-items: center;">
+            <i style="font-size: 25px;" class="col-xl-2" class="fas fa-calendar-alt"></i>
+            <div style="text-align: left; " class="col-xl-10">
+                <label style="margin-bottom: 0;">
+                    Data de Atendimento
+                </label>
+                <h5>{{formatarDataHora(dadosAgendamento?.dataInicial).data + ' Até ' +
+                    formatarDataHora(dadosAgendamento?.dataFinal).data}}</h5>
 
-                    <tr>
-                        <td class="mainsHeigt">01:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">02:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">03:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">04:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">05:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">06:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">07:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">08:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">09:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">10:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">11:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">12:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">13:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">14:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">15:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">16:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">17:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">18:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">19:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">20:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">21:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">22:00</td>
-                    </tr>
-                    <tr>
-                        <td class="mainsHeigt">23:00</td>
-                    </tr>
-                </tbody>
-            </table>
+            </div>
+        </div>
+        <div class="row" style="align-items: center;">
+            <i style="font-size: 25px;" class="col-xl-2" class="fas fa-clock"></i>
+            <div style="text-align: left; " class="col-xl-10">
+                <label style="margin-bottom: 0;">
+                    Hora de Atendimento
+                </label>
+                <h5>{{formatarDataHora(dadosAgendamento?.dataInicial).hora + ' Até ' +
+                    formatarDataHora(dadosAgendamento?.dataFinal).hora + ' Horas'}}</h5>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <div style=" font-size: 25px;">
+            <i style="margin: 10px;" class="fas fa-edit" (click)="editar()"></i>
+            <i style="margin: 10px;" class="fas fa-trash-alt" (click)="excluir()"></i>
+            <i style="margin: 10px;" class="fas fa-times" (click)="closeModal()"></i>
         </div>
     </div>
-</div>
+</ng-template>
 
 <ng-template #contentClient>
     <div class="modal-header">
@@ -442,14 +329,15 @@
                                 </div>
                             </td>
                             <td *ngFor="let field of fields;">
-                                <label for="{{ item.id }}">
+                                <label for="{{ item?.id }}">
                                     {{
-                                        field.isDate?(item[field.field] | date :'dd/MM/yyyy') : 
-                                        field.isDateTime?(item[field.field] | date :'dd/MM/yyyy HH:mm'): 
-                                        field.translate?(translate(item[field.field], field.translate)):
-                                        field.decimalMask?(toCurrency(item[field.field] | currency:'R$ ':true:'1.2-2',field.decimalMask)):
-                                        field.docMask?(maskDocument(item[field.field])):
-                                        item[field.field]
+                                    field.isDate?(item[field.field] | date :'dd/MM/yyyy') :
+                                    field.isDateTime?(item[field.field] | date :'dd/MM/yyyy HH:mm'):
+                                    field.translate?(translate(item[field.field], field.translate)):
+                                    field.decimalMask?(toCurrency(item[field.field] |
+                                    currency:'R$':true:'1.2-2',field.decimalMask)):
+                                    field.docMask?(maskDocument(item[field.field])):
+                                    item[field.field]
                                     }}
                                 </label>
                             </td>
@@ -467,7 +355,7 @@
             </div>
         </div>
         <div class="row mb-2">
-            <div *ngIf="pager.pages && pager.pages.length" class="text text-secondary col-md-12 pr-0 mx-auto">
+            <div *ngIf="pager.pages && pager?.pages.length" class="text text-secondary col-md-12 pr-0 mx-auto">
                 <i>
                     Exibindo
                     {{pager.currentPage === pager.totalPages?allItems.length:pager.currentPage*pagedItems.length}}
@@ -517,247 +405,6 @@
                     (click)="confirmaPaciente()">
                     <i class="fa fa-plus-circle"></i> Carregar seleção
                 </button>
-
-                <button class="btn btn-default" (click)="close()" type="button">
-                    <i class="fa fa-times"></i> Cancelar
-                </button>
-            </div>
-        </div>
-    </div>
-</ng-template>
-
-
-<ng-template #contentScheduler>
-    <div class="modal-header">
-        <h4 class="modal-title">{{readonly ? 'Visualizar agenda' : 'Adicionar agenda'}}</h4>
-        <button type="button" class="close" aria-label="Close" (click)="close()">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-
-        <div *ngIf="errors.length" class="alert alert-danger">
-            <div *ngFor="let error of errors" class="row">
-                <div class="col-12 text-left">
-                    {{error.message}}
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-xl-3 col-form-label text-left">
-                Tipo de agenda <span class="text-danger font-weight-bold"> *</span>
-            </label>
-            <div class="col-xl-9">
-                <select *ngIf="domains" class="custom-select d-block w-100" (change)="tipoAgenda($event)"
-                    [(ngModel)]="object.idTipoAgenda" [disabled]="readonly">
-                    <option [value]="null">Selecione...</option>
-                    <option value="U">Única</option>
-                    <option value="S">Semanal</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-xl-3 col-form-label text-left">Equipe/Profissonal</label>
-            <div class="col-xl-9">
-                <div class="input-group">
-                    <input type="text" class="form-control rounded" [(ngModel)]="object.equipeNome" readonly/>
-                    <span class="input-group-addon mr-3"> </span>
-                    <input type="text" class="form-control rounded" [(ngModel)]="object.nome" readonly />
-                
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="form-group row">
-            <label class="col-xl-3 col-form-label text-left">Data/Horários
-                <span class="text-danger font-weight-bold">*</span>
-            </label>
-            <div class="col-xl-9">
-                <div class="input-group">
-                    <input type="text" class="form-control rounded" placeholder="Data" mask="99/99/9999"
-                        [(ngModel)]="object.dataInicio" [disabled]="readonly" />
-                    <span class="input-group-addon mr-3"> </span>
-                    <input type="text" class="form-control rounded" placeholder="De" mask="99:00"
-                        [(ngModel)]="object.horaInicio" [disabled]="readonly" />
-                    <span class="input-group-addon mr-3"> </span>
-                    <input type="text" class="form-control rounded" placeholder="Até" mask="99:00"
-                        [(ngModel)]="object.horaFim" [disabled]="readonly" />
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group row" *ngIf="object.idTipoAgenda == 'S'">
-            <label class="col-xl-3 col-sm-12 col-form-label text-left">Dias da semana
-                <span class="text-danger font-weight-bold">*</span>
-            </label>
-
-            <div class="col-xl-1 col-sm-6">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="chk_0" [(ngModel)]="object.dom"
-                        [disabled]="readonly">
-                    <label class="custom-control-label" for="chk_0">Dom</label>
-                </div>
-            </div>
-            <div class="col-xl-1 col-sm-6">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="chk_1" [(ngModel)]="object.seg"
-                        [disabled]="readonly">
-                    <label class="custom-control-label" for="chk_1">Seg</label>
-                </div>
-            </div>
-            <div class="col-xl-1 col-sm-6">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="chk_2" [(ngModel)]="object.ter"
-                        [disabled]="readonly">
-                    <label class="custom-control-label" for="chk_2">Ter</label>
-                </div>
-            </div>
-            <div class="col-xl-1 col-sm-6">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="chk_3" [(ngModel)]="object.qua"
-                        [disabled]="readonly">
-                    <label class="custom-control-label" for="chk_3">Qua</label>
-                </div>
-            </div>
-            <div class="col-xl-1 col-sm-6">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="chk_4" [(ngModel)]="object.qui"
-                        [disabled]="readonly">
-                    <label class="custom-control-label" for="chk_4">Qui</label>
-                </div>
-            </div>
-            <div class="col-xl-1 col-sm-6">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="chk_5" [(ngModel)]="object.sex"
-                        [disabled]="readonly">
-                    <label class="custom-control-label" for="chk_5">Sex</label>
-                </div>
-            </div>
-            <div class="col-xl-1 col-sm-6">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="chk_6" [(ngModel)]="object.sab"
-                        [disabled]="readonly">
-                    <label class="custom-control-label" for="chk_6">Sab</label>
-                </div>
-            </div>
-            <div class="col-xl-2 col-sm-12">
-            </div>
-        </div>
-
-        <div class="form-group row" *ngIf="object.idTipoAgenda == 'S'">
-            <label class="col-xl-3 col-sm-12 col-form-label text-left">
-                Vigência: <span class="text-danger font-weight-bold">*</span>
-            </label>
-            <div class="col-xl-3 col-sm-12">
-                <input type="text" mask="99/99/9999" class="form-control has-error" [(ngModel)]="object.dataVigencia"
-                    [disabled]="readonly">
-            </div>
-            <div class="col-xl-3 col-sm-12"></div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-xl-3 col-sm-12 col-form-label text-left">
-                Comentários: <span class="text-danger font-weight-bold">*</span>
-            </label>
-            <div class="col-xl-9 col-sm-12">
-                <textarea rows="4" class="form-control has-error" [(ngModel)]="object.observacoes"
-                    [disabled]="readonly"></textarea>
-            </div>
-        </div>
-
-        <div class="form-group row text-right">
-            <div class="col-12">
-                <button *ngIf="!readonly" class="btn btn-primary mr-2" type="button" (click)="saveSchedule()"
-                    [disabled]="isValid()">
-                    <i class="fa fa-save"></i> Gravar
-                </button>
-
-                <button *ngIf="object.id && !readonly" class="btn btn-danger mr-2" type="button"
-                    (click)="openRemoveSchedule(contentRemove)" [disabled]="isValid()">
-                    <i class="fa fa-trash"></i> Remover Agenda
-                </button>
-
-                <button class="btn btn-default" (click)="close()" type="button">
-                    <i class="fa fa-times"></i> {{!readonly ? 'Cancelar' : 'Fechar'}}
-                </button>
-            </div>
-        </div>
-    </div>
-</ng-template>
-
-<ng-template #contentRemove>
-
-    <div class="modal-header">
-        <h4 class="modal-title">Remover agenda</h4>
-        <button type="button" class="close" aria-label="Close" (click)="removeCancel()">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        <p>Deseja realmente remover este registro?</p>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-danger" (click)="removeSchedule()">Remover</button>
-        <button type="button" class="btn btn-outline-dark" (click)="removeCancel()">Cancelar</button>
-    </div>
-
-</ng-template>
-
-
-
-<ng-template #contentList>
-    <div class="modal-header">
-        <h4 class="modal-title">Agendas do profissional</h4>
-        <button type="button" class="close" aria-label="Close" (click)="close()">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-
-        <div class="form-group row">
-            <div class="col-12 table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th class="text-left">Tipo de agenda</th>
-                            <th class="text-left">Início</th>
-                            <th class="text-left">Fim</th>
-                            <th class="text-left">Vigência</th>
-                            <th></th>
-
-                        </tr>
-                    </thead>
-                    <tbody *ngFor="let agenda of agendas let index=index; let odd='odd'; let even='even';">
-                        <tr class="text-left" [ngClass]="{ odd: odd, even: even }">
-                            <td>{{agenda.idTipoAgenda=='U' ? 'Diária' : 'Semanal'}}</td>
-                            <td>{{convertTodate(agenda.dataInicio) | date :'dd/MM/yyyy HH:mm' }}</td>
-                            <td>{{convertTodate(agenda.dataFim) | date :'dd/MM/yyyy HH:mm'}}</td>
-                            <td>{{convertTodate(agenda.dataVigencia) | date :'dd/MM/yyyy HH:mm'}}</td>
-                            <td>
-                                <a class="btn btn-link" [routerLink]="" (click)="ver(agenda)">
-                                    <i class="fa fa-eye"></i> Ver
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-
-                    <tbody *ngIf="!agendas || agendas.length==0">
-                        <tr class="text-left" class="even">
-                            <td colspan="99" class="text-secondary">
-                                <i>Não há resultados...</i>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="form-group row text-right">
-            <div class="col-12">
 
                 <button class="btn btn-default" (click)="close()" type="button">
                     <i class="fa fa-times"></i> Cancelar
