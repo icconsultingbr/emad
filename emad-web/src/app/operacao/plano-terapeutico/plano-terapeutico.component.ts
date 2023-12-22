@@ -33,11 +33,11 @@ const colors: Record<string, EventColor> = {
     primary: '#ad2121',
     secondary: '#FAE3E3',
   },
-  blue: {
+  profissional: {
     primary: '#1e90ff',
-    secondary: '#D1E8FF',
+    secondary: '#00929c',
   },
-  yellow: {
+  equipe: {
     primary: '#e3bc08',
     secondary: '#FDF1BA',
   },
@@ -369,24 +369,38 @@ export class PlanoTerapeuticoComponent implements OnInit {
 
   consultaAgendamentos() {
     this.service.list('agendamento').subscribe((result) => {
-      const eventosDoServico: CalendarEvent[] = result.map((evento) => ({
-        id: evento.idAgendamento,
-        title: evento.pacienteNome,
-        start: new Date(evento.dataInicial),
-        end: new Date(evento.dataFinal),
-        resizable: {
-          beforeStart: true,
-          afterEnd: true,
-        },
-        actions: this.actions, //permite deletar e editar
-      }));
+      console.log(result)
+      const eventosDoServico: CalendarEvent[] = result.map((evento) => {
+        let color;
+        if (evento.idEquipe) {
+          color = { ...colors.equipe };
+        }
+        if (evento.idProfissional) {
+          color = { ...colors.profissional };
+        }
+        return {
+          id: evento.idAgendamento,
+          title: evento.pacienteNome,
+          start: new Date(evento.dataInicial),
+          end: new Date(evento.dataFinal),
+          color: color,
+          resizable: {
+            beforeStart: true,
+            afterEnd: true,
+          },
+          actions: this.actions, // permite deletar e editar
+        };
+      });
+
       this.events = [...eventosDoServico];
+      console.log(this.events)
     });
   }
 
   consultaAgendamentoId(id: number) {
     this.service.list(`agendamento/${id}`).subscribe((result) => {
       this.dadosAgendamento = result
+      console.log(result)
     });
   }
 
@@ -406,6 +420,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
 
   handleEvent(action: string, event: CalendarEvent): void {
     this.agendamentoSelecionado = event;
+    console.log(this.agendamentoSelecionado)
     const idAgendamento = parseInt(this.agendamentoSelecionado.id)
     this.modalData = { event, action };
     this.openModalConsultaAgendamento(this.modalInfoAgendamento)

@@ -31,6 +31,17 @@ module.exports = function (app) {
             return;
         });
     });
+    app.get('/agendamento/equipe/:id', function (req, res) {
+        let usuario = req.usuario;
+        let id = parseInt(req.params.id);
+        let util = new app.util.Util();
+        let errors = [];
+
+        buscaPorEquipe(id, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
 
     app.get('/agendamento/paciente/:id', function (req, res) {
         let usuario = req.usuario;
@@ -254,6 +265,29 @@ module.exports = function (app) {
         return d.promise;
     };
 
+    function buscaPorEquipe(id, res) {
+        let q = require('q');
+        let d = q.defer();
+        let util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.AgendamentoDAO(connection);
+        let errors = [];
+
+        objDAO.buscaPorEquipe(id, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
+                res.status(500).send(errors);
+                return;
+            } else {
+
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    };
     function buscaPorProfissional(id, res) {
         let q = require('q');
         let d = q.defer();
