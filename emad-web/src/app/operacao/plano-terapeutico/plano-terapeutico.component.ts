@@ -87,7 +87,10 @@ export class PlanoTerapeuticoComponent implements OnInit {
   events: CalendarEvent[] = [];
 
   listaProfissional = [];
+
+  //Mensagens
   mensagem = '';
+  mensagemErro: string;
 
   modalData: {
     action: string;
@@ -141,54 +144,38 @@ export class PlanoTerapeuticoComponent implements OnInit {
       }
       if (value == 1) {
         this.consultaProfissional();
+        this.form.get('idEquipe').clearValidators()
+        this.form.get('idEquipe').updateValueAndValidity()
       }
       if (value == 2) {
         this.consultaProfissionalPorEquipe(value);
+        this.form.get('idProfissional').clearValidators()
+        this.form.get('idProfissional').updateValueAndValidity()
       }
     });
     this.form.get('dataFinal').valueChanges.subscribe((result) => {
       const dtIn = this.form.get('dataInicial').value
       const dtFim = result
-      this.verificarAgendamento(moment(dtIn), moment(dtFim));
+      this.consultaAgendaPaciente(moment(dtIn), moment(dtFim));
+      this.form.patchValue({ formaAtendimento: 1 })
     });
 
   }
 
-  verificarAgendamento(dataInicial: any, dataFinal: any) {
-    const idPaciente = Number(this.form.get('idPaciente').value);
-    const novaDataInicial = moment(dataInicial);
-    const novaDataFinal = moment(dataFinal);
-
-    this.service.list(`agendamento/paciente/${idPaciente}`).subscribe((result) => {
-      const AgendamentoPaciente = result;
-      const conflitos = AgendamentoPaciente.filter(agendamento =>
-        (novaDataInicial >= moment(agendamento.dataInicial) && novaDataInicial < moment(agendamento.dataFinal)) ||
-        (novaDataFinal > moment(agendamento.dataInicial) && novaDataFinal <= moment(agendamento.dataFinal)) ||
-        (novaDataInicial <= moment(agendamento.dataInicial) && novaDataFinal >= moment(agendamento.dataFinal))
-      );
-
-      if (conflitos.length > 0) {
-        console.log('Existe na mesma data')
-      }
-    });
-  };
-
-
   fomularioAgendamento() {
     this.form = this.fb.group({
-      id: ['', [Validators.required]],
+      id: [''],
+      nomePaciente: [''],
       idPaciente: ['', [Validators.required]],
       idEquipe: ['', [Validators.required]],
       idProfissional: ['', [Validators.required]],
-      nomePaciente: ['', [Validators.required]],
-      formaAtendimento: [1, [Validators.required]],
+      formaAtendimento: ['', [Validators.required]],
       tipoAtendimento: ['', [Validators.required,]],
       dataInicial: ['', [Validators.required,]],
       dataFinal: ['', [Validators.required,]],
       especialidade: ['', Validators.required],
       observacao: [''],
     });
-
   }
 
   limparFormulario() {
@@ -326,6 +313,27 @@ export class PlanoTerapeuticoComponent implements OnInit {
       });
     });
   }
+
+  consultaAgendaPaciente(dataInicial: any, dataFinal: any) {
+    //verifica disponibilidade do agendamento do paciente para o dia informado.
+    this.mensagemErro = '';
+    const idPaciente = Number(this.form.get('idPaciente').value);
+    const novaDataInicial = moment(dataInicial);
+    const novaDataFinal = moment(dataFinal);
+
+    this.service.list(`agendamento/paciente/${idPaciente}`).subscribe((result) => {
+      const AgendamentoPaciente = result;
+      const conflitos = AgendamentoPaciente.filter(agendamento =>
+        (novaDataInicial >= moment(agendamento.dataInicial) && novaDataInicial < moment(agendamento.dataFinal)) ||
+        (novaDataFinal > moment(agendamento.dataInicial) && novaDataFinal <= moment(agendamento.dataFinal)) ||
+        (novaDataInicial <= moment(agendamento.dataInicial) && novaDataFinal >= moment(agendamento.dataFinal))
+      );
+
+      if (conflitos.length > 0) {
+        this.mensagemErro = 'Paciente possui agendamento para a data e hora informada.'
+      }
+    });
+  };
 
   selecionaPaciente(item) {
     this.pacienteSelecionado = item;
