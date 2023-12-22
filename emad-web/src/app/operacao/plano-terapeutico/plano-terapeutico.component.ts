@@ -146,11 +146,33 @@ export class PlanoTerapeuticoComponent implements OnInit {
         this.consultaProfissionalPorEquipe(value);
       }
     });
-    this.form.get('dataInicial').valueChanges.subscribe((result) => {
-      this.dataSelecionada = moment(result).format('YYYY-MM-DDTHH:mm');
+    this.form.get('dataFinal').valueChanges.subscribe((result) => {
+      const dtIn = this.form.get('dataInicial').value
+      const dtFim = result
+      this.verificarAgendamento(moment(dtIn), moment(dtFim));
     });
 
   }
+
+  verificarAgendamento(dataInicial: any, dataFinal: any) {
+    const idPaciente = Number(this.form.get('idPaciente').value);
+    const novaDataInicial = moment(dataInicial);
+    const novaDataFinal = moment(dataFinal);
+
+    this.service.list(`agendamento/paciente/${idPaciente}`).subscribe((result) => {
+      const AgendamentoPaciente = result;
+      const conflitos = AgendamentoPaciente.filter(agendamento =>
+        (novaDataInicial >= moment(agendamento.dataInicial) && novaDataInicial < moment(agendamento.dataFinal)) ||
+        (novaDataFinal > moment(agendamento.dataInicial) && novaDataFinal <= moment(agendamento.dataFinal)) ||
+        (novaDataInicial <= moment(agendamento.dataInicial) && novaDataFinal >= moment(agendamento.dataFinal))
+      );
+
+      if (conflitos.length > 0) {
+        console.log('Existe na mesma data')
+      }
+    });
+  };
+
 
   fomularioAgendamento() {
     this.form = this.fb.group({
@@ -305,8 +327,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
     });
   }
 
-
-
   selecionaPaciente(item) {
     this.pacienteSelecionado = item;
   }
@@ -356,6 +376,12 @@ export class PlanoTerapeuticoComponent implements OnInit {
     });
   }
 
+  consultaAgendamentoId(id: number) {
+    this.service.list(`agendamento/${id}`).subscribe((result) => {
+      this.dadosAgendamento = result
+    });
+  }
+
   consultaPaciente(id: number) {
     this.service.list(`paciente/${id}`).subscribe((result) => {
       this.idEstabelecimento = result.idEstabelecimentoCadastro
@@ -376,13 +402,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
     this.modalData = { event, action };
     this.openModalConsultaAgendamento(this.modalInfoAgendamento)
     this.consultaAgendamentoId(idAgendamento)
-  }
-
-
-  consultaAgendamentoId(id: number) {
-    this.service.list(`agendamento/${id}`).subscribe((result) => {
-      this.dadosAgendamento = result
-    });
   }
 
   openModalConsultaAgendamento(content: any) {
@@ -478,7 +497,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
     this.activeDayIsOpen = false;
   }
 
-
   onDateSelection(date: NgbDate) {
     if (!this.fromDate && !this.toDate) {
       this.fromDate = date;
@@ -517,6 +535,4 @@ export class PlanoTerapeuticoComponent implements OnInit {
   togglePaciente() {
     return Util.isEmpty(this.paciente.cartaoSus) && Util.isEmpty(this.paciente.nome);
   }
-
-
 }
