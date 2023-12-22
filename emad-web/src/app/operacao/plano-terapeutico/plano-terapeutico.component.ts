@@ -178,7 +178,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
       this.mensagem = 'Agendamento salvo com sucesso'
       this.closeModal()
       this.consultaAgendamentos();
-      this.limparFormulario()
     })
   }
 
@@ -419,6 +418,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
 
   closeModal() {
     this.modalRef.dismiss()
+    this.limparFormulario()
   }
 
   setView(view: string) {
