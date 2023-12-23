@@ -80,13 +80,17 @@ export class PlanoTerapeuticoComponent implements OnInit {
   pagedItems: any[];
   fields: any[] = [];
   listaEquipe: any[] = []
+  listaEspecialidade: any[] = []
   object: AgendaProfissional = new AgendaProfissional();
   tipoAtendimento = [];
   formaAtendimento = [];
   events: CalendarEvent[] = [];
 
   listaProfissional = [];
+
+  //Mensagens
   mensagem = '';
+  mensagemErro: string;
 
   modalData: {
     action: string;
@@ -129,6 +133,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
 
   ngOnInit() {
     this.consultaAgendamentos();
+    this.consultaEspecialidade();
     this.carregarFormaAtendimento();
     this.carregarTipoAtendimento();
     this.fomularioAgendamento()
@@ -139,31 +144,38 @@ export class PlanoTerapeuticoComponent implements OnInit {
       }
       if (value == 1) {
         this.consultaProfissional();
+        this.form.get('idEquipe').clearValidators()
+        this.form.get('idEquipe').updateValueAndValidity()
       }
       if (value == 2) {
         this.consultaProfissionalPorEquipe(value);
+        this.form.get('idProfissional').clearValidators()
+        this.form.get('idProfissional').updateValueAndValidity()
       }
     });
-    this.form.get('dataInicial').valueChanges.subscribe((result) => {
-      this.dataSelecionada = moment(result).format('YYYY-MM-DDTHH:mm');
+    this.form.get('dataFinal').valueChanges.subscribe((result) => {
+      const dtIn = this.form.get('dataInicial').value
+      const dtFim = result
+      this.consultaAgendaPaciente(moment(dtIn), moment(dtFim));
+      this.form.patchValue({ formaAtendimento: 1 })
     });
 
   }
 
   fomularioAgendamento() {
     this.form = this.fb.group({
-      id: ['', [Validators.required]],
+      id: [''],
+      nomePaciente: [''],
       idPaciente: ['', [Validators.required]],
       idEquipe: ['', [Validators.required]],
       idProfissional: ['', [Validators.required]],
-      nomePaciente: ['', [Validators.required]],
-      formaAtendimento: [1, [Validators.required]],
+      formaAtendimento: ['', [Validators.required]],
       tipoAtendimento: ['', [Validators.required,]],
       dataInicial: ['', [Validators.required,]],
       dataFinal: ['', [Validators.required,]],
-      observacao: ['']
+      especialidade: ['', Validators.required],
+      observacao: [''],
     });
-
   }
 
   limparFormulario() {
@@ -175,7 +187,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
       this.mensagem = 'Agendamento salvo com sucesso'
       this.closeModal()
       this.consultaAgendamentos();
-      this.limparFormulario()
     })
   }
 
@@ -233,6 +244,13 @@ export class PlanoTerapeuticoComponent implements OnInit {
     });
   }
 
+  consultaEspecialidade() {
+    this.service.list('especialidade').subscribe((result) => {
+      this.listaEspecialidade = result
+      console.log(result);
+    })
+  }
+
   consultaProfissionalPorEquipe(value: number) {
     const idEquipe = value
     this.service.list(`profissional/equipe/${idEquipe}`).subscribe((result) => {
@@ -241,13 +259,81 @@ export class PlanoTerapeuticoComponent implements OnInit {
   }
 
   consultaProfissional() {
+    this.listaProfissional = []
+    const idEspecialidade = Number(this.form.get('especialidade').value);
+    const novaDataInicial = moment(this.form.get('dataInicial').value);
+    const novaDataFinal = moment(this.form.get('dataFinal').value);
     if (this.pacienteSelecionado) {
       this.idEstabelecimento = Number(this.pacienteSelecionado.idEstabelecimento);
     }
+    //Cosnulta por estabelecimento e especialidade
+    if (idEspecialidade) {
+      this.service.list(`profissional/especialidade/${this.idEstabelecimento}/${idEspecialidade}`).subscribe((result) => {
+        const listaProfissionais = result;
+        listaProfissionais.forEach(item => {
+          const idProfissional = item.id;
+          this.service.list(`agendamento/profissional/${idProfissional}`).subscribe((result) => {
+            const agendamentoProfissional = result;
+
+            const conflitos = agendamentoProfissional.filter(agendamento =>
+              (novaDataInicial >= moment(agendamento.dataInicial) && novaDataInicial < moment(agendamento.dataFinal)) ||
+              (novaDataFinal > moment(agendamento.dataInicial) && novaDataFinal <= moment(agendamento.dataFinal)) ||
+              (novaDataInicial <= moment(agendamento.dataInicial) && novaDataFinal >= moment(agendamento.dataFinal))
+            );
+
+            if (conflitos.length == 0) {
+              this.listaProfissional.push(item);
+            }
+            console.log(this.listaProfissional)
+          });
+        });
+      });
+      return
+    }
+
+    //Consulta somente por estabelecimento
     this.service.list(`profissional/estabelecimento/${this.idEstabelecimento}`).subscribe((result) => {
-      this.listaProfissional = result;
-    })
+      const listaProfissionais = result;
+      //Logica para verificar o conflito de agenda dos profissionais
+      listaProfissionais.forEach(item => {
+        const idProfissional = item.id;
+        this.service.list(`agendamento/profissional/${idProfissional}`).subscribe((result) => {
+          const agendamentoProfissional = result;
+
+          const conflitos = agendamentoProfissional.filter(agendamento =>
+            (novaDataInicial >= moment(agendamento.dataInicial) && novaDataInicial < moment(agendamento.dataFinal)) ||
+            (novaDataFinal > moment(agendamento.dataInicial) && novaDataFinal <= moment(agendamento.dataFinal)) ||
+            (novaDataInicial <= moment(agendamento.dataInicial) && novaDataFinal >= moment(agendamento.dataFinal))
+          );
+
+          if (conflitos.length == 0) {
+            this.listaProfissional.push(item);
+          }
+        });
+      });
+    });
   }
+
+  consultaAgendaPaciente(dataInicial: any, dataFinal: any) {
+    //verifica disponibilidade do agendamento do paciente para o dia informado.
+    this.mensagemErro = '';
+    const idPaciente = Number(this.form.get('idPaciente').value);
+    const novaDataInicial = moment(dataInicial);
+    const novaDataFinal = moment(dataFinal);
+
+    this.service.list(`agendamento/paciente/${idPaciente}`).subscribe((result) => {
+      const AgendamentoPaciente = result;
+      const conflitos = AgendamentoPaciente.filter(agendamento =>
+        (novaDataInicial >= moment(agendamento.dataInicial) && novaDataInicial < moment(agendamento.dataFinal)) ||
+        (novaDataFinal > moment(agendamento.dataInicial) && novaDataFinal <= moment(agendamento.dataFinal)) ||
+        (novaDataInicial <= moment(agendamento.dataInicial) && novaDataFinal >= moment(agendamento.dataFinal))
+      );
+
+      if (conflitos.length > 0) {
+        this.mensagemErro = 'Paciente possui agendamento para a data e hora informada.'
+      }
+    });
+  };
 
   selecionaPaciente(item) {
     this.pacienteSelecionado = item;
@@ -298,6 +384,12 @@ export class PlanoTerapeuticoComponent implements OnInit {
     });
   }
 
+  consultaAgendamentoId(id: number) {
+    this.service.list(`agendamento/${id}`).subscribe((result) => {
+      this.dadosAgendamento = result
+    });
+  }
+
   consultaPaciente(id: number) {
     this.service.list(`paciente/${id}`).subscribe((result) => {
       this.idEstabelecimento = result.idEstabelecimentoCadastro
@@ -318,13 +410,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
     this.modalData = { event, action };
     this.openModalConsultaAgendamento(this.modalInfoAgendamento)
     this.consultaAgendamentoId(idAgendamento)
-  }
-
-
-  consultaAgendamentoId(id: number) {
-    this.service.list(`agendamento/${id}`).subscribe((result) => {
-      this.dadosAgendamento = result
-    });
   }
 
   openModalConsultaAgendamento(content: any) {
@@ -360,6 +445,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
 
   closeModal() {
     this.modalRef.dismiss()
+    this.limparFormulario()
   }
 
   setView(view: string) {
@@ -419,7 +505,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
     this.activeDayIsOpen = false;
   }
 
-
   onDateSelection(date: NgbDate) {
     if (!this.fromDate && !this.toDate) {
       this.fromDate = date;
@@ -458,6 +543,4 @@ export class PlanoTerapeuticoComponent implements OnInit {
   togglePaciente() {
     return Util.isEmpty(this.paciente.cartaoSus) && Util.isEmpty(this.paciente.nome);
   }
-
-
 }

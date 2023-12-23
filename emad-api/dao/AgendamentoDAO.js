@@ -30,6 +30,52 @@ AgendamentoDAO.prototype.buscaPorId = function (id, callback) {
         where a.id = ?`, id, callback);
 }
 
+AgendamentoDAO.prototype.buscaPorProfissional = function (id, callback) {
+    this._connection.query(`select 
+       a.id as idAgendamento,
+        a.idPaciente,
+        a.idEquipe,
+        a.idProfissional,
+        a.formaAtendimento,
+        a.tipoAtendimento,
+        a.dataInicial,
+        a.dataFinal,
+        a.observacao,
+        e.nome,
+        p.nome as profissionalNome,
+        p.id as profissionalId,
+        p.teleatendimento as profissionalTeleatendimento,
+        pc.nome as pacienteNome
+            FROM ${this._table} a 
+            inner join tb_profissional p ON(a.idProfissional = p.id) 
+            left join tb_equipe e ON(a.idEquipe = e.id)
+            inner join tb_paciente pc ON(a.idPaciente = pc.id)
+        where a.situacao = 1 AND a.idProfissional = ?`, id, callback);
+}
+
+AgendamentoDAO.prototype.buscaPorPaciente = function (id, callback) {
+    this._connection.query(`select 
+       a.id as idAgendamento,
+        a.idPaciente,
+        a.idEquipe,
+        a.idProfissional,
+        a.formaAtendimento,
+        a.tipoAtendimento,
+        a.dataInicial,
+        a.dataFinal,
+        a.observacao,
+        e.nome,
+        p.nome as profissionalNome,
+        p.id as profissionalId,
+        p.teleatendimento as profissionalTeleatendimento,
+        pc.nome as pacienteNome
+            FROM ${this._table} a 
+            left join tb_profissional p ON(a.idProfissional = p.id) 
+            left join tb_equipe e ON(a.idEquipe = e.id)
+            inner join tb_paciente pc ON(a.idPaciente = pc.id)
+        where a.situacao = 1 AND a.idPaciente = ?`, id, callback);
+}
+
 AgendamentoDAO.prototype.lista = function (addFilter, callback) {
     let where = " 1=1";
     if (addFilter.idPaciente) {
