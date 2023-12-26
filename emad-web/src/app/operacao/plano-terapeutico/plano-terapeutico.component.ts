@@ -404,6 +404,12 @@ export class PlanoTerapeuticoComponent implements OnInit {
     });
   }
 
+  consultaAgendamentoId(id: number) {
+    this.service.list(`agendamento/${id}`).subscribe((result) => {
+      this.dadosAgendamento = result
+    });
+  }
+
   consultaPaciente(id: number) {
     this.service.list(`paciente/${id}`).subscribe((result) => {
       this.idEstabelecimento = result.idEstabelecimentoCadastro
