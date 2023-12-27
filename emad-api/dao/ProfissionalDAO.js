@@ -483,6 +483,41 @@ ProfissionalDAO.prototype.buscaProfissionalSusPorUsuarioSync = async function (i
     return profissional[0];
 }
 
+ProfissionalDAO.prototype.buscaProfissionalDisponivelParaAgendamentoPorEspecialidade = async function (params, res) {
+    return await this._connection.query(
+        `SELECT *
+            FROM tb_profissional as pfst
+            WHERE pfst.idEspecialidade = ${params.idEspecialidade}
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM tb_agendamento as agt
+                    WHERE agt.idProfissional = pfst.id
+                        AND agt.situacao = 1
+                        AND (
+                            ('${params.dataInicial}' BETWEEN agt.dataInicial AND agt.dataFinal
+                            OR '${params.dataFinal}' BETWEEN agt.dataInicial AND agt.dataFinal)
+                            OR
+                            (agt.dataInicial BETWEEN '${params.dataInicial}' AND '${params.dataFinal}'
+                            OR agt.dataFinal BETWEEN '${params.dataInicial}' AND '${params.dataFinal}')
+                        )
+                )
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM tb_agendamento as agt
+                    INNER JOIN tb_profissional_equipe tpet ON true
+                    WHERE agt.idEquipe = tpet.idEquipe
+                        AND agt.situacao = 1
+                        AND pfst.id = tpet.idProfissional
+                        AND (
+                            ('${params.dataInicial}' BETWEEN agt.dataInicial AND agt.dataFinal
+                            OR '${params.dataFinal}' BETWEEN agt.dataInicial AND agt.dataFinal)
+                            OR
+                            (agt.dataInicial BETWEEN '${params.dataInicial}' AND '${params.dataFinal}'
+                            OR agt.dataFinal BETWEEN '${params.dataInicial}' AND '${params.dataFinal}'))
+        )`, res
+    )
+}
+
 module.exports = function () {
     return ProfissionalDAO;
 };

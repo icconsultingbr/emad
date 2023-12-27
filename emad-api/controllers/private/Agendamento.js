@@ -31,6 +31,7 @@ module.exports = function (app) {
             return;
         });
     });
+
     app.get('/agendamento/equipe/:id', function (req, res) {
         let usuario = req.usuario;
         let id = parseInt(req.params.id);
@@ -288,6 +289,7 @@ module.exports = function (app) {
         });
         return d.promise;
     };
+
     function buscaPorProfissional(id, res) {
         let q = require('q');
         let d = q.defer();

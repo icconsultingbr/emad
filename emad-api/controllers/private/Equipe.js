@@ -12,6 +12,18 @@ module.exports = function (app) {
         });
     });
 
+    app.get('/equipe/agendamento/especialidade/:idEspecialidade/:dataInicial/:dataFinal/:idEstabelecimento', function (req, res) {
+        let usuario = req.usuario;
+        let params = req.params
+        let util = new app.util.Util();
+        let errors = [];
+
+        listaEquipeDisponivelParaAgendamentoPorEspecialidade(params, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
     app.get('/equipe/estabelecimento/:id', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
@@ -39,7 +51,6 @@ module.exports = function (app) {
         });
     });
 
-
     app.get('/equipe/equipe/:equipe/:idEstabelecimento', function (req, res) {
         let usuario = req.usuario;
         let equipe = req.params.equipe;
@@ -54,7 +65,6 @@ module.exports = function (app) {
         });
 
     });
-
 
     app.post('/equipe', function (req, res) {
         var obj = req.body;
@@ -195,6 +205,32 @@ module.exports = function (app) {
         return d.promise;
     }
 
+    function listaEquipeDisponivelParaAgendamentoPorEspecialidade(req, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.EquipeDAO(connection, null);
+        var errors = [];
+
+
+        var errors = [];
+
+        objDAO.buscaEquipeDisponivelParaAgendamentoPorEspecialidade(req, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }
+
     function lista(res) {
         var q = require('q');
         var d = q.defer();
@@ -291,7 +327,6 @@ module.exports = function (app) {
         return d.promise;
     }
 
-
     function deletaPorId(id, res) {
         var q = require('q');
         var d = q.defer();
@@ -362,7 +397,6 @@ module.exports = function (app) {
         return d.promise;
     }
 
-
     function deletaProfissionaisPorEquipe(id, res) {
         var q = require('q');
         var d = q.defer();
@@ -408,5 +442,4 @@ module.exports = function (app) {
         });
         return d.promise;
     }
-
 }
