@@ -1,7 +1,7 @@
 <app-loader [loading]="loading"></app-loader>
 
 
-<!-- adicionar agendamento -->
+<!-- Botão adicionar agendamento -->
 <div class="row" style="margin: 2%;">
     <button class="btn btn-success" (click)="openModalAgendamento()">
         <i class="fas fa-plus"></i> Adicionar Agendamento
@@ -72,7 +72,8 @@
         </mwl-calendar-day-view> -->
     </div>
 </div>
-<!-- modal adicionar agendamento -->
+
+<!-- Adicionar agendamento -->
 <ng-template #modalAdicionarAgendamento let-close="close">
     <form [formGroup]="form">
         <div class="modal-header">
@@ -215,7 +216,7 @@
 
 </ng-template>
 
-<!-- consulta agendamento -->
+<!-- Consulta agendamento -->
 <ng-template #modalInfoAgendamento let-close="close">
     <div class="modal-header">
         <h5 class="modal-title">Agendamento</h5>
@@ -286,6 +287,7 @@
     </div>
 </ng-template>
 
+<!-- Consulta Paciente -->
 <ng-template #contentClient>
     <div class="modal-header">
         <h4 class="modal-title">Localizar paciente</h4>

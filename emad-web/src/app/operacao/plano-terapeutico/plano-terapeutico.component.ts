@@ -140,10 +140,15 @@ export class PlanoTerapeuticoComponent implements OnInit {
         this.listaProfissionalDisponivel();
         this.form.get('idEquipe').clearValidators()
         this.form.get('idEquipe').updateValueAndValidity()
+        this.form.patchValue({
+          idEquipe: null
+        })
       }
       if (value == 2) {
         this.listaEquipeDisponivel();
-
+        this.form.patchValue({
+          idProfissional: null
+        })
         this.form.get('idProfissional').clearValidators()
         this.form.get('idProfissional').updateValueAndValidity()
       }
@@ -474,6 +479,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
       size: 'lg'
     });
   }
+
   closeModalLocalizarPaciente() {
     this.modalRefLocalizarPaciente.dismiss()
     this.paciente = new Paciente
@@ -484,7 +490,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
     this.modalRef.dismiss()
     this.limparFormulario()
   }
-
 
   setView(view: string) {
     this.view = view;
