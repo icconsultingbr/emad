@@ -38,7 +38,6 @@ registerLocaleData(localePt);
         AppModalModule,
         RouterModule.forChild(planoTerapeuticoRoutes),
         CalendarModule.forRoot(),
-
     ],
     declarations: [
         PlanoTerapeuticoComponent

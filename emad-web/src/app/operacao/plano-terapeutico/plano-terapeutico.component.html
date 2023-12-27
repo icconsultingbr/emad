@@ -289,7 +289,7 @@
 <ng-template #contentClient>
     <div class="modal-header">
         <h4 class="modal-title">Localizar paciente</h4>
-        <button type="button" class="close" aria-label="Close" (click)="close()">
+        <button type="button" class="close" aria-label="Close" (click)="closeModalLocalizarPaciente()">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
@@ -436,7 +436,7 @@
                     <i class="fa fa-plus-circle"></i> Carregar seleção
                 </button>
 
-                <button class="btn btn-default" (click)="close()" type="button">
+                <button class="btn btn-default" (click)="closeModalLocalizarPaciente()" type="button">
                     <i class="fa fa-times"></i> Cancelar
                 </button>
             </div>
