@@ -262,20 +262,20 @@
             <i style="font-size: 25px;" class="col-xl-2" class="fas fa-calendar-alt"></i>
             <div style="text-align: left; " class="col-xl-10">
                 <label style="margin-bottom: 0;">
-                    Data de Atendimento
+                    Início Atendimento
                 </label>
-                <h5>{{formatarDataHora(dadosAgendamento?.dataInicial).data + ' Até ' +
-                    formatarDataHora(dadosAgendamento?.dataFinal).data}}</h5>
+                <h5>{{formatarDataHora(dadosAgendamento?.dataInicial).data + ' ás ' +
+                    formatarDataHora(dadosAgendamento?.dataInicial).hora + ' Horas'}}</h5>
 
             </div>
         </div>
         <div class="row" style="align-items: center;">
-            <i style="font-size: 25px;" class="col-xl-2" class="fas fa-clock"></i>
+            <i style="font-size: 25px;" class="col-xl-2" class="fas fa-calendar-alt"></i>
             <div style="text-align: left; " class="col-xl-10">
                 <label style="margin-bottom: 0;">
-                    Hora de Atendimento
+                    Fim do Atendimento
                 </label>
-                <h5>{{formatarDataHora(dadosAgendamento?.dataInicial).hora + ' Até ' +
+                <h5>{{formatarDataHora(dadosAgendamento?.dataFinal).data + ' ás ' +
                     formatarDataHora(dadosAgendamento?.dataFinal).hora + ' Horas'}}</h5>
             </div>
         </div>
