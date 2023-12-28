@@ -158,6 +158,12 @@ const appRoutes: Routes = [
       "./cadastro/dominio/atencao-continuada/atencao-continuada.module#AtencaoContinuadaModule",
   },
   {
+    path: "orientacao-sexual",
+    canActivate: [AuthGuard],
+    loadChildren:
+      "./cadastro/dominio/orientacao-sexual/orientacao-sexual.module#OrientacaoSexualModule",
+  },
+  {
     path: "grupos-materiais",
     canActivate: [AuthGuard],
     loadChildren:
