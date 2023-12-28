@@ -1,5 +1,17 @@
 module.exports = function (app) {
 
+    app.get('/profissional/agendamento/especialidade/:idEspecialidade/:dataInicial/:dataFinal', function (req, res) {
+        let usuario = req.usuario;
+        let params = req.params
+        let util = new app.util.Util();
+        let errors = [];
+
+        listaProfissionalDisponivelParaAgendamentoPorEspecialidade(params, res).then(function (response) {
+            res.status(200).json(response);
+            return;
+        });
+    });
+
     app.get('/profissional', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();
@@ -404,6 +416,32 @@ module.exports = function (app) {
         });
     });
 
+    function listaProfissionalDisponivelParaAgendamentoPorEspecialidade(req, res) {
+        var q = require('q');
+        var d = q.defer();
+        var util = new app.util.Util();
+
+        var connection = app.dao.ConnectionFactory();
+        var objDAO = new app.dao.ProfissionalDAO(connection, null);
+        var errors = [];
+
+
+        var errors = [];
+
+        objDAO.buscaProfissionalDisponivelParaAgendamentoPorEspecialidade(req, function (exception, result) {
+            if (exception) {
+                d.reject(exception);
+                console.log(exception);
+                errors = util.customError(errors, "data", "Erro ao acessar os dados", "objs");
+                res.status(500).send(errors);
+                return;
+            } else {
+                d.resolve(result);
+            }
+        });
+        return d.promise;
+    }
+
     function listaPorEstabelecimento(estabelecimento, addFilter, res) {
         var q = require('q');
         var d = q.defer();
@@ -497,6 +535,7 @@ module.exports = function (app) {
         });
         return d.promise;
     }
+
     function buscarPorEstabelecimento(id, res) {
         var q = require('q');
         var d = q.defer();

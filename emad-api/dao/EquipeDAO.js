@@ -23,7 +23,6 @@ EquipeDAO.prototype.listaPorEstabelecimento = function (idEstabelecimento, callb
     WHERE b.id = ${idEstabelecimento} AND a.situacao = 1`, callback);
 }
 
-
 EquipeDAO.prototype.buscaPorEquipe = function (idEstabelecimento, callback) {
     this._connection.query(`SELECT 
     e.id,
@@ -54,6 +53,44 @@ EquipeDAO.prototype.deletaPorId = function (id, callback) {
 
 EquipeDAO.prototype.dominio = function (callback) {
     this._connection.query("select id, nome FROM " + this._table + " WHERE situacao = 1 ORDER BY nome ASC", callback);
+}
+
+EquipeDAO.prototype.buscaEquipeDisponivelParaAgendamentoPorEspecialidade = async function (params, res) {
+    return await this._connection.query(
+        `select te.* from tb_equipe te
+            where exists (select 1 from tb_profissional as pfst
+            inner join tb_profissional_equipe tpe on pfst.id = tpe.idProfissional
+            inner join tb_estabelecimento_usuario teu on pfst.idUsuario = teu.idUsuario
+            where te.idEstabelecimento = teu.idEstabelecimento
+            and pfst.idEspecialidade = ${params.idEspecialidade}
+            and teu.idEstabelecimento = ${params.idEstabelecimento}
+            and not exists (select 1 from tb_agendamento as agt
+                           where agt.idProfissional = pfst.id
+                           and agt.situacao = 1
+                           and (
+                               ('${params.dataInicial}' BETWEEN agt.dataInicial and agt.dataFinal
+                              or '${params.dataFinal}' BETWEEN agt.dataInicial and agt.dataFinal)
+                            or
+                             (agt.dataInicial between '${params.dataInicial}' and '${params.dataFinal}'
+                              or agt.dataFinal between '${params.dataInicial}' and '${params.dataFinal}')
+                              )
+                           )
+            and not exists (select 1
+                            from tb_agendamento as agt
+                            inner join tb_profissional_equipe tpet on true
+                            where agt.idEquipe = tpet.idEquipe
+                            and agt.situacao = 1
+                            and pfst.id = tpet.idProfissional
+                            and
+                            (
+                                   ('${params.dataInicial}' BETWEEN agt.dataInicial and agt.dataFinal
+                                  or '${params.dataFinal}' BETWEEN agt.dataInicial and agt.dataFinal)
+                                or
+                                 (agt.dataInicial between '${params.dataInicial}' and '${params.dataFinal}'
+                                  or agt.dataFinal between '${params.dataInicial}' and '${params.dataFinal}')
+                            ))
+        )`, res
+    )
 }
 
 module.exports = function () {

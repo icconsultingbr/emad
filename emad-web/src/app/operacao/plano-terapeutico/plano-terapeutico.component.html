@@ -1,8 +1,7 @@
-<app-agendamento></app-agendamento>
 <app-loader [loading]="loading"></app-loader>
 
 
-<!-- adicionar agendamento -->
+<!-- Botão adicionar agendamento -->
 <div class="row" style="margin: 2%;">
     <button class="btn btn-success" (click)="openModalAgendamento()">
         <i class="fas fa-plus"></i> Adicionar Agendamento
@@ -73,7 +72,8 @@
         </mwl-calendar-day-view> -->
     </div>
 </div>
-<!-- modal adicionar agendamento -->
+
+<!-- Adicionar agendamento -->
 <ng-template #modalAdicionarAgendamento let-close="close">
     <form [formGroup]="form">
         <div class="modal-header">
@@ -128,15 +128,15 @@
                                 <span class="text-danger font-weight-bold">*</span>
                             </label>
                             <div class="col-sm-4 p-0">
-                                <input formControlName="dataInicial" type="datetime-local" [min]="dataAtual"
-                                    class="w-100">
+                                <input type="datetime-local" formControlName="dataInicial" [min]="dataAtual"
+                                    (blur)="focoCampoData('dataInicial')" class="w-100">
                             </div>
                             <label class="col-sm-2 p-0">Fim
                                 <span class="text-danger font-weight-bold">*</span>
                             </label>
                             <div class="col-sm-4 p-0">
                                 <input formControlName="dataFinal" type="datetime-local" [min]="dataSelecionada"
-                                    class="w-100">
+                                    (blur)="focoCampoData('dataFinal')" class="w-100">
                             </div>
                         </div>
                     </div>
@@ -161,7 +161,7 @@
                     </div>
                 </div>
                 <!-- tipo atendimento -->
-                <div *ngIf="!mensagemErro && form.get('formaAtendimento').value" class="row itemAgendamento">
+                <div *ngIf="!mensagemErro && form.get('dataFinal').value" class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">
                         Tipo de atendimento <span class="text-danger font-weight-bold"> *</span>
                     </label>
@@ -204,6 +204,9 @@
                         <textarea rows="4" class="form-control has-error" formControlName="observacao"></textarea>
                     </div>
                 </div>
+                <div *ngFor="let alert of msgAlert">
+                    <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout">{{ alert.msg }}</alert>
+                </div>
             </div>
         </div>
         <div class="modal-footer">
@@ -216,7 +219,7 @@
 
 </ng-template>
 
-<!-- consulta agendamento -->
+<!-- Consulta agendamento -->
 <ng-template #modalInfoAgendamento let-close="close">
     <div class="modal-header">
         <h5 class="modal-title">Agendamento</h5>
@@ -235,7 +238,7 @@
             </div>
         </div>
 
-        <div class="row" style="align-items: center;">
+        <div *ngIf="dadosAgendamento?.profissionalNome" class="row" style="align-items: center;">
             <i style="font-size: 25px;" class="col-xl-2" class="fas fa-user-md"></i>
             <div style="text-align: left; " class="col-xl-10">
                 <label style="margin-bottom: 0;">
@@ -245,24 +248,34 @@
             </div>
         </div>
 
+        <div *ngIf="dadosAgendamento?.nomeEquipe" class="row" style="align-items: center;">
+            <i style="font-size: 25px;" class="col-xl-2" class="fas fa-users"></i>
+            <div style="text-align: left; " class="col-xl-10">
+                <label style="margin-bottom: 0;">
+                    Equipe
+                </label>
+                <h5>{{dadosAgendamento?.nomeEquipe}}</h5>
+            </div>
+        </div>
+
         <div class="row" style="align-items: center;">
             <i style="font-size: 25px;" class="col-xl-2" class="fas fa-calendar-alt"></i>
             <div style="text-align: left; " class="col-xl-10">
                 <label style="margin-bottom: 0;">
-                    Data de Atendimento
+                    Início Atendimento
                 </label>
-                <h5>{{formatarDataHora(dadosAgendamento?.dataInicial).data + ' Até ' +
-                    formatarDataHora(dadosAgendamento?.dataFinal).data}}</h5>
+                <h5>{{formatarDataHora(dadosAgendamento?.dataInicial).data + ' ás ' +
+                    formatarDataHora(dadosAgendamento?.dataInicial).hora + ' Horas'}}</h5>
 
             </div>
         </div>
         <div class="row" style="align-items: center;">
-            <i style="font-size: 25px;" class="col-xl-2" class="fas fa-clock"></i>
+            <i style="font-size: 25px;" class="col-xl-2" class="fas fa-calendar-alt"></i>
             <div style="text-align: left; " class="col-xl-10">
                 <label style="margin-bottom: 0;">
-                    Hora de Atendimento
+                    Fim do Atendimento
                 </label>
-                <h5>{{formatarDataHora(dadosAgendamento?.dataInicial).hora + ' Até ' +
+                <h5>{{formatarDataHora(dadosAgendamento?.dataFinal).data + ' ás ' +
                     formatarDataHora(dadosAgendamento?.dataFinal).hora + ' Horas'}}</h5>
             </div>
         </div>
@@ -277,10 +290,11 @@
     </div>
 </ng-template>
 
+<!-- Consulta Paciente -->
 <ng-template #contentClient>
     <div class="modal-header">
         <h4 class="modal-title">Localizar paciente</h4>
-        <button type="button" class="close" aria-label="Close" (click)="close()">
+        <button type="button" class="close" aria-label="Close" (click)="closeModalLocalizarPaciente()">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
@@ -427,7 +441,7 @@
                     <i class="fa fa-plus-circle"></i> Carregar seleção
                 </button>
 
-                <button class="btn btn-default" (click)="close()" type="button">
+                <button class="btn btn-default" (click)="closeModalLocalizarPaciente()" type="button">
                     <i class="fa fa-times"></i> Cancelar
                 </button>
             </div>
