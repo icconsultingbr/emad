@@ -17,6 +17,7 @@ import { AppModalModule } from '../../_core/_components/app-modal/app-modal.modu
 import 'rxjs/add/operator/map';
 import { CalendarModule } from 'angular-calendar';
 import localePt from '@angular/common/locales/pt';
+import { AlertModule, TimepickerModule } from 'ngx-bootstrap';
 
 registerLocaleData(localePt);
 
@@ -38,6 +39,8 @@ registerLocaleData(localePt);
         AppModalModule,
         RouterModule.forChild(planoTerapeuticoRoutes),
         CalendarModule.forRoot(),
+        TimepickerModule.forRoot(),
+        AlertModule.forRoot()
     ],
     declarations: [
         PlanoTerapeuticoComponent

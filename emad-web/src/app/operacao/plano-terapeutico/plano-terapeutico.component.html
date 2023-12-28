@@ -128,18 +128,21 @@
                                 <span class="text-danger font-weight-bold">*</span>
                             </label>
                             <div class="col-sm-4 p-0">
-                                <input formControlName="dataInicial" type="datetime-local" [min]="dataAtual"
-                                    class="w-100">
+                                <input type="datetime-local" formControlName="dataInicial" [min]="dataAtual"
+                                    (blur)="focoCampoData('dataInicial')" class="w-100">
                             </div>
                             <label class="col-sm-2 p-0">Fim
                                 <span class="text-danger font-weight-bold">*</span>
                             </label>
                             <div class="col-sm-4 p-0">
                                 <input formControlName="dataFinal" type="datetime-local" [min]="dataSelecionada"
-                                    class="w-100">
+                                    (blur)="focoCampoData('dataFinal')" class="w-100">
                             </div>
                         </div>
                     </div>
+                </div>
+                <div *ngFor="let alert of mensagemDataInvalida">
+                    <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout">{{ alert.msg }}</alert>
                 </div>
 
                 <div *ngIf="mensagemErro">
@@ -161,7 +164,7 @@
                     </div>
                 </div>
                 <!-- tipo atendimento -->
-                <div *ngIf="!mensagemErro && form.get('formaAtendimento').value" class="row itemAgendamento">
+                <div *ngIf="!mensagemErro && form.get('dataFinal').value" class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">
                         Tipo de atendimento <span class="text-danger font-weight-bold"> *</span>
                     </label>

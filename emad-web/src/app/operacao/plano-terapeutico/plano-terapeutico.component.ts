@@ -49,7 +49,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
   @Input() public readonly: Boolean = false;
   view: string = 'month';
   selectedSchedule: any = null;
-  dataAtual = moment().format('YYYY-MM-DDTHH:mm');
+  dataAtual: string;
   selectedDate: Date;
   viewDate: Date = new Date();
   activeDayIsOpen: boolean = true;
@@ -85,6 +85,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
   //Mensagens
   mensagem = '';
   mensagemErro: string;
+  mensagemDataInvalida: any = [];
 
   modalData: {
     action: string;
@@ -131,6 +132,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
     this.carregarFormaAtendimento();
     this.carregarTipoAtendimento();
     this.fomularioAgendamento()
+    this.dataAtual = moment().format('YYYY-MM-DDTHH:mm')
 
     this.form.get('tipoAtendimento').valueChanges.subscribe((value) => {
       if (!value) {
@@ -153,6 +155,8 @@ export class PlanoTerapeuticoComponent implements OnInit {
         this.form.get('idProfissional').updateValueAndValidity()
       }
     });
+
+
     this.form.get('dataFinal').valueChanges.subscribe((result) => {
       const dtIn = this.form.get('dataInicial').value
       const dtFim = result
@@ -160,6 +164,46 @@ export class PlanoTerapeuticoComponent implements OnInit {
       this.form.patchValue({ formaAtendimento: 1 })
     });
 
+  }
+
+  focoCampoData(value: string) {
+    if (value == 'dataInicial') {
+      const dtSelecionada = this.form.get('dataInicial').value;
+      const dtAtual = moment(new Date).format('YYYY-MM-DDTHH:mm');
+      if (dtSelecionada < dtAtual) {
+        this.add('error', 'A data selecionada não pode ser menor que a data atual.', 5000)
+        this.form.get('dataInicial').reset()
+      }
+    }
+    if (value == 'dataFinal') {
+      const dtSelecionada = this.form.get('dataFinal').value;
+      const dataInicial = this.form.get('dataInicial').value;
+      if (dtSelecionada < dataInicial) {
+        this.add('error', 'A data selecionada não pode ser menor que a data Inicial.', 5000)
+        this.form.get('dataFinal').reset()
+      }
+    }
+  }
+
+
+
+  add(tipo: string, msg: string, timeout: number): void {
+    let type = '';
+    if (tipo == 'error') {
+      type = 'danger'
+    }
+    if (tipo == 'sucesso') {
+      type = 'success'
+    }
+    if (tipo == 'informacao') {
+      type = 'info'
+    }
+
+    this.mensagemDataInvalida.push({
+      type: type,
+      msg: msg,
+      timeout: 5000
+    });
   }
 
   fomularioAgendamento() {
@@ -177,6 +221,9 @@ export class PlanoTerapeuticoComponent implements OnInit {
       observacao: [''],
     });
   }
+
+
+
 
   limparFormulario() {
     this.form.reset();
