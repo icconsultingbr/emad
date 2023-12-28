@@ -85,7 +85,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
   //Mensagens
   mensagem = '';
   mensagemErro: string;
-  mensagemDataInvalida: any = [];
+  msgAlert: any = [];
 
   modalData: {
     action: string;
@@ -155,10 +155,9 @@ export class PlanoTerapeuticoComponent implements OnInit {
         this.form.get('idProfissional').updateValueAndValidity()
       }
     });
-
-
     this.form.get('dataFinal').valueChanges.subscribe((result) => {
       const dtIn = this.form.get('dataInicial').value
+      this.dataSelecionada = moment(dtIn).format('YYYY-MM-DDTHH:mm');
       const dtFim = result
       this.consultaAgendaPaciente(moment(dtIn), moment(dtFim));
       this.form.patchValue({ formaAtendimento: 1 })
@@ -171,7 +170,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
       const dtSelecionada = this.form.get('dataInicial').value;
       const dtAtual = moment(new Date).format('YYYY-MM-DDTHH:mm');
       if (dtSelecionada < dtAtual) {
-        this.add('error', 'A data selecionada não pode ser menor que a data atual.', 5000)
+        this.alerta('error', 'A data selecionada não pode ser menor que a data atual.', 5000)
         this.form.get('dataInicial').reset()
       }
     }
@@ -179,7 +178,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
       const dtSelecionada = this.form.get('dataFinal').value;
       const dataInicial = this.form.get('dataInicial').value;
       if (dtSelecionada < dataInicial) {
-        this.add('error', 'A data selecionada não pode ser menor que a data Inicial.', 5000)
+        this.alerta('error', 'A data selecionada não pode ser menor que a data Inicial.', 5000)
         this.form.get('dataFinal').reset()
       }
     }
@@ -187,7 +186,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
 
 
 
-  add(tipo: string, msg: string, timeout: number): void {
+  alerta(tipo: string, msg: string, timeout: number): void {
     let type = '';
     if (tipo == 'error') {
       type = 'danger'
@@ -199,7 +198,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
       type = 'info'
     }
 
-    this.mensagemDataInvalida.push({
+    this.msgAlert.push({
       type: type,
       msg: msg,
       timeout: 5000
@@ -306,7 +305,12 @@ export class PlanoTerapeuticoComponent implements OnInit {
     const dataFinal = moment(this.form.get('dataFinal').value).format("YYYY-MM-DD HH:mm:ss");
     const idEspecialidade = this.form.get('especialidade').value;
     this.service.list(`profissional/agendamento/especialidade/${idEspecialidade}/${dataInicial}/${dataFinal}`).subscribe((result) => {
-      this.listaProfissional = result;
+      if (result.length > 0) {
+        this.listaProfissional = result;
+      } else {
+        this.alerta('error', 'Não há profissional disponível para a especialidade desejada na data selecionada.', 5000)
+        this.form.get('tipoAtendimento').reset();
+      }
     })
   }
 
@@ -317,7 +321,12 @@ export class PlanoTerapeuticoComponent implements OnInit {
     const idEspecialidade = this.form.get('especialidade').value;
     const idEstabelecimento = this.pacienteSelecionado.idEstabelecimento;
     this.service.list(`equipe/agendamento/especialidade/${idEspecialidade}/${dataInicial}/${dataFinal}/${idEstabelecimento}`).subscribe((result) => {
-      this.listaEquipe = result;
+      if (result.length > 0) {
+        this.listaEquipe = result;
+      } else {
+        this.alerta('error', 'Não há equipe disponível para a especialidade desejada na data selecionada.', 5000);
+        this.form.get('tipoAtendimento').reset();
+      }
     })
   }
 

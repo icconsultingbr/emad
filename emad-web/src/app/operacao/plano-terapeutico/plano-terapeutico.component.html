@@ -141,9 +141,6 @@
                         </div>
                     </div>
                 </div>
-                <div *ngFor="let alert of mensagemDataInvalida">
-                    <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout">{{ alert.msg }}</alert>
-                </div>
 
                 <div *ngIf="mensagemErro">
                     <p class="alert alert-info">{{mensagemErro}}</p>
@@ -206,6 +203,9 @@
                     <div class="col-xl-9 col-sm-12">
                         <textarea rows="4" class="form-control has-error" formControlName="observacao"></textarea>
                     </div>
+                </div>
+                <div *ngFor="let alert of msgAlert">
+                    <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout">{{ alert.msg }}</alert>
                 </div>
             </div>
         </div>
