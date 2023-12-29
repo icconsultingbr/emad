@@ -164,6 +164,12 @@ const appRoutes: Routes = [
       "./cadastro/dominio/orientacao-sexual/orientacao-sexual.module#OrientacaoSexualModule",
   },
   {
+    path: "genero",
+    canActivate: [AuthGuard],
+    loadChildren:
+      "./cadastro/dominio/genero/genero.module#GeneroModule",
+  },
+  {
     path: "grupos-materiais",
     canActivate: [AuthGuard],
     loadChildren:
