@@ -150,8 +150,8 @@ export class PacienteFormComponent implements OnInit {
                                   idEstabelecimentoCadastro: estabelecimentos,
                                   escolaridade: escolaridade,
                                   idModalidade: modalidades,
-                                  orientacaoSexual: orientacaoSexual,
-                                  genero: genero,
+                                  idOrientacaoSexual: orientacaoSexual,
+                                  idGenero: genero,
                                   sexo: [
                                     { id: '1', nome: 'Masculino' },
                                     { id: '2', nome: 'Feminino' },

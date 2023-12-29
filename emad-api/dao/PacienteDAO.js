@@ -103,7 +103,7 @@ PacienteDAO.prototype.salva = function (paciente, callback) {
                                 dadosPaciente[0].stGravidezPlanejada,
                                 dadosPaciente[0].nuGestasPrevias,
                                 dadosPaciente[0].nuPartos
-                            ],
+                                ],
 
                                 function (error, novoPaciente) {
                                     if (error) { return connDim.rollback(function () { console.log('Erro no insert' + error); conn.rollback(); throw error; }); }
@@ -463,7 +463,9 @@ PacienteDAO.prototype.buscaPorId = function (id, callback) {
     nomeMae, 
     nomePai, 
     DATE_FORMAT(dataNascimento,'%d/%m/%Y') as dataNascimento,
-    sexo, 
+    sexo,
+    idOrientacaoSexual,
+    idGenero,
     idNacionalidade, 
     idNaturalidade, 
     ocupacao, 
@@ -524,6 +526,8 @@ PacienteDAO.prototype.buscaPorIdSync = async function (id) {
     pac.nomePai, 
     DATE_FORMAT(pac.dataNascimento,'%d/%m/%Y') as dataNascimento,
     pac.sexo, 
+    pac.idOrientacaoSexual,
+    pac.idGenero,
     pac.idNacionalidade, 
     pac.idNaturalidade, 
     pac.ocupacao, 
@@ -580,14 +584,12 @@ PacienteDAO.prototype.buscaPorIdSync = async function (id) {
     return responsePaciente;
 }
 
-
-
 PacienteDAO.prototype.consultaPaciente = async function (tipo, valor) {
     const camposDeConsulta = {
-        1 : 'pac.id',
-        2 : 'pac.cpf',
-        3 : 'pac.cartaoSus',
-        4 : 'pac.idSap'
+        1: 'pac.id',
+        2: 'pac.cpf',
+        3: 'pac.cartaoSus',
+        4: 'pac.idSap'
     };
 
     if (!camposDeConsulta[tipo]) {
@@ -602,7 +604,9 @@ PacienteDAO.prototype.consultaPaciente = async function (tipo, valor) {
         pac.nomeMae, 
         pac.nomePai, 
         DATE_FORMAT(pac.dataNascimento,'%d/%m/%Y') as dataNascimento,
-        pac.sexo, 
+        pac.sexo,
+        pac.idOrientacaoSexual,
+        pac.idGenero,
         pac.idNacionalidade, 
         pac.idNaturalidade, 
         pac.ocupacao, 
@@ -661,7 +665,6 @@ PacienteDAO.prototype.consultaPaciente = async function (tipo, valor) {
     return responsePaciente;
 }
 
-
 PacienteDAO.prototype.buscaPorIdFicha = function (id, callback) {
     this._connection.query(`SELECT 
     p.id,
@@ -675,7 +678,9 @@ PacienteDAO.prototype.buscaPorIdFicha = function (id, callback) {
     p.nomeMae, 
     p.nomePai, 
     DATE_FORMAT(p.dataNascimento,'%d/%m/%y') as dataNascimento,
-    p.sexo, 
+    p.sexo,
+    p.idOrientacaoSexual,
+    p.idGenero,
     p.idNacionalidade, 
     p.idNaturalidade, 
     p.ocupacao, 
