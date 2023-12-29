@@ -129,60 +129,66 @@ export class PacienteFormComponent implements OnInit {
           this.service
             .listDomains('estabelecimento')
             .subscribe((estabelecimentos) => {
-              this.service.listDomains('raca').subscribe((racas) => {
-                this.service
-                  .listDomains('hipotese-diagnostica')
-                  .subscribe((hipoteseDiagnostica) => {
+              this.service.list('orientacao-sexual').subscribe((orientacaoSexual) => {
+                this.service.list('genero').subscribe((genero) => {
+                  this.service.listDomains('raca').subscribe((racas) => {
                     this.service
-                      .listDomains('atencao-continuada')
-                      .subscribe((atencaoContinuada) => {
+                      .listDomains('hipotese-diagnostica')
+                      .subscribe((hipoteseDiagnostica) => {
                         this.service
-                          .listDomains('escolaridade')
-                          .subscribe((escolaridade) => {
-                            this.domains.push({
-                              idUf: ufs,
-                              idNacionalidade: paises,
-                              idNaturalidade: [],
-                              idMunicipio: [],
-                              hipoteses: hipoteseDiagnostica,
-                              idEstabelecimentoCadastro: estabelecimentos,
-                              escolaridade: escolaridade,
-                              idModalidade: modalidades,
-                              sexo: [
-                                { id: '1', nome: 'Masculino' },
-                                { id: '2', nome: 'Feminino' },
-                                { id: '3', nome: 'Ambos' },
-                                { id: '4', nome: 'Não informado' },
-                              ],
-                              idTipoSanguineo: [
-                                { id: '1', nome: 'A_POSITIVO' },
-                                { id: '2', nome: 'A_NEGATIVO' },
-                                { id: '3', nome: 'B_POSITIVO' },
-                                { id: '4', nome: 'B_NEGATIVO' },
-                                { id: '5', nome: 'AB_POSITIVO' },
-                                { id: '6', nome: 'AB_NEGATIVO' },
-                                { id: '7', nome: 'O_POSITIVO' },
-                                { id: '8', nome: 'O_NEGATIVO' },
-                              ],
-                              aleitamentoMaterno: [
-                                { id: '1', nome: 'Exclusivo' },
-                                { id: '2', nome: 'Predominante' },
-                                { id: '3', nome: 'Complementado' },
-                                { id: '4', nome: 'Inexistente' },
-                              ],
-                              idRaca: racas,
-                              idAtencaoContinuada: atencaoContinuada,
-                              gruposAtencaoContinuada: atencaoContinuada,
-                            });
-                            if (!Util.isEmpty(this.id)) {
-                              this.encontraPaciente();
-                            } else {
-                              this.loading = false;
-                              this.loadPhoto = true;
-                            }
+                          .listDomains('atencao-continuada')
+                          .subscribe((atencaoContinuada) => {
+                            this.service
+                              .listDomains('escolaridade')
+                              .subscribe((escolaridade) => {
+                                this.domains.push({
+                                  idUf: ufs,
+                                  idNacionalidade: paises,
+                                  idNaturalidade: [],
+                                  idMunicipio: [],
+                                  hipoteses: hipoteseDiagnostica,
+                                  idEstabelecimentoCadastro: estabelecimentos,
+                                  escolaridade: escolaridade,
+                                  idModalidade: modalidades,
+                                  orientacaoSexual: orientacaoSexual,
+                                  genero: genero,
+                                  sexo: [
+                                    { id: '1', nome: 'Masculino' },
+                                    { id: '2', nome: 'Feminino' },
+                                    { id: '3', nome: 'Ambos' },
+                                    { id: '4', nome: 'Não informado' },
+                                  ],
+                                  idTipoSanguineo: [
+                                    { id: '1', nome: 'A_POSITIVO' },
+                                    { id: '2', nome: 'A_NEGATIVO' },
+                                    { id: '3', nome: 'B_POSITIVO' },
+                                    { id: '4', nome: 'B_NEGATIVO' },
+                                    { id: '5', nome: 'AB_POSITIVO' },
+                                    { id: '6', nome: 'AB_NEGATIVO' },
+                                    { id: '7', nome: 'O_POSITIVO' },
+                                    { id: '8', nome: 'O_NEGATIVO' },
+                                  ],
+                                  aleitamentoMaterno: [
+                                    { id: '1', nome: 'Exclusivo' },
+                                    { id: '2', nome: 'Predominante' },
+                                    { id: '3', nome: 'Complementado' },
+                                    { id: '4', nome: 'Inexistente' },
+                                  ],
+                                  idRaca: racas,
+                                  idAtencaoContinuada: atencaoContinuada,
+                                  gruposAtencaoContinuada: atencaoContinuada,
+                                });
+                                if (!Util.isEmpty(this.id)) {
+                                  this.encontraPaciente();
+                                } else {
+                                  this.loading = false;
+                                  this.loadPhoto = true;
+                                }
+                              });
                           });
                       });
                   });
+                });
               });
             });
         });
@@ -250,6 +256,8 @@ export class PacienteFormComponent implements OnInit {
       nomePai: ['', ''],
       dataNascimento: ['', Validators.required],
       sexo: ['', Validators.required],
+      idOrientacaoSexual: ['', ''],
+      idGenero: ['', ''],
       idNacionalidade: ['', Validators.required],
       idNaturalidade: ['', Validators.required],
       ocupacao: ['', ''],
@@ -710,7 +718,7 @@ export class PacienteFormComponent implements OnInit {
     this.fileUploadService.uploadListImage(this.images).subscribe((result) => {
 
       result.forEach(object => {
-        object.idPaciente = this.id;        
+        object.idPaciente = this.id;
       });
 
       this.service.salvarArquivo(result).subscribe((result) => {
