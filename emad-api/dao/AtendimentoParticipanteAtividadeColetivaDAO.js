@@ -21,7 +21,8 @@ AtendimentoParticipanteAtividadeColetivaDAO.prototype.buscaPorAtendimentoId = fu
       atvcol.temperatura,
       atvcol.saturacao,
       atvcol.queixaHistoriaDoenca,
-      atvcol.observacao
+      atvcol.observacao,
+      atvcol.avaliacao
     from ${this._table} atvcol   
     INNER JOIN tb_paciente paciente ON (paciente.id = atvcol.idPaciente) 
     WHERE atvcol.idAtendimento = ?` , idAtendimento, callback);
