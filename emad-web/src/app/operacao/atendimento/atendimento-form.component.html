@@ -641,9 +641,21 @@
                 </label>
                 <div class="col-xl-8">
                   <div class="custom-control custom-checkbox" style="width: 25px">
-                    <input type="checkbox" id="pseEducacao" [(ngModel)]="object.pseEducacao"
+                    <input maxlength="60" type="checkbox" id="pseEducacao" [(ngModel)]="object.pseEducacao"
                       formControlName="pseEducacao" class="custom-control-input" />
                     <label class="custom-control-label" for="pseEducacao"></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="form-group row">
+                  <label class="col-xl-4 col-form-label text-left"> Descrição do Tipo de Atividade </label>
+                  <div class="col-xl-8">
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.descricaoTipoAtividade"
+                      formControlName="descricaoTipoAtividade" />
                   </div>
                 </div>
               </div>
@@ -4344,7 +4356,8 @@
     </button>
   </div>
   <div class="modal-body">
-    <app-file-upload [formatsAllowed]="'.jpg,.png,.jpeg'" [multiple]="true" (changeFiles)="fileChangeEvent($event)">
+    <app-file-upload [formatsAllowed]="'.jpg,.png,.jpeg,.bmp,.pdf'" [multiple]="true"
+      (changeFiles)="fileChangeEvent($event)">
     </app-file-upload>
   </div>
   <div *ngIf="this.images?.length > 0" class="modal-footer">

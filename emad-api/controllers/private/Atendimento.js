@@ -258,7 +258,7 @@ module.exports = function (app) {
         req.assert("tipoFicha").notEmpty().withMessage("Tipo de ficha é um campo obrigatório;");
         req.assert("idClassificacaoRisco").notEmpty().withMessage("Classificação de risco é um campo obrigatório;");
 
-        if (obj.tipoFicha != 1 && obj.tipoFicha != 8){
+        if (obj.tipoFicha != 1 && obj.tipoFicha != 8) {
             delete obj.idProfissionalCompartilhado;
             delete objHistorico.idProfissionalCompartilhado;
         }
@@ -303,8 +303,8 @@ module.exports = function (app) {
 
         }
 
-         //ATIVIDADE COLETIVA
-         if (obj.tipoFicha == '9') {
+        //ATIVIDADE COLETIVA
+        if (obj.tipoFicha == '9') {
             // CAMPO = atencaoDomiciliarModalidade
             // Não pode ser preenchido se o campo tipoAtendimento = 9 - Visita domiciliar pós-óbito
             if (obj.localDeAtendimento && obj.localDeAtendimento == '1') {
@@ -312,32 +312,32 @@ module.exports = function (app) {
                 res.status(400).send(errors);
                 return;
             }
-         }
+        }
 
         //else if (obj.tipoFicha == '9' || obj.tipoFicha == '8') { //Ficha de Atendimento Domiciliar E Ficha de Atendimento Odontologico Individual
 
-          //  req.assert("tipoAtendimento").notEmpty().withMessage("Preencha o campo tipo de atendimento");
-            
-            //if (obj.modalidade == null) {
-                //req.assert("modalidade").notEmpty().withMessage("Modalidade é um campo obrigatório;");
-            //}
+        //  req.assert("tipoAtendimento").notEmpty().withMessage("Preencha o campo tipo de atendimento");
 
-            // CAMPO = atencaoDomiciliarModalidade
-            // Apenas as opções 1, 2 e 3 são aceitas;
-            //if (obj.modalidade && obj.modalidade.length > 0 && obj.modalidade != '1' && obj.modalidade != '2' && obj.modalidade != '3') {
-                //errors = util.customError(errors, "header","Apenas as modalidades AD1, AD2 e AD3 são aceitas para esse tipo de ficha." , "");
-                //res.status(400).send(errors);
-               // return;
-            //}
+        //if (obj.modalidade == null) {
+        //req.assert("modalidade").notEmpty().withMessage("Modalidade é um campo obrigatório;");
+        //}
+
+        // CAMPO = atencaoDomiciliarModalidade
+        // Apenas as opções 1, 2 e 3 são aceitas;
+        //if (obj.modalidade && obj.modalidade.length > 0 && obj.modalidade != '1' && obj.modalidade != '2' && obj.modalidade != '3') {
+        //errors = util.customError(errors, "header","Apenas as modalidades AD1, AD2 e AD3 são aceitas para esse tipo de ficha." , "");
+        //res.status(400).send(errors);
+        // return;
+        //}
         //}
         //else {
-            // CAMPO = localDeAtendimento
-            // 11, 12 e 13 Utilizado apenas na Ficha de Atendimento Domiciliar
-            //if (obj.localDeAtendimento && (obj.localDeAtendimento == '11' || obj.localDeAtendimento == '12' || obj.localDeAtendimento == '13')) {
-                //errors = util.customError(errors, "header", "Esse local de atendimento só é permitido para Ficha de atendimento domiciliar", "");
-                //res.status(400).send(errors);
-                //return;
-            //}
+        // CAMPO = localDeAtendimento
+        // 11, 12 e 13 Utilizado apenas na Ficha de Atendimento Domiciliar
+        //if (obj.localDeAtendimento && (obj.localDeAtendimento == '11' || obj.localDeAtendimento == '12' || obj.localDeAtendimento == '13')) {
+        //errors = util.customError(errors, "header", "Esse local de atendimento só é permitido para Ficha de atendimento domiciliar", "");
+        //res.status(400).send(errors);
+        //return;
+        //}
         //}
 
         errors = req.validationErrors();
@@ -396,6 +396,7 @@ module.exports = function (app) {
             objParticipanteAtividadeColetiva.abandonouGrupo = !obj.abandonouGrupo ? false : obj.abandonouGrupo;
             objParticipanteAtividadeColetiva.avaliacaoAlterada = !obj.avaliacaoAlterada ? false : obj.avaliacaoAlterada;
             objParticipanteAtividadeColetiva.parouFumar = !obj.parouFumar ? false : obj.parouFumar;
+            objParticipanteAtividadeColetiva.descricaoTipoAtividade = obj.descricaoTipoAtividade;
 
             obj.modalidade == '' ? obj.modalidade = 0 : obj.modalidade;
             obj.tipoAtendimento == '' ? obj.tipoAtendimento = 0 : obj.tipoAtendimento;
@@ -407,7 +408,7 @@ module.exports = function (app) {
             delete obj.parouFumar;
             delete obj.tiposFornecimOdonto;
             delete obj.tiposConsultaOdonto;
-            delete obj.tiposVigilanciaSaudeBucal; 
+            delete obj.tiposVigilanciaSaudeBucal;
             delete obj.condutaEncaminhamento;
 
             obj.dataCriacao = new Date(obj.dataCriacao);
@@ -557,7 +558,7 @@ module.exports = function (app) {
         req.assert("idPaciente").notEmpty().withMessage("Paciente um campo obrigatório;");
         req.assert("situacao").notEmpty().withMessage("Situação é um campo obrigatório;");
         req.assert("tipoFicha").notEmpty().withMessage("Tipo de ficha é um campo obrigatório;");
-        req.assert("idClassificacaoRisco").notEmpty().withMessage("Classificação de risco é um campo obrigatório;");        
+        req.assert("idClassificacaoRisco").notEmpty().withMessage("Classificação de risco é um campo obrigatório;");
         req.assert("tipoAtendimento").notEmpty().withMessage("Tipo de atendimento é um campo obrigatório;");
 
         if (obj.tipoAtendimento && obj.tipoAtendimento == 0) {
@@ -569,7 +570,7 @@ module.exports = function (app) {
         if (obj.situacao == "X")
             req.assert("motivoCancelamento").notEmpty().withMessage("Motivo do cancelamento é obrigatório;");
 
-        if (obj.tipoFicha != 1 && obj.tipoFicha != 8){
+        if (obj.tipoFicha != 1 && obj.tipoFicha != 8) {
             delete obj.idProfissionalCompartilhado;
             delete objHistorico.idProfissionalCompartilhado;
         }
@@ -616,9 +617,9 @@ module.exports = function (app) {
         //ATENDIMENTO DOMICILIAR
         if (obj.tipoFicha == '9') {
 
-            if(obj.modalidade == undefined)
-                obj.modalidade  = '';
-             
+            if (obj.modalidade == undefined)
+                obj.modalidade = '';
+
             req.assert("modalidade").notEmpty().withMessage("Preencha o campo modalidade");
 
             // CAMPO = atencaoDomiciliarModalidade
@@ -640,10 +641,10 @@ module.exports = function (app) {
 
         //ATENDIMENTO ODONTOLOGICO
         if (obj.tipoFicha == '8') {
-            req.assert("tipoAtendimento").notEmpty().withMessage("Preencha o campo tipo de atendimento");          
+            req.assert("tipoAtendimento").notEmpty().withMessage("Preencha o campo tipo de atendimento");
         }
 
-        
+
         errors = req.validationErrors();
 
         if (errors) {
@@ -664,7 +665,7 @@ module.exports = function (app) {
         const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
         const atendimentoMedicamentoRepository = new app.dao.AtendimentoMedicamentoDAO(connection);
         const atendimentoCondicaoAvaliadaRepository = new app.dao.AtendimentoCondicaoAvaliadaDAO(connection);
-        
+
         try {
 
             await connection.beginTransaction();
@@ -682,7 +683,7 @@ module.exports = function (app) {
                 await connection.rollback();
                 return;
             }
-            
+
             var buscaCondicaoAvaliadaAtendimento = await atendimentoCondicaoAvaliadaRepository.buscarPorAtendimentoId(id);
 
             //SE O USUARIO É ENFERMEIRO E NAO ENVIOU UM CONDICAO AVALIADA OBRIGAR O MESMO A SELECIONAR
@@ -945,7 +946,7 @@ module.exports = function (app) {
     app.put('/atendimento/reabertura', async function (req, res) {
         let obj = req.body;
         let util = new app.util.Util();
-        let errors = [];        
+        let errors = [];
 
         req.assert("numero").notEmpty().withMessage("Preencha o campo com o(s) número(s) para reabertura");
         errors = req.validationErrors();
@@ -959,7 +960,7 @@ module.exports = function (app) {
         delete obj.numero;
         const connection = await app.dao.connections.EatendConnection.connection();
         const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
-        
+
         try {
 
             await connection.beginTransaction();
@@ -967,13 +968,13 @@ module.exports = function (app) {
             for (const idAtendimento of ids) {
 
                 var buscaAtendimento = await atendimentoRepository.buscaPorIdSync(idAtendimento);
-                if (buscaAtendimento) {                    
+                if (buscaAtendimento) {
                     obj.situacao = 'C'; //Em aberto
                     obj.dataFinalizacao = null;
                     obj.dataCancelamento = null;
 
-                    var atualizaAtendimento = await atendimentoRepository.atualizaPorIdSync(obj, idAtendimento);    
-                }         
+                    var atualizaAtendimento = await atendimentoRepository.atualizaPorIdSync(obj, idAtendimento);
+                }
             }
 
             res.status(201).send(obj);

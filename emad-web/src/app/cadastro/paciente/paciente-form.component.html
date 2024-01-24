@@ -1100,7 +1100,8 @@
     </button>
   </div>
   <div class="modal-body">
-    <app-file-upload [formatsAllowed]="'.jpg,.png,.jpeg'" [multiple]="true" (changeFiles)="fileChangeEvent($event)">
+    <app-file-upload [formatsAllowed]="'.jpg,.png,.jpeg,.bmp,.pdf'" [multiple]="true"
+      (changeFiles)="fileChangeEvent($event)">
     </app-file-upload>
   </div>
   <div *ngIf="this.images?.length > 0" class="modal-footer">
