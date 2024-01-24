@@ -195,8 +195,8 @@ export class ProntuarioPacienteFormComponent implements OnInit {
                                 this.service
                                   .list(
                                     'profissional/estabelecimento/' +
-                                      JSON.parse(localStorage.getItem('est'))[0]
-                                        .id,
+                                    JSON.parse(localStorage.getItem('est'))[0]
+                                      .id,
                                   )
                                   .subscribe((profissionais) => {
                                     this.service
@@ -1163,8 +1163,8 @@ export class ProntuarioPacienteFormComponent implements OnInit {
       (url) => url.nome == 'URL_FICHA_MEDICA_VISUALIZACAO',
     )
       ? JSON.parse(localStorage.getItem('parametro_seguranca'))
-          .filter((url) => url.nome == 'URL_FICHA_MEDICA_VISUALIZACAO')[0]
-          .valor.replace('{id}', id)
+        .filter((url) => url.nome == 'URL_FICHA_MEDICA_VISUALIZACAO')[0]
+        .valor.replace('{id}', id)
       : '';
     this.loading = true;
     this.atendimentoService.openDocument(url).subscribe(
@@ -1188,9 +1188,21 @@ export class ProntuarioPacienteFormComponent implements OnInit {
   }
 
   abrirDocumento(base: any) {
-    const image = new Image();
-    image.src = 'data:image/' + base.tipo + ';base64,' + base.base64;
-    const w = window.open('');
-    w.document.write(image.outerHTML);
+
+    if (base.tipo == 'pdf') {
+      const pdf = document.createElement('embed');
+      pdf.type = "application/pdf";
+      pdf.src = 'data:application/pdf;base64,' + base.base64;
+      pdf.width = '100%';
+      pdf.height = '100%';
+      const w = window.open('');
+      w.document.write(pdf.outerHTML);
+    }
+    else {
+      const image = new Image();
+      image.src = 'data:image/' + base.tipo + ';base64,' + base.base64;
+      const w = window.open('');
+      w.document.write(image.outerHTML);
+    }
   }
 }

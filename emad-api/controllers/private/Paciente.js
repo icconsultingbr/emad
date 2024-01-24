@@ -1,5 +1,3 @@
-const { async } = require('q');
-
 module.exports = function (app) {
 
     app.get('/paciente', async function (req, res) {
@@ -54,25 +52,113 @@ module.exports = function (app) {
 
     });
 
+    app.get('/paciente/prontuario/report', async function (req, res) {
+        let idPaciente = req.query.idPaciente;
+        let tipoFicha = req.query.tipoFicha == 'undefined' || req.query.tipoFicha == 'null' ? 0 : req.query.tipoFicha;
+        let profissional = req.query.profissional == 'undefined' || req.query.profissional == 'null' ? 0 : req.query.profissional;
+
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const pacienteRepository = new app.dao.PacienteDAO(connection);
+        const atencaoContinuadaPacienteRepository = new app.dao.AtencaoContinuadaPacienteDAO(connection);
+        const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
+        const atendimentoHipoteseRepository = new app.dao.AtendimentoHipoteseDiagnosticaDAO(connection);
+        const receitaRepository = new app.dao.ReceitaDAO(connection);
+        const itemReceitaRepository = new app.dao.ItemReceitaDAO(connection);
+        const estabelecimentoRepository = new app.dao.EstabelecimentoDAO(connection);
+        const nacionalidadeRepository = new app.dao.NacionalidadeDAO(connection);
+        const ufRepository = new app.dao.UfDAO(connection);
+        const exameRepository = new app.dao.ExameDAO(connection);
+        const atendimentoProcedimentoRepository = new app.dao.AtendimentoProcedimentoDAO(connection);
+        const atendimentoEncaminhamentoRepository = new app.dao.AtendimentoEncaminhamentoDAO(connection);
+
+        try {
+            let paciente = await pacienteRepository.buscaPorIdSync(idPaciente);
+            let gruposAtencaoContinuada = await atencaoContinuadaPacienteRepository.buscaPorPacienteSync(idPaciente);
+            paciente[0].gruposAtencaoContinuada = gruposAtencaoContinuada;
+            const sinaisVitais = await atendimentoRepository.buscaSinaisVitaisPorPacienteId(idPaciente, '', tipoFicha, profissional);
+            const nacionalidade = await nacionalidadeRepository.buscaPorIdSync(paciente[0].idNacionalidade);
+            const naturalidade = await ufRepository.buscaPorIdSync(paciente[0].idNaturalidade);
+
+
+            if (nacionalidade) {
+                paciente[0].nacionalidadeNome = nacionalidade[0].nome;
+            }
+
+            if (naturalidade) {
+                paciente[0].naturalidadeNome = naturalidade[0].nome;
+            }
+
+            if (paciente[0].escolaridade) {
+                paciente[0].escolaridadeNome = escolaridade.find(x => x.id == paciente[0].escolaridade).nome;
+            }
+
+            let atendimentos = await atendimentoRepository.buscaPorPacienteIdProntuario(idPaciente, 1, tipoFicha, profissional);
+            if (atendimentos) {
+                for (let atendimento of atendimentos) {
+                    let historicos = await atendimentoRepository.buscaHistoricoPorAtendimento(atendimento.id);
+                    atendimento.historicos = historicos;
+                }
+            }
+
+            let encaminhamentos = await atendimentoEncaminhamentoRepository.buscaEncaminhamentoPorPacienteId(idPaciente, tipoFicha, profissional, function (exception, result) {
+                if (exception) {
+                    d.reject(exception);
+                    console.log(exception);
+                    errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
+                    res.status(500).send(errors);
+                    return;
+                } else {
+                    d.resolve(result);
+                }
+            });
+
+            let receitas = await receitaRepository.buscaPorPacienteIdProntuario(idPaciente, profissional);
+            if (receitas) {
+                for (let receita of receitas) {
+                    let itens = await itemReceitaRepository.buscarPorReceita(receita.id);
+                    receita.itensReceita = itens;
+                }
+            }
+
+            const fichasAtendimento = await atendimentoRepository.buscaPorPacienteIdProntuario(idPaciente, 2, tipoFicha, profissional);
+            const exames = await exameRepository.buscaPorPacienteId(idPaciente, profissional);
+            const hipoteseDiagnostica = await atendimentoHipoteseRepository.listarPorPaciente(idPaciente, tipoFicha, profissional);
+            const vacinas = await receitaRepository.buscaPorPacienteIdProntuarioVacinacao(idPaciente, profissional);
+            const estabelecimento = await estabelecimentoRepository.carregaPorId(paciente[0].idEstabelecimentoCadastro);
+            const procedimentos = await atendimentoProcedimentoRepository.listarPorPaciente(idPaciente, tipoFicha, profissional);
+
+
+
+            let response = { paciente, estabelecimento, sinaisVitais, atendimentos, receitas, fichasAtendimento, exames, hipoteseDiagnostica, vacinas, procedimentos, encaminhamentos };
+
+            res.status(200).json(response);
+
+        } catch (error) {
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado!!!", ""));
+        } finally {
+            await connection.close();
+        }
+    });
+
     app.get('/paciente/:tipo/:valor', async function (req, res) {
         let usuario = req.usuario;
         let tipo = req.params.tipo;
         let valor = req.params.valor;
         let util = new app.util.Util();
         let errors = [];
-    
+
         const connection = await app.dao.connections.EatendConnection.connection();
-    
+
         const pacienteRepository = new app.dao.PacienteDAO(connection, null);
         const atencaoContinuadaPacienteRepository = new app.dao.AtencaoContinuadaPacienteDAO(connection);
-    
+
         try {
             var response = await pacienteRepository.consultaPaciente(tipo, valor);
-    
+
             if (response.length > 0) {
                 var gruposAtencaoContinuada = await atencaoContinuadaPacienteRepository.buscaPorPacienteSync(response[0].id);
                 response[0].gruposAtencaoContinuada = gruposAtencaoContinuada;
-    
+
                 res.status(201).send(response[0]);
             } else {
                 res.status(404).send(util.customError(errors, "header", "Registro não encontrado", ""));
@@ -101,13 +187,13 @@ module.exports = function (app) {
         }
 
         if (obj.cpf) {
-            if(util.cpfValido(obj.cpf) == false)
+            if (util.cpfValido(obj.cpf) == false)
                 req.assert("cpf").custom(util.cpfValido).withMessage("CPF inválido;");
         }
 
         if (obj.cartaoSus) {
-            if (util.cartaoSUSValido(obj.cartaoSus) == false) 
-                req.assert("cartaoSus").custom(util.cartaoSUSValido).withMessage("Cartão SUS inválido;");   
+            if (util.cartaoSUSValido(obj.cartaoSus) == false)
+                req.assert("cartaoSus").custom(util.cartaoSUSValido).withMessage("Cartão SUS inválido;");
         }
 
         if (obj.foneCelular == null) {
@@ -170,7 +256,7 @@ module.exports = function (app) {
                 obj.dumDaGestante = util.dateToISO(obj.dumDaGestante);
             else
                 obj.dumDaGestante = new Date(obj.dumDaGestante);
-        }      
+        }
 
         const connection = await app.dao.connections.EatendConnection.connection();
 
@@ -318,13 +404,13 @@ module.exports = function (app) {
         }
 
         if (obj.cpf) {
-            if(util.cpfValido(obj.cpf) == false)
+            if (util.cpfValido(obj.cpf) == false)
                 req.assert("cpf").custom(util.cpfValido).withMessage("CPF inválido;");
         }
 
         if (obj.cartaoSus) {
-            if (util.cartaoSUSValido(obj.cartaoSus) == false) 
-                req.assert("cartaoSus").custom(util.cartaoSUSValido).withMessage("Cartão SUS inválido;");   
+            if (util.cartaoSUSValido(obj.cartaoSus) == false)
+                req.assert("cartaoSus").custom(util.cartaoSUSValido).withMessage("Cartão SUS inválido;");
         }
 
         errors = req.validationErrors();
@@ -364,7 +450,7 @@ module.exports = function (app) {
             else
                 obj.dumDaGestante = new Date(obj.dumDaGestante);
         }
-        
+
         const connection = await app.dao.connections.EatendConnection.connection();
 
         const pacienteRepository = new app.dao.PacienteDAO(connection);
@@ -514,93 +600,6 @@ module.exports = function (app) {
             res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
         }
         finally {
-            await connection.close();
-        }
-    });
-
-    app.get('/paciente/prontuario/report', async function (req, res) {
-        let idPaciente = req.query.idPaciente;
-        let tipoFicha = req.query.tipoFicha == 'undefined' || req.query.tipoFicha == 'null' ? 0 : req.query.tipoFicha;
-        let profissional = req.query.profissional == 'undefined' || req.query.profissional == 'null'  ? 0 : req.query.profissional;
-
-        const connection = await app.dao.connections.EatendConnection.connection();
-        const pacienteRepository = new app.dao.PacienteDAO(connection);
-        const atencaoContinuadaPacienteRepository = new app.dao.AtencaoContinuadaPacienteDAO(connection);
-        const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
-        const atendimentoHipoteseRepository = new app.dao.AtendimentoHipoteseDiagnosticaDAO(connection);
-        const receitaRepository = new app.dao.ReceitaDAO(connection);
-        const itemReceitaRepository = new app.dao.ItemReceitaDAO(connection);
-        const estabelecimentoRepository = new app.dao.EstabelecimentoDAO(connection);
-        const nacionalidadeRepository = new app.dao.NacionalidadeDAO(connection);
-        const ufRepository = new app.dao.UfDAO(connection);
-        const exameRepository = new app.dao.ExameDAO(connection);
-        const atendimentoProcedimentoRepository = new app.dao.AtendimentoProcedimentoDAO(connection);
-        const atendimentoEncaminhamentoRepository = new app.dao.AtendimentoEncaminhamentoDAO(connection);
-
-        try {
-            let paciente = await pacienteRepository.buscaPorIdSync(idPaciente);
-            let gruposAtencaoContinuada = await atencaoContinuadaPacienteRepository.buscaPorPacienteSync(idPaciente);
-            paciente[0].gruposAtencaoContinuada = gruposAtencaoContinuada;
-            const sinaisVitais = await atendimentoRepository.buscaSinaisVitaisPorPacienteId(idPaciente, '', tipoFicha, profissional);
-            const nacionalidade = await nacionalidadeRepository.buscaPorIdSync(paciente[0].idNacionalidade);
-            const naturalidade = await ufRepository.buscaPorIdSync(paciente[0].idNaturalidade);
-
-
-            if (nacionalidade) {
-                paciente[0].nacionalidadeNome = nacionalidade[0].nome;
-            }
-
-            if (naturalidade) {
-                paciente[0].naturalidadeNome = naturalidade[0].nome;
-            }
-
-            if (paciente[0].escolaridade) {
-                paciente[0].escolaridadeNome = escolaridade.find(x => x.id == paciente[0].escolaridade).nome;
-            }
-
-            let atendimentos = await atendimentoRepository.buscaPorPacienteIdProntuario(idPaciente, 1, tipoFicha, profissional);
-            if (atendimentos) {
-                for (let atendimento of atendimentos) {
-                    let historicos = await atendimentoRepository.buscaHistoricoPorAtendimento(atendimento.id);
-                    atendimento.historicos = historicos;
-                }
-            }
-
-            let encaminhamentos = await atendimentoEncaminhamentoRepository.buscaEncaminhamentoPorPacienteId(idPaciente, tipoFicha, profissional, function (exception, result) {
-                if (exception) {
-                    d.reject(exception);
-                    console.log(exception);
-                    errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
-                    res.status(500).send(errors);
-                    return;
-                } else {
-                    d.resolve(result);
-                }
-            });
-
-            let receitas = await receitaRepository.buscaPorPacienteIdProntuario(idPaciente, profissional);
-            if (receitas) {
-                for (let receita of receitas) {
-                    let itens = await itemReceitaRepository.buscarPorReceita(receita.id);
-                    receita.itensReceita = itens;
-                }
-            }
-
-            const fichasAtendimento = await atendimentoRepository.buscaPorPacienteIdProntuario(idPaciente, 2, tipoFicha, profissional);
-            const exames = await exameRepository.buscaPorPacienteId(idPaciente, profissional);
-            const hipoteseDiagnostica = await atendimentoHipoteseRepository.listarPorPaciente(idPaciente, tipoFicha, profissional);
-            const vacinas = await receitaRepository.buscaPorPacienteIdProntuarioVacinacao(idPaciente,profissional);
-            const estabelecimento = await estabelecimentoRepository.carregaPorId(paciente[0].idEstabelecimentoCadastro);
-            const procedimentos = await atendimentoProcedimentoRepository.listarPorPaciente(idPaciente, tipoFicha, profissional);
-
-
-            let response = { paciente, estabelecimento, sinaisVitais, atendimentos, receitas, fichasAtendimento, exames, hipoteseDiagnostica, vacinas, procedimentos, encaminhamentos };
-
-            res.status(200).json(response);
-
-        } catch (error) {
-
-        } finally {
             await connection.close();
         }
     });

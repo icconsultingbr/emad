@@ -481,9 +481,9 @@ export class PacienteService extends GenericsService {
   findAtendimentoByPaciente(id: any, tipo: any): Observable<any> {
     return this.http.get(
       'atendimento/prontuario-paciente/paciente/' +
-        id +
-        '/tipo-atendimento/' +
-        tipo,
+      id +
+      '/tipo-atendimento/' +
+      tipo,
     );
   }
 
@@ -514,18 +514,18 @@ export class PacienteService extends GenericsService {
   findSinaisVitaisByPaciente(id: any, tipo: any): Observable<any> {
     return this.http.get(
       'atendimento/prontuario-paciente/paciente/' +
-        id +
-        '/sinais-vitais/' +
-        tipo,
+      id +
+      '/sinais-vitais/' +
+      tipo,
     );
   }
 
   carregaAtendimentosPorPeriodo(periodo: number): Observable<any> {
     return this.http.get(
       'atendimentos-por-periodo?periodo=' +
-        periodo +
-        '&idEstabelecimento=' +
-        JSON.parse(localStorage.getItem('est'))[0].id,
+      periodo +
+      '&idEstabelecimento=' +
+      JSON.parse(localStorage.getItem('est'))[0].id,
     );
   }
 
@@ -534,18 +534,18 @@ export class PacienteService extends GenericsService {
   ): Observable<any> {
     return this.http.get(
       'atendimento-situacao-existente-por-periodo?periodo=' +
-        periodo +
-        '&idEstabelecimento=' +
-        JSON.parse(localStorage.getItem('est'))[0].id,
+      periodo +
+      '&idEstabelecimento=' +
+      JSON.parse(localStorage.getItem('est'))[0].id,
     );
   }
 
   carregaAtendimentoSituacaoPorPeriodo(periodo: number): Observable<any> {
     return this.http.get(
       'atendimento-situacao-por-periodo?periodo=' +
-        periodo +
-        '&idEstabelecimento=' +
-        JSON.parse(localStorage.getItem('est'))[0].id,
+      periodo +
+      '&idEstabelecimento=' +
+      JSON.parse(localStorage.getItem('est'))[0].id,
     );
   }
 
@@ -555,12 +555,7 @@ export class PacienteService extends GenericsService {
     profissional: number,
   ): Observable<any> {
     return this.http.get(
-      'paciente/prontuario/report?idPaciente=' +
-        idPaciente +
-        '&tipoFicha=' +
-        tipoFicha +
-        '&profissional=' +
-        profissional,
+      `paciente/prontuario/report?idPaciente=${idPaciente}&tipoFicha=${tipoFicha}&profissional=${profissional}`
     );
   }
 
