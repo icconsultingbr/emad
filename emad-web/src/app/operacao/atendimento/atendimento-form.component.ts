@@ -243,6 +243,7 @@ export class AtendimentoFormComponent implements OnInit {
       altura: ['', ''],
       queixaHistoriaDoenca: ['', ''],
       peso: ['', ''],
+      observacao: ['', ''],
       historicoClinico: ['', ''],
       exameFisico: ['', ''],
       observacoesGerais: ['', ''],
@@ -308,6 +309,7 @@ export class AtendimentoFormComponent implements OnInit {
       temperatura: new FormControl({ value: '', disabled: true }),
       altura: new FormControl({ value: '', disabled: true }),
       peso: new FormControl({ value: '', disabled: true }),
+      observacao: new FormControl({ value: '', disabled: true }),
       queixaHistoriaDoenca: new FormControl({ value: '', disabled: true }),
       historicoClinico: new FormControl({ value: '', disabled: true }),
       exameFisico: new FormControl({ value: '', disabled: true }),
@@ -1990,6 +1992,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.participanteAtividadeColetiva.abandonouGrupo = false;
     this.participanteAtividadeColetiva.avaliacaoAlterada = false;
     this.participanteAtividadeColetiva.peso = '';
+    this.participanteAtividadeColetiva.observacao = '';
     this.participanteAtividadeColetiva.altura = '';
     this.participanteAtividadeColetiva.pulso = '';
     this.participanteAtividadeColetiva.saturacao = '';
@@ -2096,6 +2099,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.editParticipanteAtividadeColetiva.avaliacaoAlterada =
       item.avaliacaoAlterada;
     this.editParticipanteAtividadeColetiva.peso = item.peso;
+    this.editParticipanteAtividadeColetiva.observacao = item.observacao;
     this.editParticipanteAtividadeColetiva.altura = item.altura;
     this.editParticipanteAtividadeColetiva.pulso = item.pulso;
     this.editParticipanteAtividadeColetiva.saturacao = item.saturacao;

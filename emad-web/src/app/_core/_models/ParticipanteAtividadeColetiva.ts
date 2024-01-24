@@ -17,4 +17,5 @@ export class ParticipanteAtividadeColetiva {
     @Input() pressaoArterial: string = null
     @Input() temperatura: string = null
     @Input() queixaHistoriaDoenca: string = null
+    @Input() observacao: string = null
 }
