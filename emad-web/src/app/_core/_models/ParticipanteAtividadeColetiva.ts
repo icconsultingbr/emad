@@ -1,6 +1,4 @@
 import { Input } from '@angular/core';
-import * as moment from 'moment';
-
 export class ParticipanteAtividadeColetiva {
     @Input() id: Number = null;
     @Input() idPaciente: Number = null;
@@ -14,4 +12,9 @@ export class ParticipanteAtividadeColetiva {
     @Input() avaliacaoAlterada: boolean = null;
     @Input() peso: string = null;
     @Input() altura: string = null;
+    @Input() pulso: string = null
+    @Input() saturacao: string = null
+    @Input() pressaoArterial: string = null
+    @Input() temperatura: string = null
+    @Input() queixaHistoriaDoenca: string = null
 }

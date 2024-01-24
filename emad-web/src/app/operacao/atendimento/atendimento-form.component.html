@@ -641,10 +641,22 @@
                 </label>
                 <div class="col-xl-8">
                   <div class="custom-control custom-checkbox" style="width: 25px">
-                    <input type="checkbox" id="pseEducacao" [(ngModel)]="object.pseEducacao"
+                    <input maxlength="60" type="checkbox" id="pseEducacao" [(ngModel)]="object.pseEducacao"
                       formControlName="pseEducacao" class="custom-control-input" />
                     <label class="custom-control-label" for="pseEducacao"></label>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="form-group row">
+                <label class="col-xl-3 col-form-label text-left"> Descrição do Tipo de Atividade </label>
+                <div class="col-xl-9">
+                  <input type="text" class="form-control has-error" [(ngModel)]="object.descricaoTipoAtividade"
+                    formControlName="descricaoTipoAtividade" />
                 </div>
               </div>
             </div>
@@ -3696,37 +3708,96 @@
       </div>
 
       <div class="text-left">
-        <div class="row">
+        <diV class="row">
           <div class="col-xl-12">
-            <label class="col-xl-4 col-form-label text-left">Peso do Participante:
-            </label>
+            <h4>Dados Participante:</h4>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-xl-12">
-            <div class="col-xl-12">
-              <div class="input-group">
-                <input type="text" class="form-control has-error rounded"
-                  [(ngModel)]="participanteAtividadeColetiva.peso" />
+        </diV>
+        <div class="row" style="margin: 15px">
+          <div class="col-xl-4">
+            <div class="row">
+              <div class="col-xl-6 p-0">
+                <label class=" col-form-label text-left">Peso:
+                </label>
+              </div>
+              <div class="col-xl-6">
+                <div class="input-group">
+                  <input type="text" class="form-control has-error rounded"
+                    [(ngModel)]="participanteAtividadeColetiva.peso" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-4">
+            <div class="row">
+              <div class="col-xl-6 p-0">
+                <label class="col-form-label text-left">Altura (cm):
+                </label>
+              </div>
+              <div class="col-xl-6">
+                <div class="input-group">
+                  <input type="number" min="20" max="250" pattern="^[0-9]" class="form-control has-error rounded"
+                    [(ngModel)]="participanteAtividadeColetiva.altura" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-4">
+            <div class="row">
+              <div class="col-xl-6 p-0">
+                <label class="col-form-label text-left">Pressão arterial:
+                </label>
+              </div>
+              <div class="col-xl-6">
+                <div class="input-group">
+                  <input type="text" min="20" max="250" pattern="^[0-9]" class="form-control has-error rounded"
+                    [(ngModel)]="participanteAtividadeColetiva.pressaoArterial" />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="text-left">
-        <div class="row">
-          <div class="col-xl-12">
-            <label class="col-xl-4 col-form-label text-left">Altura do Participante (cm):
-            </label>
+        <div class="row" style="margin: 15px">
+          <div class="col-xl-4">
+            <div class="row">
+              <div class="col-xl-6 p-0">
+                <label class=" col-form-label text-left">Pulso:
+                </label>
+              </div>
+              <div class="col-xl-6">
+                <div class="input-group">
+                  <input type="text" class="form-control has-error rounded"
+                    [(ngModel)]="participanteAtividadeColetiva.pulso" />
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-xl-12">
-            <div class="col-xl-12">
-              <div class="input-group">
-                <input type="number" min="20" max="250" pattern="^[0-9]" class="form-control has-error rounded"
-                  [(ngModel)]="participanteAtividadeColetiva.altura" />
+          <div class="col-xl-4">
+            <div class="row">
+              <div class="col-xl-6 p-0">
+                <label class="col-form-label text-left">Saturação:
+                </label>
+              </div>
+              <div class="col-xl-6">
+                <div class="input-group">
+                  <input type="number" min="20" max="250" pattern="^[0-9]" class="form-control has-error rounded"
+                    [(ngModel)]="participanteAtividadeColetiva.saturacao" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-4">
+            <div class="row">
+              <div class="col-xl-6 p-0">
+                <label class="col-form-label text-left">Temperatura:
+                </label>
+              </div>
+              <div class="col-xl-6">
+                <div class="input-group">
+                  <input type="number" min="20" max="250" pattern="^[0-9]" class="form-control has-error rounded"
+                    [(ngModel)]="participanteAtividadeColetiva.temperatura" />
+                </div>
               </div>
             </div>
           </div>
@@ -3935,18 +4006,96 @@
     </div>
 
     <div class="text-left">
-      <div class="row">
+      <diV class="row">
         <div class="col-xl-12">
-          <label class="col-xl-4 col-form-label text-left">Peso do Participante:
-          </label>
+          <h4>Dados Participante:</h4>
+        </div>
+      </diV>
+      <div class="row" style="margin: 15px">
+        <div class="col-xl-4">
+          <div class="row">
+            <div class="col-xl-6 p-0">
+              <label class=" col-form-label text-left">Peso:
+              </label>
+            </div>
+            <div class="col-xl-6">
+              <div class="input-group">
+                <input type="text" class="form-control has-error rounded"
+                  [(ngModel)]="editParticipanteAtividadeColetiva.peso" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <div class="row">
+            <div class="col-xl-6 p-0">
+              <label class="col-form-label text-left">Altura (cm):
+              </label>
+            </div>
+            <div class="col-xl-6">
+              <div class="input-group">
+                <input type="number" min="20" max="250" pattern="^[0-9]" class="form-control has-error rounded"
+                  [(ngModel)]="editParticipanteAtividadeColetiva.altura" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <div class="row">
+            <div class="col-xl-6 p-0">
+              <label class="col-form-label text-left">Pressão arterial:
+              </label>
+            </div>
+            <div class="col-xl-6">
+              <div class="input-group">
+                <input type="text" min="20" max="250" pattern="^[0-9]" class="form-control has-error rounded"
+                  [(ngModel)]="editParticipanteAtividadeColetiva.pressaoArterial" />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-xl-12">
-          <div class="col-xl-12">
-            <div class="input-group">
-              <input type="text" class="form-control has-error rounded"
-                [(ngModel)]="editParticipanteAtividadeColetiva.peso" />
+
+      <div class="row" style="margin: 15px">
+        <div class="col-xl-4">
+          <div class="row">
+            <div class="col-xl-6 p-0">
+              <label class=" col-form-label text-left">Pulso:
+              </label>
+            </div>
+            <div class="col-xl-6">
+              <div class="input-group">
+                <input type="text" class="form-control has-error rounded"
+                  [(ngModel)]="editParticipanteAtividadeColetiva.pulso" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <div class="row">
+            <div class="col-xl-6 p-0">
+              <label class="col-form-label text-left">Saturação:
+              </label>
+            </div>
+            <div class="col-xl-6">
+              <div class="input-group">
+                <input type="number" min="20" max="250" pattern="^[0-9]" class="form-control has-error rounded"
+                  [(ngModel)]="editParticipanteAtividadeColetiva.saturacao" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <div class="row">
+            <div class="col-xl-6 p-0">
+              <label class="col-form-label text-left">Temperatura:
+              </label>
+            </div>
+            <div class="col-xl-6">
+              <div class="input-group">
+                <input type="number" min="20" max="250" pattern="^[0-9]" class="form-control has-error rounded"
+                  [(ngModel)]="editParticipanteAtividadeColetiva.temperatura" />
+              </div>
             </div>
           </div>
         </div>
@@ -3955,63 +4104,24 @@
 
     <div class="text-left">
       <div class="row">
-        <div class="col-xl-12">
-          <label class="col-xl-4 col-form-label text-left">Altura do Participante (cm):
+        <div class="col-xl-4">
+          <label class="col-form-label text-left">Sexo do Participante:
           </label>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-xl-12">
-          <div class="col-xl-12">
-            <div class="input-group">
-              <input type="number" min="20" max="250" pattern="^[0-9]" class="form-control has-error rounded"
-                [(ngModel)]="editParticipanteAtividadeColetiva.altura" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="text-left">
-      <div class="row">
-        <div class="col-xl-12">
-          <label class="col-xl-4 col-form-label text-left">Sexo do Participante:
-          </label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xl-12">
-          <div class="col-xl-12">
-            <div class="input-group">
-              <input type="text" class="form-control has-error rounded" [(ngModel)]="this.sexoPaciente" readonly />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="text-left">
-      <div class="row">
-        <div class="col-xl-12">
+        <div class="col-xl-8">
           <div class="input-group">
-            <label class="col-xl-4 col-form-label text-left">Avaliação Alterada:
-            </label>
-            <div class="custom-control custom-checkbox" style="margin-top: 10px">
-              <input type="checkbox" id="avaliacaoAlteradaNovo" [(ngModel)]="
-                  this.editParticipanteAtividadeColetiva.avaliacaoAlterada
-                " class="custom-control-input" />
-              <label class="custom-control-label" for="avaliacaoAlteradaNovo"></label>
-            </div>
+            <input type="text" class="form-control has-error rounded" [(ngModel)]="this.sexoPaciente" readonly />
           </div>
         </div>
       </div>
     </div>
 
+
     <div class="text-left">
       <div class="row">
-        <div class="col-xl-12">
+        <div class="col-xl-4">
           <div class="input-group">
-            <label class="col-xl-4 col-form-label text-left">Cessou o hábito de fumar:
+            <label class="col-form-label text-left" style="margin-right: 10px">Cessou o hábito de fumar:
             </label>
             <div class="custom-control custom-checkbox" style="margin-top: 10px">
               <input type="checkbox" id="parouFumarNovo" class="custom-control-input"
@@ -4020,26 +4130,45 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <div class="text-left">
-      <div class="row">
-        <div class="col-xl-12">
+        <div class="col-xl-4">
           <div class="input-group">
-            <label class="col-xl-4 col-form-label text-left">
+            <label class="col-form-label text-left" style="margin-right: 10px">
               Abandonou o grupo:
             </label>
             <div class="custom-control custom-checkbox" style="margin-top: 10px">
               <input type="checkbox" id="abandonouGrupoNovo" class="custom-control-input" [(ngModel)]="
-                  this.editParticipanteAtividadeColetiva.abandonouGrupo
-                " />
+                          this.editParticipanteAtividadeColetiva.abandonouGrupo
+                        " />
               <label class="custom-control-label" for="abandonouGrupoNovo"></label>
             </div>
           </div>
         </div>
+        <div class="col-xl-4">
+          <div class="input-group">
+            <label class="col-form-label text-left" style="margin-right: 10px;">Avaliação Alterada:
+            </label>
+            <div class="custom-control custom-checkbox" style="margin-top: 10px">
+              <input type="checkbox" id="avaliacaoAlteradaNovo" [(ngModel)]="
+                          this.editParticipanteAtividadeColetiva.avaliacaoAlterada
+                        " class="custom-control-input" />
+              <label class="custom-control-label" for="avaliacaoAlteradaNovo"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-4">
+          <label> Queixa/História da Doença</label>
+        </div>
+        <div class="col-xl-8">
+          <textarea class="form-control has-error rounded"
+            [(ngModel)]="editParticipanteAtividadeColetiva.queixaHistoriaDoenca" rows="2"
+            style="width: 100%;"></textarea>
+        </div>
       </div>
     </div>
+
+
   </div>
 
   <div class="modal-footer">
@@ -4344,7 +4473,8 @@
     </button>
   </div>
   <div class="modal-body">
-    <app-file-upload [formatsAllowed]="'.jpg,.png,.jpeg'" [multiple]="true" (changeFiles)="fileChangeEvent($event)">
+    <app-file-upload [formatsAllowed]="'.jpg,.png,.jpeg,.bmp,.pdf'" [multiple]="true"
+      (changeFiles)="fileChangeEvent($event)">
     </app-file-upload>
   </div>
   <div *ngIf="this.images?.length > 0" class="modal-footer">

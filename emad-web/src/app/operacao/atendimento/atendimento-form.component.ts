@@ -241,6 +241,7 @@ export class AtendimentoFormComponent implements OnInit {
       saturacao: ['', ''],
       temperatura: ['', ''],
       altura: ['', ''],
+      queixaHistoriaDoenca: ['', ''],
       peso: ['', ''],
       historicoClinico: ['', ''],
       exameFisico: ['', ''],
@@ -266,6 +267,7 @@ export class AtendimentoFormComponent implements OnInit {
       praticasEmSaude: ['', ''],
       pseEducacao: ['', ''],
       pseSaude: ['', ''],
+      descricaoTipoAtividade: ['', ''],
       parouFumar: ['', ''],
       abandonouGrupo: ['', ''],
       avaliacaoAlterada: ['', ''],
@@ -306,6 +308,7 @@ export class AtendimentoFormComponent implements OnInit {
       temperatura: new FormControl({ value: '', disabled: true }),
       altura: new FormControl({ value: '', disabled: true }),
       peso: new FormControl({ value: '', disabled: true }),
+      queixaHistoriaDoenca: new FormControl({ value: '', disabled: true }),
       historicoClinico: new FormControl({ value: '', disabled: true }),
       exameFisico: new FormControl({ value: '', disabled: true }),
       observacoesGerais: new FormControl({ value: '', disabled: true }),
@@ -329,6 +332,7 @@ export class AtendimentoFormComponent implements OnInit {
       praticasEmSaude: new FormControl({ value: '', disabled: true }),
       pseEducacao: new FormControl({ value: '', disabled: true }),
       pseSaude: new FormControl({ value: '', disabled: true }),
+      descricaoTipoAtividade: new FormControl({ value: '', disabled: true }),
       parouFumar: new FormControl({ value: '', disabled: true }),
       abandonouGrupo: new FormControl({ value: '', disabled: true }),
       avaliacaoAlterada: new FormControl({ value: '', disabled: true }),
@@ -1294,9 +1298,9 @@ export class AtendimentoFormComponent implements OnInit {
                                                                               this.service
                                                                                 .list(
                                                                                   'profissional/estabelecimento/' +
-                                                                                    this
-                                                                                      .paciente
-                                                                                      .idEstabelecimento,
+                                                                                  this
+                                                                                    .paciente
+                                                                                    .idEstabelecimento,
                                                                                 )
                                                                                 .subscribe(
                                                                                   (
@@ -1669,8 +1673,8 @@ export class AtendimentoFormComponent implements OnInit {
       (url) => url.nome == 'URL_FICHA_MEDICA_IMPRESSAO',
     )
       ? JSON.parse(localStorage.getItem('parametro_seguranca'))
-          .filter((url) => url.nome == 'URL_FICHA_MEDICA_IMPRESSAO')[0]
-          .valor.replace('{id}', id)
+        .filter((url) => url.nome == 'URL_FICHA_MEDICA_IMPRESSAO')[0]
+        .valor.replace('{id}', id)
       : '';
     this.loading = true;
     this.service.printDocument(url).subscribe(
@@ -1704,8 +1708,8 @@ export class AtendimentoFormComponent implements OnInit {
       (url) => url.nome == 'URL_FICHA_MEDICA_VISUALIZACAO',
     )
       ? JSON.parse(localStorage.getItem('parametro_seguranca'))
-          .filter((url) => url.nome == 'URL_FICHA_MEDICA_VISUALIZACAO')[0]
-          .valor.replace('{id}', id)
+        .filter((url) => url.nome == 'URL_FICHA_MEDICA_VISUALIZACAO')[0]
+        .valor.replace('{id}', id)
       : '';
     this.loading = true;
     this.service.openDocument(url).subscribe(
@@ -1987,6 +1991,11 @@ export class AtendimentoFormComponent implements OnInit {
     this.participanteAtividadeColetiva.avaliacaoAlterada = false;
     this.participanteAtividadeColetiva.peso = '';
     this.participanteAtividadeColetiva.altura = '';
+    this.participanteAtividadeColetiva.pulso = '';
+    this.participanteAtividadeColetiva.saturacao = '';
+    this.participanteAtividadeColetiva.pressaoArterial = '';
+    this.participanteAtividadeColetiva.temperatura = '';
+    this.participanteAtividadeColetiva.queixaHistoriaDoenca = '';
 
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
@@ -2088,6 +2097,11 @@ export class AtendimentoFormComponent implements OnInit {
       item.avaliacaoAlterada;
     this.editParticipanteAtividadeColetiva.peso = item.peso;
     this.editParticipanteAtividadeColetiva.altura = item.altura;
+    this.editParticipanteAtividadeColetiva.pulso = item.pulso;
+    this.editParticipanteAtividadeColetiva.saturacao = item.saturacao;
+    this.editParticipanteAtividadeColetiva.pressaoArterial = item.pressaoArterial;
+    this.editParticipanteAtividadeColetiva.temperatura = item.temperatura;
+    this.editParticipanteAtividadeColetiva.queixaHistoriaDoenca = item.queixaHistoriaDoenca;
 
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
@@ -2145,7 +2159,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.service
       .list(
         'profissional/estabelecimento/' +
-          JSON.parse(localStorage.getItem('est'))[0].id,
+        JSON.parse(localStorage.getItem('est'))[0].id,
       )
       .subscribe(
         (result) => {
@@ -2448,9 +2462,9 @@ export class AtendimentoFormComponent implements OnInit {
 
   salvarDocumentos() {
     this.fileUploadService.uploadListImage(this.images).subscribe((result) => {
-      
+
       result.forEach(object => {
-        object.idAtendimento = this.id;        
+        object.idAtendimento = this.id;
       });
 
       this.service.salvarArquivo(result).subscribe((result) => {
@@ -2473,10 +2487,22 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   abrirDocumento(base: any) {
-    const image = new Image();
-    image.src = 'data:image/' + base.tipo + ';base64,' + base.base64;
-    const w = window.open('');
-    w.document.write(image.outerHTML);
+
+    if (base.tipo == 'pdf') {
+      const pdf = document.createElement('embed');
+      pdf.type = "application/pdf";
+      pdf.src = 'data:application/pdf;base64,' + base.base64;
+      pdf.width = '100%';
+      pdf.height = '100%';
+      const w = window.open('');
+      w.document.write(pdf.outerHTML);
+    }
+    else {
+      const image = new Image();
+      image.src = 'data:image/' + base.tipo + ';base64,' + base.base64;
+      const w = window.open('');
+      w.document.write(image.outerHTML);
+    }
   }
 
   removeItemArquivo(item: any) {
