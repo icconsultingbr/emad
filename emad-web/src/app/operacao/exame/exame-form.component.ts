@@ -292,7 +292,7 @@ export class ExameFormComponent implements OnInit {
 
     if (base.tipo == 'pdf') {
       const pdf = document.createElement('embed');
-      pdf.type = "application/pdf";
+
       pdf.src = 'data:application/pdf;base64,' + base.base64;
       pdf.width = '100%';
       pdf.height = '100%';
