@@ -221,7 +221,6 @@ export class AtendimentoFormComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe((params) => {
       this.id = params['id'];
-      console.log(this.id);
       this.idHistorico = params['idHistorico'];
       this.carregaEntidadeCampoPorEspecialidade();
     });
@@ -241,9 +240,7 @@ export class AtendimentoFormComponent implements OnInit {
       saturacao: ['', ''],
       temperatura: ['', ''],
       altura: ['', ''],
-      queixaHistoriaDoenca: ['', ''],
       peso: ['', ''],
-      observacao: ['', ''],
       historicoClinico: ['', ''],
       exameFisico: ['', ''],
       observacoesGerais: ['', ''],
@@ -309,9 +306,7 @@ export class AtendimentoFormComponent implements OnInit {
       temperatura: new FormControl({ value: '', disabled: true }),
       altura: new FormControl({ value: '', disabled: true }),
       peso: new FormControl({ value: '', disabled: true }),
-      observacao: new FormControl({ value: '', disabled: true }),
       avaliacao: new FormControl({ value: '', disabled: true }),
-      queixaHistoriaDoenca: new FormControl({ value: '', disabled: true }),
       historicoClinico: new FormControl({ value: '', disabled: true }),
       exameFisico: new FormControl({ value: '', disabled: true }),
       observacoesGerais: new FormControl({ value: '', disabled: true }),
@@ -797,6 +792,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.pacienteSelecionado = item;
     }
   }
+
   selecionaProfissional(item) {
     this.profissionalSelecionadoAtividadeColetiva = item;
     this.profissionalAtividadeColetiva.idProfissional = item.id;
