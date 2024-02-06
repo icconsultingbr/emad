@@ -460,6 +460,11 @@ module.exports = function (app) {
 
             var valorChave = await parametroSegurancaRepository.buscarValorPorChaveSync(buscaChaves);
 
+            if (obj.tipoFicha != 1 && obj.tipoFicha != 8) {
+                delete obj.idProfissionalCompartilhado;
+                delete objHistorico.idProfissionalCompartilhado;
+            }
+
             if (valorChave) {
                 urlFicha = valorChave.filter((url) => url.NOME == "URL_FICHA_DIGITAL_SERVICO")[0].VALOR;
                 emailRemetente = valorChave.filter((url) => url.NOME == "CONTA_EMAIL")[0].VALOR;
