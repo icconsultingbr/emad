@@ -386,7 +386,8 @@ module.exports = function (app) {
             obj.pseSaude == '' ? obj.pseSaude = 0 : obj.pseSaude;
             obj.publicoAlvo == '' ? obj.publicoAlvo = 0 : obj.publicoAlvo;
             obj.temasParaSaude == '' ? obj.temasParaSaude = 0 : obj.temasParaSaude;
-            obj.temasParaReuniao == '' ? obj.temasParaReuniao = 0 : obj.temasParaReuniao;
+            obj.temasParaReuniao == '' ? obj.temasParaReuniao = 0 : obj.temasParaReuniao;            
+            obj.descricaoTipoAtividade = obj.descricaoTipoAtividade;
 
             obj.gestante == '' ? obj.gestante = 0 : obj.gestante;
             obj.possuiNecessidadesEspeciais == '' ? obj.possuiNecessidadesEspeciais = 0 : obj.possuiNecessidadesEspeciais;
@@ -396,7 +397,6 @@ module.exports = function (app) {
             objParticipanteAtividadeColetiva.abandonouGrupo = !obj.abandonouGrupo ? false : obj.abandonouGrupo;
             objParticipanteAtividadeColetiva.avaliacaoAlterada = !obj.avaliacaoAlterada ? false : obj.avaliacaoAlterada;
             objParticipanteAtividadeColetiva.parouFumar = !obj.parouFumar ? false : obj.parouFumar;
-            objParticipanteAtividadeColetiva.descricaoTipoAtividade = obj.descricaoTipoAtividade;
 
             obj.modalidade == '' ? obj.modalidade = 0 : obj.modalidade;
             obj.tipoAtendimento == '' ? obj.tipoAtendimento = 0 : obj.tipoAtendimento;

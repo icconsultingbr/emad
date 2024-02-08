@@ -418,38 +418,7 @@
                 </div>
               </div>
             </div>
-            <!--Observação/Integração e-sus-->
-            <div *ngIf="object.tipoFicha != 7 && object.idPaciente &&
-                              object.id" class="row">
-              <div class="col-xl-6">
-                <div class="form-group row">
-                  <label class="col-xl-4 col-form-label text-left">
-                    Ficou em Observação
-                  </label>
-                  <div class="col-xl-8">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="ficouEmObservacao" [(ngModel)]="object.ficouEmObservacao"
-                        formControlName="ficouEmObservacao" class="custom-control-input" />
-                      <label class="custom-control-label" for="ficouEmObservacao"></label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xl-6">
-                <div class="form-group row">
-                  <label class="col-xl-4 col-form-label text-left">
-                    Integrar PEC (e-SUS)
-                  </label>
-                  <div class="col-xl-8">
-                    <div class="custom-control custom-checkbox" style="width: 25px">
-                      <input type="checkbox" id="integracaoPEC" [(ngModel)]="object.integracaoPEC"
-                        formControlName="integracaoPEC" class="custom-control-input" />
-                      <label class="custom-control-label" for="integracaoPEC"></label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            
           </div>
 
           <!--Observação/Integração e-sus-->
@@ -3920,6 +3889,25 @@
               [(ngModel)]="participanteAtividadeColetiva.queixaHistoriaDoenca" rows="2" style="width: 100%;"></textarea>
           </div>
         </div>
+        
+      <div class="row margin-top">
+        <div class="col-xl-4">
+          <label> Evolução/Observação</label>
+        </div>
+        <div class="col-xl-8">
+          <textarea class="form-control has-error rounded" [(ngModel)]="participanteAtividadeColetiva.observacao"
+            rows="2" style="width: 100%;"></textarea>
+        </div>
+      </div>
+      <div class="row margin-top">
+        <div class="col-xl-4">
+          <label> Avaliação</label>
+        </div>
+        <div class="col-xl-8">
+          <textarea class="form-control has-error rounded" [(ngModel)]="participanteAtividadeColetiva.avaliacao"
+            rows="2" style="width: 100%;"></textarea>
+        </div>
+      </div>
 
       </div>
     </div>

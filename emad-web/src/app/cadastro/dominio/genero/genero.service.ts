@@ -28,6 +28,15 @@ export class GeneroService extends GenericsService {
       form: true,
       required: true,
       validator: ['', Validators.required]
+    },    
+    {
+      field: 'idEsus',
+      type: 'text',
+      label: 'Código eSUS',
+      grid: true,
+      form: true,
+      required: true,
+      validator: ['', Validators.required]
     },
     {
       field: 'situacao',

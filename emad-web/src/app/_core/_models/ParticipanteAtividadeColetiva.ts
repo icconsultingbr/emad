@@ -19,5 +19,4 @@ export class ParticipanteAtividadeColetiva {
     @Input() queixaHistoriaDoenca: string = null
     @Input() observacao: string = null
     @Input() avaliacao: string = null
-    @Input() descricaoTipoAtividade: string = null
 }

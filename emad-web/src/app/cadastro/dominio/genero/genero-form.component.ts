@@ -16,7 +16,7 @@ export class GeneroFormComponent implements OnInit {
   object: Genero = new Genero();
   method = 'genero';
   fields: any[] = [];
-  label = 'Orientacao sexual';
+  label = 'Gênero';
   id: Number = null;
 
   constructor(
