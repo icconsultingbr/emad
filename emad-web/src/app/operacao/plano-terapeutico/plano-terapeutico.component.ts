@@ -47,6 +47,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
   @ViewChild('modalInfoAgendamento') modalInfoAgendamento: TemplateRef<any>;
   @ViewChild('modalAdicionarAgendamento') modalAdicionarAgendamento: TemplateRef<any>;
   @Input() public readonly: Boolean = false;
+  loading: Boolean = false;
   view: string = 'month';
   selectedSchedule: any = null;
   dataAtual: string;
