@@ -384,6 +384,7 @@ module.exports = function (app) {
         const receitaRepository = new app.dao.ReceitaDAO(connection);        
         const itemReceitaRepository = new app.dao.ItemReceitaDAO(connection);        
         const itemMovimentoGeralRepository = new app.dao.ItemMovimentoGeralDAO(connection);        
+        const parametroSegurancaRepository = new app.dao.ParametroSegurancaDAO(connection); 
 
         try {
             
@@ -400,6 +401,21 @@ module.exports = function (app) {
                     itemReceita.itensEstoque = itensEstoque ? itensEstoque : null;
                 }
             }
+
+            let buscaChaves = "'RECEITA_TITULO','RECEITA_SUBTITULO', 'RECEITA_DESCRICAO'";
+
+            var valorChave = await parametroSegurancaRepository.buscarValorPorChaveSync(buscaChaves);
+
+            if (valorChave && valorChave.length > 0) {
+                titulo = valorChave.filter((url) => url.NOME == "RECEITA_TITULO")[0].VALOR;
+                subtitulo = valorChave.filter((url) => url.NOME == "RECEITA_SUBTITULO")[0].VALOR;
+                descricao = valorChave.filter((url) => url.NOME == "RECEITA_DESCRICAO")[0].VALOR;
+
+                receita.titulo = titulo;
+                receita.subtitulo = subtitulo;
+                receita.descricao = descricao;
+            }
+            
             res.status(200).json(receita);
         }
         catch (exception) {

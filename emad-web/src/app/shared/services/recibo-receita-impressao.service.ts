@@ -182,13 +182,18 @@ export class ReciboReceitaImpressaoService extends RelatorioService {
                         <a class="waves-effect waves-light btn" style="float:right; margin-right:1%" onclick="window.print()">Imprimir</a>
                     </div>
                     <div class="row">
-                        <div class="col s4" style="margin-top:20px;">
-                            <img style="width:60%; float:left; margin-left:10px;" src="${window.location.origin}${window.location.pathname}/assets/imgs/logo_relatorio.png">
+                        <div class="col s2" style="margin-top:20px;">
+                            <img style="width:50%; float:left;" src="${window.location.origin}${window.location.pathname}/assets/imgs/logotipo-e-atende.png">
                         </div>
-                        <div class="col s8" style="margin-top:40px;text-align: right; color: #7d0000; font-weight:bold">
+                        <div class="col s8" style="margin-top:40px;text-align: center; color: #7d0000; font-weight:bold">
+                            ${result.titulo ? result.titulo : ''} </br>
+                            ${result.subtitulo ? result.subtitulo : ''}</br>
+                            ${result.descricao ? result.descricao : ''}
+                        </div>
+                        <div class="col s2" style="margin-top:40px;text-align: right; color: #7d0000; font-weight:bold">
                             Unidade: ${result.nomeEstabelecimento}
                         </div>
-                        <div class="col s8" style="text-align: right; color: #7d0000; font-weight:bold">
+                        <div class="col s2" style="text-align: right; color: #7d0000; font-weight:bold">
                             Recibo da receita
                         </div>
                     </div>
@@ -239,16 +244,21 @@ export class ReciboReceitaImpressaoService extends RelatorioService {
             <div class="content">
                 <form class="container" id="form" style="font-size: 12px;">
                 <div class="row">
-                    <div class="col s4" style="margin-top:20px;">
-                        <img style="width:60%; float:left; margin-left:10px;" src="${window.location.origin}${window.location.pathname}/assets/imgs/logo_relatorio.png">
+                        <div class="col s2" style="margin-top:20px;">
+                            <img style="width:50%; float:left;" src="${window.location.origin}${window.location.pathname}/assets/imgs/logotipo-e-atende.png">
+                        </div>
+                        <div class="col s8" style="margin-top:40px;text-align: center; color: #7d0000; font-weight:bold">
+                            ${result.titulo ? result.titulo : ''} </br>
+                            ${result.subtitulo ? result.subtitulo : ''}</br>
+                            ${result.descricao ? result.descricao : ''}
+                        </div>
+                        <div class="col s2" style="margin-top:40px;text-align: right; color: #7d0000; font-weight:bold">
+                            Unidade: ${result.nomeEstabelecimento}
+                        </div>
+                        <div class="col s2" style="text-align: right; color: #7d0000; font-weight:bold">
+                            Recibo da receita
+                        </div>
                     </div>
-                    <div class="col s8" style="margin-top:40px;text-align: right; color: #7d0000; font-weight:bold">
-                        Unidade: ${result.nomeEstabelecimento}
-                    </div>
-                    <div class="col s8" style="text-align: right; color: #7d0000; font-weight:bold">
-                        Recibo da receita
-                    </div>
-                </div>
                 <hr size = 7>
                 <div class="row">
                     <div class="col" style="text-align: center;width: 100%;">
