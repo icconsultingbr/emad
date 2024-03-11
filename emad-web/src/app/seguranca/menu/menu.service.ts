@@ -11,6 +11,16 @@ export class MenuService {
 
   fields: any[] = [
     { field: 'id', type: 'hidden', label: 'Id', grid: false, form: true, required: false, validator: ['', ''] },
+    {
+      field: 'tipo',
+      type: 'select',
+      label: 'Tipo',
+      grid: true,
+      form: true,
+      translate: {1: 'Interno', 2: 'Externo'},
+      required: true,
+      validator: ['', Validators.required]
+    },
     { field: 'nome', type: 'text', label: 'Nome', grid: true, form: true, required: true, validator: ['', Validators.required] },
     {
       field: 'menuPai',

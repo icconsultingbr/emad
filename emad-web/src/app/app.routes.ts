@@ -441,6 +441,12 @@ const appRoutes: Routes = [
       "./bi/power-bi/visualizacao-power-bi.module#VisualizacaoPowerBIModule",
   },
   {
+    path: "url-externa/:id",
+    canActivate: [AuthGuard],
+    loadChildren:
+      "./urlexterna/url-externa.module#UrlExternaModule",
+  },
+  {
     path: "integracao-e-sus",
     canActivate: [AuthGuard],
     loadChildren: "./integracao/e-sus/esus.module#ESusModule",
@@ -477,7 +483,7 @@ const appRoutes: Routes = [
   },
 
   { path: "not-found", component: NotFoundComponent },
-  { path: "**", component: NotFoundComponent },
+  { path: "**", component: NotFoundComponent }
 ];
 
 export const routing = RouterModule.forRoot(appRoutes, { useHash: true });

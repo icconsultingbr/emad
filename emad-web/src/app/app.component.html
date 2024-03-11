@@ -37,7 +37,7 @@
         <div *ngFor="let menu of menus">
           <li *ngIf="menu.invisivel == false && menu.menuPai == null" class="nav-item">
             <a *ngIf="menu.rota != '#'" class="nav-link" [ngClass]="route == menu.rota ? 'active' : ''"
-              [routerLink]="menu.rota" (click)="ativo = false">
+              [routerLink]="getRouterLink(menu)" (click)="ativo = false">
               <i class="{{ 'fa mr-2 ' + menu.icone }}"></i> {{ menu.nome }}
             </a>
             <a *ngIf="menu.rota == '#'" class="nav-link" [routerLink]="" (click)="menu.isCollapsed = !menu.isCollapsed"
@@ -62,7 +62,7 @@
                   <li *ngIf="menu2.invisivel == false && menu2.menuPai == menu.id" class="nav-item"
                     style="margin-left: 39px">
                     <a *ngIf="menu2.rota != '#'" class="nav-link" [ngClass]="route == menu2.rota ? 'active' : ''"
-                      [routerLink]="menu2.rota" (click)="ativo = false">
+                      [routerLink]="getRouterLink(menu2)" (click)="ativo = false">
                       {{ menu2.nome }}
                     </a>
                     <a *ngIf="menu2.rota == '#'" class="nav-link" [routerLink]=""
@@ -93,7 +93,7 @@
                               menu3.menuPai == menu2.id
                             " class="nav-item" style="margin-left: 52px">
                             <a *ngIf="menu3.rota != '#'" class="nav-link"
-                              [ngClass]="route == menu3.rota ? 'active' : ''" [routerLink]="menu3.rota"
+                              [ngClass]="route == menu3.rota ? 'active' : ''" [routerLink]="getRouterLink(menu3)"
                               (click)="ativo = false">
                               {{ menu3.nome }}
                             </a>

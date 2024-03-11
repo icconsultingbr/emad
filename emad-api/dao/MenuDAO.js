@@ -15,6 +15,7 @@ MenuDAO.prototype.lista = function(callback) {
             "m2.nome as menuPai, "+
             "m.icone, m.ordem, "+
             "IF(m.situacao>0, 'Ativo', 'Inativo') as situacao, "+
+            "m.tipo, "+
             "m.rota from "+this._table+" as m "+
         "LEFT JOIN tb_menu as m2 ON(m.menuPai = m2.id) "+ 
         "WHERE m.invisivel = 0 "+
@@ -79,7 +80,8 @@ MenuDAO.prototype.listaPorTipoUsuarioDescricao = function(idTipoUsuario, callbac
                 ELSE m.nome \
             END  AS nome, \
             m.ordem, \
-            m.menuPai  \
+            m.menuPai,  \
+            m.tipo  \
         FROM "+this._table+" as m \
         LEFT JOIN \
             tb_menu AS m2 \
@@ -128,7 +130,8 @@ MenuDAO.prototype.listaPorTipoUsuario = function(idUsuario, callback){
             END as hasChildren,
             m1.rota, 
             m1.ordem, 
-            m1.invisivel 
+            m1.invisivel,
+            m1.tipo
             FROM 
         ${this._table} AS m1 
         INNER JOIN tb_tipo_usuario_menu tum ON(m1.id = tum.idMenu) 

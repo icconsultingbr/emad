@@ -31,7 +31,11 @@ export class MenuFormComponent {
     service.list(this.method).subscribe(menus => {
       this.domains.push({
         menuPai: menus,
-        ordem: []
+        ordem: [],
+        tipo: [
+          { id: 1, nome: 'Interno' },
+          { id: 2, nome: 'Externo' }
+        ],
       });
       this.buscaOrdemDisponivelMenu();
     });
@@ -50,8 +54,6 @@ export class MenuFormComponent {
       });
   }
 }
-
-
 
 
 

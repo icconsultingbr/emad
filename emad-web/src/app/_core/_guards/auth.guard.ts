@@ -33,7 +33,7 @@ export class AuthGuard implements CanActivate {
                 }
             }
 
-            if (this.menu.includes(this.router.url) || this.menu.includes('/' + urlRoute[1])) {
+            if (this.menu.includes(this.router.url) || this.menu.includes('/' + urlRoute[1]) || urlRoute[1] == 'url-externa') {
                 return true;
             } else {
                 this.router.navigate(['/not-found']);
