@@ -30,9 +30,26 @@ export class UrlExternaComponent implements OnInit {
         this.urlExternaService.buscaPorChaveId(this.menuId).subscribe(res => {
           this.label = res.nome;
           this.url = res.rota;
-          (<HTMLIFrameElement>document.getElementById('urlIframe')).src = this.url;
+        
+          if (localStorage.getItem('est')) {   
+            var estabelecimento = JSON.parse(localStorage.getItem('est'));
+            this.url = this.url.replace('{idEstabelecimento}', estabelecimento[0].id); 
+          }
+
+          if (localStorage.getItem('currentUser')) {
+            var usuario = JSON.parse(localStorage.getItem('currentUser'));
+            this.url = this.url.replace('{idUsuario}', usuario.id);
+          }
+
+          if(res.tipo == 3){
+            window.open(this.url, '_blank');
+            window.history.back();
+          }
+          else{
+            (<HTMLIFrameElement>document.getElementById('urlIframe')).src = this.url;
+          }
         }
-      );
-       });   
+          );
+       });  
     }
 }

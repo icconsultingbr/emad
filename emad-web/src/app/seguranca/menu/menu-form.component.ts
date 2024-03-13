@@ -34,7 +34,8 @@ export class MenuFormComponent {
         ordem: [],
         tipo: [
           { id: 1, nome: 'Interno' },
-          { id: 2, nome: 'Externo' }
+          { id: 2, nome: 'Externo (frame)' },
+          { id: 3, nome: 'Externo (nova aba)' }
         ],
       });
       this.buscaOrdemDisponivelMenu();

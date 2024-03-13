@@ -183,9 +183,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   getRouterLink(menu: any) {
     if (menu.tipo === 1) {
       return menu.rota;
-    } else if (menu.tipo === 2 && menu.id !== undefined && menu.id !== null && menu.id !== '') {
+    } else {
       return '/url-externa/' + menu.id;
     }
-    return menu.rota;
   }
 }

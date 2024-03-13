@@ -17,7 +17,7 @@ export class MenuService {
       label: 'Tipo',
       grid: true,
       form: true,
-      translate: {1: 'Interno', 2: 'Externo'},
+      translate: {1: 'Interno', 2: 'Externo (frame)', 3: 'Externo (nova aba)'},
       required: true,
       validator: ['', Validators.required]
     },
