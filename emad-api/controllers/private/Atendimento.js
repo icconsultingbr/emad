@@ -418,7 +418,7 @@ module.exports = function (app) {
             if (mesmaData) {
                 obj.dataCriacao = dataAtualServidor;
             } else {
-                dataRecebida.setHours(0, 0, 0, 0);
+                dataRecebida.setHours(3, 1, 1, 1);
                 obj.dataCriacao = dataRecebida;
             }
 
@@ -466,7 +466,7 @@ module.exports = function (app) {
             if (mesmaData) {
                 objHistorico.dataCriacao = dataAtualServidor;
             } else {
-                dataRecebida.setHours(0, 0, 0, 0);
+                dataRecebida.setHours(3, 1, 1, 1);
                 objHistorico.dataCriacao = dataRecebida;
             }
 
