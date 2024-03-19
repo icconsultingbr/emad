@@ -52,14 +52,41 @@ IntegracaoESusDAO.prototype.listaVacinas = async function (filtro) {
 
 IntegracaoESusDAO.prototype.listaProcedimentos = async function (filtro) {
    let listaProcedimentos = {};
-   listaProcedimentos.atendimentos = await this._connection.query(`SELECT * FROM vw_atendimento_individual_sus vw WHERE ${this.campoData} BETWEEN ? AND ? AND ((exists (select 1 from tb_atendimento_procedimento tap where tap.idAtendimento = vw.idAtendimento)) 
-   or (exists (select 1 from vw_atendimento_afericoes_sus afer where afer.idAtendimento = vw.idAtendimento and 
+   listaProcedimentos.atendimentos = await this._connection.query(`SELECT * FROM vw_atendimento_individual_sus vw WHERE ${this.campoData} BETWEEN ? AND ? AND 
+   ( (exists (select 1 from vw_atendimento_afericoes_sus afer where afer.idAtendimento = vw.idAtendimento and 
    (
    (pressaoArterial is not null and pressaoArterial <> '') or (temperatura is not null and temperatura <> '') or (altura is not null and altura <> '') or (peso is not null and peso <> '')
    )
    ))) AND vw.idEstabelecimento = ? ORDER BY dataCriacao asc`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1], filtro.idEstabelecimento] );
-   listaProcedimentos.procedimentos = await this._connection.query(`SELECT tap.idAtendimento, tp.co_procedimento, tap.qtd, tap.situacao FROM tb_atendimento_procedimento tap
-                                                                  INNER JOIN tb_procedimento tp ON (tap.idProcedimento = tp.id and tap.situacao=1)`);
+   listaProcedimentos.procedimentos = await this._connection.query(`SELECT tap.idAtendimento, tp.co_procedimento, tap.qtd, tap.situacao, tp2.id idProfissional FROM tb_atendimento_procedimento tap
+                                                                     INNER JOIN tb_procedimento tp ON (tap.idProcedimento = tp.id and tap.situacao=1)
+                                                                     INNER JOIN tb_usuario tu on tu.id = tap.idUsuarioCriacao 
+                                                                     INNER JOIN tb_profissional tp2 on tp2.idUsuario = tu.id`);
+   listaProcedimentos.atendimentoProcedimentos = await this._connection.query(`select * from (
+                                                                                 SELECT distinct vw.idAtendimento, vw.idEstabelecimento, vw.cartaoSus, vw.dataNascimento, vw.localDeAtendimentoSus,
+                                                                                 vw.sexo, vw.turno, vw.tipoAtendimentoSus, vw.dataCriacao, vw.dataFinalizacao, vw.cpfCidadao,
+                                                                                 tp2.id idProfissionalFiltro FROM vw_atendimento_individual_sus vw
+                                                                                 inner join tb_atendimento_procedimento tap on tap.idAtendimento = vw.idAtendimento 
+                                                                                 INNER JOIN tb_procedimento tp ON (tap.idProcedimento = tp.id and tap.situacao=1)
+                                                                                 INNER JOIN tb_usuario tu on tu.id = tap.idUsuarioCriacao 
+                                                                                 INNER JOIN tb_profissional tp2 on tp2.idUsuario = tu.id
+                                                                                 UNION ALL
+                                                                                 SELECT distinct vw.idAtendimento, vw.idEstabelecimento, vw.cartaoSus, vw.dataNascimento, vw.localDeAtendimentoSus,
+                                                                                 vw.sexo, vw.turno, vw.tipoAtendimentoSus, vw.dataCriacao, vw.dataFinalizacao, vw.cpfCidadao,
+                                                                                 tp2.id idProfissionalFiltro FROM vw_atendimento_odontologico_individual_sus vw
+                                                                                 inner join tb_atendimento_procedimento tap on tap.idAtendimento = vw.idAtendimento 
+                                                                                 INNER JOIN tb_procedimento tp ON (tap.idProcedimento = tp.id and tap.situacao=1)
+                                                                                 INNER JOIN tb_usuario tu on tu.id = tap.idUsuarioCriacao 
+                                                                                 INNER JOIN tb_profissional tp2 on tp2.idUsuario = tu.id
+                                                                                 UNION ALL
+                                                                                 SELECT distinct vw.idAtendimento, vw.idEstabelecimento, vw.cartaoSus, vw.dataNascimento, vw.localDeAtendimentoSus,
+                                                                                 vw.sexo, vw.turno, vw.tipoAtendimentoSus, vw.dataCriacao, vw.dataFinalizacao, vw.cpfCidadao,
+                                                                                 tp2.id idProfissionalFiltro FROM vw_atendimento_domiciliar_sus vw
+                                                                                 inner join tb_atendimento_procedimento tap on tap.idAtendimento = vw.idAtendimento 
+                                                                                 INNER JOIN tb_procedimento tp ON (tap.idProcedimento = tp.id and tap.situacao=1)
+                                                                                 INNER JOIN tb_usuario tu on tu.id = tap.idUsuarioCriacao 
+                                                                                 INNER JOIN tb_profissional tp2 on tp2.idUsuario = tu.id) a
+                                                                                 ORDER BY a.dataCriacao asc`);
    listaProcedimentos.numTotalAfericaoPa = await this._connection.query(`SELECT count(1) qtd, vw.idProfissional FROM vw_atendimento_afericoes_sus vw INNER JOIN tb_atendimento ta ON (ta.id = vw.idAtendimento) WHERE vw.pressaoArterial is not null and vw.pressaoArterial <> '' and vw.${this.campoData} BETWEEN ? AND ? AND ta.idEstabelecimento = ? group by vw.idProfissional`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1], filtro.idEstabelecimento]);
    listaProcedimentos.numTotalAfericaoTemperatura = await this._connection.query(`SELECT count(1) qtd, vw.idProfissional FROM vw_atendimento_afericoes_sus vw INNER JOIN tb_atendimento ta ON (ta.id = vw.idAtendimento) WHERE vw.temperatura is not null and vw.temperatura <> '' and vw.${this.campoData} BETWEEN ? AND ? AND ta.idEstabelecimento = ?  group by vw.idProfissional`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1], filtro.idEstabelecimento]);
    listaProcedimentos.numTotalMedicaoAltura = await this._connection.query(`SELECT count(1) qtd, vw.idProfissional FROM vw_atendimento_afericoes_sus vw INNER JOIN tb_atendimento ta ON (ta.id = vw.idAtendimento) WHERE vw.altura is not null and vw.altura <> '' and vw.${this.campoData} BETWEEN ? AND ? AND ta.idEstabelecimento = ?  group by vw.idProfissional`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1], filtro.idEstabelecimento]);

@@ -558,7 +558,7 @@ module.exports = function (app) {
             if (x.idAtendimento == idAtendimento && x.situacao == 1) {
                 let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('procedimentosRealizados')
                     .ele('coMsProcedimento').txt(x.co_procedimento ? x.co_procedimento : '').up()
-                    .ele('quantidade').txt(x.qtd ? x.qtd : '').up()
+                    .ele('quantidade').txt(x.qtd ? x.qtd : '1').up()
                     .up();
                 itemFilhoVacinaColetiva.push(atend);
             }
@@ -806,7 +806,9 @@ module.exports = function (app) {
         let xmls = [];
 
         profissionais.forEach(profissional => {
-            const listProcedimento = list.atendimentos.filter(x => x.idProfissional == profissional.id);
+            const listProcedimento = list.atendimentoProcedimentos.filter(x => x.idProfissional == profissional.id);
+
+            const listAtendimentosAfericoes = list.atendimentos.filter(x => x.idProfissional == profissional.id);
 
             const numTotalAfericaoPa = list.numTotalAfericaoPa.filter(x => x.idProfissional == profissional.id);
             const numTotalAfericaoTemperatura = list.numTotalAfericaoTemperatura.filter(x => x.idProfissional == profissional.id);
@@ -835,7 +837,7 @@ module.exports = function (app) {
                 .ele('cboCodigo_2002').txt(profissional.codigoCBO ? profissional.codigoCBO : '3').up()
                 .ele('cnes').txt(estabelecimento.cnes).up()
                 .ele('ine').txt(profissional.ine).up()
-                .ele('dataAtendimento').txt(new Date(listProcedimento[0].dataCriacao).getTime()).up()
+                .ele('dataAtendimento').txt(new Date(listProcedimento[0] ? listProcedimento[0].dataCriacao : listAtendimentosAfericoes[0].dataCriacao).getTime()).up()
                 .ele('codigoIbgeMunicipio').txt(estabelecimento.codigo).up()
                 .up()
                 .up()

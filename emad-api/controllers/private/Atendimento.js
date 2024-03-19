@@ -411,7 +411,16 @@ module.exports = function (app) {
             delete obj.tiposVigilanciaSaudeBucal;
             delete obj.condutaEncaminhamento;
 
-            obj.dataCriacao = new Date(obj.dataCriacao);
+            var dataAtualServidor = new Date();
+            var dataRecebida = new Date(obj.dataCriacao);
+            var mesmaData = dataRecebida.toDateString() === dataAtualServidor.toDateString();
+
+            if (mesmaData) {
+                obj.dataCriacao = dataAtualServidor;
+            } else {
+                dataRecebida.setHours(0, 0, 0, 0);
+                obj.dataCriacao = dataRecebida;
+            }
 
             var responseAtendimento = await atendimentoRepository.salvaSync(obj);
 
@@ -450,7 +459,16 @@ module.exports = function (app) {
             delete objHistorico.tiposVigilanciaSaudeBucal;
             delete objHistorico.condutaEncaminhamento;
 
-            objHistorico.dataCriacao = new Date(objHistorico.dataCriacao);
+            var dataAtualServidor = new Date();
+            var dataRecebida = new Date(objHistorico.dataCriacao);
+            var mesmaData = dataRecebida.toDateString() === dataAtualServidor.toDateString();
+
+            if (mesmaData) {
+                objHistorico.dataCriacao = dataAtualServidor;
+            } else {
+                dataRecebida.setHours(0, 0, 0, 0);
+                objHistorico.dataCriacao = dataRecebida;
+            }
 
             var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
 
