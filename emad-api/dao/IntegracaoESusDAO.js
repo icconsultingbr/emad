@@ -97,7 +97,7 @@ IntegracaoESusDAO.prototype.listaProcedimentos = async function (filtro) {
 
 IntegracaoESusDAO.prototype.listaAtendimentoOdontologicoIndividual = async function (filtro) {
    let listaAtendimentoOdontologicoIndividual = {};
-   listaAtendimentoOdontologicoIndividual.atendimentos = await this._connection.query(`SELECT * FROM vw_atendimento_odontologico_individual_sus vw WHERE ${this.campoData} BETWEEN ? AND ?  AND idEstabelecimento = ?`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1], filtro.idEstabelecimento]);
+   listaAtendimentoOdontologicoIndividual.atendimentos = await this._connection.query(`SELECT * FROM vw_atendimento_odontologico_individual_sus vw WHERE ${this.campoData} BETWEEN ? AND ?  AND idEstabelecimento = ? ORDER BY dataCriacao asc`, [filtro.periodoExtracao[0], filtro.periodoExtracao[1], filtro.idEstabelecimento]);
    return listaAtendimentoOdontologicoIndividual;
 }
 
