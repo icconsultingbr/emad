@@ -482,23 +482,37 @@ module.exports = function (app) {
         const listaAvaliacaoAtendimento = listAvaliacao.filter(x => x.idAtendimento == idAtendimento);
         const listaCiapsAtendimento = listCiaps.filter(x => x.idAtendimento == idAtendimento);
 
+        const ciapsLista = [];
+        const outroCiap1Lista = [];
+        const outroCiap2Lista = [];
+
         listaCiapsAtendimento.forEach(ciaps => {
-            if(ciaps.codigoAB && ciaps.codigoAB.length > 1){
-                const codigoAB = fragment().ele('ciaps').txt(ciaps.codigoAB).up();
-                avaliacao.import(codigoAB);
-            }
-            else{
-                if(existeCiap1 && !existeCiap2){
-                    const outroCiap2 = fragment().ele('outroCiap2').txt(ciaps.ciap2).up();
-                    avaliacao.import(outroCiap2);
+            if (ciaps.codigoAB && ciaps.codigoAB.length > 1) {
+                ciapsLista.push(ciaps);
+            } else {
+                if (existeCiap1 && !existeCiap2) {
+                    outroCiap2Lista.push(ciaps);
                     existeCiap2 = true;
-                }
-                else if(!existeCiap2){                                        
-                    const outroCiap1 = fragment().ele('outroCiap1').txt(ciaps.ciap2).up();
-                    avaliacao.import(outroCiap1);
+                } else if (!existeCiap2) {
+                    outroCiap1Lista.push(ciaps);
                     existeCiap1 = true;
                 }
-            }            
+            }
+        });
+
+        ciapsLista.forEach(ciaps => {
+            const codigoAB = fragment().ele('ciaps').txt(ciaps.codigoAB).up();
+            avaliacao.import(codigoAB);
+        });
+
+        outroCiap1Lista.forEach(ciaps => {
+            const outroCiap1 = fragment().ele('outroCiap1').txt(ciaps.ciap2).up();
+            avaliacao.import(outroCiap1);
+        });
+
+        outroCiap2Lista.forEach(ciaps => {
+            const outroCiap2 = fragment().ele('outroCiap2').txt(ciaps.ciap2).up();
+            avaliacao.import(outroCiap2);
         });
 
         if (listaAvaliacaoAtendimento && listaAvaliacaoAtendimento.length > 0) {
