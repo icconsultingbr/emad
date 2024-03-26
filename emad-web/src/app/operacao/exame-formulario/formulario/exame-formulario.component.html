@@ -14,12 +14,23 @@
     <div class="card mb-12">
       <div class="card-header text-left" *ngIf="header">
         Exame
-        <button *ngIf="object.id" class="mr-2 btn btn-primary float-right rounded" type="button"
-          (click)="abreReciboExame(object.id, false)">
-          <i class="fa fa-file-medical-alt"></i>
-        </button>
       </div>
       <div class="card-body text-left">
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Tipo de Solicitação <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <select *ngIf="domains" class="custom-select d-block w-100" formControlName="idTipoSolicitacaoExame">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.tipoSolicitacaoExame" [value]="item.id">{{item.nome}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="row">
           <div class="col-12">
             <div class="form-group row">
@@ -36,11 +47,25 @@
             </div>
           </div>
         </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Descrição <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-10">
+                <textarea rows="5" class="form-control has-error" [(ngModel)]="object.descricaoSolicitacaoExame"
+                      formControlName="descricaoSolicitacaoExame"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="card mb-4" *ngIf="object.id">
+  <!--Produto Método-->
+  <div class="card mb-4" *ngIf="object.id && idTipoSolicitacaoExame == 2">
     <div class="card mb-12">
       <div class="card-header text-left">
         Produtos/Método
@@ -128,8 +153,8 @@
       </div>
     </div>
   </div>
-
-  <div class="card mb-4" *ngIf="object.id">
+  <!--Interpretação do resultado-->
+  <div class="card mb-4" *ngIf="object.id && idTipoSolicitacaoExame == 2">
     <div class="card mb-12">
       <div class="card-header text-left">
         Interpretação do resultado
@@ -156,12 +181,16 @@
   </div>
 
   <div class="form-group text-right">
+    <button *ngIf="object.id" class="btn btn-primary" [disabled]="form.invalid"
+      (click)="abreReciboExame(object.id, false)">
+      <i class="fa fa-save"></i> {{ idTipoSolicitacaoExame == 1 ? 'Imprimir Solicitação' : 'Imprimir' }}
+    </button>
     <button class="btn btn-primary" type="submit" [disabled]="form.invalid"
-      *ngIf="object.idPaciente && object.situacao != '2'">
+      (click)="vericaoSolicitacao(idTipoSolicitacaoExame)" *ngIf="object.idPaciente && object.situacao != '2'">
       <i class="fa fa-save"></i> {{ object.situacao == '1' ? 'Salvar' : 'Criar exame' }}
     </button>
-    <button class="btn btn-primary" type="button" (click)="openConfirmacao(contentConfirmacaoFinalizar)"
-      [disabled]="form.invalid" *ngIf="object.idPaciente && object.situacao == '1'">
+    <button class="btn btn-primary" type="button" [disabled]="form.invalid"
+      *ngIf="object.idPaciente && object.situacao == '1'">
       <i class="fa fa-save"></i> Finalizar exame
     </button>
     <button (click)="close(true)" class="btn btn-default" type="button">
@@ -169,6 +198,22 @@
     </button>
   </div>
 </form>
+
+<ng-template #contentImprimirSolicitacaoExame>
+  <div class="modal-header">
+    <h4 class="modal-title">Mensagem</h4>
+    <button type="button" class="close" (click)="close(false)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Gostária de imprimir a solicitação?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="abreReciboExame(object.id, false)">Sim</button>
+    <button type="button" class="btn btn-danger" (click)="close()">Não</button>
+  </div>
+</ng-template>
 
 <ng-template #contentConfirmacaoFinalizar>
   <div class="modal-header">

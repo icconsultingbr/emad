@@ -10,7 +10,7 @@ export class ReciboExameImpressaoService extends RelatorioReciboExameService {
         { id: 1, nome: 'Amostra não reagente' },
         { id: 2, nome: 'Amostra reagente' },
         { id: 3, nome: 'Não realizado' }
-      ];
+    ];
 
     constructor(private exameService: ExameService) {
         super();
@@ -137,7 +137,45 @@ export class ReciboExameImpressaoService extends RelatorioReciboExameService {
                 let exame = '';
                 const ano = new Date(result.dataCriacao).getFullYear();
                 const resultado = this.resultadoFinal.find(x => x.id == result.resultado);
-
+                if (result.itensExame.length == 0) {
+                    exame += (`
+                    <div class="row" style="text-align: left;width: 100%;">
+                        <div class="col s3">
+                            <span style="font-family: Arial; font-size: 18px; font-weight:bold">Solicitação de exame:</span>
+                        </div>
+                        <div class"col s9">
+                            <span style="font-family: Arial; font-size: 18px; font-weight:bold"> ${result.tipoExame.nome}</span>
+                        </div>               
+                    </div>
+                    <br>
+                    <div class="row" style="text-align: left; width: 100%;">
+                        <div class="col s3">
+                            <span style="font-family: Arial; font-size: 18px; font-weight: bold;">Descrição da Solicitação:</span>
+                        </div>
+                        <div class="col s9" style="font-family: Arial; font-size: 18px; word-wrap: break-word;">
+                            ${result.descricaoSolicitacaoExame}
+                        </div>               
+                    </div>
+                    <br>
+                    <div class="row" style="text-align: left; width: 100%;">
+                        <div class="col s3">
+                            <span style="font-family: Arial; font-size: 18px; font-weight: bold;">Local:</span>
+                        </div>
+                        <div class="col s9" style="font-family: Arial; font-size: 18px; word-wrap: break-word;">
+                            ${result.local}
+                        </div>               
+                    </div>
+                    <br>
+                    <div class="row" style="text-align: left; width: 100%;">
+                        <div class="col s3">
+                            <span style="font-family: Arial; font-size: 18px; font-weight: bold;">Data do agendamento:</span>
+                        </div>
+                        <div class="col s9" style="font-family: Arial; font-size: 18px; word-wrap: break-word;">
+                            ${result.dataAgendamento ? _moment(result.dataAgendamento).format('DD/MM/YYYY') : ' ' }
+                        </div>               
+                    </div>
+                    `)
+                }
                 if (result.itensExame.length > 0) {
                     exame += (`<div class="col" style="text-align: left;width: 100%;">
                                    <span style="font-family: Arial; font-size: 18px; font-weight:bold">Exame para ${result.tipoExame.nome}</span>

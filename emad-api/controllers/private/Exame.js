@@ -75,13 +75,13 @@ module.exports = function (app) {
             return;
         }
 
-        if (exame.itensExame.length == 0) {
+        if (exame.itensExame.length == 0 && exame.tipoSolicitacaoExame == 2) {
             errors = util.customError(errors, "header", "Nenhum produto foi adicionado", "");
             res.status(400).send(errors);
             return;
         }
 
-        if (exame.acao == 'F' && !exame.resultadoFinal) {
+        if (exame.acao == 'F' && (exame.resultadoFinal !== undefined && !exame.resultadoFinal) && exame.tipoSolicitacaoExame == 2) {
             errors = util.customError(errors, "header", "Para finalizar o exame preencha o campo Interpretação do resultado", "");
             res.status(400).send(errors);
             return;
@@ -136,7 +136,12 @@ module.exports = function (app) {
             exame.resultado = exame.resultadoFinal;
             exame.dataAlteracao = new Date;
             exame.idUsuarioAlteracao = usuario.id;
-            exame.situacao = (exame.acao == 'F' ? 2 : situacao);
+            exame.situacao = (exame.acao == 'F' ? 2 : situacao);            
+
+            if(exame.dataAgendamento){
+                exame.situacao = exame.situacao == 1 ? 3 : exame.situacao;
+                exame.dataAgendamento = new Date(exame.dataAgendamento);
+            }
 
             //Quando a interpretação do resultado for reagente, criar hipotese no paciente
             if (exame.situacao == '2' && exame.resultado == '2') {
@@ -319,7 +324,7 @@ module.exports = function (app) {
                 const fs = require('fs');
                 if(fs.existsSync(itemfile.caminho)){
                     itemfile.base64 = fs.readFileSync(itemfile.caminho, { encoding: 'base64' });
-                }                
+                }
             }
 
             res.status(200).json(items);

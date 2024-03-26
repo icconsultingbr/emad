@@ -18,4 +18,8 @@ export class Exame {
     @Input() mes: string;
     @Input() numero: string;
     @Input() resultadoFinal: string;
+    @Input() descricaoSolicitacaoExame: string;
+    @Input() idTipoSolicitacaoExame: number;
+    @Input() dataAgendamento: Date;
+    @Input() local: string;
 }

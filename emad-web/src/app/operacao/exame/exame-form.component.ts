@@ -21,6 +21,7 @@ const myId = uuid.v4();
 export class ExameFormComponent implements OnInit {
   @ViewChild('contentConfirmacao') contentConfirmacao: ElementRef;
   @ViewChild('contentRecibo') contentRecibo: ElementRef;
+  @ViewChild('contentImprimirSolicitacaoExame') contentImprimirSolicitacaoExame: ElementRef;
 
   object: Exame = new Exame();
   itemExame: ItemExame = new ItemExame();
@@ -43,6 +44,7 @@ export class ExameFormComponent implements OnInit {
   listaArquivosUpload: any[] = [];
   nomeProfissional: string;
   thumbnail: any;
+  idTipoSolicitacaoExame: number;
 
   public images: any[] = [];
 
@@ -87,7 +89,15 @@ export class ExameFormComponent implements OnInit {
             { id: 2, nome: 'Amostra reagente' },
             { id: 3, nome: 'Não realizado' }
           ],
-
+          idTipoSolicitacaoExame: [
+            { id: 1, nome: 'Solicitação de Exame' },
+            { id: 2, nome: 'Realização de Exame' }
+          ],
+          situacao: [
+            { id: 1, nome: 'Em aberto' },
+            { id: 2, nome: 'Finalizado' },
+            { id: 3, nome: 'Agendado' }
+          ]
         });
         if (!Util.isEmpty(this.id)) {
           this.carregaExame();
@@ -114,13 +124,15 @@ export class ExameFormComponent implements OnInit {
   sendForm(event, acao) {
     this.errors = [];
     event.preventDefault();
-
     this.object.acao = acao ? acao : 'A';
     this.close(false);
 
     this.service
       .inserir(this.object, 'exame')
       .subscribe((res: any) => {
+        if (this.idTipoSolicitacaoExame == 1) {
+          this.openConfirmacao(this.contentImprimirSolicitacaoExame);
+        }
         if (this.object.id) {
           if (acao == 'F') {
             this.openConfirmacao(this.contentRecibo);
@@ -136,6 +148,7 @@ export class ExameFormComponent implements OnInit {
           this.service.list(`produto-exame/tipo-exame/${this.object.idTipoExame}`).subscribe(produtoExame => {
             this.domains[0].idProdutoExame = produtoExame;
             this.object.idTipoExame = this.object.idTipoExame;
+
           });
           this.service.list(`arquivo-exame/exame/${this.id}`).subscribe(arquivosExame => {
             this.listaArquivosUpload = arquivosExame;
@@ -156,6 +169,7 @@ export class ExameFormComponent implements OnInit {
       this.object = result;
       this.label = this.object.situacao == '1' ? 'Editar exame' : 'Visualizar exame (Situação: Finalizado)';
       this.arquivosVisible = true;
+      this.object.dataAgendamento = new Date(this.object.dataAgendamento);
 
       this.service.list(`produto-exame/tipo-exame/${result.idTipoExame}`).subscribe(produtoExame => {
         this.domains[0].idProdutoExame = produtoExame;
@@ -225,9 +239,14 @@ export class ExameFormComponent implements OnInit {
       numero: ['', ''],
       dataEmissao: ['', ''],
       situacao: [Validators.required],
-      qtdDispensarLote: ['', '']
+      qtdDispensarLote: ['', ''],
+      idTipoSolicitacaoExame: ['', ''],
+      descricaoSolicitacaoExame: ['', ''],
+      dataAgendamento: ['', ''],
+      local: ['', '']
     });
   }
+  
 
   confirmaItem() {
     if (!this.object.itensExame) {

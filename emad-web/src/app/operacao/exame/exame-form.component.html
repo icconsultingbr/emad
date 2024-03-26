@@ -29,6 +29,22 @@
           <div class="col-12">
             <div class="form-group row">
               <label class="col-xl-2 col-form-label text-left">
+                Tipo de Solicitação <span class="text-danger font-weight-bold"> *</span>
+              </label>
+              <div class="col-xl-4">
+                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.idTipoSolicitacaoExame"
+                formControlName="idTipoSolicitacaoExame">
+                  <option [value]="null">Selecione...</option>
+                  <option *ngFor="let item of domains[0]?.idTipoSolicitacaoExame" [value]="item.id">{{item.nome}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
                 Tipo de exame <span class="text-danger font-weight-bold"> *</span>
               </label>
               <div class="col-xl-4">
@@ -41,11 +57,58 @@
             </div>
           </div>
         </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Descrição
+              </label>
+              <div class="col-xl-10">
+                <textarea rows="5" class="form-control has-error" [(ngModel)]="object.descricaoSolicitacaoExame"
+                      formControlName="descricaoSolicitacaoExame"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="object.id && object.idTipoSolicitacaoExame == 1">
+          <div class="col-xl-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">Local </label>
+              <div class="col-xl-10">
+                <input type="text" class="form-control has-error" [(ngModel)]="object.local"
+                  formControlName="local" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="object.id && object.idTipoSolicitacaoExame == 1">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-xl-2 col-form-label text-left">
+                Data agendamento
+              </label>
+              <div class="col-xl-2">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text btn">
+                      <i class="fa fa-calendar-alt"></i>
+                    </div>
+                  </div>
+                  <input type="text" [(ngModel)]="object.dataAgendamento" formControlName="dataAgendamento"
+                    placeholder="dd/mm/aaaa" bsDatepicker [bsConfig]="{
+                      containerClass: 'theme-dark-blue',
+                      dateInputFormat: 'DD/MM/YYYY'
+                    }" class="form-control" autocomplete="off" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="card mb-4" *ngIf="object.id">
+  <div class="card mb-4" *ngIf="object.id && object.idTipoSolicitacaoExame == 2">
     <div class="card mb-12">
       <div class="card-header text-left">
         Produtos/Método
@@ -134,7 +197,7 @@
     </div>
   </div>
 
-  <div class="card mb-4" *ngIf="object.id">
+  <div class="card mb-4" *ngIf="object.id && object.idTipoSolicitacaoExame == 2">
     <div class="card mb-12">
       <div class="card-header text-left">
         Interpretação do resultado
@@ -215,12 +278,16 @@
   </div>
 
   <div class="form-group text-right">
+    <button *ngIf="object.id" class="btn btn-primary" [disabled]="form.invalid"
+      (click)="abreReciboExame(object.id, false)" type="button">
+      <i class="fa fa-save"></i> {{ object.idTipoSolicitacaoExame == 1 ? 'Imprimir Solicitação' : 'Imprimir' }}
+    </button>
     <button class="btn btn-primary" type="submit" [disabled]="form.invalid"
-      *ngIf="object.idPaciente && object.situacao != '2'">
-      <i class="fa fa-save"></i> {{ object.situacao == '1' ? 'Salvar' : 'Criar exame' }}
+     *ngIf="object.idPaciente && object.situacao != '2'">
+      <i class="fa fa-save"></i> {{ (object.situacao == '1' || object.situacao == '3' ) ? 'Salvar' : 'Criar exame' }}
     </button>
     <button class="btn btn-primary" type="button" (click)="openConfirmacao(contentConfirmacaoFinalizar)"
-      [disabled]="form.invalid" *ngIf="object.idPaciente && object.situacao == '1'">
+      [disabled]="form.invalid" *ngIf="object.idPaciente && (object.situacao == '1' || object.situacao == '3' )">
       <i class="fa fa-save"></i> Finalizar exame
     </button>
     <button (click)="back()" class="btn btn-default" type="button">
@@ -277,5 +344,21 @@
     <button type="button" class="btn btn-outline-dark" (click)="salvarDocumentos()">
       Salvar
     </button>
+  </div>
+</ng-template>
+
+<ng-template #contentImprimirSolicitacaoExame>
+  <div class="modal-header">
+    <h4 class="modal-title">Mensagem</h4>
+    <button type="button" class="close" (click)="close(false)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Gostaria de imprimir a solicitação?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="abreReciboExame(object.id, false)">Sim</button>
+    <button type="button" class="btn btn-danger" (click)="close()">Não</button>
   </div>
 </ng-template>

@@ -6,9 +6,9 @@ function ExameDAO(connection) {
 }
 
 ExameDAO.prototype.salva = async function (exame) {
-    const response = await this._connection.query(`INSERT INTO tb_exame (idEstabelecimento, idPaciente, idTipoExame, situacao, idUsuarioCriacao, dataCriacao, idAtendimento)
-                                                          VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [exame.idEstabelecimento, exame.idPaciente, exame.idTipoExame, exame.situacao, exame.idUsuarioCriacao, exame.dataCriacao, exame.idAtendimento]);
+    const response = await this._connection.query(`INSERT INTO tb_exame (idEstabelecimento, idPaciente, idTipoExame, situacao, idUsuarioCriacao, dataCriacao, idAtendimento, idTipoSolicitacaoExame, descricaoSolicitacaoExame, dataAgendamento)
+                                                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [exame.idEstabelecimento, exame.idPaciente, exame.idTipoExame, exame.situacao, exame.idUsuarioCriacao, exame.dataCriacao, exame.idAtendimento, exame.idTipoSolicitacaoExame, exame.descricaoSolicitacaoExame, exame.dataAgendamento]);
     return [response];
 }
 
@@ -19,16 +19,17 @@ ExameDAO.prototype.buscaPorId = async function(id){
 }
 
 ExameDAO.prototype.atualizaStatus = async function(obj){
-    const response =  await this._connection.query(`UPDATE tb_exame SET situacao = ?, idUsuarioAlteracao = ?, dataAlteracao  = ?, situacao = ?, resultado = ? WHERE id= ?`, [obj.situacao, obj.idUsuarioAlteracao, obj.dataAlteracao, obj.situacao, obj.resultado, obj.id]);
+    const response =  await this._connection.query(`UPDATE tb_exame SET situacao = ?, idUsuarioAlteracao = ?, dataAlteracao  = ?, situacao = ?, idTipoExame = ?, resultado = ?, idTipoSolicitacaoExame = ?, descricaoSolicitacaoExame = ?,  dataAgendamento = ?, local = ? WHERE id= ?`, 
+    [obj.situacao, obj.idUsuarioAlteracao, obj.dataAlteracao, obj.situacao, obj.idTipoExame, obj.resultado, obj.idTipoSolicitacaoExame,  obj.descricaoSolicitacaoExame, obj.dataAgendamento, obj.local, obj.id]);
     return [response];
 }
 
-ExameDAO.prototype.buscaPorPacienteId = async function (idPaciente, profissional) {   
+ExameDAO.prototype.buscaPorPacienteId = async function (idPaciente, profissional) {
     var where = "";
 
     if(profissional > 0)
         where += " and pro.id = " + profissional;
-    
+
     const response =  await  this._connection.query(`select 
                                                         a.id, 
                                                         a.idPaciente, 
@@ -49,13 +50,21 @@ ExameDAO.prototype.buscaPorPacienteId = async function (idPaciente, profissional
                                                         a.resultado,
                                                         CASE  
                                                             WHEN a.situacao = '1'  THEN 'Aberto'  
-                                                            WHEN a.situacao = '2'  THEN 'Finalizado'                                                                                          
+                                                            WHEN a.situacao = '2'  THEN 'Finalizado'      
+                                                            WHEN a.situacao = '3'  THEN 'Agendado'                                                                                    
                                                         END as situacaoNome,
                                                         CASE  
                                                             WHEN a.resultado = '1'  THEN 'Amostra não reagente'  
                                                             WHEN a.resultado = '2'  THEN 'Amostra reagente'                                  
                                                             ELSE 'Não realizado'
-                                                        END as resultadoNome  
+                                                        END as resultadoNome,
+                                                        idTipoSolicitacaoExame,
+                                                        CASE  
+                                                            WHEN a.idTipoSolicitacaoExame = '1'  THEN 'Solicitação de Exame'  
+                                                            ELSE 'Realização de Exame' 
+                                                         END as tipoSolicitacaoExameNome,
+                                                        a.descricaoSolicitacaoExame, 
+                                                        a.dataAgendamento
                                                         FROM tb_exame a
                                                         INNER JOIN tb_paciente p ON(a.idPaciente = p.id)  
                                                         INNER JOIN tb_estabelecimento e ON(a.idEstabelecimento = e.id) 
@@ -63,12 +72,12 @@ ExameDAO.prototype.buscaPorPacienteId = async function (idPaciente, profissional
                                                         INNER JOIN tb_profissional pro on pro.idUsuario = u.id
                                                         INNER JOIN tb_tipo_exame tipoExame on tipoExame.id = a.idTipoExame
                                                         LEFT JOIN tb_hipotese_diagnostica hipotese on hipotese.id = a.idHipoteseDiagnostica 
-                                                        WHERE a.idPaciente = ? AND a.situacao = 2 ${where} ` ,[idPaciente]); 
+                                                        WHERE a.idPaciente = ? AND a.situacao = 2 ${where} ` ,[idPaciente]);
 
     return response;
 }
 
-ExameDAO.prototype.listar = async function(addFilter) { 
+ExameDAO.prototype.listar = async function(addFilter) {
     let where = "";
     let offset = "";
     let orderBy = addFilter.sortColumn ? `${addFilter.sortColumn}` : "a.id";
@@ -98,10 +107,10 @@ ExameDAO.prototype.listar = async function(addFilter) {
 
         if (addFilter.situacao) {
             where+=" AND a.situacao  = '"+addFilter.situacao+"'";
-            
+
             //if(addFilter.situacao == "0"){
-                //orderBy = " cla.peso desc, a.dataCriacao ";
-                //addFilter.sortOrder = "";
+            //orderBy = " cla.peso desc, a.dataCriacao ";
+            //addFilter.sortOrder = "";
             //}
         }
 
@@ -161,7 +170,14 @@ ExameDAO.prototype.listar = async function(addFilter) {
                                                 WHEN a.resultado = '1'  THEN 'Amostra não reagente'  
                                                 WHEN a.resultado = '2'  THEN 'Amostra reagente'                                  
                                                 ELSE 'Não realizado'
-                                            END as resultadoNome              
+                                            END as resultadoNome,
+                                            idTipoSolicitacaoExame,
+                                            CASE  
+                                                WHEN a.idTipoSolicitacaoExame = '1'  THEN 'Solicitação de Exame'  
+                                                ELSE 'Realização de Exame' 
+                                            END as tipoSolicitacaoExameNome,
+                                            a.descricaoSolicitacaoExame, 
+                                            a.dataAgendamento           
                                             ${join}`, orderBy, addFilter.sortOrder, addFilter.limit, addFilter.offset);
 
     const result = await this._connection.query(query);

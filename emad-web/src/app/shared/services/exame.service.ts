@@ -22,6 +22,15 @@ export class ExameService extends GenericsService {
       validator: ['', '']
     },
     {
+      field: 'tipoSolicitacaoExameNome',
+      type: 'text',
+      label: 'Tipo solicitação',
+      grid: true,
+      form: false,
+      required: false,
+      validator: ['', '']
+    },
+    {
       field: 'nomeTipoExame',
       type: 'text',
       label: 'Tipo exame',
@@ -89,7 +98,7 @@ export class ExameService extends GenericsService {
       label: 'Situação',
       grid: true,
       form: false,
-      translate: { '1': 'Aberto', '2': 'Finalizado' },
+      translate: { '1': 'Aberto', '2': 'Finalizado', '3' : 'Agendado' },
       required: true,
       validator: ['', ''],
       filter: {

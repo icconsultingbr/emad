@@ -21,6 +21,7 @@ const myId = uuid.v4();
 export class ExameFormularioComponent implements OnInit {
   @ViewChild('contentConfirmacao') contentConfirmacao: ElementRef;
   @ViewChild('contentRecibo') contentRecibo: ElementRef;
+  @ViewChild('contentImprimirSolicitacaoExame') contentImprimirSolicitacaoExame: ElementRef;
   @Input() public pacienteId: number;
   @Input() public atendimentoId: number;
   @Input() public exameId: number;
@@ -45,6 +46,7 @@ export class ExameFormularioComponent implements OnInit {
   modalRef: NgbModalRef = null;
   listaItensExame: any[] = [];
   header: boolean;
+  idTipoSolicitacaoExame: number;
 
   constructor(
     private fb: FormBuilder,
@@ -64,7 +66,7 @@ export class ExameFormularioComponent implements OnInit {
     }
 
     this.object.idPaciente = this.pacienteId;
-    this.object.idAtendimento  = this.atendimentoId;
+    this.object.idAtendimento = this.atendimentoId;
     this.header = this.exibeHeader;
     this.loadDomains();
     this.createGroup();
@@ -89,7 +91,10 @@ export class ExameFormularioComponent implements OnInit {
             { id: 2, nome: 'Amostra reagente' },
             { id: 3, nome: 'Não realizado' }
           ],
-
+          tipoSolicitacaoExame: [
+            { id: 1, nome: 'Solicitação de Exame' },
+            { id: 2, nome: 'Realização de Exame' }
+          ],
         });
         if (!Util.isEmpty(this.id)) {
           this.carregaExame();
@@ -116,13 +121,17 @@ export class ExameFormularioComponent implements OnInit {
   sendForm(event, acao) {
     this.errors = [];
     event.preventDefault();
-
+    this.object.descricaoSolicitacaoExame = this.form.get('descricaoSolicitacaoExame').value;
+    this.object.idTipoSolicitacaoExame = this.form.get('idTipoSolicitacaoExame').value;
     this.object.acao = acao ? acao : 'A';
     this.close(false);
 
     this.service
       .inserir(this.object, 'exame')
       .subscribe((res: any) => {
+        if (this.idTipoSolicitacaoExame == 1) {
+          this.openConfirmacao(this.contentImprimirSolicitacaoExame);
+        }
         if (this.object.id) {
           if (acao == 'F') {
             this.openConfirmacao(this.contentRecibo);
@@ -151,6 +160,9 @@ export class ExameFormularioComponent implements OnInit {
     this.message = '';
     this.loading = true;
     this.service.findById(this.id, 'exame').subscribe(result => {
+      this.form.patchValue({
+        descricaoSolicitacaoExame: result.descricaoSolicitacaoExame
+      });
       this.object = result;
       this.label = this.object.situacao == '1' ? 'Editar exame' : 'Visualizar exame (Situação: Finalizado)';
 
@@ -212,8 +224,14 @@ export class ExameFormularioComponent implements OnInit {
       numero: ['', ''],
       dataEmissao: ['', ''],
       situacao: [Validators.required],
-      qtdDispensarLote: ['', '']
+      qtdDispensarLote: ['', ''],
+      idTipoSolicitacaoExame: [null, Validators.required],
+      descricaoSolicitacaoExame: ['', Validators.required]
     });
+
+    this.form.get('idTipoSolicitacaoExame').valueChanges.subscribe((result) => {
+      this.idTipoSolicitacaoExame = result;
+    })
   }
 
   confirmaItem() {
