@@ -556,12 +556,19 @@ module.exports = function (app) {
     function preencherTipoVigilanciaOdonto(listVigilancia, idAtendimento) {
         const { fragment } = require('xmlbuilder2');
         let tipoVigilancia = []
-        listVigilancia.forEach(x => {
-            if (x.idAtendimento == idAtendimento) {
-                let c = fragment().ele('tiposVigilanciaSaudeBucal').txt(x.idVigilancia ? x.idVigilancia : '').up()
-                tipoVigilancia.push(c);
-            }
-        })
+        if(listVigilancia.length){
+            listVigilancia.forEach(x => {
+                if (x.idAtendimento == idAtendimento) {
+                    let c = fragment().ele('tiposVigilanciaSaudeBucal').txt(x.idVigilancia ? x.idVigilancia : '99').up()
+                    tipoVigilancia.push(c);
+                }
+            })
+        }
+        else{
+            let c = fragment().ele('tiposVigilanciaSaudeBucal').txt('99').up()
+            tipoVigilancia.push(c);
+        }
+        
         return tipoVigilancia
     }
 

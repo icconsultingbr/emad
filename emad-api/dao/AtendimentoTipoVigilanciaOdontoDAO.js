@@ -11,6 +11,17 @@ AtendimentoTipoFornecimentoOdontoDAO.prototype.buscaPorAtendimentoId = function 
     WHERE atvcol.idAtendimento = ?` , idAtendimento, callback);
 }
 
+AtendimentoTipoFornecimentoOdontoDAO.prototype.buscarPorAtendimentoIdAtivo = async function (idAtendimento) {
+    let atendimento = await this._connection.query(`SELECT 
+                                                    atvcol.id,
+                                                    tpforn.nome
+                                                from ${this._table} atvcol   
+                                                INNER JOIN tb_tipo_vigilancia_odonto tpforn ON (tpforn.id = atvcol.idVigilancia) 
+                                                WHERE atvcol.idAtendimento = ?` , idAtendimento);
+    return atendimento;
+}
+
+
 AtendimentoTipoFornecimentoOdontoDAO.prototype.deletaPorId = function (id, callback) {
     this._connection.query(`DELETE FROM ${this._table} WHERE id=?`, id, callback);
 }

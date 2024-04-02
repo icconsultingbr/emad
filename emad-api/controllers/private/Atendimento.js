@@ -688,13 +688,14 @@ module.exports = function (app) {
         const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
         const atendimentoMedicamentoRepository = new app.dao.AtendimentoMedicamentoDAO(connection);
         const atendimentoCondicaoAvaliadaRepository = new app.dao.AtendimentoCondicaoAvaliadaDAO(connection);
+        const atendimentoTipoVigilanciaSaudeOdontoRepository = new app.dao.AtendimentoTipoVigilanciaOdontoDAO(connection);
 
         try {
 
             await connection.beginTransaction();
 
             var atualizaPaciente = await pacienteRepository.atualizaHistoriaProgressaFamiliar(obj.pacienteHistoriaProgressa, obj.idPaciente, usuario.id, new Date());
-
+            
             delete obj.pacienteHistoriaProgressa;
             delete objHistorico.pacienteHistoriaProgressa;
 
@@ -706,6 +707,18 @@ module.exports = function (app) {
                 await connection.rollback();
                 return;
             }
+
+            if (obj.tipoFicha == '8') {    
+                var buscaTipoVigilanciaSaudeOdontoAtendimento = await atendimentoTipoVigilanciaSaudeOdontoRepository.buscarPorAtendimentoIdAtivo(id);
+
+                if (obj.situacao != "C" && obj.situacao != "0" && obj.situacao != "X" && buscaTipoVigilanciaSaudeOdontoAtendimento.length == 0) {
+                    errors = util.customError(errors, "header", "É necessário informar o Tipo de Vigilância Saúde Bucal", "");
+                    res.status(400).send(errors);
+                    await connection.rollback();
+                    return;
+                }
+            }
+            
 
             var buscaCondicaoAvaliadaAtendimento = await atendimentoCondicaoAvaliadaRepository.buscarPorAtendimentoId(id);
 
