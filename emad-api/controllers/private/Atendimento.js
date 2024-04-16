@@ -268,7 +268,7 @@ module.exports = function (app) {
 
             // CAMPO = INEP
             // É de preenchimento obrigatório se pseEducacao = true ou pseSaude = true;
-            if (obj.pseEducacao == true && obj.pseSaude == true && obj.inep == '') {
+            if (obj.pseEducacao == true && obj.pseSaude == true && !obj.inep ) {
                 errors = util.customError(errors, "header", "Informe o código Inep.", "");
                 res.status(400).send(errors);
                 return;
@@ -280,17 +280,42 @@ module.exports = function (app) {
             // 03 - Reunião intersetorial / Conselho local de saúde / Controle social;
             // 05 - Atendimento em grupo.
             //Não podem ser selecionados se pseEducacao = true e pseSaude = false
-            if (obj.pseEducacao == true && obj.pseSaude == false) {
+            if (obj.pseEducacao == true && (obj.pseSaude == false || !obj.pseSaude)) {
                 if (obj.atividadeTipo == 1 || obj.atividadeTipo == 2 || obj.atividadeTipo == 3 || obj.atividadeTipo == 5) {
-                    errors = util.customError(errors, "header", "O Tipo de Atividade selecionado não pode ser utilizado quando pseEducacao selecione e pseSaude não selecionado.", "");
+                    errors = util.customError(errors, "header", "O Tipo de Atividade selecionado não pode ser utilizado quando PSE Educação está selecionado e PSE Saúde não está selecionado.", "");
                     res.status(400).send(errors);
                     return;
                 }
             }
 
-            if (obj.atividadeTipo === 4 || obj.atividadeTipo === 5 || obj.atividadeTipo === 6 || obj.atividadeTipo === 7) {
-                if (this.object.publicoAlvo == 0 || this.object.publicoAlvo == null) {
+            if (obj.atividadeTipo == 4 || obj.atividadeTipo == 5 || obj.atividadeTipo == 6 || obj.atividadeTipo == 7) {
+                if (!obj.publicoAlvo) {
                     errors = util.customError(errors, "header", "Selecione o publico alvo.", "");
+                    res.status(400).send(errors);
+                    return;
+                }
+            }
+
+            if (obj.atividadeTipo == 1 || obj.atividadeTipo == 2 || obj.atividadeTipo == 3) {
+                if (!obj.temasParaReuniao) {
+                    errors = util.customError(errors, "header", "Selecione o tema para atividade.", "");
+                    res.status(400).send(errors);
+                    return;
+                }
+            }
+
+            if (obj.atividadeTipo == 4 || obj.atividadeTipo == 5 || obj.atividadeTipo == 7) {
+                if (!obj.temasParaSaude) {
+                    errors = util.customError(errors, "header", "Preencha o tema para saúde.", "");
+                    res.status(400).send(errors);
+                    return;
+                }
+            }
+
+            if (obj.temasParaSaude) {              
+                if(obj.temasParaSaude == '13' && (obj.pseEducacao == false || !obj.pseEducacao) && (obj.pseSaude == false || !obj.pseSaude))
+                {
+                    errors = util.customError(errors, "header", "Para utilizar esse Tema para Saúde, é necessário selecionar o PSE Educação ou PSE Saúde", "");
                     res.status(400).send(errors);
                     return;
                 }
@@ -504,6 +529,21 @@ module.exports = function (app) {
             //ATIVIDADE COLETIVA
             if (obj.tipoFicha == 7) {
 
+                //validar se os participantes possuem CPF e CNS
+                if(obj.atividadeTipo == 5 || obj.atividadeTipo == 6){
+
+                    let paciente = await pacienteRepository.buscaPorIdSync(obj.idPaciente);
+
+                    if (!paciente[0].cpf && !paciente[0].cns) {
+                        errors = util.customError(errors, "header", "Para tipo de atividade 'Atendimento em grupo' ou 'Avaliação / Procedimento coletivo', é necessário que o paciente possua CPF ou CNS cadastrado.", "");
+                        res.status(400).send(errors);
+                        await connection.rollback();
+                        return;
+                    }
+
+                }               
+
+
                 objParticipanteAtividadeColetiva.idAtendimento = obj.id;
                 objProfissionalAtividadeColetiva.idAtendimento = obj.id;
                 objProfissionalAtividadeColetiva.idProfissional = buscaProfissional.id;
@@ -603,7 +643,7 @@ module.exports = function (app) {
 
             // CAMPO = INEP
             // É de preenchimento obrigatório se pseEducacao = true ou pseSaude = true;
-            if (obj.pseEducacao == true && obj.pseSaude == true && obj.inep == '') {
+            if (obj.pseEducacao == true && obj.pseSaude == true && !obj.inep) {
                 errors = util.customError(errors, "header", "Informe o código Inep.", "");
                 res.status(400).send(errors);
                 return;
@@ -623,8 +663,8 @@ module.exports = function (app) {
                 }
             }
 
-            if (obj.atividadeTipo === 4 || obj.atividadeTipo === 5 || obj.atividadeTipo === 6 || obj.atividadeTipo === 7) {
-                if (obj.publicoAlvo == 0 || obj.publicoAlvo == null) {
+            if (obj.atividadeTipo == 4 || obj.atividadeTipo == 5 || obj.atividadeTipo == 6 || obj.atividadeTipo == 7) {
+                if (!obj.publicoAlvo) {
                     errors = util.customError(errors, "header", "Selecione o publico alvo.", "");
                     res.status(400).send(errors);
                     return;
@@ -800,7 +840,7 @@ module.exports = function (app) {
                     }
                 }
             }
-
+2
             if (obj.situacao == "X")
                 obj.dataCancelamento = new Date();
             else if (obj.situacao != "C" && obj.situacao != "0")
@@ -1039,90 +1079,6 @@ module.exports = function (app) {
             res.status(200).json(obj);
             return;
         });
-    });
-
-    app.put('/atendimento/:id/finalizar', async function (req, res) {
-        const atendimentoId = req.params.id;
-        const body = req.body;
-        let util = new app.util.Util();
-        let errors = [];
-        let obj = {};
-
-        obj.situacao = body.situacao ? body.situacao : "2"; //Concluído
-
-        if (obj.situacao == 'X')
-            obj.dataCancelamento = body.dataCancelamento ? body.dataCancelamento : new Date();
-        else
-            obj.dataFinalizacao = body.dataFinalizacao ? body.dataFinalizacao : new Date();
-
-
-        const connection = await app.dao.connections.EatendConnection.connection();
-
-        const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
-
-        try {
-
-            await connection.beginTransaction();
-
-            var buscaAtendimento = await atendimentoRepository.buscaPorIdSync(atendimentoId);
-
-            if (!buscaAtendimento) {
-                errors = util.customError(errors, "header", "Atendimento não encontrado", atendimentoId);
-                res.status(400).send(errors);
-                await connection.rollback();
-                return;
-            }
-
-            if (buscaAtendimento.dataFinalizacao || buscaAtendimento.dataCancelamento) {
-                errors = util.customError(errors, "header", "Atendimento já foi finalizado/cancelado", atendimentoId);
-                res.status(400).send(errors);
-                await connection.rollback();
-                return;
-            }
-
-            var objHistorico = Object.assign({}, buscaAtendimento);
-            delete objHistorico.pacienteNome;
-            delete objHistorico.pacienteHistoriaProgressa;
-            delete objHistorico.pesquisaCentral;
-            delete objHistorico.tipoHistoriaClinica;
-            delete objHistorico.nome;
-            delete objHistorico.historiaProgressaFamiliar;
-            delete objHistorico.idMunicipioEstabelecimento;
-            delete objHistorico.idUfEstabelecimento;
-
-            if (obj.situacao == 'X') {
-                obj.motivoCancelamento = "Cancelamento realizado pela ficha digital";
-                objHistorico.motivoCancelamento = obj.motivoCancelamento;
-                objHistorico.dataCancelamento = obj.dataCancelamento;
-            } else {
-                objHistorico.dataFinalizacao = obj.dataFinalizacao;
-            }
-
-            obj.idUsuarioAlteracao = buscaAtendimento.idUsuario;
-            var atualizaAtendimento = await atendimentoRepository.atualizaPorIdSync(obj, atendimentoId);
-            delete objHistorico.dataCriacao;
-            delete objHistorico.id;
-            objHistorico.idUsuarioAlteracao = buscaAtendimento.idUsuario;
-            objHistorico.situacao = obj.situacao;
-            objHistorico.idTipoAtendimentoHistorico = 7;
-            objHistorico.textoHistorico = "";
-            objHistorico.idAtendimento = atendimentoId;
-
-            var responseAtendimento = await atendimentoRepository.salvaHistoricoSync(objHistorico);
-
-            res.status(201).send('ok');
-
-            await connection.commit();
-        }
-        catch (exception) {
-            console.log("Erro ao salvar o atendimento (" + atendimentoId + "), exception: " + exception);
-            errors = util.customError(errors, "data", "Erro ao salvar o atendimento (" + atendimentoId + "), exception: " + exception, "objs");
-            res.status(500).send(errors);
-            await connection.rollback();
-        }
-        finally {
-            await connection.close();
-        }
     });
 
     app.get('/atendimento/dominios', function (req, res) {

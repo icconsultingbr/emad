@@ -1365,6 +1365,14 @@
                         ">
                         <i class="fa fa-trash-alt"></i>
                       </a>
+                      <a class="btn btn-link" (click)="
+                          editParticipanteAtividadeColetivaPorAtendimento(
+                            item,
+                            contentEditAtividadeColetivaParticipante
+                          )
+                        " *ngIf="disableFields()" [routerLink]="">
+                        <i class="fa fa-search"></i>
+                      </a>
                     </td>
                   </tr>
                 </tbody>
@@ -3682,12 +3690,12 @@
     <button type="button" class="close" aria-label="Close" (click)="close()">
       <span aria-hidden="true">&times;</span>
     </button>
+  </div> 
 
-    <div *ngIf="errors.length" class="alert alert-danger">
-      <div *ngFor="let error of errors" class="row">
-        <div class="col-12 text-left">
-          {{ error.message }}
-        </div>
+  <div *ngIf="errors.length" class="alert alert-danger">
+    <div *ngFor="let error of errors" class="row">
+      <div class="col-12 text-left">
+        {{ error.message }}
       </div>
     </div>
   </div>
@@ -4147,7 +4155,7 @@
     </div>
   </div>
 
-  <div class="modal-footer">
+  <div class="modal-footer" *ngIf="!disableFields()">
     <button class="btn btn-primary mr-2" type="button" (click)="saveEditParticipanteAtividadeColetiva()">
       <i class="fa fa-plus-circle"></i> Salvar
     </button>

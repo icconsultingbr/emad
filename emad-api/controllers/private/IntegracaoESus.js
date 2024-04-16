@@ -592,6 +592,12 @@ module.exports = function (app) {
         const { fragment } = require('xmlbuilder2');
         let itemFilhoColetiva = [];
         listParticipantes.forEach(x => {
+             // Verifica se cartaoSus ou cpf estão ausentes
+            if (!x.cartaoSus && !x.cpf) {
+                // Continua o loop sem fazer nada
+                return;
+            }
+
             let atend = fragment({ keepNullAttributes: false, keepNullNodes: false }).ele('participantes');
 
             x.cartaoSus ? atend.ele('cnsParticipante').txt(x.cartaoSus).up() : x.cpf ? atend.ele('cpfParticipante').txt(x.cpf).up() : '';
@@ -976,10 +982,14 @@ module.exports = function (app) {
                 .ele('ns4:fichaAtividadeColetivaTransport')
                 .ele('uuidFicha').txt(uuidFicha).up()
                 .ele('inep').txt(atendimento.inep).up()
-                .ele('numParticipantes').txt(atendimento.numParticipantes).up()
+                .ele('numParticipantes').txt(itemParticipantes.length ? itemParticipantes.length : atendimento.numParticipantes).up()
                 .ele('numAvaliacoesAlteradas').txt(atendimento.numAvaliacoesAlteradas).up();
 
-            itemProfissionais.forEach(x => doc.find(x => x.node.nodeName == 'ns4:fichaAtividadeColetivaTransport', true, true).import(x));
+            //CAMPO = PROFISSIONAIS
+            // Não pode ser preenchido se pseEducacao = true e pseSaude = false
+            if (!(atendimento.pseEducacao == 1 && atendimento.pseSaude  == 0)) {
+                itemProfissionais.forEach(x => doc.find(x => x.node.nodeName == 'ns4:fichaAtividadeColetivaTransport', true, true).import(x));
+            }            
 
             doc.ele('atividadeTipo').txt(atendimento.atividadeTipo).up()
                 .ele('temasParaReuniao').txt(atendimento.temasParaReuniao).up()
@@ -990,11 +1000,11 @@ module.exports = function (app) {
             doc.ele('tbCdsOrigem').txt('3').up()
                 .ele('procedimento').txt(atendimento.codigoSIGTAP).up()
                 .ele('turno').txt(atendimento.turno).up()
-                .ele('pseEducacao').txt(!atendimento.pseEducacao ? false : atendimento.pseEducacao).up()
-                .ele('pseSaude').txt(!atendimento.pseSaude ? false : atendimento.pseSaude).up()
+                .ele('pseEducacao').txt(atendimento.pseEducacao == 1 ? true : false).up()
+                .ele('pseSaude').txt(atendimento.pseSaude == 1 ? true : false).up()
                 .ele('headerTransport')
-                .ele('profissionalCNS').txt(estabelecimento.cnsProfissionaleSus ? estabelecimento.cnsProfissionaleSus : '3').up()
-                .ele('cboCodigo_2002').txt(estabelecimento.codigoCBO ? estabelecimento.codigoCBO : '3').up()
+                .ele('profissionalCNS').txt(profissionaisAtendimento.length > 0 ? profissionaisAtendimento[0].profissionalCNS : '').up()
+                .ele('cboCodigo_2002').txt(profissionaisAtendimento.length > 0 ? profissionaisAtendimento[0].codigoCBO : '').up()
                 .ele('cnes').txt(estabelecimento.cnes).up()
                 .ele('ine').txt(atendimento.profissionalIne).up()
                 .ele('dataAtendimento').txt(new Date(atendimento.dataCriacao).getTime()).up()
@@ -1025,7 +1035,6 @@ module.exports = function (app) {
             //CAMPO = PROFISSIONAIS
             // Não pode ser preenchido se pseEducacao = true e pseSaude = false
             if (atendimento.pseEducacao == 1 && (!atendimento.pseSaude || atendimento.pseSaude == 0)) {
-                removeNode(doc.doc(), ['profissionais']);
                 removeNode(doc.doc(), ['temasParaReuniao']);
             }
 
@@ -1057,7 +1066,7 @@ module.exports = function (app) {
                 removeNode(doc.doc(), ['ineDadoSerializado', 'ine'])
             }
 
-            let fieldToValidate = ['peso', 'altura', 'procedimento'];
+            let fieldToValidate = ['peso', 'altura', 'procedimento', 'inep', 'temasParaReuniao', 'temasParaSaude', 'praticasEmSaude', 'publicoAlvo'];
 
             fieldToValidate.forEach(field => {
                 doc.each(x => {

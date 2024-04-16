@@ -2,26 +2,55 @@ module.exports = function (app) {
 
     const _table = "tb_atividade_coletiva_participantes";
 
-    app.post('/participante-atividade-coletiva', function (req, res) {
-        let obj = req.body;
+    app.post('/participante-atividade-coletiva', async function (req, res) {
+        var obj = req.body;
+        var util = new app.util.Util();
+        var errors = [];
 
         delete obj.nomePaciente;
         delete obj.sexo;
         delete obj.cartaoSus;
         delete obj.dataNascimento;
 
-        errors = req.validationErrors();
+        const connection = await app.dao.connections.EatendConnection.connection();
+        const AtendimentoParticipanteAtividadeColetivaRepository = new app.dao.AtendimentoParticipanteAtividadeColetivaDAO(connection);
+        const atendimentoRepository = new app.dao.AtendimentoDAO(connection);
+        const pacienteRepository = new app.dao.PacienteDAO(connection);
 
-        if (errors) {
-            res.status(400).send(errors);
-            return;
-        }
+        try {            
 
-        salvar(obj, res).then(function (response) {
-            obj.id = response.insertId;
+            var buscaAtendimento = await atendimentoRepository.buscaPorIdSync(obj.idAtendimento);            
+
+            //validar se os participantes possuem CPF e CNS
+            if(buscaAtendimento.atividadeTipo == 5 || buscaAtendimento.atividadeTipo == 6){
+
+                let paciente = await pacienteRepository.buscaPorIdSync(obj.idPaciente);
+
+                if (!paciente[0].cpf && !paciente[0].cns) {
+                    errors = util.customError(errors, "header", "Para tipo de atividade 'Atendimento em grupo' ou 'Avaliação / Procedimento coletivo', é necessário que o paciente possua CPF ou CNS cadastrado.", "");
+                    res.status(400).send(errors);
+                    return;
+                }
+
+            }  
+            await connection.beginTransaction();
+
+            let response = await AtendimentoParticipanteAtividadeColetivaRepository.salvaSync(obj);
+
             res.status(201).send(obj);
-        });
+
+            await connection.commit();
+        }
+        catch (exception) {
+            console.log("Erro ao salvar o participante (" + obj.nome + "), exception: " + exception);
+            res.status(500).send(util.customError(errors, "header", "Ocorreu um erro inesperado", ""));
+            await connection.rollback();
+        }
+        finally {
+            await connection.close();
+        }
     });
+
 
     app.get('/participante-atividade-coletiva/atendimento/:id', function (req, res) {
         let usuario = req.usuario;
