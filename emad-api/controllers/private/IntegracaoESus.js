@@ -982,7 +982,7 @@ module.exports = function (app) {
                 .ele('ns4:fichaAtividadeColetivaTransport')
                 .ele('uuidFicha').txt(uuidFicha).up()
                 .ele('inep').txt(atendimento.inep).up()
-                .ele('numParticipantes').txt(itemParticipantes.length ? itemParticipantes.length : atendimento.numParticipantes).up()
+                .ele('numParticipantes').txt(itemParticipantes.length ? itemParticipantes.length : '1').up()
                 .ele('numAvaliacoesAlteradas').txt(atendimento.numAvaliacoesAlteradas).up();
 
             //CAMPO = PROFISSIONAIS
