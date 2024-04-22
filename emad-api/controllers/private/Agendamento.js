@@ -1,8 +1,7 @@
 module.exports = function (app) {
 
     app.get('/agendamento', function (req, res) {
-        let addFilter = req.query;
-        listaAgendamento(addFilter = req.query, "agendamento", res).then(function (response) {
+        listaAgendamento(req.query, "agendamento", res).then(function (response) {
             res.status(200).json(response);
             return;
         });
@@ -230,7 +229,6 @@ module.exports = function (app) {
 
         dao.lista(addFilter, function (exception, result) {
             if (exception) {
-                console.log(exception);
                 d.reject(exception);
                 errors = util.customError(errors, "data", "Erro ao acessar os dados", dom);
                 res.status(500).send(errors);
@@ -239,6 +237,7 @@ module.exports = function (app) {
                 d.resolve(result);
             }
         });
+
         return d.promise;
     };
 
@@ -254,14 +253,12 @@ module.exports = function (app) {
         objDAO.buscaPorId(id, function (exception, result) {
             if (exception) {
                 d.reject(exception);
-                console.log(exception);
                 errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
                 res.status(500).send(errors);
                 return;
-            } else {
-
-                d.resolve(result[0]);
             }
+
+            d.resolve(result[0]);
         });
         return d.promise;
     };
@@ -278,7 +275,6 @@ module.exports = function (app) {
         objDAO.buscaPorEquipe(id, function (exception, result) {
             if (exception) {
                 d.reject(exception);
-                console.log(exception);
                 errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
                 res.status(500).send(errors);
                 return;
@@ -302,7 +298,6 @@ module.exports = function (app) {
         objDAO.buscaPorProfissional(id, function (exception, result) {
             if (exception) {
                 d.reject(exception);
-                console.log(exception);
                 errors = util.customError(errors, "data", "Erro ao acessar os dados", "obj");
                 res.status(500).send(errors);
                 return;

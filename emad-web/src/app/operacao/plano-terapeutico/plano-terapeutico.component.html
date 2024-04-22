@@ -39,22 +39,6 @@
                 Próximo
             </div>
         </div>
-        <!-- <div class="col-md-4">
-            <h3>{{ viewDate | calendarDate:(view + 'ViewTitle') :'pt-BR' }}</h3>
-        </div>
-        <div class="col-md-4">
-            <div class="btn-group">
-                <div class="btn btn-primary" (click)="setView('month')" [class.active]="view === 'month'">
-                    Mensal
-                </div>
-                <div class="btn btn-primary" (click)="setView('week')" [class.active]="view === 'week'">
-                    Semanal
-                </div>
-                <div class="btn btn-primary" (click)="setView('day')" [class.active]="view === 'day'">
-                    Diário
-                </div>
-            </div>
-        </div> -->
     </div>
 
     <div>
@@ -62,14 +46,6 @@
             [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)"
             (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
         </mwl-calendar-month-view>
-
-        <!-- <mwl-calendar-week-view *ngIf="view == 'week'" [viewDate]="viewDate" [events]="events" [refresh]="refresh"
-            (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
-        </mwl-calendar-week-view>
-
-        <mwl-calendar-day-view *ngIf="view == 'day'" [viewDate]="viewDate" [events]="events" [refresh]="refresh"
-            (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
-        </mwl-calendar-day-view> -->
     </div>
 </div>
 
@@ -142,12 +118,10 @@
                     </div>
                 </div>
 
-                <div *ngIf="mensagemErro">
-                    <p class="alert alert-info">{{mensagemErro}}</p>
-                </div>
+                
 
                 <!-- forma de atendimento -->
-                <div *ngIf="!mensagemErro && form.get('dataInicial').value && form.get('dataFinal').value"
+                <div *ngIf="form.get('dataInicial').value && form.get('dataFinal').value"
                     class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">
                         Atendimento <span class="text-danger font-weight-bold"> *</span>
@@ -161,7 +135,7 @@
                     </div>
                 </div>
                 <!-- tipo atendimento -->
-                <div *ngIf="!mensagemErro && form.get('dataFinal').value" class="row itemAgendamento">
+                <div *ngIf="form.get('dataFinal').value" class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">
                         Tipo de atendimento <span class="text-danger font-weight-bold"> *</span>
                     </label>
@@ -173,7 +147,7 @@
                     </div>
                 </div>
                 <!-- Equipe de atendimento -->
-                <div *ngIf="form.get('tipoAtendimento').value == 2 && !mensagemErro && form.get('tipoAtendimento').value"
+                <div *ngIf="form.get('tipoAtendimento').value == 2 && form.get('tipoAtendimento').value"
                     class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">Equipe de atendimento</label>
                     <div class="col-xl-9">
@@ -184,7 +158,7 @@
                     </div>
                 </div>
                 <!-- Profissional -->
-                <div *ngIf="form.get('tipoAtendimento').value == 1 && !mensagemErro && form.get('tipoAtendimento').value"
+                <div *ngIf="form.get('tipoAtendimento').value == 1 && form.get('tipoAtendimento').value"
                     class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">Profissional</label>
                     <div class="col-xl-9">
@@ -195,7 +169,7 @@
                     </div>
                 </div>
                 <!-- comenatario -->
-                <div *ngIf="!mensagemErro && form.get('idProfissional').value || !mensagemErro && form.get('idEquipe').value"
+                <div *ngIf="form.get('idProfissional').value || form.get('idEquipe').value"
                     class="row itemAgendamento">
                     <label class="col-xl-3 col-sm-12 col-form-label text-left">
                         Comentários: <span class="text-danger font-weight-bold">*</span>
@@ -218,6 +192,142 @@
     </form>
 
 </ng-template>
+
+<!-- Editar agendamento -->
+<ng-template #modalEditarAgendamento let-close="close">
+    <form [formGroup]="form">
+        <div class="modal-header">
+            <h4 class="modal-title">Editar agendamento</h4>
+            <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <!-- consulta paciente -->
+                <div class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">Pesquisar paciente
+                        <span class="text-danger font-weight-bold">*</span>
+                    </label>
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                            <input type="text" disabled="true" class="has-error" style="width: 89%;"
+                                formControlName="nomePaciente">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary ml-3 rounded" type="button"
+                                    (click)="openModalLocalizarPaciente(contentClient)">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Especialidade -->
+                <div *ngIf="form.get('idPaciente').value" class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">
+                        Especialidade <span class="text-danger font-weight-bold">*</span>
+                    </label>
+                    <div class="col-xl-9">
+                        <input class="form-control" formControlName="especialidade" disabled>
+                        <!-- Adicionei a classe "form-control" para estilizar o input -->
+                    </div>
+                </div>
+                
+                <!-- data -->
+                <div *ngIf="form.get('especialidade').value" class="row">
+                    <div style="text-align: left;" class="col-sm-3 itemAgendamento">
+                        <label class="col-sm-12 p-0">Data/Horários
+                            <span class="text-danger font-weight-bold">*</span>
+                        </label>
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <label class="col-sm-2 text-left p-0">Início
+                                <span class="text-danger font-weight-bold">*</span>
+                            </label>
+                            <div class="col-sm-4 p-0">
+                                <input type="datetime-local" formControlName="dataInicial" [min]="dataAtual"
+                                    (blur)="focoCampoData('dataInicial')" class="w-100" >
+                            </div>
+                            <label class="col-sm-2 p-0">Fim
+                                <span class="text-danger font-weight-bold">*</span>
+                            </label>
+                            <div class="col-sm-4 p-0">
+                                <input formControlName="dataFinal" type="datetime-local" [min]="dataSelecionada"
+                                    (blur)="focoCampoData('dataFinal')" class="w-100" >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- forma de atendimento -->
+                <div *ngIf="form.get('dataInicial').value && form.get('dataFinal').value"
+                    class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">
+                        Atendimento <span class="text-danger font-weight-bold"> *</span>
+                    </label>
+                    <div class="col-xl-9">
+                        <select class="custom-select d-block w-100" formControlName="formaAtendimento" disabled>
+                            <option [value]="null">Selecione...</option>
+                            <!-- Iterando sobre as opções em this.formaAtendimento -->
+                            <option *ngFor="let item of formaAtendimento" [value]="item.id">{{ item.nome }}</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- tipo atendimento -->
+                <div *ngIf=" form.get('dataFinal').value" class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">
+                        Tipo de atendimento <span class="text-danger font-weight-bold"> *</span>
+                    </label>
+                    <div class="col-xl-9">
+                        <select class="custom-select d-block w-100" formControlName="tipoAtendimento">
+                            <option [value]="null">Selecione...</option>
+                            <option *ngFor="let item of tipoAtendimento" [value]="item.id">{{ item.nome }}</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Equipe de atendimento -->
+                <div *ngIf="dadosAgendamento.nomeEquipe" class="row itemAgendamento">
+                    <label class="col-xl-3 col-form-label text-left">Equipe de atendimento</label>
+                    <div class="col-xl-9">
+                        <input class="form-control" formControlName="idEquipe" [value]="dadosAgendamento.nomeEquipe" readonly>
+                    </div>
+                </div>
+                
+                <!-- Profissional -->
+                <div *ngIf="form.get('tipoAtendimento').value == 1 && form.get('tipoAtendimento').value"
+                class="row itemAgendamento">
+                <label class="col-xl-3 col-form-label text-left">Profissional</label>
+                <div class="col-xl-9">
+                    <input class="form-control" formControlName="idProfissional" [value]="dadosAgendamento.profissionalNome" disabled>
+                </div>
+            </div>
+            
+                <!-- comenatario -->
+                <div *ngIf="form.get('idProfissional').value || form.get('idEquipe').value"
+                    class="row itemAgendamento">
+                    <label class="col-xl-3 col-sm-12 col-form-label text-left">
+                        Comentários: <span class="text-danger font-weight-bold">*</span>
+                    </label>
+                    <div class="col-xl-9 col-sm-12">
+                        <textarea rows="4" class="form-control has-error" formControlName="observacao"></textarea>
+                    </div>
+                </div>
+                <!-- <div *ngFor="let alert of msgAlert">
+                    <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout">{{ alert.msg }}</alert>
+                </div> -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div>
+                <button *ngIf="!(form.invalid || this.dataAtual > this.form.get('dataInicial').value)" class="btn btn-primary ml-3 rounded" type="button" (click)="salvar()">Salvar</button>
+            </div>
+            
+        </div>
+    </form>
+
+</ng-template>
+
 
 <!-- Consulta agendamento -->
 <ng-template #modalInfoAgendamento let-close="close">

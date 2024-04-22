@@ -1,0 +1,1 @@
+export * from './obter-agendamento-por-id-dto'

@@ -107,6 +107,7 @@ export class PesquisaPacienteComponent implements OnInit, AfterViewInit {
 
   close() {
     this.modalRef.close();
+    this.form.reset()
   }
 
   clear() {
