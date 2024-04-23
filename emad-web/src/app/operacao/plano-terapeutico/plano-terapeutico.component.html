@@ -206,21 +206,18 @@
             <div class="form-group">
                 <!-- consulta paciente -->
                 <div class="row itemAgendamento">
-                    <label class="col-xl-3 col-form-label text-left">Pesquisar paciente
-                        <span class="text-danger font-weight-bold">*</span>
+                    <label class="col-xl-3 col-form-label text-left">
+                        Pesquisar paciente <span class="text-danger font-weight-bold">*</span>
                     </label>
-                    <div class="col-sm-9">
-                        <div class="input-group">
-                            <input type="text" disabled="true" class="has-error" style="width: 89%;"
-                                formControlName="nomePaciente">
-                            <div class="input-group-append">
+                        <div class="col-xl-9">
+                            <input type="text" class="form-control" formControlName="nomePaciente" disabled>
+                            <!-- <div class="input-group-append">
                                 <button class="btn btn-primary ml-3 rounded" type="button"
                                     (click)="openModalLocalizarPaciente(contentClient)">
                                     <i class="fa fa-search"></i>
                                 </button>
-                            </div>
+                            </div> -->
                         </div>
-                    </div>
                 </div>
                 <!-- Especialidade -->
                 <div *ngIf="form.get('idPaciente').value" class="row itemAgendamento">
@@ -268,7 +265,7 @@
                     </label>
                     <div class="col-xl-9">
                         <select class="custom-select d-block w-100" formControlName="formaAtendimento" disabled>
-                            <option [value]="null">Selecione...</option>
+
                             <!-- Iterando sobre as opções em this.formaAtendimento -->
                             <option *ngFor="let item of formaAtendimento" [value]="item.id">{{ item.nome }}</option>
                         </select>
@@ -280,8 +277,7 @@
                         Tipo de atendimento <span class="text-danger font-weight-bold"> *</span>
                     </label>
                     <div class="col-xl-9">
-                        <select class="custom-select d-block w-100" formControlName="tipoAtendimento">
-                            <option [value]="null">Selecione...</option>
+                        <select class="custom-select d-block w-100" formControlName="tipoAtendimento" disabled>
                             <option *ngFor="let item of tipoAtendimento" [value]="item.id">{{ item.nome }}</option>
                         </select>
                     </div>
@@ -290,7 +286,7 @@
                 <div *ngIf="dadosAgendamento.nomeEquipe" class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">Equipe de atendimento</label>
                     <div class="col-xl-9">
-                        <input class="form-control" formControlName="idEquipe" [value]="dadosAgendamento.nomeEquipe" readonly>
+                        <input class="form-control" formControlName="idEquipe" [value]="dadosAgendamento.nomeEquipe" readonly disabled>
                     </div>
                 </div>
                 

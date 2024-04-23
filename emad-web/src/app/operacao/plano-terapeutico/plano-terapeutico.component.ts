@@ -110,6 +110,10 @@ export class PlanoTerapeuticoComponent implements OnInit {
       onClick: ({ event }: { event: CalendarEvent }): void => {
         this.events = this.events.filter((iEvent) => iEvent !== event);
         this.excluir(Number(event.id))
+        this.mensagem = 'Agendamento excluido com sucesso'
+        setTimeout(() => {
+        this.mensagem = '';
+      }, 4000);
       },
     },
   ];
@@ -226,15 +230,11 @@ export class PlanoTerapeuticoComponent implements OnInit {
     });
   }
 
-
-
-
   limparFormulario() {
     this.form.reset()
     this.allItems = []
     this.paciente.nome = '';
     this.msgAlert = '';
-    
   }
 
   salvar() {
@@ -286,7 +286,11 @@ export class PlanoTerapeuticoComponent implements OnInit {
     const idAgendamento = value ? value : this.dadosAgendamento.idAgendamento
     this.service.remove(Number(idAgendamento), 'agendamento').subscribe((result) => {
       this.consultaAgendamentos();
-      this.closeModal()
+      this.modalConsultaAgendamento.dismiss()
+      this.mensagem = 'Agendamento excluido com sucesso'
+      setTimeout(() => {
+        this.mensagem = '';
+      }, 4000);
     })
   }
 
