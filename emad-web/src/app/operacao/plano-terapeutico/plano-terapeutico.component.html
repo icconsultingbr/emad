@@ -78,21 +78,22 @@
                         </div>
                     </div>
                 </div>
-                <!-- Especialidade -->
+                
+                     <!-- tipo atendimento -->
                 <div *ngIf="form.get('idPaciente').value" class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">
-                        Especialidade <span class="text-danger font-weight-bold"> *</span>
+                        Tipo de atendimento <span class="text-danger font-weight-bold"> *</span>
                     </label>
                     <div class="col-xl-9">
-                        <select class="custom-select d-block w-100" formControlName="especialidade">
+                        <select class="custom-select d-block w-100" formControlName="tipoAtendimento">
                             <option [value]="null">Selecione...</option>
-                            <!-- Iterando sobre as opções em this.formaAtendimento -->
-                            <option *ngFor="let item of listaEspecialidade" [value]="item.id">{{ item.nome }}</option>
+                            <option *ngFor="let item of tipoAtendimento" [value]="item.id">{{ item.nome }}</option>
                         </select>
                     </div>
                 </div>
+               
                 <!-- data -->
-                <div *ngIf="form.get('especialidade').value" class="row">
+                <div *ngIf="form.get('tipoAtendimento').value" class="row">
                     <div style="text-align: left;" class="col-sm-3 itemAgendamento">
                         <label class="col-sm-12 p-0">Data/Horários
                             <span class="text-danger font-weight-bold">*</span>
@@ -134,18 +135,21 @@
                         </select>
                     </div>
                 </div>
-                <!-- tipo atendimento -->
-                <div *ngIf="form.get('dataFinal').value" class="row itemAgendamento">
+
+                 <!-- Especialidade -->
+                <div *ngIf="form.get('tipoAtendimento').value == 1" class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">
-                        Tipo de atendimento <span class="text-danger font-weight-bold"> *</span>
+                        Especialidade <span class="text-danger font-weight-bold"> *</span>
                     </label>
                     <div class="col-xl-9">
-                        <select class="custom-select d-block w-100" formControlName="tipoAtendimento">
+                        <select class="custom-select d-block w-100" formControlName="especialidade">
                             <option [value]="null">Selecione...</option>
-                            <option *ngFor="let item of tipoAtendimento" [value]="item.id">{{ item.nome }}</option>
+                            <!-- Iterando sobre as opções em this.formaAtendimento -->
+                            <option *ngFor="let item of listaEspecialidade" [value]="item.id">{{ item.nome }}</option>
                         </select>
                     </div>
                 </div>
+               
                 <!-- Equipe de atendimento -->
                 <div *ngIf="form.get('tipoAtendimento').value == 2 && form.get('tipoAtendimento').value"
                     class="row itemAgendamento">

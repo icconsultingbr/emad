@@ -144,6 +144,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
     this.fomularioAgendamento()
     this.dataAtual = moment().format('YYYY-MM-DDTHH:mm');
     
+    
 
     this.form.get('tipoAtendimento').valueChanges.subscribe((value) => {
       if (!value) {
@@ -166,6 +167,15 @@ export class PlanoTerapeuticoComponent implements OnInit {
         this.form.get('idProfissional').updateValueAndValidity()
       }
     });
+
+    this.form.get('especialidade').valueChanges.subscribe((value) => {
+      if (!value) {
+        return;
+      }
+
+      this.listaProfissionalDisponivel()
+    });
+
     this.form.get('dataFinal').valueChanges.subscribe((result) => {
       const dtIn = this.form.get('dataInicial').value
       this.dataSelecionada = moment(dtIn).format('YYYY-MM-DDTHH:mm');
@@ -329,14 +339,17 @@ export class PlanoTerapeuticoComponent implements OnInit {
     const dataFinal = moment(this.form.get('dataFinal').value).format("YYYY-MM-DD HH:mm:ss");
     const idEspecialidade = this.form.get('especialidade').value;
     
-    if (!this.showMensagemErro) {
+    if (!this.showMensagemErro ) {
       this.service.list(`profissional/agendamento/especialidade/${idEspecialidade}/${dataInicial}/${dataFinal}`).subscribe((result) => {
         if (result.length > 0) {
           this.listaProfissional = result;
           this.showMensagemErro = false;
         } else {
-          this.alerta('error', 'Não há profissional disponível para a especialidade desejada na data selecionada.', 5000);
-          this.form.get('tipoAtendimento').reset();
+          if( dataInicial && dataFinal && this.form.get('especialidade').value){
+            this.alerta('error', 'Não há profissional disponível para a especialidade desejada na data selecionada.', 5000);
+          }
+         
+          // this.form.get('tipoAtendimento').reset();
         }
       });
     }
@@ -348,8 +361,8 @@ export class PlanoTerapeuticoComponent implements OnInit {
     const dataFinal = moment(this.form.get('dataFinal').value).format("YYYY-MM-DD HH:mm:ss");
     const idEspecialidade = this.form.get('especialidade').value;
     const idEstabelecimento = this.pacienteSelecionado && this.pacienteSelecionado.idEstabelecimento;
-
-    this.service.list(`equipe/agendamento/especialidade/${idEspecialidade}/${dataInicial}/${dataFinal}/${idEstabelecimento}`).subscribe((result) => {
+    
+    this.service.list(`equipe/agendamento/${dataInicial}/${dataFinal}/${idEstabelecimento}`).subscribe((result) => {
       if (result.length > 0) {
         this.listaEquipe = result;
       } else {

@@ -62,7 +62,6 @@ EquipeDAO.prototype.buscaEquipeDisponivelParaAgendamentoPorEspecialidade = async
             inner join tb_profissional_equipe tpe on pfst.id = tpe.idProfissional
             inner join tb_estabelecimento_usuario teu on pfst.idUsuario = teu.idUsuario
             where te.idEstabelecimento = teu.idEstabelecimento
-            and pfst.idEspecialidade = ${params.idEspecialidade}
             and teu.idEstabelecimento = ${params.idEstabelecimento}
             and not exists (select 1 from tb_agendamento as agt
                            where agt.idProfissional = pfst.id
