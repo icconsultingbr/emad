@@ -151,7 +151,7 @@
                 </div>
                
                 <!-- Equipe de atendimento -->
-                <div *ngIf="form.get('tipoAtendimento').value == 2 && form.get('tipoAtendimento').value"
+                <div *ngIf="form.get('tipoAtendimento').value == 2 && form.get('tipoAtendimento').value && form.get('dataInicial').value && form.get('dataFinal').value"
                     class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">Equipe de atendimento</label>
                     <div class="col-xl-9">

@@ -234,9 +234,20 @@ export class PlanoTerapeuticoComponent implements OnInit {
       formaAtendimento: ['', [Validators.required]],
       tipoAtendimento: ['', [Validators.required,]],
       dataInicial: ['', [Validators.required,]],
-      dataFinal: ['', [Validators.required,]],
-      especialidade: ['', Validators.required],
+      dataFinal: ['', Validators.required],
+      especialidade: [{value: '', disabled: true}],
       observacao: [''],
+    });
+    this.form.get('tipoAtendimento').valueChanges.subscribe(value => {
+      if (value == 1) {
+          this.form.get('especialidade').enable();
+          this.form.get('especialidade').setValidators([Validators.required]);
+      } else {
+         if (value == 2) {
+          this.form.get('especialidade').disable();
+          this.form.get('especialidade').clearValidators();
+         }
+      }
     });
   }
 
