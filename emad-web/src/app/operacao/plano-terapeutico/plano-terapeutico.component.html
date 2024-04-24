@@ -42,9 +42,13 @@
     </div>
 
     <div>
-        <mwl-calendar-month-view *ngIf="view == 'month'" [viewDate]="viewDate" [events]="events" [refresh]="refresh"
-            [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)"
-            (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
+        <mwl-calendar-month-view *ngIf="view == 'month'" 
+            [viewDate]="viewDate" [events]="events" 
+            [refresh]="refresh"
+            [activeDayIsOpen]="activeDayIsOpen"
+             (dayClicked)="dayClicked($event.day)"
+            (eventClicked)="handleEvent('Clicked', $event.event)" 
+            (eventTimesChanged)="eventTimesChanged($event)">
         </mwl-calendar-month-view>
     </div>
 </div>

@@ -429,36 +429,61 @@ export class PlanoTerapeuticoComponent implements OnInit {
   }
 
   consultaAgendamentos() {
+    this.loading = true
     this.service.list('agendamento').subscribe((result) => {
-      const eventosDoServico: CalendarEvent[] = result.map((evento) => {
+      const eventosDoServico: CalendarEvent[] = [];
+      result.forEach((evento) => {
+        let title;
         let color;
+  
         if (evento.idEquipe) {
           color = { ...colors.equipe };
-        }
-        if (evento.idProfissional) {
-          color = { ...colors.profissional };
-        }
-        return {
-          id: evento.idAgendamento,
-          title: evento.pacienteNome,
-          start: new Date(evento.dataInicial),
-          end: new Date(evento.dataFinal),
-          color: color,
-          resizable: {
-            beforeStart: true,
-            afterEnd: true,
-          },
-          actions: this.actions, // permite deletar e editar
-        };
-      });
+            title = `${evento.pacienteNome} (${evento.nome})`;
+            eventosDoServico.push({
+              id: evento.idAgendamento,
+              title,
+              start: new Date(evento.dataInicial),
+              end: new Date(evento.dataFinal),
+              color,
+              resizable: {
+                beforeStart: true,
+                afterEnd: true,
+              },
+              actions: this.actions,
+            });
+  
+            this.events = [...eventosDoServico];
 
-      this.events = [...eventosDoServico];
+        } else if (evento.idProfissional) {
+          color = { ...colors.profissional };
+          title = `${evento.pacienteNome} (${evento.profissionalNome})`;
+          
+          eventosDoServico.push({
+            id: evento.idAgendamento,
+            title,
+            start: new Date(evento.dataInicial),
+            end: new Date(evento.dataFinal),
+            color,
+            resizable: {
+              beforeStart: true,
+              afterEnd: true,
+            },
+            actions: this.actions,
+          });
+          
+          this.events = [...eventosDoServico];
+        }
+      });
+        
+      this.loading = false
     });
   }
+  
 
   consultaAgendamentoId(id: number) {
     this.service.list(`agendamento/${id}`).subscribe((result) => {
       this.dadosAgendamento = result
+
     });
   }
 
