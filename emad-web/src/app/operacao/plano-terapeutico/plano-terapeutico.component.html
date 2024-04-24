@@ -141,7 +141,8 @@
                 </div>
 
                  <!-- Especialidade -->
-                <div *ngIf="form.get('tipoAtendimento').value == 1" class="row itemAgendamento">
+                <div *ngIf="!mensagemErro && form.get('dataInicial').value && form.get('dataFinal').value && 
+                            form.get('tipoAtendimento').value == 1" class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">
                         Especialidade <span class="text-danger font-weight-bold"> *</span>
                     </label>
@@ -155,7 +156,9 @@
                 </div>
                
                 <!-- Equipe de atendimento -->
-                <div *ngIf="form.get('tipoAtendimento').value == 2 && form.get('tipoAtendimento').value && form.get('dataInicial').value && form.get('dataFinal').value"
+                <div *ngIf="!mensagemErro && form.get('dataInicial').value && form.get('dataFinal').value &&
+                             form.get('tipoAtendimento').value == 2 && form.get('tipoAtendimento').value && 
+                             form.get('dataInicial').value && form.get('dataFinal').value"
                     class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">Equipe de atendimento</label>
                     <div class="col-xl-9">
@@ -166,7 +169,8 @@
                     </div>
                 </div>
                 <!-- Profissional -->
-                <div *ngIf="form.get('tipoAtendimento').value == 1 && form.get('tipoAtendimento').value"
+                <div *ngIf="!mensagemErro && form.get('dataInicial').value && form.get('dataFinal').value &&
+                             form.get('tipoAtendimento').value == 1 && form.get('tipoAtendimento').value"
                     class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">Profissional</label>
                     <div class="col-xl-9">
@@ -177,7 +181,7 @@
                     </div>
                 </div>
                 <!-- comenatario -->
-                <div *ngIf="form.get('idProfissional').value || form.get('idEquipe').value"
+                <div *ngIf="!mensagemErro && form.get('idProfissional').value || form.get('idEquipe').value"
                     class="row itemAgendamento">
                     <label class="col-xl-3 col-sm-12 col-form-label text-left">
                         Comentários: <span class="text-danger font-weight-bold">*</span>
@@ -185,6 +189,9 @@
                     <div class="col-xl-9 col-sm-12">
                         <textarea rows="4" class="form-control has-error" formControlName="observacao"></textarea>
                     </div>
+                </div>
+                <div *ngIf="mensagemErro">
+                    <p class="alert alert-info">{{mensagemErro}}</p>
                 </div>
                 <div *ngFor="let alert of msgAlert">
                     <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout">{{ alert.msg }}</alert>
@@ -194,7 +201,7 @@
         <div class="modal-footer">
             <div>
                 <button class="btn btn-primary ml-3 rounded" type="button" (click)="salvar()"
-                    [disabled]="form.invalid">Salvar</button>
+                    [disabled]="form.invalid || mensagemErro">Salvar</button>
             </div>
         </div>
     </form>
@@ -219,12 +226,6 @@
                     </label>
                         <div class="col-xl-9">
                             <input type="text" class="form-control" formControlName="nomePaciente" disabled>
-                            <!-- <div class="input-group-append">
-                                <button class="btn btn-primary ml-3 rounded" type="button"
-                                    (click)="openModalLocalizarPaciente(contentClient)">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div> -->
                         </div>
                 </div>
                 <!-- Especialidade -->
@@ -317,9 +318,12 @@
                         <textarea rows="4" class="form-control has-error" formControlName="observacao"></textarea>
                     </div>
                 </div>
-                <!-- <div *ngFor="let alert of msgAlert">
+                <div *ngIf="mensagemErro">
+                    <p class="alert alert-info">{{mensagemErro}}</p>
+                </div>
+                <div *ngFor="let alert of msgAlert">
                     <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout">{{ alert.msg }}</alert>
-                </div> -->
+                </div>
             </div>
         </div>
         <div class="modal-footer">

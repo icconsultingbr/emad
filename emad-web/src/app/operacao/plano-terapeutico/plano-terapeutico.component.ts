@@ -143,9 +143,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
     this.carregarTipoAtendimento();
     this.fomularioAgendamento()
     this.dataAtual = moment().format('YYYY-MM-DDTHH:mm');
-    
-    
-
+ 
     this.form.get('tipoAtendimento').valueChanges.subscribe((value) => {
       if (!value) {
         return;
@@ -391,8 +389,8 @@ export class PlanoTerapeuticoComponent implements OnInit {
 
     //verifica disponibilidade do agendamento do paciente para o dia informado.
     this.service.list(`agendamento/paciente/${idPaciente}`).subscribe((result) => {
-      const AgendamentoPaciente = result;
-      const conflitos = AgendamentoPaciente.filter(agendamento =>
+      const agendamentoPaciente = result;
+      const conflitos = agendamentoPaciente.filter(agendamento =>
         (novaDataInicial >= moment(agendamento.dataInicial) && novaDataInicial < moment(agendamento.dataFinal)) ||
         (novaDataFinal > moment(agendamento.dataInicial) && novaDataFinal <= moment(agendamento.dataFinal)) ||
         (novaDataInicial <= moment(agendamento.dataInicial) && novaDataFinal >= moment(agendamento.dataFinal))
@@ -400,7 +398,10 @@ export class PlanoTerapeuticoComponent implements OnInit {
 
       if (conflitos.length > 0) {
         this.mensagemErro = 'Paciente possui agendamento para a data e hora informada.'
+      }else{
+        this.mensagemErro = '';
       }
+
     });
   };
 
