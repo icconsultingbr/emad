@@ -369,6 +369,7 @@ export class AtendimentoComponent implements OnInit {
       Util.savePageState(null, 0, null, null, '');
       this.allItems = [];
       this.textoProcurado.nativeElement.value = '';
+      this.objectFiltro.cpf = '';
     }
   }
 
