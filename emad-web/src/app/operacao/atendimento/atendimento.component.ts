@@ -24,7 +24,7 @@ export class AtendimentoComponent implements OnInit {
   allItems: any[];
   pager: any = {};
   pagedItems: any[];
-
+  selecaoFeita: boolean = false;
   message = '';
   mensagem = '';
   mensagemModal = '';
