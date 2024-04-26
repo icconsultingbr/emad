@@ -134,9 +134,13 @@ export class AtendimentoFiltro {
   @Input() nomePaciente: string;
   @Input() dataCriacaoInicial: Date;
   @Input() dataCriacaoFinal: Date;
+  @Input() integracaoPEC:string;
   @Input() situacao: string;
   @Input() idSap: string;
   @Input() pesquisaCentral: string;
+  @Input() id:string;
+  @Input() tipoFicha: string;
+  @Input() idClassificacaoRisco: string;
   @Input() idEstabelecimento: number = +JSON.parse(
     localStorage.getItem('est'),
   )[0].id;

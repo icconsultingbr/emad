@@ -75,7 +75,7 @@
                         </div>
 
                     </div>
-                 </div>   
+                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12 col-md-12 col-xl-6">
@@ -148,6 +148,7 @@
                </div>
             </div>   
        </div>
+       
        <div class="row">
             <div class="col-sm-12 col-md-12 col-xl-6">
                 <div *ngIf="objectFiltro && domains" class="form-group row">
@@ -165,8 +166,55 @@
                         </select>
                     </div>
                 </div>
-            </div>   
+            </div>
+            <div class="col-sm-12 col-md-12 col-xl-6">
+                <div *ngIf="objectFiltro" class="form-group row">
+                    <label for="integracaoPEC" class="ml-3">
+                        Integração PEC                           
+                    </label>
+                    <div class="col-sm-6 col-md-8 col-xl-4">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" formControlName="integracaoPEC" 
+                            [(ngModel)]="objectFiltro.integracaoPEC" [value]="1">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+         <div class="row">
+            <div class="col-xl-12">
+              <div class="form-group row">
+                <label class="col-xl-2 col-form-label text-left">
+                  Tipo de ficha<span class="text-danger font-weight-bold">*</span>
+                </label>
+                <div class="col-xl-4">
+                  <select (change)="change($event)" *ngIf="domains" class="custom-select d-block w-100"
+                    [(ngModel)]="objectFiltro.tipoFicha" formControlName="tipoFicha">
+                    <option [value]="null">Selecione...</option>
+                    <option *ngFor="let item of tipoDefichas" [value]="item.id">
+                      {{ item.nome }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-xl-2 col-form-label text-left">
+                 classificação de risco<span class="text-danger font-weight-bold">*</span>
+                </label>
+                <div class="col-xl-4">
+                  <select (change)="change($event)" *ngIf="domains" class="custom-select d-block w-100"
+                    [(ngModel)]="objectFiltro.idClassificacaoRisco" formControlName="idClassificacaoRisco">
+                    <option [value]="null">Selecione...</option>
+                    <option *ngFor="let item of listaClassificacaoDeRisco" [value]="item.id">
+                      {{ item.nome }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
 
             <span *ngIf="domains" class="row">
                 <div class="col-md-12 col-sm-12">
