@@ -1,2 +1,4 @@
 node_modules/
 *.tar
+package-lock.json
+package.json

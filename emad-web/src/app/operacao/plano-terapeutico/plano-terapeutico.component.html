@@ -229,7 +229,7 @@
                         </div>
                 </div>
                 <!-- Especialidade -->
-                <div *ngIf="form.get('idPaciente').value" class="row itemAgendamento">
+                <div *ngIf="form.get('idPaciente').value  && form.get('tipoAtendimento').value == 1" class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">
                         Especialidade <span class="text-danger font-weight-bold">*</span>
                     </label>
@@ -240,7 +240,7 @@
                 </div>
                 
                 <!-- data -->
-                <div *ngIf="form.get('especialidade').value" class="row">
+                <div *ngIf="form.get('especialidade').value || form.get('tipoAtendimento').value == 2" class="row">
                     <div style="text-align: left;" class="col-sm-3 itemAgendamento">
                         <label class="col-sm-12 p-0">Data/Horários
                             <span class="text-danger font-weight-bold">*</span>
