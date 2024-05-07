@@ -357,8 +357,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
           if( dataInicial && dataFinal && this.form.get('especialidade').value){
             this.alerta('error', 'Não há profissional disponível para a especialidade desejada na data selecionada.', 5000);
           }
-         
-          // this.form.get('tipoAtendimento').reset();
         }
       });
     }
@@ -375,8 +373,8 @@ export class PlanoTerapeuticoComponent implements OnInit {
       if (result.length > 0) {
         this.listaEquipe = result;
       } else {
+        if(idEspecialidade)
         this.alerta('error', 'Não há equipe disponível para a especialidade desejada na data selecionada.', 5000);
-        // this.form.get('tipoAtendimento').reset();
       }
     })
   }
