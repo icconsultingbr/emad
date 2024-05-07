@@ -243,7 +243,8 @@
           <!--Sinais vitais-->
           <div *ngIf="
             object.tipoFicha != 7 &&
-            object.tipoFicha != 8
+            object.tipoFicha != 8 &&
+            !id
           ">
             <div class="row">
               <div class="col-xl-6">
@@ -746,7 +747,86 @@
           ">
         <div class="card-header text-left">Sinais vitais</div>
         <div class="card-body text-left">
-
+           <!--Sinais vitais-->
+           <div *ngIf="
+           object.tipoFicha != 7 &&
+           object.tipoFicha != 8 &&
+           id
+         ">
+           <div class="row">
+             <div class="col-xl-6">
+               <div class="form-group row">
+                 <label class="col-xl-4 col-form-label text-left">
+                   Pressão arterial
+                 </label>
+                 <div class="col-xl-8">
+                   <input type="text" mask="000/000" class="form-control has-error"
+                     [(ngModel)]="object.pressaoArterial" formControlName="pressaoArterial"
+                     [readonly]="disableFields()" />
+                 </div>
+               </div>
+             </div>
+             <div class="col-xl-6">
+               <div class="form-group row">
+                 <label class="col-xl-4 col-form-label text-left">
+                   Pulso
+                 </label>
+                 <div class="col-xl-8">
+                   <input type="text" class="form-control has-error" [(ngModel)]="object.pulso" formControlName="pulso"
+                     mask="999" [readonly]="disableFields()" />
+                 </div>
+               </div>
+             </div>
+           </div>
+           <div class="row">
+             <div class="col-xl-6">
+               <div class="form-group row">
+                 <label class="col-xl-4 col-form-label text-left">
+                   Saturação 02
+                 </label>
+                 <div class="col-xl-8">
+                   <input type="text" class="form-control has-error" [(ngModel)]="object.saturacao"
+                     formControlName="saturacao" [readonly]="disableFields()" mask="999%" />
+                 </div>
+               </div>
+             </div>
+             <div class="col-xl-6">
+               <div class="form-group row">
+                 <label class="col-xl-4 col-form-label text-left">
+                   Temperatura
+                 </label>
+                 <div class="col-xl-8">
+                   <input type="text" class="form-control has-error" [(ngModel)]="object.temperatura"
+                     formControlName="temperatura" [readonly]="disableFields()" mask="99.9" />
+                 </div>
+               </div>
+             </div>
+           </div>
+           <div class="row">
+             <div class="col-xl-6">
+               <div class="form-group row">
+                 <label class="col-xl-4 col-form-label text-left">
+                   Altura
+                 </label>
+                 <div class="col-xl-8">
+                   <input type="text" class="form-control has-error" [(ngModel)]="object.altura"
+                     formControlName="altura" [readonly]="disableFields()" mask="9.99" />
+                 </div>
+               </div>
+             </div>
+             <div class="col-xl-6">
+               <div class="form-group row">
+                 <label class="col-xl-4 col-form-label text-left">
+                   Peso
+                 </label>
+                 <div class="col-xl-8">
+                   <input type="text" class="form-control has-error" [(ngModel)]="object.peso" formControlName="peso"
+                     [readonly]="disableFields()" mask="099.99" />
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
           <div class="row">
             <div class="col-xl-6">
               <div class="form-group row">
