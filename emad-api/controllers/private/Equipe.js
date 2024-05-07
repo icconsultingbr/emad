@@ -12,7 +12,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/equipe/agendamento/especialidade/:idEspecialidade/:dataInicial/:dataFinal/:idEstabelecimento', function (req, res) {
+    app.get('/equipe/agendamento/:dataInicial/:dataFinal/:idEstabelecimento', function (req, res) {
         let usuario = req.usuario;
         let params = req.params
         let util = new app.util.Util();

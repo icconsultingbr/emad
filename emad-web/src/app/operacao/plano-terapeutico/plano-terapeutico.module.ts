@@ -46,7 +46,7 @@ registerLocaleData(localePt);
         PlanoTerapeuticoComponent
     ],
     providers: [
-        PlanoTerapeuticoService, { provide: LOCALE_ID, useValue: 'pt-BR' },
+        PlanoTerapeuticoService, { provide: LOCALE_ID, useValue: 'pt-BR' }
     ],
     exports: [
         PlanoTerapeuticoComponent
