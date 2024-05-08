@@ -12,18 +12,25 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/equipe/agendamento/:dataInicial/:dataFinal/:idEstabelecimento', function (req, res) {
+    app.get('/equipe/agendamento', function (req, res) {
         let usuario = req.usuario;
-        let params = req.params
+        let params = req.params;
+        let queryParams = req.query;
         let util = new app.util.Util();
         let errors = [];
-
-        listaEquipeDisponivelParaAgendamentoPorEspecialidade(params, res).then(function (response) {
+    
+        const filters = {
+            dataInicial: queryParams.dataInicial,
+            dataFinal: queryParams.dataFinal,
+            idEstabelecimento: queryParams.idEstabelecimento
+        };
+    
+        listaEquipeDisponivelParaAgendamentoPorEspecialidade(filters, res).then(function (response) {
             res.status(200).json(response);
             return;
         });
     });
-
+    
     app.get('/equipe/estabelecimento/:id', function (req, res) {
         let usuario = req.usuario;
         let util = new app.util.Util();

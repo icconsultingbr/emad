@@ -1,7 +1,7 @@
 const config = require('config');
 
 module.exports = config.util.getEnv('NODE_CONFIG') !== '{}' ? JSON.parse(config.util.getEnv('NODE_CONFIG')) : {
-    "urlApi": "http://localhost:4000",
+    "urlApi": "http://saude.icconsulting.com.br/api-eatende",
     "apiPort": 4000,
     "consulta": 6,
     "superAdmin": 3,
@@ -15,7 +15,7 @@ module.exports = config.util.getEnv('NODE_CONFIG') !== '{}' ? JSON.parse(config.
         "port": 3306,
         "username": "root",
         "password": "zCAV%xf2",
-        "database": "e-atend-al-dev"
+        "database": "e-atend"
     },
     "idUsuarioIntegracao": 53
 }

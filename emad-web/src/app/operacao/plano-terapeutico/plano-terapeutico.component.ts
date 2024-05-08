@@ -142,7 +142,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
     this.carregarFormaAtendimento();
     this.carregarTipoAtendimento();
     this.fomularioAgendamento()
-    this.dataAtual = moment().format('YYYY-MM-DDTHH:mm');
+    this.dataAtual = encodeURIComponent(moment().format('YYYY-MM-DDTHH:mm'));
  
     this.form.get('tipoAtendimento').valueChanges.subscribe((value) => {
       if (!value) {
@@ -259,7 +259,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
   salvar() {
     this.service.save(this.form.getRawValue(), 'agendamento').subscribe((result) => {
       this.mensagem = 'Agendamento salvo com sucesso'
-  
       this.consultaAgendamentos();
       this.paciente = new Paciente
       this.allItems = []
@@ -344,12 +343,13 @@ export class PlanoTerapeuticoComponent implements OnInit {
 
   listaProfissionalDisponivel() {
     this.listaProfissional = [];
-    const dataInicial = moment(this.form.get('dataInicial').value).format("YYYY-MM-DD HH:mm:ss");
-    const dataFinal = moment(this.form.get('dataFinal').value).format("YYYY-MM-DD HH:mm:ss");
+    const dataInicial = encodeURIComponent(moment(this.form.get('dataInicial').value).format("YYYY-MM-DD HH:mm:ss"));
+    const dataFinal = encodeURIComponent(moment(this.form.get('dataFinal').value).format("YYYY-MM-DD HH:mm:ss"));
     const idEspecialidade = this.form.get('especialidade').value;
     
-    if (!this.showMensagemErro ) {
-      this.service.list(`profissional/agendamento/especialidade/${idEspecialidade}/${dataInicial}/${dataFinal}`).subscribe((result) => {
+    
+    if (!this.showMensagemErro) {
+      this.service.list(`profissional/agendamento/especialidade/${idEspecialidade}?dataInicial=${dataInicial}&dataFinal=${dataFinal}`).subscribe((result) => {
         if (result.length > 0) {
           this.listaProfissional = result;
           this.showMensagemErro = false;
@@ -364,12 +364,12 @@ export class PlanoTerapeuticoComponent implements OnInit {
   
   listaEquipeDisponivel() {
     this.listaEquipe = []
-    const dataInicial = moment(this.form.get('dataInicial').value).format("YYYY-MM-DD HH:mm:ss");
-    const dataFinal = moment(this.form.get('dataFinal').value).format("YYYY-MM-DD HH:mm:ss");
+    const dataInicial = encodeURIComponent(moment(this.form.get('dataInicial').value).format("YYYY-MM-DD HH:mm:ss"));
+    const dataFinal = encodeURIComponent(moment(this.form.get('dataFinal').value).format("YYYY-MM-DD HH:mm:ss"));
     const idEspecialidade = this.form.get('especialidade').value;
     const idEstabelecimento = this.pacienteSelecionado && this.pacienteSelecionado.idEstabelecimento;
     
-    this.service.list(`equipe/agendamento/${dataInicial}/${dataFinal}/${idEstabelecimento}`).subscribe((result) => {
+    this.service.list(`equipe/agendamento?dataInicial=${dataInicial}&dataFinal=${dataFinal}&idEstabelecimento=${idEstabelecimento}`).subscribe((result) => {
       if (result.length > 0) {
         this.listaEquipe = result;
       } else {

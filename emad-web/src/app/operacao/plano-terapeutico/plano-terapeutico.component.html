@@ -123,10 +123,8 @@
                     </div>
                 </div>
 
-                
-
                 <!-- forma de atendimento -->
-                <div *ngIf="form.get('dataInicial').value && form.get('dataFinal').value"
+                <div *ngIf="form.get('idPaciente').value && form.get('dataInicial').value && form.get('dataFinal').value"
                     class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">
                         Atendimento <span class="text-danger font-weight-bold"> *</span>
@@ -328,7 +326,7 @@
         </div>
         <div class="modal-footer">
             <div>
-                <button *ngIf="!(form.invalid || this.dataAtual > this.form.get('dataInicial').value)" class="btn btn-primary ml-3 rounded" type="button" (click)="salvar()">Salvar</button>
+                <button *ngIf="!(form.invalid)" class="btn btn-primary ml-3 rounded" type="button" (click)="salvar()">Salvar</button>
             </div>
             
         </div>
