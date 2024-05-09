@@ -14,6 +14,9 @@ module.exports = function (app) {
         let errors = [];
 
         buscarPorId(id, res).then(function (response) {
+            console.log('response')
+            console.log(response)
+
             res.status(200).json(response);
             return;
         });
@@ -247,6 +250,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
+
         var objDAO = new app.dao.AgendamentoDAO(connection);
         let errors = [];
 

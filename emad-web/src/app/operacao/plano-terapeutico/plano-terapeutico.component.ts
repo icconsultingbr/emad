@@ -270,7 +270,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
   editar(value: number) {
     const id = value ? value : this.dadosAgendamento.idAgendamento;
     this.service.list(`agendamento/${id}`).subscribe((result) => {
-      console.log(result)
           this.dadosAgendamento = result
           this.form.patchValue({
             id: this.dadosAgendamento.idAgendamento,
@@ -284,8 +283,8 @@ export class PlanoTerapeuticoComponent implements OnInit {
             especialidadeId: this.dadosAgendamento.especialidadeId,
             formaAtendimento: this.dadosAgendamento.formaAtendimento,
             tipoAtendimento: this.dadosAgendamento.tipoAtendimento,
-            dataInicial: moment(this.dadosAgendamento.dataInicial).format('YYYY-MM-DDTHH:mm'),
-            dataFinal: moment(this.dadosAgendamento.dataFinal).format('YYYY-MM-DDTHH:mm'),
+            dataInicial: this.dadosAgendamento.dataInicial,
+            dataFinal: this.dadosAgendamento.dataFinal,
             observacao: this.dadosAgendamento.observacao,
         });
 
