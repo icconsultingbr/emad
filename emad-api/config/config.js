@@ -15,7 +15,7 @@ module.exports = config.util.getEnv('NODE_CONFIG') !== '{}' ? JSON.parse(config.
         "port": 3306,
         "username": "root",
         "password": "zCAV%xf2",
-        "database": "e-atend"
+        "database": "e-atend-al-dev"
     },
     "idUsuarioIntegracao": 53
 }

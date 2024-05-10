@@ -344,8 +344,8 @@ export class PlanoTerapeuticoComponent implements OnInit {
     this.listaProfissional = [];
     const dataInicial = encodeURIComponent(moment(this.form.get('dataInicial').value).format("YYYY-MM-DD HH:mm:ss"));
     const dataFinal = encodeURIComponent(moment(this.form.get('dataFinal').value).format("YYYY-MM-DD HH:mm:ss"));
-    const idEspecialidade = this.form.get('especialidade').value;
-    
+    const idEspecialidade = this.dadosAgendamento.especialidadeId;
+
     
     if (!this.showMensagemErro) {
       this.service.list(`profissional/agendamento/especialidade/${idEspecialidade}?dataInicial=${dataInicial}&dataFinal=${dataFinal}`).subscribe((result) => {
@@ -353,13 +353,14 @@ export class PlanoTerapeuticoComponent implements OnInit {
           this.listaProfissional = result;
           this.showMensagemErro = false;
         } else {
-          if( dataInicial && dataFinal && this.form.get('especialidade').value){
+          if( dataInicial && dataFinal && idEspecialidade){ // Alterado para 'idEspecialidade'
             this.alerta('error', 'Não há profissional disponível para a especialidade desejada na data selecionada.', 5000);
           }
         }
       });
     }
-  }
+}
+
   
   listaEquipeDisponivel() {
     this.listaEquipe = []
