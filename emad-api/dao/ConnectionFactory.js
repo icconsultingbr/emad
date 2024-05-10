@@ -10,7 +10,6 @@ function createDBConnection() {
             user: config.dbConfig.username,
             password: config.dbConfig.password,
             database: config.dbConfig.database,
-            timezone: 'utc'
         });
     }
     return connection;

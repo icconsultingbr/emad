@@ -14,9 +14,6 @@ module.exports = function (app) {
         let errors = [];
 
         buscarPorId(id, res).then(function (response) {
-            console.log('response')
-            console.log(response)
-
             res.status(200).json(response);
             return;
         });
