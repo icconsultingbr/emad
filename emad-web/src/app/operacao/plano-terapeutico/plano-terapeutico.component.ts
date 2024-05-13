@@ -85,7 +85,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
   events: CalendarEvent[] = [];
   listaProfissional = [];
   showMensagemErro = false;
-  
+  idEspecialidade = 0;
   //Mensagens
   mensagem = '';
   mensagemErro: string;
@@ -270,29 +270,29 @@ export class PlanoTerapeuticoComponent implements OnInit {
   editar(value: number) {
     const id = value ? value : this.dadosAgendamento.idAgendamento;
     this.service.list(`agendamento/${id}`).subscribe((result) => {
-          this.dadosAgendamento = result
-          this.form.patchValue({
-            id: this.dadosAgendamento.idAgendamento,
-            idPaciente: this.dadosAgendamento.idPaciente,
-            idEquipe: this.dadosAgendamento.idEquipe,
-            nomeEquipe: this.dadosAgendamento.nomeEquipe,
-            idProfissional: this.dadosAgendamento.idProfissional,
-            profissionalNome: this.dadosAgendamento.profissionalNome,
-            nomePaciente: this.dadosAgendamento.pacienteNome,
-            especialidade:this.dadosAgendamento.especialidadeNome,
-            especialidadeId: this.dadosAgendamento.especialidadeId,
-            formaAtendimento: this.dadosAgendamento.formaAtendimento,
-            tipoAtendimento: this.dadosAgendamento.tipoAtendimento,
-            dataInicial: this.dadosAgendamento.dataInicial,
-            dataFinal: this.dadosAgendamento.dataFinal,
-            observacao: this.dadosAgendamento.observacao,
-        });
+      this.dadosAgendamento = result
+      this.form.patchValue({
+        id: this.dadosAgendamento.idAgendamento,
+        idPaciente: this.dadosAgendamento.idPaciente,
+        idEquipe: this.dadosAgendamento.idEquipe,
+        nomeEquipe: this.dadosAgendamento.nomeEquipe,
+        idProfissional: this.dadosAgendamento.idProfissional,
+        profissionalNome: this.dadosAgendamento.profissionalNome,
+        nomePaciente: this.dadosAgendamento.pacienteNome,
+        especialidade:this.dadosAgendamento.especialidadeNome,
+        especialidadeId: this.dadosAgendamento.especialidadeId,
+        formaAtendimento: this.dadosAgendamento.formaAtendimento,
+        tipoAtendimento: this.dadosAgendamento.tipoAtendimento,
+        dataInicial: this.dadosAgendamento.dataInicial,
+        dataFinal: this.dadosAgendamento.dataFinal,
+        observacao: this.dadosAgendamento.observacao,
+      });
 
-        if (this.dadosAgendamento.tipo == TipoAtendimento.Profissional) {
-          this.idEstabelecimento = this.dadosAgendamento.pacienteEstabeleciomentoId
-        } else {
-          this.idEstabelecimento = this.dadosAgendamento.equipeEstabelecimetoId
-        }
+      if (this.dadosAgendamento.tipo == TipoAtendimento.Profissional) {
+        this.idEstabelecimento = this.dadosAgendamento.pacienteEstabeleciomentoId
+      } else {
+        this.idEstabelecimento = this.dadosAgendamento.equipeEstabelecimetoId
+      }
       
       this.openEditModalAgendamento()
     });
@@ -313,6 +313,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
 
   buscaPaciente() {
     let params = '';
+
     if (!Util.isEmpty(this.paciente)) {
       if (Object.keys(this.paciente).length) {
         for (const key of Object.keys(this.paciente)) {
@@ -324,7 +325,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
           params = '?' + params;
         }
       }
-    }
+    } 
 
     this.service.list('paciente' + params).subscribe(result => {
       this.allItems = result.items;
@@ -341,22 +342,37 @@ export class PlanoTerapeuticoComponent implements OnInit {
   }
 
   listaProfissionalDisponivel() {
+    const dataInicialDt = this.form.get('dataInicial').value
+    const dataFinalDt = this.form.get('dataFinal').value
+
+    if (!dataInicialDt && !dataFinalDt) return
+
     this.listaProfissional = [];
-    const dataInicial = encodeURIComponent(moment(this.form.get('dataInicial').value).format("YYYY-MM-DD HH:mm:ss"));
-    const dataFinal = encodeURIComponent(moment(this.form.get('dataFinal').value).format("YYYY-MM-DD HH:mm:ss"));
-    const idEspecialidade = (this.dadosAgendamento.especialidadeId ? this.dadosAgendamento.especialidadeId : this.form.get('especialidade').value)  ;
-      if(this.form.get('dataInicial').value && this.form.get('dataFinal').value)
-      this.service.list(`profissional/agendamento/especialidade/${idEspecialidade}?dataInicial=${dataInicial}&dataFinal=${dataFinal}`).subscribe((result) => {
+    const dataInicial = encodeURIComponent(moment(dataInicialDt).format("YYYY-MM-DD HH:mm:ss"));
+    const dataFinal = encodeURIComponent(moment(dataFinalDt).format("YYYY-MM-DD HH:mm:ss"));
+
+    if (this.dadosAgendamento && this.dadosAgendamento.especialidadeId) {
+      this.idEspecialidade = this.dadosAgendamento.especialidadeId
+    } else {
+      this.idEspecialidade = this.form.get('especialidade').value
+    }
+
+    console.log('this.idEspecialidade')
+    console.log(this.idEspecialidade)
+
+    if(this.form.get('dataInicial').value && this.form.get('dataFinal').value){
+      this.service.list(`profissional/agendamento/especialidade/${this.idEspecialidade}?dataInicial=${dataInicial}&dataFinal=${dataFinal}`).subscribe((result) => {
         if (result.length > 0) {
           this.listaProfissional = result;
           this.showMensagemErro = false;
         } else {
-          if( dataInicial && dataFinal && idEspecialidade){ // Alterado para 'idEspecialidade'
+          if(dataInicial && dataFinal){ // Alterado para 'idEspecialidade'
             this.alerta('error', 'Não há profissional disponível para a especialidade desejada na data selecionada.', 5000);
           }
         }
       });
-}
+    }
+  }
 
   
   listaEquipeDisponivel() {
@@ -514,6 +530,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
 
   openEditModalAgendamento(): void {
    this.openModal(this.modalEditarAgendamento)
+
    if(this.dataAtual > this.form.get('dataInicial').value){
     this.form.disable()
    } else {
@@ -549,6 +566,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
   closeModal() {
     this.modalRef.dismiss()
     this.limparFormulario()
+    this.idEspecialidade = 0;
   }
 
   setView(view: string) {
