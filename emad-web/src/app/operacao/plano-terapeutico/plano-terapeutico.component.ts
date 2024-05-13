@@ -363,7 +363,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
           this.listaProfissional = result;
           this.showMensagemErro = false;
         } else {
-          if(dataInicial && dataFinal){ // Alterado para 'idEspecialidade'
+          if( dataInicial && dataFinal && this.idEspecialidade){
             this.alerta('error', 'Não há profissional disponível para a especialidade desejada na data selecionada.', 5000);
           }
         }
