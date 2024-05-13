@@ -344,10 +344,8 @@ export class PlanoTerapeuticoComponent implements OnInit {
     this.listaProfissional = [];
     const dataInicial = encodeURIComponent(moment(this.form.get('dataInicial').value).format("YYYY-MM-DD HH:mm:ss"));
     const dataFinal = encodeURIComponent(moment(this.form.get('dataFinal').value).format("YYYY-MM-DD HH:mm:ss"));
-    const idEspecialidade = this.dadosAgendamento.especialidadeId;
-
-    
-    if (!this.showMensagemErro) {
+    const idEspecialidade = (this.dadosAgendamento.especialidadeId ? this.dadosAgendamento.especialidadeId : this.form.get('especialidade').value)  ;
+      if(this.form.get('dataInicial').value && this.form.get('dataFinal').value)
       this.service.list(`profissional/agendamento/especialidade/${idEspecialidade}?dataInicial=${dataInicial}&dataFinal=${dataFinal}`).subscribe((result) => {
         if (result.length > 0) {
           this.listaProfissional = result;
@@ -358,7 +356,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
           }
         }
       });
-    }
 }
 
   
