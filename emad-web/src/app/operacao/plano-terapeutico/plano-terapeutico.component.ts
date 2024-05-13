@@ -357,9 +357,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
       this.idEspecialidade = this.form.get('especialidade').value
     }
 
-    console.log('this.idEspecialidade')
-    console.log(this.idEspecialidade)
-
     if(this.form.get('dataInicial').value && this.form.get('dataFinal').value){
       this.service.list(`profissional/agendamento/especialidade/${this.idEspecialidade}?dataInicial=${dataInicial}&dataFinal=${dataFinal}`).subscribe((result) => {
         if (result.length > 0) {
