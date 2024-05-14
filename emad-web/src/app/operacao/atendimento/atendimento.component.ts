@@ -407,13 +407,15 @@ export class AtendimentoComponent implements OnInit {
         }
       }
       Util.savePageState(null, 0, null, null, '');
-      this.allItems = [];
-      this.textoProcurado.nativeElement.value = '';
-      this.objectFiltro.cpf = '';
-      this.objectFiltro.idClassificacaoRisco = '';
-      this.objectFiltro.tipoFicha = '';
-      this.objectFiltro.integracaoPEC = ''; 
-      this.objectFiltro.situacao = '';   }
+      // this.allItems = [];
+      this.textoProcurado.nativeElement.value = null;
+      this.objectFiltro.cpf = null;
+      this.objectFiltro.idClassificacaoRisco = null;
+      this.objectFiltro.tipoFicha = null;
+      this.objectFiltro.integracaoPEC = null;
+      this.objectFiltro.situacao = null;
+    }
+    this.searchFilter()
   }
 
   loadQuantityPerPagePagination(event) {

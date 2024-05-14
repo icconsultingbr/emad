@@ -305,16 +305,10 @@
                 class="custom-select d-block w-100"
                 formControlName="situacao"
               >
-                <option [ngValue]="undefined">
-                  {{
-                    domains[0]?.situacao.length
-                      ? 'Selecione...'
-                      : 'Não há registros'
-                  }}
-                </option>
+                <option [selected]="!objectFiltro.situacao">Selecione</option>
                 <option
                   *ngFor="let domain of domains[0]?.situacao"
-                  value="{{ domain.id }}"
+                  [value]="domain.id"
                 >
                   {{ domain.nome }}
                 </option>
@@ -339,8 +333,6 @@
           </div>
         </div>
       </div>
-      
-
       <span *ngIf="domains" class="row">
         <div class="col-md-12 col-sm-12">
           <a
