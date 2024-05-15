@@ -123,8 +123,9 @@
                     </div>
                 </div>
 
+
                 <!-- forma de atendimento -->
-                <div *ngIf="form.get('idPaciente').value && form.get('dataInicial').value && form.get('dataFinal').value"
+                <div *ngIf="form.get('dataInicial').value && form.get('dataFinal').value"
                     class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">
                         Atendimento <span class="text-danger font-weight-bold"> *</span>
@@ -227,18 +228,18 @@
                         </div>
                 </div>
                 <!-- Especialidade -->
-                <div *ngIf="form.get('idPaciente').value  && form.get('tipoAtendimento').value == 1" class="row itemAgendamento">
+                <div *ngIf="form.get('idPaciente').value" class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">
                         Especialidade <span class="text-danger font-weight-bold">*</span>
                     </label>
                     <div class="col-xl-9">
-                        <input class="form-control" formControlName="especialidade"  [value]="dadosAgendamento.especialidadeNome" disabled>
+                        <input class="form-control" formControlName="especialidade" disabled>
                         <!-- Adicionei a classe "form-control" para estilizar o input -->
                     </div>
                 </div>
                 
                 <!-- data -->
-                <div *ngIf="form.get('especialidade').value || form.get('tipoAtendimento').value == 2" class="row">
+                <div *ngIf="form.get('especialidade').value" class="row">
                     <div style="text-align: left;" class="col-sm-3 itemAgendamento">
                         <label class="col-sm-12 p-0">Data/Horários
                             <span class="text-danger font-weight-bold">*</span>
@@ -326,7 +327,7 @@
         </div>
         <div class="modal-footer">
             <div>
-                <button *ngIf="!(form.invalid)" class="btn btn-primary ml-3 rounded" type="button" (click)="salvar()">Salvar</button>
+                <button *ngIf="!(form.invalid || this.dataAtual > this.form.get('dataInicial').value)" class="btn btn-primary ml-3 rounded" type="button" (click)="salvar()">Salvar</button>
             </div>
             
         </div>
