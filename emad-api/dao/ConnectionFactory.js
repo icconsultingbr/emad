@@ -9,7 +9,7 @@ function createDBConnection() {
             host: config.dbConfig.host,
             user: config.dbConfig.username,
             password: config.dbConfig.password,
-            database: config.dbConfig.database
+            database: config.dbConfig.database,
         });
     }
     return connection;

@@ -1,12 +1,19 @@
 module.exports = function (app) {
 
-    app.get('/profissional/agendamento/especialidade/:idEspecialidade/:dataInicial/:dataFinal', function (req, res) {
+    app.get('/profissional/agendamento/especialidade/:idEspecialidade', function (req, res) {
         let usuario = req.usuario;
         let params = req.params
+        let queryParams = req.query;
         let util = new app.util.Util();
         let errors = [];
 
-        listaProfissionalDisponivelParaAgendamentoPorEspecialidade(params, res).then(function (response) {
+        const filters = {
+            idEspecialidade: params.idEspecialidade,
+            dataInicial: queryParams.dataInicial,
+            dataFinal: queryParams.dataFinal
+        }
+
+        listaProfissionalDisponivelParaAgendamentoPorEspecialidade(filters, res).then(function (response) {
             res.status(200).json(response);
             return;
         });

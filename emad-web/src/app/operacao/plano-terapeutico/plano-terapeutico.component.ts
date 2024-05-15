@@ -259,7 +259,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
   salvar() {
     this.service.save(this.form.getRawValue(), 'agendamento').subscribe((result) => {
       this.mensagem = 'Agendamento salvo com sucesso'
-  
+
       this.consultaAgendamentos();
       this.paciente = new Paciente
       this.allItems = []
@@ -271,7 +271,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
   editar(value: number) {
     const id = value ? value : this.dadosAgendamento.idAgendamento;
     this.service.list(`agendamento/${id}`).subscribe((result) => {
-      console.log(result)
+
           this.dadosAgendamento = result
           this.form.patchValue({
             id: this.dadosAgendamento.idAgendamento,
@@ -366,8 +366,8 @@ export class PlanoTerapeuticoComponent implements OnInit {
   
   listaEquipeDisponivel() {
     this.listaEquipe = []
-    const dataInicial = moment(this.form.get('dataInicial').value).format("YYYY-MM-DD HH:mm:ss");
-    const dataFinal = moment(this.form.get('dataFinal').value).format("YYYY-MM-DD HH:mm:ss");
+    const dataInicial = encodeURIComponent(moment(this.form.get('dataInicial').value).format("YYYY-MM-DD HH:mm:ss"));
+    const dataFinal = encodeURIComponent(moment(this.form.get('dataFinal').value).format("YYYY-MM-DD HH:mm:ss"));
     const idEspecialidade = this.form.get('especialidade').value;
     const idEstabelecimento = this.pacienteSelecionado && this.pacienteSelecionado.idEstabelecimento;
     
@@ -375,6 +375,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
       if (result.length > 0) {
         this.listaEquipe = result;
       } else {
+        if(idEspecialidade)
         this.alerta('error', 'Não há equipe disponível para a especialidade desejada na data selecionada.', 5000);
         // this.form.get('tipoAtendimento').reset();
       }

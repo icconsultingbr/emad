@@ -247,6 +247,7 @@ module.exports = function (app) {
         let util = new app.util.Util();
 
         var connection = app.dao.ConnectionFactory();
+
         var objDAO = new app.dao.AgendamentoDAO(connection);
         let errors = [];
 
