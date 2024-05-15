@@ -123,9 +123,8 @@
                     </div>
                 </div>
 
-
                 <!-- forma de atendimento -->
-                <div *ngIf="form.get('dataInicial').value && form.get('dataFinal').value"
+                <div *ngIf="form.get('idPaciente').value && form.get('dataInicial').value && form.get('dataFinal').value"
                     class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">
                         Atendimento <span class="text-danger font-weight-bold"> *</span>
@@ -228,18 +227,18 @@
                         </div>
                 </div>
                 <!-- Especialidade -->
-                <div *ngIf="form.get('idPaciente').value" class="row itemAgendamento">
+                <div *ngIf="form.get('idPaciente').value  && form.get('tipoAtendimento').value == 1" class="row itemAgendamento">
                     <label class="col-xl-3 col-form-label text-left">
                         Especialidade <span class="text-danger font-weight-bold">*</span>
                     </label>
                     <div class="col-xl-9">
-                        <input class="form-control" formControlName="especialidade" disabled>
+                        <input class="form-control" formControlName="especialidade"  [value]="dadosAgendamento.especialidadeNome" disabled>
                         <!-- Adicionei a classe "form-control" para estilizar o input -->
                     </div>
                 </div>
                 
                 <!-- data -->
-                <div *ngIf="form.get('especialidade').value" class="row">
+                <div *ngIf="form.get('especialidade').value || form.get('tipoAtendimento').value == 2" class="row">
                     <div style="text-align: left;" class="col-sm-3 itemAgendamento">
                         <label class="col-sm-12 p-0">Data/Horários
                             <span class="text-danger font-weight-bold">*</span>
@@ -327,7 +326,7 @@
         </div>
         <div class="modal-footer">
             <div>
-                <button *ngIf="!(form.invalid || this.dataAtual > this.form.get('dataInicial').value)" class="btn btn-primary ml-3 rounded" type="button" (click)="salvar()">Salvar</button>
+                <button *ngIf="!(form.invalid)" class="btn btn-primary ml-3 rounded" type="button" (click)="salvar()">Salvar</button>
             </div>
             
         </div>
@@ -398,12 +397,27 @@
         </div>
 
     </div>
+    
     <div class="modal-footer">
         <div style=" font-size: 25px;">
             <i style="margin: 10px;" class="fas fa-edit" (click)="editar()"></i>
-            <i style="margin: 10px;" class="fas fa-trash-alt" (click)="excluir()"></i>
+            <i style="margin: 10px;" class="fas fa-trash-alt" (click)="handleOpenAbrirModalConfirmacaoExlusao(dadosAgendamento.id)"></i>
             <i style="margin: 10px;" class="fas fa-times" (click)="close()"></i>
         </div>
+    </div>
+    
+</ng-template>
+<ng-template #modalConfirmarExclusao let-event>
+    <div class="modal-header">
+        <h4 class="modal-title">Confirmar Exclusão</h4>
+        <i style="margin: 10px;" class="fas fa-times" (click)="handleClickFecharModalConfirmarExcluirAgendamento()"></i>
+    </div>
+    <div class="modal-body">
+        <p>Deseja realmente excluir este evento?</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="handleClickExcluirAgendamento()">Sim</button>
+        <button type="button" class="btn btn-danger" (click)="handleClickFecharModalConfirmarExcluirAgendamento()">Não</button>
     </div>
 </ng-template>
 

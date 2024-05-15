@@ -49,6 +49,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
   @ViewChild('modalInfoAgendamento') modalInfoAgendamento: TemplateRef<any>;
   @ViewChild('modalAdicionarAgendamento') modalAdicionarAgendamento: TemplateRef<any>;
   @ViewChild('modalEditarAgendamento') modalEditarAgendamento: TemplateRef<any>;
+  @ViewChild('modalConfirmarExclusao') modalConfirmarExclusao: TemplateRef<any>;
   @Input() public readonly: Boolean = false;
   loading: Boolean = false;
   view: string = 'month';
@@ -61,6 +62,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
   modalRef: NgbModalRef = null;
   modalRefLocalizarPaciente: NgbModalRef = null;
   modalConsultaAgendamento: NgbModalRef = null;
+  modalConfirmarExclusaoAgendamento: NgbModalRef = null;
   hoveredDate: NgbDate | null = null;
   fromDate: NgbDate;
   toDate: NgbDate | null = null;
@@ -86,6 +88,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
   listaProfissional = [];
   showMensagemErro = false;
   idEspecialidade = 0;
+  eventoIdExclusao: number;
   //Mensagens
   mensagem = '';
   mensagemErro: string;
@@ -95,28 +98,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
     action: string;
     event: CalendarEvent;
   };
-
-  
-  
-  actions: CalendarEventAction[] = [
-    {
-      label: '<i class="fas fa-fw fa-pencil-alt"></i>',
-      onClick: async ({ event }: { event: CalendarEvent }): Promise<void> => {
-        this.editar(Number(event.id));
-      },
-    },
-    {
-      label: '<i class="fas fa-fw fa-trash-alt"></i>',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.events = this.events.filter((iEvent) => iEvent !== event);
-        this.excluir(Number(event.id))
-        this.mensagem = 'Agendamento excluido com sucesso'
-        setTimeout(() => {
-        this.mensagem = '';
-      }, 4000);
-      },
-    },
-  ];
 
   constructor(
     private fb: FormBuilder,
@@ -133,7 +114,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
         this.fields.push(field);
       }
     }
-
   }
 
   ngOnInit() {
@@ -181,7 +161,41 @@ export class PlanoTerapeuticoComponent implements OnInit {
       this.consultaAgendaPaciente(moment(dtIn), moment(dtFim));
       this.form.patchValue({ formaAtendimento: 1 })
     });
-    
+  }  
+  
+  handleOpenAbrirModalConfirmacaoExlusao(idAgendamento: number): void {
+    this.eventoIdExclusao = idAgendamento;
+    this.modalConfirmarExclusaoAgendamento = this.modalService.open(this.modalConfirmarExclusao, { centered: true });
+  }
+
+  handleClickExcluirAgendamento(): void {
+    this.events = this.events.filter((event) => event.id !== this.eventoIdExclusao);
+    this.excluir(Number(this.eventoIdExclusao));
+    this.mensagem = 'Agendamento excluído com sucesso';
+
+    setTimeout(() => {
+      this.mensagem = '';
+    }, 4000);
+
+    this.modalConfirmarExclusaoAgendamento.dismiss()
+
+    this.eventoIdExclusao = null;
+  }
+
+  handleClickFecharModalConfirmarExcluirAgendamento(): void {
+    this.modalConfirmarExclusaoAgendamento.dismiss()
+  }
+
+  excluir(value: number) {
+    const idAgendamento = value ? value : this.dadosAgendamento.idAgendamento
+    this.service.remove(Number(idAgendamento), 'agendamento').subscribe((result) => {
+      this.consultaAgendamentos();
+      this.modalConsultaAgendamento.dismiss()
+      this.mensagem = 'Agendamento excluido com sucesso'
+      setTimeout(() => {
+        this.mensagem = '';
+      }, 4000);
+    })
   }
 
   focoCampoData(value: string) {
@@ -203,7 +217,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
       }
     }
   }
-
 
   alerta(tipo: string, msg: string, timeout: number): void {
     let type = '';
@@ -263,8 +276,8 @@ export class PlanoTerapeuticoComponent implements OnInit {
       this.paciente = new Paciente
       this.allItems = []
     });
+
     this.closeModal();
-    
   }
 
   editar(value: number) {
@@ -297,18 +310,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
       this.openEditModalAgendamento()
     });
     
-  }
-
-  excluir(value: number) {
-    const idAgendamento = value ? value : this.dadosAgendamento.idAgendamento
-    this.service.remove(Number(idAgendamento), 'agendamento').subscribe((result) => {
-      this.consultaAgendamentos();
-      this.modalConsultaAgendamento.dismiss()
-      this.mensagem = 'Agendamento excluido com sucesso'
-      setTimeout(() => {
-        this.mensagem = '';
-      }, 4000);
-    })
   }
 
   buscaPaciente() {
@@ -370,7 +371,6 @@ export class PlanoTerapeuticoComponent implements OnInit {
       });
     }
   }
-
   
   listaEquipeDisponivel() {
     this.listaEquipe = []
@@ -440,54 +440,51 @@ export class PlanoTerapeuticoComponent implements OnInit {
   consultaAgendamentos() {
     this.loading = true
     this.service.list('agendamento').subscribe((result) => {
-      const eventosDoServico: CalendarEvent[] = [];
-      result.forEach((evento) => {
-        let title;
-        let color;
-  
-        if (evento.idEquipe) {
-          color = { ...colors.equipe };
-            title = `${evento.pacienteNome} (${evento.nome})`;
-            eventosDoServico.push({
-              id: evento.idAgendamento,
-              title,
-              start: new Date(evento.dataInicial),
-              end: new Date(evento.dataFinal),
-              color,
-              resizable: {
-                beforeStart: true,
-                afterEnd: true,
-              },
-              actions: this.actions,
-            });
-  
-            this.events = [...eventosDoServico];
+      const eventosCalendario: CalendarEvent[] = [];
 
+      result.forEach((evento) => {
+        let title = ""
+        let color = null
+
+        if (evento.idEquipe) {
+          title = `${evento.pacienteNome} (${evento.nome})`
+          color = { ...colors.equipe }
         } else if (evento.idProfissional) {
-          color = { ...colors.profissional };
-          title = `${evento.pacienteNome} (${evento.profissionalNome})`;
-          
-          eventosDoServico.push({
-            id: evento.idAgendamento,
-            title,
-            start: new Date(evento.dataInicial),
-            end: new Date(evento.dataFinal),
-            color,
-            resizable: {
-              beforeStart: true,
-              afterEnd: true,
-            },
-            actions: this.actions,
-          });
-          
-          this.events = [...eventosDoServico];
+          title = `${evento.pacienteNome} (${evento.profissionalNome})`
+          color = { ...colors.profissional }       
         }
+
+        eventosCalendario.push({
+          id: evento.idAgendamento,
+          title,
+          start: new Date(evento.dataInicial),
+          end: new Date(evento.dataFinal),
+          color,
+          resizable: {
+            beforeStart: true,
+            afterEnd: true,
+          },
+          actions: [
+            {
+              label: '<i class="fas fa-fw fa-pencil-alt"></i>',
+              onClick: async ({ event }: { event: CalendarEvent }): Promise<void> => {
+                this.editar(Number(event.id));
+              },
+            },
+            {
+              label: '<i class="fas fa-fw fa-trash-alt"></i>',
+              onClick: ({ event }: { event: CalendarEvent }): void => {
+                this.handleOpenAbrirModalConfirmacaoExlusao(parseInt(event.id as string));
+              }
+            }
+          ]
+        });
       });
-        
-      this.loading = false
+
+      this.events = eventosCalendario;
+      this.loading = false;
     });
   }
-  
 
   consultaAgendamentoId(id: number) {
     this.service.list(`agendamento/${id}`).subscribe((result) => {
@@ -616,6 +613,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
       }
       return iEvent;
     });
+
     this.handleEvent('Dropped or resized', event);
   }
 
