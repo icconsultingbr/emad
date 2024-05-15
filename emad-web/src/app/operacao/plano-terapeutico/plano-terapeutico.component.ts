@@ -142,7 +142,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
     this.carregarFormaAtendimento();
     this.carregarTipoAtendimento();
     this.fomularioAgendamento()
-    this.dataAtual = encodeURIComponent(moment().format('YYYY-MM-DDTHH:mm'));
+    this.dataAtual = moment().format('YYYY-MM-DDTHH:mm');
  
     this.form.get('tipoAtendimento').valueChanges.subscribe((value) => {
       if (!value) {
@@ -259,6 +259,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
   salvar() {
     this.service.save(this.form.getRawValue(), 'agendamento').subscribe((result) => {
       this.mensagem = 'Agendamento salvo com sucesso'
+
       this.consultaAgendamentos();
       this.paciente = new Paciente
       this.allItems = []
@@ -270,6 +271,7 @@ export class PlanoTerapeuticoComponent implements OnInit {
   editar(value: number) {
     const id = value ? value : this.dadosAgendamento.idAgendamento;
     this.service.list(`agendamento/${id}`).subscribe((result) => {
+
           this.dadosAgendamento = result
           this.form.patchValue({
             id: this.dadosAgendamento.idAgendamento,
@@ -283,8 +285,8 @@ export class PlanoTerapeuticoComponent implements OnInit {
             especialidadeId: this.dadosAgendamento.especialidadeId,
             formaAtendimento: this.dadosAgendamento.formaAtendimento,
             tipoAtendimento: this.dadosAgendamento.tipoAtendimento,
-            dataInicial: this.dadosAgendamento.dataInicial,
-            dataFinal: this.dadosAgendamento.dataFinal,
+            dataInicial: moment(this.dadosAgendamento.dataInicial).format('YYYY-MM-DDTHH:mm'),
+            dataFinal: moment(this.dadosAgendamento.dataFinal).format('YYYY-MM-DDTHH:mm'),
             observacao: this.dadosAgendamento.observacao,
         });
 
@@ -342,25 +344,25 @@ export class PlanoTerapeuticoComponent implements OnInit {
 
   listaProfissionalDisponivel() {
     this.listaProfissional = [];
-    const dataInicial = encodeURIComponent(moment(this.form.get('dataInicial').value).format("YYYY-MM-DD HH:mm:ss"));
-    const dataFinal = encodeURIComponent(moment(this.form.get('dataFinal').value).format("YYYY-MM-DD HH:mm:ss"));
-    const idEspecialidade = this.dadosAgendamento.especialidadeId;
-
+    const dataInicial = moment(this.form.get('dataInicial').value).format("YYYY-MM-DD HH:mm:ss");
+    const dataFinal = moment(this.form.get('dataFinal').value).format("YYYY-MM-DD HH:mm:ss");
+    const idEspecialidade = this.form.get('especialidade').value;
     
-    if (!this.showMensagemErro) {
-      this.service.list(`profissional/agendamento/especialidade/${idEspecialidade}?dataInicial=${dataInicial}&dataFinal=${dataFinal}`).subscribe((result) => {
+    if (!this.showMensagemErro ) {
+      this.service.list(`profissional/agendamento/especialidade/${idEspecialidade}/${dataInicial}/${dataFinal}`).subscribe((result) => {
         if (result.length > 0) {
           this.listaProfissional = result;
           this.showMensagemErro = false;
         } else {
-          if( dataInicial && dataFinal && idEspecialidade){ // Alterado para 'idEspecialidade'
+          if( dataInicial && dataFinal && this.form.get('especialidade').value){
             this.alerta('error', 'Não há profissional disponível para a especialidade desejada na data selecionada.', 5000);
           }
+         
+          // this.form.get('tipoAtendimento').reset();
         }
       });
     }
-}
-
+  }
   
   listaEquipeDisponivel() {
     this.listaEquipe = []
@@ -369,12 +371,13 @@ export class PlanoTerapeuticoComponent implements OnInit {
     const idEspecialidade = this.form.get('especialidade').value;
     const idEstabelecimento = this.pacienteSelecionado && this.pacienteSelecionado.idEstabelecimento;
     
-    this.service.list(`equipe/agendamento?dataInicial=${dataInicial}&dataFinal=${dataFinal}&idEstabelecimento=${idEstabelecimento}`).subscribe((result) => {
+    this.service.list(`equipe/agendamento/${dataInicial}/${dataFinal}/${idEstabelecimento}`).subscribe((result) => {
       if (result.length > 0) {
         this.listaEquipe = result;
       } else {
         if(idEspecialidade)
         this.alerta('error', 'Não há equipe disponível para a especialidade desejada na data selecionada.', 5000);
+        // this.form.get('tipoAtendimento').reset();
       }
     })
   }

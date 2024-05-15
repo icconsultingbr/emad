@@ -35,6 +35,22 @@ AtendimentoDAO.prototype.listarAsync = async function (addFilter) {
             where += " AND a.idEstabelecimento  = " + addFilter.idEstabelecimento;
         }
 
+        if (addFilter.id) {
+            where += " AND a.id  = " + addFilter.id;
+        }
+
+        if (addFilter.integracaoPEC) {
+            where += " AND a.integracaoPEC  = " + addFilter.integracaoPEC;
+        }
+
+        if (addFilter.idClassificacaoRisco) {
+            where += " AND a.idClassificacaoRisco  = " + addFilter.idClassificacaoRisco;
+        }
+
+        if (addFilter.tipoFicha) {
+            where += " AND a.tipoFicha  = " + addFilter.tipoFicha;
+        }
+
         if (addFilter.situacao) {
             where += " AND a.situacao  = '" + addFilter.situacao + "'";
 
@@ -81,7 +97,8 @@ AtendimentoDAO.prototype.listarAsync = async function (addFilter) {
 
     const query = QueryBuilder.datatable(`SELECT 
                                             a.id, 
-                                            a.idPaciente, 
+                                            a.idPaciente,
+                                            a.integracaoPEC, 
                                             p.cartaoSus,
                                             p.cpf, 
                                             p.nome as nomePaciente, 

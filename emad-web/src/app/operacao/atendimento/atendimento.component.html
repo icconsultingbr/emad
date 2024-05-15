@@ -1,320 +1,572 @@
-<h2 class="text-left">Atendimentos</h2><br/>
+<h2 class="text-left">Atendimentos</h2>
+<br />
 
 <app-loader [loading]="loading"></app-loader>
 
 <p *ngIf="message.length" class="alert alert-info">
-    {{message}}
+  {{ message }}
 </p>
 
 <div *ngIf="errors.length" class="alert alert-danger">
-    <div *ngFor="let error of errors" class="row">
-        <div class="col-12 text-left">
-            {{error.message}}
-        </div>
+  <div *ngFor="let error of errors" class="row">
+    <div class="col-12 text-left">
+      {{ error.message }}
     </div>
+  </div>
 </div>
 
 <form [formGroup]="form">
-    <div class="input-group">
-        <span *ngIf="create && haveSubmitPermission()" class="input-group-btn">
-            <a [routerLink]="" (click)="new()" class="btn btn-primary mr-2">
-                <i class="fa fa-plus-circle"></i>
-            </a>
-        </span>
-    
-        <span class="input-group-btn">
-            <a [routerLink]="" (click)="refresherPagination()" class="btn btn-secondary mr-2">
-                <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin text-left">
-                    <i class="fa fa-spinner"></i>
-                </i>
-                <i *ngIf="!loading" class="fas fa-sync-alt"></i>
-            </a>
-        </span>
-        <input #textoProcurado (keyup)="0" class="form-control rounder" placeholder="Procurar..."
-            formControlName="textoProcurado" [(ngModel)]="objectFiltro.pesquisaCentral" />
-        <span class="input-group-btn ml-2">
-            <a [routerLink]=""  class="btn btn-primary" (click)="pesquisaCentral()">
-                <i class="fa fa-search"></i> Pesquisar
-            </a>
-        </span>
-        <span *ngIf="object && domains" class="input-group-btn ml-2">
-            <a [routerLink]="" (click)="toggleFilter()" class="btn btn-default text-secondary float-right"
-                style="border: 1px solid #d1d1d1 ">
-                <i class="fas fa-caret-down"></i>
-            </a>
-        </span>
-    </div>
-    
-    <div class="mt-3 mb-3">
-        <div *ngIf="isFilterCollapse" class="card card-block card-header mb-3 mt-3">
-            <div class="row">
-                 <div class="col-sm-12 col-md-12 col-xl-6">
-                    <div *ngIf="objectFiltro" class="form-group row">
-                        <label for="cartaoSus" class="col-sm-12 col-md-12 col-xl-4 col-form-label text-left">
-                            Cartão SUS                            
-                        </label>
-                        <div class="col-sm-12 col-md-12 col-xl-8">
-                            <div class="input-group">
-                                <input type="text" id="cartaoSus" class="form-control"                                    
-                                    formControlName="cartaoSus" [(ngModel)]="objectFiltro.cartaoSus" >
-                            </div>
-                        </div>
+  <div class="input-group">
+    <span *ngIf="create && haveSubmitPermission()" class="input-group-btn">
+      <a [routerLink]="" (click)="new()" class="btn btn-primary mr-2">
+        <i class="fa fa-plus-circle"></i>
+      </a>
+    </span>
 
-                    </div>
-                 </div> 
-                 <div class="col-sm-12 col-md-12 col-xl-6">
-                    <div *ngIf="objectFiltro" class="form-group row">
-                        <label for="idSap" class="col-sm-12 col-md-12 col-xl-4 col-form-label text-left">
-                            Número SAP                            
-                        </label>
-                        <div class="col-sm-12 col-md-12 col-xl-8">
-                            <div class="input-group">
-                                <input type="text" id="" class="form-control"                                    
-                                    formControlName="idSap" [(ngModel)]="objectFiltro.idSap" >
-                            </div>
-                        </div>
+    <span class="input-group-btn">
+      <a
+        [routerLink]=""
+        (click)="refresherPagination()"
+        class="btn btn-secondary mr-2"
+      >
+        <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin text-left">
+          <i class="fa fa-spinner"></i>
+        </i>
+        <i *ngIf="!loading" class="fas fa-sync-alt"></i>
+      </a>
+    </span>
+    <input
+      #textoProcurado
+      (keyup)="(0)"
+      class="form-control rounder"
+      placeholder="Procurar..."
+      formControlName="textoProcurado"
+      [(ngModel)]="objectFiltro.pesquisaCentral"
+    />
+    <span class="input-group-btn ml-2">
+      <a [routerLink]="" class="btn btn-primary" (click)="pesquisaCentral()">
+        <i class="fa fa-search"></i> Pesquisar
+      </a>
+    </span>
+    <span *ngIf="object && domains" class="input-group-btn ml-2">
+      <a
+        [routerLink]=""
+        (click)="toggleFilter()"
+        class="btn btn-default text-secondary float-right"
+        style="border: 1px solid #d1d1d1"
+      >
+        <i class="fas fa-caret-down"></i>
+      </a>
+    </span>
+  </div>
 
-                    </div>
-                 </div>   
+  <div class="mt-3 mb-3">
+    <div *ngIf="isFilterCollapse" class="card card-block card-header mb-3 mt-3">
+      <div class="row">
+        <div class="col-sm-12 col-md-12 col-xl-6">
+          <div *ngIf="objectFiltro" class="form-group row">
+            <label
+              for="cartaoSus"
+              class="col-sm-12 col-md-12 col-xl-4 col-form-label text-left"
+            >
+              Cartão SUS
+            </label>
+            <div class="col-sm-12 col-md-12 col-xl-8">
+              <div class="input-group">
+                <input
+                  type="text"
+                  id="cartaoSus"
+                  class="form-control"
+                  formControlName="cartaoSus"
+                  [(ngModel)]="objectFiltro.cartaoSus"
+                />
+              </div>
             </div>
-            <div class="row">
-                <div class="col-sm-12 col-md-12 col-xl-6">
-                   <div *ngIf="objectFiltro" class="form-group row">
-                       <label for="cpf" class="col-sm-12 col-md-12 col-xl-4 col-form-label text-left">
-                           CPF                            
-                       </label>
-                       <div class="col-sm-12 col-md-12 col-xl-8">
-                           <div class="input-group">
-                               <input type="text" id="cpf" class="form-control" mask="999.999.999-99" placeholder="999.999.999-99"
-                                   formControlName="cpf" [(ngModel)]="objectFiltro.cpf" >
-                           </div>
-                       </div>
-
-                   </div>
-                </div> 
-                <div class="col-sm-12 col-md-12 col-xl-6">
-                   <div *ngIf="objectFiltro" class="form-group row">
-                       <label for="nomePaciente" class="col-sm-12 col-md-12 col-xl-4 col-form-label text-left">
-                           Nome do paciente                            
-                       </label>
-                       <div class="col-sm-12 col-md-12 col-xl-8">
-                           <div class="input-group">
-                               <input type="text" id="" class="form-control"                                    
-                                   formControlName="nomePaciente" [(ngModel)]="objectFiltro.nomePaciente" >
-                           </div>
-                       </div>
-                   </div>
-                </div>   
-           </div>
-           <div class="row">
-            <div class="col-sm-12 col-md-12 col-xl-6">
-               <div *ngIf="objectFiltro" class="form-group row">
-                   <label for="dataCriacaoInicial" class="col-sm-12 col-md-12 col-xl-4 col-form-label text-left">
-                       Data do atendimento inicial                            
-                   </label>
-                   <div class="col-sm-12 col-md-12 col-xl-8">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text btn">
-                                    <i class="fa fa-calendar-alt"></i>
-                                </div>
-                            </div>
-                            <input type="text" id="dataCriacaoInicial" name="dataCriacaoInicial" [(ngModel)]="objectFiltro.dataCriacaoInicial" 
-                                placeholder="dd/mm/aaaa" bsDatepicker formControlName="dataCriacaoInicial"
-                                [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" 
-                                class="form-control" autocomplete="off">
-                        </div>
-                   </div>
-               </div>
-            </div> 
-            <div class="col-sm-12 col-md-12 col-xl-6">
-               <div *ngIf="objectFiltro" class="form-group row">
-                   <label for="dataCriacaoFinal" class="col-sm-12 col-md-12 col-xl-4 col-form-label text-left">
-                    Data do atendimento final                            
-                   </label>
-                   <div class="col-sm-12 col-md-12 col-xl-8">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text btn">
-                                <i class="fa fa-calendar-alt"></i>
-                            </div>
-                        </div>
-                        <input type="text" id="dataCriacaoFinal" name="dataCriacaoFinal" [(ngModel)]="objectFiltro.dataCriacaoFinal" 
-                            placeholder="dd/mm/aaaa" bsDatepicker formControlName="dataCriacaoFinal"
-                            [bsConfig]="{containerClass: 'theme-dark-blue', dateInputFormat: 'DD/MM/YYYY'}" 
-                            class="form-control" autocomplete="off">
-                    </div>
-               </div>
-               </div>
-            </div>   
-       </div>
-       <div class="row">
-            <div class="col-sm-12 col-md-12 col-xl-6">
-                <div *ngIf="objectFiltro && domains" class="form-group row">
-                    <label for="cpf" class="col-sm-12 col-md-12 col-xl-4 col-form-label text-left">
-                        Situação                            
-                    </label>
-                    <div class="col-sm-12 col-md-12 col-xl-8">
-                        <select name="situacao" id="situacao" [(ngModel)]="objectFiltro.situacao" class="custom-select d-block w-100"
-                            formControlName="situacao">
-                            <option [ngValue]="undefined">
-                                {{domains[0]?.situacao.length ? "Selecione..." : "Não há registros" }}</option>
-                            <option *ngFor="let domain of domains[0]?.situacao" value="{{domain.id}}">
-                                {{domain.nome}}
-                            </option>
-                        </select>
-                    </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-xl-6">
+          <div *ngIf="objectFiltro" class="form-group row">
+            <label
+              for="idSap"
+              class="col-sm-12 col-md-12 col-xl-4 col-form-label text-left"
+            >
+              Número SAP
+            </label>
+            <div class="col-sm-12 col-md-12 col-xl-8">
+              <div class="input-group">
+                <input
+                  type="text"
+                  id=""
+                  class="form-control"
+                  formControlName="idSap"
+                  [(ngModel)]="objectFiltro.idSap"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-12 col-xl-6">
+          <div *ngIf="objectFiltro" class="form-group row">
+            <label
+              for="cpf"
+              class="col-sm-12 col-md-12 col-xl-4 col-form-label text-left"
+            >
+              CPF
+            </label>
+            <div class="col-sm-12 col-md-12 col-xl-8">
+              <div class="input-group">
+                <input
+                  type="text"
+                  id="cpf"
+                  class="form-control"
+                  mask="999.999.999-99"
+                  placeholder="999.999.999-99"
+                  formControlName="cpf"
+                  [(ngModel)]="objectFiltro.cpf"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-xl-6">
+          <div *ngIf="objectFiltro" class="form-group row">
+            <label
+              for="nomePaciente"
+              class="col-sm-12 col-md-12 col-xl-4 col-form-label text-left"
+            >
+              Nome do paciente
+            </label>
+            <div class="col-sm-12 col-md-12 col-xl-8">
+              <div class="input-group">
+                <input
+                  type="text"
+                  id=""
+                  class="form-control"
+                  formControlName="nomePaciente"
+                  [(ngModel)]="objectFiltro.nomePaciente"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-12 col-xl-6">
+          <div *ngIf="objectFiltro" class="form-group row">
+            <label
+              for="dataCriacaoInicial"
+              class="col-sm-12 col-md-12 col-xl-4 col-form-label text-left"
+            >
+              Data do atendimento inicial
+            </label>
+            <div class="col-sm-12 col-md-12 col-xl-8">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text btn">
+                    <i class="fa fa-calendar-alt"></i>
+                  </div>
                 </div>
-            </div>   
+                <input
+                  type="text"
+                  id="dataCriacaoInicial"
+                  name="dataCriacaoInicial"
+                  [(ngModel)]="objectFiltro.dataCriacaoInicial"
+                  placeholder="dd/mm/aaaa"
+                  bsDatepicker
+                  formControlName="dataCriacaoInicial"
+                  [bsConfig]="{
+                    containerClass: 'theme-dark-blue',
+                    dateInputFormat: 'DD/MM/YYYY'
+                  }"
+                  class="form-control"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-xl-6">
+          <div *ngIf="objectFiltro" class="form-group row">
+            <label
+              for="dataCriacaoFinal"
+              class="col-sm-12 col-md-12 col-xl-4 col-form-label text-left"
+            >
+              Data do atendimento final
+            </label>
+            <div class="col-sm-12 col-md-12 col-xl-8">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text btn">
+                    <i class="fa fa-calendar-alt"></i>
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  id="dataCriacaoFinal"
+                  name="dataCriacaoFinal"
+                  [(ngModel)]="objectFiltro.dataCriacaoFinal"
+                  placeholder="dd/mm/aaaa"
+                  bsDatepicker
+                  formControlName="dataCriacaoFinal"
+                  [bsConfig]="{
+                    containerClass: 'theme-dark-blue',
+                    dateInputFormat: 'DD/MM/YYYY'
+                  }"
+                  class="form-control"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-6">
+          <div class="form-group row">
+            <label class="col-xl-4 col-form-label text-left">
+              Tipo de ficha<span class="text-danger font-weight-bold">*</span>
+            </label>
+            <div class="col-xl-8">
+              <select
+                (change)="change($event)"
+                *ngIf="domains"
+                class="custom-select d-block w-100"
+                [(ngModel)]="objectFiltro.tipoFicha"
+                formControlName="tipoFicha"
+              >
+                <option
+                  [value]="null"
+                  [selected]="
+                    objectFiltro.tipoFicha == null ||
+                    objectFiltro.tipoFicha == ''
+                  "
+                >
+                  Selecione...
+                </option>
+                <option *ngFor="let item of tipoDefichas" [value]="item.id">
+                  {{ item.nome }}
+                </option>
+              </select>
+            </div>
+          </div>
         </div>
 
-            <span *ngIf="domains" class="row">
-                <div class="col-md-12 col-sm-12">
-                    <a [routerLink]="" (click)="searchFilter()" class="btn btn-primary float-right">
-                        <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin text-left">
-                            <i class="fa fa-spinner"></i>
-                        </i>
-                        <i *ngIf="!loading" class="fas fa-search"></i>
-                    </a>
-    
-                    <a [routerLink]="" (click)="clear()" class="btn btn-default text-secondary mr-2 float-right"
-                        style="border: 1px solid #d1d1d1 ">
-                        <i class="fas fa-eraser"></i>
-                    </a>
-                </div>
-            </span>
+        <div class="col-xl-6">
+          <div class="form-group row">
+            <label class="col-xl-4 col-form-label text-left">
+              Classificação de risco<span class="text-danger font-weight-bold"
+                >*</span
+              >
+            </label>
+            <div class="col-xl-8">
+              <select
+                (change)="change($event)"
+                *ngIf="domains"
+                class="custom-select d-block w-100"
+                [(ngModel)]="objectFiltro.idClassificacaoRisco"
+                formControlName="idClassificacaoRisco"
+              >
+                <option
+                  [value]="null"
+                  [selected]="
+                    objectFiltro.idClassificacaoRisco == null ||
+                    objectFiltro.idClassificacaoRisco == ''
+                  "
+                >
+                  Selecione...
+                </option>
+                <option
+                  *ngFor="let item of listaClassificacaoDeRisco"
+                  [value]="item.id"
+                >
+                  {{ item.nome }}
+                </option>
+              </select>
+            </div>
+          </div>
         </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-12 col-xl-6">
+          <div *ngIf="objectFiltro && domains" class="form-group row">
+            <label
+              for="cpf"
+              class="col-sm-12 col-md-12 col-xl-4 col-form-label text-left"
+            >
+              Situação
+            </label>
+            <div class="col-sm-12 col-md-12 col-xl-8">
+              <select
+                name="situacao"
+                id="situacao"
+                [(ngModel)]="objectFiltro.situacao"
+                class="custom-select d-block w-100"
+                formControlName="situacao"
+              >
+                <option [selected]="!objectFiltro.situacao">Selecione</option>
+                <option
+                  *ngFor="let domain of domains[0]?.situacao"
+                  [value]="domain.id"
+                >
+                  {{ domain.nome }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-xl-6">
+          <div *ngIf="objectFiltro" class="form-group row">
+            <label for="integracaoPEC" class="ml-3"> Integração PEC </label>
+            <div class="col-sm-6 col-md-8 col-xl-4">
+              <div class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  formControlName="integracaoPEC"
+                  [(ngModel)]="objectFiltro.integracaoPEC"
+                  [value]="1"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span *ngIf="domains" class="row">
+        <div class="col-md-12 col-sm-12">
+          <a
+            [routerLink]=""
+            (click)="searchFilter()"
+            class="btn btn-primary float-right"
+          >
+            <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin text-left">
+              <i class="fa fa-spinner"></i>
+            </i>
+            <i *ngIf="!loading" class="fas fa-search"></i>
+          </a>
+
+          <a
+            [routerLink]=""
+            (click)="clear()"
+            class="btn btn-default text-secondary mr-2 float-right"
+            style="border: 1px solid #d1d1d1"
+          >
+            <i class="fas fa-eraser"></i>
+          </a>
+        </div>
+      </span>
     </div>
+  </div>
 </form>
 
+<div class="panel-body" style="overflow: auto">
+  <table class="table table-hover">
+    <thead>
+      <th *ngFor="let field of fields" class="text-left">
+        <a
+          (click)="sort(field.field); event.stopPropagation()"
+          class="btn btn-link"
+          *ngIf="field.sortable"
+        >
+          {{ field.label }}
+          <i
+            class="fa fa-sort-up"
+            *ngIf="sortOrder === 'asc' && sortColumn === field.field"
+          ></i>
+          <i
+            class="fa fa-sort-down"
+            *ngIf="sortOrder === 'desc' && sortColumn === field.field"
+          ></i>
+        </a>
+      </th>
+      <th></th>
+    </thead>
+    <tbody>
+      <ng-container
+        *ngFor="
+          let item of allItems;
+          let index = index;
+          let odd = odd;
+          let even = even
+        "
+      >
+        <tr
+          class="text-left"
+          [ngClass]="{ odd: odd, even: even }"
+          [style.background]="item['corIconeGrid']"
+        >
+          <td *ngFor="let field of fields">
+            <span *ngIf="field.type == 'icone'">
+              <i
+                class="fa {{ field.icon }}"
+                title="{{ item[field.colunaDescricao] }}"
+                style="color: black"
+              ></i>
+            </span>
+            <span *ngIf="field.type == 'image'">
+              <img
+                class="bioPerson"
+                src="{{
+                  field.path +
+                    '/' +
+                    (item[field.field] ? item[field.field] : field.imgDefault)
+                }}"
+              />
+            </span>
+            <span
+              *ngIf="field.type != 'image' && field.type != 'icone'"
+              class="{{ field.class ? field.class : '' }}"
+            >
+              {{
+                field.isDate
+                  ? (item[field.field] | date: 'dd/MM/yyyy')
+                  : field.isDateTime
+                  ? (item[field.field] | date: 'dd/MM/yyyy HH:mm')
+                  : field.translate
+                  ? translate(item[field.field], field.translate)
+                  : field.decimalMask
+                  ? toCurrency(
+                      item[field.field] | currency: 'R$ ' : true : '1.2-2',
+                      field.decimalMask
+                    )
+                  : item[field.field]
+              }}
+            </span>
+          </td>
+          <td class="text-right" style="white-space: nowrap">
+            <a class="btn btn-link" [routerLink]="" (click)="viewer(item.id)">
+              <i class="fa fa-eye" title="Visualizar atendimento"></i>
+              {{ showLabels ? 'Ver' : '' }}
+            </a>
+            <a
+              class="btn btn-link"
+              [routerLink]=""
+              (click)="abreFichaDownload(item)"
+            >
+              <i class="fa fa-print" title="Imprimir ficha"></i>
+            </a>
+            <a
+              class="btn btn-link"
+              [routerLink]=""
+              (click)="abreFichaVisualizacao(item)"
+            >
+              <i class="fa fa-file-alt" title="Visualizar ficha"></i>
+            </a>
+            <a
+              class="btn btn-link"
+              [routerLink]=""
+              (click)="abreReceitaMedica(item)"
+            >
+              <i class="fa fa-file-medical-alt" title="Visualizar receita"></i>
+            </a>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
 
-<div class="panel-body" style="overflow: auto">    
-    <table class="table table-hover">
-        <thead>
-            <th *ngFor="let field of fields;" class="text-left">
-                <a (click)="sort(field.field);event.stopPropagation();" class="btn btn-link" *ngIf="field.sortable"> {{field.label}}
-                    <i class="fa fa-sort-up" *ngIf="sortOrder==='asc' && sortColumn===field.field"></i>
-                    <i class="fa fa-sort-down" *ngIf="sortOrder==='desc' && sortColumn===field.field"></i>
-                </a>
-            </th>
-            <th></th>
-        </thead>
-        <tbody>
-            <ng-container *ngFor="let item of allItems; let index=index; let odd='odd'; let even='even';">
-            <tr class="text-left" [ngClass]="{ odd: odd, even: even }" [style.background]="item['corIconeGrid']">
-                    <td *ngFor="let field of fields;">
-                        <span *ngIf="field.type=='icone'">
-                            <i class="fa {{ field.icon }}" title="{{ item[field.colunaDescricao] }}" style="color:black"></i>
-                        </span>
-                        <span *ngIf="field.type=='image'">
-                            <img class="bioPerson"
-                                src="{{field.path+'/'+(item[field.field]?item[field.field]:field.imgDefault)}}">
-                        </span>
-                        <span *ngIf="field.type!='image' && field.type!='icone'" class="{{field.class?field.class:''}}">
-                            {{
-                                field.isDate?(item[field.field] | date :'dd/MM/yyyy') :
-                                    field.isDateTime?(item[field.field] | date :'dd/MM/yyyy HH:mm') :
-                                        field.translate?(translate(item[field.field], field.translate)):
-                                        field.decimalMask?(toCurrency(item[field.field] | currency:'R$ ':true:'1.2-2',field.decimalMask)):
-                                            item[field.field]
-                            }}
-                        </span>
-                    </td>    
-                    <td class="text-right" style="white-space:nowrap">
-                        <a class="btn btn-link" [routerLink]="" (click)="viewer(item.id)">
-                            <i class="fa fa-eye" title="Visualizar atendimento"></i> {{showLabels ? 'Ver' : ''}}
-                        </a>
-                        <a class="btn btn-link" [routerLink]="" (click)="abreFichaDownload(item)">
-                            <i class="fa fa-print" title="Imprimir ficha"></i>
-                        </a>
-                        <a class="btn btn-link" [routerLink]="" (click)="abreFichaVisualizacao(item)">
-                            <i class="fa fa-file-alt" title="Visualizar ficha"></i>
-                        </a>
-                        <a class="btn btn-link" [routerLink]="" (click)="abreReceitaMedica(item)">
-                            <i class="fa fa-file-medical-alt" title="Visualizar receita"></i>
-                        </a>
-                    </td>
-                </tr>
-            </ng-container>
-            
-        </tbody>
-
-        <tbody *ngIf="allItems && allItems.length==0">
-            <tr class="text-left" class="even">
-                <td colspan="99" class="text-secondary">
-                    <i>Não há resultados...</i>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <tbody *ngIf="allItems && allItems.length == 0">
+      <tr class="text-left" class="even">
+        <td colspan="99" class="text-secondary">
+          <i>Não há resultados...</i>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
-<hr *ngIf="(allItems && allItems.length)">
+<hr *ngIf="allItems && allItems.length" />
 
 <div class="row mb-4">
-    <div *ngIf="pager.pages && pager.pages.length"
-        class="text text-secondary col-md-12 pr-0 mx-auto">
-        <i>
-            Exibindo {{pager.currentPage === pager.totalPages?allItems.length:pager.currentPage*pagedItems.length}} de
-            {{allItems.length}}
-            resultado(s).
-        </i>
-    </div>
-    <div *ngIf="!pager.pages && allItems && allItems.length"
-        class="text text-secondary col-md-12 pr-0 mx-auto">
-        <i>
-            Exibindo {{paging.offset === (totalPages-1)?paging.total:(paging.offset+1)*paging.limit}} de
-            {{paging.total}}
-            resultado(s).
-        </i>
-    </div>
+  <div
+    *ngIf="pager.pages && pager.pages.length"
+    class="text text-secondary col-md-12 pr-0 mx-auto"
+  >
+    <i>
+      Exibindo
+      {{
+        pager.currentPage === pager.totalPages
+          ? allItems.length
+          : pager.currentPage * pagedItems.length
+      }}
+      de
+      {{ allItems.length }}
+      resultado(s).
+    </i>
+  </div>
+  <div
+    *ngIf="!pager.pages && allItems && allItems.length"
+    class="text text-secondary col-md-12 pr-0 mx-auto"
+  >
+    <i>
+      Exibindo
+      {{
+        paging.offset === totalPages - 1
+          ? paging.total
+          : (paging.offset + 1) * paging.limit
+      }}
+      de
+      {{ paging.total }}
+      resultado(s).
+    </i>
+  </div>
 </div>
 
 <div class="row mb-2 mt-4">
-    <ul *ngIf="allItems && allItems.length" class="pagination mx-auto">
-        <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
-            <a class="page-link" (click)="setPagePagined(0)">
-                <i class="fas fa-angle-double-left"></i>
-            </a>
-        </li>
-        <li class="page-item" [ngClass]="{'disabled':paging.offset === 0}">
-            <a class="page-link" (click)="setPagePagined(paging.offset - 1)">
-                <i class="fas fa-angle-left"></i>
-            </a>
-        </li>
-        <li>
-            <select (change)="loadQuantityPerPagePagination($event)" class="custom-select d-block w-100"
-                style="border: 1px solid #dee2e6">
-
-                <option [ngValue]="10">10</option>
-                <option [ngValue]="25">25</option>
-                <option [ngValue]="50">50</option>
-            </select>
-        </li>
-        <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
-            <a class="page-link" (click)="setPagePagined(paging.offset + 1)">
-                <i class="fas fa-angle-right"></i>
-            </a>
-        </li>
-        <li class="page-item" [ngClass]="{'disabled':paging.offset === (totalPages-1)}">
-            <a class="page-link" (click)="setPagePagined(totalPages-1)">
-                <i class="fas fa-angle-double-right"></i>
-            </a>
-        </li>
-    </ul>
+  <ul *ngIf="allItems && allItems.length" class="pagination mx-auto">
+    <li class="page-item" [ngClass]="{ disabled: paging.offset === 0 }">
+      <a class="page-link" (click)="setPagePagined(0)">
+        <i class="fas fa-angle-double-left"></i>
+      </a>
+    </li>
+    <li class="page-item" [ngClass]="{ disabled: paging.offset === 0 }">
+      <a class="page-link" (click)="setPagePagined(paging.offset - 1)">
+        <i class="fas fa-angle-left"></i>
+      </a>
+    </li>
+    <li>
+      <select
+        (change)="loadQuantityPerPagePagination($event)"
+        class="custom-select d-block w-100"
+        style="border: 1px solid #dee2e6"
+      >
+        <option [ngValue]="10">10</option>
+        <option [ngValue]="25">25</option>
+        <option [ngValue]="50">50</option>
+      </select>
+    </li>
+    <li
+      class="page-item"
+      [ngClass]="{ disabled: paging.offset === totalPages - 1 }"
+    >
+      <a class="page-link" (click)="setPagePagined(paging.offset + 1)">
+        <i class="fas fa-angle-right"></i>
+      </a>
+    </li>
+    <li
+      class="page-item"
+      [ngClass]="{ disabled: paging.offset === totalPages - 1 }"
+    >
+      <a class="page-link" (click)="setPagePagined(totalPages - 1)">
+        <i class="fas fa-angle-double-right"></i>
+      </a>
+    </li>
+  </ul>
 </div>
 
 <ng-template #content let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h4 class="modal-title">Aviso</h4>
-        <button type="button" class="close" aria-label="Close" (click)="close()">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">        
-        <p>{{mensagemModal}}</p>
-    </div>
-    <div class="modal-footer">        
-        <button type="button" class="btn btn-outline-dark" (click)="close()">Fechar</button>
-    </div>
+  <div class="modal-header">
+    <h4 class="modal-title">Aviso</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>{{ mensagemModal }}</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="close()">
+      Fechar
+    </button>
+  </div>
 </ng-template>
