@@ -1105,10 +1105,9 @@ export class AtendimentoFormComponent implements OnInit {
       this.object.integracaoPEC = true;
     }
 
-
-      // message: 'Atendimento não encontrado',
-      this.message = "Paciente não possui atendimentos. Por favor,cadastre um atendimento.,"
-
+    this.errors.push({
+      message: 'Atendimento não encontrado',
+    });
   }
 
   findHipotesePorAtendimento() {

@@ -240,6 +240,86 @@
             </div>
           </div>
 
+          <!--Sinais vitais-->
+          <div *ngIf="
+            object.tipoFicha != 7 &&
+            object.tipoFicha != 8
+          ">
+            <div class="row">
+              <div class="col-xl-6">
+                <div class="form-group row">
+                  <label class="col-xl-4 col-form-label text-left">
+                    Pressão arterial
+                  </label>
+                  <div class="col-xl-8">
+                    <input type="text" mask="000/000" class="form-control has-error"
+                      [(ngModel)]="object.pressaoArterial" formControlName="pressaoArterial"
+                      [readonly]="disableFields()" />
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-6">
+                <div class="form-group row">
+                  <label class="col-xl-4 col-form-label text-left">
+                    Pulso
+                  </label>
+                  <div class="col-xl-8">
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.pulso" formControlName="pulso"
+                      mask="999" [readonly]="disableFields()" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-6">
+                <div class="form-group row">
+                  <label class="col-xl-4 col-form-label text-left">
+                    Saturação 02
+                  </label>
+                  <div class="col-xl-8">
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.saturacao"
+                      formControlName="saturacao" [readonly]="disableFields()" mask="999%" />
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-6">
+                <div class="form-group row">
+                  <label class="col-xl-4 col-form-label text-left">
+                    Temperatura
+                  </label>
+                  <div class="col-xl-8">
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.temperatura"
+                      formControlName="temperatura" [readonly]="disableFields()" mask="99.9" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-6">
+                <div class="form-group row">
+                  <label class="col-xl-4 col-form-label text-left">
+                    Altura
+                  </label>
+                  <div class="col-xl-8">
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.altura"
+                      formControlName="altura" [readonly]="disableFields()" mask="9.99" />
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-6">
+                <div class="form-group row">
+                  <label class="col-xl-4 col-form-label text-left">
+                    Peso
+                  </label>
+                  <div class="col-xl-8">
+                    <input type="text" class="form-control has-error" [(ngModel)]="object.peso" formControlName="peso"
+                      [readonly]="disableFields()" mask="099.99" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!--Classificação de risco-->
           <div class="row">
             <div class="col-xl-12">
@@ -666,113 +746,20 @@
           ">
         <div class="card-header text-left">Sinais vitais</div>
         <div class="card-body text-left">
-          <div *ngIf="
-          object.tipoFicha != 7 &&
-          object.tipoFicha != 8
-        ">
+
           <div class="row">
             <div class="col-xl-6">
               <div class="form-group row">
                 <label class="col-xl-4 col-form-label text-left">
-                  Pressão arterial
+                  Glicemia
                 </label>
                 <div class="col-xl-8">
-                  <input type="text" mask="000/000" class="form-control has-error"
-                    [(ngModel)]="object.pressaoArterial" formControlName="pressaoArterial"
-                    [readonly]="disableFields()" />
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-6">
-              <div class="form-group row">
-                <label class="col-xl-4 col-form-label text-left">
-                  Pulso
-                </label>
-                <div class="col-xl-8">
-                  <input type="text" class="form-control has-error" [(ngModel)]="object.pulso" formControlName="pulso"
-                    mask="999" [readonly]="disableFields()" />
+                  <input type="text" class="form-control has-error" [(ngModel)]="object.glicemia"
+                    formControlName="glicemia" [readonly]="disableFields()" mask="099.9" />
                 </div>
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-xl-6">
-              <div class="form-group row">
-                <label class="col-xl-4 col-form-label text-left">
-                  Saturação 02
-                </label>
-                <div class="col-xl-8">
-                  <input type="text" class="form-control has-error" [(ngModel)]="object.saturacao"
-                    formControlName="saturacao" [readonly]="disableFields()" mask="999%" />
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-6">
-              <div class="form-group row">
-                <label class="col-xl-4 col-form-label text-left">
-                  Temperatura
-                </label>
-                <div class="col-xl-8">
-                  <input type="text" class="form-control has-error" [(ngModel)]="object.temperatura"
-                    formControlName="temperatura" [readonly]="disableFields()" mask="99.9" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xl-6">
-              <div class="form-group row">
-                <label class="col-xl-4 col-form-label text-left">
-                  Altura
-                </label>
-                <div class="col-xl-8">
-                  <input type="text" class="form-control has-error" [(ngModel)]="object.altura"
-                    formControlName="altura" [readonly]="disableFields()" mask="9.99" />
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-6">
-              <div class="form-group row">
-                <label class="col-xl-4 col-form-label text-left">
-                  Peso
-                </label>
-                <div class="col-xl-8">
-                  <input type="text" class="form-control has-error" [(ngModel)]="object.peso" formControlName="peso"
-                    [readonly]="disableFields()" mask="099.99" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xl-6">
-            <div class="form-group row">
-              <label class="col-xl-4 col-form-label text-left">
-                Glicemia
-              </label>
-              <div class="col-xl-8">
-                <input type="text" class="form-control has-error" [(ngModel)]="object.glicemia" formControlName="glicemia" [readonly]="disableFields()" mask="099.9" />
-              </div>
-            </div>
-          </div>
-        
-          <div class="col-xl-6">
-            <div *ngIf="object.tipoAtendimento != 9" class="form-group row">
-              <label class="col-xl-4 col-form-label text-left">
-                Condição Avaliada
-              </label>
-              <div class="col-xl-8">
-                <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.condicaoAvaliada" formControlName="condicaoAvaliada">
-                  <option [value]="null">Selecione...</option>
-                  <option *ngFor="let item of domains[0]?.condicaoAvaliada" [value]="item.id">
-                    {{ item.nome }}
-                  </option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-        
 
           <div class="row">
             <div class="col-xl-12">
@@ -786,6 +773,25 @@
                       formControlName="vacinasEmDia" class="custom-control-input" [readonly]="disableFields()" />
                     <label class="custom-control-label" for="vacinasEmDia"></label>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="object.tipoAtendimento != 9" class="row">
+            <div class="col-xl-12">
+              <div class="form-group row">
+                <label class="col-xl-2 col-form-label text-left">
+                  Condição Avaliada
+                </label>
+                <div class="col-xl-4">
+                  <select *ngIf="domains" class="custom-select d-block w-100" [(ngModel)]="object.condicaoAvaliada"
+                    formControlName="condicaoAvaliada">
+                    <option [value]="null">Selecione...</option>
+                    <option *ngFor="let item of domains[0]?.condicaoAvaliada" [value]="item.id">
+                      {{ item.nome }}
+                    </option>
+                  </select>
                 </div>
               </div>
             </div>
