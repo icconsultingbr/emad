@@ -1104,10 +1104,6 @@ export class AtendimentoFormComponent implements OnInit {
       this.object.localDeAtendimento = 1;
       this.object.integracaoPEC = true;
     }
-
-    this.errors.push({
-      message: 'Atendimento não encontrado',
-    });
   }
 
   findHipotesePorAtendimento() {
