@@ -24,7 +24,7 @@ export class AtendimentoComponent implements OnInit {
   allItems: any[];
   pager: any = {};
   pagedItems: any[];
-  selecaoFeita: boolean = false;
+
   message = '';
   mensagem = '';
   mensagemModal = '';
@@ -42,7 +42,8 @@ export class AtendimentoComponent implements OnInit {
 
   enableSearchButton: any[] = [];
   dropdownList: any[] = [];
-
+  listaClassificacaoDeRisco: any[] = [];
+  tipoDefichas: any[] = [];
   errors: any[] = [];
   showLabels: Boolean = false;
   loading = false;
@@ -66,8 +67,6 @@ export class AtendimentoComponent implements OnInit {
   object: Atendimento = new Atendimento();
   objectFiltro: AtendimentoFiltro = new AtendimentoFiltro();
   idPaciente: 0;
-  tipoDefichas = [];
-  listaClassificacaoDeRisco = [];
   armazenaPesquisa: false;
   virtualDirectory: string = environment.virtualDirectory != '' ? environment.virtualDirectory + '/' : '';
   form: FormGroup;
@@ -224,24 +223,6 @@ export class AtendimentoComponent implements OnInit {
       if (filtro.indexOf('idSap') !== -1) {
         const idSap = filtro.split('=');
         this.objectFiltro.idSap = idSap[1];
-        this.isFilterCollapse = true;
-      }
-
-      if (filtro.indexOf('id') !== -1) {
-        const id = filtro.split('=');
-        this.objectFiltro.id = id[1];
-        this.isFilterCollapse = true;
-      }
-
-      if (filtro.indexOf('integracaoPEC') !== -1) {
-        const integracaoPEC = filtro.split('=');
-        this.objectFiltro.integracaoPEC = integracaoPEC[1];
-        this.isFilterCollapse = true;
-      }
-
-      if (filtro.indexOf('tipoFicha') !== -1) {
-        const tipoFicha = filtro.split('=');
-        this.objectFiltro.tipoFicha = tipoFicha[1];
         this.isFilterCollapse = true;
       }
 
@@ -407,15 +388,15 @@ export class AtendimentoComponent implements OnInit {
         }
       }
       Util.savePageState(null, 0, null, null, '');
-      // this.allItems = [];
-      this.textoProcurado.nativeElement.value = null;
-      this.objectFiltro.cpf = null;
+      this.allItems = [];
+      this.textoProcurado.nativeElement.value = '';
+      this.objectFiltro.cpf = '';
       this.objectFiltro.idClassificacaoRisco = null;
       this.objectFiltro.tipoFicha = null;
       this.objectFiltro.integracaoPEC = null;
       this.objectFiltro.situacao = null;
+      this.searchFilter();
     }
-    this.searchFilter()
   }
 
   loadQuantityPerPagePagination(event) {

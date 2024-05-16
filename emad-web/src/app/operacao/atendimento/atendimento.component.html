@@ -230,7 +230,6 @@
             </label>
             <div class="col-xl-8">
               <select
-                (change)="change($event)"
                 *ngIf="domains"
                 class="custom-select d-block w-100"
                 [(ngModel)]="objectFiltro.tipoFicha"
@@ -305,7 +304,14 @@
                 class="custom-select d-block w-100"
                 formControlName="situacao"
               >
-                <option [selected]="!objectFiltro.situacao">Selecione</option>
+                <option
+                [value]="null"
+                  [selected]="
+                    objectFiltro.situacao == null || objectFiltro.situacao == ''
+                  "
+                >
+                  Selecione
+                </option>
                 <option
                   *ngFor="let domain of domains[0]?.situacao"
                   [value]="domain.id"
