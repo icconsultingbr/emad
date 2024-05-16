@@ -397,12 +397,27 @@
         </div>
 
     </div>
+    
     <div class="modal-footer">
         <div style=" font-size: 25px;">
             <i style="margin: 10px;" class="fas fa-edit" (click)="editar()"></i>
-            <i style="margin: 10px;" class="fas fa-trash-alt" (click)="excluir()"></i>
+            <i style="margin: 10px;" class="fas fa-trash-alt" (click)="handleOpenAbrirModalConfirmacaoExlusao(dadosAgendamento.id)"></i>
             <i style="margin: 10px;" class="fas fa-times" (click)="close()"></i>
         </div>
+    </div>
+    
+</ng-template>
+<ng-template #modalConfirmarExclusao let-event>
+    <div class="modal-header">
+        <h4 class="modal-title">Confirmar Exclusão</h4>
+        <i style="margin: 10px;" class="fas fa-times" (click)="handleClickFecharModalConfirmarExcluirAgendamento()"></i>
+    </div>
+    <div class="modal-body">
+        <p>Deseja realmente excluir este evento?</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="handleClickExcluirAgendamento()">Sim</button>
+        <button type="button" class="btn btn-danger" (click)="handleClickFecharModalConfirmarExcluirAgendamento()">Não</button>
     </div>
 </ng-template>
 
