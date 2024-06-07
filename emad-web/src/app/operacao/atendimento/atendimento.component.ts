@@ -226,7 +226,7 @@ export class AtendimentoComponent implements OnInit {
     this.paging.limit = limit ? limit : 10;
 
     if (this.loading != true) {
-     setTimeout(() => this.loading = true, 300);
+      setTimeout(() => this.loading = true, 300);
     }
 
     const sessao = sessionStorage.getItem('pesquisa_atendimento');
@@ -273,7 +273,7 @@ export class AtendimentoComponent implements OnInit {
       }
 
       if (this.sortColumn) {
-        params += (params == '' ? '?' : '&') +  `sortColumn=${this.sortColumn}&sortOrder=${this.sortOrder}`;
+        params += (params == '' ? '?' : '&') + `sortColumn=${this.sortColumn}&sortOrder=${this.sortOrder}`;
       }
     }
 
@@ -405,9 +405,9 @@ export class AtendimentoComponent implements OnInit {
 
   abreFichaDownload(item) {
     let uri = JSON.parse(localStorage.getItem('parametro_seguranca')).filter((url) => url.nome == 'URL_FICHA_MEDICA_IMPRESSAO')
-              ?
-              JSON.parse(localStorage.getItem('parametro_seguranca')).filter((url) => url.nome == 'URL_FICHA_MEDICA_IMPRESSAO')[0].valor
-              : '';
+      ?
+      JSON.parse(localStorage.getItem('parametro_seguranca')).filter((url) => url.nome == 'URL_FICHA_MEDICA_IMPRESSAO')[0].valor
+      : '';
 
     uri = uri.replace('{id}', item.id);
 
@@ -418,7 +418,7 @@ export class AtendimentoComponent implements OnInit {
         window.open(
           uri,
           '_blank'
-          );
+        );
       });
     });
     this.loading = false;
@@ -426,9 +426,9 @@ export class AtendimentoComponent implements OnInit {
 
   abreFichaVisualizacao(item) {
     let uri = JSON.parse(localStorage.getItem('parametro_seguranca')).filter((url) => url.nome == 'URL_FICHA_MEDICA_VISUALIZACAO')
-              ?
-              JSON.parse(localStorage.getItem('parametro_seguranca')).filter((url) => url.nome == 'URL_FICHA_MEDICA_VISUALIZACAO')[0].valor
-              : '';
+      ?
+      JSON.parse(localStorage.getItem('parametro_seguranca')).filter((url) => url.nome == 'URL_FICHA_MEDICA_VISUALIZACAO')[0].valor
+      : '';
 
     uri = uri.replace('{id}', item.id);
 
