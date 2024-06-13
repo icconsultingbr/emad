@@ -184,6 +184,7 @@ EstabelecimentoDAO.prototype.buscaPorId = async function (id, callback) {
             e.obrigaCpfNovoPaciente,
             e.obrigaCartaoSusNovoPaciente,
             e.obrigaIdSAP,
+            e.obrigaCiap2,
             e.enviaMedicamentoSus,
             e.obrigaValidarPacienteAtendimento,
             e.celularDefaultNovoPaciente
