@@ -23,11 +23,10 @@ export class EstabelecimentoFormComponent implements OnInit {
   message = '';
   errors: any[] = [];
   form: FormGroup;
-
+  obrigaCiap2: boolean;
   selectedItems = [];
   dropdownList = [];
   dropdownSettings: any = {};
-
   idEstabelecimento: Number = null;
 
   constructor(
@@ -126,6 +125,7 @@ export class EstabelecimentoFormComponent implements OnInit {
     this.object.obrigaCpfNovoPaciente = true;
     this.object.obrigaCartaoSusNovoPaciente = true;
     this.object.obrigaIdSAP = true;
+    this.obrigaCiap2 = true;
     this.object.obrigaValidarPacienteAtendimento = true;
     this.object.enviaMedicamentoSus = false;
     this.object.celularDefaultNovoPaciente = null;
@@ -232,6 +232,7 @@ export class EstabelecimentoFormComponent implements OnInit {
       obrigaCartaoSusNovoPaciente: ['', ''],
       obrigaValidarPacienteAtendimento: ['', ''],
       obrigaIdSAP: ['', ''],
+      obrigaCiap2: ['', ''],
       enviaMedicamentoSus: ['', ''],
       celularDefaultNovoPaciente: ['', ''],
       cnsProfissionaleSus: ['', Validators.required],
@@ -302,5 +303,5 @@ export class EstabelecimentoFormComponent implements OnInit {
   onSelectAll(items: any) {
     this.object.tipoFichas = this.selectedItems;
   }
-  onChange(item: any) {}
+  onChange(item: any) { }
 }

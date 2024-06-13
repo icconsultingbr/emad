@@ -319,6 +319,15 @@ export class EstabelecimentoService extends GenericsService {
       validator: ['', ''],
     },
     {
+      field: 'obrigaCiap2',
+      type: 'checkbox',
+      label: 'Obriga ciap2',
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', ''],
+    },
+    {
       field: 'obrigaCpfNovoPaciente',
       type: 'checkbox',
       label: 'Obriga CPF novo Paciente',

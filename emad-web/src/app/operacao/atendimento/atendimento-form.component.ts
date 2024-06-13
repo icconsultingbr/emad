@@ -190,6 +190,8 @@ export class AtendimentoFormComponent implements OnInit {
   doseVacina: number;
   grupoAtendimentoVacinacao: number;
 
+  obrigaCiap2: number;
+
   constructor(
     private service: AtendimentoService,
     private pagerService: PagerService,
@@ -223,10 +225,27 @@ export class AtendimentoFormComponent implements OnInit {
       this.id = params['id'];
       this.idHistorico = params['idHistorico'];
       this.carregaEntidadeCampoPorEspecialidade();
+      this.buscaEstabelecimento()
     });
     this.loading = true;
     this.buscaProfissionais();
     this.recarregarDocumentos();
+  }
+
+  buscaEstabelecimento() {
+    this.loading = true;
+    this.service
+      .list('estabelecimento/' + this.object.idEstabelecimento)
+      .subscribe(
+        (result) => {
+          this.obrigaCiap2 = result.obrigaCiap2;
+          this.loading = false;
+        },
+        (error) => {
+          this.loading = false;
+          this.errors = Util.customHTTPResponse(error);
+        },
+      );
   }
 
   createGroup() {
@@ -1939,6 +1958,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   viewer(id: number, content: any) {
+    this.buscaEstabelecimento()
     if (!id) {
       return;
     }
