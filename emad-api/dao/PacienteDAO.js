@@ -367,6 +367,14 @@ PacienteDAO.prototype.listarAsync = async function (addFilter, idUsuario) {
         if (addFilter.idEstabelecimento && addFilter.pacienteOutroEstabelecimento == 2 && !addFilter.pesquisa) {
             where += " AND pac.idEstabelecimentoCadastro = " + addFilter.idEstabelecimento + "";
         }
+        
+        if (addFilter.pacienteAtivoInativo) {
+            if (addFilter.pacienteAtivoInativo == '2') {
+                where += " AND pac.situacao = 1 ";
+            } else if (addFilter.pacienteAtivoInativo == '3') {
+                where += " AND pac.situacao = 0 ";
+            }
+        }
 
         if (addFilter.pesquisa) {
             where += " AND pac.situacao = 1 ";

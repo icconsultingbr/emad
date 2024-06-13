@@ -452,6 +452,19 @@ export class PacienteService extends GenericsService {
         type: 'select',
       },
     },
+    {
+      field: 'pacienteAtivoInativo',
+      type: 'text',
+      label: 'Visualizar pacientess Ativos/Inativos',
+      grid: false,
+      form: false,
+      translate: { '1': 'Ambos', '2': 'Ativos', '3': 'Inativos' },
+      required: false,
+      validator: ['', ''],
+      filter: {
+        type: 'select',
+      },
+    },
   ];
 
   transfereEstabelecimento(obj: any) {
