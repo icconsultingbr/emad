@@ -226,7 +226,7 @@
         <div class="col-xl-6">
           <div class="form-group row">
             <label class="col-xl-4 col-form-label text-left">
-              Tipo de ficha<span class="text-danger font-weight-bold">*</span>
+              Tipo de ficha
             </label>
             <div class="col-xl-8">
               <select
@@ -256,13 +256,10 @@
         <div class="col-xl-6">
           <div class="form-group row">
             <label class="col-xl-4 col-form-label text-left">
-              Classificação de risco<span class="text-danger font-weight-bold"
-                >*</span
-              >
+              Classificação de risco
             </label>
             <div class="col-xl-8">
               <select
-                (change)="change($event)"
                 *ngIf="domains"
                 class="custom-select d-block w-100"
                 [(ngModel)]="objectFiltro.idClassificacaoRisco"
@@ -339,7 +336,6 @@
           </div>
         </div>
       </div>
-      
 
       <span *ngIf="domains" class="row">
         <div class="col-md-12 col-sm-12">
