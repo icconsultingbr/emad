@@ -228,6 +228,7 @@ module.exports = function (app) {
         delete obj.idEstabelecimento;
         delete obj.pesquisaCentral;
         delete obj.pacienteOutroEstabelecimento;
+        delete obj.pacienteAtivoInativo;
         delete obj.pacienteIdade;
         delete obj.celularDefaultNovoPaciente;
         delete obj.obrigaCpfNovoPaciente;
@@ -424,6 +425,7 @@ module.exports = function (app) {
         delete obj.dataCriacao;
         delete obj.idUsuarioCriacao;
         delete obj.pacienteOutroEstabelecimento;
+        delete obj.pacienteAtivoInativo;
         delete obj.pacienteIdade;
         delete obj.obrigaCpfNovoPaciente;
         delete obj.obrigaCartaoSusNovoPaciente;

@@ -14,7 +14,7 @@ import { Translation } from '../../_core/_locale/Translation';
   selector: 'app-paciente',
   templateUrl: './paciente.component.html',
   styleUrls: ['./paciente.component.css'],
-  providers : [PacienteService]
+  providers: [PacienteService]
 })
 export class PacienteComponent implements OnInit {
 
@@ -25,8 +25,8 @@ export class PacienteComponent implements OnInit {
   object: Paciente = new Paciente();
   virtualDirectory: string = environment.virtualDirectory != '' ? environment.virtualDirectory + '/' : '';
   permiteVisualizarProntuario: boolean = JSON.parse(localStorage.getItem('especialidade'))
-                                         ? JSON.parse(localStorage.getItem('especialidade')).visualizaProntuario
-                                         : false;
+    ? JSON.parse(localStorage.getItem('especialidade')).visualizaProntuario
+    : false;
   allItems: any[];
   pager: any = {};
   pagedItems: any[];
@@ -111,7 +111,7 @@ export class PacienteComponent implements OnInit {
     // }
 
     //if (typeof Util.getPageState('textoProcurado') != 'undefined') {
-//      this.textoProcurado.nativeElement.value = Util.getPageState('textoProcurado');
+    //      this.textoProcurado.nativeElement.value = Util.getPageState('textoProcurado');
     //}
   }
 
@@ -119,12 +119,17 @@ export class PacienteComponent implements OnInit {
     this.service.listDomains('estabelecimento').subscribe(estabelecimentos => {
       this.service.listDomains('especialidade').subscribe(especialidades => {
         this.domains.push({
-          estabelecimentos : estabelecimentos,
+          estabelecimentos: estabelecimentos,
           idEstabelecimentoCadastro: estabelecimentos,
-          idEspecialidade : especialidades,
+          idEspecialidade: especialidades,
           pacienteOutroEstabelecimento: [
             { id: '1', nome: 'Sim' },
             { id: '2', nome: 'Não' }
+          ],
+          pacienteAtivoInativo: [
+            { id: '1', nome: 'Ambos' },
+            { id: '2', nome: 'Ativos' },
+            { id: '3', nome: 'Inativos' }
           ]
         });
       });
@@ -144,7 +149,7 @@ export class PacienteComponent implements OnInit {
     this.paging.limit = limit ? limit : 10;
 
     if (this.loading != true) {
-     setTimeout(() => this.loading = true, 300);
+      setTimeout(() => this.loading = true, 300);
     }
 
     let params = '';
