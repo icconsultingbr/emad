@@ -234,21 +234,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
 
-  buscaEstabelecimento() {
-    this.loading = true;
-    this.service
-      .list('estabelecimento/' + this.object.idEstabelecimento)
-      .subscribe(
-        (result) => {
-          this.obrigaCiap2 = result.obrigaCiap2;
-          this.loading = false;
-        },
-        (error) => {
-          this.loading = false;
-          this.errors = Util.customHTTPResponse(error);
-        },
-      );
-  }
+
 
   createGroup() {
     this.form = this.fb.group({
