@@ -702,17 +702,9 @@
                 </div>
               </div>
               <div class="col-xl-6">
-                <div
-                  *ngIf="object.tipoAtendimento != 9 && obrigaCondAvaliada == 1"
-                  class="form-group row"
-                >
+                <div *ngIf="object.tipoAtendimento != 9" class="form-group row">
                   <label class="col-xl-4 col-form-label text-left">
-                    Condição Avaliada<span
-                      *ngIf="obrigaCondAvaliada === 1"
-                      class="text-danger font-weight-bold"
-                    >
-                      *</span
-                    >
+                    Condição Avaliada
                   </label>
                   <div class="col-xl-8">
                     <select

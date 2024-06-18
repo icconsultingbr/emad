@@ -2188,8 +2188,7 @@ export class AtendimentoFormComponent implements OnInit {
       .list('estabelecimento/' + this.object.idEstabelecimento)
       .subscribe(
         (result) => {
-          this.obrigaCondAvaliada = result.obrigaCondAvaliada;
-          this.updateCondicaoAvaliadaValidator();
+          this.obrigaCiap2 = result.obrigaCiap2;
           this.loading = false;
         },
         (error) => {
@@ -2197,27 +2196,6 @@ export class AtendimentoFormComponent implements OnInit {
           this.errors = Util.customHTTPResponse(error);
         },
       );
-  }
-
-  updateCondicaoAvaliadaValidator() {
-    const condicaoAvaliadaControl = this.form.get('condicaoAvaliada');
-    if (this.obrigaCondAvaliada === 1) {
-      condicaoAvaliadaControl.setValidators(Validators.required);
-    } else {
-      condicaoAvaliadaControl.clearValidators();
-    }
-    condicaoAvaliadaControl.updateValueAndValidity();
-  }
-
-  isFormValid() {
-    if (this.obrigaCondAvaliada === 1) {
-      return (
-        this.form.valid &&
-        this.form.get('condicaoAvaliada').value !== null &&
-        this.form.get('condicaoAvaliada').value !== 0
-      );
-    }
-    return this.form.valid;
   }
 
   //FICHA ODONTOLOGICA
