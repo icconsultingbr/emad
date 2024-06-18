@@ -38,4 +38,5 @@ export class Estabelecimento {
   @Input() cnsProfissionaleSus: Number = null;
   @Input() nivelSuperior: string;
   @Input() obrigaIdSAP: boolean;
+  @Input() obrigaCondAvaliada: Boolean;
 }
