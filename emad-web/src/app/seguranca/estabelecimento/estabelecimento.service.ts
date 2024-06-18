@@ -319,6 +319,15 @@ export class EstabelecimentoService extends GenericsService {
       validator: ['', ''],
     },
     {
+      field: 'obrigaCondAvaliada',
+      type: 'checkbox',
+      label: 'obriga Condição Avaliada',
+      grid: false,
+      form: true,
+      required: true,
+      validator: ['', ''],
+    },
+    {
       field: 'obrigaCpfNovoPaciente',
       type: 'checkbox',
       label: 'Obriga CPF novo Paciente',

@@ -160,7 +160,7 @@ export class AtendimentoFormComponent implements OnInit {
   isRequired: boolean;
   sexoPaciente: string;
   totalParticipantes: number;
-
+  obrigaCondAvaliada: any;
   localAtendimento: number;
 
   pathFiles = `${environment.apiUrl}/fotos/`;
@@ -223,6 +223,7 @@ export class AtendimentoFormComponent implements OnInit {
       this.id = params['id'];
       this.idHistorico = params['idHistorico'];
       this.carregaEntidadeCampoPorEspecialidade();
+      this.buscaEstabelecimento();
     });
     this.loading = true;
     this.buscaProfissionais();
@@ -1953,6 +1954,7 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   viewer(id: number, content: any) {
+    this.buscaEstabelecimento();
     if (!id) {
       return;
     }
@@ -2186,6 +2188,44 @@ export class AtendimentoFormComponent implements OnInit {
           this.errors = Util.customHTTPResponse(error);
         },
       );
+  }
+
+  buscaEstabelecimento() {
+    this.loading = true;
+    this.service
+      .list('estabelecimento/' + this.object.idEstabelecimento)
+      .subscribe(
+        (result) => {
+          this.obrigaCondAvaliada = result.obrigaCondAvaliada;
+          this.updateCondicaoAvaliadaValidator();
+          this.loading = false;
+        },
+        (error) => {
+          this.loading = false;
+          this.errors = Util.customHTTPResponse(error);
+        },
+      );
+  }
+
+  updateCondicaoAvaliadaValidator() {
+    const condicaoAvaliadaControl = this.form.get('condicaoAvaliada');
+    if (this.obrigaCondAvaliada === 1) {
+      condicaoAvaliadaControl.setValidators(Validators.required);
+    } else {
+      condicaoAvaliadaControl.clearValidators();
+    }
+    condicaoAvaliadaControl.updateValueAndValidity();
+  }
+
+  isFormValid() {
+    if (this.obrigaCondAvaliada === 1) {
+      return (
+        this.form.valid &&
+        this.form.get('condicaoAvaliada').value !== null &&
+        this.form.get('condicaoAvaliada').value !== 0
+      );
+    }
+    return this.form.valid;
   }
 
   //FICHA ODONTOLOGICA

@@ -60,7 +60,6 @@ module.exports = function (app) {
         let usuario = req.usuario;
         let id = req.params.id;
         let util = new app.util.Util();
-        console.log('passndo')
         let errors = [];
 
         buscarPorEstabelecimento(id, res).then(function (response) {

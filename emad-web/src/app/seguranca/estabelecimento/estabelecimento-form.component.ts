@@ -126,6 +126,7 @@ export class EstabelecimentoFormComponent implements OnInit {
     this.object.obrigaCpfNovoPaciente = true;
     this.object.obrigaCartaoSusNovoPaciente = true;
     this.object.obrigaIdSAP = true;
+    this.object.obrigaCondAvaliada = true;
     this.object.obrigaValidarPacienteAtendimento = true;
     this.object.enviaMedicamentoSus = false;
     this.object.celularDefaultNovoPaciente = null;
@@ -232,6 +233,7 @@ export class EstabelecimentoFormComponent implements OnInit {
       obrigaCartaoSusNovoPaciente: ['', ''],
       obrigaValidarPacienteAtendimento: ['', ''],
       obrigaIdSAP: ['', ''],
+      obrigaCondAvaliada: ['', ''],
       enviaMedicamentoSus: ['', ''],
       celularDefaultNovoPaciente: ['', ''],
       cnsProfissionaleSus: ['', Validators.required],
@@ -302,5 +304,5 @@ export class EstabelecimentoFormComponent implements OnInit {
   onSelectAll(items: any) {
     this.object.tipoFichas = this.selectedItems;
   }
-  onChange(item: any) {}
+  onChange(item: any) { }
 }
