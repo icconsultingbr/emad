@@ -229,6 +229,20 @@ export class AtendimentoFormComponent implements OnInit {
     this.recarregarDocumentos();
   }
 
+  filtroTiposConsultaOdonto() {
+    if (this.domains && this.domains[0].tiposConsultaOdonto) {
+      return this.domains[0].tiposConsultaOdonto.filter((item) => {
+        if (this.object.tipoAtendimento == 6) {
+          return item.id != 1;
+        } else {
+          return true;
+        }
+      });
+    } else {
+      return [];
+    }
+  }
+
   createGroup() {
     this.form = this.fb.group({
       id: [''],
@@ -2098,9 +2112,11 @@ export class AtendimentoFormComponent implements OnInit {
     this.editParticipanteAtividadeColetiva.altura = item.altura;
     this.editParticipanteAtividadeColetiva.pulso = item.pulso;
     this.editParticipanteAtividadeColetiva.saturacao = item.saturacao;
-    this.editParticipanteAtividadeColetiva.pressaoArterial = item.pressaoArterial;
+    this.editParticipanteAtividadeColetiva.pressaoArterial =
+      item.pressaoArterial;
     this.editParticipanteAtividadeColetiva.temperatura = item.temperatura;
-    this.editParticipanteAtividadeColetiva.queixaHistoriaDoenca = item.queixaHistoriaDoenca;
+    this.editParticipanteAtividadeColetiva.queixaHistoriaDoenca =
+      item.queixaHistoriaDoenca;
 
     this.modalRef = this.modalService.open(content, {
       backdrop: 'static',
@@ -2461,8 +2477,7 @@ export class AtendimentoFormComponent implements OnInit {
 
   salvarDocumentos() {
     this.fileUploadService.uploadListImage(this.images).subscribe((result) => {
-
-      result.forEach(object => {
+      result.forEach((object) => {
         object.idAtendimento = this.id;
       });
 
@@ -2486,7 +2501,6 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   abrirDocumento(base: any) {
-
     if (base.tipo == 'pdf') {
       const pdf = document.createElement('embed');
 
@@ -2495,8 +2509,7 @@ export class AtendimentoFormComponent implements OnInit {
       pdf.height = '100%';
       const w = window.open('');
       w.document.write(pdf.outerHTML);
-    }
-    else {
+    } else {
       const image = new Image();
       image.src = 'data:image/' + base.tipo + ';base64,' + base.base64;
       const w = window.open('');

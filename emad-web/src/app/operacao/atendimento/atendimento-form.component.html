@@ -331,7 +331,14 @@
             </div>
           </div>
 
-          <div *ngIf="object.tipoFicha == 8" class="row">
+          <div
+            *ngIf="
+              object.tipoFicha == 8 ||
+              object.tipoAtendimento == 2 ||
+              (object.tipoAtendimento == 6 && object.tipoAtendimento != 4)
+            "
+            class="row"
+          >
             <div class="col-xl-12">
               <div class="form-group row">
                 <label class="col-xl-2 col-form-label text-left">
@@ -349,7 +356,7 @@
                   >
                     <option [value]="null">Selecione...</option>
                     <option
-                      *ngFor="let item of domains[0]?.tiposConsultaOdonto"
+                      *ngFor="let item of filtroTiposConsultaOdonto()"
                       [value]="item.id"
                     >
                       {{ item.nome }}
