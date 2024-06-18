@@ -1448,7 +1448,12 @@
           object.tipoFicha != 8
         "
       >
-        <div class="card-header text-left">Avaliação/Classificação CIAP 2</div>
+        <div class="card-header text-left">
+          Avaliação/Classificação CIAP 2
+          <span *ngIf="obrigaCiap2 === 1" class="text-danger font-weight-bold">
+            *</span
+          >
+        </div>
         <div class="card-body text-left">
           <div class="row">
             <div class="col-12 mb-3">
@@ -2393,9 +2398,12 @@
     <button
       class="btn btn-primary"
       type="submit"
-      [disabled]="form.invalid"
+      [disabled]="
+        form.invalid ||
+        (object.id &&
+          (obrigaCiap2 ? allItemsCondicaoAvaliada.length === 0 : false))
+      "
       *ngIf="object.idPaciente && !disableFields()"
-      [disabled]="form.invalid"
     >
       <i class="fa fa-save"></i>
       {{ !object.id ? 'Criar atendimento' : 'Salvar' }}

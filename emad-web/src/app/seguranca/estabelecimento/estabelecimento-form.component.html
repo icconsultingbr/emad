@@ -1,5 +1,5 @@
 <h4 class="mb-5 text-left">
-  {{ id != null ? "Editar " + label : "Adicionar " + label }}
+  {{ id != null ? 'Editar ' + label : 'Adicionar ' + label }}
 </h4>
 <app-loader [loading]="loading"></app-loader>
 <p *ngIf="message.length" class="alert alert-info sticky-top">{{ message }}</p>
@@ -733,6 +733,27 @@
                       ></label>
                     </div>
                   </div>
+                  <label class="col-xl-2 col-form-label text-left">
+                    Obriga CIAP2
+                  </label>
+                  <div class="col-xl-4">
+                    <div
+                      class="custom-control custom-checkbox"
+                      style="width: 25px"
+                    >
+                      <input
+                        type="checkbox"
+                        id="obrigaCiap2"
+                        [(ngModel)]="object.obrigaCiap2"
+                        formControlName="obrigaCiap2"
+                        class="custom-control-input"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="obrigaCiap2"
+                      ></label>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -747,7 +768,7 @@
       <i class="fa fa-arrow-left"></i> Retornar
     </button>
     <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
-      <i class="fa fa-save"></i> {{ !object.id ? "Salvar" : "Atualizar" }}
+      <i class="fa fa-save"></i> {{ !object.id ? 'Salvar' : 'Atualizar' }}
     </button>
   </div>
 </form>
