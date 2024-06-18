@@ -224,7 +224,6 @@ module.exports = function (app) {
         let idEstabelecimento = req.params.idEstabelecimento;
         let util = new app.util.Util();
         let errors = [];
-
         buscaPorPacienteId(id, usuario, idEstabelecimento, res).then(function (response) {
             res.status(200).json(response);
             return;

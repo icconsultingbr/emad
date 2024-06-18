@@ -46,6 +46,7 @@ EstabelecimentoDAO.prototype.listaPorUsuario = function (id) {
         e.cnsProfissionaleSus, 
         e.obrigaCpfNovoPaciente,
         e.obrigaIdSAP,
+        e.obrigaCondAvaliada,
         e.obrigaCartaoSusNovoPaciente,
         e.enviaMedicamentoSus,
         e.obrigaValidarPacienteAtendimento,
@@ -134,6 +135,7 @@ EstabelecimentoDAO.prototype.lista = async function (addFilter) {
         e.obrigaCpfNovoPaciente,
         e.obrigaCartaoSusNovoPaciente,
         e.obrigaIdSAP,
+        e.obrigaCondAvaliada,
         e.enviaMedicamentoSus
     FROM 
         tb_estabelecimento AS e 
