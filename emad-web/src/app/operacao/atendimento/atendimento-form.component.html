@@ -1481,7 +1481,14 @@
       >
         <div class="card-header text-left">
           Avaliação/Classificação CIAP 2
-          <span *ngIf="obrigaCiap2 === 1" class="text-danger font-weight-bold">
+          <span
+            *ngIf="
+              obrigaCiap2 === 1 &&
+              form.get('tipoFicha').value != 7 &&
+              form.get('tipoFicha').value != 8
+            "
+            class="text-danger font-weight-bold"
+          >
             *</span
           >
         </div>
@@ -2431,8 +2438,7 @@
       type="submit"
       [disabled]="
         form.invalid ||
-        (object.id &&
-          (obrigaCiap2 ? allItemsCondicaoAvaliada.length === 0 : false))
+        (object.id && obrigaCiap2 != 0 && allItemsCondicaoAvaliada.length === 0)
       "
       *ngIf="object.idPaciente && !disableFields()"
     >
@@ -2478,6 +2484,7 @@
                 </label>
                 <div class="col-xl-4">
                   <select
+                    (change)="change($event)"
                     *ngIf="domains"
                     class="custom-select d-block w-100"
                     [(ngModel)]="objectHistorico.tipoFicha"

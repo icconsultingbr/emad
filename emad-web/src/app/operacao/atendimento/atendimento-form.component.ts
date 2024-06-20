@@ -225,12 +225,12 @@ export class AtendimentoFormComponent implements OnInit {
       this.id = params['id'];
       this.idHistorico = params['idHistorico'];
       this.carregaEntidadeCampoPorEspecialidade();
-      this.buscaEstabelecimento();
     });
+
     this.loading = true;
     this.buscaProfissionais();
     this.recarregarDocumentos();
-    this.buscaEstabelecimento()
+    this.buscaEstabelecimento();
   }
 
 
@@ -886,6 +886,11 @@ export class AtendimentoFormComponent implements OnInit {
 
         this.tipoFicha = result.tipoFicha;
 
+        this.form.get('tipoFicha').setValue(result.tipoFicha);
+        this.form.get('tipoFicha').updateValueAndValidity();
+
+        this.buscaEstabelecimento();
+
         if (
           result.atividadeTipo === 1 ||
           result.atividadeTipo === 2 ||
@@ -1057,8 +1062,6 @@ export class AtendimentoFormComponent implements OnInit {
       .subscribe(
         (result) => {
           if (result) {
-            console.log(result);
-
             if (this.tipoFicha == 7 || this.tipoFichaSelecionada === '7') {
               this.object = result;
               this.object.pacienteNome = this.pacienteSelecionado.nome;
@@ -1946,10 +1949,10 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   viewer(id: number, content: any) {
-    this.buscaEstabelecimento();
     if (!id) {
       return;
     }
+    this.buscaEstabelecimento();
 
     this.exameId = id;
 
@@ -1979,6 +1982,7 @@ export class AtendimentoFormComponent implements OnInit {
     this.tipoFichaSelecionada = event.target.value;
     this.carregarCondutaEncaminhamento(event.target.value);
     this.carregaTipoAtendimento(event.target.value);
+    this.onTipoFichaChange();
     console.log(event.target.value);
   }
   openAtividadeColetivaParticipante(content: any) {
@@ -2182,13 +2186,23 @@ export class AtendimentoFormComponent implements OnInit {
       );
   }
 
+  onTipoFichaChange() {
+    this.buscaEstabelecimento()
+  }
+
   buscaEstabelecimento() {
     this.loading = true;
     this.service
       .list('estabelecimento/' + this.object.idEstabelecimento)
       .subscribe(
         (result) => {
-          this.obrigaCiap2 = result.obrigaCiap2;
+          if (this.form.get('tipoFicha').value != 7 && this.form.get('tipoFicha').value != 8) {
+            console.log('teste')
+            this.obrigaCiap2 = result.obrigaCiap2;
+          } else {
+            console.log('teste2')
+            this.obrigaCiap2 = 0
+          }
           this.loading = false;
         },
         (error) => {
@@ -2197,6 +2211,7 @@ export class AtendimentoFormComponent implements OnInit {
         },
       );
   }
+
 
   //FICHA ODONTOLOGICA
   selecionatiposFornecimOdonto(item) {
@@ -2306,7 +2321,6 @@ export class AtendimentoFormComponent implements OnInit {
     this.service.list('conduta-encaminhamento/' + id).subscribe(
       (result) => {
         this.ListcondutaEncaminhamento = result;
-        console.log(result);
         this.loading = false;
       },
       (error) => {
