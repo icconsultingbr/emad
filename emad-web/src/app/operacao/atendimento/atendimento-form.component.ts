@@ -862,7 +862,7 @@ export class AtendimentoFormComponent implements OnInit {
 
       this.findPacienteData(this.object.idPaciente);
     }
-
+    this.onTipoFichaChange()
     this.closeLocalizacaoPaciente();
   }
 
