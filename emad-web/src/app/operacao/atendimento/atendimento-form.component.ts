@@ -230,7 +230,6 @@ export class AtendimentoFormComponent implements OnInit {
     this.loading = true;
     this.buscaProfissionais();
     this.recarregarDocumentos();
-    this.buscaEstabelecimento();
   }
 
 
@@ -2188,6 +2187,7 @@ export class AtendimentoFormComponent implements OnInit {
 
   onTipoFichaChange() {
     this.buscaEstabelecimento()
+
   }
 
   buscaEstabelecimento() {
@@ -2197,10 +2197,15 @@ export class AtendimentoFormComponent implements OnInit {
       .subscribe(
         (result) => {
           if (this.form.get('tipoFicha').value != 7 && this.form.get('tipoFicha').value != 8) {
-            console.log('teste')
+            console.log('caso 1')
+            console.log(this.tipoFicha)
+            console.log(this.form.get('tipoFicha').value)
+            // this.form.get('tipoFicha').value != 7 && this.form.get('tipoFicha').value != 8
             this.obrigaCiap2 = result.obrigaCiap2;
           } else {
-            console.log('teste2')
+            console.log('caso 2')
+            console.log(this.tipoFicha)
+            console.log(this.form.get('tipoFicha').value)
             this.obrigaCiap2 = 0
           }
           this.loading = false;
