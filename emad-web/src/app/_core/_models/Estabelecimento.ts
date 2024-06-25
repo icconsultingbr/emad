@@ -39,4 +39,5 @@ export class Estabelecimento {
   @Input() nivelSuperior: string;
   @Input() obrigaIdSAP: boolean;
   @Input() obrigaCondAvaliada: Boolean;
+  @Input() obrigaCiap2: boolean;
 }
