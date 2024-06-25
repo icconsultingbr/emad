@@ -839,6 +839,12 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   confirmaPaciente() {
+    const printTipoFicha = localStorage.getItem('tipoFicha')
+    this.service.carregaTipoAtendimentoPorTipoFicha(printTipoFicha).subscribe(
+      (result) => {
+        this.listTipoAtendimento = result;
+      },
+    );
     if (this.tipoFichaSelecionada === '7' || this.tipoFicha === 7) {
       this.participanteAtividadeColetiva.idAtendimento = this.object.id;
       this.participanteAtividadeColetiva.idPaciente =
@@ -2197,15 +2203,12 @@ export class AtendimentoFormComponent implements OnInit {
       .subscribe(
         (result) => {
           if (this.form.get('tipoFicha').value != 7 && this.form.get('tipoFicha').value != 8) {
-            console.log('caso 1')
-            console.log(this.tipoFicha)
-            console.log(this.form.get('tipoFicha').value)
-            // this.form.get('tipoFicha').value != 7 && this.form.get('tipoFicha').value != 8
+            const obterTipoFicha = this.form.get('tipoFicha').value
+            localStorage.setItem('tipoFicha', obterTipoFicha)
             this.obrigaCiap2 = result.obrigaCiap2;
           } else {
-            console.log('caso 2')
-            console.log(this.tipoFicha)
-            console.log(this.form.get('tipoFicha').value)
+            const obterTipoFicha = this.form.get('tipoFicha').value
+            localStorage.setItem('tipoFicha', obterTipoFicha)
             this.obrigaCiap2 = 0
           }
           this.loading = false;
