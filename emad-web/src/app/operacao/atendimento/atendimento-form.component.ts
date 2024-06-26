@@ -221,13 +221,14 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loading = true;
+
     this.route.params.subscribe((params) => {
       this.id = params['id'];
       this.idHistorico = params['idHistorico'];
       this.carregaEntidadeCampoPorEspecialidade();
     });
 
-    this.loading = true;
     this.buscaProfissionais();
     this.recarregarDocumentos();
   }
@@ -1645,6 +1646,15 @@ export class AtendimentoFormComponent implements OnInit {
     });
   }
 
+  disableTipoFicha(): boolean {
+    if (this.object.id) {
+      return false;
+    } else {
+      true
+    }
+
+  }
+
   disableFields(): boolean {
     if (!this.object) {
       return true;
@@ -1775,6 +1785,7 @@ export class AtendimentoFormComponent implements OnInit {
 
   carregaEntidadeCampoPorEspecialidade() {
     this.loading = true;
+
     this.allItemsEntidadeCampo = [];
     this.service.carregaEntidadeCampoPorEspecialidade().subscribe(
       (result) => {
@@ -1788,8 +1799,8 @@ export class AtendimentoFormComponent implements OnInit {
       (error) => {
         this.createGroup();
         this.loadDomains();
-        this.loading = false;
         this.errors = Util.customHTTPResponse(error);
+        this.loading = false;
       },
     );
   }
@@ -1969,7 +1980,7 @@ export class AtendimentoFormComponent implements OnInit {
       return;
     }
     this.buscaEstabelecimento();
-
+    this.disableTipoFicha();
     this.exameId = id;
 
     this.modalFormularioRef = this.modalService.open(content, {
@@ -1982,6 +1993,7 @@ export class AtendimentoFormComponent implements OnInit {
 
   //ATIVIDADE COLETIVA
   back() {
+    this.modalFormularioRef.close();
     const route = 'atendimentos/pesquisa/true';
     this.router.navigate([route]);
   }
@@ -1999,7 +2011,6 @@ export class AtendimentoFormComponent implements OnInit {
     this.carregarCondutaEncaminhamento(event.target.value);
     this.carregaTipoAtendimento(event.target.value);
     this.onTipoFichaChange();
-    console.log(event.target.value);
   }
   openAtividadeColetivaParticipante(content: any) {
     this.clear();
@@ -2208,7 +2219,6 @@ export class AtendimentoFormComponent implements OnInit {
   }
 
   buscaEstabelecimento() {
-    this.loading = true;
     this.service
       .list('estabelecimento/' + this.object.idEstabelecimento)
       .subscribe(
@@ -2217,12 +2227,14 @@ export class AtendimentoFormComponent implements OnInit {
             const obterTipoFicha = this.form.get('tipoFicha').value
             localStorage.setItem('tipoFicha', obterTipoFicha)
             this.obrigaCiap2 = result.obrigaCiap2;
+            this.loading = false;
           } else {
             const obterTipoFicha = this.form.get('tipoFicha').value
             localStorage.setItem('tipoFicha', obterTipoFicha)
             this.obrigaCiap2 = 0
+            this.loading = false;
           }
-          this.loading = false;
+
         },
         (error) => {
           this.loading = false;

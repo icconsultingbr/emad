@@ -228,6 +228,7 @@
                 </label>
                 <div class="col-xl-4">
                   <select
+                    [attr.disabled]="disableTipoFicha()"
                     (change)="change($event)"
                     *ngIf="domains"
                     class="custom-select d-block w-100"
@@ -333,8 +334,7 @@
 
           <div
             *ngIf="
-              object.tipoFicha == 8 ||
-              object.tipoAtendimento == 2 ||
+              (object.tipoFicha == 8 && object.tipoAtendimento == 2) ||
               (object.tipoAtendimento == 6 && object.tipoAtendimento != 4)
             "
             class="row"
@@ -344,6 +344,7 @@
                 <label class="col-xl-2 col-form-label text-left">
                   Tipo de Consulta Odonto<span
                     class="text-danger font-weight-bold"
+                    *ngIf="object.tipoAtendimento != 5"
                     >*</span
                   >
                 </label>
@@ -3856,7 +3857,7 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="close()">Sim</button>
-    <button type="button" class="btn btn-danger" (click)="back()">Não</button>
+    <button type="button" class="btn btn-danger" (click)="close()">Não</button>
   </div>
 </ng-template>
 
