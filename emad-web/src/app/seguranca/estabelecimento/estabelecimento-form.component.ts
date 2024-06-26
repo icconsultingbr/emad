@@ -127,7 +127,7 @@ export class EstabelecimentoFormComponent implements OnInit {
     this.object.obrigaCpfNovoPaciente = true;
     this.object.obrigaCartaoSusNovoPaciente = true;
     this.object.obrigaIdSAP = true;
-    this.obrigaCiap2 = true;
+    this.object.obrigaCiap2 = true;
     this.object.obrigaValidarPacienteAtendimento = true;
     this.object.enviaMedicamentoSus = false;
     this.object.celularDefaultNovoPaciente = null;
