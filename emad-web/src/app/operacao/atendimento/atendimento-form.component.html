@@ -321,7 +321,9 @@
                   >
                     <option [value]="null">Selecione...</option>
                     <option
-                      *ngFor="let item of listTipoAtendimento"
+                      *ngFor="
+                        let item of filtroTipoAtendimentoPorConsultaOdonto()
+                      "
                       [value]="item.id"
                     >
                       {{ item.nome }}

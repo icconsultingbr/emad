@@ -233,6 +233,15 @@ export class AtendimentoFormComponent implements OnInit {
     this.recarregarDocumentos();
   }
 
+  filtroTipoAtendimentoPorConsultaOdonto() {
+    if (this.listTipoAtendimento && this.object.tipoConsultaOdonto == 2) {
+      return this.listTipoAtendimento.filter((item) => item.id != 6);
+    } else {
+      return this.listTipoAtendimento
+    }
+  }
+
+
   filtroTiposConsultaOdonto() {
     if (this.domains && this.domains[0].tiposConsultaOdonto) {
       return this.domains[0].tiposConsultaOdonto.filter((item) => {

@@ -623,8 +623,7 @@ module.exports = function (app) {
         req.assert("idClassificacaoRisco").notEmpty().withMessage("Classificação de risco é um campo obrigatório;");
         req.assert("tipoAtendimento").notEmpty().withMessage("Tipo de atendimento é um campo obrigatório;");
        
-        if (obj.tipoAtendimento && obj.tipoAtendimento === 0 || obj.tipoAtendimento === null ||  obj.tipoAtendimento == '' ) {
-            console.log('Informe o Tipo de atendimento')
+        if (obj.tipoAtendimento && obj.tipoAtendimento == 0 || obj.tipoAtendimento == null ||  obj.tipoAtendimento == '' ) {
             errors = util.customError(errors, "header", "Informe o Tipo de atendimento.", "");
             res.status(400).send(errors);
             return;
