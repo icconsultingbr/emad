@@ -237,7 +237,7 @@ export class AtendimentoFormComponent implements OnInit {
     if (this.domains && this.domains[0].tiposConsultaOdonto) {
       return this.domains[0].tiposConsultaOdonto.filter((item) => {
         if (this.object.tipoAtendimento == 6) {
-          return item.id != 1;
+          return item.id != 2;
         } else {
           return true;
         }
@@ -1231,6 +1231,11 @@ export class AtendimentoFormComponent implements OnInit {
 
   close() {
     if (this.modalRef) this.modalRef.close();
+  }
+
+  closeFinalizarAtendimento() {
+    if (this.modalRef) this.modalRef.close();
+    this.router.navigate(['/atendimentos']);
   }
 
   closeLocalizacaoPaciente() {

@@ -622,8 +622,9 @@ module.exports = function (app) {
         req.assert("tipoFicha").notEmpty().withMessage("Tipo de ficha é um campo obrigatório;");
         req.assert("idClassificacaoRisco").notEmpty().withMessage("Classificação de risco é um campo obrigatório;");
         req.assert("tipoAtendimento").notEmpty().withMessage("Tipo de atendimento é um campo obrigatório;");
-
-        if (obj.tipoAtendimento && obj.tipoAtendimento == 0) {
+       
+        if (obj.tipoAtendimento && obj.tipoAtendimento === 0 || obj.tipoAtendimento === null ||  obj.tipoAtendimento == '' ) {
+            console.log('Informe o Tipo de atendimento')
             errors = util.customError(errors, "header", "Informe o Tipo de atendimento.", "");
             res.status(400).send(errors);
             return;
@@ -639,7 +640,6 @@ module.exports = function (app) {
 
         //ATIVIDADE COLETIVA
         if (obj.tipoFicha == 7) {
-
             // CAMPO = INEP
             // É de preenchimento obrigatório se pseEducacao = true ou pseSaude = true;
             if (obj.pseEducacao == true && obj.pseSaude == true && !obj.inep) {
@@ -704,8 +704,13 @@ module.exports = function (app) {
         //ATENDIMENTO ODONTOLOGICO
         if (obj.tipoFicha == '8') {
             req.assert("tipoAtendimento").notEmpty().withMessage("Preencha o campo tipo de atendimento");
+            
         }
 
+        if (obj.tipoFicha == '8' && obj.tipoAtendimento != '5') {
+            req.assert("tipoConsultaOdonto").notEmpty().withMessage("Preencha o campo Tipo de Consulta Odonto");
+            
+        }
 
         errors = req.validationErrors();
 
@@ -759,6 +764,7 @@ module.exports = function (app) {
                     }
                    
                 }
+
             }
             
 
@@ -842,7 +848,7 @@ module.exports = function (app) {
                     }
                 }
             }
-2
+
             if (obj.situacao == "X")
                 obj.dataCancelamento = new Date();
             else if (obj.situacao != "C" && obj.situacao != "0")

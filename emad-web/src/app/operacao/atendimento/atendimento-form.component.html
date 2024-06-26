@@ -332,13 +332,7 @@
             </div>
           </div>
 
-          <div
-            *ngIf="
-              (object.tipoFicha == 8 && object.tipoAtendimento == 2) ||
-              (object.tipoAtendimento == 6 && object.tipoAtendimento != 4)
-            "
-            class="row"
-          >
+          <div *ngIf="object.tipoFicha == 8" class="row">
             <div class="col-xl-12">
               <div class="form-group row">
                 <label class="col-xl-2 col-form-label text-left">
@@ -3848,7 +3842,7 @@
 <ng-template #contentConfirmacao>
   <div class="modal-header">
     <h4 class="modal-title">Complementar atendimento</h4>
-    <button type="button" class="close" (click)="close()">
+    <button type="button" class="close" (click)="closeFinalizarAtendimento()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -3857,7 +3851,13 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="close()">Sim</button>
-    <button type="button" class="btn btn-danger" (click)="close()">Não</button>
+    <button
+      type="button"
+      class="btn btn-danger"
+      (click)="closeFinalizarAtendimento()"
+    >
+      Não
+    </button>
   </div>
 </ng-template>
 
