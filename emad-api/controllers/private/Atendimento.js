@@ -754,13 +754,13 @@ module.exports = function (app) {
             if (obj.tipoFicha == '8') {    
                 var buscaTipoVigilanciaSaudeOdontoAtendimento = await atendimentoTipoVigilanciaSaudeOdontoRepository.buscarPorAtendimentoIdAtivo(id);
 
-                if (buscaTipoVigilanciaSaudeOdontoAtendimento.length == 0 || buscaTipoVigilanciaSaudeOdontoAtendimento.length == '') {
-                    if(obj.tipoAtendimento != 5){
+                if (buscaTipoVigilanciaSaudeOdontoAtendimento.length == 0 || buscaTipoVigilanciaSaudeOdontoAtendimento.length == '' || buscaTipoVigilanciaSaudeOdontoAtendimento.length == 'null'
+                    || buscaTipoVigilanciaSaudeOdontoAtendimento.length == null
+                ) {
                         errors = util.customError(errors, "header", "É necessário informar o Tipo de Vigilância Saúde Bucal", "");
                         res.status(400).send(errors);
                         await connection.rollback();
                         return;
-                    }
                    
                 }
 
