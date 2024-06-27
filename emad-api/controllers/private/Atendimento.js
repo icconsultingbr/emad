@@ -706,7 +706,7 @@ module.exports = function (app) {
             
         }
 
-        if (obj.tipoFicha == '8' && obj.tipoAtendimento != '5') {
+        if (obj.tipoFicha == '8' && obj.tipoAtendimento != '5' && obj.tipoAtendimento != '4') {
             req.assert("tipoConsultaOdonto").notEmpty().withMessage("Preencha o campo Tipo de Consulta Odonto");
             
         }
